@@ -79,6 +79,7 @@ size_t length64=sizeof(value64);
 #define CPU_TSV110        9
 // Ampere
 #define CPU_EMAG8180	 10
+#define CPU_AMPERE1      25
 // Apple
 #define CPU_VORTEX       13
 // Fujitsu
@@ -111,7 +112,8 @@ static char *cpuname[] = {
   "CORTEXA710",
   "FT2000",
   "CORTEXA76",
-  "NEOVERSEV2"
+  "NEOVERSEV2",
+  "AMPERE1"
 };
 
 static char *cpuname_lower[] = {
@@ -139,7 +141,9 @@ static char *cpuname_lower[] = {
   "cortexa710",
   "ft2000",
   "cortexa76",
-  "neoversev2"
+  "neoversev2",
+  "ampere1",
+  "ampere1a"
 };
 
 static int cpulowperf=0;
@@ -334,11 +338,15 @@ int detect(void)
     // Ampere
     else if (strstr(cpu_implementer, "0x50") && strstr(cpu_part, "0x000"))
                         return CPU_EMAG8180;
+    else if (strstr(cpu_implementer, "0xc0")) {
+        if (strstr(cpu_part, "0xac3") || strstr(cpu_part, "0xac4"))
+            return CPU_AMPERE1;
+    }
     // Fujitsu
     else if (strstr(cpu_implementer, "0x46") && strstr(cpu_part, "0x001"))
                         return CPU_A64FX;
     // Apple
-    else if (strstr(cpu_implementer, "0x61") && strstr(cpu_part, "0x022"))
+    else if (strstr(cpu_implementer, "0x61") /* && strstr(cpu_part, "0x022")*/)
 	    		return CPU_VORTEX;
    // Phytium
    else if (strstr(cpu_implementer, "0x70") && (strstr(cpu_part, "0x660") || strstr(cpu_part, "0x661") 
@@ -682,6 +690,21 @@ void get_cpuconfig(void)
     		printf("#define L2_LINESIZE 64\n");
 	    	printf("#define DTB_DEFAULT_ENTRIES 64\n");
 	    	printf("#define DTB_SIZE 4096\n");
+		break;
+
+	    case CPU_AMPERE1:
+		printf("#define %s\n", cpuname[d]);
+		printf("#define L1_CODE_SIZE 16384\n");
+		printf("#define L1_CODE_LINESIZE 64\n");
+		printf("#define L1_CODE_ASSOCIATIVE 4\n");
+		printf("#define L1_DATA_SIZE 65536\n");
+		printf("#define L1_DATA_LINESIZE 64\n");
+		printf("#define L1_DATA_ASSOCIATIVE 4\n");
+		printf("#define L2_SIZE 2097152\n");
+		printf("#define L2_LINESIZE 64\n");
+		printf("#define L2_ASSOCIATIVE 8\n");
+		printf("#define DTB_DEFAULT_ENTRIES 64\n");
+		printf("#define DTB_SIZE 4096\n");
 		break;
 
 	    case CPU_THUNDERX3T110:

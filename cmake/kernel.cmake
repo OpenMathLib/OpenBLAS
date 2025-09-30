@@ -1,3 +1,31 @@
+###############################################################################
+# Copyright (c) 2025, The OpenBLAS Project
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the OpenBLAS project nor the names of
+#    its contributors may be used to endorse or promote products
+#    derived from this software without specific prior written permission.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+###############################################################################
+
 # helper functions for the kernel CMakeLists.txt
 
 function(SetFallback KERNEL SOURCE_PATH)
@@ -82,6 +110,7 @@ macro(SetDefaultL1)
   SetFallback(SROTMKERNEL rotm.S)
   SetFallback(DROTMKERNEL rotm.S)
   SetFallback(QROTMKERNEL rotm.S)
+  SetFallback(BSCALKERNEL ../generic/scal.c)
   SetFallback(SSCALKERNEL scal.S)
   SetFallback(DSCALKERNEL scal.S)
   SetFallback(CSCALKERNEL zscal.S)
@@ -141,6 +170,8 @@ if (BUILD_BFLOAT16)
   SetFallback(SHSWAPKERNEL ../arm/swap.c)
   SetFallback(TOBF16KERNEL ../x86_64/tobf16.c)
   SetFallback(BF16TOKERNEL ../x86_64/bf16to.c)
+  SetFallback(BGEMVNKERNEL ../generic/gemv_n.c)
+  SetFallback(BGEMVTKERNEL ../generic/gemv_t.c)
   SetFallback(SBGEMVNKERNEL ../x86_64/sbgemv_n.c)
   SetFallback(SBGEMVTKERNEL ../x86_64/sbgemv_t.c)
 endif ()
@@ -193,6 +224,8 @@ macro(SetDefaultL2)
   SetFallback(XHEMV_V_KERNEL ../generic/zhemv_k.c)
   SetFallback(XHEMV_M_KERNEL ../generic/zhemv_k.c)
 if (BUILD_BFLOAT16)
+  SetFallback(BGEMVNKERNEL ../generic/gemv_n.c)
+  SetFallback(BGEMVTKERNEL ../generic/gemv_t.c)
   SetFallback(SBGEMVNKERNEL ../x86_64/sbgemv_n.c)
   SetFallback(SBGEMVTKERNEL ../x86_64/sbgemv_t.c)
   SetFallback(SHGERKERNEL ../generic/ger.c)
@@ -206,6 +239,16 @@ macro(SetDefaultL3)
   SetFallback(ZGEADD_KERNEL ../generic/zgeadd.c)
 if (BUILD_BFLOAT16)
   SetFallback(SHGEADD_KERNEL ../generic/geadd.c)
+  SetFallback(BGEMMKERNEL ../generic/gemmkernel_2x2.c)
+  SetFallback(BGEMM_BETA  ../generic/gemm_beta.c)
+  SetFallback(BGEMMINCOPY ../generic/gemm_ncopy_2.c)
+  SetFallback(BGEMMITCOPY ../generic/gemm_tcopy_2.c)
+  SetFallback(BGEMMONCOPY ../generic/gemm_ncopy_2.c)
+  SetFallback(BGEMMOTCOPY ../generic/gemm_tcopy_2.c)
+  SetFallback(BGEMMINCOPYOBJ bgemm_incopy.o)
+  SetFallback(BGEMMITCOPYOBJ bgemm_itcopy.o)
+  SetFallback(BGEMMONCOPYOBJ bgemm_oncopy.o)
+  SetFallback(BGEMMOTCOPYOBJ bgemm_otcopy.o)
   SetFallback(SBGEMMKERNEL ../generic/gemmkernel_2x2.c)
   SetFallback(SBGEMM_BETA  ../generic/gemm_beta.c)
   SetFallback(SBGEMMINCOPY ../generic/gemm_ncopy_2.c)

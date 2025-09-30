@@ -151,8 +151,8 @@ static double ddot_kernel_8 (long n, double *x, double *y)
        "=wa" (t2),	// 6
        "=wa" (t3)	// 7
      :
-       "m" (*x),
-       "m" (*y),
+       "m" (*(const double (*)[n]) x),
+       "m" (*(const double (*)[n]) y),
        "b" (16),	// 10
        "b" (32),	// 11
        "b" (48),	// 12

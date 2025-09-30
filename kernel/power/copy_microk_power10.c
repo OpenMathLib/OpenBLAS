@@ -241,12 +241,12 @@ static void copy_kernel (BLASLONG n, FLOAT *x, FLOAT *y)
 
      "#n=%1 x=%4=%2 y=%0=%3"
      :
-       "=m" (*y),
+       "=m" (*(FLOAT (*)[n]) y),
        "+r" (n),	// 1
        "+b" (x),	// 2
        "+b" (y) 	// 3
      :
-       "m" (*x)
+       "m" (*(FLOAT (*)[n]) x)
      :
        "cr0",
        "vs32","vs33","vs34","vs35","vs36","vs37","vs38","vs39",

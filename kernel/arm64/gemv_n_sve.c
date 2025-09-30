@@ -69,13 +69,12 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
     FLOAT *a2_ptr = a + lda * width * 2;
 
     for (j = 0; j < width; j++) {
+      ix = j * inc_x;
+
+      SV_TYPE x0_vec = SV_DUP(alpha * x[ix + (inc_x * width * 0)]);
+      SV_TYPE x1_vec = SV_DUP(alpha * x[ix + (inc_x * width * 1)]);
+      SV_TYPE x2_vec = SV_DUP(alpha * x[ix + (inc_x * width * 2)]);
       for (i = 0; (i + sve_size - 1) < m; i += sve_size) {
-        ix = j * inc_x;
-
-        SV_TYPE x0_vec = SV_DUP(alpha * x[ix + (inc_x * width * 0)]);
-        SV_TYPE x1_vec = SV_DUP(alpha * x[ix + (inc_x * width * 1)]);
-        SV_TYPE x2_vec = SV_DUP(alpha * x[ix + (inc_x * width * 2)]);
-
         SV_TYPE a00_vec = svld1(pg_true, a0_ptr + i);
         SV_TYPE a01_vec = svld1(pg_true, a1_ptr + i);
         SV_TYPE a02_vec = svld1(pg_true, a2_ptr + i);
@@ -89,10 +88,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
       }
 
       if (i < m) {
-        SV_TYPE x0_vec = SV_DUP(alpha * x[ix + (inc_x * width * 0)]);
-        SV_TYPE x1_vec = SV_DUP(alpha * x[ix + (inc_x * width * 1)]);
-        SV_TYPE x2_vec = SV_DUP(alpha * x[ix + (inc_x * width * 2)]);
-
         SV_TYPE a00_vec = svld1(pg, a0_ptr + i);
         SV_TYPE a01_vec = svld1(pg, a1_ptr + i);
         SV_TYPE a02_vec = svld1(pg, a2_ptr + i);
@@ -115,9 +110,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
     a_ptr = a2_ptr;
     for (j = width * 3; j < n; j++) {
       ix = j * inc_x;
+      SV_TYPE x_vec = SV_DUP(alpha * x[(ix)]);
       for (i = 0; (i + sve_size - 1) < m; i += sve_size) {
         SV_TYPE y_vec = svld1(pg_true, y + i);
-        SV_TYPE x_vec = SV_DUP(alpha * x[(ix)]);
         SV_TYPE a_vec = svld1(pg_true, a_ptr + i);
         y_vec = svmla_x(pg_true, y_vec, a_vec, x_vec);
         svst1(pg_true, y + i, y_vec);
@@ -125,7 +120,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
       if (i < m) {
         SV_TYPE y_vec = svld1(pg, y + i);
-        SV_TYPE x_vec = SV_DUP(alpha * x[(ix)]);
         SV_TYPE a_vec = svld1(pg, a_ptr + i);
         y_vec = svmla_m(pg, y_vec, a_vec, x_vec);
         svst1(pg, y + i, y_vec);

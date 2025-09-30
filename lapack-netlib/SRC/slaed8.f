@@ -85,7 +85,7 @@
 *>          D is REAL array, dimension (N)
 *>         On entry, the eigenvalues of the two submatrices to be
 *>         combined.  On exit, the trailing (N-K) updated eigenvalues
-*>         (those which were deflated) sorted into increasing order.
+*>         (those which were deflated) sorted into decreasing order.
 *> \endverbatim
 *>
 *> \param[in,out] Q

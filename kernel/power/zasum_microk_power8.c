@@ -154,7 +154,7 @@ static double zasum_kernel_8 (long n, double *x)
        "=wa" (t2),	// 5
        "=wa" (t3)	// 6
      :
-       "m" (*x),
+       "m" (*(const double (*)[n * 2]) x),
        "b" (16),	// 8
        "b" (32),	// 9
        "b" (48),	// 10

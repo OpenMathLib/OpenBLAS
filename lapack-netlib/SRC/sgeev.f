@@ -504,17 +504,17 @@
 *     Undo scaling if necessary
 *
    50 CONTINUE
-      IF( SCALEA .AND. INFO.GT.0) THEN
+      IF( SCALEA ) THEN
          CALL SLASCL( 'G', 0, 0, CSCALE, ANRM, N-INFO, 1, WR( INFO+1 ),
      $                MAX( N-INFO, 1 ), IERR )
          CALL SLASCL( 'G', 0, 0, CSCALE, ANRM, N-INFO, 1, WI( INFO+1 ),
      $                MAX( N-INFO, 1 ), IERR )
-
+         IF( INFO.GT.0 ) THEN
             CALL SLASCL( 'G', 0, 0, CSCALE, ANRM, ILO-1, 1, WR, N,
      $                   IERR )
             CALL SLASCL( 'G', 0, 0, CSCALE, ANRM, ILO-1, 1, WI, N,
      $                   IERR )
-
+         END IF
       END IF
 *
       WORK( 1 ) = SROUNDUP_LWORK(MAXWRK)

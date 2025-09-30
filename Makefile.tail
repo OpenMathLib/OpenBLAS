@@ -1,4 +1,34 @@
+###############################################################################
+# Copyright (c) 2025, The OpenBLAS Project
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the OpenBLAS project nor the names of
+#    its contributors may be used to endorse or promote products
+#    derived from this software without specific prior written permission.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+###############################################################################
+
+BBLASOBJS_P = $(BBLASOBJS:.$(SUFFIX)=.$(PSUFFIX))
 SBBLASOBJS_P = $(SBBLASOBJS:.$(SUFFIX)=.$(PSUFFIX))
+SHBLASPBJS_P = $(SHBLASOBJS:.$(SUFFIX)=.$(PSUFFIX))
 SBLASOBJS_P = $(SBLASOBJS:.$(SUFFIX)=.$(PSUFFIX))
 DBLASOBJS_P = $(DBLASOBJS:.$(SUFFIX)=.$(PSUFFIX))
 QBLASOBJS_P = $(QBLASOBJS:.$(SUFFIX)=.$(PSUFFIX))
@@ -11,8 +41,8 @@ COMMONOBJS_P = $(COMMONOBJS:.$(SUFFIX)=.$(PSUFFIX))
 
 HPLOBJS_P   = $(HPLOBJS:.$(SUFFIX)=.$(PSUFFIX))
 
-BLASOBJS    = $(SBEXTOBJS) $(SBBLASOBJS)  $(SBLASOBJS)   $(DBLASOBJS)   $(CBLASOBJS)   $(ZBLASOBJS) $(CBAUXOBJS)
-BLASOBJS_P  = $(SBEXTOBJS_P) $(SBBLASOBJS_P) $(SBLASOBJS_P) $(DBLASOBJS_P) $(CBLASOBJS_P) $(ZBLASOBJS_P) $(CBAUXOBJS_P)
+BLASOBJS    = $(SHBLASOBJS) $(BBLASOBJS) $(SBEXTOBJS) $(SBBLASOBJS)  $(SBLASOBJS)   $(DBLASOBJS)   $(CBLASOBJS)   $(ZBLASOBJS) $(CBAUXOBJS)
+BLASOBJS_P  = $(SHBLASPBJS_P) $(BBLASOBJS_P) $(SBEXTOBJS_P) $(SBBLASOBJS_P) $(SBLASOBJS_P) $(DBLASOBJS_P) $(CBLASOBJS_P) $(ZBLASOBJS_P) $(CBAUXOBJS_P)
 
 ifdef EXPRECISION
 BLASOBJS   += $(QBLASOBJS)   $(XBLASOBJS)
@@ -24,6 +54,8 @@ BLASOBJS   += $(QBLASOBJS)   $(XBLASOBJS)
 BLASOBJS_P += $(QBLASOBJS_P) $(XBLASOBJS_P)
 endif
 
+$(SHBLASOBJS) $(SHBLASOBJS_P) : override CFLAGS += -DHFLOAT16 -UDOUBLE  -UCOMPLEX
+$(BBLASOBJS) $(BBLASOBJS_P) : override CFLAGS += -DBFLOAT16 -DBGEMM -UDOUBLE  -UCOMPLEX
 $(SBBLASOBJS) $(SBBLASOBJS_P) : override CFLAGS += -DBFLOAT16 -UDOUBLE  -UCOMPLEX
 $(SBLASOBJS) $(SBLASOBJS_P) : override CFLAGS += -UDOUBLE  -UCOMPLEX
 $(DBLASOBJS) $(DBLASOBJS_P) : override CFLAGS += -DDOUBLE  -UCOMPLEX
@@ -33,6 +65,8 @@ $(ZBLASOBJS) $(ZBLASOBJS_P) : override CFLAGS += -DDOUBLE  -DCOMPLEX
 $(XBLASOBJS) $(XBLASOBJS_P) : override CFLAGS += -DXDOUBLE -DCOMPLEX
 $(SBEXTOBJS) $(SBEXTOBJS_P) : override CFLAGS += -DBFLOAT16 -UDOUBLE  -UCOMPLEX
 
+$(SHBLASOBJS_P) : override CFLAGS += -DPROFILE $(COMMON_PROF)
+$(BBLASOBJS_P) : override CFLAGS += -DPROFILE $(COMMON_PROF)
 $(SBBLASOBJS_P) : override CFLAGS += -DPROFILE $(COMMON_PROF)
 $(SBLASOBJS_P) : override CFLAGS += -DPROFILE $(COMMON_PROF)
 $(DBLASOBJS_P) : override CFLAGS += -DPROFILE $(COMMON_PROF)

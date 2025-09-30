@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2025 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -169,6 +170,22 @@
 #define STOP_RPCC(COUNTER)
 #endif
 
+#if defined(BUILD_BFLOAT16)
+#if defined(DYNAMIC_ARCH)
+  #if defined(BGEMM)
+    #define BFLOAT16_ALIGN_K gotoblas->bgemm_align_k
+  #else
+    #define BFLOAT16_ALIGN_K gotoblas->sbgemm_align_k
+  #endif
+#else
+  #if defined(BGEMM)
+    #define BFLOAT16_ALIGN_K BGEMM_ALIGN_K
+  #else
+    #define BFLOAT16_ALIGN_K SBGEMM_ALIGN_K
+  #endif
+#endif
+#endif
+
 int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 		  XFLOAT *sa, XFLOAT *sb, BLASLONG dummy){
   BLASLONG k, lda, ldb, ldc;
@@ -305,12 +322,8 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
       }
 
       BLASLONG pad_min_l = min_l;
-#if defined(HALF)
-#if defined(DYNAMIC_ARCH)
-      pad_min_l = (min_l + gotoblas->sbgemm_align_k - 1) & ~(gotoblas->sbgemm_align_k-1);
-#else
-      pad_min_l = (min_l + SBGEMM_ALIGN_K - 1) & ~(SBGEMM_ALIGN_K - 1);;
-#endif
+#if defined(BFLOAT16)
+    pad_min_l = (min_l + BFLOAT16_ALIGN_K - 1) & ~(BFLOAT16_ALIGN_K - 1);
 #endif
 
       /* First, we have to move data A to L2 cache */

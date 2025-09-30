@@ -134,12 +134,12 @@ static void zcopy_kernel_16 (long n, FLOAT *x, FLOAT *y)
 
      "#n=%1 x=%4=%2 y=%0=%3 o16=%5 o32=%6 o48=%7 o64=%8 o80=%9 o96=%10 o112=%11"
      :
-       "=m" (*y),
+       "=m"  (*(FLOAT (*)[n * 2]) y),
        "+r" (n),	// 1
        "+b" (x),	// 2
        "+b" (y)		// 3
      :
-       "m" (*x),
+       "m" (*(const FLOAT (*)[n * 2]) x),
        "b" (16),	// 5
        "b" (32),	// 6
        "b" (48),	// 7

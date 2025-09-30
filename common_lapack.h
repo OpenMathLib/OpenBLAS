@@ -439,4 +439,9 @@ blasint xtrtrs_LRN_parallel(blas_arg_t *, BLASLONG *, BLASLONG *, xdouble *, xdo
 blasint xtrtrs_LCU_parallel(blas_arg_t *, BLASLONG *, BLASLONG *, xdouble *, xdouble *, BLASLONG);
 blasint xtrtrs_LCN_parallel(blas_arg_t *, BLASLONG *, BLASLONG *, xdouble *, xdouble *, BLASLONG);
 
+blasint slaed3_single(blasint *, blasint *, blasint *, float *, float *, blasint *, float *, float *, float *, blasint *, blasint *, float *, float *, blasint *);
+blasint dlaed3_single(blasint *, blasint *, blasint *, double *, double *, blasint *, double *, double *, double *, blasint *, blasint *, double *, double *, blasint *);
+blasint slaed3_parallel(blasint *, blasint *, blasint *, float *, float *, blasint *, float *, float *, float *, blasint *, blasint *, float *, float *, blasint *);
+blasint dlaed3_parallel(blasint *, blasint *, blasint *, double *, double *, blasint *, double *, double *, double *, blasint *, blasint *, double *, double *, blasint *);
+
 #endif

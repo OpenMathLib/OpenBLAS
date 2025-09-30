@@ -91,7 +91,7 @@ like Intel Haswell. There once was an effort to build an OpenCL implementation t
 
 We obtained a performance comparable with Intel MKL that actually outperformed Intel MKL in some cases.
 Here is the result of the DGEMM subroutine's performance on Intel Core i5-2500K Windows 7 SP1 64-bit:
-![Single Thread DGEMM Performance on Intel Desktop Sandy Bridge](http://xianyi.github.com/OpenBLAS/dgemm_snb_1thread.png)
+![Single Thread DGEMM Performance on Intel Desktop Sandy Bridge](dgemm_snb_1thread.png)
 
 <hr noshade="noshade">
 
@@ -220,8 +220,8 @@ lead to compiler error messages about an "ABI change" when compiling AVX512 code
 ### <a name="ppcxl"></a>Building OpenBLAS on POWER fails with IBM XL
 
     Trying to compile OpenBLAS with IBM XL ends with error messages about unknown register names
-like "vs32". Working around these by using known alternate names for the vector registers only leads to another assembler error about unsupported constraints. This is a known deficiency in the IBM compiler at least up to and including 16.1.0 (and in the POWER version of clang, from which it is derived) - use gcc instead. (See issues #1078
-and #1699 for related discussions)
+like "vs32". Working around these by using known alternate names for the vector registers only leads to another assembler error about unsupported constraints. This is a known deficiency in the IBM compiler at least up to and including 16.1.0 (and in the POWER version of clang, from which it is derived) - use gcc instead. (See issues [#1078](https://github.com/OpenMathLib/OpenBLAS/issues/1078)
+and [#1699](https://github.com/OpenMathLib/OpenBLAS/issues/1699) for related discussions)
 
 ### <a name="debianlts"></a>Replacing system BLAS/updating APT OpenBLAS in Mint/Ubuntu/Debian
 
@@ -268,7 +268,7 @@ path (usually either /usr/local/include, /opt/OpenBLAS/include or whatever you s
 
 This is due to different interpretations of the (informal) standard for passing characters as arguments between C and FORTRAN functions. As the method for storing text differs in the two languages, when C calls Fortran the text length is passed as an "invisible" additional parameter.
 Historically, this has not been required when the text is just a single character, so older code like the Reference-LAPACK bundled with OpenBLAS
-does not do it. Recently gcc's checking has changed to require it, but there is no consensus yet if and how the existing LAPACK (and many other codebases) should adapt. (And for actual compilation, gcc has mostly backtracked and provided compatibility options - hence the default build settings in the OpenBLAS Makefiles add -fno-optimize-sibling-calls to the gfortran options to prevent miscompilation with "affected" versions. See ticket 2154 in the issue tracker for more details and links) 
+does not do it. Recently gcc's checking has changed to require it, but there is no consensus yet if and how the existing LAPACK (and many other codebases) should adapt. (And for actual compilation, gcc has mostly backtracked and provided compatibility options - hence the default build settings in the OpenBLAS Makefiles add -fno-optimize-sibling-calls to the gfortran options to prevent miscompilation with "affected" versions. See ticket [#2154](https://github.com/OpenMathLib/OpenBLAS/issues/2154) in the issue tracker for more details and links)
 <hr noshade="noshade">
 
 ### <a name="newcpu"></a>Build fails with lots of errors about undefined ?GEMM_UNROLL_M

@@ -1,3 +1,30 @@
+###############################################################################
+# Copyright (c) 2025, The OpenBLAS Project
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the OpenBLAS project nor the names of
+#    its contributors may be used to endorse or promote products
+#    derived from this software without specific prior written permission.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+###############################################################################
 ##
 ## Author: Hank Anderson <hank@statease.com>
 ## Description: Ported from OpenBLAS/Makefile.system
@@ -289,12 +316,19 @@ if (DEFINED TARGET)
     set (KERNEL_DEFINITIONS  "${KERNEL_DEFINITIONS} -mcpu=power8 -mtune=power8 -mvsx -fno-fast-math")
   endif()
 
+if (${TARGET} STREQUAL Z13)
+    set (KERNEL_DEFINITIONS "${KERNEL_DEFINITIONS} -march=z13 -mzvector")
+endif()
+if (${TARGET} STREQUAL Z14)
+    set (KERNEL_DEFINITIONS "${KERNEL_DEFINITIONS} -march=z14 -mzvector")
+endif()
+
 if (${TARGET} STREQUAL NEOVERSEV1)
     if (${CMAKE_C_COMPILER_ID} STREQUAL "PGI" AND NOT NO_SVE)
-	set (KERNEL_DEFINITIONS  "${KERNEL_DEFINITIONS} -Msve_intrinsics -march=armv8.4-a+sve -mtune=neoverse-v1")
+	set (KERNEL_DEFINITIONS  "${KERNEL_DEFINITIONS} -Msve_intrinsics -march=armv8.4-a+sve+bf16 -mtune=neoverse-v1")
     else ()
     if (CMAKE_C_COMPILER_VERSION VERSION_GREATER 10.4 OR CMAKE_C_COMPILER_VERSION VERSION_EQUAL 10.4)
-      set (KERNEL_DEFINITIONS  "${KERNEL_DEFINITIONS} -march=armv8.4-a+sve -mtune=neoverse-v1")
+      set (KERNEL_DEFINITIONS  "${KERNEL_DEFINITIONS} -march=armv8.4-a+sve+bf16 -mtune=neoverse-v1")
     else ()
 	    message(FATAL_ERROR "Compiler ${CMAKE_C_COMPILER} ${CMAKE_C_COMPILER_VERSION} does not support Neoverse V1.")
     endif()
@@ -308,6 +342,19 @@ if (${TARGET} STREQUAL NEOVERSEV1)
       set (KERNEL_DEFINITIONS  "${KERNEL_DEFINITIONS} -march=armv8.5-a+sve+sve2+bf16 -mtune=neoverse-n2")
     else ()
 	    message(FATAL_ERROR "Compiler $${CMAKE_C_COMPILER} ${CMAKE_C_COMPILER_VERSION} does not support Neoverse N2.")
+    endif()
+    endif()
+  endif()
+  if (${TARGET} STREQUAL NEOVERSEV2)
+    if (${CMAKE_C_COMPILER_ID} STREQUAL "PGI" AND NOT NO_SVE)
+	    set (KERNEL_DEFINITIONS  "${KERNEL_DEFINITIONS} -Msve-intrinsics -march=armv9-a+sve+sve2+bf16 -mtune=neoverse-v2")
+    else ()
+    if (CMAKE_C_COMPILER_VERSION VERSION_GREATER 13.0 OR CMAKE_C_COMPILER_VERSION VERSION_EQUAL 13.0)
+      set (KERNEL_DEFINITIONS  "${KERNEL_DEFINITIONS} -mcpu=neoverse-v2")
+    elseif (CMAKE_C_COMPILER_VERSION VERSION_GREATER 10.4 OR CMAKE_C_COMPILER_VERSION VERSION_EQUAL 10.4)
+      set (KERNEL_DEFINITIONS  "${KERNEL_DEFINITIONS} -march=armv8.4-a+sve+bf16 -mtune=neoverse-v1")
+    else ()
+	    message(FATAL_ERROR "Compiler $${CMAKE_C_COMPILER} ${CMAKE_C_COMPILER_VERSION} does not support Neoverse V2.")
     endif()
     endif()
   endif()
@@ -420,20 +467,32 @@ if (X86_64 OR ${CORE} STREQUAL POWER10 OR ARM64 OR LOONGARCH64)
 endif ()
 if (ARM64)
   set(GEMM_GEMV_FORWARD TRUE)
+  set(SBGEMM_GEMV_FORWARD TRUE)
+  set(BGEMM_GEMV_FORWARD TRUE)
+endif ()
+if (POWER)
+  set(GEMM_GEMV_FORWARD TRUE)
+  set(SBGEMM_GEMV_FORWARD TRUE)
+endif ()
+if (RISCV64)
+  set(GEMM_GEMV_FORWARD TRUE)
 endif ()
 
-if (GEMM_GEMV_FORWARD AND NOT ONLY_CBLAS)
+if (GEMM_GEMV_FORWARD)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DGEMM_GEMV_FORWARD")
 endif ()
-if (GEMM_GEMV_FORWARD_BF16 AND NOT ONLY_CBLAS)
-    set(CCOMMON_OPT "${CCOMMON_OPT} -DGEMM_GEMV_FORWARD_BF16")
+if (SBGEMM_GEMV_FORWARD)
+    set(CCOMMON_OPT "${CCOMMON_OPT} -DSBGEMM_GEMV_FORWARD")
+endif ()
+if (BGEMM_GEMV_FORWARD)
+    set(CCOMMON_OPT "${CCOMMON_OPT} -DBGEMM_GEMV_FORWARD")
 endif ()
 if (SMALL_MATRIX_OPT)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DSMALL_MATRIX_OPT")
 endif ()
 
 if (DYNAMIC_ARCH)
-  if (X86 OR X86_64 OR ARM64 OR POWER OR RISCV64 OR LOONGARCH64)
+  if (X86 OR X86_64 OR ARM64 OR POWER OR RISCV64 OR LOONGARCH64 OR ZARCH)
     set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_ARCH")
     if (DYNAMIC_OLDER)
       set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_OLDER")
@@ -640,6 +699,9 @@ endif()
 if (BUILD_BFLOAT16)
        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBUILD_BFLOAT16")
 endif()
+if (BUILD_HFLOAT16)
+       set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBUILD_HFLOAT16")
+endif()
 if(NOT MSVC)
 set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} ${CCOMMON_OPT}")
 endif()
@@ -647,14 +709,14 @@ endif()
 set(PFLAGS "${PFLAGS} ${CCOMMON_OPT} -I${TOPDIR} -DPROFILE ${COMMON_PROF}")
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
 
-if ("${F_COMPILER}" STREQUAL "FLANG")
-if (${CMAKE_Fortran_COMPILER_VERSION} VERSION_LESS_EQUAL 3)
-  set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fno-unroll-loops")
-endif ()
-endif ()
-if (ARM64 AND CMAKE_Fortran_COMPILER_ID MATCHES "LLVMFlang.*" AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -O2")
-endif ()
+  if ("${F_COMPILER}" STREQUAL "FLANG")
+    if (${CMAKE_Fortran_COMPILER_VERSION} VERSION_LESS_EQUAL 3)
+      set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fno-unroll-loops")
+    endif ()
+  endif ()
+    if (ARM64 AND CMAKE_Fortran_COMPILER_ID MATCHES "LLVMFlang.*" AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
+      set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -O2")
+    endif ()
 endif ()
 
 

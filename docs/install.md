@@ -623,14 +623,22 @@ Note: using `TARGET=CORTEXA57` in place of `ARMV8` will pick up better
 optimized routines. Implementations for the `CORTEXA57` target are compatible
 with all other `ARMV8` targets.
 
-Note: for NDK 23b, something as simple as:
+Note: for NDK 23b and later, something as simple as:
 ```bash
 export PATH=/opt/android-ndk-r23b/toolchains/llvm/prebuilt/linux-x86_64/bin/:$PATH
-make HOSTCC=gcc CC=/opt/android-ndk-r23b/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android31-clang ONLY_CBLAS=1 TARGET=ARMV8
+make HOSTCC=gcc CC=/opt/android-ndk-r23b/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android31-clang ONLY_CBLAS=1 TARGET=ARMV8 RANLIB=echo
 ```
 appears to be sufficient on Linux. On OSX, setting AR to the ar provided in the
 "bin" path of the NDK (probably `llvm-ar`) is also necessary.
 
+If you prefer building with CMake, running 
+```bash
+cmake -DANDROID_ABI=arm64-v8a -DTARGET=ARMV8 -DCMAKE_TOOLCHAIN_FILE=/opt/android-ndk-r27/build/cmake/android.toolchain.cmake -DNOFORTRAN=1 -DANDROID_PLATFORM=android-23 ..
+cmake --build .
+```
+in your build directory should work (be sure to adjust the toolchain_file argument according to where you installed the NDK, and the ANDROID_PLATFORM
+according to the minimum version of Android you want to support. (If you leave out the ANDROID_PLATFORM parameter, the build will fail with an error 
+message about a missing declaration or missing header file complex.h)
 
 ??? note "Alternative build script for 3 architectures"
 

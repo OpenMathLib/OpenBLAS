@@ -1,4 +1,5 @@
 /*********************************************************************/
+/* Copyright 2025 The OpenBLAS Project.                              */
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
 /* All rights reserved.                                              */
 /*                                                                   */
@@ -43,17 +44,25 @@
 #include "functable.h"
 #endif
 
+#ifdef BGEMM
+#define GEMV_THREAD_N bgemv_thread_n
+#define GEMV_THREAD_T bgemv_thread_t
+#define ERROR_NAME "BGEMV "
+#else
+#define GEMV_THREAD_N sbgemv_thread_n
+#define GEMV_THREAD_T sbgemv_thread_t
 #define ERROR_NAME "SBGEMV "
+#endif 
 
 #ifdef SMP
-static int (*sbgemv_thread[])(BLASLONG, BLASLONG, float, bfloat16 *, BLASLONG, bfloat16 * , BLASLONG, float, float *, BLASLONG, int) = {
-    sbgemv_thread_n, sbgemv_thread_t,
+static int (*gemv_thread[])(BLASLONG, BLASLONG, FLOAT, IFLOAT *, BLASLONG, IFLOAT * , BLASLONG, FLOAT, FLOAT *, BLASLONG, int) = {
+    GEMV_THREAD_N, GEMV_THREAD_T,
 };
 #endif
 
 #ifndef CBLAS
 
-void NAME(char *TRANS, blasint *M, blasint *N, float *ALPHA, bfloat16 *a, blasint *LDA, bfloat16 *x, blasint *INCX, float *BETA, float *y, blasint *INCY)
+void NAME(char *TRANS, blasint *M, blasint *N, FLOAT *ALPHA, IFLOAT *a, blasint *LDA, IFLOAT *x, blasint *INCX, FLOAT *BETA, FLOAT *y, blasint *INCY)
 {
     char trans = *TRANS;
     blasint m = *M;
@@ -61,14 +70,14 @@ void NAME(char *TRANS, blasint *M, blasint *N, float *ALPHA, bfloat16 *a, blasin
     blasint lda = *LDA;
     blasint incx = *INCX;
     blasint incy = *INCY;
-    float alpha = *ALPHA;
-    float beta  = *BETA;
+    FLOAT alpha = *ALPHA;
+    FLOAT beta  = *BETA;
 #ifdef SMP
     int nthreads;
 #endif
 
-    int (*sbgemv[])(BLASLONG, BLASLONG, float, bfloat16 *, BLASLONG, bfloat16 * , BLASLONG, float, float *, BLASLONG) = {
-        SBGEMV_N, SBGEMV_T,
+    int (*gemv[])(BLASLONG, BLASLONG, FLOAT, IFLOAT *, BLASLONG, IFLOAT * , BLASLONG, FLOAT, FLOAT *, BLASLONG) = {
+        GEMV_N, GEMV_T,
     };
 
     blasint info;
@@ -104,7 +113,7 @@ void NAME(char *TRANS, blasint *M, blasint *N, float *ALPHA, bfloat16 *a, blasin
 
 #else
 
-void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, blasint m, blasint n, float alpha, bfloat16 *a, blasint lda, bfloat16 *x, blasint incx, float beta, float *y, blasint incy)
+void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, blasint m, blasint n, FLOAT alpha, IFLOAT *a, blasint lda, IFLOAT *x, blasint incx, FLOAT beta, FLOAT *y, blasint incy)
 {
     blasint lenx,  leny;
     int     trans;
@@ -113,8 +122,8 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, blasint m, blasi
     int     nthreads;
 #endif
 
-    int (*sbgemv[])(BLASLONG, BLASLONG, float, bfloat16 *, BLASLONG,  bfloat16 * , BLASLONG, float, float *, BLASLONG) = {
-        SBGEMV_N, SBGEMV_T,
+    int (*gemv[])(BLASLONG, BLASLONG, FLOAT, IFLOAT *, BLASLONG,  IFLOAT * , BLASLONG, FLOAT, FLOAT *, BLASLONG) = {
+        GEMV_N, GEMV_T,
     };
 
     PRINT_DEBUG_CNAME;
@@ -166,8 +175,17 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, blasint m, blasi
         leny = m;
     }
 
-    if (alpha == ZERO) {
-        if (beta != ONE) SCAL_K(leny, 0, 0, beta, y, blasabs(incy), NULL, 0, NULL, 0);
+#ifdef BGEMM
+  float alpha_float, beta_float;
+  SBF16TOS_K(1, &alpha, 1, &alpha_float, 1);
+  SBF16TOS_K(1, &beta, 1, &beta_float, 1);
+#else
+  float alpha_float = alpha;
+  float beta_float = beta;
+#endif
+
+    if (alpha_float == ZERO) {
+        if (beta_float != ONE) SCAL_K(leny, 0, 0, beta, y, blasabs(incy), NULL, 0, NULL, 0);
         return;
     }
 
@@ -185,10 +203,10 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, blasint m, blasi
 
     if (nthreads == 1) {
 #endif
-        (sbgemv[(int)trans])(m, n, alpha, a, lda, x, incx, beta, y, incy);
+        (gemv[(int)trans])(m, n, alpha, a, lda, x, incx, beta, y, incy);
 #ifdef SMP
     } else {
-        (sbgemv_thread[(int)trans])(m, n, alpha, a, lda, x, incx, beta, y, incy, nthreads);
+        (gemv_thread[(int)trans])(m, n, alpha, a, lda, x, incx, beta, y, incy, nthreads);
     }
 #endif
 

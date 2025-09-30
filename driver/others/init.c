@@ -391,7 +391,15 @@ static void numa_mapping(void) {
     core = 0;
     for (cpu = 0; cpu < common -> num_procs; cpu ++) {
       bitmask_idx = CPUELT(cpu);
+/*
+ * When common->avail[i] = 0x5555555555555555UL (indicating that adjacent logical cores share a physical core),
+ * using it as a mask may overlap with the local_cpu_map function's role, leading to only half of the real physical cores being detected.
+ */
+#ifdef ARCH_LOONGARCH64
+      if (common -> node_info[node][bitmask_idx]) {
+#else
       if (common -> node_info[node][bitmask_idx] & common -> avail[bitmask_idx] & CPUMASK(cpu)) {
+#endif
 	common -> cpu_info[count] = WRITE_CORE(core) | WRITE_NODE(node) | WRITE_CPU(cpu);
 	count ++;
 	core ++;
@@ -930,8 +938,12 @@ void gotoblas_affinity_init(void) {
 
     if (common -> num_nodes > 1) numa_mapping();
 
+#ifdef ARCH_LOONGARCH64
+    common -> final_num_procs = common -> num_procs;
+#else
     common -> final_num_procs = 0;
     for(i = 0; i < common -> avail_count; i++) common -> final_num_procs += rcount(common -> avail[i]) + 1;   //Make the max cpu number. 
+#endif
 
     for (cpu = 0; cpu < common -> final_num_procs; cpu ++) common -> cpu_use[cpu] =  0;
 

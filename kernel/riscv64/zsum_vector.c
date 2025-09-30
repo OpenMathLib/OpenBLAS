@@ -71,14 +71,13 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	FLOAT asumf=0.0;
 	if (n <= 0 || inc_x <= 0) return(asumf);
         unsigned int gvl = 0;
-        FLOAT_V_T v0, v1, v_zero,v_sum;
+        FLOAT_V_T v0, v1,v_sum;
         FLOAT_V_T_M1 v_res;
         v_res = VFMVVF_FLOAT_M1(0, 1);
 
         if(inc_x == 1){
                 BLASLONG n2 = n * 2;
                 gvl = VSETVL(n2);
-                v_zero = VFMVVF_FLOAT(0, gvl);
                 if(gvl <= n2/2){
                         v_sum = VFMVVF_FLOAT(0, gvl);
                         for(i=0,j=0; i<n2/(gvl*2); i++){
@@ -100,7 +99,6 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
         }else{
                 gvl = VSETVL(n);
                 unsigned int stride_x = inc_x * sizeof(FLOAT) * 2;
-                v_zero = VFMVVF_FLOAT(0, gvl);
 
                 BLASLONG inc_xv = inc_x * 2 * gvl;
                 v_sum = VFMVVF_FLOAT(0, gvl);

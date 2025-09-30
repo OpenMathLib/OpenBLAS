@@ -199,14 +199,14 @@ static void caxpy_kernel_8 (long n, float *x, float *y,
 
      "#n=%1 x=%5=%2 y=%0=%3 alpha=(%7,%8) mvecp=%6=%9 ytmp=%4\n"
      :
-       "+m" (*y),
+       "+m" (*(float (*)[n * 2]) y),
        "+r" (n),	// 1
        "+b" (x),	// 2
        "+b" (y),	// 3
        "=b" (ytmp)	// 4 
      :
-       "m" (*x),
-       "m" (*mvecp),
+       "m" (*(const float (*)[n * 2]) x),
+       "m" (*(const float (*)[2]) mvecp),
        "d" (alpha_r),	// 7
        "d" (alpha_i),	// 8
        "4" (mvecp),	// 9

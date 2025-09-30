@@ -77,7 +77,14 @@ lapack_int LAPACKE_strsen( int matrix_layout, char job, char compq,
             info = LAPACK_WORK_MEMORY_ERROR;
             goto exit_level_0;
         }
+    } else {
+        iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) );
+        if( iwork == NULL ) {
+            info = LAPACK_WORK_MEMORY_ERROR;
+            goto exit_level_0;
+        }
     }
+
     work = (float*)LAPACKE_malloc( sizeof(float) * lwork );
     if( work == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;

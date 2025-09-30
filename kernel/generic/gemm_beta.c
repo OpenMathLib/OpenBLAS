@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2025 The OpenBLAS Project.						         */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -38,10 +39,40 @@
 
 #include "common.h"
 
+#if defined(BFLOAT16) && defined(BGEMM) && defined(BFLOAT16CONVERSION)
+static float
+bfloat16tof32 (bfloat16 f16)
+{
+  float result = 0;
+  unsigned short* q = (unsigned short*)(&result);
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+  q[0] = f16;
+#else
+  q[1] = f16;
+#endif
+  return result;
+}
+static bfloat16
+f32tobfloat16(float f32)
+{
+    unsigned short* q = (unsigned short*)(&f32);
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+    return q[0];
+#else
+    return q[1];
+#endif
+}
+
+#define BF16TOF32(x) (bfloat16tof32(x))
+#define F32TOBF16(x) (f32tobfloat16(x))
+#else
+#define BF16TOF32(x) x
+#define F32TOBF16(x) x
+#endif
+
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
 	  IFLOAT *dummy2, BLASLONG dummy3, IFLOAT *dummy4, BLASLONG dummy5,
 	  FLOAT *c, BLASLONG ldc){
-
 
   BLASLONG i, j;
   BLASLONG chunk, remain;
@@ -54,18 +85,18 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
 		c_offset1 = c_offset;
 		c_offset += ldc;
 		for(i=chunk; i>0; i--){
-			*(c_offset1 + 0) = ZERO;
-			*(c_offset1 + 1) = ZERO;
-			*(c_offset1 + 2) = ZERO;
-			*(c_offset1 + 3) = ZERO;
-			*(c_offset1 + 4) = ZERO;
-			*(c_offset1 + 5) = ZERO;
-			*(c_offset1 + 6) = ZERO;
-			*(c_offset1 + 7) = ZERO;
+			*(c_offset1 + 0) = F32TOBF16(ZERO);
+			*(c_offset1 + 1) = F32TOBF16(ZERO);
+			*(c_offset1 + 2) = F32TOBF16(ZERO);
+			*(c_offset1 + 3) = F32TOBF16(ZERO);
+			*(c_offset1 + 4) = F32TOBF16(ZERO);
+			*(c_offset1 + 5) = F32TOBF16(ZERO);
+			*(c_offset1 + 6) = F32TOBF16(ZERO);
+			*(c_offset1 + 7) = F32TOBF16(ZERO);
 			c_offset1 += 8;
 		}
 		for(i=remain; i>0; i--){
-			*c_offset1 = ZERO;
+			*c_offset1 = F32TOBF16(ZERO);
 			c_offset1 ++;
 		}
 	  }
@@ -74,18 +105,18 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
 		c_offset1 = c_offset;
 		c_offset += ldc;
 		for(i=chunk; i>0; i--){
-			*(c_offset1 + 0) *= beta;
-			*(c_offset1 + 1) *= beta;
-			*(c_offset1 + 2) *= beta;
-			*(c_offset1 + 3) *= beta;
-			*(c_offset1 + 4) *= beta;
-			*(c_offset1 + 5) *= beta;
-			*(c_offset1 + 6) *= beta;
-			*(c_offset1 + 7) *= beta;
+			*(c_offset1 + 0) = F32TOBF16(BF16TOF32(beta) * BF16TOF32(c_offset1[0]));
+			*(c_offset1 + 1) = F32TOBF16(BF16TOF32(beta) * BF16TOF32(c_offset1[1]));
+			*(c_offset1 + 2) = F32TOBF16(BF16TOF32(beta) * BF16TOF32(c_offset1[2]));
+			*(c_offset1 + 3) = F32TOBF16(BF16TOF32(beta) * BF16TOF32(c_offset1[3]));
+			*(c_offset1 + 4) = F32TOBF16(BF16TOF32(beta) * BF16TOF32(c_offset1[4]));
+			*(c_offset1 + 5) = F32TOBF16(BF16TOF32(beta) * BF16TOF32(c_offset1[5]));
+			*(c_offset1 + 6) = F32TOBF16(BF16TOF32(beta) * BF16TOF32(c_offset1[6]));
+			*(c_offset1 + 7) = F32TOBF16(BF16TOF32(beta) * BF16TOF32(c_offset1[7]));
 			c_offset1 += 8;
 		}
 		for(i=remain; i>0; i--){
-			*c_offset1 *= beta;
+			*c_offset1 = F32TOBF16(BF16TOF32(beta) * BF16TOF32(c_offset1[0]));
 			c_offset1 ++;
 		}
 	  }

@@ -13,8 +13,8 @@ lapack-3.4.1.tgz
 lapack-3.4.2
 lapack-3.4.2.tgz
 lapack-netlib/make.inc
-lapack-netlib/lapacke/include/lapacke_mangling.h
 lapack-netlib/SRC/la_constants.mod
+lapack-netlib/SRC/la_xisnan.mod
 lapack-netlib/TESTING/testing_results.txt
 lapack-netlib/INSTALL/test*
 lapack-netlib/TESTING/xeigtstc
@@ -81,7 +81,10 @@ test/ZBLAT2.SUMM
 test/ZBLAT3.SUMM
 test/ZBLAT3_3M.SUMM
 test/SHBLAT3.SUMM
+test/SBBLAT2.SUMM
 test/SBBLAT3.SUMM
+test/BBLAT2.SUMM
+test/BBLAT3.SUMM
 test/cblat1
 test/cblat2
 test/cblat3
@@ -96,6 +99,9 @@ test/sblat3
 test/sblat3_3m
 test/test_shgemm
 test/test_sbgemm
+test/test_sbgemv
+test/test_bgemm
+test/test_bgemv
 test/zblat1
 test/zblat2
 test/zblat3

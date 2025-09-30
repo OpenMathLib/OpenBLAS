@@ -204,7 +204,7 @@ static void zscal_kernel_8 (long n, float *x, float alpha_r, float alpha_i)
 
      "#n=%1 x=%0=%2 alpha=(%3,%4)\n"
      :
-       "+m" (*x),
+       "+m" (*(float (*)[n * 2]) x),
        "+r" (n),	// 1
        "+b" (x)		// 2
      :

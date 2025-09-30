@@ -181,7 +181,7 @@ static void daxpy_kernel_8 (long n, double *x, double *y, double alpha)
      "#n=%1 x=%21=%2 y=%0=%3 alpha=%22 o16=%23 o32=%24 o48=%25\n"
      "#t0=%x4 t1=%x5 t2=%x6 t3=%x7 t4=%x8 t5=%x9 t6=%x10 t7=%x11 t8=%x12 t9=%x13 t10=%x14 t11=%x15 t12=%x16 t13=%x17 t14=%x18 t15=%x19 t16=%x20"
      :
-       "+m" (*y),
+       "+m" (*(double (*)[n]) y),
        "+r" (n),	// 1
        "+b" (x),	// 2
        "+b" (y),	// 3
@@ -203,7 +203,7 @@ static void daxpy_kernel_8 (long n, double *x, double *y, double alpha)
        "=wa" (t15),	// 19
        "=wa" (t16)	// 20
      :
-       "m" (*x),
+       "m" (*(const double (*)[n]) x),
        "d" (alpha),	// 22
        "b" (16),	// 23
        "b" (32),	// 24

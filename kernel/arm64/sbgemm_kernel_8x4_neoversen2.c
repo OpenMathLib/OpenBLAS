@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (c) 2022, The OpenBLAS Project
+ * Copyright (c) 2022,2025 The OpenBLAS Project
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,19 +27,30 @@
  * *****************************************************************************/
 
 #include <arm_sve.h>
+#include <arm_neon.h>
 
 #include "common.h"
 
 #define ALPHA_ONE
 #include "sbgemm_kernel_8x4_neoversen2_impl.c"
 #undef ALPHA_ONE
+#undef UPDATE_C
 #include "sbgemm_kernel_8x4_neoversen2_impl.c"
 
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
           FLOAT *C, BLASLONG ldc) {
-  if (alpha == 1.0f)
-    return sbgemm_kernel_neoversen2_alpha_one(m, n, k, alpha, A, B, C, ldc);
+#ifdef BGEMM
+  bfloat16_t alpha_bf16;
+  memcpy(&alpha_bf16, &alpha, sizeof(bfloat16_t));
+  float alpha_f32 = vcvtah_f32_bf16(alpha_bf16);
+#else
+  float alpha_f32 = alpha;
+#endif
+
+  if (alpha_f32 == 1.0f)
+    return gemm_kernel_neoversen2_alpha_one(m, n, k, alpha, A, B, C, ldc);
   else
-    return sbgemm_kernel_neoversen2_alpha(m, n, k, alpha, A, B, C, ldc);
+    return gemm_kernel_neoversen2_alpha(m, n, k, alpha, A, B, C, ldc);
+
   return 0;
 }

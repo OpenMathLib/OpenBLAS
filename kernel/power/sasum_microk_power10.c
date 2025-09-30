@@ -141,7 +141,7 @@ static float sasum_kernel_32 (long n, float *x)
        "=wa" (t2),	// 5
        "=wa" (t3)	// 6
      :
-       "m" (*x)
+       "m" (*(const float (*)[n]) x),
      :
        "cr0",
        "vs32","vs33","vs34","vs35","vs36","vs37","vs38","vs39",

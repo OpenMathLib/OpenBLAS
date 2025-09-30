@@ -1,5 +1,5 @@
 /*********************************************************************/
-/* Copyright 2024, The OpenBLAS Project.                             */
+/* Copyright 2024-2025 The OpenBLAS Project.                         */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -305,7 +305,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 #endif
 	int (*gemv[]) (BLASLONG, BLASLONG, FLOAT, IFLOAT *, BLASLONG,
 		       IFLOAT *, BLASLONG, FLOAT, FLOAT *, BLASLONG) = {
-	SBGEMV_N, SBGEMV_T,};
+	GEMV_N, GEMV_T,};
 
 
 	if (m == 0)

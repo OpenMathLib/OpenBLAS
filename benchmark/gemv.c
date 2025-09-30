@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2014, The OpenBLAS Project
+Copyright (c) 2014, 2025 The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -34,6 +34,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef DOUBLE
 #define GEMV   BLASFUNC(dgemv)
+#elif defined(BFLOAT16) && defined(BGEMM)
+#define GEMV   BLASFUNC(bgemv)
+#elif defined(BFLOAT16)
+#define GEMV   BLASFUNC(sbgemv)
+#undef IFLOAT
+#define IFLOAT bfloat16
 #else
 #define GEMV   BLASFUNC(sgemv)
 #endif
@@ -49,9 +55,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 int main(int argc, char *argv[]){
 
-  FLOAT *a, *x, *y;
-  FLOAT alpha[] = {1.0, 1.0};
-  FLOAT beta [] = {1.0, 0.0};
+  IFLOAT *a, *x;
+  FLOAT *y;
+#ifdef BGEMM
+  blasint one=1;
+  blasint two=2;
+  float alpha_in[] = {1.0, 0.0};
+  float beta_in[] = {0.0, 0.0};
+  FLOAT alpha[2], beta[2];
+  sbstobf16_(&two, alpha_in, &one, alpha, &one);
+  sbstobf16_(&two, beta_in, &one, beta, &one);
+#else
+  FLOAT alpha[] = {1.0, 0.0};
+  FLOAT beta [] = {0.0, 0.0};
+#endif
   char trans='N';
   blasint m, i, j;
   blasint inc_x=1,inc_y=1;
@@ -97,11 +114,11 @@ int main(int argc, char *argv[]){
 
   fprintf(stderr, "From : %3d  To : %3d Step = %3d Trans = '%c' Inc_x = %d Inc_y = %d Loops = %d\n", from, to, step,trans,inc_x,inc_y,loops);
 
-  if (( a = (FLOAT *)malloc(sizeof(FLOAT) * tomax * tomax * COMPSIZE)) == NULL){
+  if (( a = (IFLOAT *)malloc(sizeof(IFLOAT) * tomax * tomax * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
-  if (( x = (FLOAT *)malloc(sizeof(FLOAT) * tomax * abs(inc_x) * COMPSIZE)) == NULL){
+  if (( x = (IFLOAT *)malloc(sizeof(IFLOAT) * tomax * abs(inc_x) * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
@@ -125,7 +142,7 @@ int main(int argc, char *argv[]){
    		fprintf(stderr, " %6dx%d : ", (int)m,(int)n);
    		for(j = 0; j < m; j++){
       			for(i = 0; i < n * COMPSIZE; i++){
-				a[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+				a[(long)i + (long)j * (long)m * COMPSIZE] = ((IFLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
       			}
    		}
 
@@ -133,7 +150,7 @@ int main(int argc, char *argv[]){
     		{
 
    			for(i = 0; i < n * COMPSIZE * abs(inc_x); i++){
-				x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+				x[i] = ((IFLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
    			}
 
    			for(i = 0; i < m * COMPSIZE * abs(inc_y); i++){

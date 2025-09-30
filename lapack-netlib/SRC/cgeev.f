@@ -485,12 +485,12 @@
 *     Undo scaling if necessary
 *
    50 CONTINUE
-      IF( SCALEA .AND. INFO.GT.0 ) THEN
+      IF( SCALEA ) THEN
          CALL CLASCL( 'G', 0, 0, CSCALE, ANRM, N-INFO, 1, W( INFO+1 ),
      $                MAX( N-INFO, 1 ), IERR )
-
+         IF( INFO.GT.0 ) THEN
             CALL CLASCL( 'G', 0, 0, CSCALE, ANRM, ILO-1, 1, W, N, IERR )
-
+         END IF
       END IF
 *
       WORK( 1 ) = SROUNDUP_LWORK(MAXWRK)

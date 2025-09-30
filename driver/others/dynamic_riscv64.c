@@ -97,6 +97,9 @@ struct riscv_hwprobe {
 
 #define RISCV_HWPROBE_KEY_IMA_EXT_0	4
 #define		RISCV_HWPROBE_IMA_V		(1 << 2)
+#define		RISCV_HWPROBE_EXT_ZFH		(1 << 27)
+#define		RISCV_HWPROBE_EXT_ZVFH		(1 << 30)
+#define		RISCV_HWPROBE_EXT_ZVFBFWMA	(1 << 54)
 
 #ifndef NR_riscv_hwprobe
 #ifndef NR_arch_specific_syscall
@@ -147,6 +150,7 @@ char* gotoblas_corename(void) {
 }
 
 static gotoblas_t* get_coretype(void) {
+	uint64_t vector_mask;
 	unsigned vlenb = 0;
 
 #if !defined(OS_LINUX)
@@ -165,14 +169,31 @@ static gotoblas_t* get_coretype(void) {
 	};
 	int ret = syscall(NR_riscv_hwprobe, pairs, 1, 0, NULL, 0);
 	if (ret == 0) {
-		if (!(pairs[0].value & RISCV_HWPROBE_IMA_V))
+#if defined(BUILD_HFLOAT16)
+		vector_mask = (RISCV_HWPROBE_IMA_V | RISCV_HWPROBE_EXT_ZFH | RISCV_HWPROBE_EXT_ZVFH);
+#elif defined(BUILD_BFLOAT16)
+		vector_mask = (RISCV_HWPROBE_IMA_V | RISCV_HWPROBE_EXT_ZVFBFWMA);
+#else
+		vector_mask = RISCV_HWPROBE_IMA_V;
+#endif
+		if ((pairs[0].value & vector_mask) != vector_mask)
 			return NULL;
 	} else {
+#if defined(BUILD_HFLOAT16)
+		snprintf(coremsg, sizeof(coremsg), "Cpu support for Zfh+Zvfh extensions required due to BUILD_HFLOAT16=1\n");
+		openblas_warning(1, coremsg);
+		return NULL;
+#elif defined(BUILD_BFLOAT16)
+		snprintf(coremsg, sizeof(coremsg), "Cpu support for Zvfbfwma extensions required due to BUILD_BFLOAT16=1\n");
+		openblas_warning(1, coremsg);
+		return NULL;
+#else
 		if (!(getauxval(AT_HWCAP) & DETECT_RISCV64_HWCAP_ISA_V))
 			return NULL;
 
 		if (!detect_riscv64_rvv100())
 			return NULL;
+#endif
 	}
 
 	/*

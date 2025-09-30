@@ -246,7 +246,7 @@ static void dgemv_kernel_4x4 (long n, double *ap, long lda, double *x, double *y
      "#n=%1 ap=%8=%12 lda=%13 x=%7=%10 y=%0=%2 alpha=%9 o16=%11\n"
      "#a0=%3 a1=%4 a2=%5 a3=%6"
      :
-       "+m" (*y),
+       "+m" (*(double (*)[n]) y),
        "+r" (n),	// 1
        "+b" (y),	// 2
        "=b" (a0),	// 3
@@ -254,8 +254,8 @@ static void dgemv_kernel_4x4 (long n, double *ap, long lda, double *x, double *y
        "=&b" (a2),	// 5
        "=&b" (a3)	// 6
      :
-       "m" (*x),
-       "m" (*ap),
+       "m" (*(double (*)[4]) x),
+       "m" (*(double (*)[4*n]) ap),
        "d" (alpha),	// 9
        "r" (x),		// 10
        "b" (16),	// 11
@@ -452,7 +452,7 @@ static void dgemv_kernel_4x8 (long n, double *ap, long lda, double *x, double *y
        "stxvp		36, 0( %2)	\n\t"	// y0, y1
 
      :
-       "+m" (*y),
+       "+m" (*(double (*)[n]) y),
        "+r" (n),	// 1
        "+b" (y),	// 2
        "=b" (a0),	// 3
@@ -465,8 +465,8 @@ static void dgemv_kernel_4x8 (long n, double *ap, long lda, double *x, double *y
        "=&b" (a7),	// 10
        "=b" (tmp)
      :
-       "m" (*x),
-       "m" (*ap),
+       "m" (*(double (*)[4]) x),
+       "m" (*(double (*)[]) ap),
        "d" (alpha),	// 14
        "r" (x),		// 15
        "3" (ap),	// 16

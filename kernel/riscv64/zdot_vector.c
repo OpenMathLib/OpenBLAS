@@ -69,9 +69,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #if !defined(DOUBLE)
- inline OPENBLAS_COMPLEX_FLOAT small_cdot_kernel(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
+ static inline OPENBLAS_COMPLEX_FLOAT small_cdot_kernel(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 #else
-inline OPENBLAS_COMPLEX_FLOAT small_zdot_kernel(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
+ static inline OPENBLAS_COMPLEX_FLOAT small_zdot_kernel(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 #endif
 {
 	BLASLONG i=0;

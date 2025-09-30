@@ -1,3 +1,31 @@
+###############################################################################
+# Copyright (c) 2025, The OpenBLAS Project
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the OpenBLAS project nor the names of
+#    its contributors may be used to endorse or promote products
+#    derived from this software without specific prior written permission.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+###############################################################################
+
 ##
 ## Author: Hank Anderson <hank@statease.com>
 ## Description: Ported from OpenBLAS/Makefile.prebuild
@@ -131,6 +159,8 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
       set(HAVE_SSE2 1)
       set(HAVE_SSE3 1)
       set(HAVE_SSSE3 1)
+      set(BGEMM_UNROLL_M 8)
+      set(BGEMM_UNROLL_N 4)
       set(SBGEMM_UNROLL_M 8)
       set(SBGEMM_UNROLL_N 4)
       set(SGEMM_UNROLL_M 8)
@@ -1195,6 +1225,33 @@ endif ()
     set(ZGEMM_UNROLL_M 4)
     set(ZGEMM_UNROLL_N 4)
     set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "AMPEREONE")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_CODE_SIZE\t16384\n"
+      "#define L1_CODE_LINESIZE\t64\n"
+      "#define L1_CODE_ASSOCIATIVE\t4\n"
+      "#define L1_DATA_SIZE\t65536\n"
+      "#define L1_DATA_LINESIZE\t64\n"
+      "#define L1_DATA_ASSOCIATIVE\t4\n"
+      "#define L2_SIZE\t2097152\n\n"
+      "#define L2_LINESIZE\t64\n"
+      "#define L2_ASSOCIATIVE\t8\n"
+      "#define DTB_DEFAULT_ENTRIES\t64\n"
+      "#define DTB_SIZE\t4096\n"
+      "#define HAVE_VFPV4\n"
+      "#define HAVE_VFPV3\n"
+      "#define HAVE_VFP\n"
+      "#define HAVE_NEON\n"
+      "#define ARMV8\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 4)
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 4)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 4)
+    set(ZGEMM_UNROLL_M 4)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
   elseif ("${TCORE}" STREQUAL "VORTEX")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define ARMV8\n"
@@ -1253,7 +1310,7 @@ endif ()
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE\t32768\n"
       "#define L1_DATA_LINESIZE\t64\n"
-      "#define L2_SIZE\t262144\n"
+      "#define L2_SIZE\t1048576\n"
       "#define L2_LINESIZE\t64\n"
       "#define DTB_DEFAULT_ENTRIES\t64\n"
       "#define DTB_SIZE\t4096\n"
@@ -1350,6 +1407,78 @@ endif ()
     set(ZGEMM_UNROLL_M 8)
     set(ZGEMM_UNROLL_N 2)
     set(SYMV_P 8)
+  elseif ("${TCORE}" STREQUAL "C910V")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_DATA_SIZE 32768\n"
+      "#define L1_DATA_LINESIZE 32\n"
+      "#define L2_SIZE 1048576\n"
+      "#define L2_LINESIZE 32 \n"
+      "#define DTB_DEFAULT_ENTRIES 128\n"
+      "#define DTB_SIZE 4096\n"
+      "#define L2_ASSOCIATIVE 4\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 4)
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 4)
+    set(CGEMM_UNROLL_M 2)
+    set(CGEMM_UNROLL_N 2)
+    set(ZGEMM_UNROLL_M 2)
+    set(ZGEMM_UNROLL_N 2)
+    set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "x280")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_DATA_SIZE 65536\n"
+      "#define L1_LINESIZE 32 \n"
+      "#define L2_SIZE 2097152\n"
+      "#define L2_LINESIZE 32 \n"
+      "#define DTB_DEFAULT_ENTRIES 128\n"
+      "#define DTB_SIZE 4096\n"
+      "#define L2_ASSOCIATIVE 4\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 8)
+    set(DGEMM_UNROLL_M 16)
+    set(DGEMM_UNROLL_N 8)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 4)
+    set(ZGEMM_UNROLL_M 8)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "RISCV64_ZVL128B")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_DATA_SIZE 32768\n"
+      "#define L1_DATA_LINESIZE 32\n"
+      "#define L2_SIZE 1048576\n"
+      "#define L2_LINESIZE 32 \n"
+      "#define DTB_DEFAULT_ENTRIES 128\n"
+      "#define DTB_SIZE 4096\n"
+      "#define L2_ASSOCIATIVE 4\n")
+    set(SGEMM_UNROLL_M 8)
+    set(SGEMM_UNROLL_N 8)
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 4)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 4)
+    set(ZGEMM_UNROLL_M 4)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "RISCV64_ZVL256B")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_DATA_SIZE 65536\n"
+      "#define L1_DATA_LINESIZE 32\n"
+      "#define L2_SIZE 2097152\n"
+      "#define L2_LINESIZE 32 \n"
+      "#define DTB_DEFAULT_ENTRIES 128\n"
+      "#define DTB_SIZE 4096\n"
+      "#define L2_ASSOCIATIVE 4\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 8)
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 8)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 8)
+    set(ZGEMM_UNROLL_M 8)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
   elseif ("${TCORE}" STREQUAL "GENERIC")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE 32768\n"
@@ -1361,7 +1490,7 @@ endif ()
       "#define L2_ASSOCIATIVE 8\n")
   elseif ("${TCORE}" STREQUAL "RISCV64_GENERIC")
     file(APPEND ${TARGET_CONF_TEMP}
-        "#define L1_DATA_SIZE 32768\n"
+      "#define L1_DATA_SIZE 32768\n"
       "#define L1_DATA_LINESIZE 32\n"
       "#define L2_SIZE 1048576\n"
       "#define L2_LINESIZE 32 \n"

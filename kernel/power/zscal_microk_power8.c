@@ -205,7 +205,7 @@ static void zscal_kernel_8 (long n, double *x, double alpha_r, double alpha_i)
      "#n=%1 x=%0=%2 alpha=(%15,%16) o16=%17 o32=%18 o48=%19 o64=%20 o80=%21 o96=%22 o112=%23\n"
      "#t0=%x3 t1=%x4 t2=%x5 t3=%x6 t4=%x7 t5=%x8 t6=%x9 t7=%x10 t8=%x11 t9=%x12 t10=%x13 t11=%x14"
      :
-       "+m" (*x),
+       "+m" (*(double (*)[n * 2]) x),
        "+r" (n),	// 1
        "+b" (x),	// 2
        "=wa" (t0),	// 3

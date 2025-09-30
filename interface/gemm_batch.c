@@ -114,6 +114,17 @@ static size_t zgemm_small_kernel_b0[] = {
 #endif
 #endif
 
+#ifndef CBLAS
+void NAME(char *transa_array, char *transb_array,
+	   blasint * m_array, blasint * n_array, blasint * k_array,
+	   FLOAT * alpha_array,
+	   IFLOAT ** a_array, blasint * lda_array,
+	   IFLOAT ** b_array, blasint * ldb_array,
+	   FLOAT * beta_array,
+	   FLOAT ** c_array, blasint * ldc_array, blasint * gcount, blasint * group_size) {
+       blasint group_count = *gcount;
+#else
+
 void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CBLAS_TRANSPOSE * transb_array,
 	   blasint * m_array, blasint * n_array, blasint * k_array,
 #ifndef COMPLEX
@@ -134,8 +145,11 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
   FLOAT ** a_array=(FLOAT**)va_array;
   FLOAT ** b_array=(FLOAT**)vb_array;
   FLOAT ** c_array=(FLOAT**)vc_array;
-    
 #endif
+#endif
+  BLASLONG group_m, group_n, group_k;
+  BLASLONG group_lda, group_ldb, group_ldc;
+
   blas_arg_t * args_array=NULL;
 
   int mode=0, group_mode=0;
@@ -148,8 +162,6 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
   blasint info;
 
   void * group_alpha, * group_beta;
-  BLASLONG group_m, group_n, group_k;
-  BLASLONG group_lda, group_ldb, group_ldc;
   void * group_routine=NULL;
 #ifdef SMALL_MATRIX_OPT
   void * group_small_matrix_opt_routine=NULL;
@@ -201,7 +213,8 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
     group_transa = -1;
     group_transb = -1;
     info   = 0;
-    
+   
+#if defined(CBLAS) 
     if (order == CblasColMajor) {
       group_m = m_array[i];
       group_n = n_array[i];
@@ -254,7 +267,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
       group_lda = ldb_array[i];
       group_ldb = lda_array[i];
       group_ldc = ldc_array[i];
-      
+
       if (transb_array[i] == CblasNoTrans)     group_transa = 0;
       if (transb_array[i] == CblasTrans)       group_transa = 1;
 #ifndef COMPLEX
@@ -273,6 +286,32 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
       if (transa_array[i] == CblasConjNoTrans) group_transb = 2;
       if (transa_array[i] == CblasConjTrans)   group_transb = 3;
 #endif
+
+#else
+      group_m = m_array[i];
+      group_n = n_array[i];
+      group_k = k_array[i];
+
+      group_lda = lda_array[i];
+      group_ldb = ldb_array[i];
+      group_ldc = ldc_array[i];
+      
+      if (transb_array[i] == 'N')   group_transa = 0;
+      if (transb_array[i] == 'T')   group_transa = 1;
+#ifndef COMPLEX
+      if (transb_array[i] == 'C')   group_transa = 1;
+#else
+      if (transb_array[i] == 'C')   group_transa = 3;
+#endif
+      if (transa_array[i] == 'N')   group_transb = 0;
+      if (transa_array[i] == 'T')   group_transb = 1;
+#ifndef COMPLEX
+      if (transa_array[i] == 'C')   group_transb = 1;
+#else
+      if (transa_array[i] == 'C')   group_transb = 3;
+#endif
+#endif
+
       group_nrowa = group_m;
       if (group_transa & 1) group_nrowa = group_k;
       group_nrowb = group_k;
@@ -288,7 +327,9 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
       if (group_m < 0)        info =  3;
       if (group_transb < 0)        info =  2;
       if (group_transa < 0)        info =  1;      
+#if defined(CBLAS)
     }
+#endif
 
     if (info >= 0) {
       BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
@@ -344,13 +385,17 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
       args_array[count].alpha=group_alpha;
       args_array[count].beta=group_beta;
 
+#if defined(CBLAS)
       if (order == CblasColMajor) {      
 	args_array[count].a=(a_array[matrix_idx+j]);
 	args_array[count].b=(b_array[matrix_idx+j]);
       }else if(order == CblasRowMajor){
+#endif
 	args_array[count].a=(b_array[matrix_idx+j]);
 	args_array[count].b=(a_array[matrix_idx+j]);
+#if defined(CBLAS)
       }
+#endif
       
       args_array[count].c=(c_array[matrix_idx+j]);
       

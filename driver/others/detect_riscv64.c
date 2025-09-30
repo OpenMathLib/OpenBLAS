@@ -63,12 +63,12 @@ uint64_t detect_riscv64_rvv100(void)
 	 * RVV 1.0 and we return 0.
 	 */
 
-	asm volatile("vsetvli x0, x0, e8, m1, ta, ma\n\t"
+	asm volatile("vsetvli t0, x0, e8, m1, ta, ma\n\t"
 		     "csrr %0, vtype\n\t"
 		     "slt %0, x0, %0\n"
 		     : "=r" (rvv10_supported)
 		     :
-		     :);
+		     :"t0", "vtype");
 
 	return rvv10_supported;
 }

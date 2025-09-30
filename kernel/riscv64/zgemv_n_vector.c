@@ -55,8 +55,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
         BLASLONG i = 0, j = 0, k = 0;
         BLASLONG ix = 0, iy = 0;
         FLOAT *a_ptr = a;
-        FLOAT temp_r = 0.0, temp_i = 0.0, temp_r1, temp_i1, temp_r2, temp_i2, temp_r3, temp_i3, temp_rr[4], temp_ii[4];
-        FLOAT_V_T va0, va1, vy0, vy1, vy0_new, vy1_new, va2, va3, va4, va5, va6, va7, temp_iv, temp_rv, x_v0, x_v1, temp_v1, temp_v2, temp_v3, temp_v4;
+        FLOAT temp_r = 0.0, temp_i = 0.0, temp_rr[4], temp_ii[4];
+        FLOAT_V_T va0, va1, vy0, vy1, vy0_new, vy1_new, va2, va3, va4, va5, va6, va7, temp_iv, temp_rv, x_v0, x_v1;
         unsigned int gvl = 0;
         BLASLONG stride_a = sizeof(FLOAT) * 2;
         BLASLONG stride_y = inc_y * sizeof(FLOAT) * 2;

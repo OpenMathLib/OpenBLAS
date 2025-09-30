@@ -166,13 +166,13 @@ static void cdot_kernel_8 (long n, float *x, float *y, float *dot)
 
      "#n=%1 x=%4=%2 y=%5=%3 dot=%0=%6"
      :
-       "=m" (*dot),
+       "=m" (*(float (*)[4]) dot),
        "+r" (n),	// 1
        "+b" (x),	// 2
        "+b" (y)		// 3
      :
-       "m" (*x),
-       "m" (*y),
+       "m" (*(float (*)[n * 2]) x),
+       "m" (*(float (*)[n * 2]) y),
        "b" (dot),	// 6
        "wa" (mask)
      :

@@ -270,20 +270,22 @@ SMALL_MATRIX_OPT = 1
 BUILD_BFLOAT16 = 1
 else ifeq ($(ARCH), arm64)
 SMALL_MATRIX_OPT = 1
+BUILD_BFLOAT16 = 1
 endif
 ifeq ($(ARCH), loongarch64)
 SMALL_MATRIX_OPT = 1
 endif
 ifeq ($(ARCH), arm64)
 GEMM_GEMV_FORWARD = 1
-GEMM_GEMV_FORWARD_BF16 = 1
+SBGEMM_GEMV_FORWARD = 1
+BGEMM_GEMV_FORWARD = 1
 endif
 ifeq ($(ARCH), riscv)
 GEMM_GEMV_FORWARD = 1
 endif
 ifeq ($(ARCH), power)
 GEMM_GEMV_FORWARD = 1
-GEMM_GEMV_FORWARD_BF16 = 1
+SBGEMM_GEMV_FORWARD = 1
 endif
 
 ifeq ($(SMALL_MATRIX_OPT), 1)
@@ -293,8 +295,11 @@ ifneq ($(ONLY_CBLAS), 1)
 ifeq ($(GEMM_GEMV_FORWARD), 1)
 CCOMMON_OPT += -DGEMM_GEMV_FORWARD
 endif
-ifeq ($(GEMM_GEMV_FORWARD_BF16), 1)
-CCOMMON_OPT += -DGEMM_GEMV_FORWARD_BF16
+ifeq ($(SBGEMM_GEMV_FORWARD), 1)
+CCOMMON_OPT += -DSBGEMM_GEMV_FORWARD
+endif
+ifeq ($(BGEMM_GEMV_FORWARD), 1)
+CCOMMON_OPT += -DBGEMM_GEMV_FORWARD
 endif
 endif
 
@@ -393,6 +398,8 @@ GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
 GCCVERSIONGTEQ10 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 10)
 GCCVERSIONGTEQ11 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 11)
 GCCVERSIONGTEQ12 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 12)
+GCCVERSIONGTEQ13 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 13)
+GCCVERSIONGTEQ14 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 14)
 # Note that the behavior of -dumpversion is compile-time-configurable for
 # gcc-7.x and newer. Use -dumpfullversion there
 ifeq ($(GCCVERSIONGTEQ7),1)
@@ -419,10 +426,8 @@ ifeq ($(OSNAME), Darwin)
 ifndef MACOSX_DEPLOYMENT_TARGET
 ifeq ($(ARCH), arm64)
 export MACOSX_DEPLOYMENT_TARGET=11.0
-ifeq ($(C_COMPILER), GCC)
 export NO_SVE = 1
 export NO_SME = 1
-endif
 else
 export MACOSX_DEPLOYMENT_TARGET=10.8
 endif
@@ -439,7 +444,6 @@ endif
 ifeq ($(shell [ $(XCVER) -ge 16 ] && echo yes),yes)
 ifeq ($(F_COMPILER), GFORTRAN)
 override CEXTRALIB := $(filter-out(-lto_library, $(CEXTRALIB))) 
-endif
 endif
 endif
 
@@ -1191,6 +1195,13 @@ endif
 else ifeq ($(ARCH), $(filter $(ARCH),mips))
 FCOMMON_OPT += -mabi=32
 endif
+ifeq ($(ARCH), $(filter $(ARCH),loongarch64))
+ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
+FCOMMON_OPT +=  -fdefault-integer-8
+endif
+endif
+endif
 else
 ifdef BINARY64
 ifneq ($(OSNAME), AIX)
@@ -1547,6 +1558,9 @@ endif
 ifeq ($(BUILD_BFLOAT16), 1)
 CCOMMON_OPT += -DBUILD_BFLOAT16
 endif
+ifeq ($(BUILD_HFLOAT16), 1)
+CCOMMON_OPT += -DBUILD_HFLOAT16
+endif
 ifeq ($(BUILD_SINGLE), 1)
 CCOMMON_OPT += -DBUILD_SINGLE=1
 endif
@@ -1889,11 +1903,16 @@ export TARGET_CORE
 export NO_AVX512
 export NO_AVX2
 export BUILD_BFLOAT16
+export BUILD_HFLOAT16
 export NO_LSX
 export NO_LASX
 
+export BGEMM_UNROLL_M
+export BGEMM_UNROLL_N
 export SBGEMM_UNROLL_M
 export SBGEMM_UNROLL_N
+export SHGEMM_UNROLL_M
+export SHGEMM_UNROLL_N
 export SGEMM_UNROLL_M
 export SGEMM_UNROLL_N
 export DGEMM_UNROLL_M

@@ -35,7 +35,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSSEV_FLOAT RISCV_RVV(vsse32_v_f32m8)
 #define VFMACCVF_FLOAT RISCV_RVV(vfmacc_vf_f32m8)
 #define VFMUL_VF_FLOAT RISCV_RVV(vfmul_vf_f32m8)
-#define VFILL_ZERO_FLOAT RISCV_RVV(vfsub_vv_f32m8)
+#define VREINTERPRET_FLOAT RISCV_RVV(vreinterpret_v_i32m8_f32m8)
+#define VFILL_INT RISCV_RVV(vmv_v_x_i32m8)
 #else
 #define VSETVL(n) RISCV_RVV(vsetvl_e64m4)(n)
 #define FLOAT_V_T vfloat64m4_t
@@ -45,7 +46,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSSEV_FLOAT RISCV_RVV(vsse64_v_f64m4)
 #define VFMACCVF_FLOAT RISCV_RVV(vfmacc_vf_f64m4)
 #define VFMUL_VF_FLOAT RISCV_RVV(vfmul_vf_f64m4)
-#define VFILL_ZERO_FLOAT RISCV_RVV(vfsub_vv_f64m4)
+#define VREINTERPRET_FLOAT RISCV_RVV(vreinterpret_v_i64m4_f64m4)
+#define VFILL_INT RISCV_RVV(vmv_v_x_i64m4)
 #endif
 
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *buffer)
@@ -56,7 +58,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
     if(n < 0)  return(0);
     FLOAT *a_ptr = a;
     FLOAT temp[4];
-    FLOAT_V_T va0, va1, vy0, vy1,vy0_temp, vy1_temp , temp_v ,va0_0 , va0_1 , va1_0 ,va1_1 ,va2_0 ,va2_1 ,va3_0 ,va3_1 ;
+    FLOAT_V_T va0, va1, vy0, vy1,vy0_temp, vy1_temp ,va0_0 , va0_1 , va1_0 ,va1_1 ,va2_0 ,va2_1 ,va3_0 ,va3_1 ;
     unsigned int gvl = 0;
     if(inc_y == 1 && inc_x == 1){
         gvl = VSETVL(m);
@@ -66,8 +68,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
                 ix = 0;
                 vy0_temp = VLEV_FLOAT(&y[j], gvl);
                 vy1_temp = VLEV_FLOAT(&y[j+gvl], gvl);
-                vy0 = VFILL_ZERO_FLOAT(vy0 , vy0 , gvl);
-                vy1 = VFILL_ZERO_FLOAT(vy1 , vy1 , gvl);
+                vy0 = VREINTERPRET_FLOAT(VFILL_INT(0, gvl));
+                vy1 = VREINTERPRET_FLOAT(VFILL_INT(0, gvl));
                 int i;
 
                 int remainder = n % 4;
@@ -118,7 +120,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 			a_ptr = a;
 			ix = 0;
 			vy0_temp = VLEV_FLOAT(&y[j], gvl);
-			vy0 = VFILL_ZERO_FLOAT(vy0 , vy0 , gvl);
+			vy0 = VREINTERPRET_FLOAT(VFILL_INT(0, gvl));
 			int i;
 
 			int remainder = n % 4;

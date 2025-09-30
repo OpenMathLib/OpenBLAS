@@ -1,4 +1,5 @@
 /*********************************************************************/
+/* Copyright 2025 The OpenBLAS Project.                              */
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
 /* All rights reserved.                                              */
 /*                                                                   */
@@ -169,6 +170,9 @@ BLASLONG   icmin_k(BLASLONG, float  *, BLASLONG);
 BLASLONG   izmin_k(BLASLONG, double *, BLASLONG);
 BLASLONG   ixmin_k(BLASLONG, xdouble *, BLASLONG);
 
+
+int    bscal_k(BLASLONG, BLASLONG, BLASLONG, bfloat16,
+	      bfloat16 *, BLASLONG, bfloat16 *, BLASLONG,  bfloat16  *, BLASLONG);
 int    sscal_k(BLASLONG, BLASLONG, BLASLONG, float,
 	      float *, BLASLONG, float *, BLASLONG,  float  *, BLASLONG);
 int    dscal_k(BLASLONG, BLASLONG, BLASLONG, double,

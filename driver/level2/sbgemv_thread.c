@@ -1,4 +1,5 @@
 /*********************************************************************/
+/* Copyright 2025 The OpenBLAS Project.                              */
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
 /* All rights reserved.                                              */
 /*                                                                   */
@@ -41,21 +42,21 @@
 #include "common.h"
 
 #ifndef TRANSA
-#define SBGEMV	SBGEMV_N
+#define GEMV	GEMV_N
 #else
-#define SBGEMV	SBGEMV_T
+#define GEMV	GEMV_T
 #endif
 
 static int sbgemv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *dummy1, FLOAT *dummy2, BLASLONG dummy3){
 
-    bfloat16 *a, *x;
-    float    *y;
+    IFLOAT *a, *x;
+    FLOAT    *y;
     BLASLONG lda, incx, incy;
     BLASLONG m_from, m_to, n_from, n_to;
 
-    a = (bfloat16 *)args->a;
-    x = (bfloat16 *)args->b;
-    y = (float *)args->c;
+    a = (IFLOAT *)args->a;
+    x = (IFLOAT *)args->b;
+    y = (FLOAT *)args->c;
 
     lda  = args->lda;
     incx = args->ldb;
@@ -77,12 +78,12 @@ static int sbgemv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
     y += n_from * incy;
 #endif
 
-    SBGEMV(m_to - m_from, n_to - n_from, *((FLOAT *)(args->alpha)), a, lda, x, incx, *((FLOAT *)(args->beta)), y, incy);
+    GEMV(m_to - m_from, n_to - n_from, *((FLOAT *)(args->alpha)), a, lda, x, incx, *((FLOAT *)(args->beta)), y, incy);
 
     return 0;
 }
 
-int CNAME(BLASLONG m, BLASLONG n, float alpha, bfloat16 *a, BLASLONG lda, bfloat16 *x, BLASLONG incx, float beta, float *y, BLASLONG incy, int threads)
+int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *x, BLASLONG incx, FLOAT beta, FLOAT *y, BLASLONG incy, int threads)
 {
     blas_arg_t args;
     blas_queue_t queue[MAX_CPU_NUMBER];

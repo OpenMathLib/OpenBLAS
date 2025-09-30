@@ -49,7 +49,7 @@ jobs:
           elif [ "$RUNNER_OS" == "macOS" ]; then
             # It looks like "gfortran" isn't working correctly unless "gcc" is re-installed.
             brew reinstall gcc
-            brew install coreutils cmake ccache
+            brew install coreutils ccache
           else
             echo "::error::$RUNNER_OS not supported"
             exit 1
@@ -89,6 +89,14 @@ jobs:
           echo "max_size = 300M" > ~/.ccache/ccache.conf
           echo "compression = true" >> ~/.ccache/ccache.conf
           ccache -s
+          
+      - name: Add gfortran runtime to link path
+        if: matrix.build == 'make' && runner.os == 'macOS'
+        run: |
+          GFORTRAN_LIBDIR=$(gfortran -print-file-name=libgfortran.dylib | xargs dirname)
+          echo "Using gfortran runtime in $GFORTRAN_LIBDIR"
+          # Preserve whatever LDFLAGS may already contain
+          echo "LDFLAGS=${LDFLAGS:+$LDFLAGS }-L$GFORTRAN_LIBDIR" >> "$GITHUB_ENV"
 
       - name: Build OpenBLAS
         run: |

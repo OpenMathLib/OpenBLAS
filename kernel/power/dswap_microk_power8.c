@@ -135,8 +135,8 @@ static void dswap_kernel_32 (long n, double *x, double *y)
 
      "#n=%2 x=%0=%3 y=%1=%4 o16=%5 o32=%6 o48=%7 o64=%8 o80=%9 o96=%10 o112=%11"
      :
-       "+m" (*x),
-       "+m" (*y),
+       "+m" (*(double (*)[n]) x),
+       "+m" (*(double (*)[n]) y),
        "+r" (n),	// 2
        "+b" (x),	// 3
        "+b" (y)		// 4

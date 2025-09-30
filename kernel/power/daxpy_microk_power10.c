@@ -150,13 +150,13 @@ static void daxpy_kernel_8 (long n, double *x, double *y, double alpha)
 
      "#n=%1 x=%5=%2 y=%0=%3 alpha=%6 t0=%x4\n"
      :
-       "+m" (*y),
+       "+m" (*(double (*)[n]) y),
        "+r" (n),	// 1
        "+b" (x),	// 2
        "+b" (y),	// 3
        "=wa" (t0)	// 4
      :
-       "m" (*x),
+       "m" (*(const double (*)[n]) x),
        "d" (alpha)	// 6 
      :
        "cr0",

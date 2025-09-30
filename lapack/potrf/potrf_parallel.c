@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2025 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -405,8 +406,8 @@ static int thread_driver(blas_arg_t *args, FLOAT *sa, FLOAT *sb){
 #elif defined(DOUBLE)
   mode  =  BLAS_DOUBLE  | BLAS_REAL;
   mask  = MAX(DGEMM_UNROLL_M, DGEMM_UNROLL_N) - 1;
-#elif defined(HALF)
-  mode  =  BLAS_HALF  | BLAS_REAL;
+#elif defined(BFLOAT16)
+  mode  =  BLAS_BFLOAT16  | BLAS_REAL;
   mask  = MAX(SBGEMM_UNROLL_M, SBGEMM_UNROLL_N) - 1;
 #else
   mode  =  BLAS_SINGLE  | BLAS_REAL;

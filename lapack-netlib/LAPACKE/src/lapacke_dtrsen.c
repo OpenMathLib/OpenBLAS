@@ -78,6 +78,12 @@ lapack_int LAPACKE_dtrsen( int matrix_layout, char job, char compq,
             info = LAPACK_WORK_MEMORY_ERROR;
             goto exit_level_0;
         }
+    } else {
+        iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) );
+        if( iwork == NULL ) {
+            info = LAPACK_WORK_MEMORY_ERROR;
+            goto exit_level_0;
+        }
     }
     work = (double*)LAPACKE_malloc( sizeof(double) * lwork );
     if( work == NULL ) {

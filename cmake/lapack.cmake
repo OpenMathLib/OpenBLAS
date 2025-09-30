@@ -11,7 +11,7 @@ set(SCLAUX
    la_constants.f90
    sbdsdc.f
    sbdsqr.f sdisna.f slabad.f slacpy.f sladiv.f slae2.f  slaebz.f
-   slaed0.f slaed1.f slaed2.f slaed3.f slaed4.f slaed5.f slaed6.f
+   slaed0.f slaed1.f slaed2.f slaed4.f slaed5.f slaed6.f
    slaed7.f slaed8.f slaed9.f slaeda.f slaev2.f slagtf.f
    slagts.f slamrg.f slanst.f
    slapy2.f slapy3.f slarnv.f
@@ -31,7 +31,7 @@ set(DZLAUX
    dbdsdc.f
    dbdsvdx.f dstevx.f dstein.f
    dbdsqr.f ddisna.f dlabad.f dlacpy.f dladiv.f dlae2.f  dlaebz.f
-   dlaed0.f dlaed1.f dlaed2.f dlaed3.f dlaed4.f dlaed5.f dlaed6.f
+   dlaed0.f dlaed1.f dlaed2.f dlaed4.f dlaed5.f dlaed6.f
    dlaed7.f dlaed8.f dlaed9.f dlaeda.f dlaev2.f dlagtf.f
    dlagts.f dlamrg.f dlanst.f
    dlapy2.f dlapy3.f dlarnv.f
@@ -517,7 +517,7 @@ set(SCLAUX
 	scombssq.c sbdsvdx.c sstevx.c sstein.c
    sbdsdc.c
    sbdsqr.c sdisna.c slabad.c slacpy.c sladiv.c slae2.c  slaebz.c
-   slaed0.c slaed1.c slaed2.c slaed3.c slaed4.c slaed5.c slaed6.c
+   slaed0.c slaed1.c slaed2.c slaed4.c slaed5.c slaed6.c
    slaed7.c slaed8.c slaed9.c slaeda.c slaev2.c slagtf.c
    slagts.c slamrg.c slanst.c
    slapy2.c slapy3.c slarnv.c
@@ -536,7 +536,7 @@ set(DZLAUX
    dbdsdc.c
    dbdsvdx.c dstevx.c dstein.c
    dbdsqr.c ddisna.c dlabad.c dlacpy.c dladiv.c dlae2.c  dlaebz.c
-   dlaed0.c dlaed1.c dlaed2.c dlaed3.c dlaed4.c dlaed5.c dlaed6.c
+   dlaed0.c dlaed1.c dlaed2.c dlaed4.c dlaed5.c dlaed6.c
    dlaed7.c dlaed8.c dlaed9.c dlaeda.c dlaev2.c dlagtf.c
    dlagts.c dlamrg.c dlanst.c
    dlapy2.c dlapy3.c dlarnv.c

@@ -118,7 +118,7 @@ static void dscal_kernel_8 (long n, double *x, double alpha)
 
      "#n=%1 alpha=%3 x=%0=%2"
      :
-       "+m" (*x),
+       "+m" (*(double (*)[n]) x),
        "+r" (n),	// 1
        "+b" (x)		// 2
      :
@@ -158,7 +158,7 @@ static void dscal_kernel_8_zero (long n, double *x)
 
      "#n=%1 x=%0=%2 "
      :
-       "=m" (*x),
+       "=m" (*(double (*)[n]) x),
        "+r" (n),	// 1
        "+b" (x)	// 2
      :

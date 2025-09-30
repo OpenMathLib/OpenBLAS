@@ -29,6 +29,7 @@ For a general introduction to the BLAS routines, please refer to the extensive d
 We provide official binary packages for the following platform:
 
   * Windows x86/x86_64
+  * Windows arm64 (woa)
 
 You can download them from [file hosting on sourceforge.net](https://sourceforge.net/projects/openblas/files/) or from the [Releases section of the GitHub project page](https://github.com/OpenMathLib/OpenBLAS/releases).
 

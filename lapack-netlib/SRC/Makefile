@@ -85,7 +85,7 @@ ALLAUX_O = ilaenv.o ilaenv2stage.o ieeeck.o lsamen.o xerbla.o xerbla_array.o \
    ../INSTALL/ilaver.o ../INSTALL/lsame.o ../INSTALL/slamch.o
 
 ifneq "$(or $(BUILD_SINGLE),$(BUILD_COMPLEX))" ""
-SCLAUX = la_constants.o \
+SCLAUX_O = la_constants.o \
    sbdsvdx.o sstevx.o sstein.o \
    sbdsdc.o \
    sbdsqr.o sdisna.o slabad.o slacpy.o sladiv.o slae2.o  slaebz.o \
@@ -106,7 +106,7 @@ SCLAUX = la_constants.o \
 endif
 
 ifneq "$(or $(BUILD_DOUBLE),$(BUILD_COMPLEX16))" ""
-DZLAUX = la_constants.o\
+DZLAUX_O = la_constants.o\
    dcombssq.o \
    dbdsvdx.o dstevx.o dstein.o \
    dbdsdc.o \
@@ -572,6 +572,8 @@ endif
 
 # filter out optimized codes from OpenBLAS
 ALL_AUX_OBJS = xerbla.o ../INSTALL/lsame.o
+SCL_AUX_OBJS = slaed3.o
+DZL_AUX_OBJS = dlaed3.o
 
 SLAPACKOBJS     = \
         sgetrf.o sgetrs.o spotrf.o sgetf2.o \
@@ -598,6 +600,8 @@ ZLAPACKOBJS     = \
 	zsymv.o zsyr.o zspmv.o zspr.o
 
 ALLAUX = $(filter-out $(ALL_AUX_OBJS),$(ALLAUX_O))
+SCLAUX = $(filter-out $(SCL_AUX_OBJS),$(SCLAUX_O))
+DZLAUX = $(filter-out $(DZL_AUX_OBJS),$(DZLAUX_O))
 SLASRC = $(filter-out $(SLAPACKOBJS),$(SLASRC_O))
 DLASRC = $(filter-out $(DLAPACKOBJS),$(DLASRC_O))
 CLASRC = $(filter-out $(CLAPACKOBJS),$(CLASRC_O))

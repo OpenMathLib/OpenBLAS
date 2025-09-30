@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (c) 2024-2025, The OpenBLAS Project
+ * Copyright (c) 2024, The OpenBLAS Project
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -18,29 +18,29 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
+ * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *****************************************************************************/
 
-#include <arm_sve.h>
+#pragma once
 
-#include "common.h"
+#include <stdlib.h>
 
-#define ALPHA_ONE
-#include "sbgemm_kernel_4x4_neoversev1_impl.c"
-#undef ALPHA_ONE
-#include "sbgemm_kernel_4x4_neoversev1_impl.c"
-
-int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
-          FLOAT *C, BLASLONG ldc) {
-  if (alpha == 1.0f)
-    return sbgemm_kernel_neoversev1_alpha_one(m, n, k, alpha, A, B, C, ldc);
-  else
-    return sbgemm_kernel_neoversev1_alpha(m, n, k, alpha, A, B, C, ldc);
-  return 0;
-}
+/**
+ *  * These are SME ABI routines for saving & restoring SME state.
+ *   * They are typically provided by a compiler runtime library such
+ *    * as libgcc or compiler-rt, but support for these routines is not
+ *     * yet available on all platforms.
+ *      *
+ *       * Define these as aborting stubs so that we loudly fail on nested
+ *        * usage of SME state.
+ *         *
+ *          * These are defined as weak symbols so that a compiler runtime can
+ *           * override them if supported.
+ *            */
+__attribute__((weak)) void __arm_tpidr2_save() { abort(); }
+__attribute__((weak)) void __arm_tpidr2_restore() { abort(); }
 

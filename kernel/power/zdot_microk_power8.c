@@ -186,13 +186,13 @@ static void zdot_kernel_8 (long n, double *x, double *y, double *dot)
 
      "#n=%1 x=%4=%2 y=%5=%3 dot=%0=%6 o16=%7 o32=%8 o48=%9"
      :
-       "=m" (*dot),
+       "=m" (*(double (*)[4]) dot),
        "+r" (n),	// 1
        "+b" (x),	// 2
        "+b" (y)		// 3
      :
-       "m" (*x),
-       "m" (*y),
+       "m" (*(double (*)[n * 2]) x),
+       "m" (*(double (*)[n * 2]) y),
        "b" (dot),	// 6
        "b" (16),	// 7
        "b" (32),	// 8

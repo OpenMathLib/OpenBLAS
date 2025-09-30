@@ -96,14 +96,24 @@ CGEMVTKERNEL = zgemv_t_rvv.c
 ZGEMVTKERNEL = zgemv_t_rvv.c
 
 SGEMMKERNEL    =  sgemm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N)_zvl128b.c
+ifneq ($(filter $(SGEMM_UNROLL_N),4 8 16),)
+SGEMMONCOPY    =  gemm_ncopy_$(SGEMM_UNROLL_N)_rvv.c
+SGEMMOTCOPY    =  gemm_tcopy_$(SGEMM_UNROLL_N)_rvv.c
+else
 SGEMMONCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_N).c
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_$(SGEMM_UNROLL_N).c
+endif
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 ifneq ($(SGEMM_UNROLL_M), $(SGEMM_UNROLL_N))
+ifneq ($(filter $(SGEMM_UNROLL_M),4 8 16),)
+SGEMMINCOPY    =  gemm_ncopy_$(SGEMM_UNROLL_M)_rvv.c
+SGEMMITCOPY    =  gemm_tcopy_$(SGEMM_UNROLL_M)_rvv.c
+else
 SGEMMINCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_M).c
 SGEMMITCOPY    =  ../generic/gemm_tcopy_$(SGEMM_UNROLL_M).c
+endif
 SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
@@ -245,3 +255,28 @@ endif
 ifndef ZGEMM_BETA
 ZGEMM_BETA = zgemm_beta_rvv.c
 endif
+
+ifeq ($(BUILD_HFLOAT16), 1)
+SHGEMMKERNEL    =  shgemm_kernel_$(SHGEMM_UNROLL_M)x$(SHGEMM_UNROLL_N)_zvl128b.c
+SHGEMMONCOPY    =  ../generic/gemm_ncopy_$(SHGEMM_UNROLL_N).c
+SHGEMMOTCOPY    =  ../generic/gemm_tcopy_$(SHGEMM_UNROLL_N).c
+SHGEMMONCOPYOBJ =  shgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SHGEMMOTCOPYOBJ =  shgemm_otcopy$(TSUFFIX).$(SUFFIX)
+ifndef SHGEMM_BETA
+SHGEMM_BETA =  gemm_beta_rvv.c
+endif
+endif
+
+ifeq ($(BUILD_BFLOAT16), 1)
+SBGEMMKERNEL    =  sbgemm_kernel_$(SBGEMM_UNROLL_M)x$(SBGEMM_UNROLL_N)_zvl128b.c
+SBGEMMONCOPY    =  ../generic/gemm_ncopy_$(SBGEMM_UNROLL_N).c
+SBGEMMOTCOPY    =  ../generic/gemm_tcopy_$(SBGEMM_UNROLL_N).c
+SBGEMMONCOPYOBJ =  sbgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SBGEMMOTCOPYOBJ =  sbgemm_otcopy$(TSUFFIX).$(SUFFIX)
+ifndef SBGEMM_BETA
+SBGEMM_BETA =  gemm_beta_rvv.c
+endif
+endif
+
+DOMATCOPY_CT = omatcopy_ct_rvv.c
+SOMATCOPY_CT = omatcopy_ct_rvv.c

@@ -88,7 +88,7 @@
 *>         On entry D contains the singular values of the two submatrices
 *>         to be combined.  On exit D contains the trailing (N-K) updated
 *>         singular values (those which were deflated) sorted into
-*>         increasing order.
+*>         decreasing order.
 *> \endverbatim
 *>
 *> \param[out] Z
@@ -219,7 +219,7 @@
 *>          IDXQ is INTEGER array, dimension (N)
 *>         This contains the permutation which separately sorts the two
 *>         sub-problems in D into ascending order.  Note that entries in
-*>         the first hlaf of this permutation must first be moved one
+*>         the first half of this permutation must first be moved one
 *>         position backward; and entries in the second half
 *>         must first have NL+1 added to their values.
 *> \endverbatim
@@ -451,7 +451,7 @@
 *
 *        Check if singular values are close enough to allow deflation.
 *
-         IF( ABS( D( J )-D( JPREV ) ).LE.TOL ) THEN
+         IF( ( D( J )-D( JPREV ) ).LE.TOL ) THEN
 *
 *           Deflation is possible.
 *
@@ -486,7 +486,14 @@
             END IF
             COLTYP( JPREV ) = 4
             K2 = K2 - 1
-            IDXP( K2 ) = JPREV
+*
+*           Insert the deflated index in the correct position in IDXP.
+*           If J - JPREV is greater than 1, the indices in between
+*           must be shifted to preserve the correct output order.
+*
+            DO 105 JP = JPREV, J - 1
+               IDXP( K2 + J - 1 - JP ) = JP
+  105       CONTINUE
             JPREV = J
          ELSE
             K = K + 1

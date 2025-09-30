@@ -143,8 +143,8 @@ static void sswap_kernel_32 (long n, float *x, float *y)
 
      "#n=%2 x=%0=%3 y=%1=%4"
      :
-       "+m" (*x),
-       "+m" (*y),
+       "+m" (*(FLOAT (*)[n]) x),
+       "+m" (*(FLOAT (*)[n]) y),
        "+r" (n),	// 2
        "+b" (x),	// 3
        "+b" (y)		// 4

@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2025 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -266,6 +267,14 @@ typedef uint16_t bfloat16;
 #define BFLOAT16CONVERSION 1
 #endif
 
+#ifdef BUILD_HFLOAT16
+  #ifndef hfloat16
+  typedef _Float16 hfloat16;
+  #endif
+#else
+  typedef uint16_t hfloat16;
+#endif
+
 #ifdef USE64BITINT
 typedef BLASLONG blasint;
 #if defined(OS_WINDOWS) && defined(__64BIT__)
@@ -309,8 +318,19 @@ typedef int blasint;
 #elif defined(BFLOAT16)
 #define IFLOAT	bfloat16
 #define XFLOAT IFLOAT
-#define FLOAT	float
+#ifdef BGEMM
+#define FLOAT	bfloat16
+#else
+#define FLOAT float
+#endif
 #define SIZE   2
+#define BASE_SHIFT 1
+#define ZBASE_SHIFT 2
+#elif defined(HFLOAT16)
+#define IFLOAT	hfloat16
+#define XFLOAT	IFLOAT
+#define FLOAT	float
+#define SIZE	2
 #define BASE_SHIFT 1
 #define ZBASE_SHIFT 2
 #else

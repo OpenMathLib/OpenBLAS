@@ -130,8 +130,8 @@ static void drot_kernel_16 (long n, double *x, double *y, double c, double s)
 
      "#n=%2 x=%0=%3 y=%1=%4 c=%5 s=%6\n"
      :
-       "+m" (*x),
-       "+m" (*y),
+       "+m" (*(double (*)[n]) x),
+       "+m" (*(double (*)[n]) y),
        "+r" (n),	// 2
        "+b" (x),	// 3
        "+b" (y) 	// 4

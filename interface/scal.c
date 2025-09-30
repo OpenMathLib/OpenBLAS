@@ -1,4 +1,5 @@
 /*********************************************************************/
+/* Copyright 2025 The OpenBLAS Project.                              */
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
 /* All rights reserved.                                              */
 /*                                                                   */
@@ -68,7 +69,14 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx){
 
   if (incx <= 0 || n <= 0) return;
 
-  if (alpha == ONE) return;
+#ifdef BGEMM
+  float alpha_float;
+  SBF16TOS_K(1, &alpha, 1, &alpha_float, 1);
+#else
+  float alpha_float = alpha;
+#endif
+
+  if (alpha_float == ONE) return;
 
   IDEBUG_START;
 

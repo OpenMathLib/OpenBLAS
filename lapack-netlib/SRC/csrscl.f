@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CSRSCL + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/csrscl.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/csrscl.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -77,10 +75,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERauxiliary
+*> \ingroup rscl
 *
 *  =====================================================================
       SUBROUTINE CSRSCL( N, SA, SX, INCX )
+      IMPLICIT NONE
 *
 *  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -109,10 +108,11 @@
       EXTERNAL           SLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CSSCAL, SLABAD
+      EXTERNAL           CSSCAL
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS
+      INTRINSIC          HUGE
 *     ..
 *     .. Executable Statements ..
 *
@@ -121,11 +121,15 @@
       IF( N.LE.0 )
      $   RETURN
 *
+      IF( SA.GT.HUGE(SA) .OR. SA.LT.-HUGE(SA) ) THEN
+         CALL CSSCAL( N, SA, SX, INCX )
+         RETURN
+      END IF
+*
 *     Get machine parameters
 *
       SMLNUM = SLAMCH( 'S' )
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
 *
 *     Initialize the denominator to SA and the numerator to 1.
 *

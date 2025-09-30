@@ -88,13 +88,14 @@ jobs:
         run: |
           case "${{ matrix.build }}" in
             "make")
-              make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=0 FC="ccache ${{ matrix.fortran }}"
+              make -j$(nproc) DYNAMIC_ARCH=1 BUILD_BFLOAT16=1 USE_OPENMP=0 FC="ccache ${{ matrix.fortran }}"
               ;;
             "cmake")
               mkdir build && cd build
               cmake -DDYNAMIC_ARCH=1 \
                     -DNOFORTRAN=0 \
                     -DBUILD_WITHOUT_LAPACK=0 \
+                    -DBUILD_BFLOAT16=1 \
                     -DCMAKE_VERBOSE_MAKEFILE=ON \
                     -DCMAKE_BUILD_TYPE=Release \
                     -DCMAKE_Fortran_COMPILER=${{ matrix.fortran }} \

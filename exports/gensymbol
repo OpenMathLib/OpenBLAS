@@ -1,5 +1,33 @@
 #!/bin/sh
 
+###############################################################################
+# Copyright (c) 2025, The OpenBLAS Project
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the OpenBLAS project nor the names of
+#    its contributors may be used to endorse or promote products
+#    derived from this software without specific prior written permission.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+###############################################################################
+
 # Changelog
 # 2017/09/03 staticfloat
 # Added zsymv and csymv into @lapackobjs2 so they are properly renamed
@@ -51,7 +79,8 @@ blasobjsz="
     zgeadd  dzsum zgemmt zgemmtr"
 
 blasobjs="lsame xerbla"
-bfblasobjs="sbgemm sbgemmt sbgemmtr sbgemv sbdot sbstobf16 sbdtobf16 sbf16tos dbf16tod"
+bfblasobjs="bgemm bgemv sbgemm sbgemmt sbgemmtr sbgemv sbdot sbstobf16 sbdtobf16 sbf16tos dbf16tod"
+hfblasobjs="shgemm"
 cblasobjsc="
     cblas_caxpy cblas_ccopy cblas_cdotc cblas_cdotu cblas_cgbmv cblas_cgemm cblas_cgemv
     cblas_cgerc cblas_cgeru cblas_chbmv cblas_chemm cblas_chemv cblas_cher2 cblas_cher2k
@@ -100,6 +129,7 @@ cblasobjsz="
 cblasobjs="cblas_xerbla"
 
 bfcblasobjs="cblas_sbgemm cblas_sbgemv cblas_sbdot cblas_sbstobf16 cblas_sbdtobf16 cblas_sbf16tos cblas_dbf16tod cblas_sbgemm_batch"
+hfcblasobjs="cblas_shgemm"
 
 exblasobjs="
     qamax qamin qasum qaxpy qcabs1 qcopy qdot qgbmv qgemm
@@ -3814,6 +3844,8 @@ shift
 p16=$9
 shift
 p17=$9
+shift
+p18=$9
 
 if [ $p13 -eq 1 ]; then
 	blasobjs="$blasobjs $bfblasobjs"
@@ -3821,6 +3853,11 @@ if [ $p13 -eq 1 ]; then
 fi
 
 if [ $p14 -eq 1 ]; then
+	blasobjs="$blasobjs $hfblasobjs"
+	cblasobjs="$cblasobjs $hfcblasobjs"
+fi
+
+if [ $p15 -eq 1 ]; then
 	blasobjs="$blasobjs $blasobjss"
 	cblasobjs="$cblasobjs $cblasobjss"
 	lapackobjs="$lapackobjs $lapackobjss"
@@ -3833,11 +3870,11 @@ if [ $p14 -eq 1 ]; then
 	lapackeobjs="$lapackeobjs $lapackeobjss"
 fi
 
-if [ $p15 -eq 1 ]; then
+if [ $p16 -eq 1 ]; then
 	blasobjs="$blasobjs $blasobjsd"
 	cblasobjs="$cblasobjs $cblasobjsd"
 	lapackobjs="$lapackobjs $lapackobjsd"
-    if [ $p14 -eq 0 ]; then
+    if [ $p15 -eq 0 ]; then
 		lapackobjs2="$lapackobjs2 $lapackobjs2ds"
 	fi
 	lapackobjs2="$lapackobjs2 $lapackobjs2d $lapackobjs2dz"
@@ -3847,14 +3884,14 @@ if [ $p15 -eq 1 ]; then
 	lapackeobjs="$lapackeobjs $lapackeobjsd"
 fi
 
-if [ $p16 -eq 1 ]; then
+if [ $p17 -eq 1 ]; then
 	blasobjs="$blasobjs $blasobjsc"
 	cblasobjs="$cblasobjs $cblasobjsc"
 	gemm3mobjs="$gemm3mobjs $gemm3mobjsc"
 	cblasgemm3mobjs="$cblasgemm3mobjs $cblasgemm3mobjsc"
 	lapackobjs="$lapackobjs $lapackobjsc"
 	lapackobjs2="$lapackobjs2 $lapackobjs2c $lapackobjs2zc"
-    if [ $p14 -eq 0 ]; then
+    if [ $p15 -eq 0 ]; then
 		lapackobjs2="$lapackobjs2 $lapackobjs2sc"
 	fi
 	lapack_deprecated_objs="$lapack_deprecated_objs $lapack_deprecated_objsc"
@@ -3863,17 +3900,17 @@ if [ $p16 -eq 1 ]; then
 	lapackeobjs="$lapackeobjs $lapackeobjsc"
 fi
 
-if [ $p17 -eq 1 ]; then
+if [ $p18 -eq 1 ]; then
 	blasobjs="$blasobjs $blasobjsz"
 	cblasobjs="$cblasobjs $cblasobjsz"
 	gemm3mobjs="$gemm3mobjs $gemm3mobjsz"
 	cblasgemm3mobjs="$cblasgemm3mobjs $cblasgemm3mobjsz"
 	lapackobjs="$lapackobjs $lapackobjsz"
 	lapackobjs2="$lapackobjs2 $lapackobjs2z"
-	if [ $p16 -eq 0 ]; then
+	if [ $p17 -eq 0 ]; then
 		lapackobjs2="$lapackobjs2 $lapackobjs2zc"
 	fi
-	if [ $p15 -eq 0 ]; then
+	if [ $p16 -eq 0 ]; then
 		lapackobjs2="$lapackobjs2 $lapackobjs2dz"
 	fi
 	lapack_deprecated_objs="$lapack_deprecated_objs $lapack_deprecated_objsz"

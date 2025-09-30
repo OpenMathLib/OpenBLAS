@@ -67,6 +67,16 @@ BLASLONG sbgemm_p = DEFAULT_GEMM_P;
 #else
 BLASLONG sbgemm_p = SBGEMM_P;
 #endif
+#if SHGEMM_P == shgemm_p
+BLASLONG shgemm_p = DEFAULT_GEMM_P;
+#else
+BLASLONG shgemm_p = SHGEMM_P;
+#endif
+#if BGEMM_P == bgemm_p
+BLASLONG bgemm_p = DEFAULT_GEMM_P;
+#else
+BLASLONG bgemm_p = BGEMM_P;
+#endif
 #if SGEMM_P == sgemm_p
 BLASLONG sgemm_p = DEFAULT_GEMM_P;
 #else
@@ -93,6 +103,16 @@ BLASLONG sbgemm_q = DEFAULT_GEMM_Q;
 #else
 BLASLONG sbgemm_q = SBGEMM_Q;
 #endif
+#if SHGEMM_Q == shgemm_q
+BLASLONG shgemm_q = DEFAULT_GEMM_Q;
+#else
+BLASLONG shgemm_q = SHGEMM_Q;
+#endif
+#if BGEMM_Q == bgemm_q
+BLASLONG bgemm_q = DEFAULT_GEMM_Q;
+#else
+BLASLONG bgemm_q = BGEMM_Q;
+#endif
 #if SGEMM_Q == sgemm_q
 BLASLONG sgemm_q = DEFAULT_GEMM_Q;
 #else
@@ -118,6 +138,16 @@ BLASLONG zgemm_q = ZGEMM_Q;
 BLASLONG sbgemm_r = DEFAULT_GEMM_R;
 #else
 BLASLONG sbgemm_r = SBGEMM_R;
+#endif
+#if SHGEMM_R == shgemm_r
+BLASLONG shgemm_r = DEFAULT_GEMM_R;
+#else
+BLASLONG shgemm_r = SHGEMM_R;
+#endif
+#if BGEMM_R == bgemm_r
+BLASLONG bgemm_r = DEFAULT_GEMM_R;
+#else
+BLASLONG bgemm_r = BGEMM_R;
 #endif
 #if SGEMM_R == sgemm_r
 BLASLONG sgemm_r = DEFAULT_GEMM_R;
@@ -526,6 +556,10 @@ void blas_set_parameter(void){
 
 #ifdef BUILD_BFLOAT16
   sbgemm_r = (((BUFFER_SIZE - ((SBGEMM_P * SBGEMM_Q *  4 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (SBGEMM_Q *  4)) - 15) & ~15;
+  bgemm_r = (((BUFFER_SIZE - ((BGEMM_P * BGEMM_Q *  4 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (BGEMM_Q *  4)) - 15) & ~15;
+#endif
+#ifdef BUILD_HFLOAT16
+  shgemm_r = (((BUFFER_SIZE - ((SHGEMM_P * SHGEMM_Q *  4 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (SHGEMM_Q *  4)) - 15) & ~15;
 #endif
   sgemm_r = (((BUFFER_SIZE - ((SGEMM_P * SGEMM_Q *  4 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (SGEMM_Q *  4)) - 15) & ~15;
   dgemm_r = (((BUFFER_SIZE - ((DGEMM_P * DGEMM_Q *  8 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (DGEMM_Q *  8)) - 15) & ~15;
@@ -619,6 +653,7 @@ void blas_set_parameter(void){
   size = BITMASK(cpuid3, 16, 0xff);
 
   sbgemm_p = 192 * (size + 1);
+  shgemm_p = 192 * (size + 1);
   sgemm_p = 192 * (size + 1);
   dgemm_p =  96 * (size + 1);
   cgemm_p =  96 * (size + 1);
@@ -634,6 +669,10 @@ void blas_set_parameter(void){
 
 #ifdef BUILD_BFLOAT16
   sbgemm_r = (((BUFFER_SIZE - ((SBGEMM_P * SBGEMM_Q *  4 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (SBGEMM_Q *  4)) - 15) & ~15;
+  bgemm_r = (((BUFFER_SIZE - ((BGEMM_P * BGEMM_Q *  4 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (BGEMM_Q *  4)) - 15) & ~15;
+#endif
+#ifdef BUILD_HFLOAT16
+  shgemm_r = (((BUFFER_SIZE - ((SHGEMM_P * SHGEMM_Q *  4 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (SHGEMM_Q *  4)) - 15) & ~15;
 #endif
   sgemm_r = (((BUFFER_SIZE - ((SGEMM_P * SGEMM_Q *  4 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (SGEMM_Q *  4)) - 15) & ~15;
   dgemm_r = (((BUFFER_SIZE - ((DGEMM_P * DGEMM_Q *  8 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (DGEMM_Q *  8)) - 15) & ~15;

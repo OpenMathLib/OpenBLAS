@@ -69,7 +69,10 @@ static int cpuid(void)
     else if (arch == POWER_9) return CPU_POWER9;
 #endif
 #ifdef POWER_10
-    else if (arch >= POWER_10) return CPU_POWER10;
+    else if (arch == POWER_10) return CPU_POWER10;
+#endif
+#ifdef POWER_11
+    else if (arch >= POWER_11) return CPU_POWER10;
 #endif
     return CPU_UNKNOWN;
 }
@@ -170,6 +173,13 @@ static  struct {
         .pvr_mask       = 0xffff0000,
         .pvr_value      = 0x00800000,
         .cpu_name       = "POWER10 (raw)",
+        .cpu_type       = CPU_POWER10,
+    },
+
+    {   /* Power11 */
+        .pvr_mask       = 0xffff0000,
+        .pvr_value      = 0x00820000,
+        .cpu_name       = "POWER11 (raw)",
         .cpu_type       = CPU_POWER10,
     },
 

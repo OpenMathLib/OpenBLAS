@@ -127,10 +127,10 @@ int NAME(char *UPLO, char *DIAG, blasint *N, FLOAT *a, blasint *ldA, blasint *In
 #endif
 
 #ifdef SMP
-if (args.n <= 150)
-  args.nthreads = 1;
-else
-  args.nthreads = num_cpu_avail(4);
+  if (args.n <= 150)
+    args.nthreads = 1;
+  else
+    args.nthreads = num_cpu_avail(4);
 
   if (args.nthreads == 1) {
 #endif

@@ -71,7 +71,7 @@ install : 	lib.grd
 	@cat common_interface.h >> "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
 	@echo \#endif >> "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
 
-ifndef NO_CBLAS
+ifneq ($(NO_CBLAS),1)
 	@echo Generating cblas.h in $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
 	@cp cblas.h cblas.tmp
 ifdef SYMBOLPREFIX
@@ -189,6 +189,8 @@ endif
 
 
 #Generating OpenBLASConfig.cmake
+ifneq ($(origin _OpenBLAS_ROOT_DIR),"undefined")
+
 	@echo Generating $(OPENBLAS_CMAKE_CONFIG) in $(DESTDIR)$(OPENBLAS_CMAKE_DIR)
 	@echo "SET(OpenBLAS_VERSION \"${VERSION}\")" > "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
 	@echo "file(REAL_PATH \"../../..\" _OpenBLAS_ROOT_DIR BASE_DIRECTORY \$${CMAKE_CURRENT_LIST_DIR} )" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
@@ -215,6 +217,27 @@ else
 #only static
 	@echo "SET(OpenBLAS_LIBRARIES \$${_OpenBLAS_ROOT_DIR}/lib/$(LIBPREFIX).$(LIBSUFFIX))" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
 endif
+else
+	echo Generating $(OPENBLAS_CMAKE_CONFIG) in $(DESTDIR)$(OPENBLAS_CMAKE_DIR)
+	@echo "SET(OpenBLAS_VERSION \"${VERSION}\")" > "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
+	@echo "SET(OpenBLAS_INCLUDE_DIRS ${OPENBLAS_INCLUDE_DIR})" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
+ifneq ($(NO_SHARED),1)
+#ifeq logical or
+ifeq ($(OSNAME), $(filter $(OSNAME),Linux FreeBSD NetBSD OpenBSD DragonFly))
+	@echo "SET(OpenBLAS_LIBRARIES ${OPENBLAS_LIBRARY_DIR}/$(LIBPREFIX)$(SYMBOLSUFFIX).so)" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
+	endif
+ifeq ($(OSNAME), $(filter $(OSNAME),WINNT CYGWIN_NT))
+	@echo "SET(OpenBLAS_LIBRARIES ${OPENBLAS_BINARY_DIR}/$(LIBDLLNAME))" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
+	ifeq ($(OSNAME), Darwin)
+	@echo "SET(OpenBLAS_LIBRARIES ${OPENBLAS_LIBRARY_DIR}/$(LIBPREFIX).dylib)" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
+endif
+else
+#only static
+	@echo "SET(OpenBLAS_LIBRARIES ${OPENBLAS_LIBRARY_DIR}/$(LIBPREFIX).$(LIBSUFFIX))" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
+endif
+endif
+endif
+
 #Generating OpenBLASConfigVersion.cmake
 	@echo Generating $(OPENBLAS_CMAKE_CONFIG_VERSION) in $(DESTDIR)$(OPENBLAS_CMAKE_DIR)
 	@echo "set (PACKAGE_VERSION \"${VERSION}\")" > "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG_VERSION)"

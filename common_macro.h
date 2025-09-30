@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2025 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -39,6 +40,8 @@
 #ifndef COMMON_MACRO
 #define COMMON_MACRO
 
+#include "common_sh.h"
+#include "common_b.h"
 #include "common_sb.h"
 #include "common_s.h"
 #include "common_d.h"
@@ -656,15 +659,108 @@
 #define GEMM_SMALL_KERNEL_B0_NT    DGEMM_SMALL_KERNEL_B0_NT
 #define GEMM_SMALL_KERNEL_B0_TN    DGEMM_SMALL_KERNEL_B0_TN
 #define GEMM_SMALL_KERNEL_B0_TT    DGEMM_SMALL_KERNEL_B0_TT
+#elif defined(HFLOAT16)
+#define GEMM_BETA       SHGEMM_BETA
+#define GEMM_KERNEL_N   SHGEMM_KERNEL
+#define GEMM_KERNEL_L   SHGEMM_KERNEL
+#define GEMM_KERNEL_R   SHGEMM_KERNEL
+#define GEMM_KERNEL_B   SHGEMM_KERNEL
+#define GEMM_NN        SHGEMM_NN
+#define GEMM_CN        SHGEMM_TN
+#define GEMM_TN        SHGEMM_TN
+#define GEMM_NC        SHGEMM_NT
+#define GEMM_NT        SHGEMM_NT
+#define GEMM_CC        SHGEMM_TT
+#define GEMM_CT        SHGEMM_TT
+#define GEMM_TC        SHGEMM_TT
+#define GEMM_TT        SHGEMM_TT
+#define GEMM_NR        SHGEMM_NN
+#define GEMM_TR        SHGEMM_TN
+#define GEMM_CR        SHGEMM_TN
+#define GEMM_RN        SHGEMM_NN
+#define GEMM_RT        SHGEMM_NT
+#define GEMM_RC        SHGEMM_NT
+#define GEMM_RR        SHGEMM_NN
+#define GEMM_ONCOPY    SHGEMM_ONCOPY
+#define GEMM_OTCOPY    SHGEMM_OTCOPY
+#define GEMM_INCOPY    SHGEMM_INCOPY
+#define GEMM_ITCOPY    SHGEMM_ITCOPY
+
+#define GEMM_THREAD_NN   SHGEMM_THREAD_NN
+#define GEMM_THREAD_CN   SHGEMM_THREAD_TN
+#define GEMM_THREAD_TN   SHGEMM_THREAD_TN
+#define GEMM_THREAD_NC   SHGEMM_THREAD_NT
+#define GEMM_THREAD_NT   SHGEMM_THREAD_NT
+#define GEMM_THREAD_CC   SHGEMM_THREAD_TT
+#define GEMM_THREAD_CT   SHGEMM_THREAD_TT
+#define GEMM_THREAD_TC   SHGEMM_THREAD_TT
+#define GEMM_THREAD_TT   SHGEMM_THREAD_TT
+#define GEMM_THREAD_NR   SHGEMM_THREAD_NN
+#define GEMM_THREAD_TR   SHGEMM_THREAD_TN
+#define GEMM_THREAD_CR   SHGEMM_THREAD_TN
+#define GEMM_THREAD_RN   SHGEMM_THREAD_NN
+#define GEMM_THREAD_RT   SHGEMM_THREAD_NT
+#define GEMM_THREAD_RC   SHGEMM_THREAD_NT
+#define GEMM_THREAD_RR   SHGEMM_THREAD_NN
+
+
+#elif defined(BFLOAT16) && defined(BGEMM)
+#define SCAL_K        BSCAL_K
+
+#define GEMV_N        BGEMV_N_K
+#define GEMV_T        BGEMV_T_K
+
+#define GEMM_BETA               BGEMM_BETA
+#define	GEMM_KERNEL_N		BGEMM_KERNEL
+#define	GEMM_KERNEL_L		BGEMM_KERNEL
+#define	GEMM_KERNEL_R		BGEMM_KERNEL
+#define	GEMM_KERNEL_B		BGEMM_KERNEL
+
+#define	GEMM_NN			BGEMM_NN
+#define	GEMM_CN			BGEMM_TN
+#define	GEMM_TN			BGEMM_TN
+#define	GEMM_NC			BGEMM_NT
+#define	GEMM_NT			BGEMM_NT
+#define	GEMM_CC			BGEMM_TT
+#define	GEMM_CT			BGEMM_TT
+#define	GEMM_TC			BGEMM_TT
+#define	GEMM_TT			BGEMM_TT
+#define	GEMM_NR			BGEMM_NN
+#define	GEMM_TR			BGEMM_TN
+#define	GEMM_CR			BGEMM_TN
+#define	GEMM_RN			BGEMM_NN
+#define	GEMM_RT			BGEMM_NT
+#define	GEMM_RC			BGEMM_NT
+#define	GEMM_RR			BGEMM_NN
+#define	GEMM_ONCOPY		BGEMM_ONCOPY
+#define	GEMM_OTCOPY		BGEMM_OTCOPY
+#define	GEMM_INCOPY		BGEMM_INCOPY
+#define	GEMM_ITCOPY		BGEMM_ITCOPY
+
+#define	GEMM_THREAD_NN		BGEMM_THREAD_NN
+#define	GEMM_THREAD_CN		BGEMM_THREAD_TN
+#define	GEMM_THREAD_TN		BGEMM_THREAD_TN
+#define	GEMM_THREAD_NC		BGEMM_THREAD_NT
+#define	GEMM_THREAD_NT		BGEMM_THREAD_NT
+#define	GEMM_THREAD_CC		BGEMM_THREAD_TT
+#define	GEMM_THREAD_CT		BGEMM_THREAD_TT
+#define	GEMM_THREAD_TC		BGEMM_THREAD_TT
+#define	GEMM_THREAD_TT		BGEMM_THREAD_TT
+#define	GEMM_THREAD_NR		BGEMM_THREAD_NN
+#define	GEMM_THREAD_TR		BGEMM_THREAD_TN
+#define	GEMM_THREAD_CR		BGEMM_THREAD_TN
+#define	GEMM_THREAD_RN		BGEMM_THREAD_NN
+#define	GEMM_THREAD_RT		BGEMM_THREAD_NT
+#define	GEMM_THREAD_RC		BGEMM_THREAD_NT
+#define	GEMM_THREAD_RR		BGEMM_THREAD_NN
 
 #elif defined(BFLOAT16)
-
 #define D_TO_BF16_K     SBDTOBF16_K
 #define D_BF16_TO_K     DBF16TOD_K
 #define S_TO_BF16_K     SBSTOBF16_K
 #define S_BF16_TO_K     SBF16TOS_K
-#define SBGEMV_N        SBGEMV_N_K
-#define SBGEMV_T        SBGEMV_T_K
+#define GEMV_N          SBGEMV_N_K
+#define GEMV_T          SBGEMV_T_K
 
 #define	AMAX_K			SAMAX_K
 #define	AMIN_K			SAMIN_K
@@ -682,8 +778,6 @@
 #define	AXPYC_K			SAXPYC_K
 #define AXPBY_K     SAXPBY_K
 #define SCAL_K			SSCAL_K
-#define GEMV_N			SGEMV_N
-#define GEMV_T			SGEMV_T
 #define SYMV_U			SSYMV_U
 #define SYMV_L			SSYMV_L
 #define	GERU_K			SGERU_K
@@ -2618,6 +2712,9 @@
       || defined(ARCH_LOONGARCH64) || defined(ARCH_E2K) || defined(ARCH_ALPHA))
 extern BLASLONG gemm_offset_a;
 extern BLASLONG gemm_offset_b;
+extern BLASLONG bgemm_p;
+extern BLASLONG bgemm_q;
+extern BLASLONG bgemm_r;
 extern BLASLONG sbgemm_p;
 extern BLASLONG sbgemm_q;
 extern BLASLONG sbgemm_r;
@@ -2990,6 +3087,8 @@ typedef struct {
 #define NEG_TCOPY	DNEG_TCOPY
 #define	LARF_L		DLARF_L
 #define	LARF_R		DLARF_R
+#define LAED3_SINGLE	dlaed3_single
+#define LAED3_PARALLEL	dlaed3_parallel
 #else
 #define GETF2	SGETF2
 #define GETRF	SGETRF
@@ -3011,6 +3110,8 @@ typedef struct {
 #define NEG_TCOPY	SNEG_TCOPY
 #define	LARF_L		SLARF_L
 #define	LARF_R		SLARF_R
+#define LAED3_SINGLE	slaed3_single
+#define LAED3_PARALLEL	slaed3_parallel
 #endif
 #else
 #ifdef XDOUBLE

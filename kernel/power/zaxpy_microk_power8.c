@@ -224,7 +224,7 @@ static void zaxpy_kernel_4 (long n, double *x, double *y,
      "#n=%1 x=%17=%2 y=%0=%3 alpha=(%19,%20) mvecp=%18=%16 o16=%22 o32=%23 o48=%24 ytmp=%16\n"
      "#t0=%x4 t1=%x5 t2=%x6 t3=%x7 t4=%x8 t5=%x9 t6=%x10 t7=%x11 t8=%x12 t9=%x13 t10=%x14 t11=%x15"
      :
-       "+m" (*y),
+       "+m" (*(double (*)[n * 2]) y),
        "+r" (n),	// 1
        "+b" (x),	// 2
        "+b" (y),	// 3
@@ -242,8 +242,8 @@ static void zaxpy_kernel_4 (long n, double *x, double *y,
        "=wa" (t11),	// 15
        "=b" (ytmp)	// 16
      :
-       "m" (*x),
-       "m" (*mvecp),
+       "m" (*(const double (*)[n * 2]) x),
+       "m" (*(const double (*)[2]) mvecp),
        "d" (alpha_r),	// 19
        "d" (alpha_i),	// 20
        "16" (mvecp),	// 21

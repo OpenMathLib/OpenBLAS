@@ -1,0 +1,84 @@
+name: Windows ARM64 CI
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+jobs:
+  build:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
+    runs-on: windows-11-arm
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install LLVM for Win-ARM64
+        shell: pwsh
+        run: |
+          Invoke-WebRequest https://github.com/llvm/llvm-project/releases/download/llvmorg-20.1.8/LLVM-20.1.8-woa64.exe -UseBasicParsing -OutFile LLVM-woa64.exe
+          Start-Process -FilePath ".\LLVM-woa64.exe" -ArgumentList "/S" -Wait
+          echo "C:\Program Files\LLVM\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          #dir "C:\Program Files\LLVM\include\flang"
+          #rmdir /Q /S "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/Llvm/ARM64"
+          
+      - name: Install CMake and Ninja for Win-ARM64
+        shell: pwsh
+        run: |
+          Invoke-WebRequest https://github.com/Kitware/CMake/releases/download/v3.29.4/cmake-3.29.4-windows-arm64.msi -OutFile cmake-arm64.msi
+          Start-Process msiexec.exe -ArgumentList "/i cmake-arm64.msi /quiet /norestart" -Wait
+          echo "C:\Program Files\CMake\bin" >> $env:GITHUB_PATH
+          
+          Invoke-WebRequest https://github.com/ninja-build/ninja/releases/download/v1.13.1/ninja-winarm64.zip -OutFile ninja-winarm64.zip
+          Expand-Archive ninja-winarm64.zip -DestinationPath ninja
+          Copy-Item ninja\ninja.exe -Destination "C:\Windows\System32"
+
+      - name: Configure OpenBLAS
+        shell: cmd
+        run: |
+          CALL "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsarm64.bat"
+          set PATH=C:\Program Files\LLVM\bin;%PATH%
+          
+          mkdir build
+          cd build
+          cmake .. -G Ninja ^
+            -DCMAKE_BUILD_TYPE=Release ^
+            -DTARGET=ARMV8 ^
+            -DBINARY=64 ^
+            -DCMAKE_C_COMPILER=clang-cl ^
+            -DCMAKE_Fortran_COMPILER=flang-new ^
+            -DBUILD_SHARED_LIBS=ON ^
+            -DCMAKE_SYSTEM_PROCESSOR=arm64 ^
+            -DCMAKE_SYSTEM_NAME=Windows ^
+            -DCMAKE_INSTALL_PREFIX=C:/opt
+
+      - name: Build OpenBLAS
+        shell: cmd
+        run: |
+          cd build
+          ninja -j16
+
+      - name: Install OpenBLAS
+        shell: cmd
+        run: |
+          cd build
+          cmake --install .
+
+      - name: Run ctests 
+        shell: pwsh
+        run: |
+          $env:PATH = "C:\opt\bin;$env:PATH"
+          cd build
+          ctest
+
+

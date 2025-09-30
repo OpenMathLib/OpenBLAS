@@ -59,3 +59,11 @@ CROTKERNEL = ../arm/zrot.c
 ZROTKERNEL = ../arm/zrot.c
 SGEMVNKERNEL = ../arm/gemv_n.c
 SGEMVTKERNEL = ../arm/gemv_t.c
+
+SSCALKERNEL = ../arm/scal.c
+DSCALKERNEL = ../arm/scal.c
+CSCALKERNEL = ../arm/zscal.c
+ZSCALKERNEL = ../arm/zscal.c
+
+
+

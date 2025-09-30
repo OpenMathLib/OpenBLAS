@@ -2922,6 +2922,7 @@ void *blas_memory_alloc(int procpos){
   blas_unlock(&memory[position].lock);
 #endif
   if (!memory[position].addr) {
+    int failcount = 0;
     do {
 #ifdef DEBUG
       printf("Allocation Start : %lx\n", base_address);
@@ -2973,8 +2974,16 @@ void *blas_memory_alloc(int procpos){
 #ifdef DEBUG
       printf("  Success -> %08lx\n", map_address);
 #endif
-      if (((BLASLONG) map_address) == -1) base_address = 0UL;
-
+      if (((BLASLONG) map_address) == -1) {
+	      base_address = 0UL;
+	      failcount++;
+	      if (failcount >10) {
+		      fprintf(stderr, "OpenBLAS error: Memory allocation still failed after 10 retries, giving up.\n");
+		      exit(1);
+	      }
+      } else {
+	      failcount = 0;
+      }
       if (base_address) base_address += BUFFER_SIZE + FIXED_PAGESIZE;
 
     } while ((BLASLONG)map_address == -1);

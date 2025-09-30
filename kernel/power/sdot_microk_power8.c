@@ -155,8 +155,8 @@ static float sdot_kernel_16 (long n, float *x, float *y)
        "=wa" (t2),	// 6
        "=wa" (t3)	// 7
      :
-       "m" (*x),
-       "m" (*y),
+       "m" (*(const float (*)[n]) x),
+       "m" (*(const float (*)[n]) y),
        "b" (16),	// 10
        "b" (32),	// 11
        "b" (48),	// 12

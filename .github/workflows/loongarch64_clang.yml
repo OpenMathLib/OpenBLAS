@@ -35,7 +35,7 @@ jobs:
 
       - name: Install libffi6
         run: |
-          wget http://ftp.ca.debian.org/debian/pool/main/libf/libffi/libffi6_3.2.1-9_amd64.deb
+          wget https://download.nvidia.com/cumulus/apt.cumulusnetworks.com/pool/upstream/libf/libffi/libffi6_3.2.1-9_amd64.deb
           sudo dpkg -i libffi6_3.2.1-9_amd64.deb
 
       - name: Install APT deps

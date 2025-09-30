@@ -66,5 +66,9 @@ _cpuid:
 
 #endif
 #if defined(__ELF__) && defined(__linux__)
+#if defined(__arm__)
+        .section        .note.GNU-stack,"",%progbits
+#else
         .section        .note.GNU-stack,"",@progbits
+#endif
 #endif

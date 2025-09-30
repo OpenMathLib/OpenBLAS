@@ -9,7 +9,7 @@ project(OpenBLAS C ASM)
 
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
-set(OpenBLAS_PATCH_VERSION 30)
+set(OpenBLAS_PATCH_VERSION 30.dev)
 
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
@@ -151,6 +151,9 @@ endif ()
 
 if (NOT DEFINED BUILD_BFLOAT16)
  set (BUILD_BFLOAT16 false)
+endif ()
+if (NOT DEFINED BUILD_HFLOAT16)
+ set (BUILD_HFLOAT16 false)
 endif ()
 # set which float types we want to build for
 if (NOT DEFINED BUILD_SINGLE AND NOT DEFINED BUILD_DOUBLE AND NOT DEFINED BUILD_COMPLEX AND NOT DEFINED BUILD_COMPLEX16)
@@ -305,8 +308,8 @@ if (USE_OPENMP)
   endif()
 endif()
 
-# Fix "Argument list too long" for macOS with Intel CPUs and DYNAMIC_ARCH turned on
-if(APPLE AND DYNAMIC_ARCH AND (NOT CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64"))
+# Fix "Argument list too long" for macOS with POWERPC or Intel CPUs 
+if(APPLE AND (NOT CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64"))
   # Use response files
   set(CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS 1)
   # Always build static library first
@@ -541,13 +544,13 @@ message(STATUS "adding postbuild instruction to rename syms")
   if (NOT USE_PERL)
   add_custom_command(TARGET ${OpenBLAS_LIBNAME}_shared POST_BUILD
 	  COMMAND sh ${PROJECT_SOURCE_DIR}/exports/gensymbol "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BLD}" "${BBF16}" "${BS}" "${BD}" "${BC}" "${BZ}" > ${PROJECT_BINARY_DIR}/objcopy.def
-    COMMAND objcopy -v --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/${OpenBLAS_LIBNAME}.so
+    COMMAND objcopy --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/${OpenBLAS_LIBNAME}.so
     COMMENT "renaming symbols"
     )
   else()
   add_custom_command(TARGET ${OpenBLAS_LIBNAME}_shared POST_BUILD
     COMMAND perl ${PROJECT_SOURCE_DIR}/exports/gensymbol.pl "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BLD}" "${BBF16}" "${BS}" "${BD}" "${BC}" "${BZ}" > ${PROJECT_BINARY_DIR}/objcopy.def
-    COMMAND objcopy -v --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so
+    COMMAND objcopy --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so
     COMMENT "renaming symbols"
     )
   endif()

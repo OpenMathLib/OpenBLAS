@@ -81,7 +81,6 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
         FLOAT_V_T_M1 v_res;
         v_res = VFMVVF_FLOAT_M1(0, 1);
 
-        MASK_T mask0, mask1;
         BLASLONG stride_x = inc_x * sizeof(FLOAT) * 2;
         gvl = VSETVL(n);
         v_max = VFMVVF_FLOAT(0, gvl);

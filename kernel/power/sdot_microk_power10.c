@@ -122,8 +122,8 @@ static float sdot_kernel_16 (long n, float *x, float *y)
        "+b" (x),	// 2
        "+b" (y)		// 3
      :
-       "m" (*x),
-       "m" (*y)
+       "m" (*(const float (*)[n]) x),
+       "m" (*(const float (*)[n]) y)
      :
        "cr0",
        "vs32","vs33","vs34","vs35","vs36","vs37","vs38","vs39",

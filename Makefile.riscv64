@@ -6,13 +6,20 @@ ifeq ($(CORE), x280)
 CCOMMON_OPT += -march=rv64imafdcv_zba_zbb_zfh_zvl512b -mabi=lp64d 
 FCOMMON_OPT += -march=rv64imafdcv_zba_zbb_zfh -mabi=lp64d -static
 endif
+RISCV64_OPT  = rv64imafdcv
+ifeq ($(BUILD_HFLOAT16), 1)
+RISCV64_OPT := $(RISCV64_OPT)_zvfh_zfh
+endif
+ifeq ($(BUILD_BFLOAT16), 1)
+RISCV64_OPT := $(RISCV64_OPT)_zvfbfwma
+endif
 ifeq ($(CORE), RISCV64_ZVL256B)
-CCOMMON_OPT += -march=rv64imafdcv_zvl256b -mabi=lp64d
-FCOMMON_OPT += -march=rv64imafdcv -mabi=lp64d
+CCOMMON_OPT += -march=$(RISCV64_OPT)_zvl256b -mabi=lp64d
+FCOMMON_OPT += -march=$(RISCV64_OPT) -mabi=lp64d
 endif
 ifeq ($(CORE), RISCV64_ZVL128B)
-CCOMMON_OPT += -march=rv64imafdcv -mabi=lp64d 
-FCOMMON_OPT += -march=rv64imafdcv -mabi=lp64d
+CCOMMON_OPT += -march=$(RISCV64_OPT) -mabi=lp64d
+FCOMMON_OPT += -march=$(RISCV64_OPT) -mabi=lp64d
 endif
 ifeq ($(CORE), RISCV64_GENERIC)
 CCOMMON_OPT += -march=rv64imafdc -mabi=lp64d

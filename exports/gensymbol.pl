@@ -1,5 +1,33 @@
 #!/usr/bin/env perl
 
+###############################################################################
+# Copyright (c) 2025, The OpenBLAS Project
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the OpenBLAS project nor the names of
+#    its contributors may be used to endorse or promote products
+#    derived from this software without specific prior written permission.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+###############################################################################
+
 # Changelog
 # 2017/09/03 staticfloat
 # Added zsymv and csymv into @lapackobjs2 so they are properly renamed
@@ -51,7 +79,8 @@
     zgeadd, dzsum, zgemmt,zgemmtr);
 
 @blasobjs = (lsame, xerbla);
-@bfblasobjs = (sbgemm, sbgemmt, sbgemmtr, sbgemv, sbdot, sbstobf16, sbdtobf16, sbf16tos, dbf16tod);
+@bfblasobjs = (bgemm, bgemv, sbgemm, sbgemmt, sbgemmtr, sbgemv, sbdot, sbstobf16, sbdtobf16, sbf16tos, dbf16tod);
+@hfblasobjs = (shgemm);
 @cblasobjsc = (
     cblas_caxpy, cblas_ccopy, cblas_cdotc, cblas_cdotu, cblas_cgbmv, cblas_cgemm, cblas_cgemv,
     cblas_cgerc, cblas_cgeru, cblas_chbmv, cblas_chemm, cblas_chemv, cblas_cher2, cblas_cher2k,
@@ -97,7 +126,7 @@
 @cblasobjs = (  cblas_xerbla );
 
 @bfcblasobjs = (cblas_sbgemm, cblas_sbgemmt, cblas_sbgemmtr, cblas_sbgemv, cblas_sbdot, cblas_sbstobf16, cblas_sbdtobf16, cblas_sbf16tos, cblas_dbf16tod, cblas_sbgemm_batch);
-
+@hfcblasobjs = (cblas_shgemm);
 @exblasobjs = (
     qamax,qamin,qasum,qaxpy,qcabs1,qcopy,qdot,qgbmv,qgemm,
     qgemv,qger,qmax,qmin,
@@ -3777,6 +3806,10 @@ if ($ARGV[12] == 1) {
 	@cblasobjs = (@cblasobjs, @bfcblasobjs);
 }
 if ($ARGV[13] == 1) {
+	@blasobjs = (@blasobjs, @hfblasobjs);
+	@cblasobjs = (@cblasobjs, @hfcblasobjs);
+}
+if ($ARGV[14] == 1) {
 	@blasobjs = (@blasobjs, @blasobjss);
 	@cblasobjs = (@cblasobjs, @cblasobjss);
 	@lapackobjs = (@lapackobjs, @lapackobjss);
@@ -3788,11 +3821,11 @@ if ($ARGV[13] == 1) {
 	@lapack_embeded_underscore_objs = (@lapack_embeded_underscore_objs,  @lapack_embeded_underscore_objs_s); 
 	@lapackeobjs = (@lapackeobjs, @lapackeobjss);
 }
-if ($ARGV[14] == 1) {
+if ($ARGV[15] == 1) {
 	@blasobjs = (@blasobjs, @blasobjsd);
 	@cblasobjs = (@cblasobjs, @cblasobjsd);
 	@lapackobjs = (@lapackobjs, @lapackobjsd);
-	if ($ARGV[13] == 0) { 
+	if ($ARGV[14] == 0) { 
 		@lapackobjs2 = (@lapackobjs2, @lapackobjs2ds);
 	}
 	@lapackobjs2 = (@lapackobjs2, @lapackobjs2d, @lapackobjs2dz);
@@ -3801,14 +3834,14 @@ if ($ARGV[14] == 1) {
 	@lapack_embeded_underscore_objs = (@lapack_embeded_underscore_objs,  @lapack_embeded_underscore_objs_d);
 	@lapackeobjs = (@lapackeobjs, @lapackeobjsd);
 }
-if ($ARGV[15] == 1) {
+if ($ARGV[16] == 1) {
 	@blasobjs = (@blasobjs, @blasobjsc);
 	@cblasobjs = (@cblasobjs, @cblasobjsc);
 	@gemm3mobjs = (@gemm3mobjs, @gemm3mobjsc);
 	@cblasgemm3mobjs = (@cblasgemm3mobjs, @cblasgemm3mobjsc);
 	@lapackobjs = (@lapackobjs, @lapackobjsc);
 	@lapackobjs2 = (@lapackobjs2, @lapackobjs2c, @lapackobjs2zc);
-	if ($ARGV[13] == 0) { 
+	if ($ARGV[14] == 0) { 
 		@lapackobjs2 = (@lapackobjs2, @lapackobjs2sc);
 	}
 	@lapack_deprecated_objs = (@lapack_deprecated_objs, @lapack_deprecated_objsc);
@@ -3816,17 +3849,17 @@ if ($ARGV[15] == 1) {
 	@lapack_embeded_underscore_objs = (@lapack_embeded_underscore_objs,  @lapack_embeded_underscore_objs_c);
 	@lapackeobjs = (@lapackeobjs, @lapackeobjsc);
 }
-if ($ARGV[16] == 1) {
+if ($ARGV[17] == 1) {
 	@blasobjs = (@blasobjs, @blasobjsz);
 	@cblasobjs = (@cblasobjs, @cblasobjsz);
 	@gemm3mobjs = (@gemm3mobjs, @gemm3mobjsz);
 	@cblasgemm3mobjs = (@cblasgemm3mobjs, @cblasgemm3mobjsz);
 	@lapackobjs = (@lapackobjs, @lapackobjsz);
 	@lapackobjs2 = (@lapackobjs2, @lapackobjs2z);
-	if ($ARGV[15] == 0) { 
+	if ($ARGV[16] == 0) { 
 		@lapackobjs2 = (@lapackobjs2, @lapackobjs2zc);
 	}
-	if ($ARGV[14] == 0) { 
+	if ($ARGV[15] == 0) { 
 		@lapackobjs2 = (@lapackobjs2, @lapackobjs2dz);
 	}
 	@lapack_deprecated_objs = (@lapack_deprecated_objs, @lapack_deprecated_objsz);

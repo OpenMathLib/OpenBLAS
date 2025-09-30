@@ -118,8 +118,8 @@ static double ddot_kernel_8 (long n, double *x, double *y)
        "+b" (x),	// 2
        "+b" (y)		// 3
      :
-       "m" (*x),
-       "m" (*y)
+       "m" (*(const double (*)[n]) x),
+       "m" (*(const double (*)[n]) y),
      :
        "cr0",
        "vs32","vs33","vs34","vs35","vs36","vs37","vs38","vs39",

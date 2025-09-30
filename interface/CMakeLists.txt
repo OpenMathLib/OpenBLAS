@@ -1,3 +1,30 @@
+###############################################################################
+# Copyright (c) 2025, The OpenBLAS Project
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the OpenBLAS project nor the names of
+#    its contributors may be used to endorse or promote products
+#    derived from this software without specific prior written permission.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+###############################################################################
 
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_BINARY_DIR})
@@ -97,10 +124,9 @@ foreach (CBLAS_FLAG ${CBLAS_FLAGS})
   #sdsdot, dsdot
   if (BUILD_SINGLE OR BUILD_DOUBLE)
   GenerateNamedObjects("sdsdot.c" "" "sdsdot" ${CBLAS_FLAG} "" "" true "SINGLE")
-	if(CBLAS_FLAG EQUAL 1)
-	GenerateNamedObjects("gemm_batch.c" "" "gemm_batch" ${CBLAS_FLAG} "" "" false)
-endif ()
-endif ()
+  GenerateNamedObjects("gemm_batch.c" "" "gemm_batch" ${CBLAS_FLAG} "" "" false)
+  GenerateNamedObjects("gemm_batch_strided.c" "" "gemm_batch_strided" ${CBLAS_FLAG} "" "" false)
+  endif ()
 if (BUILD_DOUBLE)
   GenerateNamedObjects("dsdot.c" "" "dsdot" ${CBLAS_FLAG} "" "" true "SINGLE")
 endif ()
@@ -123,18 +149,23 @@ endif ()
   GenerateNamedObjects("imax.c" "USE_MIN" "i*min" ${CBLAS_FLAG})
 
 if (BUILD_BFLOAT16)
+  GenerateNamedObjects("scal.c" "BGEMM" "bscal" ${CBLAS_FLAG} "" "" true "BFLOAT16")
 	GenerateNamedObjects("bf16dot.c" "" "sbdot" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+	GenerateNamedObjects("gemm.c" "BGEMM" "bgemm" ${CBLAS_FLAG} "" "" true "BFLOAT16")
 	GenerateNamedObjects("gemm.c" "" "sbgemm" ${CBLAS_FLAG} "" "" true "BFLOAT16")
 	GenerateNamedObjects("sbgemmt.c" "" "sbgemmt" ${CBLAS_FLAG} "" "" true "BFLOAT16")
 	GenerateNamedObjects("sbgemmt.c" "RNAME" "sbgemmtr" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+	GenerateNamedObjects("sbgemv.c" "BGEMM" "bgemv" ${CBLAS_FLAG} "" "" true "BFLOAT16")
 	GenerateNamedObjects("sbgemv.c" "" "sbgemv" ${CBLAS_FLAG} "" "" true "BFLOAT16")
 	GenerateNamedObjects("tobf16.c" "SINGLE_PREC" "sbstobf16" ${CBLAS_FLAG} "" "" true "BFLOAT16")
 	GenerateNamedObjects("tobf16.c" "DOUBLE_PREC" "sbdtobf16" ${CBLAS_FLAG} "" "" true "BFLOAT16")
 	GenerateNamedObjects("bf16to.c" "SINGLE_PREC" "sbf16tos" ${CBLAS_FLAG} "" "" true "BFLOAT16")
 	GenerateNamedObjects("bf16to.c" "DOUBLE_PREC" "dbf16tod" ${CBLAS_FLAG} "" "" true "BFLOAT16")
-	if(CBLAS_FLAG EQUAL 1)
 	GenerateNamedObjects("gemm_batch.c" "" "sbgemm_batch" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+	GenerateNamedObjects("gemm_batch_strided.c" "" "sbgemm_batch_strided" ${CBLAS_FLAG} "" "" true "BFLOAT16")
 endif ()
+if (BUILD_HFLOAT16)
+  GenerateNamedObjects("gemm.c" "" "shgemm" ${CBLAS_FLAG} "" "" true "HFLOAT16")
 endif ()
 
 # complex-specific sources
@@ -164,9 +195,8 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateNamedObjects("max.c" "USE_ABS" "scamax" ${CBLAS_FLAG} "" "" true "COMPLEX")
     GenerateNamedObjects("asum.c" "" "scasum" ${CBLAS_FLAG} "" "" true "COMPLEX")
     GenerateNamedObjects("sum.c" "" "scsum" ${CBLAS_FLAG} "" "" true "COMPLEX")
-	if(CBLAS_FLAG EQUAL 1)
-		GenerateNamedObjects("gemm_batch.c" "" "cgemm_batch" ${CBLAS_FLAG} "" "" true "COMPLEX")
-	endif ()
+    GenerateNamedObjects("gemm_batch.c" "" "cgemm_batch" ${CBLAS_FLAG} "" "" true "COMPLEX")
+    GenerateNamedObjects("gemm_batch_strided.c" "" "cgemm_batch_strided" ${CBLAS_FLAG} "" "" true "COMPLEX")
   endif ()
   if (${float_type} STREQUAL "ZCOMPLEX")
     GenerateNamedObjects("zscal.c" "SSCAL" "dscal" ${CBLAS_FLAG} "" "" false "ZCOMPLEX")
@@ -176,9 +206,8 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateNamedObjects("max.c" "USE_ABS" "dzamax" ${CBLAS_FLAG} "" "" true "ZCOMPLEX")
     GenerateNamedObjects("asum.c" "" "dzasum" ${CBLAS_FLAG} "" "" true "ZCOMPLEX")
     GenerateNamedObjects("sum.c" "" "dzsum" ${CBLAS_FLAG} "" "" true "ZCOMPLEX")
-	if(CBLAS_FLAG EQUAL 1)
-		GenerateNamedObjects("gemm_batch.c" "" "zgemm_batch" ${CBLAS_FLAG} "" "" true "ZCOMPLEX")
-	endif ()
+    GenerateNamedObjects("gemm_batch.c" "" "zgemm_batch" ${CBLAS_FLAG} "" "" true "ZCOMPLEX")
+    GenerateNamedObjects("gemm_batch_strided.c" "" "zgemm_batch_strided" ${CBLAS_FLAG} "" "" true "ZCOMPLEX")
   endif ()
 endforeach ()
 
@@ -218,6 +247,7 @@ if (NOT NO_LAPACK)
   GenerateNamedObjects("lapack/lauu2.c" "" "" 0 "" "" 0 3)
   GenerateNamedObjects("lapack/trti2.c" "" "" 0 "" "" 0 3)
   endif()
+  GenerateNamedObjects("lapack/laed3.c" "" "" 0 "" "" 0 1)
 endif ()
 
 if ( BUILD_COMPLEX AND NOT  BUILD_SINGLE)
@@ -228,7 +258,8 @@ if ( BUILD_COMPLEX AND NOT  BUILD_SINGLE)
 	GenerateNamedObjects("nrm2.c" "" "nrm2" 0 "" "" false "SINGLE")
 	GenerateNamedObjects("gemv.c" "" "gemv" 0 "" "" false "SINGLE")
 	GenerateNamedObjects("gemm.c" "" "gemm" 0 "" "" false "SINGLE")
-	GenerateNamedObjects("gemm_batch.c" "" "gemm_batch" 1 "" "" false "SINGLE")
+	GenerateNamedObjects("gemm_batch.c" "" "gemm_batch" 0 "" "" false "SINGLE")
+	GenerateNamedObjects("gemm_batch_strided.c" "" "gemm_batch_strided" 0 "" "" false "SINGLE")
 	GenerateNamedObjects("asum.c" "" "asum" 0 "" "" false "SINGLE")
 	GenerateNamedObjects("swap.c" "" "swap" 0 "" "" false "SINGLE")
 	GenerateNamedObjects("axpy.c" "" "axpy" 0 "" "" false "SINGLE")
@@ -242,12 +273,18 @@ if ( BUILD_COMPLEX16 AND NOT  BUILD_DOUBLE)
 	GenerateNamedObjects("nrm2.c" "" "nrm2" 0 "" "" false "DOUBLE")
 	GenerateNamedObjects("gemv.c" "" "gemv" 0 "" "" false "DOUBLE")
 	GenerateNamedObjects("gemm.c" "" "gemm" 0 "" "" false "DOUBLE")
-	GenerateNamedObjects("gemm_batch.c" "" "gemm_batch" 1 "" "" false "DOUBLE")
+	GenerateNamedObjects("gemm_batch.c" "" "gemm_batch" 0 "" "" false "DOUBLE")
+	GenerateNamedObjects("gemm_batch_strided.c" "" "gemm_batch_strided" 0 "" "" false "DOUBLE")
 	GenerateNamedObjects("asum.c" "" "asum" 0 "" "" false "DOUBLE")
 	GenerateNamedObjects("swap.c" "" "swap" 0 "" "" false "DOUBLE")
 	GenerateNamedObjects("axpy.c" "" "axpy" 0 "" "" false "DOUBLE")
 	GenerateNamedObjects("imax.c" "USE_ABS" "i*amax" 0 "" "" false "DOUBLE")
 endif ()
+
+if ( BUILD_BFLOAT16 AND NO_FBLAS )
+	GenerateNamedObjects("tobf16.c" "SINGLE_PREC" "sbstobf16" 0 "" "" true "BFLOAT16")
+	GenerateNamedObjects("bf16to.c" "SINGLE_PREC" "sbf16tos" 0 "" "" true "BFLOAT16")
+endif()
 
 add_library(interface OBJECT ${OPENBLAS_SRC})
 

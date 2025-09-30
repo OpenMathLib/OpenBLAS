@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (c) 2022, The OpenBLAS Project
+ * Copyright (c) 2022,2025 The OpenBLAS Project
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -27,6 +27,7 @@
  * *****************************************************************************/
 
 #include <arm_sve.h>
+#include <arm_neon.h>
 
 #include "common.h"
 
@@ -46,49 +47,94 @@
     INIT_C(3, 1);  \
   } while (0);
 
+#ifdef BGEMM
 #ifdef ALPHA_ONE
-#define UPDATE_C(PG, PTR, DST, SRC) \
-  do {                              \
-    DST = svld1_f32((PG), (PTR));   \
-    DST = svadd_z((PG), SRC, DST);  \
-    svst1_f32((PG), (PTR), DST);    \
+#define UPDATE_C(PG16, PG32, PTR, SRC)                                    \
+  do {                                                                    \
+    tmp32 = svreinterpret_f32_u32(svld1uh_u32((PG16), (uint16_t*)PTR));   \
+    tmp32 = svadd_z((PG32), SRC, tmp32);                                  \
+    tmp16 = svcvt_bf16_f32_z((PG32), tmp32);                              \
+    tmp16 = svuzp1_bf16(tmp16, tmp16);                                    \
+    svst1_bf16((PG16), (PTR), tmp16);                                     \
+  } while (0)
+#else
+#define UPDATE_C(PG16, PG32, PTR, SRC)                                     \
+  do {                                                                     \
+    tmp32 = svreinterpret_f32_u32(svld1uh_u32((PG16), (uint16_t*)PTR));    \
+    tmp32 = svmad_z((PG32), svalpha, SRC, tmp32);                          \
+    tmp16 = svcvt_bf16_f32_z((PG32), tmp32);                               \
+    tmp16 = svuzp1_bf16(tmp16, tmp16);                                     \
+    svst1_bf16((PG16), (PTR), tmp16);                                      \
+  } while (0)
+#endif
+#else
+#ifdef ALPHA_ONE
+#define UPDATE_C(PG16, PG32, PTR, SRC)   \
+  do {                                   \
+    tmp32 = svld1_f32((PG32), (PTR));    \
+    tmp32 = svadd_z((PG32), SRC, tmp32); \
+    svst1_f32((PG32), (PTR), tmp32);     \
   } while (0);
 #else
-#define UPDATE_C(PG, PTR, DST, SRC)         \
-  do {                                      \
-    DST = svld1_f32((PG), (PTR));           \
-    DST = svmad_z((PG), svalpha, SRC, DST); \
-    svst1_f32((PG), (PTR), DST);            \
+#define UPDATE_C(PG16, PG32, PTR, SRC)            \
+  do {                                            \
+    tmp32 = svld1_f32((PG32), (PTR));             \
+    tmp32 = svmad_z((PG32), svalpha, SRC, tmp32); \
+    svst1_f32((PG32), (PTR), tmp32);              \
   } while (0);
+ #endif
+ #endif
+
+#ifdef BGEMM
+#define OUTPUT_FLOAT bfloat16_t
+#else
+#define OUTPUT_FLOAT float
 #endif
 
 #ifdef ALPHA_ONE
-int sbgemm_kernel_neoversen2_alpha_one(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A, IFLOAT * B, FLOAT * C, BLASLONG ldc)
+static int gemm_kernel_neoversen2_alpha_one(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A, IFLOAT * B, FLOAT * C, BLASLONG ldc)
 #else
-int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A, IFLOAT * B, FLOAT * C, BLASLONG ldc)
+static int gemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A, IFLOAT * B, FLOAT * C, BLASLONG ldc)
 #endif
 {
   BLASLONG pad_k = (k + 3) & ~3;
 
   svbfloat16_t ma0, ma1, ma2, ma3, mb0, mb1;
   svfloat32_t mc00, mc01, mc10, mc11, mc20, mc21, mc30, mc31, 
-              vc0, vc1, vc2, vc3, vc4, vc5, vc6, vc7, 
-              oc0, oc1, oc2, oc3, oc4, oc5, oc6, oc7;
-  svfloat32_t svalpha = svdup_f32(alpha);
+              vc0, vc1, vc2, vc3, vc4, vc5, vc6, vc7;
 
-  svbool_t pg16 = svptrue_b16();
-  svbool_t pg16_low = svdupq_b16(1, 1, 1, 1, 0, 0, 0, 0);
-  svbool_t pg32 = svptrue_b32();
-  svbool_t pg32_low = svdupq_b32(1, 1, 0, 0);
-  svbool_t pg32_first = svdupq_b32(1, 0, 0, 0);
+#ifndef ALPHA_ONE
+#ifdef BGEMM
+  bfloat16_t alpha_bf16;
+  memcpy(&alpha_bf16, &alpha, sizeof(bfloat16_t));
+  svfloat32_t svalpha = svdup_f32(vcvtah_f32_bf16(alpha_bf16));
+#else
+  svfloat32_t svalpha = svdup_f32(alpha);
+#endif
+#endif
+
+  svbool_t pg32_first_4 = svdupq_b32(1, 1, 1, 1);
+  svbool_t pg32_first_2 = svdupq_b32(1, 1, 0, 0);
+  svbool_t pg32_first_1 = svdupq_b32(1, 0, 0, 0);
+  svbool_t pg16_first_8 = svdupq_b16(1, 1, 1, 1, 1, 1, 1, 1);
+  svbool_t pg16_first_4 = svdupq_b16(1, 1, 1, 1, 0, 0, 0, 0);
+#ifdef BGEMM
+  svbool_t pg16_first_2 = svdupq_b16(1, 1, 0, 0, 0, 0, 0, 0);
+  svbool_t pg16_first_1 = svdupq_b16(1, 0, 0, 0, 0, 0, 0, 0);
+#endif
 
   bfloat16_t *ptr_a = (bfloat16_t *)A;
   bfloat16_t *ptr_b = (bfloat16_t *)B;
-  FLOAT *ptr_c = C;
+  OUTPUT_FLOAT *ptr_c = (OUTPUT_FLOAT*)C;
 
-  bfloat16_t *ptr_a0, *ptr_a1, *ptr_a2, *ptr_a3;
-  bfloat16_t *ptr_b0, *ptr_b1;
-  FLOAT *ptr_c0, *ptr_c1, *ptr_c2, *ptr_c3;
+  bfloat16_t *ptr_a0;
+  bfloat16_t *ptr_b0;
+  OUTPUT_FLOAT *ptr_c0, *ptr_c1, *ptr_c2, *ptr_c3;
+
+  svfloat32_t tmp32;
+#ifdef BGEMM
+  svbfloat16_t tmp16;
+#endif
 
   for (BLASLONG j = 0; j < n / 4; j++) {
     ptr_c0 = ptr_c;
@@ -107,13 +153,13 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       INIT_C_8x4;
 
       for (BLASLONG p = 0; p < pad_k; p += 4) {
-        ma0 = svld1_bf16(pg16, ptr_a0);
-        ma1 = svld1_bf16(pg16, ptr_a0 + 8);
-        ma2 = svld1_bf16(pg16, ptr_a0 + 16);
-        ma3 = svld1_bf16(pg16, ptr_a0 + 24);
+        ma0 = svld1_bf16(pg16_first_8, ptr_a0);
+        ma1 = svld1_bf16(pg16_first_8, ptr_a0 + 8);
+        ma2 = svld1_bf16(pg16_first_8, ptr_a0 + 16);
+        ma3 = svld1_bf16(pg16_first_8, ptr_a0 + 24);
 
-        mb0 = svld1_bf16(pg16, ptr_b0);
-        mb1 = svld1_bf16(pg16, ptr_b0 + 8);
+        mb0 = svld1_bf16(pg16_first_8, ptr_b0);
+        mb1 = svld1_bf16(pg16_first_8, ptr_b0 + 8);
 
         MATMUL(0, 0); MATMUL(0, 1);
         MATMUL(1, 0); MATMUL(1, 1);
@@ -133,14 +179,14 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       vc6 = svuzp2(mc01, mc11);
       vc7 = svuzp2(mc21, mc31);
 
-      UPDATE_C(pg32, ptr_c0, oc0, vc0);
-      UPDATE_C(pg32, ptr_c0+4, oc1, vc1);
-      UPDATE_C(pg32, ptr_c1, oc2, vc2);
-      UPDATE_C(pg32, ptr_c1+4, oc3, vc3);
-      UPDATE_C(pg32, ptr_c2, oc4, vc4)
-      UPDATE_C(pg32, ptr_c2+4, oc5, vc5);
-      UPDATE_C(pg32, ptr_c3, oc6, vc6)
-      UPDATE_C(pg32, ptr_c3+4, oc7, vc7);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c0, vc0);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c0+4, vc1);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c1, vc2);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c1+4, vc3);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c2, vc4);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c2+4, vc5);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c3, vc6);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c3+4, vc7);
 
       ptr_c0 += 8;
       ptr_c1 += 8;
@@ -157,10 +203,10 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       INIT_C(1, 0); INIT_C(1, 1);
 
       for (BLASLONG p = 0; p < pad_k; p += 4) {
-        ma0 = svld1_bf16(pg16, ptr_a0);
-        ma1 = svld1_bf16(pg16, ptr_a0 + 8);
-        mb0 = svld1_bf16(pg16, ptr_b0);
-        mb1 = svld1_bf16(pg16, ptr_b0 + 8);
+        ma0 = svld1_bf16(pg16_first_8, ptr_a0);
+        ma1 = svld1_bf16(pg16_first_8, ptr_a0 + 8);
+        mb0 = svld1_bf16(pg16_first_8, ptr_b0);
+        mb1 = svld1_bf16(pg16_first_8, ptr_b0 + 8);
 
         MATMUL(0, 0); MATMUL(0, 1);
         MATMUL(1, 0); MATMUL(1, 1);
@@ -174,10 +220,10 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       vc2 = svuzp1(mc01, mc11);
       vc3 = svuzp2(mc01, mc11);
 
-      UPDATE_C(pg32, ptr_c0, oc0, vc0);
-      UPDATE_C(pg32, ptr_c1, oc1, vc1);
-      UPDATE_C(pg32, ptr_c2, oc2, vc2);
-      UPDATE_C(pg32, ptr_c3, oc3, vc3);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c0, vc0);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c1, vc1);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c2, vc2);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c3, vc3);
 
       ptr_c0 += 4;
       ptr_c1 += 4;
@@ -192,9 +238,9 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
 
       INIT_C(0, 0); INIT_C(0, 1);
       for (BLASLONG p = 0; p < pad_k; p += 4) {
-        ma0 = svld1_bf16(pg16, ptr_a0);
-        mb0 = svld1_bf16(pg16, ptr_b0);
-        mb1 = svld1_bf16(pg16, ptr_b0 + 8);
+        ma0 = svld1_bf16(pg16_first_8, ptr_a0);
+        mb0 = svld1_bf16(pg16_first_8, ptr_b0);
+        mb1 = svld1_bf16(pg16_first_8, ptr_b0 + 8);
 
         MATMUL(0, 0); MATMUL(0, 1);
 
@@ -207,10 +253,10 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       vc2 = svuzp1(mc01, mc01);
       vc3 = svuzp2(mc01, mc01);
 
-      UPDATE_C(pg32_low, ptr_c0, oc0, vc0);
-      UPDATE_C(pg32_low, ptr_c1, oc1, vc1);
-      UPDATE_C(pg32_low, ptr_c2, oc2, vc2);
-      UPDATE_C(pg32_low, ptr_c3, oc3, vc3);
+      UPDATE_C(pg16_first_2, pg32_first_2, ptr_c0, vc0);
+      UPDATE_C(pg16_first_2, pg32_first_2, ptr_c1, vc1);
+      UPDATE_C(pg16_first_2, pg32_first_2, ptr_c2, vc2);
+      UPDATE_C(pg16_first_2, pg32_first_2, ptr_c3, vc3);
 
       ptr_c0 += 2;
       ptr_c1 += 2;
@@ -224,9 +270,9 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
 
       INIT_C(0, 0); INIT_C(0, 1);
       for (BLASLONG p = 0; p < pad_k; p += 4) {
-        ma0 = svld1_bf16(pg16_low, ptr_a0);
-        mb0 = svld1_bf16(pg16, ptr_b0);
-        mb1 = svld1_bf16(pg16, ptr_b0 + 8);
+        ma0 = svld1_bf16(pg16_first_4, ptr_a0);
+        mb0 = svld1_bf16(pg16_first_8, ptr_b0);
+        mb1 = svld1_bf16(pg16_first_8, ptr_b0 + 8);
 
         MATMUL(0, 0); MATMUL(0, 1);
 
@@ -237,10 +283,10 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       vc1 = svuzp2(mc00, mc00);
       vc3 = svuzp2(mc01, mc01);
 
-      UPDATE_C(pg32_first, ptr_c0, oc0, mc00);
-      UPDATE_C(pg32_first, ptr_c1, oc1, vc1);
-      UPDATE_C(pg32_first, ptr_c2, oc2, mc01);
-      UPDATE_C(pg32_first, ptr_c3, oc3, vc3);
+      UPDATE_C(pg16_first_1, pg32_first_1, ptr_c0, mc00);
+      UPDATE_C(pg16_first_1, pg32_first_1, ptr_c1, vc1);
+      UPDATE_C(pg16_first_1, pg32_first_1, ptr_c2, mc01);
+      UPDATE_C(pg16_first_1, pg32_first_1, ptr_c3, vc3);
 
     }
 
@@ -265,12 +311,12 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       INIT_C(3, 0);
 
       for (BLASLONG p = 0; p < pad_k; p += 4) {
-        ma0 = svld1_bf16(pg16, ptr_a0);
-        ma1 = svld1_bf16(pg16, ptr_a0 + 8);
-        ma2 = svld1_bf16(pg16, ptr_a0 + 16);
-        ma3 = svld1_bf16(pg16, ptr_a0 + 24);
+        ma0 = svld1_bf16(pg16_first_8, ptr_a0);
+        ma1 = svld1_bf16(pg16_first_8, ptr_a0 + 8);
+        ma2 = svld1_bf16(pg16_first_8, ptr_a0 + 16);
+        ma3 = svld1_bf16(pg16_first_8, ptr_a0 + 24);
 
-        mb0 = svld1_bf16(pg16, ptr_b0);
+        mb0 = svld1_bf16(pg16_first_8, ptr_b0);
 
         MATMUL(0, 0);
         MATMUL(1, 0);
@@ -286,10 +332,10 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       vc2 = svuzp2(mc00, mc10);
       vc3 = svuzp2(mc20, mc30);
 
-      UPDATE_C(pg32, ptr_c0, oc0, vc0);
-      UPDATE_C(pg32, ptr_c0 + 4, oc1, vc1);
-      UPDATE_C(pg32, ptr_c1, oc2, vc2);
-      UPDATE_C(pg32, ptr_c1 + 4, oc3, vc3);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c0, vc0);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c0 + 4, vc1);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c1, vc2);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c1 + 4, vc3);
 
       ptr_c0 += 8;
       ptr_c1 += 8;
@@ -304,9 +350,9 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       INIT_C(1, 0);
 
       for (BLASLONG p = 0; p < pad_k; p += 4) {
-        ma0 = svld1_bf16(pg16, ptr_a0);
-        ma1 = svld1_bf16(pg16, ptr_a0 + 8);
-        mb0 = svld1_bf16(pg16, ptr_b0);
+        ma0 = svld1_bf16(pg16_first_8, ptr_a0);
+        ma1 = svld1_bf16(pg16_first_8, ptr_a0 + 8);
+        mb0 = svld1_bf16(pg16_first_8, ptr_b0);
         MATMUL(0, 0);
         MATMUL(1, 0);
         ptr_a0 += 16;
@@ -316,8 +362,8 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       vc0 = svuzp1(mc00, mc10);
       vc1 = svuzp2(mc00, mc10);
 
-      UPDATE_C(pg32, ptr_c0, oc0, vc0);
-      UPDATE_C(pg32, ptr_c1, oc1, vc1);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c0, vc0);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c1, vc1);
 
       ptr_c0 += 4;
       ptr_c1 += 4;
@@ -331,8 +377,8 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       INIT_C(0, 0);
 
       for (BLASLONG p = 0; p < pad_k; p += 4) {
-        ma0 = svld1_bf16(pg16, ptr_a0);
-        mb0 = svld1_bf16(pg16, ptr_b0);
+        ma0 = svld1_bf16(pg16_first_8, ptr_a0);
+        mb0 = svld1_bf16(pg16_first_8, ptr_b0);
 
         MATMUL(0, 0);
 
@@ -342,8 +388,8 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
 
       vc0 = svuzp1(mc00, mc00);
       vc1 = svuzp2(mc00, mc00);
-      UPDATE_C(pg32_low, ptr_c0, oc0, vc0);
-      UPDATE_C(pg32_low, ptr_c1, oc1, vc1);
+      UPDATE_C(pg16_first_2, pg32_first_2, ptr_c0, vc0);
+      UPDATE_C(pg16_first_2, pg32_first_2, ptr_c1, vc1);
 
       ptr_c0 += 2;
       ptr_c1 += 2;
@@ -355,16 +401,16 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       ptr_b0 = ptr_b;
       INIT_C(0, 0);
       for (BLASLONG p = 0; p < pad_k; p += 4) {
-        ma0 = svld1_bf16(pg16_low, ptr_a0);
-        mb0 = svld1_bf16(pg16, ptr_b0);
+        ma0 = svld1_bf16(pg16_first_4, ptr_a0);
+        mb0 = svld1_bf16(pg16_first_8, ptr_b0);
         MATMUL(0, 0);
         ptr_a0 += 4;
         ptr_b0 += 8;
       }
       vc1 = svuzp2(mc00, mc00);
 
-      UPDATE_C(pg32_first, ptr_c0, oc0, mc00);
-      UPDATE_C(pg32_first, ptr_c1, oc1, vc1);
+      UPDATE_C(pg16_first_1, pg32_first_1, ptr_c0, mc00);
+      UPDATE_C(pg16_first_1, pg32_first_1, ptr_c1, vc1);
     }
 
     ptr_b += 2 * pad_k;
@@ -386,12 +432,12 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       INIT_C(3, 0);
 
       for (BLASLONG p = 0; p < pad_k; p += 4) {
-        ma0 = svld1_bf16(pg16, ptr_a0);
-        ma1 = svld1_bf16(pg16, ptr_a0 + 8);
-        ma2 = svld1_bf16(pg16, ptr_a0 + 16);
-        ma3 = svld1_bf16(pg16, ptr_a0 + 24);
+        ma0 = svld1_bf16(pg16_first_8, ptr_a0);
+        ma1 = svld1_bf16(pg16_first_8, ptr_a0 + 8);
+        ma2 = svld1_bf16(pg16_first_8, ptr_a0 + 16);
+        ma3 = svld1_bf16(pg16_first_8, ptr_a0 + 24);
 
-        mb0 = svld1_bf16(pg16_low, ptr_b0);
+        mb0 = svld1_bf16(pg16_first_4, ptr_b0);
 
         MATMUL(0, 0);
         MATMUL(1, 0);
@@ -405,8 +451,8 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       vc0 = svuzp1(mc00, mc10);
       vc1 = svuzp1(mc20, mc30);
 
-      UPDATE_C(pg32, ptr_c0, oc0, vc0);
-      UPDATE_C(pg32, ptr_c0 + 4, oc1, vc1);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c0, vc0);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c0 + 4, vc1);
 
       ptr_c0 += 8;
     }
@@ -418,16 +464,16 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       INIT_C(0, 0);
       INIT_C(1, 0);
       for (BLASLONG p = 0; p < pad_k; p += 4) {
-        ma0 = svld1_bf16(pg16, ptr_a0);
-        ma1 = svld1_bf16(pg16, ptr_a0 + 8);
-        mb0 = svld1_bf16(pg16_low, ptr_b0);
+        ma0 = svld1_bf16(pg16_first_8, ptr_a0);
+        ma1 = svld1_bf16(pg16_first_8, ptr_a0 + 8);
+        mb0 = svld1_bf16(pg16_first_4, ptr_b0);
         MATMUL(0, 0);
         MATMUL(1, 0);
         ptr_a0 += 16;
         ptr_b0 += 4;
       }
       vc0 = svuzp1(mc00, mc10);
-      UPDATE_C(pg32, ptr_c0, oc0, vc0);
+      UPDATE_C(pg16_first_4, pg32_first_4, ptr_c0, vc0);
       ptr_c0 += 4;
     }
 
@@ -439,8 +485,8 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       INIT_C(0, 0);
 
       for (BLASLONG p = 0; p < pad_k; p += 4) {
-        ma0 = svld1_bf16(pg16, ptr_a0);
-        mb0 = svld1_bf16(pg16_low, ptr_b0);
+        ma0 = svld1_bf16(pg16_first_8, ptr_a0);
+        mb0 = svld1_bf16(pg16_first_4, ptr_b0);
 
         MATMUL(0, 0);
 
@@ -448,7 +494,7 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
         ptr_b0 += 4;
       }
       vc0 = svuzp1(mc00, mc00);
-      UPDATE_C(pg32_low, ptr_c0, oc0, vc0);
+      UPDATE_C(pg16_first_2, pg32_first_2, ptr_c0, vc0);
       ptr_c0 += 2;
     }
 
@@ -457,13 +503,13 @@ int sbgemm_kernel_neoversen2_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alp
       ptr_b0 = ptr_b;
       INIT_C(0, 0);
       for (BLASLONG p = 0; p < pad_k; p += 4) {
-        ma0 = svld1_bf16(pg16_low, ptr_a0);
-        mb0 = svld1_bf16(pg16_low, ptr_b0);
+        ma0 = svld1_bf16(pg16_first_4, ptr_a0);
+        mb0 = svld1_bf16(pg16_first_4, ptr_b0);
         MATMUL(0, 0);
         ptr_a0 += 4;
         ptr_b0 += 4;
       }
-      UPDATE_C(pg32_first, ptr_c0, oc0, mc00);
+      UPDATE_C(pg16_first_1, pg32_first_1, ptr_c0, mc00);
     }
   }
 

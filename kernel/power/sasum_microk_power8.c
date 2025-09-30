@@ -159,7 +159,7 @@ static float sasum_kernel_32 (long n, float *x)
        "=wa" (t2),	// 5
        "=wa" (t3)	// 6
      :
-       "m" (*x),
+       "m" (*(const float (*)[n]) x),
        "b" (16),	// 8
        "b" (32),	// 9
        "b" (48),	// 10

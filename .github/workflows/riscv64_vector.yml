@@ -17,7 +17,7 @@ jobs:
       triple: riscv64-unknown-linux-gnu
       riscv_gnu_toolchain: https://github.com/riscv-collab/riscv-gnu-toolchain
       riscv_gnu_toolchain_version: 13.2.0
-      riscv_gnu_toolchain_nightly_download_path: /releases/download/2024.02.02/riscv64-glibc-ubuntu-22.04-llvm-nightly-2024.02.02-nightly.tar.gz
+      riscv_gnu_toolchain_nightly_download_path: /releases/download/2025.08.29/riscv64-glibc-ubuntu-22.04-llvm-nightly-2025.08.29-nightly.tar.xz
     strategy:
       fail-fast: false
       matrix:

@@ -51,7 +51,7 @@ int CNAME(BLASLONG rows, BLASLONG cols, FLOAT alpha, FLOAT *a, BLASLONG lda, FLO
 	FLOAT *aptr,*bptr;
 	size_t vl;
 
-	FLOAT_V_T va, vb,va1,vb1;
+	FLOAT_V_T va,va1;
 	if ( rows <= 0 )  return(0);
 	if ( cols <= 0 )  return(0);
 

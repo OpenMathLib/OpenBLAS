@@ -75,7 +75,7 @@
 *>         On entry, D contains the eigenvalues of the two submatrices to
 *>         be combined.
 *>         On exit, D contains the trailing (N-K) updated eigenvalues
-*>         (those which were deflated) sorted into increasing order.
+*>         (those which were deflated) sorted into decreasing order.
 *> \endverbatim
 *>
 *> \param[in,out] Q

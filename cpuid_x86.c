@@ -1567,6 +1567,7 @@ int get_cpuname(void){
           case 10:
           case 15:
 	  case 14: // Alder Lake N
+	  case 13: // Lunar Lake
             if(support_avx2())
               return CPUTYPE_HASWELL;
 	    if(support_avx())
@@ -2412,7 +2413,8 @@ int get_coretype(void){
 	  case 7: // Raptor Lake
           case 10:
           case 15:
-	  case 14: // Alder Lake N	  
+	  case 14: // Alder Lake N
+	  case 13: // Lunar Lake
 #ifndef NO_AVX2
 	  if(support_avx2())
             return CORE_HASWELL;

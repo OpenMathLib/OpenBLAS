@@ -225,7 +225,7 @@ static double dasum_kernel_16 (long n, double *x)
        "=wa" (a6),	// 17
        "=wa" (a7)	// 18
      :
-       "m" (*x)
+       "m" (*(const double (*)[n]) x)
      :
        "cr0",
        "vs32","vs33","vs34","vs35","vs36","vs37","vs38","vs39",

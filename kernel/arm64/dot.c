@@ -40,7 +40,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef USE_SVE
+#ifdef DOT_KERNEL_SVE
+#include DOT_KERNEL_SVE
+#else
 #include "dot_kernel_sve.c"
+#endif
 #endif
 #include "dot_kernel_asimd.c"
 

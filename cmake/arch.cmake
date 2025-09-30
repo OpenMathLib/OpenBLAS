@@ -94,7 +94,13 @@ if (DYNAMIC_ARCH)
       set(DYNAMIC_CORE PRESCOTT ${DYNAMIC_LIST})
     endif ()
   endif ()
-
+  
+  if (ZARCH)
+    set(DYNAMIC_CORE Z13 Z14 ZARCH_GENERIC)
+    set(DYN_Z13 1)
+	set(DYN_Z14 1)
+  endif ()
+  
   if (LOONGARCH64)
     set(DYNAMIC_CORE LA64_GENERIC LA264 LA464)
   endif ()

@@ -133,8 +133,8 @@ static void srot_kernel_16 (long n, float *x, float *y, float c, float s)
 
      "#n=%2 x=%0=%3 y=%1=%4 c=%5 s=%6\n"
      :
-       "+m" (*x),
-       "+m" (*y),
+       "+m" (*(float (*)[n]) x),
+       "+m" (*(float (*)[n]) y),
        "+r" (n),	// 2
        "+b" (x),	// 3
        "+b" (y) 	// 4

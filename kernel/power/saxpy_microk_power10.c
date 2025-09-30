@@ -238,13 +238,13 @@ static void saxpy_kernel_64(long n, float *x, float *y, float alpha)
 
      "#n=%1 x=%5=%2 y=%0=%3 t0=%x4\n"
      :
-       "+m" (*y),
+       "+m" (*(float (*)[n]) y),
        "+r" (n),	// 1
        "+b" (x),	// 2
        "+b" (y)		// 3
      :
        "wa" (t0),	// 4
-       "m" (*x)
+       "m" (*(const float (*)[n]) x)
      :
        "cr0",
        "vs32","vs33","vs34","vs35","vs36","vs37", "vs38", "vs39",

@@ -119,7 +119,7 @@ static void sscal_kernel_16 (long n, float *x, float alpha)
 
      "#n=%1 alpha=%3 x=%0=%2 o16=%4 o32=%5 o48=%6 o64=%7 o80=%8 o96=%9 o112=%10"
      :
-       "+m" (*x),
+       "+m" (*(float (*)[n]) x),
        "+r" (n),	// 1
        "+b" (x),	// 2
        "+f" (alpha)	// 3
@@ -166,7 +166,7 @@ static void sscal_kernel_16_zero (long n, float *x)
 
      "#n=%1 x=%0=%2 t0=%x3 o16=%4 o32=%5 o48=%6 o64=%7 o80=%8 o96=%9 o112=%10"
      :
-       "=m" (*x),
+       "=m" (*(float (*)[n]) x),
        "+r" (n),	// 1
        "+b" (x),	// 2
        "=wa" (t0)	// 3
