@@ -446,6 +446,7 @@ ifeq ($(F_COMPILER), GFORTRAN)
 override CEXTRALIB := $(filter-out(-lto_library, $(CEXTRALIB))) 
 endif
 endif
+endif
 
 ifneq (,$(findstring $(OSNAME), FreeBSD OpenBSD DragonFly))
 MD5SUM = md5 -r
