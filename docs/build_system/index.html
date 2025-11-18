@@ -9,10 +9,10 @@
 <link href="../developers/" rel="prev"/>
 <link href="../runtime_variables/" rel="next"/>
 <link href="../logo.svg" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.6.23" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.0" name="generator"/>
 <title>Build system - OpenBLAS</title>
-<link href="../assets/stylesheets/main.84d31ad4.min.css" rel="stylesheet"/>
-<link href="../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.618322db.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
 <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
@@ -133,7 +133,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="..">
 <span class="md-ellipsis">
+    
+  
     Home
+  
+
     
   </span>
 </a>
@@ -141,7 +145,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../install/">
 <span class="md-ellipsis">
+    
+  
     Install OpenBLAS
+  
+
     
   </span>
 </a>
@@ -149,7 +157,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../user_manual/">
 <span class="md-ellipsis">
+    
+  
     User manual
+  
+
     
   </span>
 </a>
@@ -157,7 +169,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../extensions/">
 <span class="md-ellipsis">
+    
+  
     Extensions
+  
+
     
   </span>
 </a>
@@ -165,7 +181,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../developers/">
 <span class="md-ellipsis">
+    
+  
     Developer manual
+  
+
     
   </span>
 </a>
@@ -174,14 +194,22 @@
 <input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
 <label class="md-nav__link md-nav__link--active" for="__toc">
 <span class="md-ellipsis">
+    
+  
     Build system
+  
+
     
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
 <a class="md-nav__link md-nav__link--active" href="./">
 <span class="md-ellipsis">
+    
+  
     Build system
+  
+
     
   </span>
 </a>
@@ -194,14 +222,18 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="#makefile-dependency-graph">
 <span class="md-ellipsis">
-      Makefile dependency graph
+      
+        Makefile dependency graph
+      
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#important-variables">
 <span class="md-ellipsis">
-      Important Variables
+      
+        Important Variables
+      
     </span>
 </a>
 <nav aria-label="Important Variables" class="md-nav">
@@ -209,21 +241,27 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="#cpu-related">
 <span class="md-ellipsis">
-      CPU related
+      
+        CPU related
+      
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#toolchain-related">
 <span class="md-ellipsis">
-      Toolchain related
+      
+        Toolchain related
+      
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#library-related">
 <span class="md-ellipsis">
-      Library related
+      
+        Library related
+      
     </span>
 </a>
 <nav aria-label="Library related" class="md-nav">
@@ -231,35 +269,45 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="#library-kind-and-bitness-options">
 <span class="md-ellipsis">
-      Library kind and bitness options
+      
+        Library kind and bitness options
+      
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#data-type-options">
 <span class="md-ellipsis">
-      Data type options
+      
+        Data type options
+      
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#threading-options">
 <span class="md-ellipsis">
-      Threading options
+      
+        Threading options
+      
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#library-and-symbol-name-options">
 <span class="md-ellipsis">
-      Library and symbol name options
+      
+        Library and symbol name options
+      
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#blas-and-lapack-options">
 <span class="md-ellipsis">
-      BLAS and LAPACK options
+      
+        BLAS and LAPACK options
+      
     </span>
 </a>
 </li>
@@ -275,7 +323,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../runtime_variables/">
 <span class="md-ellipsis">
+    
+  
     Runtime variables
+  
+
     
   </span>
 </a>
@@ -283,7 +335,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../distributing/">
 <span class="md-ellipsis">
+    
+  
     Redistributing OpenBLAS
+  
+
     
   </span>
 </a>
@@ -291,7 +347,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../ci/">
 <span class="md-ellipsis">
+    
+  
     CI jobs
+  
+
     
   </span>
 </a>
@@ -299,7 +359,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../about/">
 <span class="md-ellipsis">
+    
+  
     About
+  
+
     
   </span>
 </a>
@@ -307,7 +371,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../faq/">
 <span class="md-ellipsis">
+    
+  
     FAQ
+  
+
     
   </span>
 </a>
@@ -329,14 +397,18 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="#makefile-dependency-graph">
 <span class="md-ellipsis">
-      Makefile dependency graph
+      
+        Makefile dependency graph
+      
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#important-variables">
 <span class="md-ellipsis">
-      Important Variables
+      
+        Important Variables
+      
     </span>
 </a>
 <nav aria-label="Important Variables" class="md-nav">
@@ -344,21 +416,27 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="#cpu-related">
 <span class="md-ellipsis">
-      CPU related
+      
+        CPU related
+      
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#toolchain-related">
 <span class="md-ellipsis">
-      Toolchain related
+      
+        Toolchain related
+      
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#library-related">
 <span class="md-ellipsis">
-      Library related
+      
+        Library related
+      
     </span>
 </a>
 <nav aria-label="Library related" class="md-nav">
@@ -366,35 +444,45 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="#library-kind-and-bitness-options">
 <span class="md-ellipsis">
-      Library kind and bitness options
+      
+        Library kind and bitness options
+      
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#data-type-options">
 <span class="md-ellipsis">
-      Data type options
+      
+        Data type options
+      
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#threading-options">
 <span class="md-ellipsis">
-      Threading options
+      
+        Threading options
+      
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#library-and-symbol-name-options">
 <span class="md-ellipsis">
-      Library and symbol name options
+      
+        Library and symbol name options
+      
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#blas-and-lapack-options">
 <span class="md-ellipsis">
-      BLAS and LAPACK options
+      
+        BLAS and LAPACK options
+      
     </span>
 </a>
 </li>
@@ -611,8 +699,8 @@ including deprecated functions, while
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": "..", "features": ["header.autohide"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>
+<script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["header.autohide"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
 <script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
 window.mermaidConfig = {default: {
     startOnLoad: false
