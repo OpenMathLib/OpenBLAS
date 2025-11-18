@@ -992,6 +992,37 @@ endif ()
     set(ZGEMM_UNROLL_M 4)
     set(ZGEMM_UNROLL_N 4)
     set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "ORYON")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_CODE_SIZE\t196608\n"
+      "#define L1_CODE_LINESIZE\t64\n"
+      "#define L1_CODE_ASSOCIATIVE\t6\n"
+      "#define L1_DATA_SIZE\t98304\n"
+      "#define L1_DATA_LINESIZE\t64\n"
+      "#define L1_DATA_ASSOCIATIVE\t6\n"
+      "#define L2_SIZE\t12582912\n\n"
+      "#define L2_LINESIZE\t32\n"
+      "#define L2_ASSOCIATIVE\t12\n"
+      "#define ITB_SIZE\t4096\n"
+      "#define ITB_DEFAULT_ENTRIES\t256\n"
+      "#define ITB_ASSOCIATIVE\t8\n"
+      "#define DTB_ASSOCIATIVE\t7\n"
+      "#define DTB_DEFAULT_ENTRIES\t48\n"
+      "#define DTB_SIZE\t4096\n"
+      "#define HAVE_VFPV4\n"
+      "#define HAVE_VFPV3\n"
+      "#define HAVE_VFP\n"
+      "#define HAVE_NEON\n"
+      "#define ARMV8\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 4)
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 4)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 4)
+    set(ZGEMM_UNROLL_M 4)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
   elseif ("${TCORE}" STREQUAL "NEOVERSEN1")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_CODE_SIZE\t65536\n"

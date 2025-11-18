@@ -71,6 +71,7 @@ size_t length64=sizeof(value64);
 #define CPU_CORTEXA710    21
 // Qualcomm
 #define CPU_FALKOR        6
+#define CPU_ORYON         26
 // Cavium
 #define CPU_THUNDERX      7
 #define CPU_THUNDERX2T99  8
@@ -113,7 +114,8 @@ static char *cpuname[] = {
   "FT2000",
   "CORTEXA76",
   "NEOVERSEV2",
-  "AMPERE1"
+  "AMPERE1",
+  "ORYON"
 };
 
 static char *cpuname_lower[] = {
@@ -143,7 +145,7 @@ static char *cpuname_lower[] = {
   "cortexa76",
   "neoversev2",
   "ampere1",
-  "ampere1a"
+  "oryon"
 };
 
 static int cpulowperf=0;
@@ -325,6 +327,8 @@ int detect(void)
     // Qualcomm
     else if (strstr(cpu_implementer, "0x51") && strstr(cpu_part, "0xc00"))
       return CPU_FALKOR;
+    else if (strstr(cpu_implementer, "0x51") && strstr(cpu_part, "0x001"))
+      return CPU_ORYON;
     // Cavium
     else if (strstr(cpu_implementer, "0x43") && strstr(cpu_part, "0x0a1"))
 			return CPU_THUNDERX;
@@ -418,7 +422,7 @@ int detect(void)
 	if (errcode != ERROR_SUCCESS) wprintf(L"Error reading cpuname from registry:%x\n",errcode);
 //wprintf(stderr,L"%s\n",(PWSTR)valstring);
 	RegCloseKey(reghandle);
-	if (strstr(valstring, "Snapdragon(R) X Elite")) return CPU_NEOVERSEN1;
+	if (strstr(valstring, "Snapdragon(R) X Elite")) return CPU_ORYON;
 	if (strstr(valstring, "Ampere(R) Altra")) return CPU_NEOVERSEN1;
 	if (strstr(valstring, "Snapdragon (TM) 8cx Gen 3")) return CPU_CORTEXX1;
 	if (strstr(valstring, "Snapdragon Compute Platform")) return CPU_CORTEXX1;
@@ -764,6 +768,24 @@ void get_cpuconfig(void)
     		printf("#define L2_LINESIZE 64\n");
 	    	printf("#define DTB_DEFAULT_ENTRIES 64\n");
 	    	printf("#define DTB_SIZE 4096\n");
+		break;
+	    case CPU_ORYON:
+		printf("#define ORYON\n");
+		printf("#define L1_CODE_SIZE 196608\n");
+		printf("#define L1_CODE_LINESIZE 64\n");
+		printf("#define L1_CODE_ASSOCIATIVE 6\n");
+		printf("#define L1_DATA_SIZE 98304\n");
+		printf("#define L1_DATA_LINESIZE 64\n");
+		printf("#define L1_DATA_ASSOCIATIVE 6\n");
+		printf("#define L2_SIZE 12582912\n");
+		printf("#define L2_LINESIZE 32\n");
+		printf("#define L2_ASSOCIATIVE 12\n");
+		printf("#define ITB_SIZE 4096\n");
+		printf("#define ITB_ASSOCIATIVE 8\n");
+		printf("#define ITB_DEFAULT_ENTRIES 256\n");
+		printf("#define DTB_DEFAULT_ENTRIES 224\n");
+		printf("#define DTB_ASSOCIATIVE 7\n");
+		printf("#define DTB_SIZE 4096\n");
 		break;
 	}
 	get_cpucount();

@@ -224,6 +224,21 @@ endif
 endif
 endif
 
+# Detect Qualcomm Oryon.
+ifeq ($(CORE), ORYON)
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ15) $(ISCLANG)))
+CCOMMON_OPT += -mcpu=oryon-1
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -mcpu=oryon-1
+endif
+else
+CCOMMON_OPT += -march=armv8.7-a -mtune=neoverse-n1
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.7-a -mtune=neoverse-n1
+endif
+endif
+endif
+
 # Detect Ampere AmpereOne(ampere1,ampere1a) processors.
 ifeq ($(CORE), AMPERE1)
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ12) $(ISCLANG)))
