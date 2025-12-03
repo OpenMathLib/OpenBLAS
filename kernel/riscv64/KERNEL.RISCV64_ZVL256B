@@ -95,10 +95,10 @@ DTRMMKERNEL	= dtrmm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N)_zvl256b.c
 CTRMMKERNEL = ctrmm_kernel_$(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N)_zvl256b.c
 ZTRMMKERNEL = ztrmm_kernel_$(ZGEMM_UNROLL_M)x$(ZGEMM_UNROLL_N)_zvl256b.c
 
-SGEMMKERNEL    =  sgemm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N)_zvl256b.c
+SGEMMKERNEL    =  sgemm_kernel_zvl256b.c
 ifneq ($(filter $(SGEMM_UNROLL_N),4 8 16),)
 SGEMMONCOPY    =  gemm_ncopy_$(SGEMM_UNROLL_N)_rvv.c
-SGEMMOTCOPY    =  gemm_tcopy_$(SGEMM_UNROLL_N)_rvv.c
+SGEMMOTCOPY    =  gemm_tcopy_$(SGEMM_UNROLL_N)_rvv_max.c
 else
 SGEMMONCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_N).c
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_$(SGEMM_UNROLL_N).c
@@ -108,7 +108,7 @@ SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 ifneq ($(SGEMM_UNROLL_M), $(SGEMM_UNROLL_N))
 ifneq ($(filter $(SGEMM_UNROLL_M),4 8 16),)
 SGEMMINCOPY    =  gemm_ncopy_$(SGEMM_UNROLL_M)_rvv.c
-SGEMMITCOPY    =  gemm_tcopy_$(SGEMM_UNROLL_M)_rvv.c
+SGEMMITCOPY    =  gemm_tcopy_$(SGEMM_UNROLL_M)_rvv_max.c
 else
 SGEMMINCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_M).c
 SGEMMITCOPY    =  ../generic/gemm_tcopy_$(SGEMM_UNROLL_M).c
@@ -117,19 +117,20 @@ SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
 
-DGEMMKERNEL    =  dgemm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N)_zvl256b.c
+DGEMMKERNEL    =  dgemm_kernel_zvl256b.c
 DGEMMONCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_N).c
 ifneq ($(filter $(DGEMM_UNROLL_N),4 8 16),)
-DGEMMOTCOPY    =  gemm_tcopy_$(DGEMM_UNROLL_N)_rvv.c
+DGEMMOTCOPY    =  gemm_tcopy_$(DGEMM_UNROLL_N)_rvv_max.c
 else
 DGEMMOTCOPY    =  ../generic/gemm_tcopy_$(DGEMM_UNROLL_N).c
 endif
+
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 ifneq ($(DGEMM_UNROLL_M), $(DGEMM_UNROLL_N))
 DGEMMINCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_M).c
 ifneq ($(filter $(DGEMM_UNROLL_M),4 8 16),)
-DGEMMITCOPY    =  gemm_tcopy_$(DGEMM_UNROLL_M)_rvv.c
+DGEMMITCOPY    =  gemm_tcopy_$(DGEMM_UNROLL_M)_rvv_max.c
 else
 DGEMMITCOPY    =  ../generic/gemm_tcopy_$(DGEMM_UNROLL_M).c
 endif
@@ -137,28 +138,28 @@ DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
 DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
 
-CGEMMKERNEL    =  cgemm_kernel_$(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N)_zvl256b.c
+CGEMMKERNEL    =  cgemm_kernel_zvl256b.c
 CGEMMONCOPY    =  ../generic/zgemm_ncopy_$(CGEMM_UNROLL_N).c
-CGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(CGEMM_UNROLL_N).c
+CGEMMOTCOPY    =  zgemm_tcopy_$(CGEMM_UNROLL_N)_rvv_max.c
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
 CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 ifneq ($(CGEMM_UNROLL_M), $(CGEMM_UNROLL_N))
 CGEMMINCOPY    =  ../generic/zgemm_ncopy_$(CGEMM_UNROLL_M).c
-CGEMMITCOPY    =  ../generic/zgemm_tcopy_$(CGEMM_UNROLL_M).c
+CGEMMITCOPY    =  zgemm_tcopy_$(CGEMM_UNROLL_M)_rvv_max.c
 CGEMMINCOPYOBJ =  cgemm_incopy$(TSUFFIX).$(SUFFIX)
 CGEMMITCOPYOBJ =  cgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
 
-ZGEMMKERNEL    =  zgemm_kernel_$(ZGEMM_UNROLL_M)x$(ZGEMM_UNROLL_N)_zvl256b.c
+ZGEMMKERNEL    =  zgemm_kernel_zvl256b.c
 ZGEMMONCOPY    =  ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_N).c
-ZGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_N).c
+ZGEMMOTCOPY    =  zgemm_tcopy_$(ZGEMM_UNROLL_N)_rvv_max.c
 ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
 ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 ifneq ($(ZGEMM_UNROLL_M), $(ZGEMM_UNROLL_N))
 ZGEMMINCOPY    =  ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_M).c
-ZGEMMITCOPY    =  ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_M).c
+ZGEMMITCOPY    =  zgemm_tcopy_$(ZGEMM_UNROLL_M)_rvv_max.c
 ZGEMMINCOPYOBJ =  zgemm_incopy$(TSUFFIX).$(SUFFIX)
 ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
