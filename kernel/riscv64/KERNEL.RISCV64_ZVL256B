@@ -90,10 +90,10 @@ DGEMVTKERNEL = gemv_t_vector.c
 CGEMVTKERNEL = zgemv_t_vector.c
 ZGEMVTKERNEL = zgemv_t_vector.c
 
-STRMMKERNEL	= strmm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N)_zvl256b.c
-DTRMMKERNEL	= dtrmm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N)_zvl256b.c
-CTRMMKERNEL = ctrmm_kernel_$(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N)_zvl256b.c
-ZTRMMKERNEL = ztrmm_kernel_$(ZGEMM_UNROLL_M)x$(ZGEMM_UNROLL_N)_zvl256b.c
+STRMMKERNEL	= strmm_kernel_$(STRMM_UNROLL_M)x$(STRMM_UNROLL_N)_zvl256b.c
+DTRMMKERNEL	= dtrmm_kernel_$(DTRMM_UNROLL_M)x$(DTRMM_UNROLL_N)_zvl256b.c
+CTRMMKERNEL = ctrmm_kernel_$(CTRMM_UNROLL_M)x$(CTRMM_UNROLL_N)_zvl256b.c
+ZTRMMKERNEL = ztrmm_kernel_$(ZTRMM_UNROLL_M)x$(ZTRMM_UNROLL_N)_zvl256b.c
 
 SGEMMKERNEL    =  sgemm_kernel_zvl256b.c
 ifneq ($(filter $(SGEMM_UNROLL_N),4 8 16),)
