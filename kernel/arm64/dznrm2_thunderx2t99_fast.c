@@ -155,7 +155,10 @@ static double nrm2_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	"	cmp	"J", xzr			\n"
 	"	beq	.Lnrm2_kernel_F1		\n"
 
+/* https://github.com/llvm/llvm-project/issues/149547 */
+#if !(defined(__clang__) && defined(OS_WINDOWS))
 	"	.align 5				\n"
+#endif
 	".Lnrm2_kernel_F:				\n"
 	"	"KERNEL_F"				\n"
 	"	subs	"J", "J", #1			\n"
