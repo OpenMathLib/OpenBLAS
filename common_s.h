@@ -117,6 +117,8 @@
 #define	STRMM_ILNNCOPY		strmm_ilnncopy
 #define	STRMM_ILTUCOPY		strmm_iltucopy
 #define	STRMM_ILTNCOPY		strmm_iltncopy
+#define	SCOMM_NCOPY		    scomm_ncopy
+#define	SCOMM_TCOPY	    	scomm_tcopy
 
 #define	STRSM_IUNUCOPY		strsm_iunucopy
 #define	STRSM_IUNNCOPY		strsm_iunncopy
@@ -131,6 +133,7 @@
 #define	SGEMM_BETA		sgemm_beta
 
 #define	SGEMM_KERNEL		sgemm_kernel
+#define	SCOMM_KERNEL		scomm_kernel
 
 #define	STRMM_KERNEL_LN		strmm_kernel_LN
 #define	STRMM_KERNEL_LT		strmm_kernel_LT
@@ -278,13 +281,17 @@
 #define	STRMM_IUTNCOPY		gotoblas -> strmm_iutncopy
 #define	STRMM_ILNNCOPY		gotoblas -> strmm_ilnncopy
 #define	STRMM_ILTNCOPY		gotoblas -> strmm_iltncopy
+#define	SCOMM_NCOPY		    gotoblas -> scomm_ncopy
+#define	SCOMM_TCOPY	     	gotoblas -> scomm_tcopy
+
 #define	STRSM_IUNNCOPY		gotoblas -> strsm_iunncopy
 #define	STRSM_IUTNCOPY		gotoblas -> strsm_iutncopy
 #define	STRSM_ILNNCOPY		gotoblas -> strsm_ilnncopy
 #define	STRSM_ILTNCOPY		gotoblas -> strsm_iltncopy
 
-#define	SGEMM_BETA		gotoblas -> sgemm_beta
+#define	SGEMM_BETA		    gotoblas -> sgemm_beta
 #define	SGEMM_KERNEL		gotoblas -> sgemm_kernel
+#define	SCOMM_KERNEL		gotoblas -> scomm_kernel
 
 #define	STRMM_KERNEL_LN		gotoblas -> strmm_kernel_LN
 #define	STRMM_KERNEL_LT		gotoblas -> strmm_kernel_LT

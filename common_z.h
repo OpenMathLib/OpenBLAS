@@ -89,6 +89,8 @@
 #define	ZTRMM_ILNNCOPY		ztrmm_olnncopy
 #define	ZTRMM_ILTUCOPY		ztrmm_oltucopy
 #define	ZTRMM_ILTNCOPY		ztrmm_oltncopy
+#define	ZCOMM_NCOPY	    	zcomm_ncopy
+#define	ZCOMM_TCOPY	    	zcomm_tcopy
 
 #define	ZTRSM_IUNUCOPY		ztrsm_ounucopy
 #define	ZTRSM_IUNNCOPY		ztrsm_ounncopy
@@ -107,6 +109,8 @@
 #define	ZTRMM_ILNNCOPY		ztrmm_ilnncopy
 #define	ZTRMM_ILTUCOPY		ztrmm_iltucopy
 #define	ZTRMM_ILTNCOPY		ztrmm_iltncopy
+#define	ZCOMM_NCOPY		    zcomm_ncopy
+#define	ZCOMM_TCOPY	    	zcomm_tcopy
 
 #define	ZTRSM_IUNUCOPY		ztrsm_iunucopy
 #define	ZTRSM_IUNNCOPY		ztrsm_iunncopy
@@ -124,6 +128,11 @@
 #define	ZGEMM_KERNEL_L		zgemm_kernel_l
 #define	ZGEMM_KERNEL_R		zgemm_kernel_r
 #define	ZGEMM_KERNEL_B		zgemm_kernel_b
+
+#define	ZCOMM_KERNEL_N		zcomm_kernel_n
+#define	ZCOMM_KERNEL_L		zcomm_kernel_l
+#define	ZCOMM_KERNEL_R		zcomm_kernel_r
+#define	ZCOMM_KERNEL_B		zcomm_kernel_b
 
 #define	ZTRMM_KERNEL_LN		ztrmm_kernel_LN
 #define	ZTRMM_KERNEL_LT		ztrmm_kernel_LT
@@ -320,6 +329,9 @@
 #define	ZTRMM_IUTNCOPY		gotoblas -> ztrmm_iutncopy
 #define	ZTRMM_ILNNCOPY		gotoblas -> ztrmm_ilnncopy
 #define	ZTRMM_ILTNCOPY		gotoblas -> ztrmm_iltncopy
+#define	ZCOMM_NCOPY	    	gotoblas -> zcomm_ncopy
+#define	ZCOMM_TCOPY		    gotoblas -> zcomm_tcopy
+
 #define	ZTRSM_IUNNCOPY		gotoblas -> ztrsm_iunncopy
 #define	ZTRSM_IUTNCOPY		gotoblas -> ztrsm_iutncopy
 #define	ZTRSM_ILNNCOPY		gotoblas -> ztrsm_ilnncopy
@@ -330,6 +342,11 @@
 #define	ZGEMM_KERNEL_L		gotoblas -> zgemm_kernel_l
 #define	ZGEMM_KERNEL_R		gotoblas -> zgemm_kernel_r
 #define	ZGEMM_KERNEL_B		gotoblas -> zgemm_kernel_b
+
+#define	ZCOMM_KERNEL_N		gotoblas -> zcomm_kernel_n
+#define	ZCOMM_KERNEL_L		gotoblas -> zcomm_kernel_l
+#define	ZCOMM_KERNEL_R		gotoblas -> zcomm_kernel_r
+#define	ZCOMM_KERNEL_B		gotoblas -> zcomm_kernel_b
 
 #define	ZTRMM_KERNEL_LN		gotoblas -> ztrmm_kernel_LN
 #define	ZTRMM_KERNEL_LT		gotoblas -> ztrmm_kernel_LT

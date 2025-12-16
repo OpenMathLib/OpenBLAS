@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2025 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -284,6 +285,8 @@ int strmm_ilnucopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, BLASLONG posX
 int strmm_ilnncopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, float *b);
 int strmm_iltucopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, float *b);
 int strmm_iltncopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, float *b);
+int scomm_ncopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b);
+int scomm_tcopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b);
 int strmm_olnucopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, float *b);
 int strmm_olnncopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, float *b);
 int strmm_oltucopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, float *b);
@@ -301,6 +304,8 @@ int dtrmm_ilnucopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, BLASLONG pos
 int dtrmm_ilnncopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, double *b);
 int dtrmm_iltucopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, double *b);
 int dtrmm_iltncopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, double *b);
+int dcomm_tcopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b);
+int dcomm_ncopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b);
 int dtrmm_olnucopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, double *b);
 int dtrmm_olnncopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, double *b);
 int dtrmm_oltucopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, double *b);
@@ -335,6 +340,8 @@ int ctrmm_ilnucopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, BLASLONG posX
 int ctrmm_ilnncopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, float *b);
 int ctrmm_iltucopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, float *b);
 int ctrmm_iltncopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, float *b);
+int ccomm_tcopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b);
+int ccomm_ncopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b);
 int ctrmm_olnucopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, float *b);
 int ctrmm_olnncopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, float *b);
 int ctrmm_oltucopy(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, float *b);
@@ -352,6 +359,8 @@ int ztrmm_ilnucopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, BLASLONG pos
 int ztrmm_ilnncopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, double *b);
 int ztrmm_iltucopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, double *b);
 int ztrmm_iltncopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, double *b);
+int zcomm_tcopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b);
+int zcomm_ncopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b);
 int ztrmm_olnucopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, double *b);
 int ztrmm_olnncopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, double *b);
 int ztrmm_oltucopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, double *b);
@@ -579,6 +588,8 @@ int bgemm_kernel(BLASLONG, BLASLONG, BLASLONG, bfloat16,  bfloat16 *, bfloat16 *
 int sbgemm_kernel(BLASLONG, BLASLONG, BLASLONG, float,  bfloat16 *, bfloat16 *, float *, BLASLONG);
 int sgemm_kernel(BLASLONG, BLASLONG, BLASLONG, float,  float  *, float  *, float  *, BLASLONG);
 int dgemm_kernel(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG);
+int scomm_kernel(BLASLONG, BLASLONG, BLASLONG, float,  float  *, float  *, float  *, BLASLONG);
+int dcomm_kernel(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG);
 
 #ifdef QUAD_PRECISION
 int qgemm_kernel(BLASLONG, BLASLONG, BLASLONG, xidouble *, xidouble *, xidouble *, xdouble *, BLASLONG);
@@ -727,6 +738,16 @@ int xgemm_kernel_b(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xd
 int cgemm3m_kernel(BLASLONG, BLASLONG, BLASLONG, float,  float,  float  *, float  *, float  *, BLASLONG);
 int zgemm3m_kernel(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
 int xgemm3m_kernel(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG);
+
+int ccomm_kernel_n(BLASLONG, BLASLONG, BLASLONG, float,  float,  float  *, float  *, float  *, BLASLONG);
+int ccomm_kernel_l(BLASLONG, BLASLONG, BLASLONG, float,  float,  float  *, float  *, float  *, BLASLONG);
+int ccomm_kernel_r(BLASLONG, BLASLONG, BLASLONG, float,  float,  float  *, float  *, float  *, BLASLONG);
+int ccomm_kernel_b(BLASLONG, BLASLONG, BLASLONG, float,  float,  float  *, float  *, float  *, BLASLONG);
+
+int zcomm_kernel_n(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+int zcomm_kernel_l(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+int zcomm_kernel_r(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+int zcomm_kernel_b(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
 
 int shgemm_nn(blas_arg_t *, BLASLONG *, BLASLONG *, hfloat16 *, hfloat16 *, BLASLONG);
 int shgemm_nt(blas_arg_t *, BLASLONG *, BLASLONG *, hfloat16 *, hfloat16 *, BLASLONG);

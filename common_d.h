@@ -100,6 +100,8 @@
 #define	DTRMM_ILNNCOPY		dtrmm_ilnncopy
 #define	DTRMM_ILTUCOPY		dtrmm_iltucopy
 #define	DTRMM_ILTNCOPY		dtrmm_iltncopy
+#define	DCOMM_NCOPY	    	dcomm_ncopy
+#define	DCOMM_TCOPY	    	dcomm_tcopy
 
 #define	DTRSM_IUNUCOPY		dtrsm_iunucopy
 #define	DTRSM_IUNNCOPY		dtrsm_iunncopy
@@ -114,6 +116,7 @@
 #define	DGEMM_BETA		dgemm_beta
 
 #define	DGEMM_KERNEL		dgemm_kernel
+#define	DCOMM_KERNEL		dcomm_kernel
 
 #define	DTRMM_KERNEL_LN		dtrmm_kernel_LN
 #define	DTRMM_KERNEL_LT		dtrmm_kernel_LT
@@ -239,13 +242,17 @@
 #define	DTRMM_IUTNCOPY		gotoblas -> dtrmm_iutncopy
 #define	DTRMM_ILNNCOPY		gotoblas -> dtrmm_ilnncopy
 #define	DTRMM_ILTNCOPY		gotoblas -> dtrmm_iltncopy
+#define	DCOMM_NCOPY		    gotoblas -> dcomm_ncopy
+#define	DCOMM_TCOPY		    gotoblas -> dcomm_tcopy
+
 #define	DTRSM_IUNNCOPY		gotoblas -> dtrsm_iunncopy
 #define	DTRSM_IUTNCOPY		gotoblas -> dtrsm_iutncopy
 #define	DTRSM_ILNNCOPY		gotoblas -> dtrsm_ilnncopy
 #define	DTRSM_ILTNCOPY		gotoblas -> dtrsm_iltncopy
 
-#define	DGEMM_BETA		gotoblas -> dgemm_beta
+#define	DGEMM_BETA	    	gotoblas -> dgemm_beta
 #define	DGEMM_KERNEL		gotoblas -> dgemm_kernel
+#define	DCOMM_KERNEL		gotoblas -> dcomm_kernel
 
 #define	DTRMM_KERNEL_LN		gotoblas -> dtrmm_kernel_LN
 #define	DTRMM_KERNEL_LT		gotoblas -> dtrmm_kernel_LT

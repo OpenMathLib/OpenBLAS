@@ -229,7 +229,7 @@ gotoblas_t TABLE_NAME = {
   ssyrk_direct_alpha_betaLTTS,
 #endif
 
-  sgemm_kernelTS, sgemm_betaTS,
+  sgemm_kernelTS, sgemm_betaTS, scomm_kernelTS,
 #if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
   sgemm_incopyTS, sgemm_itcopyTS,
 #else
@@ -267,6 +267,7 @@ gotoblas_t TABLE_NAME = {
   strmm_ounucopyTS, strmm_ounncopyTS, strmm_outucopyTS, strmm_outncopyTS,
   strmm_olnucopyTS, strmm_olnncopyTS, strmm_oltucopyTS, strmm_oltncopyTS,
 #endif
+  scomm_ncopyTS,   scomm_tcopyTS,
   strmm_ounucopyTS, strmm_ounncopyTS, strmm_outucopyTS, strmm_outncopyTS,
   strmm_olnucopyTS, strmm_olnncopyTS, strmm_oltucopyTS, strmm_oltncopyTS,
 #if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
@@ -321,7 +322,7 @@ gotoblas_t TABLE_NAME = {
 #endif
 
 #if  (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)  
-  dgemm_kernelTS, dgemm_betaTS,
+  dgemm_kernelTS, dgemm_betaTS, dcomm_kernelTS,
 #if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
   dgemm_incopyTS, dgemm_itcopyTS,
 #else
@@ -356,6 +357,7 @@ gotoblas_t TABLE_NAME = {
   dtrmm_ounucopyTS, dtrmm_ounncopyTS, dtrmm_outucopyTS, dtrmm_outncopyTS,
   dtrmm_olnucopyTS, dtrmm_olnncopyTS, dtrmm_oltucopyTS, dtrmm_oltncopyTS,
 #endif
+  dcomm_ncopyTS,   dcomm_tcopyTS,
   dtrmm_ounucopyTS, dtrmm_ounncopyTS, dtrmm_outucopyTS, dtrmm_outncopyTS,
   dtrmm_olnucopyTS, dtrmm_olnncopyTS, dtrmm_oltucopyTS, dtrmm_oltncopyTS,
 #if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
@@ -467,6 +469,7 @@ gotoblas_t TABLE_NAME = {
 #if (BUILD_COMPLEX)
   cgemm_kernel_nTS, cgemm_kernel_lTS, cgemm_kernel_rTS, cgemm_kernel_bTS,
   cgemm_betaTS,
+  ccomm_kernel_nTS, ccomm_kernel_lTS, ccomm_kernel_rTS, ccomm_kernel_bTS,
 #if CGEMM_DEFAULT_UNROLL_M != CGEMM_DEFAULT_UNROLL_N
   cgemm_incopyTS, cgemm_itcopyTS,
 #else
@@ -512,6 +515,7 @@ gotoblas_t TABLE_NAME = {
   ctrmm_ounucopyTS,  ctrmm_ounncopyTS,  ctrmm_outucopyTS,  ctrmm_outncopyTS,
   ctrmm_olnucopyTS,  ctrmm_olnncopyTS,  ctrmm_oltucopyTS,  ctrmm_oltncopyTS,
 #endif
+  ccomm_ncopyTS,    ccomm_tcopyTS,
   ctrmm_ounucopyTS,  ctrmm_ounncopyTS,  ctrmm_outucopyTS,  ctrmm_outncopyTS,
   ctrmm_olnucopyTS,  ctrmm_olnncopyTS,  ctrmm_oltucopyTS,  ctrmm_oltncopyTS,
 
@@ -623,6 +627,7 @@ gotoblas_t TABLE_NAME = {
 
   zgemm_kernel_nTS, zgemm_kernel_lTS, zgemm_kernel_rTS, zgemm_kernel_bTS,
   zgemm_betaTS,
+  zcomm_kernel_nTS, zcomm_kernel_lTS, zcomm_kernel_rTS, zcomm_kernel_bTS,
 
 #if ZGEMM_DEFAULT_UNROLL_M != ZGEMM_DEFAULT_UNROLL_N
   zgemm_incopyTS, zgemm_itcopyTS,
@@ -666,6 +671,7 @@ gotoblas_t TABLE_NAME = {
   ztrmm_ounucopyTS,  ztrmm_ounncopyTS,  ztrmm_outucopyTS,  ztrmm_outncopyTS,
   ztrmm_olnucopyTS,  ztrmm_olnncopyTS,  ztrmm_oltucopyTS,  ztrmm_oltncopyTS,
 #endif
+  zcomm_ncopyTS,     zcomm_tcopyTS,
   ztrmm_ounucopyTS,  ztrmm_ounncopyTS,  ztrmm_outucopyTS,  ztrmm_outncopyTS,
   ztrmm_olnucopyTS,  ztrmm_olnncopyTS,  ztrmm_oltucopyTS,  ztrmm_oltncopyTS,
 

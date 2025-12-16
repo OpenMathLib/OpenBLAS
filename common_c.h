@@ -107,6 +107,8 @@
 #define	CTRMM_ILNNCOPY		ctrmm_ilnncopy
 #define	CTRMM_ILTUCOPY		ctrmm_iltucopy
 #define	CTRMM_ILTNCOPY		ctrmm_iltncopy
+#define	CCOMM_NCOPY		    ccomm_ncopy
+#define	CCOMM_TCOPY	    	ccomm_tcopy
 
 #define	CTRSM_IUNUCOPY		ctrsm_iunucopy
 #define	CTRSM_IUNNCOPY		ctrsm_iunncopy
@@ -124,6 +126,11 @@
 #define	CGEMM_KERNEL_L		cgemm_kernel_l
 #define	CGEMM_KERNEL_R		cgemm_kernel_r
 #define	CGEMM_KERNEL_B		cgemm_kernel_b
+
+#define	CCOMM_KERNEL_N		ccomm_kernel_n
+#define	CCOMM_KERNEL_L		ccomm_kernel_l
+#define	CCOMM_KERNEL_R		ccomm_kernel_r
+#define	CCOMM_KERNEL_B		ccomm_kernel_b
 
 #define	CTRMM_KERNEL_LN		ctrmm_kernel_LN
 #define	CTRMM_KERNEL_LT		ctrmm_kernel_LT
@@ -320,16 +327,24 @@
 #define	CTRMM_IUTNCOPY		gotoblas -> ctrmm_iutncopy
 #define	CTRMM_ILNNCOPY		gotoblas -> ctrmm_ilnncopy
 #define	CTRMM_ILTNCOPY		gotoblas -> ctrmm_iltncopy
+#define	CCOMM_NCOPY		    gotoblas -> ccomm_ncopy
+#define	CCOMM_TCOPY		    gotoblas -> ccomm_tcopy
+
 #define	CTRSM_IUNNCOPY		gotoblas -> ctrsm_iunncopy
 #define	CTRSM_IUTNCOPY		gotoblas -> ctrsm_iutncopy
 #define	CTRSM_ILNNCOPY		gotoblas -> ctrsm_ilnncopy
 #define	CTRSM_ILTNCOPY		gotoblas -> ctrsm_iltncopy
 
-#define	CGEMM_BETA		gotoblas -> cgemm_beta
+#define	CGEMM_BETA		    gotoblas -> cgemm_beta
 #define	CGEMM_KERNEL_N		gotoblas -> cgemm_kernel_n
 #define	CGEMM_KERNEL_L		gotoblas -> cgemm_kernel_l
 #define	CGEMM_KERNEL_R		gotoblas -> cgemm_kernel_r
 #define	CGEMM_KERNEL_B		gotoblas -> cgemm_kernel_b
+
+#define	CCOMM_KERNEL_N		gotoblas -> ccomm_kernel_n
+#define	CCOMM_KERNEL_L		gotoblas -> ccomm_kernel_l
+#define	CCOMM_KERNEL_R		gotoblas -> ccomm_kernel_r
+#define	CCOMM_KERNEL_B		gotoblas -> ccomm_kernel_b
 
 #define	CTRMM_KERNEL_LN		gotoblas -> ctrmm_kernel_LN
 #define	CTRMM_KERNEL_LT		gotoblas -> ctrmm_kernel_LT
