@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2025 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -43,11 +44,11 @@
 const static FLOAT dp1 = 1.;
 
 #ifdef CONJ
-#define GEMM_KERNEL   GEMM_KERNEL_R
+#define COMM_KERNEL   COMM_KERNEL_R
 #define TRMM_KERNEL_N TRMM_KERNEL_RR
 #define TRMM_KERNEL_T TRMM_KERNEL_RC
 #else
-#define GEMM_KERNEL   GEMM_KERNEL_N
+#define COMM_KERNEL   COMM_KERNEL_N
 #define TRMM_KERNEL_N TRMM_KERNEL_RN
 #define TRMM_KERNEL_T TRMM_KERNEL_RT
 #endif
@@ -118,7 +119,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       min_i = m;
       if (min_i > GEMM_P) min_i = GEMM_P;
 
-      GEMM_ITCOPY(min_l, min_i, b + (ls * ldb) * COMPSIZE, ldb, sa);
+      COMM_TCOPY(min_l, min_i, b + (ls * ldb) * COMPSIZE, ldb, sa);
 
       for(jjs = 0; jjs < ls - js; jjs += min_jj){
 	min_jj = ls - js - jjs;
@@ -136,7 +137,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	GEMM_OTCOPY(min_l, min_jj, a + ((js + jjs) + ls * lda) * COMPSIZE, lda, sb + min_l * jjs * COMPSIZE);
 #endif
 
-	GEMM_KERNEL(min_i, min_jj, min_l, dp1,
+	COMM_KERNEL(min_i, min_jj, min_l, dp1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
@@ -173,9 +174,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	min_i = m - is;
 	if (min_i > GEMM_P) min_i = GEMM_P;
 
-	GEMM_ITCOPY(min_l, min_i, b + (is + ls * ldb) * COMPSIZE, ldb, sa);
+	COMM_TCOPY(min_l, min_i, b + (is + ls * ldb) * COMPSIZE, ldb, sa);
 
-	GEMM_KERNEL(min_i, ls - js, min_l, dp1,
+	COMM_KERNEL(min_i, ls - js, min_l, dp1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
@@ -199,7 +200,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       min_i = m;
       if (min_i > GEMM_P) min_i = GEMM_P;
 
-      GEMM_ITCOPY(min_l, min_i, b + (ls * ldb) * COMPSIZE, ldb, sa);
+      COMM_TCOPY(min_l, min_i, b + (ls * ldb) * COMPSIZE, ldb, sa);
 
       for(jjs = js; jjs < js + min_j; jjs += min_jj){
 	min_jj = min_j + js - jjs;
@@ -217,7 +218,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	GEMM_OTCOPY(min_l, min_jj, a + (jjs + ls * lda) * COMPSIZE, lda, sb + min_l * (jjs - js) * COMPSIZE);
 #endif
 
-	GEMM_KERNEL(min_i, min_jj, min_l, dp1,
+	COMM_KERNEL(min_i, min_jj, min_l, dp1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
@@ -229,9 +230,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	min_i = m - is;
 	if (min_i > GEMM_P) min_i = GEMM_P;
 
-	GEMM_ITCOPY(min_l, min_i, b + (is + ls * ldb) * COMPSIZE, ldb, sa);
+	COMM_TCOPY(min_l, min_i, b + (is + ls * ldb) * COMPSIZE, ldb, sa);
 
-	GEMM_KERNEL(min_i, min_j, min_l, dp1,
+	COMM_KERNEL(min_i, min_j, min_l, dp1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
@@ -254,7 +255,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       min_i = m;
       if (min_i > GEMM_P) min_i = GEMM_P;
 
-      GEMM_ITCOPY(min_l, min_i, b + (ls * ldb) * COMPSIZE, ldb, sa);
+      COMM_TCOPY(min_l, min_i, b + (ls * ldb) * COMPSIZE, ldb, sa);
 
       for(jjs = 0; jjs < min_l; jjs += min_jj){
 	min_jj = min_l - jjs;
@@ -299,7 +300,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 		    sb + min_l * (min_l + jjs) * COMPSIZE);
 #endif
 
-	GEMM_KERNEL(min_i, min_jj, min_l, dp1,
+	COMM_KERNEL(min_i, min_jj, min_l, dp1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
@@ -312,7 +313,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	min_i = m - is;
 	if (min_i > GEMM_P) min_i = GEMM_P;
 
-	GEMM_ITCOPY(min_l, min_i, b + (is + ls * ldb) * COMPSIZE, ldb, sa);
+	COMM_TCOPY(min_l, min_i, b + (is + ls * ldb) * COMPSIZE, ldb, sa);
 
 	TRMM_KERNEL_N(min_i, min_l, min_l, dp1,
 #ifdef COMPLEX
@@ -323,7 +324,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 		      b + (is + ls * ldb) * COMPSIZE, ldb, 0);
 
 	if (js - ls - min_l > 0) {
-	  GEMM_KERNEL(min_i, js - ls - min_l, min_l, dp1,
+	  COMM_KERNEL(min_i, js - ls - min_l, min_l, dp1,
 #ifdef COMPLEX
 		      ZERO,
 #endif
@@ -340,7 +341,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       min_i = m;
       if (min_i > GEMM_P) min_i = GEMM_P;
 
-      GEMM_ITCOPY(min_l, min_i, b + (ls * ldb) * COMPSIZE, ldb, sa);
+      COMM_TCOPY(min_l, min_i, b + (ls * ldb) * COMPSIZE, ldb, sa);
 
       for(jjs = js; jjs < js + min_j; jjs += min_jj){
 	min_jj = min_j + js - jjs;
@@ -358,7 +359,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	GEMM_OTCOPY(min_l, min_jj, a + ((jjs - min_j) + ls * lda) * COMPSIZE, lda, sb + min_l * (jjs - js) * COMPSIZE);
 #endif
 
-	GEMM_KERNEL(min_i, min_jj, min_l, dp1,
+	COMM_KERNEL(min_i, min_jj, min_l, dp1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
@@ -370,9 +371,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	min_i = m - is;
 	if (min_i > GEMM_P) min_i = GEMM_P;
 
-	GEMM_ITCOPY(min_l, min_i, b + (is + ls * ldb) * COMPSIZE, ldb, sa);
+	COMM_TCOPY(min_l, min_i, b + (is + ls * ldb) * COMPSIZE, ldb, sa);
 
-	GEMM_KERNEL(min_i, min_j, min_l, dp1,
+	COMM_KERNEL(min_i, min_j, min_l, dp1,
 #ifdef COMPLEX
 		    ZERO,
 #endif

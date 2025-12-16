@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2025 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -57,6 +58,35 @@
 #endif
 #endif
 
+
+#ifndef ICOPY_OPERATION
+#if defined(NN) || defined(NT) || defined(NC) || defined(NR) || \
+    defined(RN) || defined(RT) || defined(RC) || defined(RR)
+#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) COMM_TCOPY(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER);
+#else
+#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) COMM_NCOPY(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER);
+#endif
+#endif
+
+
+
+
+//#ifndef KERNEL_FUNC
+#if defined(NN) || defined(NT) || defined(TN) || defined(TT)
+#define KERNEL_FUNC	COMM_KERNEL_N
+#endif
+#if defined(CN) || defined(CT) || defined(RN) || defined(RT)
+#define KERNEL_FUNC	COMM_KERNEL_L
+#endif
+#if defined(NC) || defined(TC) || defined(NR) || defined(TR)
+#define KERNEL_FUNC	COMM_KERNEL_R
+#endif
+#if defined(CC) || defined(CR) || defined(RC) || defined(RR)
+#define KERNEL_FUNC	COMM_KERNEL_B
+#endif
+//#endif
+
+
 #ifndef RSIDE
 #define K		args -> m
 #ifndef LOWER
@@ -72,6 +102,7 @@
 #define GEMM_LOCAL    SYMM_RL
 #endif
 #endif
+
 
 #ifdef THREADED_LEVEL3
 #include "level3_thread.c"

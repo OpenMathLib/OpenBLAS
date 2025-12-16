@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2025 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -43,11 +44,11 @@
 const static FLOAT dp1 = 1.;
 
 #ifdef CONJ
-#define GEMM_KERNEL   GEMM_KERNEL_L
+#define COMM_KERNEL   COMM_KERNEL_L
 #define TRMM_KERNEL_N TRMM_KERNEL_LR
 #define TRMM_KERNEL_T TRMM_KERNEL_LC
 #else
-#define GEMM_KERNEL   GEMM_KERNEL_N
+#define COMM_KERNEL   COMM_KERNEL_N
 #define TRMM_KERNEL_N TRMM_KERNEL_LN
 #define TRMM_KERNEL_T TRMM_KERNEL_LT
 #endif
@@ -206,9 +207,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       START_RPCC();
 
 #ifndef TRANSA
-      GEMM_ITCOPY(min_l, min_i, a + (ls * lda) * COMPSIZE, lda, sa);
+      COMM_TCOPY(min_l, min_i, a + (ls * lda) * COMPSIZE, lda, sa);
 #else
-      GEMM_INCOPY(min_l, min_i, a + (ls      ) * COMPSIZE, lda, sa);
+      COMM_NCOPY(min_l, min_i, a + (ls      ) * COMPSIZE, lda, sa);
 #endif
 
       STOP_RPCC(innercost);
@@ -231,7 +232,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
 	START_RPCC();
 
-	GEMM_KERNEL(min_i, min_jj, min_l, dp1,
+	COMM_KERNEL(min_i, min_jj, min_l, dp1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
@@ -251,16 +252,16 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	START_RPCC();
 
 #ifndef TRANSA
-	GEMM_ITCOPY(min_l, min_i, a + (is + ls * lda) * COMPSIZE, lda, sa);
+	COMM_TCOPY(min_l, min_i, a + (is + ls * lda) * COMPSIZE, lda, sa);
 #else
-	GEMM_INCOPY(min_l, min_i, a + (ls + is * lda) * COMPSIZE, lda, sa);
+	COMM_NCOPY(min_l, min_i, a + (ls + is * lda) * COMPSIZE, lda, sa);
 #endif
 
 	STOP_RPCC(innercost);
 
 	START_RPCC();
 
-	GEMM_KERNEL(min_i, min_j, min_l, dp1,
+	COMM_KERNEL(min_i, min_j, min_l, dp1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
@@ -466,16 +467,16 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	START_RPCC();
 
 #ifndef TRANSA
-	GEMM_ITCOPY(min_l, min_i, a + (is + (ls - min_l) * lda) * COMPSIZE, lda, sa);
+	COMM_TCOPY(min_l, min_i, a + (is + (ls - min_l) * lda) * COMPSIZE, lda, sa);
 #else
-	GEMM_INCOPY(min_l, min_i, a + ((ls - min_l) + is * lda) * COMPSIZE, lda, sa);
+	COMM_NCOPY(min_l, min_i, a + ((ls - min_l) + is * lda) * COMPSIZE, lda, sa);
 #endif
 
 	STOP_RPCC(innercost);
 
 	START_RPCC();
 
-	GEMM_KERNEL(min_i, min_j, min_l, dp1,
+	COMM_KERNEL(min_i, min_j, min_l, dp1,
 #ifdef COMPLEX
 		    ZERO,
 #endif
@@ -492,7 +493,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 #ifdef TIMING
   total = (double)outercost + (double)innercost + (double)gemmcost + (double)trmmcost;
 
-  printf( "Copy A : %5.2f Copy  B: %5.2f  GEMM Kernel : %5.2f  TRMM Kerlnel : %5.2f   kernel Effi. : %5.2f Total Effi. : %5.2f\n",
+  printf( "Copy A : %5.2f Copy  B: %5.2f  GEMM Kernel : %5.2f  TRMM Kernel : %5.2f   kernel Effi. : %5.2f Total Effi. : %5.2f\n",
 	  innercost / total * 100., outercost / total * 100.,
 	  gemmcost / total * 100., trmmcost / total * 100.,
 	  (double)n * (double)n * (double)n / (double)(trmmcost + gemmcost) * 100. * (double)COMPSIZE / 2.,
