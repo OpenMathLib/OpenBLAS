@@ -163,8 +163,6 @@ SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
-SCOMMNCOPYOBJ =  scomm_ncopy$(TSUFFIX).$(SUFFIX)
-SCOMMTCOPYOBJ =  scomm_tcopy$(TSUFFIX).$(SUFFIX)
 
 SGEMM_SMALL_M_PERMIT = gemm_small_kernel_permit_sve.c
 SGEMM_SMALL_K_NT = sgemm_small_kernel_nt_sve.c
@@ -199,8 +197,6 @@ DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
 DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
-DCOMMNCOPYOBJ =  dcomm_ncopy$(TSUFFIX).$(SUFFIX)
-DCOMMTCOPYOBJ =  dcomm_tcopy$(TSUFFIX).$(SUFFIX)
 
 DGEMM_SMALL_M_PERMIT = gemm_small_kernel_permit_sve.c
 DGEMM_SMALL_K_NT = dgemm_small_kernel_nt_sve.c
@@ -235,8 +231,6 @@ CGEMMINCOPYOBJ =  cgemm_incopy$(TSUFFIX).$(SUFFIX)
 CGEMMITCOPYOBJ =  cgemm_itcopy$(TSUFFIX).$(SUFFIX)
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
 CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
-CCOMMNCOPYOBJ =  ccomm_ncopy$(TSUFFIX).$(SUFFIX)
-CCOMMTCOPYOBJ =  ccomm_tcopy$(TSUFFIX).$(SUFFIX)
 
 CTRMMUNCOPY_M  =  ztrmm_uncopy_sve_v1.c
 CTRMMLNCOPY_M  =  ztrmm_lncopy_sve_v1.c
@@ -264,8 +258,6 @@ ZGEMMINCOPYOBJ =  zgemm_incopy$(TSUFFIX).$(SUFFIX)
 ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
 ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
 ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
-ZCOMMNCOPYOBJ =  zcomm_ncopy$(TSUFFIX).$(SUFFIX)
-ZCOMMTCOPYOBJ =  zcomm_tcopy$(TSUFFIX).$(SUFFIX)
 
 ZTRMMUNCOPY_M  =  ztrmm_uncopy_sve_v1.c
 ZTRMMLNCOPY_M  =  ztrmm_lncopy_sve_v1.c
