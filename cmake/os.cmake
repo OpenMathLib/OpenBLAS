@@ -98,7 +98,6 @@ if (UTEST_CHECK)
 endif ()
 
 if (SANITY_CHECK)
-  # TODO: need some way to get $(*F) (target filename)
-  set(CCOMMON_OPT "${CCOMMON_OPT} -DSANITY_CHECK -DREFNAME=$(*F)f${BU}")
+  set(CCOMMON_OPT "${CCOMMON_OPT} -DSANITY_CHECK")
 endif ()
 
