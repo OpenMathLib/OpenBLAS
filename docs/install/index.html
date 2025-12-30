@@ -1311,28 +1311,32 @@ in this section, since the process for each is quite different.</p>
 <h4 id="visual-studio-native-windows-abi">Visual Studio &amp; native Windows ABI</h4>
 <p>For Visual Studio, you can use CMake to generate Visual Studio solution files;
 note that you will need at least CMake 3.11 for linking to work correctly).</p>
-<p>Note that you need a Fortran compiler if you plan to build and use the LAPACK
-functions included with OpenBLAS. The sections below describe using either
+<p>Note that you need a Fortran compiler if you plan to build and use the latest version 
+of the LAPACK functions included with OpenBLAS. (If you do not have a Fortran compiler
+installed, you can build an older version of the LAPACK sources that has been converted
+to C - but its performance will likely be slower and accuracy may be poorer too.) 
+The sections below describe using either
 <code>flang</code> as an add-on to clang/LLVM or <code>gfortran</code> as part of MinGW for this
 purpose. If you want to use the Intel Fortran compiler (<code>ifort</code> or <code>ifx</code>) for
 this, be sure to also use the Intel C compiler (<code>icc</code> or <code>icx</code>) for building
 the C parts, as the ABI imposed by <code>ifort</code> is incompatible with MSVC</p>
 <p>A fully-optimized OpenBLAS that can be statically or dynamically linked to your
 application can currently be built for the 64-bit architecture with the LLVM
-compiler infrastructure. We're going to use <a href="https://docs.anaconda.com/miniconda/">Miniconda3</a>
+compiler infrastructure. We're going to use [Miniforge3] the pre-configured
+and more versatile alternative to <a href="https://docs.anaconda.com/miniconda/">Miniconda</a>
 to grab all of the tools we need, since some of them are in an experimental
 status. Before you begin, you'll need to have Microsoft Visual Studio 2015 or
 newer installed.</p>
 <ol>
-<li>Install Miniconda3 for 64-bit Windows using <code>winget install --id Anaconda.Miniconda3</code>,
-   or easily download from <a href="https://docs.conda.io/en/latest/miniconda.html">conda.io</a>.</li>
-<li>Open the "Anaconda Command Prompt" now available in the Start Menu, or at <code>%USERPROFILE%\miniconda3\shell\condabin\conda-hook.ps1</code>.</li>
+<li>Install Miniforge for 64-bit Windows with the latest version of the installer Miniforge3-Windows-x86_64.exe
+   available on <a href="https://github.com/conda-forge/miniforge/releases/">github.com</a></li>
+<li>Open the "Miniforge Command Prompt" now available in the Start Menu, or at <code>%USERPROFILE%\miniforge3\shell\condabin\conda-hook.ps1</code>.</li>
 <li>In that command prompt window, use <code>cd</code> to change to the directory where you want to build OpenBLAS.</li>
 <li>Now install all of the tools we need:
    <div class="highlight"><pre><span></span><code>conda update -n base conda
-conda config --add channels conda-forge
-conda install -y cmake flang clangdev perl libflang ninja
-</code></pre></div></li>
+conda install -y cmake flang_win-64 clangdev perl libflang ninja
+</code></pre></div>
+   (if you want to build with OpenMP support, add <code>llvm-openmp</code> and <code>llvm-openmp-fortran</code>)</li>
 <li>
 <p>Still in the Anaconda Command Prompt window, activate the 64-bit MSVC environment with <code>vcvarsall x64</code>.
     On Windows 11 with Visual Studio 2022, this would be done by invoking:</p>
@@ -1881,7 +1885,7 @@ provides one implementation of <code>malloc</code> for embedded platforms.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 15, 2025 16:25:55 UTC">July 15, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="December 29, 2025 23:03:40 UTC">December 29, 2025</span>
   </span>
 
     
