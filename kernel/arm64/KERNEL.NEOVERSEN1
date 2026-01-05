@@ -102,18 +102,8 @@ ZNRM2KERNEL    = znrm2.S
 
 DDOTKERNEL     = dot.c
 SDOTKERNEL     = dot.c
-ifeq ($(OSNAME), WINNT)
-ifeq ($(C_COMPILER), CLANG)
-CDOTKERNEL     = zdot.S
-ZDOTKERNEL     = zdot.S
-else
 CDOTKERNEL     = zdot_thunderx2t99.c
 ZDOTKERNEL     = zdot_thunderx2t99.c
-endif
-else
-CDOTKERNEL     = zdot_thunderx2t99.c
-ZDOTKERNEL     = zdot_thunderx2t99.c
-endif
 DSDOTKERNEL    = dot.S
 
 DGEMM_BETA     = dgemm_beta.S

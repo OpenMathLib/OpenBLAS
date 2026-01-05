@@ -32,7 +32,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include "common.h"
-
+#ifdef _MSC_VER
+#include <complex.h>
+#endif
 #include <arm_neon.h>
 
 #define N		"x0"	/* vector length */
@@ -197,14 +199,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(SMP)
 extern int blas_level1_thread_with_return_value(int mode, BLASLONG m, BLASLONG n,
 	BLASLONG k, void *alpha, void *a, BLASLONG lda, void *b, BLASLONG ldb,
-	void *c, BLASLONG ldc, int (*function)(), int nthreads);
+	void *c, BLASLONG ldc, int (*function)(void), int nthreads);
 #endif
 
 static void zdot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, OPENBLAS_COMPLEX_FLOAT *result)
 {
-	FLOAT dotr = 0.0, doti = 0.0;
+	FLOAT dotr = 0.0, doti = 0.0; 
+
+#ifdef _MSC_VER
+    CREAL(*result) = 0.0;
+	CIMAG(*result) = 0.0;
+#else
 	OPENBLAS_COMPLEX_FLOAT cf = OPENBLAS_MAKE_COMPLEX_FLOAT(0.0, 0.0);
-        *result = cf;
+    *result = cf;
+#endif
 
 	if ( n < 0 ) return;
 
@@ -235,8 +243,9 @@ static void zdot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLON
 	"	asr	"J", "N", #"N_DIV_SHIFT"	\n"
 	"	cmp	"J", xzr			\n"
 	"	beq	3f //dot_kernel_F1		\n"
-
+#ifndef _MSC_VER
 	"	.align 5				\n"
+#endif
 	"2: //dot_kernel_F:				\n"
 	"	"KERNEL_F"				\n"
 	"	subs	"J", "J", #1			\n"
@@ -297,10 +306,14 @@ static void zdot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLON
 	  "v23", "v24", "v25", "v26", "v27", "v28", "v29",
 	  "v30", "v31"
 	);
-
+#ifdef _MSC_VER
+    CREAL(*result) = dotr;
+	CIMAG(*result) = doti;
+#else
 	cf=OPENBLAS_MAKE_COMPLEX_FLOAT(dotr, doti);
 	*result = cf;
-	return;
+#endif
+	return;	
 }
 
 #if defined(SMP)
@@ -320,7 +333,13 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 	int nthreads;
 	FLOAT dummy_alpha;
 #endif
+#ifdef _MSC_VER
+    OPENBLAS_COMPLEX_FLOAT zdot;
+	CREAL(zdot) = 0.0;
+	CIMAG(zdot) = 0.0;
+#else
 	OPENBLAS_COMPLEX_FLOAT zdot = OPENBLAS_MAKE_COMPLEX_FLOAT(0.0,0.0);
+#endif
 
 #if defined(SMP)
 	if (inc_x == 0 || inc_y == 0 || n <= 10000)
@@ -347,7 +366,11 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 
 		ptr = (OPENBLAS_COMPLEX_FLOAT *)result;
 		for (i = 0; i < nthreads; i++) {
+#ifdef _MSC_VER
+			CREAL(zdot)+= CREAL(*ptr);CIMAG(zdot)+=CIMAG(*ptr);
+#else
 			zdot = OPENBLAS_MAKE_COMPLEX_FLOAT (CREAL(zdot) + CREAL(*ptr), CIMAG(zdot) + CIMAG(*ptr));
+#endif
 			ptr = (void *)(((char *)ptr) + sizeof(double) * 2);
 		}
 	}

@@ -982,6 +982,8 @@ int BLASFUNC(blas_thread_shutdown)(void){
 
   int i;
 
+  LOCK_COMMAND(&server_lock);
+
   //Free buffers allocated for threads
   for(i=0; i<MAX_CPU_NUMBER; i++){
     if(blas_thread_buffer[i]!=NULL){
@@ -1021,6 +1023,7 @@ int BLASFUNC(blas_thread_shutdown)(void){
     blas_server_avail = 0;
 
   }
+  UNLOCK_COMMAND(&server_lock);
 
   return 0;
 }

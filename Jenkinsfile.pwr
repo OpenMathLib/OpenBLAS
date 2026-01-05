@@ -1,15 +1,30 @@
 pipeline {
-    agent { 
-        docker {
-            image 'osuosl/ubuntu-ppc64le:18.04'
-        }
-    }
+    agent none
     stages {
-        stage('Build') {
+        stage('GCC build') {
+            agent {
+                docker {
+                    image 'osuosl/ubuntu-ppc64le:18.04' // gcc 7, gfortran 7
+                }
+            }
             steps {
+                checkout scm
                 sh 'sudo apt update'
                 sh 'sudo apt install gfortran -y'
                 sh 'make clean && make'
+            }
+        }
+        stage('Clang build') {
+            agent {
+                docker {
+                    image 'osuosl/ubuntu-ppc64le:20.04' // clang 10, gfortran 9
+                }
+            }
+            steps {
+                checkout scm
+                sh 'sudo apt update'
+                sh 'sudo apt install -y clang gfortran'
+                sh 'make clean && make CC=clang'
             }
         }
     }

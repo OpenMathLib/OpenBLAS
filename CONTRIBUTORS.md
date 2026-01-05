@@ -29,6 +29,9 @@
 * Annop Wongwathanarat <annop.wongwathanarat@arm.com>
   * Optimizations and other improvements targeting AArch64
 
+* Anna Mayne <anna.mayne@arm.com>
+  * Optimizations and other improvements targeting AArch64
+
 ## Previous Developers
 
 * Zaheer Chothia <zaheer.chothia@gmail.com>
@@ -267,3 +270,5 @@ In chronological order:
   * [2025-05-29] Optimise axpby kernel for RISCV64_ZVL256B
   * [2025-06-05] Optimise hbmv kernel for RISCV64_ZVL256B
 
+* Anna Mayne <anna.mayne@arm.com>
+  * [2025-11-19] Update thread throttling profile for SGEMV on NEOVERSEV1 and NEOVERSEV2

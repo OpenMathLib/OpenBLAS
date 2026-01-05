@@ -92,7 +92,7 @@ else
 		vendor=FLANG
 		openmp='-fopenmp'
 		;;	
-            *GNU*|*GCC*)
+            *GCC*)
 
                 v="${data#*GCC: *\) }"
                 v="${v%%\"*}"

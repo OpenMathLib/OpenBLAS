@@ -217,8 +217,11 @@ in this section, since the process for each is quite different.
 For Visual Studio, you can use CMake to generate Visual Studio solution files;
 note that you will need at least CMake 3.11 for linking to work correctly).
 
-Note that you need a Fortran compiler if you plan to build and use the LAPACK
-functions included with OpenBLAS. The sections below describe using either
+Note that you need a Fortran compiler if you plan to build and use the latest version 
+of the LAPACK functions included with OpenBLAS. (If you do not have a Fortran compiler
+installed, you can build an older version of the LAPACK sources that has been converted
+to C - but its performance will likely be slower and accuracy may be poorer too.) 
+The sections below describe using either
 `flang` as an add-on to clang/LLVM or `gfortran` as part of MinGW for this
 purpose. If you want to use the Intel Fortran compiler (`ifort` or `ifx`) for
 this, be sure to also use the Intel C compiler (`icc` or `icx`) for building
@@ -226,21 +229,22 @@ the C parts, as the ABI imposed by `ifort` is incompatible with MSVC
 
 A fully-optimized OpenBLAS that can be statically or dynamically linked to your
 application can currently be built for the 64-bit architecture with the LLVM
-compiler infrastructure. We're going to use [Miniconda3](https://docs.anaconda.com/miniconda/)
+compiler infrastructure. We're going to use [Miniforge3] the pre-configured
+and more versatile alternative to [Miniconda](https://docs.anaconda.com/miniconda/)
 to grab all of the tools we need, since some of them are in an experimental
 status. Before you begin, you'll need to have Microsoft Visual Studio 2015 or
 newer installed.
 
-1. Install Miniconda3 for 64-bit Windows using `winget install --id Anaconda.Miniconda3`,
-   or easily download from [conda.io](https://docs.conda.io/en/latest/miniconda.html).
-2. Open the "Anaconda Command Prompt" now available in the Start Menu, or at `%USERPROFILE%\miniconda3\shell\condabin\conda-hook.ps1`.
+1. Install Miniforge for 64-bit Windows with the latest version of the installer Miniforge3-Windows-x86_64.exe
+   available on [github.com](https://github.com/conda-forge/miniforge/releases/)
+2. Open the "Miniforge Command Prompt" now available in the Start Menu, or at `%USERPROFILE%\miniforge3\shell\condabin\conda-hook.ps1`.
 3. In that command prompt window, use `cd` to change to the directory where you want to build OpenBLAS.
 4. Now install all of the tools we need:
    ```
    conda update -n base conda
-   conda config --add channels conda-forge
-   conda install -y cmake flang clangdev perl libflang ninja
+   conda install -y cmake flang_win-64 clangdev perl libflang ninja
    ```
+   (if you want to build with OpenMP support, add `llvm-openmp` and `llvm-openmp-fortran`)
 5.  Still in the Anaconda Command Prompt window, activate the 64-bit MSVC environment with `vcvarsall x64`.
     On Windows 11 with Visual Studio 2022, this would be done by invoking:
     

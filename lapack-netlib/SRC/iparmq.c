@@ -745,7 +745,7 @@ integer iparmq_(integer *ispec, char *name__, char *opts, integer *n, integer
     /* Local variables */
     integer i__, ic, nh, ns, iz;
     char subnam[6];
-    integer name_len;
+    integer name_len=0;
 
 /*  -- LAPACK auxiliary routine (version 3.7.1) -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */

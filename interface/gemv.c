@@ -1,4 +1,5 @@
 /*********************************************************************/
+/* Copyright 2025 The OpenBLAS Project                               */
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
 /* All rights reserved.                                              */
 /*                                                                   */
@@ -81,9 +82,12 @@ static inline int get_gemv_optimal_nthreads_neoversev1(BLASLONG MN, int ncpu) {
           : (MN < 1050625L)   ? MIN(ncpu, 40)
           : ncpu;
   #else
-      return (MN < 25600L)     ? 1
+      return
+            (MN < 25600L)     ? 1
           : (MN < 63001L)     ? MIN(ncpu, 4)
-          : (MN < 459684L)    ? MIN(ncpu, 16)
+          : (MN < 202500L)    ? MIN(ncpu, 8)
+          : (MN < 806404L)    ? MIN(ncpu, 16)
+          : (MN < 1638400L)    ? MIN(ncpu, 32)
           : ncpu;
   #endif
 }
@@ -93,9 +97,9 @@ static inline int get_gemv_optimal_nthreads_neoversev1(BLASLONG MN, int ncpu) {
 static inline int get_gemv_optimal_nthreads_neoversev2(BLASLONG MN, int ncpu) {
   return
       MN < 24964L    ? 1
-    : MN < 65536L    ? MIN(ncpu, 8)
-    : MN < 262144L   ? MIN(ncpu, 32)
-    : MN < 1638400L  ? MIN(ncpu, 64)
+    : MN < 145924L    ? MIN(ncpu, 8)
+    : MN < 692224L   ? MIN(ncpu, 16)
+    : MN < 1638400L  ? MIN(ncpu, 32)
     : ncpu;
 }
 #endif

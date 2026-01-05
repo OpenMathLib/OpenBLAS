@@ -594,7 +594,7 @@ logical lsamen_(integer *n, char *ca, char *cb)
     /* Local variables */
     integer i__;
     extern logical lsame_(char *, char *);
-    integer ca_len,cb_len;
+    integer ca_len=0,cb_len=0;
 
 /*  -- LAPACK auxiliary routine (version 3.7.0) -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
