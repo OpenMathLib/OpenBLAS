@@ -272,3 +272,5 @@ In chronological order:
 
 * Anna Mayne <anna.mayne@arm.com>
   * [2025-11-19] Update thread throttling profile for SGEMV on NEOVERSEV1 and NEOVERSEV2
+  * [2026-01-05] Add interleaving to sgemm and dgemm. Disentangle trmm/symm from gemm.
+  
