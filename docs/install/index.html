@@ -1740,9 +1740,10 @@ You can find full list of target architectures in <a href="https://github.com/Op
 was found to work in our Azure CI setup, but as far as we know this builds a
 fully working OpenBLAS for this platform.</p>
 <p>Go to the directory where you unpacked OpenBLAS,and enter the following commands:
-<div class="highlight"><pre><span></span><code><span class="nv">CC</span><span class="o">=</span>/Applications/Xcode_12.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+<div class="highlight"><pre><span></span><code><span class="nv">CC</span><span class="o">=</span><span class="s2">&quot;/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang&quot;</span>
 
-<span class="nv">CFLAGS</span><span class="o">=</span><span class="w"> </span>-O2<span class="w"> </span>-Wno-macro-redefined<span class="w"> </span>-isysroot<span class="w"> </span>/Applications/Xcode_12.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.4.sdk<span class="w"> </span>-arch<span class="w"> </span>arm64<span class="w"> </span>-miphoneos-version-min<span class="o">=</span><span class="m">10</span>.0
+<span class="nv">SDKROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>xcrun<span class="w"> </span>--sdk<span class="w"> </span>iphoneos<span class="w"> </span>--show-sdk-path<span class="k">)</span><span class="s2">&quot;</span>
+<span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-O2 -Wno-macro-redefined -isysroot </span><span class="nv">$SDKROOT</span><span class="s2"> -arch arm64 -miphoneos-version-min=10.0&quot;</span>
 
 make<span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>ARMV8<span class="w"> </span><span class="nv">DYNAMIC_ARCH</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">NUM_THREADS</span><span class="o">=</span><span class="m">32</span><span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>clang<span class="w"> </span><span class="nv">NOFORTRAN</span><span class="o">=</span><span class="m">1</span>
 </code></pre></div>
@@ -1885,7 +1886,7 @@ provides one implementation of <code>malloc</code> for embedded platforms.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="December 29, 2025 23:03:40 UTC">December 29, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="January 10, 2026 13:14:05 UTC">January 10, 2026</span>
   </span>
 
     
