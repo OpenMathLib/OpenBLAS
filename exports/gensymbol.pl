@@ -177,6 +177,9 @@
     goto_set_num_threads,
     openblas_get_config,
     openblas_get_corename,
+);
+
+@smp_no_underscore_objs = (
     openblas_set_threads_callback_function,
 );
 
@@ -3917,6 +3920,10 @@ if ($ARGV[4] == 0) {
 }else{
     #NO_CBLAS=1
     @no_underscore_objs = (@misc_no_underscore_objs);
+}
+if ($ARGV[18]) == 1) {
+    #SMP=1
+    @no_underscore_objs = (@no_underscore_objs, @smp_no_underscore_objs);
 }
 if ($ARGV[6] == 1) {
     #NO_LAPACKE=1
