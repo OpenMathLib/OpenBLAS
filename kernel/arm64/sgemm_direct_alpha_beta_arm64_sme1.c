@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <math.h>
-#include "sme_abi.h"
+//#include "sme_abi.h"
 
 #if defined(DYNAMIC_ARCH)
 #define COMBINE(a,b) a ## b
@@ -213,4 +213,5 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float alpha, float * __restrict 
             BLASLONG strideA, float * __restrict B, BLASLONG strideB ,\
             float beta, float * __restrict R, BLASLONG strideR){fprintf(stderr,"empty sgemm_direct_alpha_beta should not be called!!!\n");}
 #endif
+
 
