@@ -38,6 +38,8 @@
 /*********************************************************************/
 
 #include "common.h"
+#include <strings.h>
+
 #if (defined OS_LINUX || defined OS_ANDROID)
 #include <asm/hwcap.h>
 #include <sys/auxv.h>
