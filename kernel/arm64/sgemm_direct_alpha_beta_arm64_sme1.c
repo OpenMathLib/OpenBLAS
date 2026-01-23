@@ -27,6 +27,10 @@ extern void SME1_PREPROCESS(uint64_t nbr, uint64_t nbc,\
 
 #if defined(HAVE_SME)
 
+#if !defined(__clang__) || __clang_major__ < 17
+#include "sme_abi.h"
+#endif
+
 #if defined(__ARM_FEATURE_SME) && defined(__clang__) && __clang_major__ >= 16
 #include <arm_sme.h>
 #endif
@@ -213,5 +217,6 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float alpha, float * __restrict 
             BLASLONG strideA, float * __restrict B, BLASLONG strideB ,\
             float beta, float * __restrict R, BLASLONG strideR){fprintf(stderr,"empty sgemm_direct_alpha_beta should not be called!!!\n");}
 #endif
+
 
 
