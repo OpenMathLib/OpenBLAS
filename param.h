@@ -1,4 +1,4 @@
-/*****************************************************************************
+https://github.com/numpy/numpy/issues/30816https://github.com/numpy/numpy/issues/30816https://github.com/numpy/numpy/issues/30816/*****************************************************************************
 Copyright (c) 2011-2023, 2025 The OpenBLAS Project
 All rights reserved.
 
@@ -3661,6 +3661,8 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define ZGEMM_DEFAULT_R 4096
 
 #elif defined(NEOVERSEN2) || defined(NEOVERSEV2)
+
+#define GEMM_DIVIDE_LIMIT       3
 
 #if defined(XDOUBLE) || defined(DOUBLE)
 #define SWITCH_RATIO            8
