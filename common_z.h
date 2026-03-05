@@ -1,3 +1,42 @@
+/*********************************************************************/
+/* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2025 The OpenBLAS Project.                              */
+/* All rights reserved.                                              */
+/*                                                                   */
+/* Redistribution and use in source and binary forms, with or        */
+/* without modification, are permitted provided that the following   */
+/* conditions are met:                                               */
+/*                                                                   */
+/*   1. Redistributions of source code must retain the above         */
+/*      copyright notice, this list of conditions and the following  */
+/*      disclaimer.                                                  */
+/*                                                                   */
+/*   2. Redistributions in binary form must reproduce the above      */
+/*      copyright notice, this list of conditions and the following  */
+/*      disclaimer in the documentation and/or other materials       */
+/*      provided with the distribution.                              */
+/*                                                                   */
+/*    THIS  SOFTWARE IS PROVIDED  BY THE  UNIVERSITY OF  TEXAS AT    */
+/*    AUSTIN  ``AS IS''  AND ANY  EXPRESS OR  IMPLIED WARRANTIES,    */
+/*    INCLUDING, BUT  NOT LIMITED  TO, THE IMPLIED  WARRANTIES OF    */
+/*    MERCHANTABILITY  AND FITNESS FOR  A PARTICULAR  PURPOSE ARE    */
+/*    DISCLAIMED.  IN  NO EVENT SHALL THE UNIVERSITY  OF TEXAS AT    */
+/*    AUSTIN OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,    */
+/*    INCIDENTAL,  SPECIAL, EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES    */
+/*    (INCLUDING, BUT  NOT LIMITED TO,  PROCUREMENT OF SUBSTITUTE    */
+/*    GOODS  OR  SERVICES; LOSS  OF  USE,  DATA,  OR PROFITS;  OR    */
+/*    BUSINESS INTERRUPTION) HOWEVER CAUSED  AND ON ANY THEORY OF    */
+/*    LIABILITY, WHETHER  IN CONTRACT, STRICT  LIABILITY, OR TORT    */
+/*    (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING IN ANY WAY OUT    */
+/*    OF  THE  USE OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE    */
+/*    POSSIBILITY OF SUCH DAMAGE.                                    */
+/*                                                                   */
+/* The views and conclusions contained in the software and           */
+/* documentation are those of the authors and should not be          */
+/* interpreted as representing official policies, either expressed   */
+/* or implied, of The University of Texas at Austin.                 */
+/*********************************************************************/
+
 #ifndef COMMON_Z_H
 #define COMMON_Z_H
 
@@ -62,6 +101,9 @@
 #define	ZGEMM_ITCOPY		zgemm_itcopy
 #endif
 
+#define	ZCOMM_NCOPY	    	zcomm_ncopy
+#define	ZCOMM_TCOPY	    	zcomm_tcopy
+
 #define	ZTRMM_OUNUCOPY		ztrmm_ounucopy
 #define	ZTRMM_OUNNCOPY		ztrmm_ounncopy
 #define	ZTRMM_OUTUCOPY		ztrmm_outucopy
@@ -124,6 +166,11 @@
 #define	ZGEMM_KERNEL_L		zgemm_kernel_l
 #define	ZGEMM_KERNEL_R		zgemm_kernel_r
 #define	ZGEMM_KERNEL_B		zgemm_kernel_b
+
+#define	ZCOMM_KERNEL_N		zcomm_kernel_n
+#define	ZCOMM_KERNEL_L		zcomm_kernel_l
+#define	ZCOMM_KERNEL_R		zcomm_kernel_r
+#define	ZCOMM_KERNEL_B		zcomm_kernel_b
 
 #define	ZTRMM_KERNEL_LN		ztrmm_kernel_LN
 #define	ZTRMM_KERNEL_LT		ztrmm_kernel_LT
@@ -320,6 +367,9 @@
 #define	ZTRMM_IUTNCOPY		gotoblas -> ztrmm_iutncopy
 #define	ZTRMM_ILNNCOPY		gotoblas -> ztrmm_ilnncopy
 #define	ZTRMM_ILTNCOPY		gotoblas -> ztrmm_iltncopy
+#define	ZCOMM_NCOPY	    	gotoblas -> zcomm_ncopy
+#define	ZCOMM_TCOPY		    gotoblas -> zcomm_tcopy
+
 #define	ZTRSM_IUNNCOPY		gotoblas -> ztrsm_iunncopy
 #define	ZTRSM_IUTNCOPY		gotoblas -> ztrsm_iutncopy
 #define	ZTRSM_ILNNCOPY		gotoblas -> ztrsm_ilnncopy
@@ -330,6 +380,11 @@
 #define	ZGEMM_KERNEL_L		gotoblas -> zgemm_kernel_l
 #define	ZGEMM_KERNEL_R		gotoblas -> zgemm_kernel_r
 #define	ZGEMM_KERNEL_B		gotoblas -> zgemm_kernel_b
+
+#define	ZCOMM_KERNEL_N		gotoblas -> zcomm_kernel_n
+#define	ZCOMM_KERNEL_L		gotoblas -> zcomm_kernel_l
+#define	ZCOMM_KERNEL_R		gotoblas -> zcomm_kernel_r
+#define	ZCOMM_KERNEL_B		gotoblas -> zcomm_kernel_b
 
 #define	ZTRMM_KERNEL_LN		gotoblas -> ztrmm_kernel_LN
 #define	ZTRMM_KERNEL_LT		gotoblas -> ztrmm_kernel_LT

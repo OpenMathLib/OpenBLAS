@@ -1,3 +1,30 @@
+###############################################################################
+# Copyright (c) 2025, The OpenBLAS Project
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the OpenBLAS project nor the names of
+#    its contributors may be used to endorse or promote products
+#    derived from this software without specific prior written permission.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+###############################################################################
 
 CSUMKERNEL    = csum_thunderx2t99.c
 ZSUMKERNEL    = zsum_thunderx2t99.c
@@ -123,11 +150,12 @@ DSDOTKERNEL    = dot.S
 DGEMM_BETA     = dgemm_beta.S
 SGEMM_BETA     = sgemm_beta.S
 
-SGEMMKERNEL    =  sgemm_kernel_sve_v2x$(SGEMM_UNROLL_N).S
+SGEMMKERNEL    =  sgemm_kernel_inter_sve_v2x$(SGEMM_UNROLL_N).S
+SCOMMKERNEL    =  sgemm_kernel_sve_v2x$(SGEMM_UNROLL_N).S
 STRMMKERNEL    =  strmm_kernel_sve_v1x$(SGEMM_UNROLL_N).S
 
-SGEMMINCOPY    =  gemm_ncopy_sve_v1x$(SGEMM_UNROLL_N).c
-SGEMMITCOPY    =  gemm_tcopy_sve_v1x$(SGEMM_UNROLL_N).c
+SGEMMINCOPY    =  gemm_ncopy_sve_v2x$(SGEMM_UNROLL_N).c
+SGEMMITCOPY    =  gemm_tcopy_sve_v2x$(SGEMM_UNROLL_N).c
 SGEMMONCOPY    =  sgemm_ncopy_$(SGEMM_UNROLL_N).S
 SGEMMOTCOPY    =  sgemm_tcopy_$(SGEMM_UNROLL_N).S
 
@@ -150,15 +178,18 @@ STRMMUNCOPY_M  =  trmm_uncopy_sve_v1.c
 STRMMLNCOPY_M  =  trmm_lncopy_sve_v1.c
 STRMMUTCOPY_M  =  trmm_utcopy_sve_v1.c
 STRMMLTCOPY_M  =  trmm_ltcopy_sve_v1.c
+SCOMMNCOPY    =  gemm_ncopy_sve_v1x$(SGEMM_UNROLL_N).c
+SCOMMTCOPY    =  gemm_tcopy_sve_v1x$(SGEMM_UNROLL_N).c
 
 SSYMMUCOPY_M    =  symm_ucopy_sve.c
 SSYMMLCOPY_M    =  symm_lcopy_sve.c
 
-DGEMMKERNEL    =  dgemm_kernel_sve_v2x$(DGEMM_UNROLL_N).S
+DGEMMKERNEL    =  dgemm_kernel_inter_sve_v2x$(DGEMM_UNROLL_N).S
+DCOMMKERNEL    =  dgemm_kernel_sve_v2x$(DGEMM_UNROLL_N).S
 DTRMMKERNEL    =  dtrmm_kernel_sve_v1x$(DGEMM_UNROLL_N).S
 
-DGEMMINCOPY    =  gemm_ncopy_sve_v1x$(DGEMM_UNROLL_N).c
-DGEMMITCOPY    =  gemm_tcopy_sve_v1x$(DGEMM_UNROLL_N).c
+DGEMMINCOPY    =  gemm_ncopy_sve_v2x$(DGEMM_UNROLL_N).c
+DGEMMITCOPY    =  gemm_tcopy_sve_v2x$(DGEMM_UNROLL_N).c
 DGEMMONCOPY    =  dgemm_ncopy_$(DGEMM_UNROLL_N).S
 DGEMMOTCOPY    =  dgemm_tcopy_$(DGEMM_UNROLL_N).S
 
@@ -181,11 +212,14 @@ DTRMMUNCOPY_M  =  trmm_uncopy_sve_v1.c
 DTRMMLNCOPY_M  =  trmm_lncopy_sve_v1.c
 DTRMMUTCOPY_M  =  trmm_utcopy_sve_v1.c
 DTRMMLTCOPY_M  =  trmm_ltcopy_sve_v1.c
+DCOMMNCOPY    =  gemm_ncopy_sve_v1x$(DGEMM_UNROLL_N).c
+DCOMMTCOPY    =  gemm_tcopy_sve_v1x$(DGEMM_UNROLL_N).c
 
 DSYMMUCOPY_M    =  symm_ucopy_sve.c
 DSYMMLCOPY_M    =  symm_lcopy_sve.c
 
 CGEMMKERNEL    =  cgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
+CCOMMKERNEL    =  cgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
 CTRMMKERNEL    =  ctrmm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
 
 CGEMMINCOPY    =  gemm_ncopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
@@ -202,6 +236,8 @@ CTRMMUNCOPY_M  =  ztrmm_uncopy_sve_v1.c
 CTRMMLNCOPY_M  =  ztrmm_lncopy_sve_v1.c
 CTRMMUTCOPY_M  =  ztrmm_utcopy_sve_v1.c
 CTRMMLTCOPY_M  =  ztrmm_ltcopy_sve_v1.c
+CCOMMNCOPY    =  gemm_ncopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
+CCOMMTCOPY    =  gemm_tcopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
 
 CHEMMLTCOPY_M    =  zhemm_ltcopy_sve.c
 CHEMMUTCOPY_M    =  zhemm_utcopy_sve.c
@@ -210,6 +246,7 @@ CSYMMUCOPY_M    =  zsymm_ucopy_sve.c
 CSYMMLCOPY_M    =  zsymm_lcopy_sve.c
 
 ZGEMMKERNEL    =  zgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
+ZCOMMKERNEL    =  zgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
 ZTRMMKERNEL    =  ztrmm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
 
 ZGEMMINCOPY    =  gemm_ncopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
@@ -226,6 +263,8 @@ ZTRMMUNCOPY_M  =  ztrmm_uncopy_sve_v1.c
 ZTRMMLNCOPY_M  =  ztrmm_lncopy_sve_v1.c
 ZTRMMUTCOPY_M  =  ztrmm_utcopy_sve_v1.c
 ZTRMMLTCOPY_M  =  ztrmm_ltcopy_sve_v1.c
+ZCOMMNCOPY    =  gemm_ncopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
+ZCOMMTCOPY    =  gemm_tcopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
 
 ZHEMMLTCOPY_M    =  zhemm_ltcopy_sve.c
 ZHEMMUTCOPY_M    =  zhemm_utcopy_sve.c
