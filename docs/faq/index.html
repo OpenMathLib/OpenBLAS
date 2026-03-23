@@ -1063,8 +1063,18 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Getting &#34;ELF load command address/offset not properly aligned&#34; when loading libopenblas.so">
-      <ul class="md-nav__list">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-tests-work-fine-but-calling-any-complex-function-from-my-code-produces-wrong-or-no-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The tests work fine, but calling any complex function from my code produces wrong or no results
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#using-openblas-with-openmp" class="md-nav__link">
@@ -1074,11 +1084,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -1603,8 +1608,18 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Getting &#34;ELF load command address/offset not properly aligned&#34; when loading libopenblas.so">
-      <ul class="md-nav__list">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-tests-work-fine-but-calling-any-complex-function-from-my-code-produces-wrong-or-no-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The tests work fine, but calling any complex function from my code produces wrong or no results
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#using-openblas-with-openmp" class="md-nav__link">
@@ -1614,11 +1629,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -1699,10 +1709,9 @@
 <li><a href="#multithreaded-openblas-runs-no-faster-or-is-even-slower-than-singlethreaded-on-my-armv7-board">Multithreaded OpenBLAS runs no faster or is even slower than singlethreaded on my ARMV7 board</a></li>
 <li><a href="#speed-varies-wildly-between-individual-runs-on-a-typical-armv8-smartphone-processor">Speed varies wildly between individual runs on a typical ARMV8 smartphone processor</a></li>
 <li><a href="#i-cannot-get-openblas-to-use-more-than-a-small-subset-of-available-cores-on-a-big-system">I cannot get OpenBLAS to use more than a small subset of available cores on a big system</a></li>
-<li><a href="#getting-elf-load-command-addressoffset-not-properly-aligned-when-loading-libopenblasso">Getting "ELF load command address/offset not properly aligned" when loading libopenblas.so</a><ul>
+<li><a href="#getting-elf-load-command-addressoffset-not-properly-aligned-when-loading-libopenblasso">Getting "ELF load command address/offset not properly aligned" when loading libopenblas.so</a></li>
+<li><a href="#the-tests-work-fine-but-calling-any-complex-function-from-my-code-produces-wrong-or-no-results">The tests work fine, but calling any complex function from my code produces wrong or no results</a></li>
 <li><a href="#using-openblas-with-openmp">Using OpenBLAS with OpenMP</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -1929,7 +1938,10 @@ a huge drop in performance on a 4+4 core chip while <code>OMP_NUM_THREADS=2 OMP_
 <h3 id="getting-elf-load-command-addressoffset-not-properly-aligned-when-loading-libopenblasso"><a name="ELFoffset"></a>Getting "ELF load command address/offset not properly aligned" when loading libopenblas.so</h3>
 <p>If you get a message "error while loading shared libraries: libopenblas.so.0: ELF load command address/offset not properly aligned" when starting a program that is (dynamically) linked to OpenBLAS, this is very likely due to a bug in the GNU linker (ld) that is part of the
 GNU binutils package. This error was specifically observed on older versions of Ubuntu Linux updated with the (at the time) most recent binutils version 2.38, but an internet search turned up sporadic reports involving various other libraries dating back several years. A bugfix was created by the binutils developers and should be available in later versions of binutils.(See issue 3708 for details)</p>
-<h4 id="using-openblas-with-openmp"><a name="OpenMP"></a>Using OpenBLAS with OpenMP</h4>
+<h3 id="the-tests-work-fine-but-calling-any-complex-function-from-my-code-produces-wrong-or-no-results"><a name="CallingConvention"></a>The tests work fine, but calling any complex function from my code produces wrong or no results</h3>
+<p>This is almost certainly a problem with the calling convention used, in particular with the way the computed result is transported back to the caller. By default, OpenBLAS follows the F2C convention of returning the result on the stack rather than as the first argument to the function. So if your code has a prototype like "void cdotu ( complex *res, int n,...)" change it to "complex cdotu (int n,...)". Better yet,
+use the CBLAS interface rather than the Fortran one.</p>
+<h3 id="using-openblas-with-openmp"><a name="OpenMP"></a>Using OpenBLAS with OpenMP</h3>
 <p>OpenMP provides its own locking mechanisms, so when your code makes BLAS/LAPACK calls from inside OpenMP parallel regions it is imperative
 that you use an OpenBLAS that is built with USE_OPENMP=1, as otherwise deadlocks might occur. Furthermore, OpenBLAS will automatically restrict itself to using only a single thread when called from an OpenMP parallel region. When it is certain that calls will only occur
 from the main thread of your program (i.e. outside of omp parallel constructs), a standard pthreads build of OpenBLAS can be used as well. In that case it may be useful to tune the linger behaviour of idle threads in both your OpenMP program (e.g. set OMP_WAIT_POLICY=passive) and OpenBLAS (by redefining the THREAD_TIMEOUT variable at build time, or setting the environment variable OPENBLAS_THREAD_TIMEOUT smaller than the default 26) so that the two alternating thread pools do not unnecessarily hog the cpu during the handover.</p>
@@ -1955,7 +1967,7 @@ from the main thread of your program (i.e. outside of omp parallel constructs), 
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="January 17, 2026 19:58:49 UTC">January 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 22, 2026 22:44:32 UTC">March 22, 2026</span>
   </span>
 
     
