@@ -415,6 +415,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#half-precision-float-or-fp16-functionality" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        half-precision float or fp16 functionality
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#utility-functions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -669,6 +680,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#half-precision-float-or-fp16-functionality" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        half-precision float or fp16 functionality
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#utility-functions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -745,6 +767,21 @@ This page documents those non-standard APIs.</p>
 <td style="text-align: left;">s,d,c,z</td>
 <td style="text-align: left;"><code>gemm</code> but only a triangular part updated</td>
 </tr>
+<tr>
+<td>cblas_?gemm_batch</td>
+<td style="text-align: left;">s,d,c,z,b</td>
+<td style="text-align: left;"><code>gemm</code> with several groups of input data</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td>cblas_?gemm_batch_strided</td>
+<td style="text-align: left;">s,d,c,z,b</td>
+<td style="text-align: left;"><code>gemm</code> with groups of data stored at fixed offsets in the input arrays</td>
+</tr>
 </tbody>
 </table>
 <h2 id="bfloat16-functionality">bfloat16 functionality</h2>
@@ -757,6 +794,13 @@ This page documents those non-standard APIs.</p>
 <li><code>float cblas_sbdot</code> computes the dot product of two bfloat16 arrays</li>
 <li><code>void cblas_sbgemv</code> performs the matrix-vector operations of GEMV with the input matrix and X vector as bfloat16</li>
 <li><code>void cblas_sbgemm</code> performs the matrix-matrix operations of GEMM with both input arrays containing bfloat16</li>
+<li><code>void cblas_bgemv</code> performs the matrix-vector operations of GEMV with the input matrix, X vector and result as bfloat16</li>
+<li><code>void cblas_bgemm</code> performs the matrix-matrix operations of GEMM with both input arrays containing bfloat16 and the output being bfloat16 as well</li>
+</ul>
+<h2 id="half-precision-float-or-fp16-functionality">half-precision float or fp16 functionality</h2>
+<p>BLAS-like and conversion functions for <code>hfloat16</code> (available when OpenBLAS was compiled with <code>BUILD_HFLOAT16=1</code>):</p>
+<ul>
+<li><code>void cblas_shgemm</code> performs the matrix-matrix operations of GEMM with both input arrays containing hfloat16</li>
 </ul>
 <h2 id="utility-functions">Utility functions</h2>
 <ul>
@@ -767,6 +811,7 @@ This page documents those non-standard APIs.</p>
 <li><code>char * openblas_get_config()</code> returns the options OpenBLAS was built with, something like <code>NO_LAPACKE DYNAMIC_ARCH NO_AFFINITY Haswell</code></li>
 <li><code>int openblas_set_affinity(int thread_index, size_t cpusetsize, cpu_set_t *cpuset)</code> sets the CPU affinity mask of the given thread
   to the provided cpuset. Only available on Linux, with semantics identical to <code>pthread_setaffinity_np</code>.</li>
+<li><code>openblas_set_thread_callback_function</code> overrides the default multithreading backend with the provided argument</li>
 </ul>
 
 
@@ -790,7 +835,7 @@ This page documents those non-standard APIs.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="December 26, 2024 20:09:26 UTC">December 26, 2024</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 22, 2026 21:34:27 UTC">March 22, 2026</span>
   </span>
 
     
