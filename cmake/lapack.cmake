@@ -262,7 +262,7 @@ set(DLASRC
    dlaqr0.f dlaqr1.f dlaqr2.f dlaqr3.f dlaqr4.f dlaqr5.f
    dlaqtr.f dlar1v.f dlar2v.f iladlr.f iladlc.f
    dlarf.f  dlarfb.f dlarfb_gett.f dlarfg.f dlarfgp.f dlarft.f dlarfx.f dlarfy.f
-   dlargv.f dlarrv.f dlartv.f
+   dlarf1f.f dlarf1l.f dlargv.f dlarrv.f dlartv.f
    dlarz.f  dlarzb.f dlarzt.f dlasy2.f
    dlasyf.f dlasyf_rook.f dlasyf_rk.f dlasyf_aa.f
    dlatbs.f dlatdf.f dlatps.f dlatrd.f dlatrs.f dlatrz.f
@@ -371,7 +371,7 @@ set(ZLASRC
    zlaqr0.f zlaqr1.f zlaqr2.f zlaqr3.f zlaqr4.f zlaqr5.f
    zlaqsp.f zlaqsy.f zlar1v.f zlar2v.f ilazlr.f ilazlc.f
    zlarcm.f zlarf.f  zlarfb.f zlarfb_gett.f
-   zlarfg.f zlarfgp.f zlarft.f
+   zlarfg.f zlarfgp.f zlarft.f zlarf1f.f zlarf1l.f
    zlarfx.f zlarfy.f zlargv.f zlarnv.f zlarrv.f zlartg.f90 zlartv.f
    zlarz.f  zlarzb.f zlarzt.f zlascl.f zlaset.f zlasr.f
    zlassq.f90 zlasyf.f zlasyf_rook.f zlasyf_rk.f zlasyf_aa.f
