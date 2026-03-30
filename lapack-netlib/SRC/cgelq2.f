@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CGELQ2 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgelq2.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgelq2.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -104,7 +102,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEcomputational
+*> \ingroup gelq2
 *
 *> \par Further Details:
 *  =====================
@@ -126,6 +124,7 @@
 *>
 *  =====================================================================
       SUBROUTINE CGELQ2( M, N, A, LDA, TAU, WORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -140,16 +139,11 @@
 *
 *  =====================================================================
 *
-*     .. Parameters ..
-      COMPLEX            ONE
-      PARAMETER          ( ONE = ( 1.0E+0, 0.0E+0 ) )
-*     ..
 *     .. Local Scalars ..
       INTEGER            I, K
-      COMPLEX            ALPHA
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLACGV, CLARF, CLARFG, XERBLA
+      EXTERNAL           CLACGV, CLARF1F, CLARFG, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -178,18 +172,15 @@
 *        Generate elementary reflector H(i) to annihilate A(i,i+1:n)
 *
          CALL CLACGV( N-I+1, A( I, I ), LDA )
-         ALPHA = A( I, I )
-         CALL CLARFG( N-I+1, ALPHA, A( I, MIN( I+1, N ) ), LDA,
+         CALL CLARFG( N-I+1, A( I, I ), A( I, MIN( I+1, N ) ), LDA,
      $                TAU( I ) )
          IF( I.LT.M ) THEN
 *
 *           Apply H(i) to A(i+1:m,i:n) from the right
 *
-            A( I, I ) = ONE
-            CALL CLARF( 'Right', M-I, N-I+1, A( I, I ), LDA, TAU( I ),
-     $                  A( I+1, I ), LDA, WORK )
+            CALL CLARF1F( 'Right', M-I, N-I+1, A( I, I ), LDA,
+     $                    TAU( I ), A( I+1, I ), LDA, WORK )
          END IF
-         A( I, I ) = ALPHA
          CALL CLACGV( N-I+1, A( I, I ), LDA )
    10 CONTINUE
       RETURN

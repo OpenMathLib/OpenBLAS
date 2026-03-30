@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CUNM2R + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cunm2r.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cunm2r.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -151,11 +149,12 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup unm2r
 *
 *  =====================================================================
       SUBROUTINE CUNM2R( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
      $                   WORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -171,21 +170,17 @@
 *
 *  =====================================================================
 *
-*     .. Parameters ..
-      COMPLEX            ONE
-      PARAMETER          ( ONE = ( 1.0E+0, 0.0E+0 ) )
-*     ..
 *     .. Local Scalars ..
       LOGICAL            LEFT, NOTRAN
       INTEGER            I, I1, I2, I3, IC, JC, MI, NI, NQ
-      COMPLEX            AII, TAUI
+      COMPLEX            TAUI
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLARF, XERBLA
+      EXTERNAL           CLARF1F, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          CONJG, MAX
@@ -270,11 +265,8 @@
          ELSE
             TAUI = CONJG( TAU( I ) )
          END IF
-         AII = A( I, I )
-         A( I, I ) = ONE
-         CALL CLARF( SIDE, MI, NI, A( I, I ), 1, TAUI, C( IC, JC ), LDC,
-     $               WORK )
-         A( I, I ) = AII
+         CALL CLARF1F( SIDE, MI, NI, A( I, I ), 1, TAUI, C( IC, JC ),
+     $                 LDC, WORK )
    10 CONTINUE
       RETURN
 *

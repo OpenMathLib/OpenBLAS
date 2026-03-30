@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CUNMR2 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cunmr2.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cunmr2.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -151,11 +149,12 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup unmr2
 *
 *  =====================================================================
       SUBROUTINE CUNMR2( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
      $                   WORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -171,21 +170,17 @@
 *
 *  =====================================================================
 *
-*     .. Parameters ..
-      COMPLEX            ONE
-      PARAMETER          ( ONE = ( 1.0E+0, 0.0E+0 ) )
-*     ..
 *     .. Local Scalars ..
       LOGICAL            LEFT, NOTRAN
       INTEGER            I, I1, I2, I3, MI, NI, NQ
-      COMPLEX            AII, TAUI
+      COMPLEX            TAUI
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLACGV, CLARF, XERBLA
+      EXTERNAL           CLACGV, CLARF1L, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          CONJG, MAX
@@ -267,10 +262,8 @@
             TAUI = TAU( I )
          END IF
          CALL CLACGV( NQ-K+I-1, A( I, 1 ), LDA )
-         AII = A( I, NQ-K+I )
-         A( I, NQ-K+I ) = ONE
-         CALL CLARF( SIDE, MI, NI, A( I, 1 ), LDA, TAUI, C, LDC, WORK )
-         A( I, NQ-K+I ) = AII
+         CALL CLARF1L( SIDE, MI, NI, A( I, 1 ), LDA, TAUI, C, LDC,
+     $                 WORK )
          CALL CLACGV( NQ-K+I-1, A( I, 1 ), LDA )
    10 CONTINUE
       RETURN

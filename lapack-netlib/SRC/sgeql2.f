@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download SGEQL2 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgeql2.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgeql2.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -98,7 +96,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGEcomputational
+*> \ingroup geql2
 *
 *> \par Further Details:
 *  =====================
@@ -120,6 +118,7 @@
 *>
 *  =====================================================================
       SUBROUTINE SGEQL2( M, N, A, LDA, TAU, WORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -134,16 +133,11 @@
 *
 *  =====================================================================
 *
-*     .. Parameters ..
-      REAL               ONE
-      PARAMETER          ( ONE = 1.0E+0 )
-*     ..
 *     .. Local Scalars ..
       INTEGER            I, K
-      REAL               AII
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLARF, SLARFG, XERBLA
+      EXTERNAL           SLARF1L, SLARFG, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -177,11 +171,8 @@
 *
 *        Apply H(i) to A(1:m-k+i,1:n-k+i-1) from the left
 *
-         AII = A( M-K+I, N-K+I )
-         A( M-K+I, N-K+I ) = ONE
-         CALL SLARF( 'Left', M-K+I, N-K+I-1, A( 1, N-K+I ), 1, TAU( I ),
-     $               A, LDA, WORK )
-         A( M-K+I, N-K+I ) = AII
+         CALL SLARF1L( 'Left', M-K+I, N-K+I-1, A( 1, N-K+I ), 1,
+     $                 TAU( I ), A, LDA, WORK )
    10 CONTINUE
       RETURN
 *

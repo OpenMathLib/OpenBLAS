@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CLAQP2 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/claqp2.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/claqp2.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -122,7 +120,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERauxiliary
+*> \ingroup laqp2
 *
 *> \par Contributors:
 *  ==================
@@ -139,13 +137,12 @@
 *>
 *> LAPACK Working Note 176
 *
-*> \htmlonly
 *> <a href="http://www.netlib.org/lapack/lawnspdf/lawn176.pdf">[PDF]</a>
-*> \endhtmlonly
 *
 *  =====================================================================
       SUBROUTINE CLAQP2( M, N, OFFSET, A, LDA, JPVT, TAU, VN1, VN2,
      $                   WORK )
+      IMPLICIT NONE
 *
 *  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -164,17 +161,14 @@
 *
 *     .. Parameters ..
       REAL               ZERO, ONE
-      COMPLEX            CONE
-      PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0,
-     $                   CONE = ( 1.0E+0, 0.0E+0 ) )
+      PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, ITEMP, J, MN, OFFPI, PVT
       REAL               TEMP, TEMP2, TOL3Z
-      COMPLEX            AII
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLARF, CLARFG, CSWAP
+      EXTERNAL           CLARF1F, CLARFG, CSWAP
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, CONJG, MAX, MIN, SQRT
@@ -211,7 +205,8 @@
 *        Generate elementary reflector H(i).
 *
          IF( OFFPI.LT.M ) THEN
-            CALL CLARFG( M-OFFPI+1, A( OFFPI, I ), A( OFFPI+1, I ), 1,
+            CALL CLARFG( M-OFFPI+1, A( OFFPI, I ), A( OFFPI+1, I ),
+     $                   1,
      $                   TAU( I ) )
          ELSE
             CALL CLARFG( 1, A( M, I ), A( M, I ), 1, TAU( I ) )
@@ -221,12 +216,9 @@
 *
 *           Apply H(i)**H to A(offset+i:m,i+1:n) from the left.
 *
-            AII = A( OFFPI, I )
-            A( OFFPI, I ) = CONE
-            CALL CLARF( 'Left', M-OFFPI+1, N-I, A( OFFPI, I ), 1,
-     $                  CONJG( TAU( I ) ), A( OFFPI, I+1 ), LDA,
-     $                  WORK( 1 ) )
-            A( OFFPI, I ) = AII
+            CALL CLARF1F( 'Left', M-OFFPI+1, N-I, A( OFFPI, I ), 1,
+     $                    CONJG( TAU( I ) ), A( OFFPI, I+1 ), LDA,
+     $                    WORK( 1 ) )
          END IF
 *
 *        Update partial column norms.

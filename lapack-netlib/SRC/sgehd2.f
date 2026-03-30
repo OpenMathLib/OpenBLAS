@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download SGEHD2 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgehd2.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgehd2.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -106,7 +104,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGEcomputational
+*> \ingroup gehd2
 *
 *> \par Further Details:
 *  =====================
@@ -146,6 +144,7 @@
 *>
 *  =====================================================================
       SUBROUTINE SGEHD2( N, ILO, IHI, A, LDA, TAU, WORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -160,16 +159,11 @@
 *
 *  =====================================================================
 *
-*     .. Parameters ..
-      REAL               ONE
-      PARAMETER          ( ONE = 1.0E+0 )
-*     ..
 *     .. Local Scalars ..
       INTEGER            I
-      REAL               AII
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLARF, SLARFG, XERBLA
+      EXTERNAL           SLARF1F, SLARFG, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -199,20 +193,17 @@
 *
          CALL SLARFG( IHI-I, A( I+1, I ), A( MIN( I+2, N ), I ), 1,
      $                TAU( I ) )
-         AII = A( I+1, I )
-         A( I+1, I ) = ONE
 *
 *        Apply H(i) to A(1:ihi,i+1:ihi) from the right
 *
-         CALL SLARF( 'Right', IHI, IHI-I, A( I+1, I ), 1, TAU( I ),
-     $               A( 1, I+1 ), LDA, WORK )
+         CALL SLARF1F( 'Right', IHI, IHI-I, A( I+1, I ), 1, TAU( I ),
+     $                 A( 1, I+1 ), LDA, WORK )
 *
 *        Apply H(i) to A(i+1:ihi,i+1:n) from the left
 *
-         CALL SLARF( 'Left', IHI-I, N-I, A( I+1, I ), 1, TAU( I ),
-     $               A( I+1, I+1 ), LDA, WORK )
+         CALL SLARF1F( 'Left', IHI-I, N-I, A( I+1, I ), 1, TAU( I ),
+     $                 A( I+1, I+1 ), LDA, WORK )
 *
-         A( I+1, I ) = AII
    10 CONTINUE
 *
       RETURN

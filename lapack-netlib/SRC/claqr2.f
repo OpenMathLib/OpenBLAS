@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CLAQR2 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/claqr2.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/claqr2.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -254,7 +252,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERauxiliary
+*> \ingroup laqr2
 *
 *> \par Contributors:
 *  ==================
@@ -263,9 +261,11 @@
 *>       University of Kansas, USA
 *>
 *  =====================================================================
-      SUBROUTINE CLAQR2( WANTT, WANTZ, N, KTOP, KBOT, NW, H, LDH, ILOZ,
+      SUBROUTINE CLAQR2( WANTT, WANTZ, N, KTOP, KBOT, NW, H, LDH,
+     $                   ILOZ,
      $                   IHIZ, Z, LDZ, NS, ND, SH, V, LDV, NH, T, LDT,
      $                   NV, WV, LDWV, WORK, LWORK )
+      IMPLICIT NONE
 *
 *  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -291,7 +291,7 @@
       PARAMETER          ( RZERO = 0.0e0, RONE = 1.0e0 )
 *     ..
 *     .. Local Scalars ..
-      COMPLEX            BETA, CDUM, S, TAU
+      COMPLEX            CDUM, S, TAU
       REAL               FOO, SAFMAX, SAFMIN, SMLNUM, ULP
       INTEGER            I, IFST, ILST, INFO, INFQR, J, JW, KCOL, KLN,
      $                   KNT, KROW, KWTOP, LTOP, LWK1, LWK2, LWKOPT
@@ -301,8 +301,9 @@
       EXTERNAL           SLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CCOPY, CGEHRD, CGEMM, CLACPY, CLAHQR, CLARF,
-     $                   CLARFG, CLASET, CTREXC, CUNMHR, SLABAD
+      EXTERNAL           CCOPY, CGEHRD, CGEMM, CLACPY, CLAHQR,
+     $                   CLARF1F,
+     $                   CLARFG, CLASET, CTREXC, CUNMHR
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, AIMAG, CMPLX, CONJG, INT, MAX, MIN, REAL
@@ -329,7 +330,8 @@
 *
 *        ==== Workspace query call to CUNMHR ====
 *
-         CALL CUNMHR( 'R', 'N', JW, JW, 1, JW-1, T, LDT, WORK, V, LDV,
+         CALL CUNMHR( 'R', 'N', JW, JW, 1, JW-1, T, LDT, WORK, V,
+     $                LDV,
      $                WORK, -1, INFO )
          LWK2 = INT( WORK( 1 ) )
 *
@@ -360,7 +362,6 @@
 *
       SAFMIN = SLAMCH( 'SAFE MINIMUM' )
       SAFMAX = RONE / SAFMIN
-      CALL SLABAD( SAFMIN, SAFMAX )
       ULP = SLAMCH( 'PRECISION' )
       SMLNUM = SAFMIN*( REAL( N ) / ULP )
 *
@@ -399,7 +400,8 @@
 *     .    here and there to keep track.) ====
 *
       CALL CLACPY( 'U', JW, JW, H( KWTOP, KWTOP ), LDH, T, LDT )
-      CALL CCOPY( JW-1, H( KWTOP+1, KWTOP ), LDH+1, T( 2, 1 ), LDT+1 )
+      CALL CCOPY( JW-1, H( KWTOP+1, KWTOP ), LDH+1, T( 2, 1 ),
+     $            LDT+1 )
 *
       CALL CLASET( 'A', JW, JW, ZERO, ONE, V, LDV )
       CALL CLAHQR( .true., .true., JW, 1, JW, T, LDT, SH( KWTOP ), 1,
@@ -451,7 +453,8 @@
    20       CONTINUE
             ILST = I
             IF( IFST.NE.ILST )
-     $         CALL CTREXC( 'V', JW, T, LDT, V, LDV, IFST, ILST, INFO )
+     $         CALL CTREXC( 'V', JW, T, LDT, V, LDV, IFST, ILST,
+     $                      INFO )
    30    CONTINUE
       END IF
 *
@@ -471,18 +474,17 @@
             DO 50 I = 1, NS
                WORK( I ) = CONJG( WORK( I ) )
    50       CONTINUE
-            BETA = WORK( 1 )
-            CALL CLARFG( NS, BETA, WORK( 2 ), 1, TAU )
-            WORK( 1 ) = ONE
+            CALL CLARFG( NS, WORK( 1 ), WORK( 2 ), 1, TAU )
 *
-            CALL CLASET( 'L', JW-2, JW-2, ZERO, ZERO, T( 3, 1 ), LDT )
+            CALL CLASET( 'L', JW-2, JW-2, ZERO, ZERO, T( 3, 1 ),
+     $                   LDT )
 *
-            CALL CLARF( 'L', NS, JW, WORK, 1, CONJG( TAU ), T, LDT,
-     $                  WORK( JW+1 ) )
-            CALL CLARF( 'R', NS, NS, WORK, 1, TAU, T, LDT,
-     $                  WORK( JW+1 ) )
-            CALL CLARF( 'R', JW, NS, WORK, 1, TAU, V, LDV,
-     $                  WORK( JW+1 ) )
+            CALL CLARF1F( 'L', NS, JW, WORK, 1, CONJG( TAU ), T, LDT,
+     $                    WORK( JW+1 ) )
+            CALL CLARF1F( 'R', NS, NS, WORK, 1, TAU, T, LDT,
+     $                    WORK( JW+1 ) )
+            CALL CLARF1F( 'R', JW, NS, WORK, 1, TAU, V, LDV,
+     $                    WORK( JW+1 ) )
 *
             CALL CGEHRD( JW, 1, NS, T, LDT, WORK, WORK( JW+1 ),
      $                   LWORK-JW, INFO )
@@ -500,7 +502,8 @@
 *        .    H and Z, if requested.  ====
 *
          IF( NS.GT.1 .AND. S.NE.ZERO )
-     $      CALL CUNMHR( 'R', 'N', JW, NS, 1, NS, T, LDT, WORK, V, LDV,
+     $      CALL CUNMHR( 'R', 'N', JW, NS, 1, NS, T, LDT, WORK, V,
+     $                   LDV,
      $                   WORK( JW+1 ), LWORK-JW, INFO )
 *
 *        ==== Update vertical slab in H ====
@@ -514,7 +517,8 @@
             KLN = MIN( NV, KWTOP-KROW )
             CALL CGEMM( 'N', 'N', KLN, JW, JW, ONE, H( KROW, KWTOP ),
      $                  LDH, V, LDV, ZERO, WV, LDWV )
-            CALL CLACPY( 'A', KLN, JW, WV, LDWV, H( KROW, KWTOP ), LDH )
+            CALL CLACPY( 'A', KLN, JW, WV, LDWV, H( KROW, KWTOP ),
+     $                   LDH )
    60    CONTINUE
 *
 *        ==== Update horizontal slab in H ====
@@ -534,7 +538,8 @@
          IF( WANTZ ) THEN
             DO 80 KROW = ILOZ, IHIZ, NV
                KLN = MIN( NV, IHIZ-KROW+1 )
-               CALL CGEMM( 'N', 'N', KLN, JW, JW, ONE, Z( KROW, KWTOP ),
+               CALL CGEMM( 'N', 'N', KLN, JW, JW, ONE, Z( KROW,
+     $                     KWTOP ),
      $                     LDZ, V, LDV, ZERO, WV, LDWV )
                CALL CLACPY( 'A', KLN, JW, WV, LDWV, Z( KROW, KWTOP ),
      $                      LDZ )

@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download SORGL2 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sorgl2.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sorgl2.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -106,10 +104,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup ungl2
 *
 *  =====================================================================
       SUBROUTINE SORGL2( M, N, K, A, LDA, TAU, WORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -132,7 +131,7 @@
       INTEGER            I, J, L
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLARF, SSCAL, XERBLA
+      EXTERNAL           SLARF1F, SSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX
@@ -180,9 +179,8 @@
 *
          IF( I.LT.N ) THEN
             IF( I.LT.M ) THEN
-               A( I, I ) = ONE
-               CALL SLARF( 'Right', M-I, N-I+1, A( I, I ), LDA,
-     $                     TAU( I ), A( I+1, I ), LDA, WORK )
+               CALL SLARF1F( 'Right', M-I, N-I+1, A( I, I ), LDA,
+     $                       TAU( I ), A( I+1, I ), LDA, WORK )
             END IF
             CALL SSCAL( N-I, -TAU( I ), A( I, I+1 ), LDA )
          END IF

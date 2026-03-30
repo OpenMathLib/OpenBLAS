@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CUNGL2 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cungl2.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cungl2.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -106,10 +104,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup ungl2
 *
 *  =====================================================================
       SUBROUTINE CUNGL2( M, N, K, A, LDA, TAU, WORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -133,7 +132,7 @@
       INTEGER            I, J, L
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLACGV, CLARF, CSCAL, XERBLA
+      EXTERNAL           CLACGV, CLARF1F, CSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          CONJG, MAX
@@ -182,9 +181,9 @@
          IF( I.LT.N ) THEN
             CALL CLACGV( N-I, A( I, I+1 ), LDA )
             IF( I.LT.M ) THEN
-               A( I, I ) = ONE
-               CALL CLARF( 'Right', M-I, N-I+1, A( I, I ), LDA,
-     $                     CONJG( TAU( I ) ), A( I+1, I ), LDA, WORK )
+               CALL CLARF1F( 'Right', M-I, N-I+1, A( I, I ), LDA,
+     $                       CONJG( TAU( I ) ), A( I+1, I ), LDA,
+     $                       WORK )
             END IF
             CALL CSCAL( N-I, -TAU( I ), A( I, I+1 ), LDA )
             CALL CLACGV( N-I, A( I, I+1 ), LDA )

@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download SORBDB3 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sorbdb3.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sorbdb3.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -173,7 +171,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup unbdb3
 *
 *> \par Further Details:
 *  =====================
@@ -197,8 +195,10 @@
 *>      Algorithms, 50(1):33-65, 2009.
 *>
 *  =====================================================================
-      SUBROUTINE SORBDB3( M, P, Q, X11, LDX11, X21, LDX21, THETA, PHI,
+      SUBROUTINE SORBDB3( M, P, Q, X11, LDX11, X21, LDX21, THETA,
+     $                    PHI,
      $                    TAUP1, TAUP2, TAUQ1, WORK, LWORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -215,10 +215,6 @@
 *
 *  ====================================================================
 *
-*     .. Parameters ..
-      REAL               ONE
-      PARAMETER          ( ONE = 1.0E0 )
-*     ..
 *     .. Local Scalars ..
       REAL               C, S
       INTEGER            CHILDINFO, I, ILARF, IORBDB5, LLARF, LORBDB5,
@@ -226,7 +222,8 @@
       LOGICAL            LQUERY
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLARF, SLARFGP, SORBDB5, SROT, XERBLA
+      EXTERNAL           SLARF1F, SLARFGP, SORBDB5, SROT,
+     $                   XERBLA
 *     ..
 *     .. External Functions ..
       REAL               SNRM2
@@ -263,7 +260,7 @@
          LORBDB5 = Q-1
          LWORKOPT = MAX( ILARF+LLARF-1, IORBDB5+LORBDB5-1 )
          LWORKMIN = LWORKOPT
-         WORK(1) = LWORKOPT
+         WORK(1) = REAL( LWORKOPT )
          IF( LWORK .LT. LWORKMIN .AND. .NOT.LQUERY ) THEN
            INFO = -14
          END IF
@@ -280,16 +277,16 @@
       DO I = 1, M-P
 *
          IF( I .GT. 1 ) THEN
-            CALL SROT( Q-I+1, X11(I-1,I), LDX11, X21(I,I), LDX11, C, S )
+            CALL SROT( Q-I+1, X11(I-1,I), LDX11, X21(I,I), LDX11, C,
+     $                 S )
          END IF
 *
          CALL SLARFGP( Q-I+1, X21(I,I), X21(I,I+1), LDX21, TAUQ1(I) )
          S = X21(I,I)
-         X21(I,I) = ONE
-         CALL SLARF( 'R', P-I+1, Q-I+1, X21(I,I), LDX21, TAUQ1(I),
-     $               X11(I,I), LDX11, WORK(ILARF) )
-         CALL SLARF( 'R', M-P-I, Q-I+1, X21(I,I), LDX21, TAUQ1(I),
-     $               X21(I+1,I), LDX21, WORK(ILARF) )
+         CALL SLARF1F( 'R', P-I+1, Q-I+1, X21(I,I), LDX21, TAUQ1(I),
+     $                 X11(I,I), LDX11, WORK(ILARF) )
+         CALL SLARF1F( 'R', M-P-I, Q-I+1, X21(I,I), LDX21, TAUQ1(I),
+     $                 X21(I+1,I), LDX21, WORK(ILARF) )
          C = SQRT( SNRM2( P-I+1, X11(I,I), 1 )**2
      $           + SNRM2( M-P-I, X21(I+1,I), 1 )**2 )
          THETA(I) = ATAN2( S, C )
@@ -299,17 +296,16 @@
      $                 WORK(IORBDB5), LORBDB5, CHILDINFO )
          CALL SLARFGP( P-I+1, X11(I,I), X11(I+1,I), 1, TAUP1(I) )
          IF( I .LT. M-P ) THEN
-            CALL SLARFGP( M-P-I, X21(I+1,I), X21(I+2,I), 1, TAUP2(I) )
+            CALL SLARFGP( M-P-I, X21(I+1,I), X21(I+2,I), 1,
+     $                    TAUP2(I) )
             PHI(I) = ATAN2( X21(I+1,I), X11(I,I) )
             C = COS( PHI(I) )
             S = SIN( PHI(I) )
-            X21(I+1,I) = ONE
-            CALL SLARF( 'L', M-P-I, Q-I, X21(I+1,I), 1, TAUP2(I),
-     $                  X21(I+1,I+1), LDX21, WORK(ILARF) )
+            CALL SLARF1F( 'L', M-P-I, Q-I, X21(I+1,I), 1, TAUP2(I),
+     $                    X21(I+1,I+1), LDX21, WORK(ILARF) )
          END IF
-         X11(I,I) = ONE
-         CALL SLARF( 'L', P-I+1, Q-I, X11(I,I), 1, TAUP1(I), X11(I,I+1),
-     $               LDX11, WORK(ILARF) )
+         CALL SLARF1F( 'L', P-I+1, Q-I, X11(I,I), 1, TAUP1(I), X11(I,
+     $                 I+1), LDX11, WORK(ILARF) )
 *
       END DO
 *
@@ -317,9 +313,8 @@
 *
       DO I = M-P + 1, Q
          CALL SLARFGP( P-I+1, X11(I,I), X11(I+1,I), 1, TAUP1(I) )
-         X11(I,I) = ONE
-         CALL SLARF( 'L', P-I+1, Q-I, X11(I,I), 1, TAUP1(I), X11(I,I+1),
-     $               LDX11, WORK(ILARF) )
+         CALL SLARF1F( 'L', P-I+1, Q-I, X11(I,I), 1, TAUP1(I), X11(I,
+     $                 I+1), LDX11, WORK(ILARF) )
       END DO
 *
       RETURN

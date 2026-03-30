@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CGEHD2 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgehd2.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgehd2.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -106,7 +104,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEcomputational
+*> \ingroup gehd2
 *
 *> \par Further Details:
 *  =====================
@@ -146,6 +144,7 @@
 *>
 *  =====================================================================
       SUBROUTINE CGEHD2( N, ILO, IHI, A, LDA, TAU, WORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -160,16 +159,11 @@
 *
 *  =====================================================================
 *
-*     .. Parameters ..
-      COMPLEX            ONE
-      PARAMETER          ( ONE = ( 1.0E+0, 0.0E+0 ) )
-*     ..
 *     .. Local Scalars ..
       INTEGER            I
-      COMPLEX            ALPHA
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLARF, CLARFG, XERBLA
+      EXTERNAL           CLARF1F, CLARFG, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          CONJG, MAX, MIN
@@ -197,21 +191,19 @@
 *
 *        Compute elementary reflector H(i) to annihilate A(i+2:ihi,i)
 *
-         ALPHA = A( I+1, I )
-         CALL CLARFG( IHI-I, ALPHA, A( MIN( I+2, N ), I ), 1, TAU( I ) )
-         A( I+1, I ) = ONE
+         CALL CLARFG( IHI-I, A( I+1, I ), A( MIN( I+2, N ), I ), 1,
+     $                TAU( I ) )
 *
 *        Apply H(i) to A(1:ihi,i+1:ihi) from the right
 *
-         CALL CLARF( 'Right', IHI, IHI-I, A( I+1, I ), 1, TAU( I ),
-     $               A( 1, I+1 ), LDA, WORK )
+         CALL CLARF1F( 'Right', IHI, IHI-I, A( I+1, I ), 1, TAU( I ),
+     $                 A( 1, I+1 ), LDA, WORK )
 *
 *        Apply H(i)**H to A(i+1:ihi,i+1:n) from the left
 *
-         CALL CLARF( 'Left', IHI-I, N-I, A( I+1, I ), 1,
-     $               CONJG( TAU( I ) ), A( I+1, I+1 ), LDA, WORK )
+         CALL CLARF1F( 'Left', IHI-I, N-I, A( I+1, I ), 1,
+     $                 CONJG( TAU( I ) ), A( I+1, I+1 ), LDA, WORK )
 *
-         A( I+1, I ) = ALPHA
    10 CONTINUE
 *
       RETURN

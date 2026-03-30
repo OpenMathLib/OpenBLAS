@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CGEQR2P + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgeqr2p.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgeqr2p.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -107,7 +105,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEcomputational
+*> \ingroup geqr2p
 *
 *> \par Further Details:
 *  =====================
@@ -131,6 +129,7 @@
 *>
 *  =====================================================================
       SUBROUTINE CGEQR2P( M, N, A, LDA, TAU, WORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -145,16 +144,11 @@
 *
 *  =====================================================================
 *
-*     .. Parameters ..
-      COMPLEX            ONE
-      PARAMETER          ( ONE = ( 1.0E+0, 0.0E+0 ) )
-*     ..
 *     .. Local Scalars ..
       INTEGER            I, K
-      COMPLEX            ALPHA
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLARF, CLARFGP, XERBLA
+      EXTERNAL           CLARF1F, CLARFGP, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          CONJG, MAX, MIN
@@ -188,11 +182,8 @@
 *
 *           Apply H(i)**H to A(i:m,i+1:n) from the left
 *
-            ALPHA = A( I, I )
-            A( I, I ) = ONE
-            CALL CLARF( 'Left', M-I+1, N-I, A( I, I ), 1,
-     $                  CONJG( TAU( I ) ), A( I, I+1 ), LDA, WORK )
-            A( I, I ) = ALPHA
+            CALL CLARF1F( 'Left', M-I+1, N-I, A( I, I ), 1,
+     $                    CONJG( TAU( I ) ), A( I, I+1 ), LDA, WORK )
          END IF
    10 CONTINUE
       RETURN

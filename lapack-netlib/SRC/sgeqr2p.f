@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download SGEQR2P + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgeqr2p.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgeqr2p.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -107,7 +105,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGEcomputational
+*> \ingroup geqr2p
 *
 *> \par Further Details:
 *  =====================
@@ -131,6 +129,7 @@
 *>
 *  =====================================================================
       SUBROUTINE SGEQR2P( M, N, A, LDA, TAU, WORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -145,16 +144,11 @@
 *
 *  =====================================================================
 *
-*     .. Parameters ..
-      REAL               ONE
-      PARAMETER          ( ONE = 1.0E+0 )
-*     ..
 *     .. Local Scalars ..
       INTEGER            I, K
-      REAL               AII
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLARF, SLARFGP, XERBLA
+      EXTERNAL           SLARF1F, SLARFGP, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -188,11 +182,8 @@
 *
 *           Apply H(i) to A(i:m,i+1:n) from the left
 *
-            AII = A( I, I )
-            A( I, I ) = ONE
-            CALL SLARF( 'Left', M-I+1, N-I, A( I, I ), 1, TAU( I ),
-     $                  A( I, I+1 ), LDA, WORK )
-            A( I, I ) = AII
+            CALL SLARF1F( 'Left', M-I+1, N-I, A( I, I ), 1, TAU( I ),
+     $                    A( I, I+1 ), LDA, WORK )
          END IF
    10 CONTINUE
       RETURN

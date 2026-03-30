@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CLAQP2RK + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/claqp2rk.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/claqp2rk.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -254,7 +252,7 @@
 *> \param[out] WORK
 *> \verbatim
 *>          WORK is COMPLEX array, dimension (N-1)
-*>          Used in CLARF subroutine to apply an elementary
+*>          Used in CLARF1F subroutine to apply an elementary
 *>          reflector from the left.
 *> \endverbatim
 *>
@@ -304,27 +302,19 @@
 *> C. H. Bischof, Math. and Comp. Sci. Div., Argonne National Lab, USA.
 *> A BLAS-3 version of the QR factorization with column pivoting.
 *> LAPACK Working Note 114
-*> \htmlonly
 *> <a href="https://www.netlib.org/lapack/lawnspdf/lawn114.pdf">https://www.netlib.org/lapack/lawnspdf/lawn114.pdf</a>
-*> \endhtmlonly
 *> and in
 *> SIAM J. Sci. Comput., 19(5):1486-1494, Sept. 1998.
-*> \htmlonly
 *> <a href="https://doi.org/10.1137/S1064827595296732">https://doi.org/10.1137/S1064827595296732</a>
-*> \endhtmlonly
 *>
 *> [2] A partial column norm updating strategy developed in 2006.
 *> Z. Drmac and Z. Bujanovic, Dept. of Math., University of Zagreb, Croatia.
 *> On the failure of rank revealing QR factorization software – a case study.
 *> LAPACK Working Note 176.
-*> \htmlonly
 *> <a href="http://www.netlib.org/lapack/lawnspdf/lawn176.pdf">http://www.netlib.org/lapack/lawnspdf/lawn176.pdf</a>
-*> \endhtmlonly
 *> and in
 *> ACM Trans. Math. Softw. 35, 2, Article 12 (July 2008), 28 pages.
-*> \htmlonly
 *> <a href="https://doi.org/10.1145/1377612.1377616">https://doi.org/10.1145/1377612.1377616</a>
-*> \endhtmlonly
 *
 *> \par Contributors:
 *  ==================
@@ -364,18 +354,16 @@
 *     .. Parameters ..
       REAL               ZERO, ONE
       PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
-      COMPLEX            CZERO, CONE
-      PARAMETER          ( CZERO = ( 0.0E+0, 0.0E+0 ),
-     $                   CONE = ( 1.0E+0, 0.0E+0 ) )
+      COMPLEX            CZERO
+      PARAMETER          ( CZERO = ( 0.0E+0, 0.0E+0 ) )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            I, ITEMP, J, JMAXC2NRM, KK, KP, MINMNFACT,
-     $                   MINMNUPDT
+      INTEGER            I, ITEMP, J, JMAXC2NRM, KK, KP,
+     $                   KBOUND, MINMNFACT, MINMNUPDT
       REAL               HUGEVAL, TAUNAN, TEMP, TEMP2, TOL3Z
-      COMPLEX            AIKK
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLARF, CLARFG, CSWAP
+      EXTERNAL           CLARF1F, CLARFG, CSWAP
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, REAL, CONJG, AIMAG, MAX, MIN, SQRT
@@ -402,13 +390,13 @@
 *
       MINMNFACT = MIN( M-IOFFSET, N )
       MINMNUPDT = MIN( M-IOFFSET, N+NRHS )
-      KMAX = MIN( KMAX, MINMNFACT )
+      KBOUND = MIN( KMAX, MINMNFACT )
       TOL3Z = SQRT( SLAMCH( 'Epsilon' ) )
       HUGEVAL = SLAMCH( 'Overflow' )
 *
 *     Compute the factorization, KK is the lomn loop index.
 *
-      DO KK = 1, KMAX
+      DO KK = 1, KBOUND
 *
          I = IOFFSET + KK
 *
@@ -633,12 +621,9 @@
 *         condition is satisfied, not only KK < N+NRHS )
 *
          IF( KK.LT.MINMNUPDT ) THEN
-            AIKK = A( I, KK )
-            A( I, KK ) = CONE
-            CALL CLARF( 'Left', M-I+1, N+NRHS-KK, A( I, KK ), 1,
-     $                  CONJG( TAU( KK ) ), A( I, KK+1 ), LDA,
-     $                  WORK( 1 ) )
-            A( I, KK ) = AIKK
+            CALL CLARF1F( 'Left', M-I+1, N+NRHS-KK, A( I, KK ), 1,
+     $                    CONJG( TAU( KK ) ), A( I, KK+1 ), LDA,
+     $                    WORK( 1 ) )
          END IF
 *
          IF( KK.LT.MINMNFACT ) THEN
@@ -689,7 +674,7 @@
 *     i.e. no condition was triggered to exit the routine.
 *     Set the number of factorized columns.
 *
-      K = KMAX
+      K = KBOUND
 *
 *     We reached the end of the loop, i.e. all KMAX columns were
 *     factorized, we need to set MAXC2NRMK and RELMAXC2NRMK before

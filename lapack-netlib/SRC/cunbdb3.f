@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CUNBDB3 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cunbdb3.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cunbdb3.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -197,8 +195,10 @@
 *>      Algorithms, 50(1):33-65, 2009.
 *>
 *  =====================================================================
-      SUBROUTINE CUNBDB3( M, P, Q, X11, LDX11, X21, LDX21, THETA, PHI,
+      SUBROUTINE CUNBDB3( M, P, Q, X11, LDX11, X21, LDX21, THETA,
+     $                    PHI,
      $                    TAUP1, TAUP2, TAUQ1, WORK, LWORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -215,10 +215,6 @@
 *
 *  ====================================================================
 *
-*     .. Parameters ..
-      COMPLEX            ONE
-      PARAMETER          ( ONE = (1.0E0,0.0E0) )
-*     ..
 *     .. Local Scalars ..
       REAL               C, S
       INTEGER            CHILDINFO, I, ILARF, IORBDB5, LLARF, LORBDB5,
@@ -226,7 +222,8 @@
       LOGICAL            LQUERY
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLARF, CLARFGP, CUNBDB5, CSROT, CLACGV, XERBLA
+      EXTERNAL           CLARF1F, CLARFGP, CUNBDB5, CSROT, CLACGV,
+     $                   XERBLA
 *     ..
 *     .. External Functions ..
       REAL               SCNRM2, SROUNDUP_LWORK
@@ -287,11 +284,10 @@
          CALL CLACGV( Q-I+1, X21(I,I), LDX21 )
          CALL CLARFGP( Q-I+1, X21(I,I), X21(I,I+1), LDX21, TAUQ1(I) )
          S = REAL( X21(I,I) )
-         X21(I,I) = ONE
-         CALL CLARF( 'R', P-I+1, Q-I+1, X21(I,I), LDX21, TAUQ1(I),
-     $               X11(I,I), LDX11, WORK(ILARF) )
-         CALL CLARF( 'R', M-P-I, Q-I+1, X21(I,I), LDX21, TAUQ1(I),
-     $               X21(I+1,I), LDX21, WORK(ILARF) )
+         CALL CLARF1F( 'R', P-I+1, Q-I+1, X21(I,I), LDX21, TAUQ1(I),
+     $                 X11(I,I), LDX11, WORK(ILARF) )
+         CALL CLARF1F( 'R', M-P-I, Q-I+1, X21(I,I), LDX21, TAUQ1(I),
+     $                 X21(I+1,I), LDX21, WORK(ILARF) )
          CALL CLACGV( Q-I+1, X21(I,I), LDX21 )
          C = SQRT( SCNRM2( P-I+1, X11(I,I), 1 )**2
      $           + SCNRM2( M-P-I, X21(I+1,I), 1 )**2 )
@@ -302,17 +298,17 @@
      $                 WORK(IORBDB5), LORBDB5, CHILDINFO )
          CALL CLARFGP( P-I+1, X11(I,I), X11(I+1,I), 1, TAUP1(I) )
          IF( I .LT. M-P ) THEN
-            CALL CLARFGP( M-P-I, X21(I+1,I), X21(I+2,I), 1, TAUP2(I) )
+            CALL CLARFGP( M-P-I, X21(I+1,I), X21(I+2,I), 1,
+     $                    TAUP2(I) )
             PHI(I) = ATAN2( REAL( X21(I+1,I) ), REAL( X11(I,I) ) )
             C = COS( PHI(I) )
             S = SIN( PHI(I) )
-            X21(I+1,I) = ONE
-            CALL CLARF( 'L', M-P-I, Q-I, X21(I+1,I), 1, CONJG(TAUP2(I)),
-     $                  X21(I+1,I+1), LDX21, WORK(ILARF) )
+            CALL CLARF1F( 'L', M-P-I, Q-I, X21(I+1,I), 1,
+     $                    CONJG(TAUP2(I)), X21(I+1,I+1), LDX21,
+     $                    WORK(ILARF) )
          END IF
-         X11(I,I) = ONE
-         CALL CLARF( 'L', P-I+1, Q-I, X11(I,I), 1, CONJG(TAUP1(I)),
-     $               X11(I,I+1), LDX11, WORK(ILARF) )
+         CALL CLARF1F( 'L', P-I+1, Q-I, X11(I,I), 1, CONJG(TAUP1(I)),
+     $                 X11(I,I+1), LDX11, WORK(ILARF) )
 *
       END DO
 *
@@ -320,9 +316,8 @@
 *
       DO I = M-P + 1, Q
          CALL CLARFGP( P-I+1, X11(I,I), X11(I+1,I), 1, TAUP1(I) )
-         X11(I,I) = ONE
-         CALL CLARF( 'L', P-I+1, Q-I, X11(I,I), 1, CONJG(TAUP1(I)),
-     $               X11(I,I+1), LDX11, WORK(ILARF) )
+         CALL CLARF1F( 'L', P-I+1, Q-I, X11(I,I), 1, CONJG(TAUP1(I)),
+     $                 X11(I,I+1), LDX11, WORK(ILARF) )
       END DO
 *
       RETURN

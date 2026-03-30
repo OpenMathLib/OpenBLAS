@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CUNG2R + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cung2r.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cung2r.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -107,10 +105,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup ung2r
 *
 *  =====================================================================
       SUBROUTINE CUNG2R( M, N, K, A, LDA, TAU, WORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -134,7 +133,7 @@
       INTEGER            I, J, L
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLARF, CSCAL, XERBLA
+      EXTERNAL           CLARF1F, CSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX
@@ -177,9 +176,8 @@
 *        Apply H(i) to A(i:m,i:n) from the left
 *
          IF( I.LT.N ) THEN
-            A( I, I ) = ONE
-            CALL CLARF( 'Left', M-I+1, N-I, A( I, I ), 1, TAU( I ),
-     $                  A( I, I+1 ), LDA, WORK )
+            CALL CLARF1F( 'Left', M-I+1, N-I, A( I, I ), 1, TAU( I ),
+     $                    A( I, I+1 ), LDA, WORK )
          END IF
          IF( I.LT.M )
      $      CALL CSCAL( M-I, -TAU( I ), A( I+1, I ), 1 )

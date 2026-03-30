@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download SORBDB + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sorbdb.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sorbdb.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -255,7 +253,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup unbdb
 *
 *> \par Further Details:
 *  =====================
@@ -281,9 +279,11 @@
 *>      Algorithms, 50(1):33-65, 2009.
 *>
 *  =====================================================================
-      SUBROUTINE SORBDB( TRANS, SIGNS, M, P, Q, X11, LDX11, X12, LDX12,
+      SUBROUTINE SORBDB( TRANS, SIGNS, M, P, Q, X11, LDX11, X12,
+     $                   LDX12,
      $                   X21, LDX21, X22, LDX22, THETA, PHI, TAUP1,
      $                   TAUP2, TAUQ1, TAUQ2, WORK, LWORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -306,8 +306,6 @@
 *     .. Parameters ..
       REAL               REALONE
       PARAMETER          ( REALONE = 1.0E0 )
-      REAL               ONE
-      PARAMETER          ( ONE = 1.0E0 )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            COLMAJOR, LQUERY
@@ -315,7 +313,8 @@
       REAL               Z1, Z2, Z3, Z4
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SAXPY, SLARF, SLARFGP, SSCAL, XERBLA
+      EXTERNAL           SAXPY, SLARF1F, SLARFGP, SSCAL,
+     $                   XERBLA
 *     ..
 *     .. External Functions ..
       REAL               SNRM2
@@ -374,7 +373,7 @@
       IF( INFO .EQ. 0 ) THEN
          LWORKOPT = M - Q
          LWORKMIN = M - Q
-         WORK(1) = LWORKOPT
+         WORK(1) = REAL( LWORKOPT )
          IF( LWORK .LT. LWORKMIN .AND. .NOT. LQUERY ) THEN
             INFO = -21
          END IF
@@ -398,14 +397,16 @@
                CALL SSCAL( P-I+1, Z1, X11(I,I), 1 )
             ELSE
                CALL SSCAL( P-I+1, Z1*COS(PHI(I-1)), X11(I,I), 1 )
-               CALL SAXPY( P-I+1, -Z1*Z3*Z4*SIN(PHI(I-1)), X12(I,I-1),
+               CALL SAXPY( P-I+1, -Z1*Z3*Z4*SIN(PHI(I-1)), X12(I,
+     $                     I-1),
      $                     1, X11(I,I), 1 )
             END IF
             IF( I .EQ. 1 ) THEN
                CALL SSCAL( M-P-I+1, Z2, X21(I,I), 1 )
             ELSE
                CALL SSCAL( M-P-I+1, Z2*COS(PHI(I-1)), X21(I,I), 1 )
-               CALL SAXPY( M-P-I+1, -Z2*Z3*Z4*SIN(PHI(I-1)), X22(I,I-1),
+               CALL SAXPY( M-P-I+1, -Z2*Z3*Z4*SIN(PHI(I-1)), X22(I,
+     $                     I-1),
      $                     1, X21(I,I), 1 )
             END IF
 *
@@ -413,44 +414,47 @@
      $                 SNRM2( P-I+1, X11(I,I), 1 ) )
 *
             IF( P .GT. I ) THEN
-               CALL SLARFGP( P-I+1, X11(I,I), X11(I+1,I), 1, TAUP1(I) )
+               CALL SLARFGP( P-I+1, X11(I,I), X11(I+1,I), 1,
+     $                       TAUP1(I) )
             ELSE IF( P .EQ. I ) THEN
                CALL SLARFGP( P-I+1, X11(I,I), X11(I,I), 1, TAUP1(I) )
             END IF
-            X11(I,I) = ONE
             IF ( M-P .GT. I ) THEN
                CALL SLARFGP( M-P-I+1, X21(I,I), X21(I+1,I), 1,
      $                       TAUP2(I) )
             ELSE IF ( M-P .EQ. I ) THEN
-               CALL SLARFGP( M-P-I+1, X21(I,I), X21(I,I), 1, TAUP2(I) )
+               CALL SLARFGP( M-P-I+1, X21(I,I), X21(I,I), 1,
+     $                       TAUP2(I) )
             END IF
-            X21(I,I) = ONE
 *
             IF ( Q .GT. I ) THEN
-               CALL SLARF( 'L', P-I+1, Q-I, X11(I,I), 1, TAUP1(I),
-     $                     X11(I,I+1), LDX11, WORK )
+               CALL SLARF1F( 'L', P-I+1, Q-I, X11(I,I), 1, TAUP1(I),
+     $                       X11(I,I+1), LDX11, WORK )
             END IF
             IF ( M-Q+1 .GT. I ) THEN
-               CALL SLARF( 'L', P-I+1, M-Q-I+1, X11(I,I), 1, TAUP1(I),
-     $                     X12(I,I), LDX12, WORK )
+               CALL SLARF1F( 'L', P-I+1, M-Q-I+1, X11(I,I), 1,
+     $                       TAUP1(I), X12(I,I), LDX12, WORK )
             END IF
             IF ( Q .GT. I ) THEN
-               CALL SLARF( 'L', M-P-I+1, Q-I, X21(I,I), 1, TAUP2(I),
-     $                     X21(I,I+1), LDX21, WORK )
+               CALL SLARF1F( 'L', M-P-I+1, Q-I, X21(I,I), 1,
+     $                       TAUP2(I), X21(I,I+1), LDX21, WORK )
             END IF
             IF ( M-Q+1 .GT. I ) THEN
-               CALL SLARF( 'L', M-P-I+1, M-Q-I+1, X21(I,I), 1, TAUP2(I),
-     $                     X22(I,I), LDX22, WORK )
+               CALL SLARF1F( 'L', M-P-I+1, M-Q-I+1, X21(I,I), 1,
+     $                       TAUP2(I), X22(I,I), LDX22, WORK )
             END IF
 *
             IF( I .LT. Q ) THEN
                CALL SSCAL( Q-I, -Z1*Z3*SIN(THETA(I)), X11(I,I+1),
      $                     LDX11 )
-               CALL SAXPY( Q-I, Z2*Z3*COS(THETA(I)), X21(I,I+1), LDX21,
+               CALL SAXPY( Q-I, Z2*Z3*COS(THETA(I)), X21(I,I+1),
+     $                     LDX21,
      $                     X11(I,I+1), LDX11 )
             END IF
-            CALL SSCAL( M-Q-I+1, -Z1*Z4*SIN(THETA(I)), X12(I,I), LDX12 )
-            CALL SAXPY( M-Q-I+1, Z2*Z4*COS(THETA(I)), X22(I,I), LDX22,
+            CALL SSCAL( M-Q-I+1, -Z1*Z4*SIN(THETA(I)), X12(I,I),
+     $                  LDX12 )
+            CALL SAXPY( M-Q-I+1, Z2*Z4*COS(THETA(I)), X22(I,I),
+     $                  LDX22,
      $                  X12(I,I), LDX12 )
 *
             IF( I .LT. Q )
@@ -465,7 +469,6 @@
                   CALL SLARFGP( Q-I, X11(I,I+1), X11(I,I+2), LDX11,
      $                          TAUQ1(I) )
                END IF
-               X11(I,I+1) = ONE
             END IF
             IF ( Q+I-1 .LT. M ) THEN
                IF ( M-Q .EQ. I ) THEN
@@ -476,21 +479,20 @@
      $                          TAUQ2(I) )
                END IF
             END IF
-            X12(I,I) = ONE
 *
             IF( I .LT. Q ) THEN
-               CALL SLARF( 'R', P-I, Q-I, X11(I,I+1), LDX11, TAUQ1(I),
-     $                     X11(I+1,I+1), LDX11, WORK )
-               CALL SLARF( 'R', M-P-I, Q-I, X11(I,I+1), LDX11, TAUQ1(I),
-     $                     X21(I+1,I+1), LDX21, WORK )
+               CALL SLARF1F( 'R', P-I, Q-I, X11(I,I+1), LDX11,
+     $                       TAUQ1(I), X11(I+1,I+1), LDX11, WORK )
+               CALL SLARF1F( 'R', M-P-I, Q-I, X11(I,I+1), LDX11,
+     $                       TAUQ1(I), X21(I+1,I+1), LDX21, WORK )
             END IF
             IF ( P .GT. I ) THEN
-               CALL SLARF( 'R', P-I, M-Q-I+1, X12(I,I), LDX12, TAUQ2(I),
-     $                     X12(I+1,I), LDX12, WORK )
+               CALL SLARF1F( 'R', P-I, M-Q-I+1, X12(I,I), LDX12,
+     $                       TAUQ2(I), X12(I+1,I), LDX12, WORK )
             END IF
             IF ( M-P .GT. I ) THEN
-               CALL SLARF( 'R', M-P-I, M-Q-I+1, X12(I,I), LDX12,
-     $                     TAUQ2(I), X22(I+1,I), LDX22, WORK )
+               CALL SLARF1F( 'R', M-P-I, M-Q-I+1, X12(I,I), LDX12,
+     $                       TAUQ2(I), X22(I+1,I), LDX22, WORK )
             END IF
 *
          END DO
@@ -507,15 +509,14 @@
                CALL SLARFGP( M-Q-I+1, X12(I,I), X12(I,I+1), LDX12,
      $                       TAUQ2(I) )
             END IF
-            X12(I,I) = ONE
 *
             IF ( P .GT. I ) THEN
-               CALL SLARF( 'R', P-I, M-Q-I+1, X12(I,I), LDX12, TAUQ2(I),
-     $                     X12(I+1,I), LDX12, WORK )
+               CALL SLARF1F( 'R', P-I, M-Q-I+1, X12(I,I), LDX12,
+     $                       TAUQ2(I), X12(I+1,I), LDX12, WORK )
             END IF
             IF( M-P-Q .GE. 1 )
-     $         CALL SLARF( 'R', M-P-Q, M-Q-I+1, X12(I,I), LDX12,
-     $                     TAUQ2(I), X22(Q+1,I), LDX22, WORK )
+     $         CALL SLARF1F( 'R', M-P-Q, M-Q-I+1, X12(I,I), LDX12,
+     $                       TAUQ2(I), X22(Q+1,I), LDX22, WORK )
 *
          END DO
 *
@@ -531,10 +532,10 @@
                CALL SLARFGP( M-P-Q-I+1, X22(Q+I,P+I), X22(Q+I,P+I+1),
      $                       LDX22, TAUQ2(P+I) )
             END IF
-            X22(Q+I,P+I) = ONE
             IF ( I .LT. M-P-Q ) THEN
-               CALL SLARF( 'R', M-P-Q-I, M-P-Q-I+1, X22(Q+I,P+I), LDX22,
-     $                     TAUQ2(P+I), X22(Q+I+1,P+I), LDX22, WORK )
+               CALL SLARF1F( 'R', M-P-Q-I, M-P-Q-I+1, X22(Q+I,P+I),
+     $                       LDX22, TAUQ2(P+I), X22(Q+I+1,P+I),
+     $                       LDX22, WORK )
             END IF
 *
          END DO
@@ -549,22 +550,25 @@
                CALL SSCAL( P-I+1, Z1, X11(I,I), LDX11 )
             ELSE
                CALL SSCAL( P-I+1, Z1*COS(PHI(I-1)), X11(I,I), LDX11 )
-               CALL SAXPY( P-I+1, -Z1*Z3*Z4*SIN(PHI(I-1)), X12(I-1,I),
+               CALL SAXPY( P-I+1, -Z1*Z3*Z4*SIN(PHI(I-1)), X12(I-1,
+     $                     I),
      $                     LDX12, X11(I,I), LDX11 )
             END IF
             IF( I .EQ. 1 ) THEN
                CALL SSCAL( M-P-I+1, Z2, X21(I,I), LDX21 )
             ELSE
-               CALL SSCAL( M-P-I+1, Z2*COS(PHI(I-1)), X21(I,I), LDX21 )
-               CALL SAXPY( M-P-I+1, -Z2*Z3*Z4*SIN(PHI(I-1)), X22(I-1,I),
+               CALL SSCAL( M-P-I+1, Z2*COS(PHI(I-1)), X21(I,I),
+     $                     LDX21 )
+               CALL SAXPY( M-P-I+1, -Z2*Z3*Z4*SIN(PHI(I-1)), X22(I-1,
+     $                     I),
      $                     LDX22, X21(I,I), LDX21 )
             END IF
 *
             THETA(I) = ATAN2( SNRM2( M-P-I+1, X21(I,I), LDX21 ),
      $                 SNRM2( P-I+1, X11(I,I), LDX11 ) )
 *
-            CALL SLARFGP( P-I+1, X11(I,I), X11(I,I+1), LDX11, TAUP1(I) )
-            X11(I,I) = ONE
+            CALL SLARFGP( P-I+1, X11(I,I), X11(I,I+1), LDX11,
+     $                    TAUP1(I) )
             IF ( I .EQ. M-P ) THEN
                CALL SLARFGP( M-P-I+1, X21(I,I), X21(I,I), LDX21,
      $                       TAUP2(I) )
@@ -572,23 +576,22 @@
                CALL SLARFGP( M-P-I+1, X21(I,I), X21(I,I+1), LDX21,
      $                       TAUP2(I) )
             END IF
-            X21(I,I) = ONE
 *
             IF ( Q .GT. I ) THEN
-               CALL SLARF( 'R', Q-I, P-I+1, X11(I,I), LDX11, TAUP1(I),
-     $                     X11(I+1,I), LDX11, WORK )
+               CALL SLARF1F( 'R', Q-I, P-I+1, X11(I,I), LDX11,
+     $                       TAUP1(I), X11(I+1,I), LDX11, WORK )
             END IF
             IF ( M-Q+1 .GT. I ) THEN
-               CALL SLARF( 'R', M-Q-I+1, P-I+1, X11(I,I), LDX11,
-     $                     TAUP1(I), X12(I,I), LDX12, WORK )
+               CALL SLARF1F( 'R', M-Q-I+1, P-I+1, X11(I,I), LDX11,
+     $                       TAUP1(I), X12(I,I), LDX12, WORK )
             END IF
             IF ( Q .GT. I ) THEN
-               CALL SLARF( 'R', Q-I, M-P-I+1, X21(I,I), LDX21, TAUP2(I),
-     $                     X21(I+1,I), LDX21, WORK )
+               CALL SLARF1F( 'R', Q-I, M-P-I+1, X21(I,I), LDX21,
+     $                       TAUP2(I), X21(I+1,I), LDX21, WORK )
             END IF
             IF ( M-Q+1 .GT. I ) THEN
-               CALL SLARF( 'R', M-Q-I+1, M-P-I+1, X21(I,I), LDX21,
-     $                     TAUP2(I), X22(I,I), LDX22, WORK )
+               CALL SLARF1F( 'R', M-Q-I+1, M-P-I+1, X21(I,I), LDX21,
+     $                       TAUP2(I), X22(I,I), LDX22, WORK )
             END IF
 *
             IF( I .LT. Q ) THEN
@@ -612,7 +615,6 @@
                   CALL SLARFGP( Q-I, X11(I+1,I), X11(I+2,I), 1,
      $                          TAUQ1(I) )
                END IF
-               X11(I+1,I) = ONE
             END IF
             IF ( M-Q .GT. I ) THEN
                CALL SLARFGP( M-Q-I+1, X12(I,I), X12(I+1,I), 1,
@@ -621,19 +623,18 @@
                CALL SLARFGP( M-Q-I+1, X12(I,I), X12(I,I), 1,
      $                       TAUQ2(I) )
             END IF
-            X12(I,I) = ONE
 *
             IF( I .LT. Q ) THEN
-               CALL SLARF( 'L', Q-I, P-I, X11(I+1,I), 1, TAUQ1(I),
-     $                     X11(I+1,I+1), LDX11, WORK )
-               CALL SLARF( 'L', Q-I, M-P-I, X11(I+1,I), 1, TAUQ1(I),
-     $                     X21(I+1,I+1), LDX21, WORK )
+               CALL SLARF1F( 'L', Q-I, P-I, X11(I+1,I), 1, TAUQ1(I),
+     $                       X11(I+1,I+1), LDX11, WORK )
+               CALL SLARF1F( 'L', Q-I, M-P-I, X11(I+1,I), 1,
+     $                       TAUQ1(I), X21(I+1,I+1), LDX21, WORK )
             END IF
-            CALL SLARF( 'L', M-Q-I+1, P-I, X12(I,I), 1, TAUQ2(I),
-     $                  X12(I,I+1), LDX12, WORK )
+            CALL SLARF1F( 'L', M-Q-I+1, P-I, X12(I,I), 1, TAUQ2(I),
+     $                    X12(I,I+1), LDX12, WORK )
             IF ( M-P-I .GT. 0 ) THEN
-               CALL SLARF( 'L', M-Q-I+1, M-P-I, X12(I,I), 1, TAUQ2(I),
-     $                     X22(I,I+1), LDX22, WORK )
+               CALL SLARF1F( 'L', M-Q-I+1, M-P-I, X12(I,I), 1,
+     $                       TAUQ2(I), X22(I,I+1), LDX22, WORK )
             END IF
 *
          END DO
@@ -643,16 +644,16 @@
          DO I = Q + 1, P
 *
             CALL SSCAL( M-Q-I+1, -Z1*Z4, X12(I,I), 1 )
-            CALL SLARFGP( M-Q-I+1, X12(I,I), X12(I+1,I), 1, TAUQ2(I) )
-            X12(I,I) = ONE
+            CALL SLARFGP( M-Q-I+1, X12(I,I), X12(I+1,I), 1,
+     $                    TAUQ2(I) )
 *
             IF ( P .GT. I ) THEN
-               CALL SLARF( 'L', M-Q-I+1, P-I, X12(I,I), 1, TAUQ2(I),
-     $                     X12(I,I+1), LDX12, WORK )
+               CALL SLARF1F( 'L', M-Q-I+1, P-I, X12(I,I), 1,
+     $                       TAUQ2(I), X12(I,I+1), LDX12, WORK )
             END IF
             IF( M-P-Q .GE. 1 )
-     $         CALL SLARF( 'L', M-Q-I+1, M-P-Q, X12(I,I), 1, TAUQ2(I),
-     $                     X22(I,Q+1), LDX22, WORK )
+     $         CALL SLARF1F( 'L', M-Q-I+1, M-P-Q, X12(I,I), 1,
+     $                       TAUQ2(I), X22(I,Q+1), LDX22, WORK )
 *
          END DO
 *
@@ -662,15 +663,16 @@
 *
             CALL SSCAL( M-P-Q-I+1, Z2*Z4, X22(P+I,Q+I), 1 )
             IF ( M-P-Q .EQ. I ) THEN
-               CALL SLARFGP( M-P-Q-I+1, X22(P+I,Q+I), X22(P+I,Q+I), 1,
+               CALL SLARFGP( M-P-Q-I+1, X22(P+I,Q+I), X22(P+I,Q+I),
+     $                       1,
      $                       TAUQ2(P+I) )
-               X22(P+I,Q+I) = ONE
             ELSE
-               CALL SLARFGP( M-P-Q-I+1, X22(P+I,Q+I), X22(P+I+1,Q+I), 1,
+               CALL SLARFGP( M-P-Q-I+1, X22(P+I,Q+I), X22(P+I+1,Q+I),
+     $                       1,
      $                       TAUQ2(P+I) )
-               X22(P+I,Q+I) = ONE
-               CALL SLARF( 'L', M-P-Q-I+1, M-P-Q-I, X22(P+I,Q+I), 1,
-     $                     TAUQ2(P+I), X22(P+I,Q+I+1), LDX22, WORK )
+               CALL SLARF1F( 'L', M-P-Q-I+1, M-P-Q-I, X22(P+I,Q+I),
+     $                       1, TAUQ2(P+I), X22(P+I,Q+I+1), LDX22,
+     $                       WORK )
             END IF
 *
 *
