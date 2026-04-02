@@ -24,6 +24,30 @@ For a general introduction to the BLAS routines, please refer to the extensive d
 <https://www.netlib.org/blas>. On that site you will likewise find documentation for the reference implementation of the higher-level library LAPACK - the **L**inear **A**lgebra **Pack**age that comes included with OpenBLAS. If you are looking for a general primer or refresher on Linear Algebra, the set of six
 20-minute lecture videos by Prof. Gilbert Strang on either MIT OpenCourseWare [here](https://ocw.mit.edu/resources/res-18-010-a-2020-vision-of-linear-algebra-spring-2020/) or YouTube [here](https://www.youtube.com/playlist?list=PLUl4u3cNGP61iQEFiWLE21EJCxwmWvvek) may be helpful.
 
+## Building Documentation for offline use
+
+You can run your own local instance of http://www.openmathlib.org/OpenBLAS/docs/ via:
+
+```
+uv venv
+source .venv/bin/activate
+uv pip install mkdocs
+uv pip install $(mkdocs-get-deps)
+mkdocs serve
+```
+
+For reference / reproducing in the future, here is a summary of the versions used:
+
+```
+(OpenBLAS) yalihupokn@zoqu-endiman:~/Repositories/dc/OpenBLAS$ python --version
+Python 3.14.3
+(OpenBLAS) yalihupokn@zoqu-endiman:~/Repositories/dc/OpenBLAS$ mkdocs --version
+mkdocs, version 1.6.1 from /home/yalihupokn/Repositories/dc/OpenBLAS/.venv/lib64/python3.14/site-packages/mkdocs (Python 3.14)
+(OpenBLAS) yalihupokn@zoqu-endiman:~/Repositories/dc/OpenBLAS$ uv --version
+uv 0.11.2 (aarch64-unknown-linux-gnu)
+(OpenBLAS) yalihupokn@zoqu-endiman:~/Repositories/dc/OpenBLAS$ 
+```
+
 ## Binary Packages
 
 We provide official binary packages for the following platform:
