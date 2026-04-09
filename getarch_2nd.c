@@ -103,7 +103,55 @@ int main(int argc, char **argv) {
     printf("XGEMM3M_UNROLL_N=%d\n", QGEMM_DEFAULT_UNROLL_N);
 #endif
 
+#ifdef ARCH_RISCV64
+#ifdef STRMM_DEFAULT_UNROLL_M
+    printf("STRMM_UNROLL_M=%d\n", STRMM_DEFAULT_UNROLL_M);
+#else
+    printf("STRMM_UNROLL_M=%d\n", SGEMM_DEFAULT_UNROLL_M);
+#endif
 
+#ifdef STRMM_DEFAULT_UNROLL_N
+    printf("STRMM_UNROLL_N=%d\n", STRMM_DEFAULT_UNROLL_N);
+#else
+    printf("STRMM_UNROLL_N=%d\n", SGEMM_DEFAULT_UNROLL_N);
+#endif
+
+#ifdef DTRMM_DEFAULT_UNROLL_M
+    printf("DTRMM_UNROLL_M=%d\n", DTRMM_DEFAULT_UNROLL_M);
+#else
+    printf("DTRMM_UNROLL_M=%d\n", DGEMM_DEFAULT_UNROLL_M);
+#endif
+
+#ifdef DTRMM_DEFAULT_UNROLL_N
+    printf("DTRMM_UNROLL_N=%d\n", DTRMM_DEFAULT_UNROLL_N);
+#else
+    printf("DTRMM_UNROLL_N=%d\n", DGEMM_DEFAULT_UNROLL_N);
+#endif
+
+#ifdef CTRMM_DEFAULT_UNROLL_M
+    printf("CTRMM_UNROLL_M=%d\n", CTRMM_DEFAULT_UNROLL_M);
+#else
+    printf("CTRMM_UNROLL_M=%d\n", CGEMM_DEFAULT_UNROLL_M);
+#endif
+
+#ifdef CTRMM_DEFAULT_UNROLL_N
+    printf("CTRMM_UNROLL_N=%d\n", CTRMM_DEFAULT_UNROLL_N);
+#else
+    printf("CTRMM_UNROLL_N=%d\n", CGEMM_DEFAULT_UNROLL_N);
+#endif
+
+#ifdef ZTRMM_DEFAULT_UNROLL_M
+    printf("ZTRMM_UNROLL_M=%d\n", ZTRMM_DEFAULT_UNROLL_M);
+#else
+    printf("ZTRMM_UNROLL_M=%d\n", ZGEMM_DEFAULT_UNROLL_M);
+#endif
+
+#ifdef ZTRMM_DEFAULT_UNROLL_N
+    printf("ZTRMM_UNROLL_N=%d\n", ZTRMM_DEFAULT_UNROLL_N);
+#else
+    printf("ZTRMM_UNROLL_N=%d\n", ZGEMM_DEFAULT_UNROLL_N);
+#endif
+#endif /* ARCH_RISCV64 */
   }
 
 

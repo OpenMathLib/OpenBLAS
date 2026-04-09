@@ -95,10 +95,10 @@ DGEMVTKERNEL = gemv_t_rvv.c
 CGEMVTKERNEL = zgemv_t_rvv.c
 ZGEMVTKERNEL = zgemv_t_rvv.c
 
-SGEMMKERNEL    =  sgemm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N)_zvl128b.c
+SGEMMKERNEL    =  sgemm_kernel_zvl128b.c
 ifneq ($(filter $(SGEMM_UNROLL_N),4 8 16),)
 SGEMMONCOPY    =  gemm_ncopy_$(SGEMM_UNROLL_N)_rvv.c
-SGEMMOTCOPY    =  gemm_tcopy_$(SGEMM_UNROLL_N)_rvv.c
+SGEMMOTCOPY    =  gemm_tcopy_$(SGEMM_UNROLL_N)_rvv_max.c
 else
 SGEMMONCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_N).c
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_$(SGEMM_UNROLL_N).c
@@ -109,7 +109,7 @@ SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 ifneq ($(SGEMM_UNROLL_M), $(SGEMM_UNROLL_N))
 ifneq ($(filter $(SGEMM_UNROLL_M),4 8 16),)
 SGEMMINCOPY    =  gemm_ncopy_$(SGEMM_UNROLL_M)_rvv.c
-SGEMMITCOPY    =  gemm_tcopy_$(SGEMM_UNROLL_M)_rvv.c
+SGEMMITCOPY    =  gemm_tcopy_$(SGEMM_UNROLL_M)_rvv_max.c
 else
 SGEMMINCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_M).c
 SGEMMITCOPY    =  ../generic/gemm_tcopy_$(SGEMM_UNROLL_M).c
@@ -118,10 +118,10 @@ SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
 
-DGEMMKERNEL    =  dgemm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N)_zvl128b.c
+DGEMMKERNEL    =  dgemm_kernel_zvl128b.c
 DGEMMONCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_N).c
 ifneq ($(filter $(DGEMM_UNROLL_N),4 8 16),)
-DGEMMOTCOPY    =  gemm_tcopy_$(DGEMM_UNROLL_N)_rvv.c
+DGEMMOTCOPY    =  gemm_tcopy_$(DGEMM_UNROLL_N)_rvv_max.c
 else
 DGEMMOTCOPY    =  ../generic/gemm_tcopy_$(DGEMM_UNROLL_N).c
 endif
@@ -131,7 +131,7 @@ DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 ifneq ($(DGEMM_UNROLL_M), $(DGEMM_UNROLL_N))
 DGEMMINCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_M).c
 ifneq ($(filter $(DGEMM_UNROLL_M),4 8 16),)
-DGEMMITCOPY    =  gemm_tcopy_$(DGEMM_UNROLL_M)_rvv.c
+DGEMMITCOPY    =  gemm_tcopy_$(DGEMM_UNROLL_M)_rvv_max.c
 else
 DGEMMITCOPY    =  ../generic/gemm_tcopy_$(DGEMM_UNROLL_M).c
 endif
@@ -139,55 +139,55 @@ DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
 DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
 
-CGEMMKERNEL    =  cgemm_kernel_$(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N)_zvl128b.c
+CGEMMKERNEL    =  cgemm_kernel_zvl128b.c
 CGEMMONCOPY    =  ../generic/zgemm_ncopy_$(CGEMM_UNROLL_N).c
-CGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(CGEMM_UNROLL_N).c
+CGEMMOTCOPY    =  zgemm_tcopy_$(CGEMM_UNROLL_N)_rvv_max.c
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
 CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 ifneq ($(CGEMM_UNROLL_M), $(CGEMM_UNROLL_N))
 CGEMMINCOPY    =  ../generic/zgemm_ncopy_$(CGEMM_UNROLL_M).c
-CGEMMITCOPY    =  ../generic/zgemm_tcopy_$(CGEMM_UNROLL_M).c
+CGEMMITCOPY    =  zgemm_tcopy_$(CGEMM_UNROLL_M)_rvv_max.c
 CGEMMINCOPYOBJ =  cgemm_incopy$(TSUFFIX).$(SUFFIX)
 CGEMMITCOPYOBJ =  cgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
 
-ZGEMMKERNEL    =  zgemm_kernel_$(ZGEMM_UNROLL_M)x$(ZGEMM_UNROLL_N)_zvl128b.c
+ZGEMMKERNEL    =  zgemm_kernel_zvl128b.c
 ZGEMMONCOPY    =  ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_N).c
-ZGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_N).c
+ZGEMMOTCOPY    =  zgemm_tcopy_$(ZGEMM_UNROLL_N)_rvv_max.c
 ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
 ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 ifneq ($(ZGEMM_UNROLL_M), $(ZGEMM_UNROLL_N))
 ZGEMMINCOPY    =  ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_M).c
-ZGEMMITCOPY    =  ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_M).c
+ZGEMMITCOPY    =  zgemm_tcopy_$(ZGEMM_UNROLL_M)_rvv_max.c
 ZGEMMINCOPYOBJ =  zgemm_incopy$(TSUFFIX).$(SUFFIX)
 ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
 
-STRMMKERNEL	   =  strmm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N)_zvl128b.c
-STRMMUNCOPY_M  =  ../generic/trmm_uncopy_$(SGEMM_UNROLL_M).c
-STRMMLNCOPY_M  =  ../generic/trmm_lncopy_$(SGEMM_UNROLL_M).c
-STRMMUTCOPY_M  =  ../generic/trmm_utcopy_$(SGEMM_UNROLL_M).c
-STRMMLTCOPY_M  =  ../generic/trmm_ltcopy_$(SGEMM_UNROLL_M).c
+STRMMKERNEL	   =  strmm_kernel_$(STRMM_UNROLL_M)x$(STRMM_UNROLL_N)_zvl128b.c
+STRMMUNCOPY_M  =  ../generic/trmm_uncopy_$(STRMM_UNROLL_M).c
+STRMMLNCOPY_M  =  ../generic/trmm_lncopy_$(STRMM_UNROLL_M).c
+STRMMUTCOPY_M  =  ../generic/trmm_utcopy_$(STRMM_UNROLL_M).c
+STRMMLTCOPY_M  =  ../generic/trmm_ltcopy_$(STRMM_UNROLL_M).c
 
-DTRMMKERNEL	   =  dtrmm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N)_zvl128b.c
-DTRMMUNCOPY_M  =  ../generic/trmm_uncopy_$(DGEMM_UNROLL_M).c
-DTRMMLNCOPY_M  =  ../generic/trmm_lncopy_$(DGEMM_UNROLL_M).c
-DTRMMUTCOPY_M  =  ../generic/trmm_utcopy_$(DGEMM_UNROLL_M).c
-DTRMMLTCOPY_M  =  ../generic/trmm_ltcopy_$(DGEMM_UNROLL_M).c
+DTRMMKERNEL	   =  dtrmm_kernel_$(DTRMM_UNROLL_M)x$(DTRMM_UNROLL_N)_zvl128b.c
+DTRMMUNCOPY_M  =  ../generic/trmm_uncopy_$(DTRMM_UNROLL_M).c
+DTRMMLNCOPY_M  =  ../generic/trmm_lncopy_$(DTRMM_UNROLL_M).c
+DTRMMUTCOPY_M  =  ../generic/trmm_utcopy_$(DTRMM_UNROLL_M).c
+DTRMMLTCOPY_M  =  ../generic/trmm_ltcopy_$(DTRMM_UNROLL_M).c
 
-CTRMMKERNEL	   =  ctrmm_kernel_$(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N)_zvl128b.c
-CTRMMUNCOPY_M  =  ../generic/ztrmm_uncopy_$(CGEMM_UNROLL_M).c
-CTRMMLNCOPY_M  =  ../generic/ztrmm_lncopy_$(CGEMM_UNROLL_M).c
-CTRMMUTCOPY_M  =  ../generic/ztrmm_utcopy_$(CGEMM_UNROLL_M).c
-CTRMMLTCOPY_M  =  ../generic/ztrmm_ltcopy_$(CGEMM_UNROLL_M).c
+CTRMMKERNEL	   =  ctrmm_kernel_$(CTRMM_UNROLL_M)x$(CTRMM_UNROLL_N)_zvl128b.c
+CTRMMUNCOPY_M  =  ../generic/ztrmm_uncopy_$(CTRMM_UNROLL_M).c
+CTRMMLNCOPY_M  =  ../generic/ztrmm_lncopy_$(CTRMM_UNROLL_M).c
+CTRMMUTCOPY_M  =  ../generic/ztrmm_utcopy_$(CTRMM_UNROLL_M).c
+CTRMMLTCOPY_M  =  ../generic/ztrmm_ltcopy_$(CTRMM_UNROLL_M).c
 
-ZTRMMKERNEL	   =  ztrmm_kernel_$(ZGEMM_UNROLL_M)x$(ZGEMM_UNROLL_N)_zvl128b.c
-ZTRMMUNCOPY_M  =  ../generic/ztrmm_uncopy_$(ZGEMM_UNROLL_M).c
-ZTRMMLNCOPY_M  =  ../generic/ztrmm_lncopy_$(ZGEMM_UNROLL_M).c
-ZTRMMUTCOPY_M  =  ../generic/ztrmm_utcopy_$(ZGEMM_UNROLL_M).c
-ZTRMMLTCOPY_M  =  ../generic/ztrmm_ltcopy_$(ZGEMM_UNROLL_M).c
+ZTRMMKERNEL	   =  ztrmm_kernel_$(ZTRMM_UNROLL_M)x$(ZTRMM_UNROLL_N)_zvl128b.c
+ZTRMMUNCOPY_M  =  ../generic/ztrmm_uncopy_$(ZTRMM_UNROLL_M).c
+ZTRMMLNCOPY_M  =  ../generic/ztrmm_lncopy_$(ZTRMM_UNROLL_M).c
+ZTRMMUTCOPY_M  =  ../generic/ztrmm_utcopy_$(ZTRMM_UNROLL_M).c
+ZTRMMLTCOPY_M  =  ../generic/ztrmm_ltcopy_$(ZTRMM_UNROLL_M).c
 
 STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
 STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
