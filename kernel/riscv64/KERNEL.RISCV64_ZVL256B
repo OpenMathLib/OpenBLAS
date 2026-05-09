@@ -138,69 +138,79 @@ DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
 
 CGEMMKERNEL    =  cgemm_kernel_$(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N)_zvl256b.c
-CGEMMONCOPY    =  ../generic/zgemm_ncopy_$(CGEMM_UNROLL_N).c
-CGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(CGEMM_UNROLL_N).c
+CGEMMONCOPY    =  zgemm_ncopy_rvv_v1.c
+CGEMMOTCOPY    =  zgemm_tcopy_rvv_v1.c
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
 CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 ifneq ($(CGEMM_UNROLL_M), $(CGEMM_UNROLL_N))
-CGEMMINCOPY    =  ../generic/zgemm_ncopy_$(CGEMM_UNROLL_M).c
-CGEMMITCOPY    =  ../generic/zgemm_tcopy_$(CGEMM_UNROLL_M).c
+CGEMMINCOPY    =  zgemm_ncopy_rvv_v1.c
+CGEMMITCOPY    =  zgemm_tcopy_rvv_v1.c
 CGEMMINCOPYOBJ =  cgemm_incopy$(TSUFFIX).$(SUFFIX)
 CGEMMITCOPYOBJ =  cgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
 
 ZGEMMKERNEL    =  zgemm_kernel_$(ZGEMM_UNROLL_M)x$(ZGEMM_UNROLL_N)_zvl256b.c
-ZGEMMONCOPY    =  ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_N).c
-ZGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_N).c
+ZGEMMONCOPY    =  zgemm_ncopy_rvv_v1.c
+ZGEMMOTCOPY    =  zgemm_tcopy_rvv_v1.c
 ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
 ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 ifneq ($(ZGEMM_UNROLL_M), $(ZGEMM_UNROLL_N))
-ZGEMMINCOPY    =  ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_M).c
-ZGEMMITCOPY    =  ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_M).c
+ZGEMMINCOPY    =  zgemm_ncopy_rvv_v1.c
+ZGEMMITCOPY    =  zgemm_tcopy_rvv_v1.c
 ZGEMMINCOPYOBJ =  zgemm_incopy$(TSUFFIX).$(SUFFIX)
 ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
 
-STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
-STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
-STRSMKERNEL_RN	=  ../generic/trsm_kernel_RN.c
-STRSMKERNEL_RT	=  ../generic/trsm_kernel_RT.c
+STRSMKERNEL_LN	=  trsm_kernel_LN_rvv_v1.c
+STRSMKERNEL_LT	=  trsm_kernel_LT_rvv_v1.c
+STRSMKERNEL_RN	=  trsm_kernel_RN_rvv_v1.c
+STRSMKERNEL_RT	=  trsm_kernel_RT_rvv_v1.c
 
-DTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
-DTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
-DTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
-DTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+DTRSMKERNEL_LN	=  trsm_kernel_LN_rvv_v1.c
+DTRSMKERNEL_LT	=  trsm_kernel_LT_rvv_v1.c
+DTRSMKERNEL_RN	=  trsm_kernel_RN_rvv_v1.c
+DTRSMKERNEL_RT	=  trsm_kernel_RT_rvv_v1.c
 
-CTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
-CTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
-CTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
-CTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+CTRSMKERNEL_LN	=  trsm_kernel_LN_rvv_v1.c
+CTRSMKERNEL_LT	=  trsm_kernel_LT_rvv_v1.c
+CTRSMKERNEL_RN	=  trsm_kernel_RN_rvv_v1.c
+CTRSMKERNEL_RT	=  trsm_kernel_RT_rvv_v1.c
 
-ZTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
-ZTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
-ZTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
-ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+ZTRSMKERNEL_LN	=  trsm_kernel_LN_rvv_v1.c
+ZTRSMKERNEL_LT	=  trsm_kernel_LT_rvv_v1.c
+ZTRSMKERNEL_RN	=  trsm_kernel_RN_rvv_v1.c
+ZTRSMKERNEL_RT	=  trsm_kernel_RT_rvv_v1.c
 
-SSYMV_U_KERNEL =  symv_U_vector.c
-SSYMV_L_KERNEL =  symv_L_vector.c
-DSYMV_U_KERNEL =  symv_U_vector.c
-DSYMV_L_KERNEL =  symv_L_vector.c
+TRSMCOPYLN_M    =  trsm_lncopy_rvv_v1.c
+TRSMCOPYLT_M    =  trsm_ltcopy_rvv_v1.c
+TRSMCOPYUN_M    =  trsm_uncopy_rvv_v1.c
+TRSMCOPYUT_M    =  trsm_utcopy_rvv_v1.c
 
-CSYMV_U_KERNEL =  ../generic/zsymv_k.c
-CSYMV_L_KERNEL =  ../generic/zsymv_k.c
-ZSYMV_U_KERNEL =  ../generic/zsymv_k.c
-ZSYMV_L_KERNEL =  ../generic/zsymv_k.c
+ZTRSMCOPYLN_M   =  ztrsm_lncopy_rvv_v1.c
+ZTRSMCOPYLT_M   =  ztrsm_ltcopy_rvv_v1.c
+ZTRSMCOPYUN_M   =  ztrsm_uncopy_rvv_v1.c
+ZTRSMCOPYUT_M   =  ztrsm_utcopy_rvv_v1.c
 
-CHEMV_L_KERNEL =  zhemv_LM_vector.c
-CHEMV_M_KERNEL =  zhemv_LM_vector.c
-CHEMV_U_KERNEL =  zhemv_UV_vector.c
-CHEMV_V_KERNEL =  zhemv_UV_vector.c
-ZHEMV_L_KERNEL =  zhemv_LM_vector.c
-ZHEMV_M_KERNEL =  zhemv_LM_vector.c
-ZHEMV_U_KERNEL =  zhemv_UV_vector.c
-ZHEMV_V_KERNEL =  zhemv_UV_vector.c
+SSYMV_U_KERNEL =  symv_U_rvv.c 
+SSYMV_L_KERNEL =  symv_L_rvv.c
+DSYMV_U_KERNEL =  symv_U_rvv.c 
+DSYMV_L_KERNEL =  symv_L_rvv.c
+
+CSYMV_U_KERNEL =  zsymv_U_rvv.c
+CSYMV_L_KERNEL =  zsymv_L_rvv.c
+ZSYMV_U_KERNEL =  zsymv_U_rvv.c
+ZSYMV_L_KERNEL =  zsymv_L_rvv.c
+
+CHEMV_L_KERNEL =  zhemv_LM_rvv.c
+CHEMV_M_KERNEL =  zhemv_LM_rvv.c
+CHEMV_U_KERNEL =  zhemv_UV_rvv.c
+CHEMV_V_KERNEL =  zhemv_UV_rvv.c
+ZHEMV_L_KERNEL =  zhemv_LM_rvv.c
+ZHEMV_M_KERNEL =  zhemv_LM_rvv.c
+ZHEMV_U_KERNEL =  zhemv_UV_rvv.c
+ZHEMV_V_KERNEL =  zhemv_UV_rvv.c
 
 LSAME_KERNEL = ../generic/lsame.c
 
