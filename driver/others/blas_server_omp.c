@@ -69,7 +69,7 @@
 
 int blas_server_avail = 0;
 int blas_omp_number_max = 0;
-int blas_omp_threads_local = 1;
+int blas_omp_threads_local = 1; // num threads to use when already inside omp_in_parallel()
 int blas_is_num_threads_set_explicitly = 0; // tracks whether the user called openblas_set_num_threads()
 
 extern int openblas_omp_adaptive_env(void);
