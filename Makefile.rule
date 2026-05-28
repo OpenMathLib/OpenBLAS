@@ -335,3 +335,8 @@ COMMON_PROF = -pg
 #
 #  End of user configuration
 #
+
+# RISC-V 64-bit support
+ifeq ($(ARCH), riscv64)
+TARGET = RISCV64_GENERIC
+endif
