@@ -314,8 +314,8 @@ typedef __vector unsigned char vec_t;
   *((__vector_pair *)(void *)(packB+(k*8)+4+offset)) = pb1;
 
 #define LOAD_PACKED_B(pb0, pb1, offset)                        \
-  pb0 = __builtin_vsx_lxvp(0, (__vector_pair *)((void *)(packB+(k*8)+0+offset)));  \
-  pb1 = __builtin_vsx_lxvp(0, (__vector_pair *)((void *)(packB+(k*8)+4+offset)));
+  pb0 = __builtin_vsx_lxvp(0L, (__vector_pair *)((void *)(packB+(k*8)+0+offset)));  \
+  pb1 = __builtin_vsx_lxvp(0L, (__vector_pair *)((void *)(packB+(k*8)+4+offset)));
 
 #ifdef B0
 int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, IFLOAT * A, BLASLONG lda, FLOAT alpha, IFLOAT * B, BLASLONG ldb, FLOAT * C, BLASLONG ldc)

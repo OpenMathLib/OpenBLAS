@@ -144,11 +144,11 @@ typedef __vector unsigned char vec_t;
 #define LOAD_A_1x1(K, M) ra0 = vec_splats(A[K*lda+M]);
 
 #define LOAD_BP_1x8(K, N)                                 \
-  pb0 = __builtin_vsx_lxvp(0, (__vector_pair *)((void *)&B[((K)*ldb)+N+0]));  \
-  pb1 = __builtin_vsx_lxvp(0, (__vector_pair *)((void *)&B[((K)*ldb)+N+4]));
+  pb0 = __builtin_vsx_lxvp(0L, (__vector_pair *)((void *)&B[((K)*ldb)+N+0]));  \
+  pb1 = __builtin_vsx_lxvp(0L, (__vector_pair *)((void *)&B[((K)*ldb)+N+4]));
 
 #define LOAD_BP_1x4(K, N)                                \
-  pb0 = __builtin_vsx_lxvp(0, (__vector_pair *)((void *)&B[((K)*ldb)+N+0]));
+  pb0 = __builtin_vsx_lxvp(0L, (__vector_pair *)((void *)&B[((K)*ldb)+N+0]));
 
 #define LOAD_BP_1x2(K, N)                                  \
   t0 = vec_xl(0, B+(K*ldb)+N);                             \
