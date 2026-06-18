@@ -566,6 +566,45 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#risc-v" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RISC-V
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RISC-V">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#target-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Target selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compiler-requirements-for-zvl-targets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compiler requirements for ZVL targets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#freebsd_1" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1089,6 +1128,45 @@
       
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#risc-v" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RISC-V
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RISC-V">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#target-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Target selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compiler-requirements-for-zvl-targets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compiler requirements for ZVL targets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -1810,6 +1888,71 @@ make<span class="w"> </span><span class="nv">BINARY</span><span class="o">=</spa
 
 make<span class="w"> </span><span class="nv">BINARY</span><span class="o">=</span><span class="m">32</span><span class="w"> </span><span class="nv">BINARY32</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="nv">$MTI_TOOLCHAIN</span>-gcc<span class="w"> </span><span class="nv">AR</span><span class="o">=</span><span class="nv">$MTI_TOOLCHAIN</span>-ar<span class="w"> </span><span class="nv">FC</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$MTI_TOOLCHAIN</span><span class="s2">-gfortran -EL&quot;</span><span class="w">    </span><span class="nv">RANLIB</span><span class="o">=</span><span class="nv">$MTI_TOOLCHAIN</span>-ranlib<span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-EL&quot;</span><span class="w"> </span><span class="nv">FFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>P5600
 </code></pre></div>
+<h3 id="risc-v">RISC-V</h3>
+<p>OpenBLAS supports several RISC-V targets. Target selection determines whether
+the resulting build is vectorized.</p>
+<h4 id="target-selection">Target selection</h4>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Vectorization</th>
+<th>Use when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RISCV64_GENERIC</code></td>
+<td>None — scalar reference path</td>
+<td>Non-vector cores, or as a baseline reference build</td>
+</tr>
+<tr>
+<td><code>RISCV64_ZVL128B</code></td>
+<td>RVV 1.0, VLEN &gt;= 128 bits</td>
+<td>Generic RVV-1.0 hardware with 128-bit vector registers</td>
+</tr>
+<tr>
+<td><code>RISCV64_ZVL256B</code></td>
+<td>RVV 1.0, VLEN &gt;= 256 bits</td>
+<td>Generic RVV-1.0 hardware with 256-bit vector registers</td>
+</tr>
+<tr>
+<td><code>C910V</code></td>
+<td>RVV 0.7.1 (legacy)</td>
+<td>T-Head C910 (Allwinner D1, etc.)</td>
+</tr>
+<tr>
+<td><code>x280</code></td>
+<td>RVV 1.0, SiFive-tuned</td>
+<td>SiFive x280 cores</td>
+</tr>
+</tbody>
+</table>
+<p>As with the <code>GENERIC</code> and <code>ARCH_GENERIC</code> targets on other architectures,
+<code>RISCV64_GENERIC</code> maps all BLAS operations to the non-vectorized plain-C
+reference path. On RISC-V specifically, <code>Makefile.riscv64</code> also appends a
+scalar <code>-march</code> override for this target that takes precedence over any
+user-supplied <code>-march=rv64gcv</code> flag, so passing the V extension on the
+command line will not produce a vectorized build under this target.</p>
+<p>For RVV 1.0 vectorized builds, use <code>RISCV64_ZVL128B</code> or <code>RISCV64_ZVL256B</code>.
+These targets route all three BLAS levels including DGEMM to the
+<code>_rvv.c</code> kernel set introduced in 2022; see
+<a href="https://github.com/OpenMathLib/OpenBLAS/issues/3808">issue #3808</a> for the
+design rationale and the <code>_vector.c</code> (legacy RVV 0.7) / <code>_rvv.c</code> (RVV 1.0)
+codebase separation.</p>
+<h4 id="compiler-requirements-for-zvl-targets">Compiler requirements for ZVL targets</h4>
+<p>GCC 14 or later is required on current OpenBLAS releases when building the
+<code>RISCV64_ZVL128B</code> or <code>RISCV64_ZVL256B</code> targets. GCC 13 does not implement
+the segmented load/store intrinsics (<code>__riscv_vsseg*</code>) used by the
+<code>_rvv.c</code> kernels; under GCC 13 the build still completes and produces a
+library, but the affected routines fall back to scalar code paths.
+Functional tests will pass on the resulting library; only
+disassembly-level verification detects the regression.</p>
+<p>For a correct <code>RISCV64_ZVL128B</code> build on OpenBLAS 0.3.33,</p>
+<div class="highlight"><pre><span></span><code>riscv64-linux-gnu-objdump<span class="w"> </span>-d<span class="w"> </span>libopenblas*.a<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>grep<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;vle64\|vfmacc\|vsetvli\|vlse64\|vfmul\|vfadd\|vfredosum&#39;</span>
+</code></pre></div>
+<p>returns approximately 12,000-14,000 (GCC 14: ~12,691; GCC 15: ~14,355).</p>
 <h3 id="freebsd_1">FreeBSD</h3>
 <p>You will need to install the following tools from the FreeBSD ports tree:</p>
 <ul>
@@ -1888,7 +2031,7 @@ provides one implementation of <code>malloc</code> for embedded platforms.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 1, 2026 05:18:25 UTC">May 1, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 24, 2026 20:10:28 UTC">May 24, 2026</span>
   </span>
 
     
