@@ -1313,8 +1313,8 @@ vcpkg add port openblas
 </div>
 <div class="tabbed-block">
 <p>Windows is the only platform for which binaries are made available by the
-OpenBLAS project itself. They can be downloaded from the GitHub
-Releases](https://github.com/OpenMathLib/OpenBLAS/releases) page. These
+OpenBLAS project itself. They can be downloaded from the
+<a href="https://github.com/OpenMathLib/OpenBLAS/releases">GitHub Releases</a> page. These
 binaries are built with MinGW, using the following build options:
 <div class="highlight"><pre><span></span><code>NUM_THREADS=64 TARGET=GENERIC DYNAMIC_ARCH=1 DYNAMIC_OLDER=1 CONSISTENT_FPCSR=1 INTERFACE=0
 </code></pre></div>
@@ -1388,7 +1388,7 @@ Using MinGW will yield a different ABI. We'll describe both methods in detail
 in this section, since the process for each is quite different.</p>
 <h4 id="visual-studio-native-windows-abi">Visual Studio &amp; native Windows ABI</h4>
 <p>For Visual Studio, you can use CMake to generate Visual Studio solution files;
-note that you will need at least CMake 3.11 for linking to work correctly).</p>
+note that you will need at least CMake 3.11 for linking to work correctly.</p>
 <p>Note that you need a Fortran compiler if you plan to build and use the latest version 
 of the LAPACK functions included with OpenBLAS. (If you do not have a Fortran compiler
 installed, you can build an older version of the LAPACK sources that has been converted
@@ -1400,7 +1400,7 @@ this, be sure to also use the Intel C compiler (<code>icc</code> or <code>icx</c
 the C parts, as the ABI imposed by <code>ifort</code> is incompatible with MSVC</p>
 <p>A fully-optimized OpenBLAS that can be statically or dynamically linked to your
 application can currently be built for the 64-bit architecture with the LLVM
-compiler infrastructure. We're going to use [Miniforge3] the pre-configured
+compiler infrastructure. We're going to use <a href="https://github.com/conda-forge/miniforge">Miniforge3</a>, the pre-configured
 and more versatile alternative to <a href="https://docs.anaconda.com/miniconda/">Miniconda</a>
 to grab all of the tools we need, since some of them are in an experimental
 status. Before you begin, you'll need to have Microsoft Visual Studio 2015 or
@@ -1545,7 +1545,7 @@ experimental.</p>
 <p>To build OpenBLAS on Windows with MinGW:</p>
 <ol>
 <li>Install the MinGW (GCC) compiler suite, either the 32-bit
-    [MinGW]((http://www.mingw.org/) or the 64-bit
+    <a href="http://www.mingw.org/">MinGW</a> or the 64-bit
     <a href="http://mingw-w64.sourceforge.net/">MinGW-w64</a> toolchain. Be sure to install
     its <code>gfortran</code> package as well (unless you really want to build the BLAS part
     of OpenBLAS only) and check that <code>gcc</code> and <code>gfortran</code> are the same version.
@@ -1598,7 +1598,7 @@ the LLVM toolchain enables native compilation of the Fortran sources of LAPACK a
 <li>
 <p>Clone OpenBLAS to your local machine and checkout to latest release of
    OpenBLAS (unless you want to build the latest development snapshot - here we
-   are using  the 0.3.28 release as the example, of course this exact version
+   are using the 0.3.28 release as the example, of course this exact version
    may be outdated by the time you read this)</p>
 <div class="highlight"><pre><span></span><code>git clone https://github.com/OpenMathLib/OpenBLAS.git
 cd OpenBLAS
@@ -1695,7 +1695,7 @@ Then, generate the import library: <code>dlltool -d libopenblas.def -l libopenbl
 ARMV8 targets, respectively. The same basic principles as described below for
 ARMV8 should also apply to building an x86 or x86-64 version (substitute
 something like <code>NEHALEM</code> for the target instead of <code>ARMV8</code>, and replace all the
-<code>aarch64</code> in the toolchain paths with <code>x86</code> or <code>x96_64</code> as appropriate).</p>
+<code>aarch64</code> in the toolchain paths with <code>x86</code> or <code>x86_64</code> as appropriate).</p>
 <div class="admonition info">
 <p class="admonition-title">Historic note</p>
 <p>Since NDK version 19, the default toolchain is provided as a standalone
@@ -1756,13 +1756,15 @@ appears to be sufficient on Linux. On OSX, setting AR to the ar provided in the
 <div class="highlight"><pre><span></span><code>cmake<span class="w"> </span>-DANDROID_ABI<span class="o">=</span>arm64-v8a<span class="w"> </span>-DTARGET<span class="o">=</span>ARMV8<span class="w"> </span>-DCMAKE_TOOLCHAIN_FILE<span class="o">=</span>/opt/android-ndk-r27/build/cmake/android.toolchain.cmake<span class="w"> </span>-DNOFORTRAN<span class="o">=</span><span class="m">1</span><span class="w"> </span>-DANDROID_PLATFORM<span class="o">=</span>android-23<span class="w"> </span>..
 cmake<span class="w"> </span>--build<span class="w"> </span>.
 </code></pre></div>
-in your build directory should work (be sure to adjust the toolchain_file argument according to where you installed the NDK, and the ANDROID_PLATFORM
-according to the minimum version of Android you want to support. (If you leave out the ANDROID_PLATFORM parameter, the build will fail with an error 
-message about a missing declaration or missing header file complex.h)</p>
+in your build directory should work. Be sure to adjust the toolchain file
+argument according to where you installed the NDK, and <code>ANDROID_PLATFORM</code>
+according to the minimum version of Android you want to support. If you leave
+out the <code>ANDROID_PLATFORM</code> parameter, the build will fail with an error message
+about a missing declaration or missing header file <code>complex.h</code>.</p>
 <details class="note">
-<summary>Alternative build script for 3 architectures</summary>
-<p>This script will build OpenBLAS for 3 architecture (<code>ARMV7</code>, <code>ARMV8</code>,
-<code>X86</code>) and install them to <code>/opt/OpenBLAS/lib</code>. Of course you can also copy
+<summary>Alternative build script for 4 Android ABIs</summary>
+<p>This script will build OpenBLAS for 4 Android ABIs (<code>armeabi-v7a</code>, <code>arm64-v8a</code>,
+<code>x86</code>, <code>x86_64</code>) and install them to <code>/opt/OpenBLAS/lib</code>. Of course you can also copy
 only the section that is of interest to you - also notice that the <code>AR=</code>
 line may need adapting to the name of the ar tool provided in your
 <code>$TOOLCHAIN/bin</code> - for example <code>llvm-ar</code> in some recent NDK versions.
@@ -1835,13 +1837,13 @@ which contains solutions for both Windows and Linux. Only the Linux-based
 toolchain has been tested so far, but the following instructions may apply
 similarly to Windows:</p>
 <p>Download <a href="https://repo.huaweicloud.com/harmonyos/os/4.1.1-Release/ohos-sdk-windows_linux-public.tar.gz">this HarmonyOS 4.1.1 SDK</a>,
-or whatever newer version may be available in the future). Use <code>tar -xvf
-ohos-sdk-windows_linux_public.tar.gz</code> to unpack it somewhere on your system.
+or whatever newer version may be available in the future. Use <code>tar -xvf
+ohos-sdk-windows_linux-public.tar.gz</code> to unpack it somewhere on your system.
 This will create a folder named "ohos-sdk" with subfolders "linux" and
 "windows". In the linux one you will find a ZIP archive named
 <code>native-linux-x64-4.1.7.8-Release.zip</code> - you need to unzip this where you want
 to install the cross-compiler, for example in <code>/opt/ohos-sdk</code>.</p>
-<p>In the directory where you unpacked OpenBLAS, create a build directory for cmake, and change into it :
+<p>In the directory where you unpacked OpenBLAS, create a build directory for cmake, and change into it:
 <div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>build
 <span class="nb">cd</span><span class="w"> </span>build
 </code></pre></div>
@@ -1853,7 +1855,7 @@ contains no Fortran compiler):
 <span class="w">      </span>-DCMAKE_TOOLCHAIN_FILE<span class="o">=</span>/opt/ohos-sdk/linux/native/build/cmake/ohos.toolchain.cmake<span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>-DOHOS_ARCH<span class="o">=</span><span class="s2">&quot;arm64-v8a&quot;</span><span class="w"> </span>-DTARGET<span class="o">=</span>ARMV8<span class="w"> </span>-DNOFORTRAN<span class="o">=</span><span class="m">1</span><span class="w"> </span>..
 </code></pre></div>
-Additional other OpenBLAS build options like <code>USE_OPENMP=1</code> or <code>DYNAMIC_ARCH=1</code>
+Additional OpenBLAS build options like <code>USE_OPENMP=1</code> or <code>DYNAMIC_ARCH=1</code>
 will probably work too. Finally do the build:
 <div class="highlight"><pre><span></span><code>/opt/ohos-sdk/linux/native/build-tools/cmake/bin/cmake<span class="w"> </span>--build<span class="w"> </span>.
 </code></pre></div></p>
@@ -2031,7 +2033,7 @@ provides one implementation of <code>malloc</code> for embedded platforms.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 24, 2026 20:10:28 UTC">May 24, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 2, 2026 17:50:09 UTC">July 2, 2026</span>
   </span>
 
     
