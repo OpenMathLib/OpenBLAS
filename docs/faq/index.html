@@ -1783,7 +1783,7 @@ Here is the result of the DGEMM subroutine's performance on Intel Core i5-2500K 
 <p>Zaheer has fixed this bug. You can now use the structure instead of C99 complex numbers. Please read <a href="http://github.com/xianyi/OpenBLAS/issues/95">this issue page</a> for details.</p>
 <p><a href="https://github.com/OpenMathLib/OpenBLAS/issues/305">This issue</a> is for using LAPACKE in Visual Studio.</p>
 <h3 id="i-get-a-segfault-with-multi-threading-on-linux-whats-wrong"><a name="Linux_SEGFAULT"></a>I get a SEGFAULT with multi-threading on Linux. What's wrong?</h3>
-<p>This may be related to a bug in the Linux kernel 2.6.32 (?). Try applying the patch segaults.patch to disable mbind using</p>
+<p>This may be related to a bug in the Linux kernel 2.6.32 (?). Try applying the patch segfaults.patch to disable mbind using</p>
 <pre><code> patch &lt; segfaults.patch
 </code></pre>
 <p>and see if the crashes persist. Note that this patch will lead to many compiler warnings.</p>
@@ -1854,7 +1854,7 @@ Now just prefix your build commands with respective redirection:
 </code></pre></div>
 AVX-512 (SKYLAKEX) support requires devtoolset-8-gcc-gfortran (which exceeds formal requirement for AVX-512 because of packaging issues in earlier packages) which dependency-installs respective binutils and gcc or later and kernel 2.6.32-696 aka 6U9 or 3.10.0-327 aka 7U2 or later to run. In absence of abovementioned toolset OpenBLAS will fall back to AVX2 instructions in place of AVX512 sacrificing some performance on SKYLAKE-X platform.</p>
 <h3 id="building-openblas-in-qemukvmxen"><a name="qemu"></a>Building OpenBLAS in QEMU/KVM/XEN</h3>
-<p>By default, QEMU reports the CPU as "QEMU Virtual CPU version 2.2.0", which shares CPUID with existing 32bit CPU even in 64bit virtual machine, and OpenBLAS recognizes it as PENTIUM2. Depending on the exact combination of CPU features the hypervisor choses to expose, this may not correspond to any CPU that exists, and OpenBLAS will error when trying to build. To fix this, pass <code>-cpu host</code> or <code>-cpu passthough</code> to QEMU, or another CPU model.
+<p>By default, QEMU reports the CPU as "QEMU Virtual CPU version 2.2.0", which shares CPUID with existing 32bit CPU even in 64bit virtual machine, and OpenBLAS recognizes it as PENTIUM2. Depending on the exact combination of CPU features the hypervisor chooses to expose, this may not correspond to any CPU that exists, and OpenBLAS will error when trying to build. To fix this, pass <code>-cpu host</code> to QEMU, or choose another CPU model.
 Similarly, the XEN hypervisor may not pass through all features of the host cpu while reporting the cpu type itself correctly, which can
 lead to compiler error messages about an "ABI change" when compiling AVX512 code. Again changing the Xen configuration by running e.g. 
 "xen-cmdline --set-xen cpuid=avx512" should get around this (as would building OpenBLAS for an older cpu lacking that particular feature, e.g. TARGET=HASWELL)</p>
@@ -1907,14 +1907,14 @@ by adding the option <code>-DCMAKE_Fortran_USE_RESPONSE_FILE_FOR_OBJECTS=1</code
 <p>There have been a few reports of wrong calculation results and build-time test failures when building in a container environment managed by the OSX version of Docker Desktop, which uses the xhyve virtualizer underneath. Judging from these reports, AVX2 support in xhyve appears to be subtly broken but a corresponding ticket in the xhyve issue tracker has not drawn any reaction or comment since 2019. Therefore it is strongly recommended to build OpenBLAS with the NO_AVX2=1 option when inside a container under (or for later use with) the Docker Desktop environment on Intel-based Apple hardware.</p>
 <h2 id="usage">Usage</h2>
 <h3 id="program-is-terminated-because-you-tried-to-allocate-too-many-memory-regions"><a name="allocmorebuffers"></a>Program is Terminated. Because you tried to allocate too many memory regions</h3>
-<p>In OpenBLAS, we mange a pool of memory buffers and allocate the number of buffers as the following.
+<p>In OpenBLAS, we manage a pool of memory buffers and set the number of buffers as follows.
 <div class="highlight"><pre><span></span><code>#define NUM_BUFFERS (MAX_CPU_NUMBER * 2)
 </code></pre></div>
 This error indicates that the program exceeded the number of buffers.</p>
 <p>Please build OpenBLAS with larger <code>NUM_THREADS</code>. For example, <code>make NUM_THREADS=32</code> or <code>make NUM_THREADS=64</code>.
 In <code>Makefile.system</code>, we will set <code>MAX_CPU_NUMBER=NUM_THREADS</code>.</p>
 <h3 id="how-to-choose-target-manually-at-runtime-when-compiled-with-dynamic_arch"><a name="choose_target_dynamic"></a>How to choose TARGET manually at runtime when compiled with DYNAMIC_ARCH</h3>
-<p>The environment variable which control the kernel selection is <code>OPENBLAS_CORETYPE</code> (see <code>driver/others/dynamic.c</code>)
+<p>The environment variable that controls the kernel selection is <code>OPENBLAS_CORETYPE</code> (see <code>driver/others/dynamic.c</code>)
 e.g. <code>export OPENBLAS_CORETYPE=Haswell</code>. And the function <code>char* openblas_get_corename()</code> returns the used target.</p>
 <h3 id="after-updating-the-installed-openblas-a-program-complains-about-undefined-symbol-gotoblas"><a name="missgoto"></a>After updating the installed OpenBLAS, a program complains about "undefined symbol gotoblas"</h3>
 <p>This symbol gets defined only when OpenBLAS is built with "make DYNAMIC_ARCH=1" (which is what distributors will choose to ensure support for more than just one CPU type).</p>
@@ -1927,7 +1927,7 @@ e.g. <code>export OPENBLAS_CORETYPE=Haswell</code>. And the function <code>char*
 Running <code>ldd /path/to/your/program</code> will tell you which library the linkage loader will actually use.</p>
 <p>Specifying the "correct" library location with the <code>-L</code> flag (like <code>-L /opt/OpenBLAS/lib</code>) when linking your program only defines which library will be used to see if all symbols <em>can</em> be resolved, you will need to add an rpath entry to the binary (using <code>-Wl,rpath=/opt/OpenBLAS/lib</code>) to make it request searching that location. Alternatively, remove the "wrong old" library (if you can), or set LD_LIBRARY_PATH to the desired location before running your program.</p>
 <h3 id="i-want-to-use-openblas-with-cuda-in-the-hpl-23-benchmark-code-but-it-keeps-looking-for-intel-mkl"><a name="cudahpl"></a>I want to use OpenBLAS with CUDA in the HPL 2.3 benchmark code but it keeps looking for Intel MKL</h3>
-<p>You need to edit file src/cuda/cuda_dgemm.c in the NVIDIA version of HPL, change the "handle2" and "handle" dlopen calls to use libopenblas.so instead of libmkl_intel_lp64.so, and add an trailing underscore in the dlsym lines for dgemm_mkl and dtrsm_mkl (like  <code>dgemm_mkl = (void(*)())dlsym(handle, “dgemm_”);</code>)</p>
+<p>You need to edit file src/cuda/cuda_dgemm.c in the NVIDIA version of HPL, change the "handle2" and "handle" dlopen calls to use libopenblas.so instead of libmkl_intel_lp64.so, and add a trailing underscore in the dlsym lines for dgemm_mkl and dtrsm_mkl (like  <code>dgemm_mkl = (void(*)())dlsym(handle, "dgemm_");</code>)</p>
 <h3 id="multithreaded-openblas-runs-no-faster-or-is-even-slower-than-singlethreaded-on-my-armv7-board"><a name="cpusoffline"></a>Multithreaded OpenBLAS runs no faster or is even slower than singlethreaded on my ARMV7 board</h3>
 <p>The power saving mechanisms of your board may have shut down some cores, making them invisible to OpenBLAS in its startup phase. Try bringing them online before starting your calculation.</p>
 <h3 id="speed-varies-wildly-between-individual-runs-on-a-typical-armv8-smartphone-processor"><a name="biglittle"></a>Speed varies wildly between individual runs on a typical ARMV8 smartphone processor</h3>
@@ -1967,7 +1967,7 @@ from the main thread of your program (i.e. outside of omp parallel constructs), 
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 22, 2026 22:44:32 UTC">March 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 3, 2026 16:32:31 UTC">July 3, 2026</span>
   </span>
 
     

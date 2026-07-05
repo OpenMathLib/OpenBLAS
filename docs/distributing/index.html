@@ -823,13 +823,14 @@
 <p>This document contains recommendations only - packagers and other
 redistributors are in charge of how OpenBLAS is built and distributed in their
 systems, and may have good reasons to deviate from the guidance given on this
-page. These recommendations are aimed at general packaging systems, with a user
-base that typically is large, open source (or freely available at least), and
-doesn't behave uniformly or that the packager is directly connected with.*</p>
+page. These recommendations are aimed at general packaging systems that are
+open source (or at least freely available) and typically serve a large user
+base that does not behave uniformly and is not directly connected with the
+packager.</p>
 </div>
 <p>OpenBLAS has a large number of build-time options which can be used to change
 how it behaves at runtime, how artifacts or symbols are named, etc. Variation
-in build configuration can be necessary to acheive a given end goal within a
+in build configuration can be necessary to achieve a given end goal within a
 distribution or as an end user. However, such variation can also make it more
 difficult to build on top of OpenBLAS and ship code or other packages in a way
 that works across many different distros. Here we provide guidance about the
@@ -858,7 +859,7 @@ settings):</p>
    while it does make up a significant part of the binary size of the installed
    library, that does not outweigh the regression in usability when deviating
    from the default here.<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup></li>
-<li>Always distribute the pkg-config (<code>.pc</code>) and CMake <code>.cmake</code>) dependency
+<li>Always distribute the pkg-config (<code>.pc</code>) and CMake (<code>.cmake</code>) dependency
    detection files. These files are used by build systems when users want to
    link against OpenBLAS, and there is no benefit of leaving them out.</li>
 <li>Provide the LP64 interface by default, and if in addition to that you choose
@@ -1114,7 +1115,7 @@ problems.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to f
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 29, 2024 07:56:30 UTC">June 29, 2024</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 3, 2026 16:32:24 UTC">July 3, 2026</span>
   </span>
 
     
