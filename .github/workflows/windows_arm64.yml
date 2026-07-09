@@ -57,13 +57,15 @@ jobs:
           
           mkdir build
           cd build
+          REM Use a static OpenBLAS build so openblas_utest_ext can use its test-local xerbla handler.
           cmake .. -G Ninja ^
             -DCMAKE_BUILD_TYPE=Release ^
             -DTARGET=ARMV8 ^
             -DBINARY=64 ^
             -DCMAKE_C_COMPILER=clang-cl ^
             -DCMAKE_Fortran_COMPILER=flang-new ^
-            -DBUILD_SHARED_LIBS=ON ^
+            -DBUILD_STATIC_LIBS=ON ^
+            -DBUILD_SHARED_LIBS=OFF ^
             -DCMAKE_SYSTEM_PROCESSOR=arm64 ^
             -DCMAKE_SYSTEM_NAME=Windows ^
             -DCMAKE_INSTALL_PREFIX=C:/opt
@@ -85,13 +87,4 @@ jobs:
         run: |
           $env:PATH = "C:\opt\bin;$env:PATH"
           cd build
-          ctest --output-on-failure
-          $ctestExitCode = $LASTEXITCODE
-          if ($ctestExitCode -ne 0) {
-            if (Test-Path "Testing/Temporary/LastTest.log") {
-              Write-Host "===== Testing/Temporary/LastTest.log ====="
-              Get-Content "Testing/Temporary/LastTest.log"
-            }
-            exit $ctestExitCode
-          }
-
+          ctest
