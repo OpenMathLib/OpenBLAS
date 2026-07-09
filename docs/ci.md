@@ -33,6 +33,7 @@
 | arm64       |Apple M1   |macOS26|gmake      |x86_64| XCode| - | | + | - | both | Github |   |
 | arm64       |Apple M1   |macOS26|gmake      |arm64| XCode| - | | + | - | both | Github |   |
 | arm64       |Apple M1   |macOS26|gmake      |arm| AndroidNDK-llvm | - | | - | - | both | Github |   |
+| arm64       |ARMV8      |Windows11|CMAKE/Ninja| - |LLVM clang-cl|flang-new| | - | - | static | Github | |
 | arm64       |Neoverse N1|Linux  |gmake      | -    |gcc|gfortran| pthreads| - | - | both   | Github |   |
 | arm64       |Neoverse N1|Linux  |gmake      | -    |gcc|gfortran| pthreads| - | + | both   | Github |  |
 | arm64       |Neoverse N1|Linux  |gmake      |-     |gcc|gfortran| OpenMP | - | - | both   | Github |  |
@@ -64,3 +65,6 @@
 | x86_64      |C910V|QEmu         |gmake      |riscv64|gcc|gfortran|pthreads|-|-|both|Github| |
 |power        |pwr9| Ubuntu        |gmake      | - |gcc|gfortran|OpenMP|-|-|both|OSUOSL|  |
 |zarch        |z14 | Ubuntu        |gmake      | - |gcc|gfortran|OpenMP|-|-|both|OSUOSL|  |
+
+The Windows ARM64 CMake job builds OpenBLAS statically so `openblas_utest_ext`
+can use its test-local `xerbla` handler during CTest.

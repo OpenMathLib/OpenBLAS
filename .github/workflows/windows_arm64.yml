@@ -57,7 +57,7 @@ jobs:
           
           mkdir build
           cd build
-          REM Use a static OpenBLAS build so openblas_utest_ext can use its test-local xerbla handler.
+          REM Build static so openblas_utest_ext can use its test-local xerbla handler during CTest.
           cmake .. -G Ninja ^
             -DCMAKE_BUILD_TYPE=Release ^
             -DTARGET=ARMV8 ^
