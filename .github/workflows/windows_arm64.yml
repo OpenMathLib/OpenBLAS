@@ -85,6 +85,13 @@ jobs:
         run: |
           $env:PATH = "C:\opt\bin;$env:PATH"
           cd build
-          ctest
-
+          ctest --output-on-failure
+          $ctestExitCode = $LASTEXITCODE
+          if ($ctestExitCode -ne 0) {
+            if (Test-Path "Testing/Temporary/LastTest.log") {
+              Write-Host "===== Testing/Temporary/LastTest.log ====="
+              Get-Content "Testing/Temporary/LastTest.log"
+            }
+            exit $ctestExitCode
+          }
 
