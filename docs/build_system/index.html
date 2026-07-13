@@ -629,9 +629,8 @@ ensures that there are a sufficient number of buffer sets available.</p>
   no symbolic linking to variant names (default is <code>0</code>)</li>
 <li><code>LIBNAMEPREFIX</code>: prefix that, if given, will be inserted in the library name
   before <code>openblas</code> (e.g., <code>xxx</code> will result in <code>libxxxopenblas.so</code>)</li>
-<li><code>LIBNAMESUFFIX</code>: suffix that, if given, will be inserted in the library name
-  after <code>openblas</code>, separated by an underscore (e.g., <code>yyy</code> will result in
-  <code>libopenblas_yyy.so</code>)</li>
+<li><code>LIBNAMESUFFIX</code>: suffix that, if given, will be appended to the library name
+  after <code>openblas</code> (e.g., <code>_yyy</code> will result in <code>libopenblas_yyy.so</code>)</li>
 <li><code>SYMBOLPREFIX</code>: prefix that, if given, will be added to all symbol names
   <em>and</em> to the library name</li>
 <li><code>SYMBOLSUFFIX</code>: suffix that, if given, will be added to all symbol names
