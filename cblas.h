@@ -40,6 +40,39 @@ extern "C" {
 /*Set the number of threads on runtime.*/
 void openblas_set_num_threads(int num_threads);
 void goto_set_num_threads(int num_threads);
+/*
+ * Intent:
+ *   Sets the thread-local number of threads that OpenBLAS functions should request.
+ *   This thread-local number only affects the current execution thread
+ *   and, when set, overrides the global default.
+ *   This is useful for controlling nested parallelism.
+ *   For example when the caller's own (e.g. OpenMP) threads each invoke
+ *   OpenBLAS, `num_threads` determines how many threads OpenBLAS may use
+ *   per such call, instead of the process-wide default of
+ *   `omp_get_max_threads()`.
+ *
+ *   The intent of this was likely to match MKL's `mkl_set_num_threads_local()`
+ *   but implementation may not live up to the original intent yet.
+ *
+ * TODO:
+ *   Currently the implementation doesn't really do any of that:
+ *   * The setting is NOT thread-local.
+ *   * This function currently just calls `openblas_set_num_threads(num_threads)`,
+ *     changing the same process-wide thread count as that function,
+ *     and additionally records `num_threads` in an internal (global, not per-thread)
+ *     variable that is only consulted when OpenBLAS is invoked from within
+ *     a caller's OpenMP parallel region and the user has not made an
+ *     explicit thread-count choice.
+ *   * There is no special handling of `num_threads == 0`
+ *     (or other MKL-style reset values); the value is forwarded to
+ *     `openblas_set_num_threads()`, where values < 1 are treated
+ *     as "use the default" and large values are clamped to the number of cores.
+ *
+ * Returns the *previous* number of threads (as reported by
+ * `openblas_get_num_threads()`), so the caller can save and later restore it.
+ *
+ * On single-threaded OpenBLAS builds this is a no-op that returns 1.
+ */
 int openblas_set_num_threads_local(int num_threads);
 
 /*Get the number of threads on runtime.*/
