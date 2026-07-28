@@ -144,6 +144,24 @@ add_executable(${OpenBLAS_utest_ext_bin} ${OpenBLAS_utest_ext_src})
 target_link_libraries(${OpenBLAS_utest_bin} ${OpenBLAS_LIBNAME})
 target_link_libraries(${OpenBLAS_utest_ext_bin} ${OpenBLAS_LIBNAME})
 
+if (USE_OPENMP AND NOT NO_CBLAS)
+set(OpenBLAS_utest_openmp_bin openblas_utest_openmp)
+add_executable(${OpenBLAS_utest_openmp_bin} test_openmp_thread_selection.c)
+target_link_libraries(${OpenBLAS_utest_openmp_bin}
+  ${OpenBLAS_LIBNAME}
+  OpenMP::OpenMP_C
+  )
+set_target_properties(${OpenBLAS_utest_openmp_bin} PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  )
+add_test(${OpenBLAS_utest_openmp_bin}
+  ${CMAKE_CURRENT_BINARY_DIR}/${OpenBLAS_utest_openmp_bin}
+  )
+set_tests_properties(${OpenBLAS_utest_openmp_bin} PROPERTIES
+  ENVIRONMENT "OMP_NUM_THREADS=2"
+  )
+endif()
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "QNX"  )
 target_link_libraries(${OpenBLAS_utest_bin} m)
 endif()

@@ -7,11 +7,18 @@ override TARGET_MACH=
 
 UTESTBIN=openblas_utest$(EXE)
 UTESTEXTBIN=openblas_utest_ext$(EXE)
+UTESTOPENMPBIN=openblas_utest_openmp$(EXE)
 
 .PHONY : all
-.NOTPARALLEL : all run_test $(UTESTBIN) $(UTESTEXTBIN)
+.NOTPARALLEL : all run_test $(UTESTBIN) $(UTESTEXTBIN) $(UTESTOPENMPBIN)
 
 include $(TOPDIR)/Makefile.system
+
+ifeq ($(USE_OPENMP), 1)
+ifneq ($(NO_CBLAS), 1)
+OPENMP_TEST_TARGET=$(UTESTOPENMPBIN)
+endif
+endif
 
 OBJS=utest_main.o test_min.o test_amax.o test_ismin.o test_rotmg.o test_axpy.o test_dotu.o test_dsdot.o test_swap.o test_rot.o test_dnrm2.o test_zscal.o \
      test_amin.o test_axpby.o test_gemv.o
@@ -84,14 +91,20 @@ $(UTESTEXTBIN): $(OBJS_EXT)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB)
 endif
 
-run_test: $(UTESTBIN) $(UTESTEXTBIN)
+$(UTESTOPENMPBIN): test_openmp_thread_selection.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB)
+
+run_test: $(UTESTBIN) $(UTESTEXTBIN) $(OPENMP_TEST_TARGET)
 ifneq ($(CROSS), 1)
 	./$(UTESTBIN)
 	./$(UTESTEXTBIN)
+ifneq ($(OPENMP_TEST_TARGET),)
+	OMP_NUM_THREADS=2 ./$(UTESTOPENMPBIN)
+endif
 endif
 
 clean:
-	-rm -f *.o $(UTESTBIN) $(UTESTEXTBIN)
+	-rm -f *.o $(UTESTBIN) $(UTESTEXTBIN) $(UTESTOPENMPBIN)
 	-rm -f $(DIR_EXT)/*.o
 
 libs:

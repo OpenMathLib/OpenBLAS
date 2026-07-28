@@ -143,17 +143,41 @@ extern int blas_is_num_threads_set_explicitly;
 static __inline int num_cpu_avail(int level) {
 
 #ifdef USE_OPENMP
-  /* If the user explicitly called openblas_set_num_threads(),
-     respect that setting instead of overriding it with
-     `omp_get_max_threads()` below (which is to get a default
-     in case the user hasn't made an explicit choice). */
-  if (blas_is_num_threads_set_explicitly) {
-    return blas_cpu_number;
-  }
+  int in_parallel = omp_in_parallel();
+  int openmp_nthreads;
 
-int openmp_nthreads;
-	openmp_nthreads=omp_get_max_threads();
-	if (omp_in_parallel()) openmp_nthreads = blas_omp_threads_local;
+  /*
+   * An active outer OpenMP region takes precedence and uses the local
+   * setting, which defaults to one. Outside a region, an explicit
+   * openblas_set_num_threads() setting takes precedence over the OpenMP
+   * runtime default. Without either, keep following omp_get_max_threads().
+   */
+  if (in_parallel)
+    openmp_nthreads = blas_omp_threads_local;
+  else if (blas_is_num_threads_set_explicitly)
+    openmp_nthreads = blas_cpu_number;
+  else
+    openmp_nthreads = omp_get_max_threads();
+
+  if (openmp_nthreads < 1)
+    openmp_nthreads = 1;
+  if (openmp_nthreads > blas_omp_number_max && blas_omp_number_max > 0) {
+#ifdef DEBUG
+    fprintf(stderr,
+            "WARNING - more OpenMP threads requested (%d) than available (%d)\n",
+            openmp_nthreads, blas_omp_number_max);
+#endif
+    openmp_nthreads = blas_omp_number_max;
+  }
+  if (openmp_nthreads > MAX_CPU_NUMBER)
+    openmp_nthreads = MAX_CPU_NUMBER;
+
+  /*
+   * The nested count is per-call policy. Do not make a serialized nested
+   * call overwrite the durable global setting.
+   */
+  if (in_parallel)
+    return openmp_nthreads;
 #endif
 
 #ifndef USE_OPENMP 
@@ -164,18 +188,14 @@ int openmp_nthreads;
       ) return 1;        
 
 #ifdef USE_OPENMP
-     if (openmp_nthreads > blas_omp_number_max){
-#ifdef DEBUG
-     fprintf(stderr,"WARNING - more OpenMP threads requested (%d) than available (%d)\n",openmp_nthreads,blas_omp_number_max);
-#endif
-     openmp_nthreads = blas_omp_number_max;
-     }
-     if (blas_cpu_number != openmp_nthreads) {
-	  goto_set_num_threads(openmp_nthreads);
+  if (!blas_is_num_threads_set_explicitly &&
+      blas_cpu_number != openmp_nthreads) {
+    goto_set_num_threads(openmp_nthreads);
   }
-#endif
-
+  return openmp_nthreads;
+#else
   return blas_cpu_number;
+#endif
 
 }
 
