@@ -3537,7 +3537,7 @@ zomatcopy.$(SUFFIX) : omatcopy.c
 
 
 smallscaling: smallscaling.c $(OPENBLAS_LIB_DEP)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(EXTRALIB) -fopenmp -lm -lpthread
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB_DEP) $(EXTRALIB) -fopenmp -lm -lpthread
 
 clean ::
 	@rm -f *.goto *.mkl *.acml *.atlas *.veclib *.essl smallscaling
