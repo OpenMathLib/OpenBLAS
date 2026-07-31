@@ -2712,7 +2712,7 @@
 #ifndef ASSEMBLER
 #if !defined(DYNAMIC_ARCH) \
   && (defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64) || defined(ARCH_ARM64) \
-      || defined(ARCH_LOONGARCH64) || defined(ARCH_E2K) || defined(ARCH_ALPHA))
+      || defined(ARCH_LOONGARCH64) || defined(ARCH_E2K) || defined(ARCH_ALPHA) || defined(ARCH_RISCV64))
 extern BLASLONG gemm_offset_a;
 extern BLASLONG gemm_offset_b;
 extern BLASLONG bgemm_p;
@@ -2762,6 +2762,13 @@ typedef struct {
   //for gemm_batch
   void * routine;
   int routine_mode;
+
+  /* Generation slot of the thread that issued this operation and the
+     generation it runs as (see driver/others/openblas_cancel.c), or
+     NULL/0.  Consulted only by the level-3 thread drivers; must be set
+     explicitly wherever it is to be observed. */
+  size_t * cancel_slot;
+  size_t cancel_gen;
 
 } blas_arg_t;
 #endif

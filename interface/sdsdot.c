@@ -42,6 +42,8 @@
 #include "functable.h"
 #endif
 
+OPENBLAS_EXPORT
+
 #ifndef CBLAS
 
 FLOATRET NAME(blasint *N, FLOAT *a, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY){

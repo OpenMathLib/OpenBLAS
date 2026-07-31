@@ -40,6 +40,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 /* ===================================================================== */
+OPENBLAS_EXPORT
 int NAME(blasint *k, blasint *n, blasint *n1, FLOAT *d, 
         FLOAT *q, blasint *ldq, FLOAT *rho, FLOAT *dlamda,
         FLOAT *q2, blasint *indx, blasint *ctot, FLOAT *w, 
@@ -72,7 +73,8 @@ int NAME(blasint *k, blasint *n, blasint *n1, FLOAT *d,
   if (kval == 0) return 0;
 
 #ifdef SMP
-  int nthreads = num_cpu_avail(4);
+  int nthreads = 1;
+  if (n >= 64) nthreads = num_cpu_avail(4);
 
   if (nthreads == 1) {
 #endif

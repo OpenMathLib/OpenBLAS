@@ -42,6 +42,7 @@
 #include "functable.h"
 #endif
 
+OPENBLAS_EXPORT
 #ifndef CBLAS
 
 double NAME(blasint *N, float *x, blasint *INCX, float *y, blasint *INCY){

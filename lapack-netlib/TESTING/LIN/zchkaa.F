@@ -70,6 +70,7 @@
 *> ZQL    8               List types on next line if 0 < NTYPES <  8
 *> ZQP    6               List types on next line if 0 < NTYPES <  6
 *> ZQK   19               List types on next line if 0 < NTYPES < 19
+*> ZCX   19               List types on next line if 0 < NTYPES < 19
 *> ZTZ    3               List types on next line if 0 < NTYPES <  3
 *> ZLS    6               List types on next line if 0 < NTYPES <  6
 *> ZEQ
@@ -150,13 +151,14 @@
 *     ..
 *     .. Local Arrays ..
       LOGICAL            DOTYPE( MATMAX )
-      INTEGER            IWORK( 25*NMAX ), MVAL( MAXIN ),
+      INTEGER            MVAL( MAXIN ),
      $                   NBVAL( MAXIN ), NBVAL2( MAXIN ),
      $                   NSVAL( MAXIN ), NVAL( MAXIN ), NXVAL( MAXIN ),
      $                   RANKVAL( MAXIN ), PIV( NMAX )
 *     ..
 *     .. Allocatable Arrays ..
       INTEGER AllocateStatus
+      INTEGER, DIMENSION(:), ALLOCATABLE :: IWORK
       DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE::  RWORK, S
       COMPLEX*16, DIMENSION(:), ALLOCATABLE :: E
       COMPLEX*16, DIMENSION(:,:), ALLOCATABLE::  A, B, WORK
@@ -167,7 +169,8 @@
       EXTERNAL           LSAME, LSAMEN, DLAMCH, DSECND
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAREQ, ZCHKEQ, ZCHKGB, ZCHKGE, ZCHKGT, ZCHKHE,
+      EXTERNAL           ALAREQ, ZCHKCXX,
+     $                   ZCHKEQ, ZCHKGB, ZCHKGE, ZCHKGT, ZCHKHE,
      $                   ZCHKHE_ROOK, ZCHKHE_RK, ZCHKHE_AA, ZCHKHP,
      $                   ZCHKLQ, ZCHKUNHR_COL, ZCHKPB, ZCHKPO, ZCHKPS,
      $                   ZCHKPP, ZCHKPT, ZCHKQ3, ZCHKQP3RK, ZCHKQL,
@@ -179,7 +182,8 @@
      $                   ZDRVPO, ZDRVPP, ZDRVPT, ZDRVSP, ZDRVSY,
      $                   ZDRVSY_ROOK, ZDRVSY_RK, ZDRVSY_AA,
      $                   ZDRVSY_AA_2STAGE, ILAVER, ZCHKQRT, ZCHKQRTP,
-     $                   ZCHKLQT, ZCHKLQTP, ZCHKTSQR
+     $                   ZCHKLQT, ZCHKLQTP, ZCHKTSQR,
+     $                   ZCHKHE_AA_2STAGE, ZCHKSY_AA_2STAGE
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -199,7 +203,9 @@
 *
 *     .. Allocate memory dynamically ..
 *
-      ALLOCATE ( A ( (KDMAX+1) * NMAX, 7 ), STAT = AllocateStatus)
+      ALLOCATE ( IWORK( 34*NMAX ), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( A ( (KDMAX+1) * NMAX, 8 ), STAT = AllocateStatus)
       IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
       ALLOCATE ( B ( NMAX * MAXRHS, 4 ), STAT = AllocateStatus)
       IF (AllocateStatus /= 0 ) STOP "*** Not enough memory ***"
@@ -1129,6 +1135,30 @@
      $                   A( 1, 2 ), B( 1, 1 ), B( 1, 2 ),
      $                   S( 1 ), B( 1, 4 ),
      $                   WORK, RWORK, IWORK, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'CX' ) ) THEN
+*
+*        CX: CX decomposition
+*
+         NTYPES = 19
+         CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
+*
+         IF( TSTCHK ) THEN
+            CALL ZCHKCXX( DOTYPE, NM, MVAL, NN, NVAL,
+     $                    NNB, NBVAL, NXVAL, THRESH, TSTERR,
+     $                    A( 1, 1 ), A( 1, 2 ),
+     $                    A( 1, 3 ), A( 1, 4 ),
+     $                    A( 1, 5 ), A( 1, 6 ),
+     $                    A( 1, 7 ), A( 1, 8 ),
+     $                    S( 1 ), B( 1, 1 ),
+     $                    IWORK( 1 ), IWORK( 1+2*NMAX ),
+     $                    IWORK(1+4*NMAX), IWORK(1+6*NMAX),
+     $                    IWORK(1+8*NMAX), IWORK(1+10*NMAX),
+     $                    IWORK(1+12*NMAX), IWORK(1+14*NMAX),
+     $                    WORK, RWORK, IWORK(1+16*NMAX), NOUT )
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH
          END IF

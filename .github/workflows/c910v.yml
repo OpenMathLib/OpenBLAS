@@ -1,6 +1,14 @@
 name: c910v qemu test
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -50,8 +58,11 @@ jobs:
         run: |
           # Force use c910v qemu-user
           wget https://github.com/revyos/qemu/commit/222729c7455784dd855216d7a2bec4bd8f2a6800.patch
+          # Backport the upstream linux-user clone_lock fix
+          wget -O qemu-clone-lock.patch https://gitlab.com/qemu-project/qemu/-/commit/d22e9aec572396836782e993cb18d598e6012688.patch
           cd qemu
           patch -p1 < ../222729c7455784dd855216d7a2bec4bd8f2a6800.patch
+          patch -p1 < ../qemu-clone-lock.patch
           export CXXFLAGS="-Wno-error"; export CFLAGS="-Wno-error"
           ./configure --prefix=$GITHUB_WORKSPACE/qemu-install --target-list=riscv64-linux-user --disable-system
           make -j$(nproc)
@@ -85,8 +96,9 @@ jobs:
         run: |
           run_with_retry() {
               local cmd="$1"
-              local time_out=10
-              local retries=10
+              local time_out="${2:-10}"
+              local retries="${3:-10}"
+              local timeout_step="${4:-5}"
               local attempt=0
 
               for ((i=1; i<=retries; i++)); do
@@ -98,7 +110,7 @@ jobs:
                       local exit_code=$?
                       if [ $exit_code -eq 140 ]; then
                           echo "Attempt $i timed out (retrying...)"
-                          time_out=$((time_out + 5))
+                          time_out=$((time_out + timeout_step))
                       else
                           echo "Attempt $i failed with exit code $exit_code. Aborting workflow."
                           exit $exit_code
@@ -113,7 +125,7 @@ jobs:
           export PATH=$GITHUB_WORKSPACE/qemu-install/bin:$PATH
           which qemu-riscv64
           export QEMU_BIN=$(which qemu-riscv64)
-          run_with_retry "$QEMU_BIN ./utest/openblas_utest"
+          run_with_retry "$QEMU_BIN ./utest/openblas_utest" 120 2 30
           run_with_retry "$QEMU_BIN ./utest/openblas_utest_ext"
 
           OPENBLAS_NUM_THREADS=2 qemu-riscv64 ./ctest/xscblat1

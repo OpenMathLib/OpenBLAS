@@ -335,7 +335,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
       }
 }
 
-#if defined(OS_LINUX) && !defined(NO_AFFINITY) 
+#if defined(OS_LINUX) && !defined(NO_AFFINITY)
 int gotoblas_set_affinity(int);
 int gotoblas_set_affinity2(int);
 int get_node(void);
@@ -345,7 +345,7 @@ static int increased_threads = 0;
 
 #ifdef OS_LINUX
 extern int openblas_get_num_threads(void);  
-
+OPENBLAS_EXPORT
 int openblas_setaffinity(int thread_idx, size_t cpusetsize, cpu_set_t* cpu_set) {
   const int active_threads = openblas_get_num_threads();
 
@@ -360,6 +360,7 @@ int openblas_setaffinity(int thread_idx, size_t cpusetsize, cpu_set_t* cpu_set) 
 
   return pthread_setaffinity_np(thread, cpusetsize, cpu_set);
 }
+OPENBLAS_EXPORT
 int openblas_getaffinity(int thread_idx, size_t cpusetsize, cpu_set_t* cpu_set) {
   const int active_threads = openblas_get_num_threads();
 
@@ -867,6 +868,7 @@ if (openblas_threads_callback_) {
   return 0;
 }
 
+OPENBLAS_EXPORT
 void goto_set_num_threads(int num_threads) {
 
   long i;
@@ -939,6 +941,7 @@ void goto_set_num_threads(int num_threads) {
 
 }
 
+OPENBLAS_EXPORT
 void openblas_set_num_threads(int num_threads) {
 	goto_set_num_threads(num_threads);
 

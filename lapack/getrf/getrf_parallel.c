@@ -69,8 +69,8 @@ double sqrt(double);
 
 
 #ifdef HAVE_C11
-#define	atomic_load_long(p)		__atomic_load_n(p, __ATOMIC_RELAXED)
-#define	atomic_store_long(p, v)		__atomic_store_n(p, v, __ATOMIC_RELAXED)
+#define	atomic_load_long(p)		__atomic_load_n(p, __ATOMIC_ACQUIRE)
+#define	atomic_store_long(p, v)		__atomic_store_n(p, v, __ATOMIC_RELEASE)
 #else
 #define	atomic_load_long(p)		(BLASLONG)(*(volatile BLASLONG*)(p))
 #define	atomic_store_long(p, v)		(*(volatile BLASLONG *)(p)) = (v)

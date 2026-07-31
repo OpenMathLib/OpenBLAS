@@ -114,6 +114,8 @@ static size_t zgemm_small_kernel_b0[] = {
 #endif
 #endif
 
+OPENBLAS_EXPORT
+
 #ifndef CBLAS
 void NAME(char *transa, char *transb,
 	   blasint * M, blasint * N, blasint * K,

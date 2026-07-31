@@ -74,6 +74,7 @@ static int (*gbmv_thread[])(BLASLONG, BLASLONG, BLASLONG, BLASLONG, FLOAT,
 };
 #endif
 
+OPENBLAS_EXPORT
 #ifndef CBLAS
 
 void NAME(char *TRANS, blasint *M, blasint *N,

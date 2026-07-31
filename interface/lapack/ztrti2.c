@@ -60,6 +60,7 @@ static blasint (*trti2[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *
 #endif
   };
 
+OPENBLAS_EXPORT
 int NAME(char *UPLO, char *DIAG, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
 
   blas_arg_t args;

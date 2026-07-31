@@ -63,7 +63,8 @@
 *> SLQ    8               List types on next line if 0 < NTYPES <  8
 *> SQL    8               List types on next line if 0 < NTYPES <  8
 *> SQP    6               List types on next line if 0 < NTYPES <  6
-*> DQK    19              List types on next line if 0 < NTYPES <  19
+*> SQK    19              List types on next line if 0 < NTYPES <  19
+*> SCX    19              List types on next line if 0 < NTYPES <  19
 *> STZ    3               List types on next line if 0 < NTYPES <  3
 *> SLS    6               List types on next line if 0 < NTYPES <  6
 *> SEQ
@@ -144,13 +145,14 @@
 *     ..
 *     .. Local Arrays ..
       LOGICAL            DOTYPE( MATMAX )
-      INTEGER            IWORK( 25*NMAX ), MVAL( MAXIN ),
+      INTEGER            MVAL( MAXIN ),
      $                   NBVAL( MAXIN ), NBVAL2( MAXIN ),
      $                   NSVAL( MAXIN ), NVAL( MAXIN ), NXVAL( MAXIN ),
      $                   RANKVAL( MAXIN ), PIV( NMAX )
 *     ..
 *     .. Allocatable Arrays ..
       INTEGER AllocateStatus
+      INTEGER, DIMENSION(:), ALLOCATABLE :: IWORK
       REAL, DIMENSION(:), ALLOCATABLE :: RWORK, S
       REAL, DIMENSION(:), ALLOCATABLE :: E
       REAL, DIMENSION(:,:), ALLOCATABLE :: A, B, WORK
@@ -161,15 +163,17 @@
       EXTERNAL           LSAME, LSAMEN, SECOND, SLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAREQ, SCHKEQ, SCHKGB, SCHKGE, SCHKGT, SCHKLQ,
+      EXTERNAL           ALAREQ, SCHKCXX, 
+     $                   SCHKEQ, SCHKGB, SCHKGE, SCHKGT, SCHKLQ,
      $                   SCHKORHR_COL, SCHKPB, SCHKPO, SCHKPS, SCHKPP,
      $                   SCHKPT, SCHKQ3, SCHKQP3RK, SCHKQL, SCHKQR,
      $                   SCHKRQ, SCHKSP, SCHKSY, SCHKSY_ROOK, SCHKSY_RK,
      $                   SCHKSY_AA, SCHKTB, SCHKTP, SCHKTR, SCHKTZ,
      $                   SDRVGB, SDRVGE, SDRVGT, SDRVLS, SDRVPB, SDRVPO,
      $                   SDRVPP, SDRVPT, SDRVSP, SDRVSY, SDRVSY_ROOK,
-     $                   SDRVSY_RK, SDRVSY_AA, ILAVER, SCHKLQTP, SCHKQRT,
-     $                   SCHKQRTP, SCHKLQT, SCHKTSQR
+     $                   SDRVSY_RK, SDRVSY_AA, ILAVER, SCHKLQTP,
+     $                   SCHKQRT, SCHKQRTP, SCHKLQT, SCHKTSQR,
+     $                   SCHKSY_AA_2STAGE, SDRVSY_AA_2STAGE
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -189,7 +193,9 @@
 *     ..
 *     .. Allocate memory dynamically ..
 *
-      ALLOCATE ( A( ( KDMAX+1 )*NMAX, 7 ), STAT = AllocateStatus )
+      ALLOCATE ( IWORK( 34*NMAX ), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( A( ( KDMAX+1 )*NMAX, 8 ), STAT = AllocateStatus )
       IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
       ALLOCATE ( B( NMAX*MAXRHS, 4 ), STAT = AllocateStatus )
       IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
@@ -200,7 +206,7 @@
       ALLOCATE ( S( 2*NMAX ), STAT = AllocateStatus )
       IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
       ALLOCATE ( RWORK( 5*NMAX+2*MAXRHS ), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***" 
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
 *     ..
 *     .. Executable Statements ..
 *
@@ -939,6 +945,30 @@
      $                      A( 1, 2 ), B( 1, 1 ), B( 1, 2 ),
      $                      B( 1, 3 ), B( 1, 4 ),
      $                      WORK, IWORK, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'CX' ) ) THEN
+*
+*        CX: CX decomposition
+*
+         NTYPES = 19
+         CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
+*
+         IF( TSTCHK ) THEN
+            CALL SCHKCXX( DOTYPE, NM, MVAL, NN, NVAL,
+     $                    NNB, NBVAL, NXVAL, THRESH, TSTERR,
+     $                    A( 1, 1 ), A( 1, 2 ),
+     $                    A( 1, 3 ), A( 1, 4 ),
+     $                    A( 1, 5 ), A( 1, 6 ),
+     $                    A( 1, 7 ), A( 1, 8 ),
+     $                    B( 1, 1 ), B( 1, 2 ),
+     $                    IWORK( 1 ), IWORK( 1+2*NMAX ),
+     $                    IWORK(1+4*NMAX), IWORK(1+6*NMAX),
+     $                    IWORK(1+8*NMAX), IWORK(1+10*NMAX),
+     $                    IWORK(1+12*NMAX), IWORK(1+14*NMAX),
+     $                    WORK, IWORK(1+16*NMAX), NOUT )
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH
          END IF

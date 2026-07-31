@@ -45,7 +45,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 extern int check_error(void);
 extern void set_xerbla(char* current_rout, int expected_info);
-extern int BLASFUNC(xerbla)(char *name, blasint *info, blasint length);
 
 extern void srand_generate(float *alpha, blasint n);
 extern void drand_generate(double *alpha, blasint n);

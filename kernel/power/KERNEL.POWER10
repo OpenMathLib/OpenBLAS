@@ -3,6 +3,22 @@
 #CGEMM_BETA = ../generic/zgemm_beta.c
 #ZGEMM_BETA = ../generic/zgemm_beta.c
 
+# BGEMM (BFloat16-in, BFloat16-out) for POWER10 using plain MMA (xvbf16ger2pp).
+# The kernel source is shared with SBGEMM; -DBGEMM is injected by Makefile.L3
+# to switch the SAVE_ACC macros to convert float32 accumulators back to BF16.
+# UNROLL_M=16 (A-panel, packed by ncopy_16), UNROLL_N=8 (B-panel, packed by
+# ncopy_8) — matches the 16x8 primary tile in sbgemm_kernel_power10.c.
+BGEMM_BETA      = ../generic/gemm_beta.c
+BGEMMKERNEL     = sbgemm_kernel_power10.c
+BGEMMINCOPY     = sbgemm_ncopy_16_power10.c
+BGEMMITCOPY     = sbgemm_tcopy_16_power10.c
+BGEMMONCOPY     = sbgemm_ncopy_8_power10.c
+BGEMMOTCOPY     = sbgemm_tcopy_8_power10.c
+BGEMMINCOPYOBJ  = bgemm_incopy$(TSUFFIX).$(SUFFIX)
+BGEMMITCOPYOBJ  = bgemm_itcopy$(TSUFFIX).$(SUFFIX)
+BGEMMONCOPYOBJ  = bgemm_oncopy$(TSUFFIX).$(SUFFIX)
+BGEMMOTCOPYOBJ  = bgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
 SBGEMM_BETA = ../generic/gemm_beta.c
 SBGEMMKERNEL    = sbgemm_kernel_power10.c
 SBGEMMINCOPY    = sbgemm_ncopy_16_power10.c

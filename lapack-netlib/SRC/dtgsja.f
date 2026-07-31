@@ -409,17 +409,19 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      DOUBLE PRECISION   DLAMCH
+      EXTERNAL           LSAME, DLAMCH
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DCOPY, DLAGS2, DLAPLL, DLARTG, DLASET, DROT,
      $                   DSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, MIN, HUGE
-      PARAMETER          ( HUGENUM = HUGE(ZERO) )
+      INTRINSIC          ABS, MAX, MIN
 *     ..
 *     .. Executable Statements ..
+*
+      HUGENUM = DLAMCH( 'O' )
 *
 *     Decode and test the input parameters
 *

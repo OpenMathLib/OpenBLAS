@@ -73,10 +73,20 @@ static inline int blas_quickdivide(blasint x, blasint y){
 
 #if defined(ASSEMBLER) && !defined(NEEDPARAM)
 
-#define PROLOGUE \
+#define PROLOGUE_EXPORT \
 	.arm		 ;\
 	.global	REALNAME ;\
 REALNAME:
+
+#ifdef __ELF__
+#define PROLOGUE \
+	.arm		 ;\
+	.global	REALNAME ;\
+	.hidden REALNAME ;\
+REALNAME:
+#else
+#define PROLOGUE PROLOGUE_EXPORT
+#endif
 
 #define EPILOGUE
 

@@ -80,8 +80,8 @@ According to the above `KERNEL.HASWELL`, OpenBLAS Haswell dgemm kernel file is `
     ["Anatomy of High-Performance Matrix Multiplication"](http://delivery.acm.org/10.1145/1360000/1356053/a12-goto.pdf?ip=155.68.162.54&id=1356053&acc=ACTIVE%20SERVICE&key=A79D83B43E50B5B8%2EF070BBE7E45C3F17%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&__acm__=1517932837_edfe766f1e295d9a7830812371e1d173).
     ACM Transactions on Mathematical Software 34 (3): Article 12
 
-    (The above link is available only to ACM members, but this and many related
-    papers is also available on [the pages of van de Geijn's FLAME project](http://www.cs.utexas.edu/~flame/web/FLAMEPublications.html))
+    (The above link is available only to ACM members, but this paper and many
+    related papers are also available on [the pages of van de Geijn's FLAME project](http://www.cs.utexas.edu/~flame/web/FLAMEPublications.html))
 
 The `driver/level3/level3.c` is the implementation of Goto's algorithm.
 Meanwhile, you can look at `kernel/generic/gemmkernel_2x2.c`, which is a naive

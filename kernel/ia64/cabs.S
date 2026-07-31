@@ -39,7 +39,7 @@
 #define ASSEMBLER
 #include "common.h"
 
-	 PROLOGUE
+	 PROLOGUE_EXPORT
 	 PROFCODE
 
 	.prologue

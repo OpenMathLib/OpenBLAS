@@ -44,7 +44,7 @@
 #define AA	%o4
 #define BB	%o3
 
-	PROLOGUE
+	PROLOGUE_EXPORT
 
 	ldub	[A], A
 	ldub	[B], B

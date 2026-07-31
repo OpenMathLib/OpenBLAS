@@ -5,8 +5,8 @@ DIR_EXT=test_extensions
 override TARGET_ARCH=
 override TARGET_MACH=
 
-UTESTBIN=openblas_utest
-UTESTEXTBIN=openblas_utest_ext
+UTESTBIN=openblas_utest$(EXE)
+UTESTEXTBIN=openblas_utest_ext$(EXE)
 
 .PHONY : all
 .NOTPARALLEL : all run_test $(UTESTBIN) $(UTESTEXTBIN)
@@ -30,6 +30,7 @@ OBJS_EXT+=$(DIR_EXT)/test_cgemv_t.o $(DIR_EXT)/test_zgemv_t.o $(DIR_EXT)/test_cg
 OBJS_EXT+=$(DIR_EXT)/test_sgemmt.o $(DIR_EXT)/test_dgemmt.o $(DIR_EXT)/test_cgemmt.o $(DIR_EXT)/test_zgemmt.o
 OBJS_EXT+=$(DIR_EXT)/test_ztrmv.o $(DIR_EXT)/test_ctrmv.o $(DIR_EXT)/test_ztrsv.o $(DIR_EXT)/test_ctrsv.o
 OBJS_EXT+=$(DIR_EXT)/test_zgemm.o $(DIR_EXT)/test_cgemm.o $(DIR_EXT)/test_zgbmv.o $(DIR_EXT)/test_cgbmv.o
+OBJS_EXT+=$(DIR_EXT)/test_bgemm.o
 
 ifneq ($(NO_LAPACK), 1)
 OBJS += test_potrs.o

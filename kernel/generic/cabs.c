@@ -39,6 +39,7 @@
 #include <math.h>
 #include "common.h"
 
+OPENBLAS_EXPORT
 FLOAT NAME(FLOAT *a){
   return fabs(a[0]) + fabs(a[1]);
 }

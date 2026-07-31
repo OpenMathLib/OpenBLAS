@@ -84,6 +84,8 @@
 #define GEMM_MULTITHREAD_THRESHOLD 4
 #endif
 
+OPENBLAS_EXPORT
+
 #ifndef CBLAS
 
 void NAME(char *UPLO, char *TRANSA, char *TRANSB,

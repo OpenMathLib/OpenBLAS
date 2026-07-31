@@ -4,6 +4,7 @@
 *.dylib
 *.def
 *.o
+*.exe
 *.out
 *.tmp
 lapack-3.1.1

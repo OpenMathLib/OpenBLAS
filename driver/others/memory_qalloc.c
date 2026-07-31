@@ -277,7 +277,7 @@ void set_stack_limit(int limitMB){
 OpenBLAS uses the numbers of CPU cores in multithreading.
 It can be set by openblas_set_num_threads(int num_threads);
 */
-int blas_cpu_number  = 0;
+_Atomic int blas_cpu_number  = 0;
 /*
 The numbers of threads in the thread pool.
 This value is equal or large than blas_cpu_number. This means some threads are sleep.

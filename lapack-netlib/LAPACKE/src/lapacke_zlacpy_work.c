@@ -42,10 +42,7 @@ lapack_int LAPACKE_zlacpy_work( int matrix_layout, char uplo, lapack_int m,
         /* Call LAPACK function and adjust info */
         LAPACK_zlacpy( &uplo, &m, &n, a, &lda, b, &ldb );
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
-        lapack_int lda_t = MAX(1,m);
-        lapack_int ldb_t = MAX(1,m);
-        lapack_complex_double* a_t = NULL;
-        lapack_complex_double* b_t = NULL;
+        char uplo_t = uplo;
         /* Check leading dimension(s) */
         if( lda < n ) {
             info = -6;
@@ -57,34 +54,13 @@ lapack_int LAPACKE_zlacpy_work( int matrix_layout, char uplo, lapack_int m,
             LAPACKE_xerbla( "LAPACKE_zlacpy_work", info );
             return info;
         }
-        /* Allocate memory for temporary array(s) */
-        a_t = (lapack_complex_double*)
-            LAPACKE_malloc( sizeof(lapack_complex_double) * lda_t * MAX(1,n) );
-        if( a_t == NULL ) {
-            info = LAPACK_TRANSPOSE_MEMORY_ERROR;
-            goto exit_level_0;
+        if( uplo == 'U' || uplo == 'u' ) {
+            uplo_t = 'L';
+        } else if( uplo == 'L' || uplo == 'l' ) {
+            uplo_t = 'U';
         }
-        b_t = (lapack_complex_double*)
-            LAPACKE_malloc( sizeof(lapack_complex_double) * ldb_t * MAX(1,n) );
-        if( b_t == NULL ) {
-            info = LAPACK_TRANSPOSE_MEMORY_ERROR;
-            goto exit_level_1;
-        }
-        /* Transpose input matrices */
-        LAPACKE_zge_trans( matrix_layout, m, n, a, lda, a_t, lda_t );
-        /* Call LAPACK function and adjust info */
-        LAPACK_zlacpy( &uplo, &m, &n, a_t, &lda_t, b_t, &ldb_t );
+        LAPACK_zlacpy( &uplo_t, &n, &m, a, &lda, b, &ldb );
         info = 0;  /* LAPACK call is ok! */
-        /* Transpose output matrices */
-        LAPACKE_zge_trans( LAPACK_COL_MAJOR, m, n, b_t, ldb_t, b, ldb );
-        /* Release memory and exit */
-        LAPACKE_free( b_t );
-exit_level_1:
-        LAPACKE_free( a_t );
-exit_level_0:
-        if( info == LAPACK_TRANSPOSE_MEMORY_ERROR ) {
-            LAPACKE_xerbla( "LAPACKE_zlacpy_work", info );
-        }
     } else {
         info = -1;
         LAPACKE_xerbla( "LAPACKE_zlacpy_work", info );

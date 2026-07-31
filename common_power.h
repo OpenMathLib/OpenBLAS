@@ -89,6 +89,7 @@
 
 void *qalloc(int flags, size_t bytes);
 
+#ifndef BLAS_LOCK_DEFINED
 static inline void blas_lock(volatile unsigned long *address){
 
   long int ret, val = 1;
@@ -123,6 +124,7 @@ static inline void blas_lock(volatile unsigned long *address){
   } while (ret);
 }
 #define BLAS_LOCK_DEFINED
+#endif
 
 static inline unsigned long rpcc(void){
   unsigned long ret;
@@ -535,6 +537,13 @@ static inline int blas_quickdivide(blasint x, blasint y){
 	.section .text;\
 	.align 6;\
 	.globl	REALNAME;\
+	.hidden REALNAME ;\
+	.type	REALNAME, @function;\
+REALNAME:
+#define PROLOGUE_EXPORT \
+	.section .text;\
+	.align 6;\
+	.globl	REALNAME;\
 	.type	REALNAME, @function;\
 REALNAME:
 #define EPILOGUE	.size	REALNAME, .-REALNAME
@@ -544,11 +553,33 @@ REALNAME:
 	.section .text;\
 	.align 6;\
 	.globl	REALNAME;\
+	.hidden REALNAME ;\
+	.type	REALNAME, @function;\
+REALNAME:
+#define PROLOGUE_EXPORT \
+	.section .text;\
+	.align 6;\
+	.globl	REALNAME;\
 	.type	REALNAME, @function;\
 REALNAME:
 #define EPILOGUE	.size	REALNAME, .-REALNAME
 #else
 #define PROLOGUE \
+	.section .text;\
+	.align 5;\
+	.globl REALNAME;\
+	.hidden REALNAME ;\
+	.section	".opd","aw";\
+	.align 3;\
+REALNAME:;\
+	.quad	.REALNAME, .TOC.@tocbase, 0;\
+	.previous;\
+	.size	REALNAME, 24;\
+	.type	.REALNAME, @function;\
+	.globl	.REALNAME;\
+	.hidden .REALNAME ;\
+.REALNAME:
+#define PROLOGUE_EXPORT \
 	.section .text;\
 	.align 5;\
 	.globl REALNAME;\
@@ -637,6 +668,17 @@ REALNAME:;\
 	.csect .text[PR],5;\
 .REALNAME:
 
+#define PROLOGUE_EXPORT \
+	.machine "any";\
+	.toc;\
+	.globl .REALNAME;\
+	.globl REALNAME;\
+	.csect REALNAME[DS],3;\
+REALNAME:;\
+	.long .REALNAME, TOC[tc0], 0;\
+	.csect .text[PR],5;\
+.REALNAME:
+
 #define EPILOGUE \
 _section_.text:;\
 	.csect .data[RW],4;\
@@ -645,6 +687,17 @@ _section_.text:;\
 #else
 
 #define PROLOGUE \
+	.machine "any";\
+	.toc;\
+	.globl .REALNAME;\
+	.globl REALNAME;\
+	.csect REALNAME[DS],3;\
+REALNAME:;\
+	.llong .REALNAME, TOC[tc0], 0;\
+	.csect .text[PR], 5;\
+.REALNAME:
+
+#define PROLOGUE_EXPORT \
 	.machine "any";\
 	.toc;\
 	.globl .REALNAME;\
@@ -676,8 +729,28 @@ _section_.text:;\
 	.globl REALNAME
 REALNAME:
 	.endmacro
+
+	.macro PROLOGUE_EXPORT
+	.section __TEXT,__text,regular,pure_instructions
+	.section __TEXT,__picsymbolstub1,symbol_stubs,pure_instructions,32
+	.machine ppc
+	.text
+	.align 4
+	.globl REALNAME
+REALNAME:
+	.endmacro
 #else
 	.macro PROLOGUE
+	.section __TEXT,__text,regular,pure_instructions
+	.section __TEXT,__picsymbolstub1,symbol_stubs,pure_instructions,32
+	.machine ppc64
+	.text
+	.align 4
+	.globl REALNAME
+REALNAME:
+	.endmacro
+
+	.macro PROLOGUE_EXPORT
 	.section __TEXT,__text,regular,pure_instructions
 	.section __TEXT,__picsymbolstub1,symbol_stubs,pure_instructions,32
 	.machine ppc64

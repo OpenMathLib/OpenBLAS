@@ -33,7 +33,12 @@
 TOPSRCDIR = ../..
 include $(TOPSRCDIR)/make.inc
 
-ifneq ($(C_LAPACK), 1)
+ifeq ($(C_LAPACK), 1)
+.SUFFIXES:
+.SUFFIXES: .c .o
+.c.o:
+	$(CC) $(filter-out -fvisibility=hidden, $(CFLAGS)) -c -o $@ $<
+else
 .SUFFIXES:
 .SUFFIXES: .f .o
 .f.o:
@@ -128,9 +133,9 @@ dlaran.o: dlaran.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
 endif
 else
 ifeq ($(filter $(BUILD_SINGLE) $(BUILD_COMPLEX),1),)
-slaran.o: slaran.c ; $(CC) $(CFLAGS) -O0 -c -o $@ $<
+slaran.o: slaran.c ; $(CC) $(filter-out -fvisibility=hidden, $(CFLAGS)) -O0 -c -o $@ $<
 endif
 ifeq ($(filter $(BUILD_DOUBLE) $(BUILD_COMPLEX16),1),)
-dlaran.o: dlaran.c ; $(CC) $(CFLAGS) -O0 -c -o $@ $<
+dlaran.o: dlaran.c ; $(CC) $(filter-out -fvisibility=hidden, $(CFLAGS) -O0 -c -o $@ $<
 endif
 endif

@@ -41,6 +41,7 @@ set(COMMON_SOURCES
   openblas_env.c
   openblas_get_num_procs.c
   openblas_get_num_threads.c
+  openblas_cancel.c
   blas_server_callback.c
 )
 

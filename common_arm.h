@@ -53,6 +53,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(ARMV6) || defined(ARMV7) || defined(ARMV8)
 
+#ifndef BLAS_LOCK_DEFINED
 static __inline void blas_lock(volatile BLASULONG *address){
 
   int register ret;
@@ -74,6 +75,7 @@ static __inline void blas_lock(volatile BLASULONG *address){
 }
 
 #define BLAS_LOCK_DEFINED
+#endif
 #endif
 
 static inline int blas_quickdivide(blasint x, blasint y){

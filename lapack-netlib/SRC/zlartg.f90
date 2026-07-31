@@ -203,7 +203,7 @@ subroutine ZLARTG( f, g, c, s, r )
             rtmax = rtmax * 2
             if( f2 > rtmin .and. h2 < rtmax ) then
                ! safmin <= sqrt( f2*h2 ) <= safmax
-               s = conjg( g ) * ( f / sqrt( f2*h2 ) )
+               s = ( f / sqrt( f2 ) ) * ( conjg( g ) / sqrt( h2 ) )
             else
                s = conjg( g ) * ( r / h2 )
             end if
@@ -223,7 +223,7 @@ subroutine ZLARTG( f, g, c, s, r )
                !  sqrt(safmin) <= f2 * sqrt(safmax) <= h2 / sqrt(f2 * h2) <= h2 * (safmin / f2) <= h2 <= safmax
                r = f * ( h2 / d )
             end if
-            s = conjg( g ) * ( f / d )
+            s = ( f / sqrt( f2 ) ) * ( conjg( g ) / sqrt( h2 ) )
          end if
       else
 !
@@ -259,7 +259,7 @@ subroutine ZLARTG( f, g, c, s, r )
             rtmax = rtmax * 2
             if( f2 > rtmin .and. h2 < rtmax ) then
                ! safmin <= sqrt( f2*h2 ) <= safmax
-               s = conjg( gs ) * ( fs / sqrt( f2*h2 ) )
+               s = ( fs / sqrt( f2 ) ) * ( conjg( gs ) / sqrt( h2 ) )
             else
                s = conjg( gs ) * ( r / h2 )
             end if
@@ -279,7 +279,7 @@ subroutine ZLARTG( f, g, c, s, r )
                !  sqrt(safmin) <= f2 * sqrt(safmax) <= h2 / sqrt(f2 * h2) <= h2 * (safmin / f2) <= h2 <= safmax
                r = fs * ( h2 / d )
             end if
-            s = conjg( gs ) * ( fs / d )
+            s = ( fs / sqrt( f2 ) ) * ( conjg( gs ) / sqrt( h2 ) )
          end if
          ! Rescale c and r
          c = c * w

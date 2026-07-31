@@ -18,6 +18,7 @@ if(WIN32)
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_cblas_helper.ps1
 "$ErrorActionPreference = \"Stop\"\n"
 "Get-Content $args[1] | & $args[0]\n"
+"exit $LASTEXITCODE\n"
 )
 set(test_helper powershell -ExecutionPolicy Bypass "${CMAKE_CURRENT_BINARY_DIR}/test_cblas_helper.ps1")
 else()

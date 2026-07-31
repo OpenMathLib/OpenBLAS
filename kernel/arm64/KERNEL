@@ -56,3 +56,19 @@ endif
 ifndef QROTMKERNEL
 QROTMKERNEL = ../generic/rotm.c
 endif
+
+ifndef SOMATCOPY_CT
+SOMATCOPY_CT = omatcopy_ct_neon.c
+endif
+
+ifndef SOMATCOPY_RT
+SOMATCOPY_RT = omatcopy_rt_neon.c
+endif
+
+ifndef DOMATCOPY_CT
+DOMATCOPY_CT = omatcopy_ct_neon.c
+endif
+
+ifndef DOMATCOPY_RT
+DOMATCOPY_RT = omatcopy_rt_neon.c
+endif

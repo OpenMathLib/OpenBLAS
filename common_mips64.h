@@ -205,7 +205,7 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define ASSEMBLER_ARCH mips64
 #endif
 
-#define PROLOGUE \
+#define PROLOGUE_EXPORT \
 	.text ;\
 	.set	ASSEMBLER_ARCH ;\
 	.align 5 ;\
@@ -215,6 +215,22 @@ static inline int blas_quickdivide(blasint x, blasint y){
 REALNAME: ;\
 	.set	noreorder ;\
 	.set	nomacro
+
+#ifdef __ELF__
+#define PROLOGUE \
+	.text ;\
+	.set	ASSEMBLER_ARCH ;\
+	.align 5 ;\
+	.globl	REALNAME ;\
+	.hidden REALNAME ;\
+	.ent	REALNAME ;\
+	.type	REALNAME, @function ;\
+REALNAME: ;\
+	.set	noreorder ;\
+	.set	nomacro
+#else
+#define PROLOGUE PROLOGUE_EXPORT
+#endif
 
 #if defined(__linux__) && defined(__ELF__)
 #define GNUSTACK .section .note.GNU-stack,"",@progbits

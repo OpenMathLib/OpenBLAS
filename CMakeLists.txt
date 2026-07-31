@@ -9,7 +9,7 @@ project(OpenBLAS C ASM)
 
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
-set(OpenBLAS_PATCH_VERSION 33.dev)
+set(OpenBLAS_PATCH_VERSION 34.dev)
 
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
@@ -733,19 +733,48 @@ if(NOT NO_CBLAS)
   message (STATUS "Generating cblas.h in ${CMAKE_INSTALL_INCLUDEDIR}")
   set(CBLAS_H ${CMAKE_BINARY_DIR}/generated/cblas.h)
   file(READ ${CMAKE_CURRENT_SOURCE_DIR}/cblas.h CBLAS_H_CONTENTS)
-  string(REPLACE "common" "openblas_config" CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS}")
+  string(REPLACE "common" "openblas_config" CBLAS_H_CONTENTS_NEW2 "${CBLAS_H_CONTENTS}")
+  string(REPLACE "OPENBLAS_EXPORT " "" CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW2}")
+
+  # Symbol prefix/suffix settings rename exported functions, not C typedefs.
+  # Protect callback type names from the textual function-name rewriting below.
+  string(REPLACE "openblas_dojob_callback" "OPENBLAS_DOJOB_CALLBACK_TYPE"
+    CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW}")
+  string(REPLACE "openblas_threads_callback" "OPENBLAS_THREADS_CALLBACK_TYPE"
+    CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW}")
+  string(REPLACE "openblas_xerbla_handler" "OPENBLAS_XERBLA_HANDLER_TYPE"
+    CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW}")
+
   if (NOT ${SYMBOLPREFIX} STREQUAL "")
-    string(REPLACE " cblas" " ${SYMBOLPREFIX}cblas" CBLAS_H_CONTENTS	"${CBLAS_H_CONTENTS_NEW}")
-    string(REPLACE " openblas" " ${SYMBOLPREFIX}openblas" CBLAS_H_CONTENTS_NEW	"${CBLAS_H_CONTENTS}")
-    string (REPLACE " ${SYMBOLPREFIX}openblas_complex" " openblas_complex" CBLAS_H_CONTENTS	"${CBLAS_H_CONTENTS_NEW}")
-    string(REPLACE " goto" " ${SYMBOLPREFIX}goto" CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS}")
+    string(REPLACE " cblas" " ${SYMBOLPREFIX}cblas"
+      CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW}")
+    string(REPLACE " openblas" " ${SYMBOLPREFIX}openblas"
+      CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW}")
+    string(REPLACE " ${SYMBOLPREFIX}openblas_complex" " openblas_complex"
+      CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW}")
+    string(REPLACE " goto" " ${SYMBOLPREFIX}goto"
+      CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW}")
   endif()
   if (NOT ${SYMBOLSUFFIX} STREQUAL "")
-    string(REGEX REPLACE "(cblas[^ (]*)" "\\1${SYMBOLSUFFIX}" CBLAS_H_CONTENTS	"${CBLAS_H_CONTENTS_NEW}")
-    string(REGEX REPLACE "(openblas[^ (]*)" "\\1${SYMBOLSUFFIX}" CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS}")
-    string(REGEX REPLACE "(openblas_complex[^ ]*)${SYMBOLSUFFIX}" "\\1" CBLAS_H_CONTENTS	"${CBLAS_H_CONTENTS_NEW}")
-    string(REGEX REPLACE "(goto[^ (]*)" "\\1${SYMBOLSUFFIX}" CBLAS_H_CONTENTS_NEW	"${CBLAS_H_CONTENTS}")
+    string(REGEX REPLACE "(cblas[A-Za-z0-9_]*)" "\\1${SYMBOLSUFFIX}"
+      CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW}")
+    string(REGEX REPLACE "(openblas[A-Za-z0-9_]*)" "\\1${SYMBOLSUFFIX}"
+      CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW}")
+    string(REPLACE "openblas_config${SYMBOLSUFFIX}" "openblas_config"
+      CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW}")
+    string(REGEX REPLACE "(openblas_complex[A-Za-z0-9_]*)${SYMBOLSUFFIX}" "\\1"
+      CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW}")
+    string(REGEX REPLACE "(goto[A-Za-z0-9_]*)" "\\1${SYMBOLSUFFIX}"
+      CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW}")
   endif()
+
+  string(REPLACE "OPENBLAS_DOJOB_CALLBACK_TYPE" "openblas_dojob_callback"
+    CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW}")
+  string(REPLACE "OPENBLAS_THREADS_CALLBACK_TYPE" "openblas_threads_callback"
+    CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW}")
+  string(REPLACE "OPENBLAS_XERBLA_HANDLER_TYPE" "openblas_xerbla_handler"
+    CBLAS_H_CONTENTS_NEW "${CBLAS_H_CONTENTS_NEW}")
+
   file(WRITE ${CBLAS_H} "${CBLAS_H_CONTENTS_NEW}")
   install (FILES ${CBLAS_H} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()

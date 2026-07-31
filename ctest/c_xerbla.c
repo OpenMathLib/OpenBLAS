@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <stdarg.h>
 #include <string.h>
@@ -8,16 +9,8 @@
 void cblas_xerbla(blasint info, char *rout, char *form, ...)
 {
    extern int cblas_lerr, cblas_info, cblas_ok;
-   extern int link_xerbla;
    extern int RowMajorStrg;
    extern char *cblas_rout;
-
-   /* Initially, c__3chke will call this routine with
-    * global variable link_xerbla=1, and F77_xerbla will set link_xerbla=0.
-    * This is done to fool the linker into loading these subroutines first
-    * instead of ones in the CBLAS or the legacy BLAS library.
-    */
-   if (link_xerbla) return;
 
    if (cblas_rout != NULL && strcmp(cblas_rout, rout) != 0){
       printf("***** XERBLA WAS CALLED WITH SRNAME = <%s> INSTEAD OF <%s> *******\n", rout, cblas_rout);
@@ -78,44 +71,27 @@ void cblas_xerbla(blasint info, char *rout, char *form, ...)
    }
 
    if (info != cblas_info){
-      printf("***** XERBLA WAS CALLED WITH INFO = %d INSTEAD OF %d in %s *******\n",info, cblas_info, rout);
+      printf("***** XERBLA WAS CALLED WITH INFO = %lld INSTEAD OF %lld in %s *******\n",
+             (long long)info, (long long)cblas_info, rout);
       cblas_lerr = PASSED;
       cblas_ok = FALSE;
    } else cblas_lerr = FAILED;
 }
 
-#ifdef F77_Char
-void F77_xerbla(F77_Char F77_srname, void *vinfo)
-#else
-void F77_xerbla(char *srname, void *vinfo)
-#endif
+static void cblas_test_xerbla(const char *srname, const blasint *info,
+                              size_t length)
 {
-#ifdef F77_Char
-   char *srname;
-#endif
-
+   extern int cblas_ok;
    char rout[] = {'c','b','l','a','s','_','\0','\0','\0','\0','\0','\0','\0'};
+   blasint i;
 
-#ifdef F77_Integer
-   F77_Integer *info=vinfo;
-   F77_Integer i;
-   extern F77_Integer link_xerbla;
-#else
-   int *info=vinfo;
-   int i;
-   extern int link_xerbla;
-#endif
-#ifdef F77_Char
-   srname = F2C_STR(F77_srname, XerblaStrLen);
-#endif
-
-   /* See the comment in cblas_xerbla() above */
-   if (link_xerbla)
-   {
-      link_xerbla = 0;
+   if (length < 6) {
+      printf("***** XERBLA WAS CALLED WITH AN INVALID ROUTINE NAME LENGTH *******\n");
+      cblas_ok = FALSE;
       return;
    }
-   for(i=0;  i  < 6; i++) rout[i+6] = tolower(srname[i]);
+
+   for(i=0;  i  < 6; i++) rout[i+6] = tolower((unsigned char)srname[i]);
    for(i=11; i >= 9; i--) if (rout[i] == ' ') rout[i] = '\0';
 
    /* We increment *info by 1 since the CBLAS interface adds one more
@@ -124,14 +100,10 @@ void F77_xerbla(char *srname, void *vinfo)
    cblas_xerbla(*info+1,rout,"");
 }
 
-#ifdef USE64BITINT
-#undef int
-#endif
+void cblas_test_set_xerbla(void) {
+   openblas_set_xerbla(cblas_test_xerbla);
+}
 
-int    BLASFUNC(xerbla)(char *name, blasint *info, blasint length) {
-
-  F77_xerbla(name, info);
-  return 0;
-};
-
-
+void cblas_test_fail(void) {
+   exit(EXIT_FAILURE);
+}

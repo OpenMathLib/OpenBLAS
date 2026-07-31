@@ -426,10 +426,10 @@
 *           the statistically correct thing to do in this situation is
 *           simply to iterate again.
 *           N.B. the case X( I ) = 0.0 should not be possible.
-            I1 = I1 + 2
-            I2 = I2 + 2
-            I3 = I3 + 2
-            I4 = I4 + 2
+            I1 = IT1
+            I2 = IT2
+            I3 = IT3
+            I4 = IT4
             GOTO 20
          END IF
 *

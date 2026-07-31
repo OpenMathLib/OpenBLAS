@@ -3,6 +3,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <complex.h>
+
+#include <exports.h>
+
 #ifdef complex
 #undef complex
 #endif
@@ -604,6 +607,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
+OPENBLAS_EXPORT
 /* Subroutine */ void slaruv_(integer *iseed, integer *n, real *x)
 {
     /* Initialized data */

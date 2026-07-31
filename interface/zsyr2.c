@@ -73,6 +73,7 @@ static int (*syr2_thread[])(BLASLONG, FLOAT *, FLOAT *, BLASLONG, FLOAT *, BLASL
 };
 #endif
 
+OPENBLAS_EXPORT
 void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 	 FLOAT  *x, blasint *INCX, FLOAT *y, blasint *INCY, FLOAT *a, blasint *LDA){
 
@@ -127,6 +128,9 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 
 #ifdef SMP
   nthreads = num_cpu_avail(2);
+
+  if (n < 50) nthreads = 1;
+  if (nthreads > 2 && n < 500) nthreads = 2;
 
   if (nthreads == 1) {
 #endif

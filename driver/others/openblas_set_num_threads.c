@@ -38,6 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern  void openblas_set_num_threads(int num_threads) ;
 extern  int openblas_get_num_threads(void) ;
 
+OPENBLAS_EXPORT
 void openblas_set_num_threads_(int* num_threads){
 	openblas_set_num_threads(*num_threads);
 }
@@ -53,9 +54,11 @@ int openblas_set_num_threads_local(int num_threads){
 #else
 //Single thread
 
+OPENBLAS_EXPORT
 void openblas_set_num_threads(int num_threads) {
 }
 
+OPENBLAS_EXPORT
 void openblas_set_num_threads_(int* num_threads){
 
 }

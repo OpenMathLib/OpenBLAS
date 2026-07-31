@@ -203,7 +203,7 @@ blasint CNAME(blasint *k, blasint *n, blasint *n1, FLOAT *d,
       exec_blas(num_cpu, queue);
     }
     for (i = 0; i < kval; i++) {
-      temp = sqrt(-w[i]);
+      temp = sqrt(fmax(-w[i], 0.0));
       w[i] = copysign(temp, s[i]);
     }
 

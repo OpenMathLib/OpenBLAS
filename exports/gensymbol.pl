@@ -178,6 +178,7 @@
     openblas_get_config,
     openblas_get_corename,
     openblas_set_threads_callback_function,
+    openblas_set_xerbla,
 );
 
 @misc_underscore_objs = (
@@ -892,7 +893,8 @@ zpotri,
     claqp3rk,
     clatrs3,
     crscl,
-    ctrsyl3
+    ctrsyl3,
+    cgecxx
     );
 #    claqz0
 #    claqz1
@@ -907,7 +909,8 @@ zpotri,
     dlaqp3rk,
     dlarmm,
     dlatrs3,
-    dtrsyl3
+    dtrsyl3,
+    dgecxx
     );
 
 @lapackobjs2s = (@lapackobjs2s,
@@ -917,7 +920,8 @@ zpotri,
     slaqp3rk,
     slarmm,
     slatrs3,
-    strsyl3
+    strsyl3,
+    sgecxx
     );
 
 @lapackobjs2z = (@lapackobjs2z,
@@ -927,7 +931,8 @@ zpotri,
     zlaqp3rk,
     zlatrs3,
     zrscl,
-    ztrsyl3
+    ztrsyl3,
+    zgecxx
     );
 #    zlaqz0
 #    zlaqz1
@@ -1109,6 +1114,8 @@ zpotri,
     LAPACKE_cgedmd_work,
     LAPACKE_cgedmdq,
     LAPACKE_cgedmdq_work,
+    LAPACKE_cgecxx,
+    LAPACKE_cgecxx_work,
     LAPACKE_cgeequ,
     LAPACKE_cgeequ_work,
     LAPACKE_cgeequb,
@@ -1779,6 +1786,8 @@ zpotri,
     LAPACKE_dgedmd_work,
     LAPACKE_dgedmdq,
     LAPACKE_dgedmdq_work,
+    LAPACKE_dgecxx,
+    LAPACKE_dgecxx_work,
     LAPACKE_dgeequ,
     LAPACKE_dgeequ_work,
     LAPACKE_dgeequb,
@@ -2404,6 +2413,8 @@ zpotri,
     LAPACKE_sgedmd_work,
     LAPACKE_sgedmdq,
     LAPACKE_sgedmdq_work,
+    LAPACKE_sgecxx,
+    LAPACKE_sgecxx_work,
     LAPACKE_sgeequ,
     LAPACKE_sgeequ_work,
     LAPACKE_sgeequb,
@@ -3025,6 +3036,8 @@ zpotri,
     LAPACKE_zgedmd_work,
     LAPACKE_zgedmdq,
     LAPACKE_zgedmdq_work,
+    LAPACKE_zgecxx,
+    LAPACKE_zgecxx_work,
     LAPACKE_zgeequ,
     LAPACKE_zgeequ_work,
     LAPACKE_zgeequb,
@@ -4053,9 +4066,11 @@ if ($ARGV[0] eq "win2k"){
 
 
     foreach $objs (@no_underscore_objs) {
+        next if $objs eq "openblas_set_xerbla";
         print "\t",$symbolprefix,$objs,$symbolsuffix,"=$objs","  \@", $count, "\n";
         $count ++;
     }
+    print "\t",$symbolprefix,"openblas_set_xerbla",$symbolsuffix,"=openblas_set_xerbla  \@",$count,"\n";
 
     exit(0);
 }

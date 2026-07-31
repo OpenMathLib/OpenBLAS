@@ -75,6 +75,8 @@
 *>             _TP:  Triangular packed
 *>             _TB:  Triangular band
 *>             _QR:  QR (general matrices)
+*>             _QK:  truncated QR decomposition with column pivoting
+*>             _CX:  CX decomposition
 *>             _LQ:  LQ (general matrices)
 *>             _QL:  QL (general matrices)
 *>             _RQ:  RQ (general matrices)
@@ -104,6 +106,7 @@
 *
 *  =====================================================================
       SUBROUTINE ALAHD( IOUNIT, PATH )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -605,6 +608,19 @@
          WRITE( IOUNIT, FMT = 8063 )4
          WRITE( IOUNIT, FMT = 8064 )5
          WRITE( IOUNIT, FMT = '( '' Messages:'' )' )
+
+      ELSE IF( LSAMEN( 2, P2, 'CX' ) ) THEN
+*
+*        CX decomposition
+*
+         WRITE( IOUNIT, FMT = 8007 )PATH
+         WRITE( IOUNIT, FMT = 9871 )
+         WRITE( IOUNIT, FMT = '( '' Test ratios:'' )' )
+         WRITE( IOUNIT, FMT = 8060 )1
+         WRITE( IOUNIT, FMT = 8061 )2
+         WRITE( IOUNIT, FMT = 8062 )3
+         WRITE( IOUNIT, FMT = 8063 )4
+         WRITE( IOUNIT, FMT = '( '' Messages:'' )' )
 *
       ELSE IF( LSAMEN( 2, P2, 'TZ' ) ) THEN
 *
@@ -795,6 +811,7 @@
      $       ' factorization output ', /,' for tall-skinny matrices.' )
  8006 FORMAT( / 1X, A3, ':  truncated QR factorization',
      $        ' with column pivoting' )
+ 8007 FORMAT( / 1X, A3, ':  CX decomposition' )
 *
 *     GE matrix types
 *
@@ -941,28 +958,42 @@
 *     QK matrix types
 *
  9871 FORMAT( 4X, ' 1. Zero matrix', /
-     $        4X, ' 2. Random, Diagonal, CNDNUM = 2', /
-     $        4X, ' 3. Random, Upper triangular, CNDNUM = 2', /
-     $        4X, ' 4. Random, Lower triangular, CNDNUM = 2', /
-     $        4X, ' 5. Random, First column is zero, CNDNUM = 2', /
-     $        4X, ' 6. Random, Last MINMN column is zero, CNDNUM = 2', /
-     $        4X, ' 7. Random, Last N column is zero, CNDNUM = 2', /
+     $        4X, ' 2. Random, Diagonal, CNDNUM = 2, NORM = 1', /
+     $        4X, ' 3. Random, Upper triangular, CNDNUM = 2,',
+     $                 ' NORM = 1', /
+     $        4X, ' 4. Random, Lower triangular, CNDNUM = 2,',
+     $                 ' NORM = 1', /
+     $        4X, ' 5. Random, First column is zero, CNDNUM = 2,',
+     $                 ' NORM = 1', /
+     $        4X, ' 6. Random, Last MINMN column is zero, CNDNUM = 2,',
+     $                 ' NORM = 1', /
+     $        4X, ' 7. Random, Last N column is zero, CNDNUM = 2,',
+     $                 ' NORM = 1', /
      $        4X, ' 8. Random, Middle column in MINMN is zero,',
-     $               ' CNDNUM = 2', /
-     $        4X, ' 9. Random, First half of MINMN columns are zero,',
-     $                 ' CNDNUM = 2', /
+     $                 ' CNDNUM = 2, NORM = 1', /
+     $        4X, ' 9. Random, First half of MINMN columns are zero,', /
+     $        4x, '            zero block size MINMN/2, CNDNUM = 2,',
+     $                       ' NORM = 1', /
      $        4X, '10. Random, Last columns are zero starting from',
-     $                 ' MINMN/2+1, CNDNUM = 2', /
-     $        4X, '11. Random, Half MINMN columns in the middle are',
-     $                 ' zero starting from MINMN/2-(MINMN/2)/2+1,',
-     $                 ' CNDNUM = 2', /
-     $        4X, '12. Random, Odd columns are ZERO, CNDNUM = 2', /
-     $        4X, '13. Random, Even columns are ZERO, CNDNUM = 2', /
-     $        4X, '14. Random, CNDNUM = 2', /
-     $        4X, '15. Random, CNDNUM = sqrt(0.1/EPS)', /
-     $        4X, '16. Random, CNDNUM = 0.1/EPS', /
+     $                 ' MINMN/2+1 column,', /
+     $        4x, '            zero block size N - MINMN/2',
+     $                 ' CNDNUM = 2, NORM = 1', /
+     $        4X, '11. Random, Half of MINMN columns in the middle are',
+     $                 ' zero,', /
+     $        4X, '            starting from MINMN/2-(MINMN/2)/2+1',
+     $                 ' column,', /
+     $        4x, '            zero block size',
+     $                 ' MINMN/2, CNDNUM = 2, NORM = 1', /
+     $        4X, '12. Random, Odd columns are ZERO, CNDNUM = 2,',
+     $                 ' NORM = 1', /
+     $        4X, '13. Random, Even columns are ZERO, CNDNUM = 2,',
+     $                 ' NORM = 1', /
+     $        4X, '14. Random, CNDNUM = 2, NORM = 1', /
+     $        4X, '15. Random, CNDNUM = sqrt(0.1/EPS), NORM = 1', /
+     $        4X, '16. Random, CNDNUM = 0.1/EPS, NORM = 1', /
      $        4X, '17. Random, CNDNUM = 0.1/EPS,',
-     $                 ' one small singular value S(N)=1/CNDNUM', /
+     $                 ' one small singular value S(N)=1/CNDNUM,',
+     $                 ' NORM = 1', /
      $        4X, '18. Random, CNDNUM = 2, scaled near underflow,',
      $                 ' NORM = SMALL = SAFMIN', /
      $        4X, '19. Random, CNDNUM = 2, scaled near overflow,',

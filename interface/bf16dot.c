@@ -4,6 +4,7 @@
 #include "functable.h"
 #endif
 
+OPENBLAS_EXPORT
 #ifndef CBLAS
 float NAME(blasint *N, bfloat16 *x, blasint *INCX, bfloat16 *y, blasint *INCY){
    BLASLONG n    = *N;

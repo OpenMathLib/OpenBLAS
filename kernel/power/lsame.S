@@ -39,7 +39,7 @@
 #define ASSEMBLER
 #include "common.h"
 
-	PROLOGUE
+	PROLOGUE_EXPORT
 	PROFCODE
 
 	lbz	r3,  0(r3)

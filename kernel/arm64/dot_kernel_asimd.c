@@ -262,16 +262,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 static RETURN_TYPE dot_kernel_asimd(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 {
-#ifndef DOUBLE
-    volatile
-#endif
+
     RETURN_TYPE  dot = 0.0;
 	BLASLONG j = 0;
 
 	__asm__ __volatile__ (
 	"	fmov	"OUT", "REG0"			\n"
+	"	fmov	d0, xzr				\n"
 	"	fmov	d1, xzr				\n"
-	"	fmov	d2, xzr				\n"
+    "	fmov	d2, xzr				\n"
 	"	fmov	d3, xzr				\n"
 	"	fmov	d4, xzr				\n"
 	"	fmov	d5, xzr				\n"
@@ -342,7 +341,10 @@ static RETURN_TYPE dot_kernel_asimd(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT 
           [J_]    "r"   (j)
 	: "cc",
 	  "memory",
-	  "d1", "d2", "d3", "d4", "d5", "d6", "d7"
+	  "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7",
+	  "v16", "v17", "v18", "v19", "v20", "v21", "v22",
+	  "v23", "v24", "v25", "v26", "v27", "v28", "v29",
+	  "v30", "v31"
 	);
 
 	return dot;

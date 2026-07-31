@@ -52,6 +52,7 @@ static int (*laswp[])(BLASLONG, BLASLONG, BLASLONG, FLOAT, FLOAT, FLOAT *, BLASL
 #endif
 };
 
+OPENBLAS_EXPORT
 int NAME(blasint *N, FLOAT *a, blasint *LDA, blasint *K1, blasint *K2, blasint *ipiv, blasint *INCX){
 
   blasint n    = *N;
@@ -78,7 +79,11 @@ int NAME(blasint *N, FLOAT *a, blasint *LDA, blasint *K1, blasint *K2, blasint *
   flag = (incx < 0);
 
 #ifdef SMP
-  nthreads = num_cpu_avail(2);
+  if (n < 64) {
+    nthreads = 1;
+  } else {
+    nthreads = num_cpu_avail(2);
+  }
 
   if (nthreads == 1) {
 #endif

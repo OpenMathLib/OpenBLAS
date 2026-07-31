@@ -44,7 +44,7 @@
 #define XX	ARG3
 #define YY	ARG4
 
-	PROLOGUE
+	PROLOGUE_EXPORT
 	PROFCODE
 
 	movzbq	(X), X

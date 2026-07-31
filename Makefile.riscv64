@@ -25,3 +25,7 @@ ifeq ($(CORE), RISCV64_GENERIC)
 CCOMMON_OPT += -march=rv64imafdc -mabi=lp64d
 FCOMMON_OPT += -march=rv64imafdc -mabi=lp64d
 endif
+ifeq ($(CORE), U74)
+CCOMMON_OPT += -march=rv64imafdc_zba_zbb -mabi=lp64d -mtune=sifive-u74
+FCOMMON_OPT += -march=rv64imafdc_zba_zbb -mabi=lp64d -mtune=sifive-u74
+endif

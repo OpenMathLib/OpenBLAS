@@ -73,6 +73,8 @@ static  int (*spmv_thread[])(BLASLONG, FLOAT *, FLOAT *, FLOAT *, BLASLONG, FLOA
 };
 #endif
 
+OPENBLAS_EXPORT
+
 void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA, FLOAT *a,
             FLOAT  *b, blasint *INCX, FLOAT *BETA, FLOAT *c, blasint *INCY){
 

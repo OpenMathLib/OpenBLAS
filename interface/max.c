@@ -126,6 +126,8 @@
 
 #endif
 
+OPENBLAS_EXPORT
+
 #ifndef CBLAS
 
 FLOATRET NAME(blasint *N, FLOAT *x, blasint *INCX){

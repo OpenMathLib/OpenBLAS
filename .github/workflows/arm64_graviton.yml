@@ -5,10 +5,16 @@ on:
     branches:
       - develop
       - release-**
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
   pull_request:
     branches:
       - develop
       - release-**
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}

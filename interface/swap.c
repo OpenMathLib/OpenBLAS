@@ -50,6 +50,8 @@
 #undef SMP
 #endif
 
+OPENBLAS_EXPORT
+
 #ifndef CBLAS
 
 void NAME(blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY){

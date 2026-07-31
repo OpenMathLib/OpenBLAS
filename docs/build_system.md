@@ -98,7 +98,7 @@ though - please read the linked Makefiles if you want to see all variables.
 - `BUILD_DOUBLE`: build the double-precision real functions
 - `BUILD_COMPLEX`: build the single-precision complex functions
 - `BUILD_COMPLEX16`: build the double-precision complex functions
-- `BUILD_BFLOAT16`: build the "half precision brainfloat" real functions 
+- `BUILD_BFLOAT16`: build the `bfloat16` real functions
 - `EXPRECISION`: (do not use, this is a work in progress) option to use `long
   double` functions
 
@@ -143,9 +143,8 @@ ensures that there are a sufficient number of buffer sets available.
   no symbolic linking to variant names (default is `0`)
 - `LIBNAMEPREFIX`: prefix that, if given, will be inserted in the library name
   before `openblas` (e.g., `xxx` will result in `libxxxopenblas.so`)
-- `LIBNAMESUFFIX`: suffix that, if given, will be inserted in the library name
-  after `openblas`, separated by an underscore (e.g., `yyy` will result in
-  `libopenblas_yyy.so`)
+- `LIBNAMESUFFIX`: suffix that, if given, will be appended to the library name
+  after `openblas` (e.g., `_yyy` will result in `libopenblas_yyy.so`)
 - `SYMBOLPREFIX`: prefix that, if given, will be added to all symbol names
   *and* to the library name
 - `SYMBOLSUFFIX`: suffix that, if given, will be added to all symbol names

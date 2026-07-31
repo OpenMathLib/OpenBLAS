@@ -6,7 +6,6 @@
 #include "common.h"
 #include <stdlib.h>
 #include <inttypes.h>
-#include <math.h>
 
 #if defined(DYNAMIC_ARCH)
 #define COMBINE(a,b) a ## b
@@ -64,27 +63,30 @@ kernel_2x2(const float *A, const float *B, float *C, size_t shared_dim,
 #define pg_c_1 pg_b_1
 
   svzero_za();
-  svfloat32_t beta_vec = svdup_f32(beta);
+  // beta == 0 must not read C; ZA is already initialized to zero.
+  if (beta != 0.0f) {
+    svfloat32_t beta_vec = svdup_f32(beta);
     // Load C to ZA
-  for (size_t i = 0; i < MIN(svl, block_rows); i++) {
-	svfloat32_t row_c_0 = svld1(pg_c_0, &C[i * ldc]);
-	row_c_0 = svmul_x(pg, beta_vec, row_c_0);
-    svwrite_hor_za32_f32_m(/*tile*/0, /*slice*/i, pg_c_0, row_c_0);
-    
-	svfloat32_t row_c_1 = svld1(pg_c_1, &C[i * ldc + svl]);
-	row_c_1 = svmul_x(pg, beta_vec, row_c_1);
-    svwrite_hor_za32_f32_m(/*tile*/1, /*slice*/i, pg_c_1, row_c_1);
-  }
-  for (size_t i = svl; i < block_rows; i++) {
-    svfloat32_t row_c_0 = svld1(pg_c_0, &C[i * ldc]);
-	row_c_0 = svmul_x(pg, beta_vec, row_c_0);
-	svwrite_hor_za32_f32_m(/*tile*/2, /*slice*/i, pg_c_0, row_c_0);
+    for (size_t i = 0; i < MIN(svl, block_rows); i++) {
+      svfloat32_t row_c_0 = svld1(pg_c_0, &C[i * ldc]);
+      row_c_0 = svmul_x(pg, beta_vec, row_c_0);
+      svwrite_hor_za32_f32_m(/*tile*/0, /*slice*/i, pg_c_0, row_c_0);
 
-    svfloat32_t row_c_1 = svld1(pg_c_1, &C[i * ldc + svl]);
-	row_c_1 = svmul_x(pg, beta_vec, row_c_1);
-    svwrite_hor_za32_f32_m(/*tile*/3, /*slice*/i, pg_c_1, row_c_1);
+      svfloat32_t row_c_1 = svld1(pg_c_1, &C[i * ldc + svl]);
+      row_c_1 = svmul_x(pg, beta_vec, row_c_1);
+      svwrite_hor_za32_f32_m(/*tile*/1, /*slice*/i, pg_c_1, row_c_1);
+    }
+    for (size_t i = svl; i < block_rows; i++) {
+      svfloat32_t row_c_0 = svld1(pg_c_0, &C[i * ldc]);
+      row_c_0 = svmul_x(pg, beta_vec, row_c_0);
+      svwrite_hor_za32_f32_m(/*tile*/2, /*slice*/i, pg_c_0, row_c_0);
+
+      svfloat32_t row_c_1 = svld1(pg_c_1, &C[i * ldc + svl]);
+      row_c_1 = svmul_x(pg, beta_vec, row_c_1);
+      svwrite_hor_za32_f32_m(/*tile*/3, /*slice*/i, pg_c_1, row_c_1);
+    }
   }
-  
+
   svfloat32_t alpha_vec = svdup_f32(alpha);
   // Iterate through shared dimension (K)
   for (size_t k = 0; k < shared_dim; k++) {
@@ -168,15 +170,21 @@ void SME1_KERNEL2X2(uint64_t m, uint64_t k, uint64_t n, const float* alpha,\
 void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float alpha, float * __restrict A,\
             BLASLONG strideA, float * __restrict B, BLASLONG strideB ,\
             float beta, float * __restrict R, BLASLONG strideR){
-                
+        if (alpha == 0.0f || K == 0) {
+                if (beta == 1.0f)
+                        return;
+                SME1_KERNEL2X2(M, 0, N, &alpha, A, B, &beta, R);
+                return;
+        }
+
         uint64_t m_mod, vl_elms;
-        
+
         vl_elms = sve_cntw();
 
-        m_mod = ceil((double)M/(double)vl_elms) * vl_elms;
+        m_mod = (((uint64_t)M + vl_elms - 1) / vl_elms) * vl_elms;
 
         float *A_mod = (float *) malloc(m_mod*K*sizeof(float));
-	    
+
 	    /* Prevent compiler optimization by reading from memory instead
 	     * of reading directly from vector (z) registers.
 	     * */
@@ -186,13 +194,13 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float alpha, float * __restrict 
                          "z8", "z9", "z10", "z11", "z12", "z13", "z14", "z15",
                          "z16", "z17", "z18", "z19", "z20", "z21", "z22", "z23",
                          "z24", "z25", "z26", "z27", "z28", "z29", "z30", "z31");
-      
-        /* Pre-process the left matrix to make it suitable for 
+
+        /* Pre-process the left matrix to make it suitable for
            matrix sum of outer-product calculation
          */
 
         SME1_PREPROCESS(M, K, A, A_mod);
-       
+
         asm volatile("" : : :"p0", "p1", "p2", "p3", "p4", "p5", "p6", "p7",
                          "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15","d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
                          "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7",

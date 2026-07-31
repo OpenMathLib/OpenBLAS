@@ -4,21 +4,14 @@
 #include "cblas_test.h"
 
 int cblas_ok, cblas_lerr, cblas_info;
-int link_xerbla=TRUE;
 char *cblas_rout;
-
-#ifdef F77_Char
-void F77_xerbla(F77_Char F77_srname, void *vinfo);
-#else
-void F77_xerbla(char *srname, void *vinfo);
-#endif
 
 void chkxer(void) {
    extern int cblas_ok, cblas_lerr, cblas_info;
-   extern int link_xerbla;
    extern char *cblas_rout;
    if (cblas_lerr == 1 ) {
-      printf("***** ILLEGAL VALUE OF PARAMETER NUMBER %d NOT DETECTED BY %s *****\n", cblas_info, cblas_rout);
+      printf("***** ILLEGAL VALUE OF PARAMETER NUMBER %lld NOT DETECTED BY %s *****\n",
+             (long long)cblas_info, cblas_rout);
       cblas_ok = 0 ;
    }
    cblas_lerr = 1 ;
@@ -39,11 +32,7 @@ void  F77_c3chke(char *  rout) {
    cblas_ok = TRUE ;
    cblas_lerr = PASSED ;
 
-   if (link_xerbla) /* call these first to link */
-   {
-      cblas_xerbla(cblas_info,cblas_rout,"");
-      F77_xerbla(cblas_rout,&cblas_info);
-   }
+   cblas_test_set_xerbla();
 
 
    if (strncmp( sf,"cblas_cgemm"   ,11)==0) {
@@ -1703,6 +1692,8 @@ void  F77_c3chke(char *  rout) {
 
    if (cblas_ok == 1 )
        printf(" %-12s PASSED THE TESTS OF ERROR-EXITS\n", cblas_rout);
-   else
+   else {
        printf("***** %s FAILED THE TESTS OF ERROR-EXITS *******\n",cblas_rout);
+       cblas_test_fail();
+   }
 }

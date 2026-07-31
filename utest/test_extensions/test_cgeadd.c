@@ -57,21 +57,27 @@ static struct DATA_CGEADD data_cgeadd;
  * param beta - scaling factor for matrix C
  * param cptr - refer to matrix C
  * param ldc - leading dimension of C
+ * param transa - Traspose of A
+ * param transc - Transpose of C
  */
 static void cgeadd_trusted(blasint m, blasint n, float *alpha, float *aptr,
-                           blasint lda, float *beta, float *cptr, blasint ldc)
+                           blasint lda, float *beta, float *cptr, blasint ldc,
+                            OPENBLAS_CONST enum CBLAS_TRANSPOSE transa, 
+                           OPENBLAS_CONST enum CBLAS_TRANSPOSE transc)
 {
     blasint i;
-    blasint one=1;
+     blasint inc_a = (transa == CblasTrans) ? lda : 1;
+    blasint inc_c = (transc == CblasTrans) ? ldc : 1;
 
-    lda *= 2; 
-	ldc *= 2;
+ 
+    blasint step_a = (transa == CblasTrans) ? 1 : lda;
+    blasint step_c = (transc == CblasTrans) ? 1 : ldc;
 
     for (i = 0; i < n; i++)
     {
-        BLASFUNC(caxpby)(&m, alpha, aptr, &one, beta, cptr, &one);
-        aptr += lda;
-        cptr += ldc;
+        BLASFUNC(caxpby)(&m, alpha, aptr, &inc_a, beta, cptr, &inc_c);
+         aptr += step_a*2;
+        cptr += step_c*2;
     }
 }
 
@@ -91,6 +97,8 @@ static void cgeadd_trusted(blasint m, blasint n, float *alpha, float *aptr,
  * return norm of differences
  */
 static float check_cgeadd(char api, OPENBLAS_CONST enum CBLAS_ORDER order,
+                         OPENBLAS_CONST enum CBLAS_TRANSPOSE transa, 
+                        OPENBLAS_CONST enum CBLAS_TRANSPOSE transc,
                           blasint m, blasint n, float *alpha, blasint lda,
                           float *beta, blasint ldc)
 {
@@ -112,14 +120,19 @@ static float check_cgeadd(char api, OPENBLAS_CONST enum CBLAS_ORDER order,
         data_cgeadd.c_verify[i] = data_cgeadd.c_test[i];
 
     cgeadd_trusted(cols, rows, alpha, data_cgeadd.a_test, lda,
-                   beta, data_cgeadd.c_verify, ldc);
+                   beta, data_cgeadd.c_verify, ldc,transa, transc);
 
-    if (api == 'F')
+    if (api == 'F'){
+
+              char transa_f = (transa == CblasTrans) ? 'T' : 'N';
+        char transc_f = (transc == CblasTrans) ? 'T' : 'N';
         BLASFUNC(cgeadd)(&m, &n, alpha, data_cgeadd.a_test, &lda,
-                         beta, data_cgeadd.c_test, &ldc);
+                         beta, data_cgeadd.c_test, &ldc,&transa_f, &transc_f);
+
+    }
 #ifndef NO_CBLAS
     else
-        cblas_cgeadd(order, m, n, alpha, data_cgeadd.a_test, lda,
+        cblas_cgeadd(order,transa,transc, m, n, alpha, data_cgeadd.a_test, lda,
                      beta, data_cgeadd.c_test, ldc);
 #endif
 
@@ -142,6 +155,8 @@ static float check_cgeadd(char api, OPENBLAS_CONST enum CBLAS_ORDER order,
  * return TRUE if everything is ok, otherwise FALSE
  */
 static int check_badargs(char api, OPENBLAS_CONST enum CBLAS_ORDER order,
+                         OPENBLAS_CONST enum CBLAS_TRANSPOSE transa,
+                            OPENBLAS_CONST enum CBLAS_TRANSPOSE transc,
                          blasint m, blasint n, blasint lda,
                          blasint ldc, int expected_info)
 {
@@ -150,12 +165,17 @@ static int check_badargs(char api, OPENBLAS_CONST enum CBLAS_ORDER order,
 
     set_xerbla("CGEADD ", expected_info);
 
-    if (api == 'F')
+    if (api == 'F'){
+                   char transa_f = (transa == CblasTrans) ? 'T' : 'N';
+    char transc_f = (transc == CblasTrans) ? 'T' : 'N';
         BLASFUNC(cgeadd)(&m, &n, alpha, data_cgeadd.a_test, &lda,
-                         beta, data_cgeadd.c_test, &ldc);
+                         beta, data_cgeadd.c_test, &ldc,&transa_f, &transc_f);
+
+    }
+
 #ifndef NO_CBLAS
     else 
-        cblas_cgeadd(order, m, n, alpha, data_cgeadd.a_test, lda,
+        cblas_cgeadd(order,transa, transc, m, n, alpha, data_cgeadd.a_test, lda,
                  beta, data_cgeadd.c_test, ldc);
 #endif
 
@@ -183,7 +203,7 @@ CTEST(cgeadd, matrix_n_100_m_100)
     float alpha[] = {3.0f, 2.0f};
     float beta[] = {1.0f, 3.0f};
 
-    float norm = check_cgeadd('F', order, m, n, alpha, lda, beta, ldc);
+    float norm = check_cgeadd('F', order,CblasNoTrans, CblasNoTrans,m, n, alpha, lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
@@ -210,7 +230,7 @@ CTEST(cgeadd, matrix_n_100_m_100_alpha_zero)
     float alpha[] = {0.0f, 0.0f};
     float beta[] = {2.5f, 1.0f};
 
-    float norm = check_cgeadd('F', order, m, n, alpha, lda, beta, ldc);
+    float norm = check_cgeadd('F', order,CblasNoTrans, CblasNoTrans,  m, n, alpha, lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
@@ -237,7 +257,7 @@ CTEST(cgeadd, matrix_n_100_m_100_beta_zero)
     float alpha[] = {3.0f, 1.5f};
     float beta[] = {0.0f, 0.0f};
 
-    float norm = check_cgeadd('F', order, m, n, alpha, lda, beta, ldc);
+    float norm = check_cgeadd('F', order,CblasNoTrans, CblasNoTrans,  m, n, alpha, lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
@@ -264,7 +284,7 @@ CTEST(cgeadd, matrix_n_100_m_100_alpha_beta_zero)
     float alpha[] = {0.0f, 0.0f};
     float beta[] = {0.0f, 0.0f};
 
-    float norm = check_cgeadd('F', order, m, n, alpha, lda, beta, ldc);
+    float norm = check_cgeadd('F', order,CblasNoTrans, CblasNoTrans,  m, n, alpha, lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
@@ -290,7 +310,7 @@ CTEST(cgeadd, matrix_n_100_m_50)
     float alpha[] = {1.0f, 1.0f};
     float beta[] = {1.0f, 1.0f};
 
-    float norm = check_cgeadd('F', order, m, n, alpha, lda, beta, ldc);
+    float norm = check_cgeadd('F', order,CblasNoTrans, CblasNoTrans,  m, n, alpha, lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
@@ -313,7 +333,7 @@ CTEST(cgeadd, xerbla_n_invalid)
 
     int expected_info = 2;
 
-    int passed = check_badargs('F', order, m, n, lda, ldc, expected_info);
+    int passed = check_badargs('F', order,CblasNoTrans, CblasNoTrans,  m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
 
@@ -335,7 +355,7 @@ CTEST(cgeadd, xerbla_m_invalid)
 
     int expected_info = 1;
 
-    int passed = check_badargs('F', order, m, n, lda, ldc, expected_info);
+    int passed = check_badargs('F', order,CblasNoTrans, CblasNoTrans,  m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
 
@@ -356,7 +376,7 @@ CTEST(cgeadd, xerbla_lda_invalid)
 
     int expected_info = 5;
 
-    int passed = check_badargs('F', order, m, n, lda, ldc, expected_info);
+    int passed = check_badargs('F', order,CblasNoTrans, CblasNoTrans,  m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
 
@@ -377,7 +397,7 @@ CTEST(cgeadd, xerbla_ldc_invalid)
 
     int expected_info = 8;
 
-    int passed = check_badargs('F', order, m, n, lda, ldc, expected_info);
+    int passed = check_badargs('F', order,CblasNoTrans, CblasNoTrans,  m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
 
@@ -398,7 +418,7 @@ CTEST(cgeadd, n_zero)
     float alpha[] = {1.0f, 1.0f};
     float beta[] = {1.0f, 1.0f};
 
-    float norm = check_cgeadd('F', order, m, n, alpha, lda, beta, ldc);
+    float norm = check_cgeadd('F', order,CblasNoTrans, CblasNoTrans,  m, n, alpha, lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
@@ -420,7 +440,7 @@ CTEST(cgeadd, m_zero)
     float alpha[] = {1.0f, 1.0f};
     float beta[] = {1.0f, 1.0f};
 
-    float norm = check_cgeadd('F', order, m, n, alpha, lda, beta, ldc);
+    float norm = check_cgeadd('F', order,CblasNoTrans, CblasNoTrans,  m, n, alpha, lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
@@ -447,7 +467,7 @@ CTEST(cgeadd, c_api_matrix_n_100_m_100)
     float alpha[] = {2.0f, 1.0f};
     float beta[] = {1.0f, 3.0f};
 
-    float norm = check_cgeadd('C', order, m, n, alpha,
+    float norm = check_cgeadd('C', order,CblasNoTrans, CblasNoTrans,  m, n, alpha,
                                     lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
@@ -475,7 +495,7 @@ CTEST(cgeadd, c_api_matrix_n_100_m_100_row_major)
     float alpha[] = {4.0f, 1.5f};
     float beta[] = {2.0f, 1.0f};
 
-    float norm = check_cgeadd('C', order, m, n, alpha,
+    float norm = check_cgeadd('C', order,CblasNoTrans, CblasNoTrans,  m, n, alpha,
                                     lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
@@ -503,7 +523,7 @@ CTEST(cgeadd, c_api_matrix_n_50_m_100_row_major)
     float alpha[] = {3.0f, 2.5f};
     float beta[] = {1.0f, 2.0f};
 
-    float norm = check_cgeadd('C', order, m, n, alpha,
+    float norm = check_cgeadd('C', order,CblasNoTrans, CblasNoTrans,  m, n, alpha,
                                     lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
@@ -532,7 +552,7 @@ CTEST(cgeadd, c_api_matrix_n_100_m_100_alpha_zero)
     float alpha[] = {0.0f, 0.0f};
     float beta[] = {1.0f, 1.0f};
 
-    float norm = check_cgeadd('C', order, m, n, alpha,
+    float norm = check_cgeadd('C', order,CblasNoTrans, CblasNoTrans,  m, n, alpha,
                                     lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
@@ -561,7 +581,7 @@ CTEST(cgeadd, c_api_matrix_n_100_m_100_beta_zero)
     float alpha[] = {3.0f, 1.5f};
     float beta[] = {0.0f, 0.0f};
 
-    float norm = check_cgeadd('C', order, m, n, alpha,
+    float norm = check_cgeadd('C', order,CblasNoTrans, CblasNoTrans,  m, n, alpha,
                                     lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
@@ -590,7 +610,7 @@ CTEST(cgeadd, c_api_matrix_n_100_m_100_alpha_beta_zero)
     float alpha[] = {0.0f, 0.0f};
     float beta[] = {0.0f, 0.0f};
 
-    float norm = check_cgeadd('C', order, m, n, alpha,
+    float norm = check_cgeadd('C', order,CblasNoTrans, CblasNoTrans,  m, n, alpha,
                                     lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
@@ -617,7 +637,7 @@ CTEST(cgeadd, c_api_matrix_n_100_m_50)
     float alpha[] = {2.0f, 3.0f};
     float beta[] = {2.0f, 4.0f};
 
-    float norm = check_cgeadd('C', order, m, n, alpha,
+    float norm = check_cgeadd('C', order,CblasNoTrans, CblasNoTrans,  m, n, alpha,
                                     lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
@@ -641,7 +661,7 @@ CTEST(cgeadd, c_api_xerbla_invalid_order)
 
     int expected_info = 0;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
+    int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans,  m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
 
@@ -665,7 +685,7 @@ CTEST(cgeadd, c_api_xerbla_n_invalid)
 
     int expected_info = 2;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
+    int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans,  m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
 
@@ -689,7 +709,7 @@ CTEST(cgeadd, c_api_xerbla_n_invalid_row_major)
 
     int expected_info = 2;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
+    int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans,  m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
 
@@ -713,7 +733,7 @@ CTEST(cgeadd, c_api_xerbla_m_invalid)
 
     int expected_info = 1;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
+    int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans,  m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
 
@@ -737,7 +757,7 @@ CTEST(cgeadd, c_api_xerbla_m_invalid_row_major)
 
     int expected_info = 1;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
+    int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans,  m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
 
@@ -760,7 +780,7 @@ CTEST(cgeadd, c_api_xerbla_lda_invalid)
 
     int expected_info = 5;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
+    int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans,  m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
 
@@ -783,7 +803,7 @@ CTEST(cgeadd, c_api_xerbla_lda_invalid_row_major)
 
     int expected_info = 5;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
+    int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans,  m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
 
@@ -806,7 +826,7 @@ CTEST(cgeadd, c_api_xerbla_ldc_invalid)
 
     int expected_info = 8;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
+    int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans,  m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
 
@@ -829,7 +849,7 @@ CTEST(cgeadd, c_api_xerbla_ldc_invalid_row_major)
 
     int expected_info = 8;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
+    int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans,  m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
 
@@ -852,7 +872,7 @@ CTEST(cgeadd, c_api_n_zero)
     float alpha[] = {1.0f, 1.0f};
     float beta[] = {1.0f, 1.0f};
 
-    float norm = check_cgeadd('C', order, m, n, alpha,
+    float norm = check_cgeadd('C', order,CblasNoTrans, CblasNoTrans,  m, n, alpha,
                                     lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
@@ -877,10 +897,83 @@ CTEST(cgeadd, c_api_m_zero)
     float alpha[] = {1.0f, 1.0f};
     float beta[] = {1.0f, 1.0f};
 
-    float norm = check_cgeadd('C', order, m, n, alpha,
+    float norm = check_cgeadd('C', order,CblasNoTrans, CblasNoTrans,  m, n, alpha,
                                     lda, beta, ldc);
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
+}
+
+
+CTEST(cgeadd, c_api_matrix_2x2_transA) {
+  blasint m = 2;
+  blasint n = 2;
+  blasint lda = 2;
+  blasint ldc = 2;
+
+  float alpha[] = {1.0f, 0.0f};
+  float beta[]  = {0.0f, 0.0f};
+
+  float a_test[8] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f};
+
+  float c_test[8]   = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+  float c_verify[8] = {1.0f, 2.0f, 5.0f, 6.0f, 3.0f, 4.0f, 7.0f, 8.0f};
+
+  cblas_cgeadd(CblasColMajor, CblasTrans, CblasNoTrans, m, n, alpha, a_test,
+               lda, beta, c_test, ldc);
+
+  blasint i;
+  for (i = 0; i < 8; i++) {
+    ASSERT_DBL_NEAR_TOL(c_verify[i], c_test[i], SINGLE_EPS);
+  }
+}
+
+/**
+ * Custom C API specific test
+ * Test BOTH transposed (C^T = A^T) with a simple 2x2 complex float matrix
+ */
+CTEST(cgeadd, c_api_matrix_2x2_transA_transC) {
+  blasint m = 2;
+  blasint n = 2;
+  blasint lda = 2;
+  blasint ldc = 2;
+
+  float alpha[] = {1.0f, 0.0f};
+  float beta[]  = {0.0f, 0.0f};
+
+  float a_test[8] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f};
+
+  float c_test[8]   = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+  float c_verify[8] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f};
+
+  cblas_cgeadd(CblasColMajor, CblasTrans, CblasTrans, m, n, alpha, a_test, lda,
+               beta, c_test, ldc);
+
+  blasint i;
+  for (i = 0; i < 8; i++) {
+    ASSERT_DBL_NEAR_TOL(c_verify[i], c_test[i], SINGLE_EPS);
+  }
+}
+
+/**
+ * C API specific test - Transposed A (Complex Single Precision)
+ * Fuzzes your core complex float pointer math against a large 100x100 random matrix.
+ */
+CTEST(cgeadd, c_api_matrix_n_100_m_100_transA) {
+  CBLAS_ORDER order = CblasColMajor;
+
+  blasint n = N;
+  blasint m = M;
+
+  blasint lda = n; 
+  blasint ldc = m;
+
+  float alpha[] = {2.0f, -1.0f};
+  float beta[]  = {1.5f, 3.0f};
+
+  float norm = check_cgeadd('C', order, CblasTrans, CblasNoTrans, m, n, alpha,
+                             lda, beta, ldc);
+
+  ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
 #endif
 #endif

@@ -39,7 +39,7 @@
 #define ASSEMBLER
 #include "common.h"
 
-	PROLOGUE
+	PROLOGUE_EXPORT
 
 	add	%sp, -128, %sp
 

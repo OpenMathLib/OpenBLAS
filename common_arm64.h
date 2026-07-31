@@ -68,6 +68,7 @@ static __inline int WhereAmI(void){
 }
 #endif
 
+#ifndef BLAS_LOCK_DEFINED
 static __inline void blas_lock(volatile BLASULONG *address){
 
   BLASULONG ret;
@@ -101,6 +102,7 @@ static __inline void blas_lock(volatile BLASULONG *address){
 }
 
 #define BLAS_LOCK_DEFINED
+#endif
 
 #if !defined(OS_DARWIN) && !defined (OS_ANDROID)
 static __inline BLASULONG rpcc(void){

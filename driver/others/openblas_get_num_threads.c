@@ -35,6 +35,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 extern int openblas_get_num_threads(void);
 
+OPENBLAS_EXPORT
 int openblas_get_num_threads_(void) {
   return openblas_get_num_threads();
 }

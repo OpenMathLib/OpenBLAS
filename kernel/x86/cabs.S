@@ -39,7 +39,7 @@
 #define ASSEMBLER
 #include "common.h"
 
-	PROLOGUE
+	PROLOGUE_EXPORT
 	PROFCODE
 
 #if defined(F_INTERFACE_GFORT) || defined(F_INTERFACE_G95)

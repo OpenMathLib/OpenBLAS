@@ -539,6 +539,7 @@ int BLASFUNC(blas_thread_shutdown)(void){
   return 0;
 }
 
+OPENBLAS_EXPORT
 void goto_set_num_threads(int num_threads)
 {
 	long i;
@@ -583,6 +584,7 @@ void goto_set_num_threads(int num_threads)
 	blas_cpu_number  = num_threads;
 }
 
+OPENBLAS_EXPORT
 void openblas_set_num_threads(int num)
 {
 	goto_set_num_threads(num);

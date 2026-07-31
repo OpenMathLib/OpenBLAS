@@ -31,41 +31,57 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
+#include <limits.h>
+#include "utest/openblas_utest.h"
 #include "common.h"
 
-static int link_xerbla=TRUE;
+static int handler_installed = FALSE;
 static int lerr, _info, ok;
 static char *rout;
 
-static void F77_xerbla(char *srname, void *vinfo)
+static void test_xerbla(const char *srname, const blasint *vinfo, size_t length)
 {
-   blasint info=*(blasint*)vinfo;
+   blasint info = *vinfo;
+   int name_length = length > (size_t)INT_MAX ? INT_MAX : (int)length;
 
-   if (link_xerbla)
-   {
-      link_xerbla = 0;
-      return;
-   }
-
-   if (rout != NULL && strcmp(rout, srname) != 0){
-      printf("***** XERBLA WAS CALLED WITH SRNAME = <%s> INSTEAD OF <%s> *******\n", srname, rout);
+   if (rout != NULL &&
+       (length != strlen(rout) || memcmp(rout, srname, length) != 0)) {
+      printf("***** XERBLA WAS CALLED WITH AN UNEXPECTED SRNAME INSTEAD OF <%s> *******\n",
+             rout);
       ok = FALSE;
    }
 
    if (info != _info){
-      printf("***** XERBLA WAS CALLED WITH INFO = %d INSTEAD OF %d in %s *******\n",info, _info, srname);
+      printf("***** XERBLA WAS CALLED WITH INFO = %lld INSTEAD OF %d in %.*s *******\n",
+             (long long)info, _info, name_length, srname == NULL ? "" : srname);
       lerr = TRUE;
       ok = FALSE;
    } else lerr = FALSE;
 }
 
-/**  
-* error function redefinition 
-*/
-int BLASFUNC(xerbla)(char *name, blasint *info, blasint length)
+static void alternate_xerbla(const char *srname, const blasint *vinfo,
+                             size_t length)
 {
-  F77_xerbla(name, info);
-  return 0;
+   (void) srname;
+   (void) vinfo;
+   (void) length;
+}
+
+CTEST(openblas_extensions, xerbla_handler_registration)
+{
+   openblas_xerbla_handler original;
+   openblas_xerbla_handler previous;
+   openblas_xerbla_handler restored;
+   openblas_xerbla_handler default_handler;
+
+   original = openblas_set_xerbla(test_xerbla);
+   previous = openblas_set_xerbla(alternate_xerbla);
+   restored = openblas_set_xerbla(NULL);
+   default_handler = openblas_set_xerbla(original);
+
+   ASSERT_TRUE(previous == test_xerbla);
+   ASSERT_TRUE(restored == alternate_xerbla);
+   ASSERT_TRUE(default_handler != NULL);
 }
 
 int check_error(void) {
@@ -78,8 +94,10 @@ int check_error(void) {
 }
 
 void set_xerbla(char* current_rout, int expected_info){
-   if (link_xerbla) /* call these first to link */
-      F77_xerbla(rout, &_info);
+   if (!handler_installed) {
+      openblas_set_xerbla(test_xerbla);
+      handler_installed = TRUE;
+   }
 
    ok = TRUE;
    lerr = TRUE;

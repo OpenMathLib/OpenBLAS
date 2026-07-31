@@ -75,13 +75,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CPU_x280            2
 #define CPU_RISCV64_ZVL256B 3
 #define CPU_RISCV64_ZVL128B 4
+#define CPU_U74             5
 
 static char *cpuname[] = {
   "RISCV64_GENERIC",
   "C910V",
   "x280",
   "CPU_RISCV64_ZVL256B",
-  "CPU_RISCV64_ZVL128B"
+  "CPU_RISCV64_ZVL128B",
+  "U74"
 };
 
 static char *cpuname_lower[] = {
@@ -89,15 +91,17 @@ static char *cpuname_lower[] = {
   "c910v",
   "x280",
   "riscv64_zvl256b",
-  "riscv64_zvl128b"
+  "riscv64_zvl128b",
+  "u74"
 };
 
 int detect(void){
 #ifdef __linux
   FILE *infile;
-  char buffer[512],isa_buffer[512],model_buffer[512];
+  char buffer[512],isa_buffer[512],model_buffer[512], uarch_buffer[512];
   const char* check_c910_str = "T-HEAD C910";
-  char *pmodel = NULL, *pisa = NULL;
+  const char* check_u74_str = "sifive,u74";
+  char *pmodel = NULL, *pisa = NULL, *puarch = NULL;
 
   infile = fopen("/proc/cpuinfo", "r");
   if (!infile)
@@ -110,6 +114,13 @@ int detect(void){
         pmodel++;
     }
 
+    if(!strncmp(buffer, "uarch", 5)){
+      strcpy(uarch_buffer, buffer);
+      puarch = strchr(uarch_buffer, ':');
+      if (puarch)
+        puarch++;
+    }
+
     if(!strncmp(buffer, "isa", 3)){
       strcpy(isa_buffer, buffer);
       pisa = strchr(isa_buffer, '4');
@@ -120,12 +131,16 @@ int detect(void){
 
   fclose(infile);
 
-  if (!pmodel || !pisa)
+  if ((!pmodel && !puarch) || !pisa)
    return(CPU_GENERIC);
 
-  if (strstr(pmodel, check_c910_str) && strchr(pisa, 'v'))
-    return CPU_C910V;
-
+  if (pmodel) {
+    if (strstr(pmodel, check_c910_str) && strchr(pisa, 'v'))
+      return CPU_C910V;
+  } else if (puarch) {
+    if (strstr(puarch, check_u74_str) && !strchr(pisa, 'v'))
+      return CPU_U74;
+  }
   return CPU_GENERIC;
 #endif
 

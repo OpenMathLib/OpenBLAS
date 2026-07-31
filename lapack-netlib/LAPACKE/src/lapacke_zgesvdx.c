@@ -73,12 +73,12 @@ lapack_int LAPACKE_zgesvdx( int matrix_layout, char jobu, char jobvt, char range
         LAPACKE_malloc( sizeof(lapack_complex_double) * lwork );
     if( work == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;
-        goto exit_level_1;
+        goto exit_level_0;
     }
     rwork = (double*)LAPACKE_malloc( sizeof(double) * lrwork );
     if( rwork == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;
-        goto exit_level_0;
+        goto exit_level_1;
     }
     iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * MAX(1,(12*MIN(m,n))) );
     if( iwork == NULL ) {
@@ -96,9 +96,9 @@ lapack_int LAPACKE_zgesvdx( int matrix_layout, char jobu, char jobvt, char range
     /* Release memory and exit */
     LAPACKE_free( iwork );
 exit_level_2:
-    LAPACKE_free( work );
-exit_level_1:
     LAPACKE_free( rwork );
+exit_level_1:
+    LAPACKE_free( work );
 exit_level_0:
     if( info == LAPACK_WORK_MEMORY_ERROR ) {
         LAPACKE_xerbla( "LAPACKE_zgesvdx", info );

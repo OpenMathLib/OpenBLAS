@@ -41,11 +41,14 @@ static int parallel = 0;
 #endif
 
 
+OPENBLAS_EXPORT
+
 #ifdef NEEDBUNDERSCORE
 int CNAME(void) {
   return parallel;
 }
 
+OPENBLAS_EXPORT
 int NAME(void) {
   return parallel;
 }

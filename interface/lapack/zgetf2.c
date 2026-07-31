@@ -50,6 +50,7 @@
 #define ERROR_NAME "CGETF2"
 #endif
 
+OPENBLAS_EXPORT
 int NAME(blasint *M, blasint *N, FLOAT *a, blasint *ldA, blasint *ipiv, blasint *Info){
 
   blas_arg_t args;

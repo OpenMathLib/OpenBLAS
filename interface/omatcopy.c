@@ -47,6 +47,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BlasNoTrans  0
 #define BlasTrans    1
 
+OPENBLAS_EXPORT
+
 #ifndef CBLAS 
 void NAME( char* ORDER, char* TRANS, blasint *rows, blasint *cols, FLOAT *alpha, FLOAT *a, blasint *lda, FLOAT *b, blasint *ldb)
 {

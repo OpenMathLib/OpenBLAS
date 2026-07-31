@@ -6,7 +6,6 @@
 #include "common.h"
 #include <stdlib.h>
 #include <inttypes.h>
-#include <math.h>
 //#include "sme_abi.h"
 #if defined(HAVE_SME)
 
@@ -14,6 +13,7 @@
 #include <arm_sme.h>
 #endif
 
+#if !defined(TRANSA)
 /* Function Definitions */
 static uint64_t sve_cntw() {
     uint64_t cnt;
@@ -24,12 +24,14 @@ static uint64_t sve_cntw() {
     );
     return cnt;
 }
+#endif
 
 #if defined(__ARM_FEATURE_SME) && defined(__ARM_FEATURE_LOCALLY_STREAMING) && defined(__clang__) && __clang_major__ >= 16
 
+#if !defined(TRANSA)
 // Transpose 1SVL x N panel of A
 __attribute__((always_inline))
-inline static void transpose_panel_lower(const float *restrict a, float *restrict b, 
+inline static void transpose_panel_lower(const float *restrict a, float *restrict b,
                 uint64_t rows, uint64_t cols,
                 uint64_t a_step, uint64_t rows_index)
 __arm_out("za") __arm_streaming {
@@ -59,7 +61,7 @@ __arm_out("za") __arm_streaming {
 }
 
 __attribute__((always_inline))
-inline static void transpose_panel_upper(const float *restrict a, float *restrict b, 
+inline static void transpose_panel_upper(const float *restrict a, float *restrict b,
                 uint64_t rows, uint64_t cols,
                 uint64_t a_step, uint64_t rows_index)
 __arm_out("za") __arm_streaming {
@@ -81,7 +83,7 @@ __arm_out("za") __arm_streaming {
         for (uint64_t col = 0, real_col = k; col < col_batch; col++, real_col++) {
             // Only the upper triangular part of the matrix is stored.
             svbool_t pg_col = svwhilelt_b32_u64(rows_index, real_col + 1);
-            svst1_ver_za32(0, col, pg_col, &b[(col + k) * svl]);  
+            svst1_ver_za32(0, col, pg_col, &b[(col + k) * svl]);
         }
     }
 }
@@ -101,6 +103,7 @@ static void strmm_direct_sme1_preprocess(uint64_t nbr, uint64_t nbc,
 #endif
     }
 }
+#endif
 
 // Outer product kernel.
 // Computes a 2SVL x 2SVL block of C, utilizing all four FP32 tiles of ZA.
@@ -111,7 +114,7 @@ kernel_2x2(const float *A, const float *B, float *C, size_t shared_dim,
     const uint64_t svl = svcntw();
     size_t ldb = ldc;
     // Predicate set-up
-    svbool_t pg = svptrue_b32();    
+    svbool_t pg = svptrue_b32();
     svbool_t pg_a_0 = svwhilelt_b32_u64(0, block_rows);
     svbool_t pg_a_1 = svwhilelt_b32_u64(svl, block_rows);
 
@@ -137,7 +140,7 @@ kernel_2x2(const float *A, const float *B, float *C, size_t shared_dim,
         // If k exceeds row_idx, mask out rows before (k - row_idx)
         // This ensures only valid rows are included for lower triangular logic.
         if (k > row_idx) {
-            pg_a_0 = svnot_b_z(pg_a_0_full, svwhilelt_b32_u64(0, k - row_idx));  
+            pg_a_0 = svnot_b_z(pg_a_0_full, svwhilelt_b32_u64(0, k - row_idx));
             pg_a_1 = svnot_b_z(pg_a_1_full, svwhilelt_b32_u64(svl, k - row_idx));
         }
 #endif
@@ -146,10 +149,10 @@ kernel_2x2(const float *A, const float *B, float *C, size_t shared_dim,
         // Load column of A
         svfloat32_t col_a_0 = svld1(pg_a_0, &A[k * svl]);
         svfloat32_t col_a_1 = svld1(pg_a_1, &A[(k + shared_dim) * svl]);
-#else   
+#else
         svfloat32_t col_a_0 = svld1(pg_a_0, &A[k * shared_dim]);
         svfloat32_t col_a_1 = svld1(pg_a_1, &A[k * shared_dim + svl]);
-#endif       
+#endif
         col_a_0 = svmul_x(pg_a_0, alpha_vec, col_a_0);
         col_a_1 = svmul_x(pg_a_1, alpha_vec, col_a_1);
         // Load row of B
@@ -179,15 +182,15 @@ static inline void strmm_direct_alpha_sme1_2VLx2VL(uint64_t m, uint64_t k, uint6
                                    const float *ba, float *restrict bb) {
     const uint64_t num_rows = m;
     const uint64_t num_cols = n;
-    
+
     const float *restrict a_ptr = ba;
     const float *restrict b_ptr = bb;
     float *restrict c_ptr = bb;
-    
+
     const uint64_t svl = svcntw();
     const uint64_t svl_x2 = 2*svl;
-    const uint64_t ldc = n; 
-    
+    const uint64_t ldc = n;
+
 
     uint64_t row_idx = 0;
 #if (!defined(TRANSA) && defined(UPPER)) || (defined(TRANSA) && !defined(UPPER))
@@ -204,7 +207,7 @@ static inline void strmm_direct_alpha_sme1_2VLx2VL(uint64_t m, uint64_t k, uint6
     // Loop from bottom to top, processing rows in batches
     for (uint64_t index = num_rows; index > 0; index -= row_batch, row_batch = svl_x2) {
         // Compute the starting row index for the current batch
-        row_idx = index - row_batch;        
+        row_idx = index - row_batch;
 #endif
         uint64_t col_idx = 0;
         uint64_t col_batch = svl_x2;
@@ -227,20 +230,32 @@ static inline void strmm_direct_alpha_sme1_2VLx2VL(uint64_t m, uint64_t k, uint6
 }
 
 #else
+#if !defined(TRANSA)
 static void strmm_direct_sme1_preprocess(uint64_t nbr, uint64_t nbc,
                                          const float *restrict a, float *restrict a_mod) {}
+#endif
 static void strmm_direct_alpha_sme1_2VLx2VL(uint64_t m, uint64_t k, uint64_t n, const float* alpha,\
                                             const float *ba, float *restrict bb){}
 #endif
 
 void CNAME (BLASLONG M, BLASLONG N, float alpha, float * __restrict A,\
             BLASLONG strideA, float * __restrict B, BLASLONG strideB){
+    if (alpha == 0.0f) {
+        for (BLASLONG i = 0; i < M; i++) {
+            float *row = B + i * strideB;
+            for (BLASLONG j = 0; j < N; j++) {
+                row[j] = 0.0f;
+            }
+        }
+        return;
+    }
+
 #if !defined(TRANSA)
     uint64_t m_mod, vl_elms;
-    
+
     vl_elms = sve_cntw();
 
-    m_mod = ceil((double)M/(double)vl_elms) * vl_elms;
+    m_mod = (((uint64_t)M + vl_elms - 1) / vl_elms) * vl_elms;
 
     float *A_mod = (float *) malloc(m_mod*M*sizeof(float));
     strmm_direct_sme1_preprocess(M, M, A, A_mod);

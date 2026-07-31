@@ -64,6 +64,7 @@
 *> DQL    8               List types on next line if 0 < NTYPES <  8
 *> DQP    6               List types on next line if 0 < NTYPES <  6
 *> DQK    19              List types on next line if 0 < NTYPES <  19
+*> DCX    19              List types on next line if 0 < NTYPES <  19
 *> DTZ    3               List types on next line if 0 < NTYPES <  3
 *> DLS    6               List types on next line if 0 < NTYPES <  6
 *> DEQ
@@ -146,13 +147,14 @@
 *     ..
 *     .. Local Arrays ..
       LOGICAL            DOTYPE( MATMAX )
-      INTEGER            IWORK( 25*NMAX ), MVAL( MAXIN ),
+      INTEGER            MVAL( MAXIN ),
      $                   NBVAL( MAXIN ), NBVAL2( MAXIN ),
      $                   NSVAL( MAXIN ), NVAL( MAXIN ), NXVAL( MAXIN ),
      $                   RANKVAL( MAXIN ), PIV( NMAX )
 *     ..
 *     .. Allocatable Arrays ..
       INTEGER AllocateStatus
+      INTEGER, DIMENSION(:), ALLOCATABLE :: IWORK
       DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: RWORK, S
       DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: E
       DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: A, B, WORK
@@ -163,15 +165,17 @@
       EXTERNAL           LSAME, LSAMEN, DLAMCH, DSECND
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAREQ, DCHKEQ, DCHKGB, DCHKGE, DCHKGT, DCHKLQ,
+      EXTERNAL           ALAREQ, DCHKCXX,
+     $                   DCHKEQ, DCHKGB, DCHKGE, DCHKGT, DCHKLQ,
      $                   DCHKORHR_COL, DCHKPB, DCHKPO, DCHKPS, DCHKPP,
      $                   DCHKPT, DCHKQ3, DCHKQP3RK, DCHKQL, DCHKQR,
      $                   DCHKRQ, DCHKSP, DCHKSY, DCHKSY_ROOK, DCHKSY_RK,
      $                   DCHKSY_AA, DCHKTB, DCHKTP, DCHKTR, DCHKTZ,
      $                   DDRVGB, DDRVGE, DDRVGT, DDRVLS, DDRVPB, DDRVPO,
      $                   DDRVPP, DDRVPT, DDRVSP, DDRVSY, DDRVSY_ROOK,
-     $                   DDRVSY_RK, DDRVSY_AA, ILAVER, DCHKLQTP, DCHKQRT,
-     $                   DCHKQRTP, DCHKLQT,DCHKTSQR
+     $                   DDRVSY_RK, DDRVSY_AA, ILAVER, DCHKLQTP,
+     $                   DCHKQRT, DCHKQRTP, DCHKLQT, DCHKTSQR,
+     $                   DCHKSY_AA_2STAGE, DDRVSY_AA_2STAGE
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -192,7 +196,9 @@
 *     ..
 *     .. Allocate memory dynamically ..
 *
-      ALLOCATE ( A( ( KDMAX+1 )*NMAX, 7 ), STAT = AllocateStatus )
+      ALLOCATE ( IWORK( 34*NMAX ), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( A( ( KDMAX+1 )*NMAX, 8 ), STAT = AllocateStatus )
       IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
       ALLOCATE ( B( NMAX*MAXRHS, 4 ), STAT = AllocateStatus )
       IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
@@ -441,6 +447,7 @@
 *
       IF( .NOT.LSAME( C1, 'Double precision' ) ) THEN
          WRITE( NOUT, FMT = 9990 )PATH
+
 *
       ELSE IF( NMATS.LE.0 ) THEN
 *
@@ -944,6 +951,30 @@
      $                      A( 1, 2 ), B( 1, 1 ), B( 1, 2 ),
      $                      B( 1, 3 ), B( 1, 4 ),
      $                      WORK, IWORK, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'CX' ) ) THEN
+*
+*        CX: CX decomposition
+*
+         NTYPES = 19
+         CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
+*
+         IF( TSTCHK ) THEN
+            CALL DCHKCXX( DOTYPE, NM, MVAL, NN, NVAL,
+     $                    NNB, NBVAL, NXVAL, THRESH, TSTERR,
+     $                    A( 1, 1 ), A( 1, 2 ),
+     $                    A( 1, 3 ), A( 1, 4 ),
+     $                    A( 1, 5 ), A( 1, 6 ),
+     $                    A( 1, 7 ), A( 1, 8 ),
+     $                    B( 1, 1 ), B( 1, 2 ),
+     $                    IWORK( 1 ), IWORK( 1+2*NMAX ),
+     $                    IWORK(1+4*NMAX), IWORK(1+6*NMAX),
+     $                    IWORK(1+8*NMAX), IWORK(1+10*NMAX),
+     $                    IWORK(1+12*NMAX), IWORK(1+14*NMAX),
+     $                    WORK, IWORK(1+16*NMAX), NOUT )
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH
          END IF

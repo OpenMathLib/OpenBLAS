@@ -60,6 +60,7 @@ static blasint (*trtri_parallel[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *
 };
 #endif
 
+OPENBLAS_EXPORT
 int NAME(char *UPLO, char *DIAG, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
 
   blas_arg_t args;
@@ -125,7 +126,11 @@ int NAME(char *UPLO, char *DIAG, blasint *N, FLOAT *a, blasint *ldA, blasint *In
 
 #ifdef SMP
   args.common = NULL;
-  args.nthreads = num_cpu_avail(4);
+  if (args.n < 64) {
+    args.nthreads = 1;
+  } else {
+    args.nthreads = num_cpu_avail(4);
+  }
 
   if (args.nthreads == 1) {
 #endif

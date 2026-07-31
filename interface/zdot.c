@@ -52,6 +52,8 @@
 #endif
 #endif
 
+OPENBLAS_EXPORT
+
 #ifndef CBLAS
 
 #ifdef RETURN_BY_STRUCT

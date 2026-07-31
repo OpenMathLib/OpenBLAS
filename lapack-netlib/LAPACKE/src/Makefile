@@ -39,7 +39,7 @@ include $(TOPSRCDIR)/make.inc
 
 .SUFFIXES: .c .o
 .c.o:
-	$(CC) $(CFLAGS) -I../include -c -o $@ $<
+	$(CC) $(filter-out -fvisibility=hidden, $(CFLAGS)) -I../include -c -o $@ $<
 
 OBJ = \
 lapacke_ilaver.o \
@@ -77,6 +77,8 @@ lapacke_cgebrd.o \
 lapacke_cgebrd_work.o \
 lapacke_cgecon.o \
 lapacke_cgecon_work.o \
+lapacke_cgecxx.o \
+lapacke_cgecxx_work.o \
 lapacke_cgeequ.o \
 lapacke_cgeequ_work.o \
 lapacke_cgeequb.o \
@@ -707,6 +709,8 @@ lapacke_dgebrd.o \
 lapacke_dgebrd_work.o \
 lapacke_dgecon.o \
 lapacke_dgecon_work.o \
+lapacke_dgecxx.o \
+lapacke_dgecxx_work.o \
 lapacke_dgeequ.o \
 lapacke_dgeequ_work.o \
 lapacke_dgeequb.o \
@@ -1291,6 +1295,8 @@ lapacke_sgebrd.o \
 lapacke_sgebrd_work.o \
 lapacke_sgecon.o \
 lapacke_sgecon_work.o \
+lapacke_sgecxx.o \
+lapacke_sgecxx_work.o \
 lapacke_sgeequ.o \
 lapacke_sgeequ_work.o \
 lapacke_sgeequb.o \
@@ -1865,6 +1871,8 @@ lapacke_zgebrd.o \
 lapacke_zgebrd_work.o \
 lapacke_zgecon.o \
 lapacke_zgecon_work.o \
+lapacke_zgecxx.o \
+lapacke_zgecxx_work.o \
 lapacke_zgeequ.o \
 lapacke_zgeequ_work.o \
 lapacke_zgeequb.o \

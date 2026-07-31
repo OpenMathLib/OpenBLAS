@@ -54,6 +54,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Enables the New IMATCOPY code with inplace operation if lda == ldb   */
 #define NEW_IMATCOPY
 
+OPENBLAS_EXPORT
+
 #ifndef CBLAS
 void NAME( char* ORDER, char* TRANS, blasint *rows, blasint *cols, FLOAT *alpha, FLOAT *a, blasint *lda, blasint *ldb)
 {

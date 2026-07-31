@@ -182,9 +182,19 @@ misc_no_underscore_objs="
     openblas_get_config
     openblas_get_corename
     openblas_set_threads_callback_function
+    openblas_set_xerbla
 "
 
 misc_underscore_objs=""
+
+# Symbols that are exported exactly as spelled, without any SYMBOLPREFIX /
+# SYMBOLSUFFIX decoration (like the openblas_* utility functions, these are
+# not per-precision entry points).  They are therefore deliberately left out
+# of the objcopy/objconv rename lists.
+misc_no_suffix_objs="
+    openblas_cancel
+    openblas_cancel_token
+"
 
 # These routines are provided by OpenBLAS.
 lapackobjss="
@@ -907,6 +917,7 @@ lapackobjs2c="$lapackobjs2c
     clatrs3
     crscl
     ctrsyl3
+    cgecxx
     "
 #    claqz0
 #    claqz1
@@ -922,6 +933,7 @@ lapackobjs2d="$lapackobjs2d
     dlarmm
     dlatrs3
     dtrsyl3
+    dgecxx
     "
 #    dlaqz0
 #    dlaqz1
@@ -937,6 +949,7 @@ lapackobjs2s="$lapackobjs2s
     slarmm
     slatrs3
     strsyl3
+    sgecxx
     "
 
 lapackobjs2z="$lapackobjs2z
@@ -947,6 +960,7 @@ lapackobjs2z="$lapackobjs2z
     zlatrs3
     zrscl
     ztrsyl3
+    zgecxx
     "
 #    zlaqz0
 #    zlaqz1
@@ -1132,6 +1146,8 @@ lapackeobjsc="
     LAPACKE_cgedmd_work
     LAPACKE_cgedmdq
     LAPACKE_cgedmdq_work
+    LAPACKE_cgecxx
+    LAPACKE_cgecxx_work
     LAPACKE_cgeequ
     LAPACKE_cgeequ_work
     LAPACKE_cgeequb
@@ -1803,6 +1819,8 @@ lapackeobjsd="
     LAPACKE_dgedmd_work
     LAPACKE_dgedmdq
     LAPACKE_dgedmdq_work
+    LAPACKE_dgecxx
+    LAPACKE_dgecxx_work
     LAPACKE_dgeequ
     LAPACKE_dgeequ_work
     LAPACKE_dgeequb
@@ -2428,6 +2446,8 @@ lapackeobjss="
     LAPACKE_sgedmd_work
     LAPACKE_sgedmdq
     LAPACKE_sgedmdq_work
+    LAPACKE_sgecxx
+    LAPACKE_sgecxx_work
     LAPACKE_sgeequ
     LAPACKE_sgeequ_work
     LAPACKE_sgeequb
@@ -3049,6 +3069,8 @@ lapackeobjsz="
     LAPACKE_zgedmd_work
     LAPACKE_zgedmdq
     LAPACKE_zgedmdq_work
+    LAPACKE_zgecxx
+    LAPACKE_zgecxx_work
     LAPACKE_zgeequ
     LAPACKE_zgeequ_work
     LAPACKE_zgeequb
@@ -4010,6 +4032,10 @@ case "$p1" in
         for obj in $no_underscore_objs; do
             printf '_%s%s%s\n' "$symbolprefix" "$obj" "$symbolsuffix"
         done
+
+        for obj in $misc_no_suffix_objs; do
+            printf '_%s\n' "$obj"
+        done
     ;;
 
     aix)
@@ -4111,8 +4137,17 @@ case "$p1" in
         done
 
         for obj in $no_underscore_objs; do
+            [ "$obj" = "openblas_set_xerbla" ] && continue
             printf '\t%s%s%s=%s  @%s\n' \
                 "$symbolprefix" "$obj" "$symbolsuffix" "$obj" "$count"
+            count=`expr $count + 1`
+        done
+        printf '\t%sopenblas_set_xerbla%s=openblas_set_xerbla  @%s\n' \
+            "$symbolprefix" "$symbolsuffix" "$count"
+        count=`expr $count + 1`
+
+        for obj in $misc_no_suffix_objs; do
+            printf '\t%s  @%s\n' "$obj" "$count"
             count=`expr $count + 1`
         done
     ;;
@@ -4166,6 +4201,10 @@ case "$p1" in
             printf '\t%s%s%s=%s__  @%s\n' \
                 "$symbolprefix" "$uppercase" "$symbolsuffix" "$obj" "$count"
             count=`expr $count + 1`
+        done
+
+        for obj in $misc_no_suffix_objs; do
+            printf '\t%s\n' "$obj"
         done
     ;;
 

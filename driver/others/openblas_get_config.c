@@ -78,6 +78,7 @@ char *gotoblas_corename(void);
 static char tmp_config_str[256];
 int openblas_get_parallel(void);
 
+OPENBLAS_EXPORT
 char* CNAME(void) {
 char tmpstr[20];
   strncpy(tmp_config_str, openblas_config_str, 255-40);
@@ -93,6 +94,7 @@ char tmpstr[20];
 }
 
 
+OPENBLAS_EXPORT
 char* openblas_get_corename(void) {
 #ifndef DYNAMIC_ARCH
   return CHAR_CORENAME;

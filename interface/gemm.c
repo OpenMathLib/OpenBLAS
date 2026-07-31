@@ -252,6 +252,8 @@ static inline int get_gemm_optimal_nthreads(double MNK) {
 }
 #endif
 
+OPENBLAS_EXPORT
+
 #ifndef CBLAS
 
 void NAME(char *TRANSA, char *TRANSB,

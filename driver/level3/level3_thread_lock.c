@@ -33,7 +33,7 @@
 
 static omp_lock_t level3_lock, critical_section_lock;
 static volatile BLASULONG init_lock = 0;
-static volatile BLASULONG omp_lock_initialized = 0;
+static _Atomic BLASULONG omp_lock_initialized = 0;
 static volatile BLASULONG parallel_section_left = MAX_PARALLEL_NUMBER;
 
 static void blas_level3_thread_lock_init(void)

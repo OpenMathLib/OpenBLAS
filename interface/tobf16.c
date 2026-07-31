@@ -11,6 +11,8 @@
 #else
 #endif
 
+OPENBLAS_EXPORT
+
 #ifndef CBLAS
 void NAME(blasint *N, FLOAT_TYPE *in, blasint *INC_IN, bfloat16 *out, blasint *INC_OUT){
    BLASLONG n    = *N;

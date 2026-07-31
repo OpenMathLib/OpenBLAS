@@ -46,6 +46,8 @@
 #else
 #define MULTI_THREAD_MINIMAL  10000
 #endif
+
+OPENBLAS_EXPORT
 #ifndef CBLAS
 
 void NAME(blasint *N, FLOAT *ALPHA, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY){

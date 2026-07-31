@@ -214,6 +214,15 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
   double total;
 #endif
 
+  /* Begin a cancellable generation on the calling thread and poll it at
+   * block granularity; openblas_cancel() against this thread's slot makes
+   * the operation return early, leaving C partially updated.  (When this
+   * driver runs on a BLAS worker thread on behalf of another operation,
+   * the generation is the worker's own, which nobody cancels; the outer
+   * operation's cancellation is handled by the threading driver.) */
+  size_t cancel_gen = openblas_cancel_begin();
+  size_t *cancel_slot = openblas_cancel_self();
+
   k = K;
 
   a = (IFLOAT *)A;
@@ -303,10 +312,14 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 #endif
 
   for(js = n_from; js < n_to; js += GEMM_R){
+    if (openblas_cancel_poll(cancel_slot, cancel_gen)) return 0;
+
     min_j = n_to - js;
     if (min_j > GEMM_R) min_j = GEMM_R;
 
     for(ls = 0; ls < k; ls += min_l){
+
+      if (openblas_cancel_poll(cancel_slot, cancel_gen)) return 0;
 
       min_l = k - ls;
 
@@ -354,6 +367,8 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 
 #else
       for(jjs = js; jjs < js + min_j; jjs += min_jj){
+	if (openblas_cancel_poll(cancel_slot, cancel_gen)) return 0;
+
 	min_jj = min_j + js - jjs;
 #if defined(SKYLAKEX) || defined(COOPERLAKE) || defined(SAPPHIRERAPIDS)
 	/* the current AVX512 s/d/c/z GEMM kernel requires n>=6*GEMM_UNROLL_N to achieve best performance */
@@ -391,6 +406,8 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 #endif
 
       for(is = m_from + min_i; is < m_to; is += min_i){
+	if (openblas_cancel_poll(cancel_slot, cancel_gen)) return 0;
+
 	min_i = m_to - is;
 
 	if (min_i >= GEMM_P * 2) {

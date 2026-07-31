@@ -221,7 +221,12 @@
 *
 *           This is the general case.
 *
-            CALL SSCAL( N-1, ONE / ALPHA, X, INCX )
+            IF( ABS( ALPHA ).LT.SMLNUM ) THEN
+               CALL SSCAL( N-1, ONE / SMLNUM, X, INCX )
+               CALL SSCAL( N-1, SMLNUM / ALPHA, X, INCX )
+            ELSE
+               CALL SSCAL( N-1, ONE / ALPHA, X, INCX )
+            END IF
 *
          END IF
 *

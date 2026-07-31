@@ -66,6 +66,7 @@
 #define GER_THREAD	sger_thread
 #endif
 
+OPENBLAS_EXPORT
 
 #ifndef CBLAS
 

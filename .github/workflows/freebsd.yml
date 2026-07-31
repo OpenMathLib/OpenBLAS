@@ -1,0 +1,63 @@
+name: freebsd
+
+on:
+  push:
+    branches:
+      - develop
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+  pull_request:
+    branches:
+      - develop
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+jobs:
+  bsd-x86:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
+    runs-on: ubuntu-latest
+    steps:
+     - name: checkout
+       uses: actions/checkout@v6
+     
+     - name: build
+       id: freebsd_x86_64
+       uses: vmactions/freebsd-vm@v1
+       with:
+        usesh: true
+        prepare: |
+
+        run: |
+          freebsd-version
+          sysctl hw.ncpu
+          pkg install -y gmake gcc15
+          gmake CC=gcc15 FC=gfortran15
+          
+  bsd-aarch64:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
+    runs-on: ubuntu-latest
+    steps:
+     - name: checkout
+       uses: actions/checkout@v6
+     
+     - name: build
+       id: freebsd_arm64
+       uses: vmactions/freebsd-vm@v1
+       with:
+        arch: aarch64
+        usesh: true
+        run: |
+          freebsd-version
+          sysctl hw.ncpu
+          pkg install -y gmake gcc15
+          gmake CC=gcc15 FC=gfortran15
+          

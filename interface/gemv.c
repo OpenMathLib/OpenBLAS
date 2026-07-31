@@ -131,6 +131,8 @@ static inline int get_gemv_optimal_nthreads(BLASLONG MN) {
 }
 #endif
 
+OPENBLAS_EXPORT
+
 #ifndef CBLAS
 
 void NAME(char *TRANS, blasint *M, blasint *N,

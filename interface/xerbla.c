@@ -6,6 +6,8 @@
 #include <stdarg.h>
 #include "common.h"
 
+OPENBLAS_EXPORT
+
 void CNAME(blasint p, char *rout, char *form, ...)
 {
    va_list args;

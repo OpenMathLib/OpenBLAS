@@ -76,7 +76,7 @@ ALLMOD = la_xisnan.mod la_constants.mod
 else
 .SUFFIXES: .c .o
 .c.o:
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(filter-out -fvisibility=hidden, $(CFLAGS)) -c -o $@ $<
 endif
 
 ALLAUX_O = ilaenv.o ilaenv2stage.o ieeeck.o lsamen.o xerbla.o xerbla_array.o \
@@ -207,7 +207,7 @@ SLASRC_O = \
    ssytrd_2stage.o ssytrd_sy2sb.o ssytrd_sb2st.o ssb2st_kernels.o \
    ssyevd_2stage.o ssyev_2stage.o ssyevx_2stage.o ssyevr_2stage.o \
    ssbev_2stage.o ssbevx_2stage.o ssbevd_2stage.o ssygv_2stage.o \
-   sgesvdq.o slatrs3.o strsyl3.o sgelst.o sgedmd.o sgedmdq.o
+   sgesvdq.o slatrs3.o strsyl3.o sgelst.o sgedmd.o sgedmdq.o sgecxx.o
    
 endif
 
@@ -317,7 +317,7 @@ CLASRC_O = \
    chetrd_2stage.o chetrd_he2hb.o chetrd_hb2st.o chb2st_kernels.o \
    cheevd_2stage.o cheev_2stage.o cheevx_2stage.o cheevr_2stage.o \
    chbev_2stage.o chbevx_2stage.o chbevd_2stage.o chegv_2stage.o \
-   cgesvdq.o clatrs3.o ctrsyl3.o cgelst.o cgedmd.o cgedmdq.o
+   cgesvdq.o clatrs3.o ctrsyl3.o cgelst.o cgedmd.o cgedmdq.o cgecxx.o
 endif
 
 ifdef USEXBLAS
@@ -418,7 +418,7 @@ DLASRC_O = \
    dsytrd_2stage.o dsytrd_sy2sb.o dsytrd_sb2st.o dsb2st_kernels.o \
    dsyevd_2stage.o dsyev_2stage.o dsyevx_2stage.o dsyevr_2stage.o \
    dsbev_2stage.o dsbevx_2stage.o dsbevd_2stage.o dsygv_2stage.o \
-   dgesvdq.o dlatrs3.o dtrsyl3.o dgelst.o dgedmd.o dgedmdq.o
+   dgesvdq.o dlatrs3.o dtrsyl3.o dgelst.o dgedmd.o dgedmdq.o dgecxx.o
 endif
 
 ifdef USEXBLAS
@@ -527,7 +527,7 @@ ZLASRC_O = \
    zhetrd_2stage.o zhetrd_he2hb.o zhetrd_hb2st.o zhb2st_kernels.o \
    zheevd_2stage.o zheev_2stage.o zheevx_2stage.o zheevr_2stage.o \
    zhbev_2stage.o zhbevx_2stage.o zhbevd_2stage.o zhegv_2stage.o \
-   zgesvdq.o zlatrs3.o ztrsyl3.o zgelst.o zgedmd.o zgedmdq.o
+   zgesvdq.o zlatrs3.o ztrsyl3.o zgelst.o zgedmd.o zgedmdq.o zgecxx.o
 endif
 
 ifdef USEXBLAS
@@ -690,11 +690,11 @@ la_xisnan.o: la_xisnan.F90 la_constants.mod
 la_constants.o: la_constants.f90
 	$(FC) $(FFLAGS) -c -o $@ $<
 else
-slaruv.o: slaruv.c ; $(CC) $(CFLAGS) -c -o $@ $<
-dlaruv.o: dlaruv.c ; $(CC) $(CFLAGS) -c -o $@ $<
-sla_wwaddw.o: sla_wwaddw.c ; $(CC) $(CFLAGS) -c -o $@ $<
-dla_wwaddw.o: dla_wwaddw.c ; $(CC) $(CFLAGS) -c -o $@ $<
-cla_wwaddw.o: cla_wwaddw.c ; $(CC) $(CFLAGS) -c -o $@ $<
-zla_wwaddw.o: zla_wwaddw.c ; $(CC) $(CFLAGS) -c -o $@ $<
+slaruv.o: slaruv.c ; $(CC) $(CFLAGS) -I../.. -c -o $@ $<
+dlaruv.o: dlaruv.c ; $(CC) $(CFLAGS) -I../.. -c -o $@ $<
+sla_wwaddw.o: sla_wwaddw.c ; $(CC) $(CFLAGS) -I../.. -c -o $@ $<
+dla_wwaddw.o: dla_wwaddw.c ; $(CC) $(CFLAGS) -I../.. -c -o $@ $<
+cla_wwaddw.o: cla_wwaddw.c ; $(CC) $(CFLAGS) -I../.. -c -o $@ $<
+zla_wwaddw.o: zla_wwaddw.c ; $(CC) $(CFLAGS) -I../.. -c -o $@ $<
 endif
 

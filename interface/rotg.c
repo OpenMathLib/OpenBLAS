@@ -5,6 +5,7 @@
 #include "functable.h"
 #endif
 
+OPENBLAS_EXPORT
 
 #ifndef CBLAS
 

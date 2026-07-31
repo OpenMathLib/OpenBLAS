@@ -6,7 +6,6 @@
 #include "common.h"
 #include <stdlib.h>
 #include <inttypes.h>
-#include <math.h>
 // #include "sme_abi.h"
 #if defined(HAVE_SME)
 
@@ -46,6 +45,7 @@ static uint64_t sve_cntw() {
 
 #if defined(__ARM_FEATURE_SME) && defined(__ARM_FEATURE_LOCALLY_STREAMING) && defined(__clang__) && __clang_major__ >= 16
 
+#if defined(UPPER)
 __arm_new("za") __arm_locally_streaming
 static void ssymm_direct_sme1_preprocessLU(uint64_t nbr, uint64_t nbc,
                 const float *restrict a, float *restrict a_mod)
@@ -55,7 +55,7 @@ static void ssymm_direct_sme1_preprocessLU(uint64_t nbr, uint64_t nbc,
   const uint64_t svl = svcntw();
   uint64_t row_batch = svl;
 
-  float *restrict pSrc;
+  const float *restrict pSrc;
   float *restrict pDst;
   for (uint64_t row_idx = 0; row_idx < nbr; row_idx += row_batch)
   {
@@ -123,8 +123,10 @@ static void ssymm_direct_sme1_preprocessLU(uint64_t nbr, uint64_t nbc,
     }
   }
 }
+#endif
 
 //
+#if defined(LOWER)
 __arm_new("za") __arm_locally_streaming
 static void ssymm_direct_sme1_preprocessLL(uint64_t nbr, uint64_t nbc,
                 const float *restrict a, float *restrict a_mod)
@@ -133,7 +135,7 @@ static void ssymm_direct_sme1_preprocessLL(uint64_t nbr, uint64_t nbc,
   const uint64_t svl = svcntw();
   uint64_t row_batch = svl;
 
-  float *restrict pSrc;
+  const float *restrict pSrc;
   float *restrict pDst;
   for (uint64_t row_idx = 0; row_idx < nbr; row_idx += row_batch)
   {
@@ -201,11 +203,16 @@ static void ssymm_direct_sme1_preprocessLL(uint64_t nbr, uint64_t nbc,
     }
   }
 }
+#endif
 #else
+#if defined(UPPER)
 static void ssymm_direct_sme1_preprocessLU(uint64_t nbr, uint64_t nbc,
                 const float *restrict a, float *restrict a_mod){}
+#endif
+#if defined(LOWER)
 static void ssymm_direct_sme1_preprocessLL(uint64_t nbr, uint64_t nbc,
                 const float *restrict a, float *restrict a_mod){}
+#endif
 #endif
 
 //
@@ -213,8 +220,15 @@ void CNAME(BLASLONG M, BLASLONG N, float alpha, float *__restrict A,
            BLASLONG strideA, float *__restrict B, BLASLONG strideB,
            float beta, float *__restrict R, BLASLONG strideR)
 {
+  if (alpha == 0.0f) {
+    if (beta == 1.0f)
+      return;
+    SGEMM_DIRECT2X2(M, 0, N, &alpha, A, B, &beta, R);
+    return;
+  }
+
   uint64_t vl_elms = sve_cntw(); // vl_elem = 16
-  uint64_t m_mod = ceil((double)M / (double)vl_elms) * vl_elms;
+  uint64_t m_mod = (((uint64_t)M + vl_elms - 1) / vl_elms) * vl_elms;
 
   /* Pre-process the left matrix to make it suitable for
      matrix sum of outer-product calculation
@@ -237,5 +251,5 @@ void CNAME(BLASLONG M, BLASLONG N, float alpha, float *__restrict A,
 void CNAME (BLASLONG M, BLASLONG N, float alpha, float * __restrict A,\
             BLASLONG strideA, float * __restrict B, BLASLONG strideB ,\
             float beta, float * __restrict R, BLASLONG strideR){}
- 
+
 #endif

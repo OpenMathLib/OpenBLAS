@@ -60,6 +60,7 @@
 #endif
 #endif
 
+OPENBLAS_EXPORT
 int NAME(blasint *N, blasint *NRHS, FLOAT *a, blasint *ldA, blasint *ipiv,
          FLOAT *b, blasint *ldB, blasint *Info){
 

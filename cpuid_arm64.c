@@ -426,13 +426,13 @@ int detect(void)
 	if (errcode != ERROR_SUCCESS) wprintf(L"Error reading cpuname from registry:%x\n",errcode);
 //wprintf(stderr,L"%s\n",(PWSTR)valstring);
 	RegCloseKey(reghandle);
-	if (strstr(valstring, "Snapdragon(R) X Elite")) {
+	if (strstr(pvalstring, "Snapdragon(R) X Elite")) {
 		aliased = 1;
 		return CPU_NEOVERSEN1;
 	}
-	if (strstr(valstring, "Ampere(R) Altra")) return CPU_NEOVERSEN1;
-	if (strstr(valstring, "Snapdragon (TM) 8cx Gen 3")) return CPU_CORTEXX1;
-	if (strstr(valstring, "Snapdragon Compute Platform")) return CPU_CORTEXX1;
+	if (strstr(pvalstring, "Ampere(R) Altra")) return CPU_NEOVERSEN1;
+	if (strstr(pvalstring, "Snapdragon (TM) 8cx Gen 3")) return CPU_CORTEXX1;
+	if (strstr(pvalstring, "Snapdragon Compute Platform")) return CPU_CORTEXX1;
 #endif
 #endif
 	return CPU_ARMV8;	

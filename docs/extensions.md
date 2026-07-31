@@ -13,9 +13,8 @@ This page documents those non-standard APIs.
 | ?omatcopy     | s,d,c,z       | out-of-place transposition/copying              |
 | ?geadd        | s,d,c,z       | ATLAS-like matrix add `B = &alpha;*A+&beta;*B`  |
 | ?gemmt        | s,d,c,z       | `gemm` but only a triangular part updated       |
-| cblas_?gemm_batch | s,d,c,z,b | `gemm` with several groups of input data
-|
-| cblas_?gemm_batch_strided | s,d,c,z,b | `gemm` with groups of data stored at fixed offsets in the input arrays 
+| cblas_?gemm_batch | s,d,c,z,b | `gemm` with several groups of input data |
+| cblas_?gemm_batch_strided | s,d,c,z,b | `gemm` with groups of data stored at fixed offsets in the input arrays |
 
 ## bfloat16 functionality
 
@@ -48,4 +47,7 @@ BLAS-like and conversion functions for `hfloat16` (available when OpenBLAS was c
 * `int openblas_set_affinity(int thread_index, size_t cpusetsize, cpu_set_t *cpuset)` sets the CPU affinity mask of the given thread
   to the provided cpuset. Only available on Linux, with semantics identical to `pthread_setaffinity_np`.
 * `openblas_set_thread_callback_function` overrides the default multithreading backend with the provided argument
-
+* `openblas_set_xerbla(openblas_xerbla_handler handler)` replaces the XERBLA handler for the current OpenBLAS
+  instance and returns the previous handler; passing `NULL` restores the default. Callbacks may be invoked concurrently
+  and therefore must be thread-safe. `name` is valid for `name_length` bytes during the callback and need not be
+  NUL-terminated. On ELF platforms, an application-provided strong `xerbla` symbol bypasses the registered handler.

@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download DLARFGP + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlarfgp.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlarfgp.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -101,6 +99,7 @@
 *
 *  =====================================================================
       SUBROUTINE DLARFGP( N, ALPHA, X, INCX, TAU )
+      IMPLICIT NONE
 *
 *  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -221,7 +220,12 @@
 *
 *           This is the general case.
 *
-            CALL DSCAL( N-1, ONE / ALPHA, X, INCX )
+            IF( ABS( ALPHA ).LT.SMLNUM ) THEN
+               CALL DSCAL( N-1, ONE / SMLNUM, X, INCX )
+               CALL DSCAL( N-1, SMLNUM / ALPHA, X, INCX )
+            ELSE
+               CALL DSCAL( N-1, ONE / ALPHA, X, INCX )
+            END IF
 *
          END IF
 *

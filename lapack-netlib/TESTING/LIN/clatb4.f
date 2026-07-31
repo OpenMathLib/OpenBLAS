@@ -118,6 +118,7 @@
 *  =====================================================================
       SUBROUTINE CLATB4( PATH, IMAT, M, N, TYPE, KL, KU, ANORM, MODE,
      $                   CNDNUM, DIST )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -237,11 +238,115 @@
          TYPE = 'N'
 *
 *        Set DIST, the type of distribution for the random
-*        number generator. 'S' is
+*        number generator. 'S' => UNIFORM( -1, 1 ) ( 'S' for symmetric )
 *
          DIST = 'S'
 *
-*        Set the lower and upper bandwidths.
+*        Set the lower bandwidth KL and the upper bandwidth KU.
+*
+         IF( IMAT.EQ.2 ) THEN
+*
+*           2. Random, Diagonal, CNDNUM = 2
+*
+            KL = 0
+            KU = 0
+            CNDNUM = TWO
+            ANORM = ONE
+            MODE = 3
+         ELSE IF( IMAT.EQ.3 ) THEN
+*
+*           3. Random, Upper triangular,  CNDNUM = 2
+*
+            KL = 0
+            KU = MAX( N-1, 0 )
+            CNDNUM = TWO
+            ANORM = ONE
+            MODE = 3
+         ELSE IF( IMAT.EQ.4 ) THEN
+*
+*          4. Random, Lower triangular,  CNDNUM = 2
+*
+            KL = MAX( M-1, 0 )
+            KU = 0
+            CNDNUM = TWO
+            ANORM = ONE
+            MODE = 3
+         ELSE
+*
+*           5.-19. Rectangular matrix
+*
+            KL = MAX( M-1, 0 )
+            KU = MAX( N-1, 0 )
+*
+            IF( IMAT.GE.5 .AND. IMAT.LE.14 ) THEN
+*
+*              5.-14. Random, CNDNUM = 2.
+*
+               CNDNUM = TWO
+               ANORM = ONE
+               MODE = 3
+*
+            ELSE IF( IMAT.EQ.15 ) THEN
+*
+*              15. Random, CNDNUM = sqrt(0.1/EPS)
+*
+               CNDNUM = BADC1
+               ANORM = ONE
+               MODE = 3
+*
+            ELSE IF( IMAT.EQ.16 ) THEN
+*
+*              16. Random, CNDNUM = 0.1/EPS
+*
+               CNDNUM = BADC2
+               ANORM = ONE
+               MODE = 3
+*
+            ELSE IF( IMAT.EQ.17 ) THEN
+*
+*              17. Random, CNDNUM = 0.1/EPS,
+*                  one small singular value S(N)=1/CNDNUM
+*
+               CNDNUM = BADC2
+               ANORM = ONE
+               MODE = 2
+*
+            ELSE IF( IMAT.EQ.18 ) THEN
+*
+*              18. Random, scaled near underflow
+*
+               CNDNUM = TWO
+               ANORM = SMALL
+               MODE = 3
+*
+            ELSE IF( IMAT.EQ.19 ) THEN
+*
+*              19. Random, scaled near overflow
+*
+               CNDNUM = TWO
+               ANORM = LARGE
+               MODE = 3
+*
+            END IF
+*
+         END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'CX' ) ) THEN
+*
+*        xCX: CX factorization
+*             Set parameters to generate a general
+*             M x N matrix.
+*
+*        Set TYPE, the type of matrix to be generated.  'N' is nonsymmetric.
+*
+         TYPE = 'N'
+*
+*        Set DIST, the type of distribution for the random
+*        number generator. 'S' => UNIFORM( -1, 1 ) ( 'S' for symmetric )
+*
+         DIST = 'S'
+*
+*        Set the lower bandwidth KL and the upper bandwidth KU.
 *
          IF( IMAT.EQ.2 ) THEN
 *

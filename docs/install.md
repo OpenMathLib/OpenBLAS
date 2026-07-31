@@ -120,8 +120,8 @@ Distro-specific installation commands:
 === "OpenBLAS releases"
 
     Windows is the only platform for which binaries are made available by the
-    OpenBLAS project itself. They can be downloaded from the GitHub
-    Releases](https://github.com/OpenMathLib/OpenBLAS/releases) page. These
+    OpenBLAS project itself. They can be downloaded from the
+    [GitHub Releases](https://github.com/OpenMathLib/OpenBLAS/releases) page. These
     binaries are built with MinGW, using the following build options:
     ```
     NUM_THREADS=64 TARGET=GENERIC DYNAMIC_ARCH=1 DYNAMIC_OLDER=1 CONSISTENT_FPCSR=1 INTERFACE=0
@@ -215,7 +215,7 @@ in this section, since the process for each is quite different.
 #### Visual Studio & native Windows ABI
 
 For Visual Studio, you can use CMake to generate Visual Studio solution files;
-note that you will need at least CMake 3.11 for linking to work correctly).
+note that you will need at least CMake 3.11 for linking to work correctly.
 
 Note that you need a Fortran compiler if you plan to build and use the latest version 
 of the LAPACK functions included with OpenBLAS. (If you do not have a Fortran compiler
@@ -229,7 +229,7 @@ the C parts, as the ABI imposed by `ifort` is incompatible with MSVC
 
 A fully-optimized OpenBLAS that can be statically or dynamically linked to your
 application can currently be built for the 64-bit architecture with the LLVM
-compiler infrastructure. We're going to use [Miniforge3] the pre-configured
+compiler infrastructure. We're going to use [Miniforge3](https://github.com/conda-forge/miniforge), the pre-configured
 and more versatile alternative to [Miniconda](https://docs.anaconda.com/miniconda/)
 to grab all of the tools we need, since some of them are in an experimental
 status. Before you begin, you'll need to have Microsoft Visual Studio 2015 or
@@ -393,7 +393,7 @@ OpenBLAS can be built targeting [Universal Windows Platform](https://en.wikipedi
 To build OpenBLAS on Windows with MinGW:
 
 1.  Install the MinGW (GCC) compiler suite, either the 32-bit
-    [MinGW]((http://www.mingw.org/) or the 64-bit
+    [MinGW](http://www.mingw.org/) or the 64-bit
     [MinGW-w64](http://mingw-w64.sourceforge.net/) toolchain. Be sure to install
     its `gfortran` package as well (unless you really want to build the BLAS part
     of OpenBLAS only) and check that `gcc` and `gfortran` are the same version.
@@ -453,7 +453,7 @@ the LLVM toolchain enables native compilation of the Fortran sources of LAPACK a
 
 1. Clone OpenBLAS to your local machine and checkout to latest release of
    OpenBLAS (unless you want to build the latest development snapshot - here we
-   are using  the 0.3.28 release as the example, of course this exact version
+   are using the 0.3.28 release as the example, of course this exact version
    may be outdated by the time you read this)
   
        ```cmd
@@ -569,7 +569,7 @@ The next two sections below describe how to build with Clang for ARMV7 and
 ARMV8 targets, respectively. The same basic principles as described below for
 ARMV8 should also apply to building an x86 or x86-64 version (substitute
 something like `NEHALEM` for the target instead of `ARMV8`, and replace all the
-`aarch64` in the toolchain paths with `x86` or `x96_64` as appropriate).
+`aarch64` in the toolchain paths with `x86` or `x86_64` as appropriate).
 
 !!! info "Historic note"
 
@@ -644,14 +644,16 @@ If you prefer building with CMake, running
 cmake -DANDROID_ABI=arm64-v8a -DTARGET=ARMV8 -DCMAKE_TOOLCHAIN_FILE=/opt/android-ndk-r27/build/cmake/android.toolchain.cmake -DNOFORTRAN=1 -DANDROID_PLATFORM=android-23 ..
 cmake --build .
 ```
-in your build directory should work (be sure to adjust the toolchain_file argument according to where you installed the NDK, and the ANDROID_PLATFORM
-according to the minimum version of Android you want to support. (If you leave out the ANDROID_PLATFORM parameter, the build will fail with an error 
-message about a missing declaration or missing header file complex.h)
+in your build directory should work. Be sure to adjust the toolchain file
+argument according to where you installed the NDK, and `ANDROID_PLATFORM`
+according to the minimum version of Android you want to support. If you leave
+out the `ANDROID_PLATFORM` parameter, the build will fail with an error message
+about a missing declaration or missing header file `complex.h`.
 
-??? note "Alternative build script for 3 architectures"
+??? note "Alternative build script for 4 Android ABIs"
 
-    This script will build OpenBLAS for 3 architecture (`ARMV7`, `ARMV8`,
-    `X86`) and install them to `/opt/OpenBLAS/lib`. Of course you can also copy
+    This script will build OpenBLAS for 4 Android ABIs (`armeabi-v7a`, `arm64-v8a`,
+    `x86`, `x86_64`) and install them to `/opt/OpenBLAS/lib`. Of course you can also copy
     only the section that is of interest to you - also notice that the `AR=`
     line may need adapting to the name of the ar tool provided in your
     `$TOOLCHAIN/bin` - for example `llvm-ar` in some recent NDK versions.
@@ -733,14 +735,14 @@ toolchain has been tested so far, but the following instructions may apply
 similarly to Windows:
 
 Download [this HarmonyOS 4.1.1 SDK](https://repo.huaweicloud.com/harmonyos/os/4.1.1-Release/ohos-sdk-windows_linux-public.tar.gz),
-or whatever newer version may be available in the future). Use `tar -xvf
-ohos-sdk-windows_linux_public.tar.gz` to unpack it somewhere on your system.
+or whatever newer version may be available in the future. Use `tar -xvf
+ohos-sdk-windows_linux-public.tar.gz` to unpack it somewhere on your system.
 This will create a folder named "ohos-sdk" with subfolders "linux" and
 "windows". In the linux one you will find a ZIP archive named
 `native-linux-x64-4.1.7.8-Release.zip` - you need to unzip this where you want
 to install the cross-compiler, for example in `/opt/ohos-sdk`.
 
-In the directory where you unpacked OpenBLAS, create a build directory for cmake, and change into it :
+In the directory where you unpacked OpenBLAS, create a build directory for cmake, and change into it:
 ```bash
 mkdir build
 cd build
@@ -754,7 +756,7 @@ contains no Fortran compiler):
       -DCMAKE_TOOLCHAIN_FILE=/opt/ohos-sdk/linux/native/build/cmake/ohos.toolchain.cmake \
       -DOHOS_ARCH="arm64-v8a" -DTARGET=ARMV8 -DNOFORTRAN=1 ..
 ```
-Additional other OpenBLAS build options like `USE_OPENMP=1` or `DYNAMIC_ARCH=1`
+Additional OpenBLAS build options like `USE_OPENMP=1` or `DYNAMIC_ARCH=1`
 will probably work too. Finally do the build:
 ```bash
 /opt/ohos-sdk/linux/native/build-tools/cmake/bin/cmake --build .

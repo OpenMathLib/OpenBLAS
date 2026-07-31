@@ -107,9 +107,9 @@ OpenBLAS can be used as a shared or a static library.
 
 ### Link a shared library
 
-The shared library is normally called `libopenblas.so`, but not that the name
+The shared library is normally called `libopenblas.so`, but note that the name
 may be different as a result of build flags used or naming choices by a distro
-packager (see [distributing.md] for details). To link a shared library named
+packager (see [distributing.md](distributing.md) for details). To link a shared library named
 `libopenblas.so`, the flag `-lopenblas` is needed. To find the OpenBLAS headers,
 a `-I/path/to/includedir` is needed. And unless the library is installed in a
 directory that the linker searches by default, also `-L` and `-Wl,-rpath` flags
