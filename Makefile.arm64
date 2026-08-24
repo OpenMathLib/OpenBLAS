@@ -34,7 +34,7 @@ endif
 ifeq ($(C_COMPILER), FUJITSU)
 ISCLANG=1
 endif
-ifneq (1, $(filter 1,$(GCCVERSIONGT4) $(ISCLANG)))
+ifeq "$(or $(GCCVERSIONGT4),$(ISCLANG))" ""
 CCOMMON_OPT += -march=armv8-a
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8-a

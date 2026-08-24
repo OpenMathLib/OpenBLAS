@@ -902,3 +902,53 @@ void blas_set_parameter(void)
 }
 
 #endif
+
+#if defined(ARCH_RISCV64)
+
+#include <stdio.h>
+
+/* RISC-V has no architectural cache-size query (cf. x86 CPUID / LoongArch
+   CPUCFG), so read the L2 (level 2, unified) size from Linux sysfs and fall
+   back to 512 KB. Returns the L2 size in kilobytes. */
+int get_L2_size(void) {
+  int size = 0;
+#if defined(OS_LINUX) || defined(OS_ANDROID)
+  int idx;
+  for (idx = 0; idx <= 4; idx++) {
+    char path[80]; FILE *fp; int level = 0; long val = 0; char unit = 0;
+    snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu0/cache/index%d/level", idx);
+    fp = fopen(path, "r"); if (fp == NULL) continue;
+    if (fscanf(fp, "%d", &level) != 1) { fclose(fp); continue; }
+    fclose(fp); if (level != 2) continue;
+    snprintf(path, sizeof(path), "/sys/devices/system/cpu/cpu0/cache/index%d/size", idx);
+    fp = fopen(path, "r"); if (fp == NULL) continue;
+    if (fscanf(fp, "%ld%c", &val, &unit) >= 1) {
+      if (unit == 'M' || unit == 'm') val *= 1024;
+      if (unit == 'G' || unit == 'g') val *= 1024 * 1024;
+      size = (int)val;
+    }
+    fclose(fp); if (size > 0) break;
+  }
+#endif
+  if (size <= 0) size = 512;
+  return size;
+}
+
+void blas_set_parameter(void) {
+#if defined(SGEMM_DEFAULT_P_BASE)
+  /* Scale each precision's packed-A dimension P from the detected L2, relative
+     to the size the active core's base blocking targets (RISCV_L2_REFERENCE_KB).
+     The bases come from the core's own param.h block, so this is not tied to any
+     single core; Q and R keep their param.h defaults. */
+  int l2    = get_L2_size();   /* KB */
+  int scale = l2 / RISCV_L2_REFERENCE_KB;
+  if (scale < 1) scale = 1;
+  if (scale > 4) scale = 4;
+  sgemm_p = SGEMM_DEFAULT_P_BASE * scale;
+  dgemm_p = DGEMM_DEFAULT_P_BASE * scale;
+  cgemm_p = CGEMM_DEFAULT_P_BASE * scale;
+  zgemm_p = ZGEMM_DEFAULT_P_BASE * scale;
+#endif
+}
+
+#endif

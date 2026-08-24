@@ -2050,10 +2050,10 @@ int zimatcopy_k_rnc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG);
 int zimatcopy_k_ctc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG);
 int zimatcopy_k_rtc(BLASLONG, BLASLONG,  double, double, double *, BLASLONG);
 
-int sgeadd_k(BLASLONG, BLASLONG, float, float*, BLASLONG, float, float *, BLASLONG); 
-int dgeadd_k(BLASLONG, BLASLONG, double, double*, BLASLONG, double, double *, BLASLONG); 
-int cgeadd_k(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float, float, float *, BLASLONG); 
-int zgeadd_k(BLASLONG, BLASLONG, double,double, double*, BLASLONG, double, double, double *, BLASLONG);
+int sgeadd_k(BLASLONG, BLASLONG, float, float*, BLASLONG, float, float *, BLASLONG,BLASLONG,BLASLONG); 
+int dgeadd_k(BLASLONG, BLASLONG, double, double*, BLASLONG, double, double *, BLASLONG,BLASLONG,BLASLONG); 
+int cgeadd_k(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float, float, float *, BLASLONG,BLASLONG,BLASLONG); 
+int zgeadd_k(BLASLONG, BLASLONG, double,double, double*, BLASLONG, double, double, double *, BLASLONG,BLASLONG,BLASLONG);
 
 int sgemm_batch_thread(blas_arg_t * queue, BLASLONG nums);
 int dgemm_batch_thread(blas_arg_t * queue, BLASLONG nums);

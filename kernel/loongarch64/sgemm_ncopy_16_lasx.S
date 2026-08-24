@@ -130,6 +130,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //.L_N2:
 //|   .L_N2_M2:
 //|   .L_N2_M1:
+//|   .L_N2_END:
 //.L_N1:
 //|   .L_N1_M1:
 //.L_N0
@@ -436,7 +437,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     blt          ZERO, I,    .L_N2_M2
 .L_N2_M1:
     andi      I,     M,    0x01
-    beq       I,     ZERO, .L_N1
+    beq       I,     ZERO, .L_N2_END
 
     fld.s     F0,    S1,  0x00
     fld.s     F1,    S2,  0x00
@@ -446,6 +447,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     fst.s       F1,    TD,  0x04
     PTR_ADDI    S2,    S2,  0x04
     PTR_ADDI    TD,    TD,  0x08
+.L_N2_END:
+    andi      J,     N,   0x01
+    beq       ZERO,  J,   .L_N0
 .align 5
 .L_N1:
     move      S1,    TS

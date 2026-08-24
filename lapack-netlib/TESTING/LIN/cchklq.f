@@ -394,12 +394,19 @@
                            CALL CLACPY( 'Full', M, N, A, LDA, AF, LDA )
 *
                            SRNAMT = 'CGELS'
-                           CALL CGELS( 'No transpose', M, N, NRHS, AF,
+                            CALL CGELS( 'No transpose', M, N, NRHS, AF,
      $                                 LDA, X, LDA, WORK, LWORK, INFO )
+*
+*                          Re-factorize AF with CGELQF for subsequent
+*                          LQ tests which expect LQ factorization in AF.
+*
+                            CALL CLACPY( 'Full', M, N, A, LDA, AF, LDA )
+                            CALL CGELQF( M, N, AF, LDA, TAU, WORK,
+     $                                   LWORK, INFO )
 *
 *                          Check error code from CGELS.
 *
-                           IF( INFO.NE.0 )
+                            IF( INFO.NE.0 )
      $                        CALL ALAERH( PATH, 'CGELS', INFO, 0, 'N',
      $                                     M, N, NRHS, -1, NB, IMAT,
      $                                     NFAIL, NERRS, NOUT )

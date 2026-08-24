@@ -22,14 +22,24 @@
 | x86_64      | " |macOS11|gmake |arm64| XCode 12.4 | - | | + | - | both | Azure |  |
 | x86_64      | " |macOS11|gmake |arm | XCode 12.4 | - | | + | - | both | Azure |  |
 | x86_64      | " |Alpine Linux(musl)|gmake| - | gcc | gfortran | pthreads | + | - | both | Azure |  |
-| arm64       |Apple M1   |OSX    |CMAKE/XCode| - | LLVM   | - | OpenMP | - | - | static | Cirrus |   |
-| arm64       |Apple M1   |OSX    |CMAKE/Xcode| - | LLVM   | - | OpenMP | - | + | static | Cirrus |  |  
-| arm64       |Apple M1   |OSX    |CMAKE/XCode|x86_64| LLVM| - | - | + | - | static | Cirrus |   |
-| arm64       |Neoverse N1|Linux  |gmake      | -    |gcc10.2| -| pthreads| - | - | both   | Cirrus |   |
-| arm64       |Neoverse N1|Linux  |gmake      | -    |gcc10.2| -| pthreads| - | + | both   | Cirrus |  |
-| arm64       |Neoverse N1|Linux  |gmake      |-     |gcc10.2| -| OpenMP | - | - | both   |Cirrus | 8 |
-| x86_64      | Ryzen|   FreeBSD  |gmake      | - | gcc12.2|gfortran| pthreads| - | - | both | Cirrus | |
-| x86_64      | Ryzen|   FreeBSD  |gmake      |   | gcc12.2|gfortran| pthreads| - | + | both | Cirrus | |
+| arm64       |Apple M1   |macOS14|CMAKE      | - | LLVM   |gfortran| pthreads | + | - | static | Github |  |
+| arm64       |Apple M1   |macOS14|CMAKE      | - | LLVM   |gfortran| pthreads | + | + | static | Github |  |
+| arm64       |Apple M1   |macOS14|CMAKE      | - | LLVM   |gfortran| OpenMP | + | - | static | Github |  |
+| arm64       |Apple M1   |macOS14|CMAKE      | - | LLVM   |gfortran| OpenMP | + | + | static | Github |  |
+| arm64       |Apple M1   |macOS14|gmake      | - | LLVM   |gfortran| pthreads | + | - | both | Github |   |
+| arm64       |Apple M1   |macOS14|gmake      | - | LLVM   |gfortran| pthreads | + | + | both | Github |  |
+| arm64       |Apple M1   |macOS14|gmake      | - | LLVM   |gfortran| OpenMP | + | - | both | Github |  |
+| arm64       |Apple M1   |macOS14|gmake      | - | LLVM   |gfortran| OpenMP | + | + | both | Github |  |
+| arm64       |Apple M1   |macOS26|gmake      |x86_64| XCode| - | | + | - | both | Github |   |
+| arm64       |Apple M1   |macOS26|gmake      |arm64| XCode| - | | + | - | both | Github |   |
+| arm64       |Apple M1   |macOS26|gmake      |arm| AndroidNDK-llvm | - | | - | - | both | Github |   |
+| arm64       |Neoverse N1|Linux  |gmake      | -    |gcc|gfortran| pthreads| - | - | both   | Github |   |
+| arm64       |Neoverse N1|Linux  |gmake      | -    |gcc|gfortran| pthreads| - | + | both   | Github |  |
+| arm64       |Neoverse N1|Linux  |gmake      |-     |gcc|gfortran| OpenMP | - | - | both   | Github |  |
+| arm64       |Graviton3  |Linux  |CMAKE      | - |gcc|gfortran| pthreads| + | - | static | Github | |
+| arm64       |Graviton3  |Linux  |gmake      | - |gcc|gfortran| pthreads| + | - | both | Github | |
+| x86_64      |generic|FreeBSD  |gmake      | - | gcc15|gfortran15| pthreads| - | - | both | Github | |
+| arm64       |generic|FreeBSD  |gmake      | - | gcc15|gfortran15| pthreads| - | - | both | Github | |
 | x86_64       |GENERIC    |QEMU   |gmake| mips64 | gcc | gfortran | pthreads | - | - | static | Github |  |
 | x86_64      |SICORTEX   |QEMU   |gmake| mips64 | gcc | gfortran | pthreads | - | - | static | Github |  |
 | x86_64      |I6400      |QEMU   |gmake| mips64 | gcc | gfortran | pthreads | - | - | static | Github |  |

@@ -1256,16 +1256,16 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
 #endif
 
 #if (BUILD_SINGLE==1)
-  int    (*sgeadd_k) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG); 
+  int    (*sgeadd_k) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG, BLASLONG, BLASLONG); 
 #endif
 #if (BUILD_DOUBLE==1)
-  int    (*dgeadd_k) (BLASLONG, BLASLONG, double, double *, BLASLONG, double, double *, BLASLONG); 
+  int    (*dgeadd_k) (BLASLONG, BLASLONG, double, double *, BLASLONG, double, double *, BLASLONG, BLASLONG, BLASLONG); 
 #endif
 #if (BUILD_COMPLEX==1)
-  int    (*cgeadd_k) (BLASLONG, BLASLONG, float, float,  float *,  BLASLONG, float, float, float *, BLASLONG); 
+  int    (*cgeadd_k) (BLASLONG, BLASLONG, float, float,  float *,  BLASLONG, float, float, float *, BLASLONG, BLASLONG, BLASLONG); 
 #endif
 #if (BUILD_COMPLEX16==1)
-  int    (*zgeadd_k) (BLASLONG, BLASLONG, double, double, double *, BLASLONG, double, double, double *, BLASLONG); 
+  int    (*zgeadd_k) (BLASLONG, BLASLONG, double, double, double *, BLASLONG, double, double, double *, BLASLONG, BLASLONG, BLASLONG); 
 #endif
 } gotoblas_t;
 

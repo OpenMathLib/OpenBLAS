@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CGELSY + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgelsy.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgelsy.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -197,7 +195,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEsolve
+*> \ingroup gelsy
 *
 *> \par Contributors:
 *  ==================
@@ -207,8 +205,10 @@
 *>    G. Quintana-Orti, Depto. de Informatica, Universidad Jaime I, Spain \n
 *>
 *  =====================================================================
-      SUBROUTINE CGELSY( M, N, NRHS, A, LDA, B, LDB, JPVT, RCOND, RANK,
+      SUBROUTINE CGELSY( M, N, NRHS, A, LDA, B, LDB, JPVT, RCOND,
+     $                   RANK,
      $                   WORK, LWORK, RWORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -244,8 +244,9 @@
       COMPLEX            C1, C2, S1, S2
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CCOPY, CGEQP3, CLAIC1, CLASCL, CLASET, CTRSM,
-     $                   CTZRZF, CUNMQR, CUNMRZ, SLABAD, XERBLA
+      EXTERNAL           CCOPY, CGEQP3, CLAIC1, CLASCL, CLASET,
+     $                   CTRSM,
+     $                   CTZRZF, CUNMQR, CUNMRZ, XERBLA
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
@@ -265,9 +266,9 @@
 *
       INFO = 0
       NB1 = ILAENV( 1, 'CGEQRF', ' ', M, N, -1, -1 )
-      NB2 = ILAENV( 1, 'CGERQF', ' ', M, N, -1, -1 )
+      NB2 = ILAENV( 1, 'CTZRZF', ' ', M, N, -1, -1 )
       NB3 = ILAENV( 1, 'CUNMQR', ' ', M, N, NRHS, -1 )
-      NB4 = ILAENV( 1, 'CUNMRQ', ' ', M, N, NRHS, -1 )
+      NB4 = ILAENV( 1, 'CUNMRZ', ' ', M, N, NRHS, -1 )
       NB = MAX( NB1, NB2, NB3, NB4 )
       LWKOPT = MAX( 1, MN+2*N+NB*(N+1), 2*MN+NB*NRHS )
       WORK( 1 ) = CMPLX( LWKOPT )
@@ -305,7 +306,6 @@
 *
       SMLNUM = SLAMCH( 'S' ) / SLAMCH( 'P' )
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
 *
 *     Scale A, B if max entries outside range [SMLNUM,BIGNUM]
 *
@@ -338,13 +338,15 @@
 *
 *        Scale matrix norm up to SMLNUM
 *
-         CALL CLASCL( 'G', 0, 0, BNRM, SMLNUM, M, NRHS, B, LDB, INFO )
+         CALL CLASCL( 'G', 0, 0, BNRM, SMLNUM, M, NRHS, B, LDB,
+     $                INFO )
          IBSCL = 1
       ELSE IF( BNRM.GT.BIGNUM ) THEN
 *
 *        Scale matrix norm down to BIGNUM
 *
-         CALL CLASCL( 'G', 0, 0, BNRM, BIGNUM, M, NRHS, B, LDB, INFO )
+         CALL CLASCL( 'G', 0, 0, BNRM, BIGNUM, M, NRHS, B, LDB,
+     $                INFO )
          IBSCL = 2
       END IF
 *
@@ -353,7 +355,7 @@
 *
       CALL CGEQP3( M, N, A, LDA, JPVT, WORK( 1 ), WORK( MN+1 ),
      $             LWORK-MN, RWORK, INFO )
-      WSIZE = MN + REAL( WORK( MN+1 ) )
+      WSIZE = REAL( MN ) + REAL( WORK( MN+1 ) )
 *
 *     complex workspace: MN+NB*(N+1). real workspace 2*N.
 *     Details of Householder rotations stored in WORK(1:MN).
@@ -411,9 +413,10 @@
 *
 *     B(1:M,1:NRHS) := Q**H * B(1:M,1:NRHS)
 *
-      CALL CUNMQR( 'Left', 'Conjugate transpose', M, NRHS, MN, A, LDA,
+      CALL CUNMQR( 'Left', 'Conjugate transpose', M, NRHS, MN, A,
+     $             LDA,
      $             WORK( 1 ), B, LDB, WORK( 2*MN+1 ), LWORK-2*MN, INFO )
-      WSIZE = MAX( WSIZE, 2*MN+REAL( WORK( 2*MN+1 ) ) )
+      WSIZE = MAX( WSIZE, REAL( 2*MN )+REAL( WORK( 2*MN+1 ) ) )
 *
 *     complex workspace: 2*MN+NB*NRHS.
 *
@@ -452,18 +455,22 @@
 *     Undo scaling
 *
       IF( IASCL.EQ.1 ) THEN
-         CALL CLASCL( 'G', 0, 0, ANRM, SMLNUM, N, NRHS, B, LDB, INFO )
+         CALL CLASCL( 'G', 0, 0, ANRM, SMLNUM, N, NRHS, B, LDB,
+     $                INFO )
          CALL CLASCL( 'U', 0, 0, SMLNUM, ANRM, RANK, RANK, A, LDA,
      $                INFO )
       ELSE IF( IASCL.EQ.2 ) THEN
-         CALL CLASCL( 'G', 0, 0, ANRM, BIGNUM, N, NRHS, B, LDB, INFO )
+         CALL CLASCL( 'G', 0, 0, ANRM, BIGNUM, N, NRHS, B, LDB,
+     $                INFO )
          CALL CLASCL( 'U', 0, 0, BIGNUM, ANRM, RANK, RANK, A, LDA,
      $                INFO )
       END IF
       IF( IBSCL.EQ.1 ) THEN
-         CALL CLASCL( 'G', 0, 0, SMLNUM, BNRM, N, NRHS, B, LDB, INFO )
+         CALL CLASCL( 'G', 0, 0, SMLNUM, BNRM, N, NRHS, B, LDB,
+     $                INFO )
       ELSE IF( IBSCL.EQ.2 ) THEN
-         CALL CLASCL( 'G', 0, 0, BIGNUM, BNRM, N, NRHS, B, LDB, INFO )
+         CALL CLASCL( 'G', 0, 0, BIGNUM, BNRM, N, NRHS, B, LDB,
+     $                INFO )
       END IF
 *
    70 CONTINUE

@@ -351,9 +351,9 @@
 *     .. Parameters ..
       INTEGER            MAXITR
       PARAMETER          ( MAXITR = 6 )
-      REAL               HUNDRED, MEIGHTH, ONE, TEN, ZERO
+      REAL               HUNDRED, MEIGHTH, ZERO, ONE, TEN
       PARAMETER          ( HUNDRED = 100.0E0, MEIGHTH = -0.125E0,
-     $                     ONE = 1.0E0, TEN = 10.0E0, ZERO = 0.0E0 )
+     $                     ZERO = 0.0E0, ONE = 1.0E0, TEN = 10.0E0 )
       REAL               NEGONE
       PARAMETER          ( NEGONE = -1.0E0 )
       REAL               PIOVER2
@@ -576,7 +576,7 @@
                END IF
             ELSE
                NU = SIGMA21
-               MU = SQRT( 1.0 - NU**2 )
+               MU = SQRT( ONE - NU**2 )
                IF( NU .LT. THRESH ) THEN
                   MU = ONE
                   NU = ZERO
@@ -1108,4 +1108,3 @@
 *     End of SBBCSD
 *
       END
-

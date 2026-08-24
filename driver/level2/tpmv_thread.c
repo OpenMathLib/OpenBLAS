@@ -71,7 +71,7 @@
 
 static int tpmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *dummy1, FLOAT *buffer, BLASLONG pos){
 
-  FLOAT *a, *x, *y;
+  volatile FLOAT *a, *x, *y;
 
   BLASLONG incx;
   BLASLONG m_from, m_to;

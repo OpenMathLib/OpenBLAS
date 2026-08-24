@@ -276,6 +276,16 @@
          ELSE
              NB = 32
          END IF
+      ELSE IF( SUBNAM(2:6).EQ.'TZRZF' ) THEN
+         IF( SNAME ) THEN
+             NB = 64
+         ELSE
+             NB = 32
+         END IF
+      ELSE IF( SUBNAM(2:6).EQ.'ORMRZ' ) THEN
+             NB = 64
+      ELSE IF( SUBNAM(2:6).EQ.'UNMRZ' ) THEN
+             NB = 32
       ELSE IF( C2.EQ.'GE' ) THEN
          IF( C3.EQ.'TRF' ) THEN
             IF( SNAME ) THEN

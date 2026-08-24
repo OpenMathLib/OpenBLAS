@@ -44,9 +44,9 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
   BLASLONG i, js;
   BLASLONG X;
 
-  FLOAT data01, data02, data03, data04, data05, data06, data07, data08;
-  FLOAT data09, data10, data11, data12, data13, data14, data15, data16;
-  FLOAT *ao1, *ao2, *ao3, *ao4;
+  volatile FLOAT data01, data02, data03, data04, data05, data06, data07, data08;
+  volatile FLOAT data09, data10, data11, data12, data13, data14, data15, data16;
+  volatile FLOAT *ao1, *ao2, *ao3, *ao4;
 
   js = (n >> 2);
 

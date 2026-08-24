@@ -45,6 +45,7 @@
 
 #ifndef ASSEMBLER
 
+#ifndef BLAS_LOCK_DEFINED
 static __inline void blas_lock(volatile unsigned long *address){
 
   long int ret = 1;
@@ -60,6 +61,7 @@ static __inline void blas_lock(volatile unsigned long *address){
   } while (ret);
 }
 #define BLAS_LOCK_DEFINED
+#endif
 
 static __inline unsigned long rpcc(void){
   unsigned long clocks;

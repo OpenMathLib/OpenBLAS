@@ -1,6 +1,15 @@
 name: continuous build
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -61,8 +70,8 @@ jobs:
                 sudo ./llvm.sh 21
             fi
             if [ "${{ matrix.fortran }}" == "flang" ]; then
-              wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
-              sudo apt install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
+              wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.2_amd64.deb
+              sudo apt install ./libtinfo5_6.3-2ubuntu0.2_amd64.deb
             else
               sudo apt-get install -y ${{ matrix.fortran }}
             fi
@@ -349,6 +358,8 @@ jobs:
             check-name: "linux_thread_stress (openmp)"
           - backend: tsan
             check-name: linux_thread_sanitizer
+          - backend: tsan-openmp
+            check-name: linux_thread_sanitizer_openmp
 
     steps:
       - name: Checkout repository
@@ -362,8 +373,11 @@ jobs:
           EOF
           sudo apt-get update
           sudo apt-get install -y ccache cmake ninja-build
-          if [ "${{ matrix.backend }}" = "tsan" ]; then
-            sudo apt-get install -y clang llvm
+          case "${{ matrix.backend }}" in
+            tsan|tsan-openmp) sudo apt-get install -y clang llvm ;;
+          esac
+          if [ "${{ matrix.backend }}" = "tsan-openmp" ]; then
+            sudo apt-get install -y libomp-dev
           fi
 
       - name: Compilation cache
@@ -398,7 +412,7 @@ jobs:
           sanitizer_flags=
           if [ "${{ matrix.backend }}" = "openmp" ]; then
             use_openmp=ON
-          elif [ "${{ matrix.backend }}" = "tsan" ]; then
+          elif [ "${{ matrix.backend }}" = "tsan" ] || [ "${{ matrix.backend }}" = "tsan-openmp" ]; then
             build_type=RelWithDebInfo
             c_compiler=clang
             cxx_compiler=clang++
@@ -408,6 +422,10 @@ jobs:
             dgemm_mixed_args="131072;8;10"
             dgemv_args="64;4;1"
             sanitizer_flags="-fsanitize=thread -g -O1 -fno-omit-frame-pointer"
+            if [ "${{ matrix.backend }}" = "tsan-openmp" ]; then
+              use_openmp=ON
+              cpp_thread_safety_use_openmp=ON
+            fi
           fi
           cmake_args=(
             -G Ninja
@@ -436,7 +454,7 @@ jobs:
             -DCMAKE_C_COMPILER_LAUNCHER=ccache
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           )
-          if [ "${{ matrix.backend }}" = "tsan" ]; then
+          if [ "${{ matrix.backend }}" = "tsan" ] || [ "${{ matrix.backend }}" = "tsan-openmp" ]; then
             cmake_args+=(
               "-DCMAKE_C_FLAGS=$sanitizer_flags"
               "-DCMAKE_CXX_FLAGS=$sanitizer_flags"
@@ -459,10 +477,24 @@ jobs:
         timeout-minutes: 30
         run: |
           cd build
-          if [ "${{ matrix.backend }}" = "tsan" ]; then
+          if [ "${{ matrix.backend }}" = "tsan" ] || [ "${{ matrix.backend }}" = "tsan-openmp" ]; then
             export LLVM_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer
             export TSAN_OPTIONS=halt_on_error=1:exitcode=66:second_deadlock_stack=1
-          else
+          fi
+          if [ "${{ matrix.backend }}" = "tsan-openmp" ]; then
+            # Load Archer (the OMPT tool from Ubuntu's libomp-dev) so TSan
+            # understands libomp's barriers instead of flagging them as false positives. The OpenMP runtime will load this tool automatically if OMP_TOOL_LIBRARIES is set.
+            archer=$(clang -print-file-name=libarcher.so)
+            [ -f "$archer" ] || archer=$(find /usr/lib/llvm-* -name libarcher.so 2>/dev/null | head -1)
+            if [ ! -f "$archer" ]; then
+              echo "::error::libarcher.so not found (expected from libomp-dev)"
+              exit 1
+            fi
+            echo "Using distro Archer: $archer"
+            export OMP_TOOL_LIBRARIES="$archer"
+            export TSAN_OPTIONS="$TSAN_OPTIONS:ignore_noninstrumented_modules=1"
+          fi
+          if [ "${{ matrix.backend }}" != "tsan" ]; then
             export OMP_NUM_THREADS=16
           fi
           export OPENBLAS_NUM_THREADS=8

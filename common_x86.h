@@ -54,6 +54,7 @@
 #define	__volatile__
 #endif
 
+#ifndef BLAS_LOCK_DEFINED
 static __inline void blas_lock(volatile BLASULONG *address){
 
   int ret;
@@ -83,6 +84,7 @@ static __inline void blas_lock(volatile BLASULONG *address){
 
 }
 #define BLAS_LOCK_DEFINED
+#endif
 
 static __inline unsigned long long rpcc(void){
 #if defined(_MSC_VER) && !defined(__clang__)

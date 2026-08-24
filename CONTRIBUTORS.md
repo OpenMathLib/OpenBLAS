@@ -278,3 +278,9 @@ In chronological order:
 
 * Nathan Sircombe <nathan.sircombe@arm.com>
   * [2026-04-16] Add CPU ID for Neoverse V3
+hheei <hheei@users.noreply.github.com>
+
+* Aadityansha Verma <https://github.com/aadityansha06>
+  * [2026-07-14] Add independent transpose support for C in GEADD (sgeadd/dgeadd/cgeadd/zgeadd).
+
+

@@ -1976,6 +1976,7 @@
 *     .. Common blocks ..
       COMMON             /INFOC/INFOT, NOUTC, OK, LERR
 *     .. Executable Statements ..
+      CALL OPENBLAS_TEST_SET_XERBLA
 *     OK is set to .FALSE. by the special version of XERBLA or by CHKXER
 *     if anything is wrong.
       OK = .TRUE.

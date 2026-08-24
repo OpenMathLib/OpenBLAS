@@ -79,6 +79,22 @@ extern "C" {
 #endif
 #endif
 
+#ifndef ASSEMBLER
+#ifdef HAVE_C11
+#if defined(C_GCC) && ( __GNUC__ < 7)
+// workaround for GCC bug 65467
+#ifndef _Atomic
+#define _Atomic volatile
+#endif
+#endif
+#include <stdatomic.h>
+#else
+#ifndef _Atomic
+#define _Atomic volatile
+#endif
+#endif
+#endif
+
 #if !defined(NOINCLUDE) && !defined(ASSEMBLER)
 #include <stdio.h>
 #include <stdlib.h>
@@ -430,6 +446,12 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #include "common_quad.h"
 #endif
 
+#ifndef ASSEMBLER
+#ifdef HAVE_C11
+#define BLAS_LOCK_DEFINED
+#endif
+#endif
+
 #ifdef ARCH_ALPHA
 #include "common_alpha.h"
 #endif
@@ -556,6 +578,27 @@ static __inline void blas_lock(volatile BLASULONG *address){
 }
 #define BLAS_LOCK_DEFINED
 #endif
+
+#ifdef HAVE_C11
+static __inline void blas_lock(volatile BLASULONG *address) {
+  BLASULONG expected = 0;
+  while (!atomic_compare_exchange_strong((volatile _Atomic BLASULONG *)address,
+             &expected, (BLASULONG)1)) {
+    expected = 0;
+    YIELDING;
+  }
+}
+#endif
+
+static __inline void blas_unlock(volatile BLASULONG *address){
+#ifdef HAVE_C11
+  atomic_store((volatile _Atomic BLASULONG *)address, (BLASULONG)0);
+#else
+  MB;
+  *address = 0;
+#endif
+}
+
 
 #ifndef RPCC_DEFINED
 #error "rpcc() implementation is missing for your platform"
@@ -740,19 +783,6 @@ __declspec(dllimport) int __cdecl omp_in_parallel(void);
 __declspec(dllimport) int __cdecl omp_get_num_procs(void);
 #endif
 
-#ifdef HAVE_C11
-#if defined(C_GCC) && ( __GNUC__ < 7) 
-// workaround for GCC bug 65467
-#ifndef _Atomic
-#define _Atomic volatile
-#endif
-#endif
-#include <stdatomic.h>
-#else
-#ifndef _Atomic
-#define _Atomic volatile
-#endif
-#endif
 
 #else
 #ifdef __ELF__
@@ -761,10 +791,6 @@ int omp_get_num_procs(void) __attribute__ ((weak));
 #endif
 #endif
 
-static __inline void blas_unlock(volatile BLASULONG *address){
-  MB;
-  *address = 0;
-}
 
 #ifdef OS_WINDOWSSTORE
 static __inline int readenv_atoi(char *env) {
@@ -854,6 +880,26 @@ typedef struct {
 #endif
 
 #include "common_interface.h"
+
+/* Internal declaration of the public C XERBLA callback API. Keep this out of
+ * common_interface.h, whose contents are copied verbatim into f77blas.h and
+ * are not adjusted for SYMBOLPREFIX/SYMBOLSUFFIX by the CMake build. */
+#ifndef ASSEMBLER
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifndef OPENBLAS_XERBLA_HANDLER_DEFINED
+#define OPENBLAS_XERBLA_HANDLER_DEFINED
+typedef void (*openblas_xerbla_handler)(const char *name,
+                                        const blasint *info,
+                                        size_t name_length);
+#endif
+openblas_xerbla_handler openblas_set_xerbla(openblas_xerbla_handler handler);
+#ifdef __cplusplus
+}
+#endif
+#endif
+
 #ifdef SANITY_CHECK
 #include "common_reference.h"
 #endif

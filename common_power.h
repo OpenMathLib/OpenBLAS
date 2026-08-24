@@ -89,6 +89,7 @@
 
 void *qalloc(int flags, size_t bytes);
 
+#ifndef BLAS_LOCK_DEFINED
 static inline void blas_lock(volatile unsigned long *address){
 
   long int ret, val = 1;
@@ -123,6 +124,7 @@ static inline void blas_lock(volatile unsigned long *address){
   } while (ret);
 }
 #define BLAS_LOCK_DEFINED
+#endif
 
 static inline unsigned long rpcc(void){
   unsigned long ret;

@@ -125,39 +125,39 @@
 #    cpu: 8
 #  compile_script:
 #  - make USE_OPENMP=1
-
-
-FreeBSD_task:
-  name: FreeBSD-gcc
-  freebsd_instance:
-    image_family: freebsd-14-3
-  install_script:
-  - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc
-  compile_script:
-  - ls -l /usr/local/lib
-  - gmake CC=gcc 
-
-
-FreeBSD_task:
-  name: freebsd-gcc-ilp64
-  freebsd_instance:
-    image_family: freebsd-14-3
-  install_script:
-  - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc
-  compile_script:
-  - ls -l /usr/local/lib
-  - gmake CC=gcc INTERFACE64=1
-
-FreeBSD_task:
-  name: FreeBSD-clang-openmp
-  freebsd_instance:
-    image_family: freebsd-14-3
-  install_script:
-  - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc 
-  - ln -s /usr/local/lib/gcc14/libgfortran.so.5.0.0 /usr/lib/libgfortran.so
-  compile_script:
-  - gmake CC=clang FC=gfortran USE_OPENMP=1 CPP_THREAD_SAFETY_TEST=1
-
+#
+#
+#FreeBSD_task:
+#  name: FreeBSD-gcc
+#  freebsd_instance:
+#    image_family: freebsd-14-3
+#  install_script:
+#  - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc
+#  compile_script:
+#  - ls -l /usr/local/lib
+#  - gmake CC=gcc 
+#
+#
+#FreeBSD_task:
+#  name: freebsd-gcc-ilp64
+#  freebsd_instance:
+#    image_family: freebsd-14-3
+#  install_script:
+#  - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc
+#  compile_script:
+#  - ls -l /usr/local/lib
+#  - gmake CC=gcc INTERFACE64=1
+#
+#FreeBSD_task:
+#  name: FreeBSD-clang-openmp
+#  freebsd_instance:
+#    image_family: freebsd-14-3
+#  install_script:
+#  - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc 
+#  - ln -s /usr/local/lib/gcc14/libgfortran.so.5.0.0 /usr/lib/libgfortran.so
+#  compile_script:
+#  - gmake CC=clang FC=gfortran USE_OPENMP=1 CPP_THREAD_SAFETY_TEST=1
+#
 #task:
 #  name: Windows/LLVM16     --- too slow ---
 #  windows_container:

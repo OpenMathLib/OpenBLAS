@@ -147,7 +147,11 @@ int NAME(char *UPLO, char* TRANS, char* DIAG, blasint *N, blasint *NRHS, FLOAT *
 
 #ifdef SMP
   args.common = NULL;
-  args.nthreads = num_cpu_avail(4);
+  if (args.m < 64) {
+    args.nthreads = 1;
+  } else {
+    args.nthreads = num_cpu_avail(4);
+  }
 
   if (args.nthreads == 1) {
 #endif

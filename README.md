@@ -2,15 +2,10 @@
 
 [![Join the chat at https://gitter.im/xianyi/OpenBLAS](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/xianyi/OpenBLAS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Cirrus CI: [![Build Status](https://api.cirrus-ci.com/github/xianyi/OpenBLAS.svg?branch=develop)](https://cirrus-ci.com/github/xianyi/OpenBLAS)
+GitHub Actions: [![Build Status](https://github.com/OpenMathLib/OpenBLAS/actions/workflows/dynamic_arch.yml/badge.svg?branch=develop)](https://github.com/OpenMathLib/OpenBLAS/actions/workflows/dynamic_arch.yml?query=branch%3Adevelop)
 
+Azure Pipelines: [![Build Status](https://dev.azure.com/xianyi/OpenBLAS/_apis/build/status/xianyi.OpenBLAS?branchName=develop)](https://dev.azure.com/xianyi/OpenBLAS/_build/latest?definitionId=1&branchName=develop)
 
-
-[![Build Status](https://dev.azure.com/xianyi/OpenBLAS/_apis/build/status/xianyi.OpenBLAS?branchName=develop)](https://dev.azure.com/xianyi/OpenBLAS/_build/latest?definitionId=1&branchName=develop)
-
-OSUOSL POWERCI [![Build Status](https://powerci.osuosl.org/buildStatus/icon?job=OpenBLAS_gh%2Fdevelop)](http://powerci.osuosl.org/job/OpenBLAS_gh/job/develop/)
-
-OSUOSL IBMZ-CI [![Build Status](http://ibmz-ci.osuosl.org/buildStatus/icon?job=OpenBLAS-Z%2Fdevelop)](http://ibmz-ci.osuosl.org/job/OpenBLAS-Z/job/develop/)
 ## Introduction
 
 OpenBLAS is an optimized BLAS (Basic Linear Algebra Subprograms) library based on GotoBLAS2 1.13 BSD version.
@@ -292,17 +287,17 @@ Please note that it is not possible to combine support for different architectur
 ### Supported OS
 
 - **GNU/Linux**
-- **MinGW or Visual Studio (CMake)/Windows**: Please read <https://github.com/OpenMathLib/OpenBLAS/docs/nstall.md#visual-studio-native-windows-abi>.
+- **MinGW or Visual Studio (CMake)/Windows**: Please read <https://github.com/OpenMathLib/OpenBLAS/blob/develop/docs/install.md#visual-studio--native-windows-abi>.
 - **Darwin/macOS/OSX/iOS**: Already supported on PPC and x86 by the original GotoBLAS, now also on ARM64 but we are not OSX/iOS experts.
-- **FreeBSD**: Supported by the community. We don't actively test the library on this OS.
+- **FreeBSD**: Supported by the community. Basic test coverage is provided by GitHub Actions.
 - **OpenBSD**: Supported by the community. We don't actively test the library on this OS.
 - **NetBSD**: Supported by the community. We don't actively test the library on this OS.
 - **DragonFly BSD**: Supported by the community. We don't actively test the library on this OS.
-- **Android**: Supported by the community. Please read <https://github.com/OpenMathLib/OpenBLAS/docs/install.md#android>.
+- **Android**: Supported by the community. Please read <https://github.com/OpenMathLib/OpenBLAS/blob/develop/docs/install.md#android>.
 - **AIX**: Supported on PPC up to POWER10 but testing is increasingly problematic due to lack of publicly available systems
 - **Haiku**: Supported by the community. We don't actively test the library on this OS.
 - **SunOS**: Supported by the community. We don't actively test the library on this OS.
-- **Cortex-M**: Supported by the community. Please read <https://github.com/OpenMathLib/OpenBLAS/docs/install.md#cortex-m>.
+- **Cortex-M**: Supported by the community. Please read <https://github.com/OpenMathLib/OpenBLAS/blob/develop/docs/install.md#cortex-m>.
 
 ## Usage
 

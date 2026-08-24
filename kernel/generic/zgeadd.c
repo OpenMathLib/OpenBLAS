@@ -17,49 +17,72 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
-USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
+THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 #include "common.h"
 
+int CNAME(BLASLONG rows, BLASLONG cols, FLOAT alphar, FLOAT alphai, FLOAT *a,
+          BLASLONG lda, FLOAT betar, FLOAT betai, FLOAT *b, BLASLONG ldb,
+          BLASLONG transa, BLASLONG transb) {
+  BLASLONG i;
+  FLOAT *aptr, *bptr;
+  BLASLONG lda_elem = lda;
+  BLASLONG ldb_elem = ldb;
+  if (rows <= 0)
+    return (0);
+  if (cols <= 0)
+    return (0);
 
-int CNAME(BLASLONG rows, BLASLONG cols, FLOAT alphar, FLOAT alphai, FLOAT *a, BLASLONG lda, FLOAT betar, FLOAT betai , FLOAT *b, BLASLONG ldb)
-{
-	BLASLONG i;
-	FLOAT *aptr,*bptr;
+  aptr = a;
+  bptr = b;
+  lda *= 2;
+  ldb *= 2;
 
-	if ( rows <= 0     )  return(0);
-	if ( cols <= 0     )  return(0);
-
-	
-	aptr = a;
-	bptr = b;
-	lda *= 2; 
-	ldb *= 2; 
-
-	if ( alphar == 0.0 && alphai == 0.0 )
-	{
-		for ( i=0; i<cols ; i++ )
-		{
-			SCAL_K(rows, 0,0, betar, betai, bptr, 1,  NULL, 0,NULL,0); 
-			bptr+=ldb; 
-		}
-
-		return(0);
-	}
-
-	for (i = 0; i < cols; i++) {
-		AXPBY_K(rows, alphar, alphai, aptr, 1, betar, betai,  bptr, 1); 
-		aptr += lda; 
-		bptr += ldb; 
-	}
-	return(0);
-
+  if (alphar == 0.0 && alphai == 0.0) {
+    if (!transb) {
+      for (i = 0; i < cols; i++) {
+        SCAL_K(rows, 0, 0, betar, betai, bptr, 1, NULL, 0, NULL, 0);
+        bptr += ldb;
+      }
+    } else {
+      for (i = 0; i < cols; i++) {
+        SCAL_K(rows, 0, 0, betar, betai, bptr, ldb_elem, NULL, 0, NULL, 0);
+        bptr += 2;
+      }
+    }
+    return (0);
+  }
+  if (!transa && !transb) {
+    for (i = 0; i < cols; i++) {
+      AXPBY_K(rows, alphar, alphai, aptr, 1, betar, betai, bptr, 1);
+      aptr += lda;
+      bptr += ldb;
+    }
+  } else if (transa && !transb) {
+    for (i = 0; i < cols; i++) {
+      AXPBY_K(rows, alphar, alphai, aptr, lda_elem, betar, betai, bptr, 1);
+      aptr += 2;
+      bptr += ldb;
+    }
+  } else if (!transa && transb) {
+    for (i = 0; i < cols; i++) {
+      AXPBY_K(rows, alphar, alphai, aptr, 1, betar, betai, bptr, ldb_elem);
+      aptr += lda;
+      bptr += 2;
+    }
+  } else if (transa && transb) {
+    for (i = 0; i < cols; i++) {
+      AXPBY_K(rows, alphar, alphai, aptr, lda_elem, betar, betai, bptr,
+              ldb_elem);
+      aptr += 2;
+      bptr += 2;
+    }
+  }
+  return (0);
 }
-
-

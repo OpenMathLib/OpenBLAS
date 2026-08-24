@@ -397,12 +397,19 @@
                            CALL DLACPY( 'Full', M, N, A, LDA, AF, LDA )
 *
                            SRNAMT = 'DGELS'
-                           CALL DGELS( 'No transpose', M, N, NRHS, AF,
+                            CALL DGELS( 'No transpose', M, N, NRHS, AF,
      $                                 LDA, X, LDA, WORK, LWORK, INFO )
+*
+*                          Re-factorize AF with DGELQF for subsequent
+*                          LQ tests which expect LQ factorization in AF.
+*
+                            CALL DLACPY( 'Full', M, N, A, LDA, AF, LDA )
+                            CALL DGELQF( M, N, AF, LDA, TAU, WORK,
+     $                                   LWORK, INFO )
 *
 *                          Check error code from DGELS.
 *
-                           IF( INFO.NE.0 )
+                            IF( INFO.NE.0 )
      $                        CALL ALAERH( PATH, 'DGELS', INFO, 0, 'N',
      $                                     M, N, NRHS, -1, NB, IMAT,
      $                                     NFAIL, NERRS, NOUT )

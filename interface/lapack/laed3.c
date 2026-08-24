@@ -72,7 +72,8 @@ int NAME(blasint *k, blasint *n, blasint *n1, FLOAT *d,
   if (kval == 0) return 0;
 
 #ifdef SMP
-  int nthreads = num_cpu_avail(4);
+  int nthreads = 1;
+  if (n >= 64) nthreads = num_cpu_avail(4);
 
   if (nthreads == 1) {
 #endif

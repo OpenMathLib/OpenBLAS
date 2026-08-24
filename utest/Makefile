@@ -5,8 +5,8 @@ DIR_EXT=test_extensions
 override TARGET_ARCH=
 override TARGET_MACH=
 
-UTESTBIN=openblas_utest
-UTESTEXTBIN=openblas_utest_ext
+UTESTBIN=openblas_utest$(EXE)
+UTESTEXTBIN=openblas_utest_ext$(EXE)
 
 .PHONY : all
 .NOTPARALLEL : all run_test $(UTESTBIN) $(UTESTEXTBIN)

@@ -6,7 +6,6 @@
 #include "common.h"
 #include <stdlib.h>
 #include <inttypes.h>
-#include <math.h>
 #if defined(DYNAMIC_ARCH)
 #define COMBINE(a,b) a ## b
 #define COMBINE2(a,b) COMBINE(a,b)
@@ -46,14 +45,14 @@ static uint64_t sve_cntw() {
 void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float * __restrict A,\
             BLASLONG strideA, float * __restrict B, BLASLONG strideB ,\
             float * __restrict R, BLASLONG strideR){
-                
+
         uint64_t m_mod, vl_elms;
-        
+
         vl_elms = sve_cntw();
-        m_mod = ceil((double)M/(double)vl_elms) * vl_elms;
+        m_mod = (((uint64_t)M + vl_elms - 1) / vl_elms) * vl_elms;
 
         float *A_mod = (float *) malloc(m_mod*K*sizeof(float));
-	    
+
 	    /* Prevent compiler optimization by reading from memory instead
 	     * of reading directly from vector (z) registers.
 	     * */
@@ -63,15 +62,15 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float * __restrict A,\
                          "z8", "z9", "z10", "z11", "z12", "z13", "z14", "z15",
                          "z16", "z17", "z18", "z19", "z20", "z21", "z22", "z23",
                          "z24", "z25", "z26", "z27", "z28", "z29", "z30", "z31");
-      
-        /* Pre-process the left matrix to make it suitable for 
+
+        /* Pre-process the left matrix to make it suitable for
            matrix sum of outer-product calculation
          */
         SME1_PREPROCESS(M, K, A, A_mod);
-        
+
         /* Calculate C = A*B */
         SME1_DIRECT2X2(M, K, N, A_mod, B, R);
-       
+
         asm volatile("" : : :"p0", "p1", "p2", "p3", "p4", "p5", "p6", "p7",
                          "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
                          "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7",
@@ -91,7 +90,7 @@ fprintf(stderr,"EMPTY sgemm_kernel_direct should never be called \n");
 void SME1_DIRECT2X2( uint64_t M , uint64_t K, uint64_t N,\
                                const float * restrict A_base,\
                                const float * restrict B_base,\
-                               const float * restrict C_base){}; 
+                               const float * restrict C_base){};
 void SME1_PREPROCESS(uint64_t nbr, uint64_t nbc,\
                                   const float * restrict a, float *  a_mod){};
 

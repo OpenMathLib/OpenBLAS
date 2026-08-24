@@ -4,6 +4,15 @@ trigger:
   branches:
     include:
       - develop
+  paths:
+    exclude:
+      - 'docs/**'
+      - '**/*.md'
+pr:
+  paths:
+    exclude:
+      - 'docs/**'
+      - '**/*.md'
 resources:
   containers:
       - container: oneapi-hpckit

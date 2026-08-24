@@ -6,7 +6,6 @@
 #include "common.h"
 #include <stdlib.h>
 #include <inttypes.h>
-#include <math.h>
 
 #if defined(DYNAMIC_ARCH)
 #define COMBINE(a,b) a ## b
@@ -30,6 +29,7 @@ extern void SGEMM_PREPROCESS(uint64_t nbr, uint64_t nbc,\
                                   const float * restrict a, float *  a_mod) ;
 
 /* Function Definitions */
+#if !defined(TRANSA)
 static uint64_t sve_cntw() {
     uint64_t cnt;
     asm volatile(
@@ -39,18 +39,21 @@ static uint64_t sve_cntw() {
     );
     return cnt;
 }
+#endif
 
 #if defined(__ARM_FEATURE_SME) && defined(__ARM_FEATURE_LOCALLY_STREAMING) && defined(__clang__) && __clang_major__ >= 16
 // Outer product kernel.
 // Computes a 2SVL x 2SVL block of C, utilizing all four FP32 tiles of ZA.
 __attribute__((always_inline)) inline void
-kernel_2x2(const float *A, float *B_T, const float *B, float *A_T, float *C, size_t shared_dim,
+kernel_2x2(const float *A, const float *B_T, const float *B, const float *A_T, float *C, size_t shared_dim,
            size_t ldc, size_t block_rows, size_t block_cols, float alpha,
            float beta, uint64_t row_idx, uint64_t col_idx)
     __arm_out("za") __arm_streaming {
 
   const uint64_t svl = svcntw();
+#if defined(TRANSA)
   size_t ldb = ldc;
+#endif
   // Predicate set-up
   svbool_t pg = svptrue_b32();
   svbool_t pg_a_0 = svwhilelt_b32_u64(0, block_rows);
@@ -63,26 +66,29 @@ kernel_2x2(const float *A, float *B_T, const float *B, float *A_T, float *C, siz
 #define pg_c_1 pg_b_1
 
   svzero_za();
-  svfloat32_t beta_vec = svdup_f32(beta);
+  // beta == 0 must not read C; ZA is already initialized to zero.
+  if (beta != 0.0f) {
+    svfloat32_t beta_vec = svdup_f32(beta);
 
-  // Load C to ZA
-  for (size_t i = 0; i < MIN(svl, block_rows); i++) {
-    svfloat32_t row_c_0 = svld1(pg_c_0, &C[i * ldc]);
-    row_c_0 = svmul_x(pg, beta_vec, row_c_0);
-    svwrite_hor_za32_f32_m(/*tile*/0, /*slice*/i, pg_c_0, row_c_0);
+    // Load C to ZA
+    for (size_t i = 0; i < MIN(svl, block_rows); i++) {
+      svfloat32_t row_c_0 = svld1(pg_c_0, &C[i * ldc]);
+      row_c_0 = svmul_x(pg, beta_vec, row_c_0);
+      svwrite_hor_za32_f32_m(/*tile*/0, /*slice*/i, pg_c_0, row_c_0);
 
-    svfloat32_t row_c_1 = svld1(pg_c_1, &C[i * ldc + svl]);
-    row_c_1 = svmul_x(pg, beta_vec, row_c_1);
-    svwrite_hor_za32_f32_m(/*tile*/1, /*slice*/i, pg_c_1, row_c_1);
-  }
-  for (size_t i = svl; i < block_rows; i++) {
-    svfloat32_t row_c_0 = svld1(pg_c_0, &C[i * ldc]);
-    row_c_0 = svmul_x(pg, beta_vec, row_c_0);
-    svwrite_hor_za32_f32_m(/*tile*/2, /*slice*/i, pg_c_0, row_c_0);
+      svfloat32_t row_c_1 = svld1(pg_c_1, &C[i * ldc + svl]);
+      row_c_1 = svmul_x(pg, beta_vec, row_c_1);
+      svwrite_hor_za32_f32_m(/*tile*/1, /*slice*/i, pg_c_1, row_c_1);
+    }
+    for (size_t i = svl; i < block_rows; i++) {
+      svfloat32_t row_c_0 = svld1(pg_c_0, &C[i * ldc]);
+      row_c_0 = svmul_x(pg, beta_vec, row_c_0);
+      svwrite_hor_za32_f32_m(/*tile*/2, /*slice*/i, pg_c_0, row_c_0);
 
-    svfloat32_t row_c_1 = svld1(pg_c_1, &C[i * ldc + svl]);
-    row_c_1 = svmul_x(pg, beta_vec, row_c_1);
-    svwrite_hor_za32_f32_m(/*tile*/3, /*slice*/i, pg_c_1, row_c_1);
+      svfloat32_t row_c_1 = svld1(pg_c_1, &C[i * ldc + svl]);
+      row_c_1 = svmul_x(pg, beta_vec, row_c_1);
+      svwrite_hor_za32_f32_m(/*tile*/3, /*slice*/i, pg_c_1, row_c_1);
+    }
   }
 
   svfloat32_t alpha_vec = svdup_f32(alpha);
@@ -250,12 +256,19 @@ void CNAME (BLASLONG N, BLASLONG K, float alpha, float * __restrict A, \
             BLASLONG strideA, float * __restrict B, BLASLONG strideB, \
             float beta, float * __restrict R, BLASLONG strideR)
 {
+        if (alpha == 0.0f || K == 0) {
+                if (beta == 1.0f)
+                        return;
+                ssyr2k_direct_sme1_2VLx2VL(N, 0, &alpha, A, B, &beta, R);
+                return;
+        }
+
 #if !defined(TRANSA)
         uint64_t n_mod, vl_elms;
 
         vl_elms = sve_cntw();
 
-        n_mod = ceil((double)N/(double)vl_elms) * vl_elms;
+        n_mod = (((uint64_t)N + vl_elms - 1) / vl_elms) * vl_elms;
 
         float *A_mod = (float *) malloc(n_mod*K*sizeof(float));
         float *B_mod = (float *) malloc(n_mod*K*sizeof(float));

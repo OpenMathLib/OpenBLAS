@@ -47,7 +47,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 
   BLASLONG i, j;
   BLASLONG loop;
-  FLOAT subbuffer[GEMM_UNROLL_MN * GEMM_UNROLL_MN * COMPSIZE];
+  volatile FLOAT subbuffer[GEMM_UNROLL_MN * GEMM_UNROLL_MN * COMPSIZE];
 
   if (m + offset < 0) {
 #ifndef LOWER

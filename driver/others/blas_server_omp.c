@@ -70,15 +70,12 @@
 int blas_server_avail = 0;
 int blas_omp_number_max = 0;
 int blas_omp_threads_local = 1;
+int blas_is_num_threads_set_explicitly = 0; // tracks whether the user called openblas_set_num_threads()
 
 extern int openblas_omp_adaptive_env(void);
 
-static void * blas_thread_buffer[MAX_PARALLEL_NUMBER][MAX_CPU_NUMBER];
-#ifdef HAVE_C11
-static atomic_bool blas_buffer_inuse[MAX_PARALLEL_NUMBER];
-#else
-static _Bool blas_buffer_inuse[MAX_PARALLEL_NUMBER];
-#endif
+static _Atomic(void *) blas_thread_buffer[MAX_PARALLEL_NUMBER][MAX_CPU_NUMBER];
+static _Atomic _Bool blas_buffer_inuse[MAX_PARALLEL_NUMBER];
 
 static void adjust_thread_buffers(void) {
 
@@ -122,7 +119,7 @@ void goto_set_num_threads(int num_threads) {
 
 }
 void openblas_set_num_threads(int num_threads) {
-
+	blas_is_num_threads_set_explicitly = 1;
 	goto_set_num_threads(num_threads);
 }
 
@@ -145,7 +142,7 @@ extern int openblas_omp_num_threads_env(void);
 
    if(blas_omp_number_max <= 0)
 	   blas_omp_number_max= openblas_omp_num_threads_env();
-   if (blas_omp_number_max <= 0) 
+   if (blas_omp_number_max <= 0)
 	   blas_omp_number_max=MAX_CPU_NUMBER;
 #else
     blas_omp_number_max = omp_get_max_threads();
@@ -365,14 +362,14 @@ static void exec_threads(int thread_num, blas_queue_t *queue, int buf_index){
 #ifdef BUILD_COMPLEX16
 	    sb = (void *)(((BLASLONG)sa + ((ZGEMM_P * ZGEMM_Q * 2 * sizeof(double)
 					    + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
-#else 
+#else
 fprintf(stderr,"UNHANDLED COMPLEX16\n");
 #endif
 	  } else if ((queue -> mode & BLAS_PREC) == BLAS_SINGLE) {
 #ifdef BUILD_COMPLEX
 	    sb = (void *)(((BLASLONG)sa + ((CGEMM_P * CGEMM_Q * 2 * sizeof(float)
 					    + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
-#else 
+#else
 fprintf(stderr,"UNHANDLED COMPLEX\n");
 #endif
 	  } else {

@@ -153,10 +153,10 @@ set_target_properties( ${OpenBLAS_utest_bin} PROPERTIES COMPILE_DEFINITIONS "_CR
 endif()
 
 #Set output for utest
-set_target_properties( ${OpenBLAS_utest_bin} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+set_target_properties( ${OpenBLAS_utest_bin} ${OpenBLAS_utest_ext_bin} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
   string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-  set_target_properties( ${OpenBLAS_utest_bin} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_BINARY_DIR})
+  set_target_properties( ${OpenBLAS_utest_bin} ${OpenBLAS_utest_ext_bin} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_BINARY_DIR})
 endforeach()
 
 if (MSVC AND BUILD_SHARED_LIBS)
@@ -167,4 +167,4 @@ add_custom_command(TARGET ${OpenBLAS_utest_bin}
 endif()
 
 add_test(${OpenBLAS_utest_bin} ${CMAKE_CURRENT_BINARY_DIR}/${OpenBLAS_utest_bin})
-add_test(${OpenBLAS_utest_ext_bin} ${CMAKE_CURRENT_BINARY_DIR}/${OpenBLAS_utest_bin})
+add_test(${OpenBLAS_utest_ext_bin} ${CMAKE_CURRENT_BINARY_DIR}/${OpenBLAS_utest_ext_bin})

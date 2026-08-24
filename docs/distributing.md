@@ -4,13 +4,14 @@
     This document contains recommendations only - packagers and other
     redistributors are in charge of how OpenBLAS is built and distributed in their
     systems, and may have good reasons to deviate from the guidance given on this
-    page. These recommendations are aimed at general packaging systems, with a user
-    base that typically is large, open source (or freely available at least), and
-    doesn't behave uniformly or that the packager is directly connected with.*
+    page. These recommendations are aimed at general packaging systems that are
+    open source (or at least freely available) and typically serve a large user
+    base that does not behave uniformly and is not directly connected with the
+    packager.
 
 OpenBLAS has a large number of build-time options which can be used to change
 how it behaves at runtime, how artifacts or symbols are named, etc. Variation
-in build configuration can be necessary to acheive a given end goal within a
+in build configuration can be necessary to achieve a given end goal within a
 distribution or as an end user. However, such variation can also make it more
 difficult to build on top of OpenBLAS and ship code or other packages in a way
 that works across many different distros. Here we provide guidance about the
@@ -42,7 +43,7 @@ settings):
    while it does make up a significant part of the binary size of the installed
    library, that does not outweigh the regression in usability when deviating
    from the default here.[^1]
-3. Always distribute the pkg-config (`.pc`) and CMake `.cmake`) dependency
+3. Always distribute the pkg-config (`.pc`) and CMake (`.cmake`) dependency
    detection files. These files are used by build systems when users want to
    link against OpenBLAS, and there is no benefit of leaving them out.
 4. Provide the LP64 interface by default, and if in addition to that you choose

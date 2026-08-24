@@ -6,7 +6,6 @@
 #include "common.h"
 #include <stdlib.h>
 #include <inttypes.h>
-#include <math.h>
 #if defined(HAVE_SME)
 
 #if defined(DYNAMIC_ARCH)
@@ -31,6 +30,7 @@ extern void SGEMM_PREPROCESS (uint64_t nbr, uint64_t nbc,\
                                   const float * restrict a, float *  a_mod) ;
 
 /* Function Definitions */
+#if !defined(TRANSA)
 static uint64_t sve_cntw() {
     uint64_t cnt;
     asm volatile(
@@ -40,18 +40,21 @@ static uint64_t sve_cntw() {
     );
     return cnt;
 }
+#endif
 
 #if defined(__ARM_FEATURE_SME) && defined(__ARM_FEATURE_LOCALLY_STREAMING) && defined(__clang__) && __clang_major__ >= 16
 // Outer product kernel.
 // Computes a 2SVL x 2SVL block of C, utilizing all four FP32 tiles of ZA.
 __attribute__((always_inline)) inline void
-kernel_2x2(const float *A, float *B, float *C, size_t shared_dim,
-           size_t ldc, size_t block_rows, size_t block_cols, float alpha, 
+kernel_2x2(const float *A, const float *B, float *C, size_t shared_dim,
+           size_t ldc, size_t block_rows, size_t block_cols, float alpha,
            float beta, uint64_t row_idx, uint64_t col_idx)
     __arm_out("za") __arm_streaming {
 
   const uint64_t svl = svcntw();
+#if defined(TRANSA)
   size_t ldb = ldc;
+#endif
   // Predicate set-up
   svbool_t pg = svptrue_b32();
   svbool_t pg_a_0 = svwhilelt_b32_u64(0, block_rows);
@@ -64,28 +67,31 @@ kernel_2x2(const float *A, float *B, float *C, size_t shared_dim,
 #define pg_c_1 pg_b_1
 
   svzero_za();
-  svfloat32_t beta_vec = svdup_f32(beta);
+  // beta == 0 must not read C; ZA is already initialized to zero.
+  if (beta != 0.0f) {
+    svfloat32_t beta_vec = svdup_f32(beta);
 
-  // Load C to ZA
-  for (size_t i = 0; i < MIN(svl, block_rows); i++) {
-    svfloat32_t row_c_0 = svld1(pg_c_0, &C[i * ldc]);
-    row_c_0 = svmul_x(pg, beta_vec, row_c_0);
-    svwrite_hor_za32_f32_m(/*tile*/0, /*slice*/i, pg_c_0, row_c_0);
-    
-    svfloat32_t row_c_1 = svld1(pg_c_1, &C[i * ldc + svl]);
-    row_c_1 = svmul_x(pg, beta_vec, row_c_1);
-    svwrite_hor_za32_f32_m(/*tile*/1, /*slice*/i, pg_c_1, row_c_1);
-  }
-  for (size_t i = svl; i < block_rows; i++) {
-    svfloat32_t row_c_0 = svld1(pg_c_0, &C[i * ldc]);
-    row_c_0 = svmul_x(pg, beta_vec, row_c_0);
-    svwrite_hor_za32_f32_m(/*tile*/2, /*slice*/i, pg_c_0, row_c_0);
+    // Load C to ZA
+    for (size_t i = 0; i < MIN(svl, block_rows); i++) {
+      svfloat32_t row_c_0 = svld1(pg_c_0, &C[i * ldc]);
+      row_c_0 = svmul_x(pg, beta_vec, row_c_0);
+      svwrite_hor_za32_f32_m(/*tile*/0, /*slice*/i, pg_c_0, row_c_0);
 
-    svfloat32_t row_c_1 = svld1(pg_c_1, &C[i * ldc + svl]);
-    row_c_1 = svmul_x(pg, beta_vec, row_c_1);
-    svwrite_hor_za32_f32_m(/*tile*/3, /*slice*/i, pg_c_1, row_c_1);
+      svfloat32_t row_c_1 = svld1(pg_c_1, &C[i * ldc + svl]);
+      row_c_1 = svmul_x(pg, beta_vec, row_c_1);
+      svwrite_hor_za32_f32_m(/*tile*/1, /*slice*/i, pg_c_1, row_c_1);
+    }
+    for (size_t i = svl; i < block_rows; i++) {
+      svfloat32_t row_c_0 = svld1(pg_c_0, &C[i * ldc]);
+      row_c_0 = svmul_x(pg, beta_vec, row_c_0);
+      svwrite_hor_za32_f32_m(/*tile*/2, /*slice*/i - svl, pg_c_0, row_c_0);
+
+      svfloat32_t row_c_1 = svld1(pg_c_1, &C[i * ldc + svl]);
+      row_c_1 = svmul_x(pg, beta_vec, row_c_1);
+      svwrite_hor_za32_f32_m(/*tile*/3, /*slice*/i - svl, pg_c_1, row_c_1);
+    }
   }
-  
+
   svfloat32_t alpha_vec = svdup_f32(alpha);
   // Iterate through shared dimension (K)
   for (size_t k = 0; k < shared_dim; k++) {
@@ -95,7 +101,7 @@ kernel_2x2(const float *A, float *B, float *C, size_t shared_dim,
     col_a_0 = svmul_x(pg, alpha_vec, col_a_0);
     svfloat32_t col_a_1 = svld1(pg_a_1, &A[(k + shared_dim) * svl]);
     col_a_1 = svmul_x(pg, alpha_vec, col_a_1);
-    
+
     // Load row of A**T
     svfloat32_t row_b_0 = svld1(pg_b_0, &B[k * svl]);
     svfloat32_t row_b_1 = svld1(pg_b_1, &B[(k + shared_dim) * svl]);
@@ -106,10 +112,10 @@ kernel_2x2(const float *A, float *B, float *C, size_t shared_dim,
 
     svfloat32_t col_a_1 = svld1(pg_a_1, &A[k * ldb + svl]);
     col_a_1 = svmul_x(pg, alpha_vec, col_a_1);
-    
+
     // Load row of A
     svfloat32_t row_b_0 = svld1(pg_b_0, &B[k * ldb]);
-    svfloat32_t row_b_1 = svld1(pg_b_1, &B[k * ldb + svl]);    
+    svfloat32_t row_b_1 = svld1(pg_b_1, &B[k * ldb + svl]);
 #endif
     // Perform outer product
     svmopa_za32_m(/*tile*/0, pg, pg, col_a_0, row_b_0);
@@ -121,7 +127,7 @@ kernel_2x2(const float *A, float *B, float *C, size_t shared_dim,
 #if defined(UPPER)
 #define pg_c_0_full pg_c_0
 #define pg_c_1_full pg_c_1
-  
+
   bool need_update_pg_b = true;
   size_t last_invalid_index = col_idx - row_idx;
   // For Upper, If col_idx - row_idx >= 2*svl, we don't need to update the predicate due to all elements above the digonal
@@ -134,7 +140,7 @@ kernel_2x2(const float *A, float *B, float *C, size_t shared_dim,
        pg_c_0 = svnot_b_z(pg_c_0_full, svwhilelt_b32_u64(0, last_invalid_index));
        pg_c_1 = svnot_b_z(pg_c_1_full, svwhilelt_b32_u64(svl, last_invalid_index));
     }
-    
+
     svst1_hor_za32(/*tile*/0, /*slice*/i, pg_c_0, &C[i * ldc]);
     svst1_hor_za32(/*tile*/1, /*slice*/i, pg_c_1, &C[i * ldc + svl]);
   }
@@ -143,8 +149,8 @@ kernel_2x2(const float *A, float *B, float *C, size_t shared_dim,
         pg_c_0 = svnot_b_z(pg_c_0_full, svwhilelt_b32_u64(0, last_invalid_index));
         pg_c_1 = svnot_b_z(pg_c_1_full, svwhilelt_b32_u64(svl, last_invalid_index));
       }
-      svst1_hor_za32(/*tile*/2, /*slice*/i, pg_c_0, &C[i * ldc]);
-      svst1_hor_za32(/*tile*/3, /*slice*/i, pg_c_1, &C[i * ldc + svl]);
+      svst1_hor_za32(/*tile*/2, /*slice*/i - svl, pg_c_0, &C[i * ldc]);
+      svst1_hor_za32(/*tile*/3, /*slice*/i - svl, pg_c_1, &C[i * ldc + svl]);
   }
 #else
   // Store to C from ZA
@@ -158,10 +164,10 @@ kernel_2x2(const float *A, float *B, float *C, size_t shared_dim,
   for (size_t i = svl; i < block_rows; i++, valid_index++) {
     pg_c_0 = svwhilelt_b32_u64(0, MIN(valid_index, block_cols));
     pg_c_1 = svwhilelt_b32_u64(svl, MIN(valid_index, block_cols));
-    svst1_hor_za32(/*tile*/2, /*slice*/i, pg_c_0, &C[i * ldc]);
-    svst1_hor_za32(/*tile*/3, /*slice*/i, pg_c_1, &C[i * ldc + svl]);
-  }  
-#endif 
+    svst1_hor_za32(/*tile*/2, /*slice*/i - svl, pg_c_0, &C[i * ldc]);
+    svst1_hor_za32(/*tile*/3, /*slice*/i - svl, pg_c_1, &C[i * ldc + svl]);
+  }
+#endif
 }
 
 __arm_new("za") __arm_locally_streaming
@@ -218,15 +224,22 @@ static void ssyrk_direct_sme1_2VLx2VL(uint64_t n, uint64_t k, const float* alpha
 
 void CNAME (BLASLONG N, BLASLONG K, float alpha, float * __restrict A,\
             BLASLONG strideA, float beta, float * __restrict C, BLASLONG strideC){
-#if !defined(TRANSA)          
+        if (alpha == 0.0f || K == 0) {
+                if (beta == 1.0f)
+                        return;
+                ssyrk_direct_sme1_2VLx2VL(N, 0, &alpha, A, &beta, C);
+                return;
+        }
+
+#if !defined(TRANSA)
         uint64_t n_mod, vl_elms;
-        
+
         vl_elms = sve_cntw();
 
-        n_mod = ceil((double)N/(double)vl_elms) * vl_elms;
+        n_mod = (((uint64_t)N + vl_elms - 1) / vl_elms) * vl_elms;
 
         float *A_mod = (float *) malloc(n_mod*K*sizeof(float));
-	    
+
 	    /* Prevent compiler optimization by reading from memory instead
 	     * of reading directly from vector (z) registers.
 	     * */
@@ -236,8 +249,8 @@ void CNAME (BLASLONG N, BLASLONG K, float alpha, float * __restrict A,\
                          "z8", "z9", "z10", "z11", "z12", "z13", "z14", "z15",
                          "z16", "z17", "z18", "z19", "z20", "z21", "z22", "z23",
                          "z24", "z25", "z26", "z27", "z28", "z29", "z30", "z31");
-      
-        /* Pre-process the left matrix to make it suitable for 
+
+        /* Pre-process the left matrix to make it suitable for
            matrix sum of outer-product calculation
          */
         SGEMM_PREPROCESS (N, K, A, A_mod);
@@ -252,7 +265,7 @@ void CNAME (BLASLONG N, BLASLONG K, float alpha, float * __restrict A,\
 #else
         ssyrk_direct_sme1_2VLx2VL(N, K, &alpha, A, &beta, C);
 #endif
-        
+
 }
 
 #else

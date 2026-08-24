@@ -22,25 +22,25 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
-USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
+THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
 
-#include "utest/openblas_utest.h"
 #include "common.h"
+#include "utest/openblas_utest.h"
 
 #define N 100
 #define M 100
 
-struct DATA_DGEADD{
-    double a_test[M * N];
-    double c_test[M * N];
-    double c_verify[M * N];
+struct DATA_DGEADD {
+  double a_test[M * N];
+  double c_test[M * N];
+  double c_verify[M * N];
 };
 
 #ifdef BUILD_DOUBLE
@@ -57,19 +57,26 @@ static struct DATA_DGEADD data_dgeadd;
  * param beta - scaling factor for matrix C
  * param cptr - refer to matrix C
  * param ldc - leading dimension of C
+ * param transa - Traspose of A
+ * param transc - Transpose of C
  */
 static void dgeadd_trusted(blasint m, blasint n, double alpha, double *aptr,
-                           blasint lda, double beta, double *cptr, blasint ldc)
-{
-    blasint i;
-    blasint one=1;
+                           blasint lda, double beta, double *cptr,
+                           blasint ldc, OPENBLAS_CONST enum CBLAS_TRANSPOSE transa, 
+                           OPENBLAS_CONST enum CBLAS_TRANSPOSE transc) {
+  blasint i;
+  blasint inc_a = (transa == CblasTrans) ? lda : 1;
+    blasint inc_c = (transc == CblasTrans) ? ldc : 1;
 
-    for (i = 0; i < n; i++)
-    {
-        BLASFUNC(daxpby)(&m, &alpha, aptr, &one, &beta, cptr, &one);
-        aptr += lda;
-        cptr += ldc;
-    }
+ 
+    blasint step_a = (transa == CblasTrans) ? 1 : lda;
+    blasint step_c = (transc == CblasTrans) ? 1 : ldc;
+
+  for (i = 0; i < n; i++) {
+    BLASFUNC(daxpby)(&m, &alpha, aptr, &inc_a, &beta, cptr, &inc_c);
+    aptr += step_a;
+    cptr += step_c;
+  }
 }
 
 /**
@@ -78,6 +85,8 @@ static void dgeadd_trusted(blasint m, blasint n, double alpha, double *aptr,
  *
  * param api - specifies Fortran or C API
  * param order - specifies whether A and C stored in
+ * param transa - Traspose of A
+ * param transc - Transpose of C
  * row-major order or column-major order
  * param m - number of rows of A and C
  * param n - number of columns of A and C
@@ -87,41 +96,48 @@ static void dgeadd_trusted(blasint m, blasint n, double alpha, double *aptr,
  * param ldc - leading dimension of C
  * return norm of differences
  */
-static double check_dgeadd(char api, OPENBLAS_CONST enum CBLAS_ORDER order,
-                          blasint m, blasint n, double alpha, blasint lda,
-                          double beta, blasint ldc)
-{
-    blasint i;
-    blasint cols = m, rows = n;
+static double check_dgeadd(char api, OPENBLAS_CONST enum CBLAS_ORDER order, 
+                OPENBLAS_CONST enum CBLAS_TRANSPOSE transa, 
+                OPENBLAS_CONST enum CBLAS_TRANSPOSE transc,
+                      blasint m, blasint n, double alpha, blasint lda,
+                           double beta, blasint ldc) {
+  blasint i;
+  blasint cols = m, rows = n;
 
-    if (order == CblasRowMajor)
-    {
-        rows = m;
-        cols = n;
-    }
+  if (order == CblasRowMajor) {
+    rows = m;
+    cols = n;
+  }
 
-    // Fill matrix A, C
-    drand_generate(data_dgeadd.a_test, lda * rows);
-    drand_generate(data_dgeadd.c_test, ldc * rows);
+  // Fill matrix A, C
+  drand_generate(data_dgeadd.a_test, lda * rows);
+  drand_generate(data_dgeadd.c_test, ldc * rows);
 
-    // Copy matrix C for dgeadd
-    for (i = 0; i < ldc * rows; i++)
-        data_dgeadd.c_verify[i] = data_dgeadd.c_test[i];
+  // Copy matrix C for dgeadd
+  for (i = 0; i < ldc * rows; i++)
+    data_dgeadd.c_verify[i] = data_dgeadd.c_test[i];
 
-    dgeadd_trusted(cols, rows, alpha, data_dgeadd.a_test, lda,
-                   beta, data_dgeadd.c_verify, ldc);
+  dgeadd_trusted(cols, rows, alpha, data_dgeadd.a_test, lda, beta,
+                 data_dgeadd.c_verify, ldc,transa, transc);
 
-    if (api == 'F')
-        BLASFUNC(dgeadd)(&m, &n, &alpha, data_dgeadd.a_test, &lda,
-         &beta, data_dgeadd.c_test, &ldc);
+  if (api == 'F'){
+        char transa_f = (transa == CblasTrans) ? 'T' : 'N';
+        char transc_f = (transc == CblasTrans) ? 'T' : 'N';
+    
+
+    BLASFUNC(dgeadd)(&m, &n, &alpha, data_dgeadd.a_test, &lda, &beta,
+                     data_dgeadd.c_test, &ldc, &transa_f,&transc_f);
+
+  }
 #ifndef NO_CBLAS
-    else
-        cblas_dgeadd(order, m, n, alpha, data_dgeadd.a_test, lda,
-                     beta, data_dgeadd.c_test, ldc);
+  else
+    cblas_dgeadd(order,transa,transc, m, n, alpha, data_dgeadd.a_test, lda, beta,
+                 data_dgeadd.c_test, ldc);
 #endif
 
-    // Find the differences between output matrix caculated by dgeadd and sgemm
-    return dmatrix_difference(data_dgeadd.c_test, data_dgeadd.c_verify, cols, rows, ldc);
+  // Find the differences between output matrix caculated by dgeadd and sgemm
+  return dmatrix_difference(data_dgeadd.c_test, data_dgeadd.c_verify, cols,
+                            rows, ldc);
 }
 
 /**
@@ -130,6 +146,8 @@ static double check_dgeadd(char api, OPENBLAS_CONST enum CBLAS_ORDER order,
  *
  * param api - specifies Fortran or C API
  * param order - specifies whether A and C stored in
+ * param transa - Traspose of A
+ * param transc - Transpose of C
  * row-major order or column-major order
  * param m - number of rows of A and C
  * param n - number of columns of A and C
@@ -139,24 +157,29 @@ static double check_dgeadd(char api, OPENBLAS_CONST enum CBLAS_ORDER order,
  * return TRUE if everything is ok, otherwise FALSE
  */
 static int check_badargs(char api, OPENBLAS_CONST enum CBLAS_ORDER order,
-                         blasint m, blasint n, blasint lda,
-                         blasint ldc, int expected_info)
-{
-    double alpha = 1.0;
-    double beta = 1.0;
+                        OPENBLAS_CONST enum CBLAS_TRANSPOSE transa,
+                        OPENBLAS_CONST enum CBLAS_TRANSPOSE transc,
+                         blasint m, blasint n, blasint lda, blasint ldc,
+                         int expected_info) {
+  double alpha = 1.0;
+  double beta = 1.0;
 
-    set_xerbla("DGEADD ", expected_info);
+  set_xerbla("DGEADD ", expected_info);
 
-    if (api == 'F')
-        BLASFUNC(dgeadd)(&m, &n, &alpha, data_dgeadd.a_test, &lda,
-                         &beta, data_dgeadd.c_test, &ldc);
+  if (api == 'F'){
+      char transa_f = (transa == CblasTrans) ? 'T' : 'N';
+    char transc_f = (transc == CblasTrans) ? 'T' : 'N'; 
+      BLASFUNC(dgeadd)(&m, &n, &alpha, data_dgeadd.a_test, &lda, &beta,
+                     data_dgeadd.c_test, &ldc,&transa_f, &transc_f);
+
+  }
 #ifndef NO_CBLAS
-    else 
-        cblas_dgeadd(order, m, n, alpha, data_dgeadd.a_test, lda,
-                 beta, data_dgeadd.c_test, ldc);
+  else
+    cblas_dgeadd(order, transa, transc, m, n, alpha, data_dgeadd.a_test, lda, beta,
+                 data_dgeadd.c_test, ldc);
 #endif
 
-    return check_error();
+  return check_error();
 }
 
 /**
@@ -167,22 +190,21 @@ static int check_badargs(char api, OPENBLAS_CONST enum CBLAS_ORDER order,
  * For A number of rows is 100, number of colums is 100
  * For C number of rows is 100, number of colums is 100
  */
-CTEST(dgeadd, matrix_n_100_m_100)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, matrix_n_100_m_100) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = N;
-    blasint m = M;
+  blasint n = N;
+  blasint m = M;
 
-    blasint lda = m;
-    blasint ldc = m;
+  blasint lda = m;
+  blasint ldc = m;
 
-    double alpha = 3.0;
-    double beta = 3.0;
+  double alpha = 3.0;
+  double beta = 3.0;
 
-    double norm = check_dgeadd('F', order, m, n, alpha, lda, beta, ldc);
+  double norm = check_dgeadd('F', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
 /**
@@ -194,22 +216,21 @@ CTEST(dgeadd, matrix_n_100_m_100)
  * For C number of rows is 100, number of colums is 100
  * Scalar alpha is zero (operation is C:=beta*C)
  */
-CTEST(dgeadd, matrix_n_100_m_100_alpha_zero)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, matrix_n_100_m_100_alpha_zero) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = N;
-    blasint m = M;
+  blasint n = N;
+  blasint m = M;
 
-    blasint lda = m;
-    blasint ldc = m;
+  blasint lda = m;
+  blasint ldc = m;
 
-    double alpha = 0.0;
-    double beta = 2.5;
+  double alpha = 0.0;
+  double beta = 2.5;
 
-    double norm = check_dgeadd('F', order, m, n, alpha, lda, beta, ldc);
+  double norm = check_dgeadd('F', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
 /**
@@ -221,22 +242,21 @@ CTEST(dgeadd, matrix_n_100_m_100_alpha_zero)
  * For C number of rows is 100, number of colums is 100
  * Scalar beta is zero (operation is C:=alpha*A)
  */
-CTEST(dgeadd, matrix_n_100_m_100_beta_zero)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, matrix_n_100_m_100_beta_zero) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = N;
-    blasint m = M;
+  blasint n = N;
+  blasint m = M;
 
-    blasint lda = m;
-    blasint ldc = m;
+  blasint lda = m;
+  blasint ldc = m;
 
-    double alpha = 3.0;
-    double beta = 0.0;
+  double alpha = 3.0;
+  double beta = 0.0;
 
-    double norm = check_dgeadd('F', order, m, n, alpha, lda, beta, ldc);
+  double norm = check_dgeadd('F', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
 /**
@@ -248,22 +268,21 @@ CTEST(dgeadd, matrix_n_100_m_100_beta_zero)
  * For C number of rows is 100, number of colums is 100
  * Scalars alpha, beta is zero (operation is C:= 0)
  */
-CTEST(dgeadd, matrix_n_100_m_100_alpha_beta_zero)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, matrix_n_100_m_100_alpha_beta_zero) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = N;
-    blasint m = M;
+  blasint n = N;
+  blasint m = M;
 
-    blasint lda = m;
-    blasint ldc = m;
+  blasint lda = m;
+  blasint ldc = m;
 
-    double alpha = 0.0;
-    double beta = 0.0;
+  double alpha = 0.0;
+  double beta = 0.0;
 
-    double norm = check_dgeadd('F', order, m, n, alpha, lda, beta, ldc);
+  double norm = check_dgeadd('F', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
 /**
@@ -274,22 +293,21 @@ CTEST(dgeadd, matrix_n_100_m_100_alpha_beta_zero)
  * For A number of rows is 50, number of colums is 100
  * For C number of rows is 50, number of colums is 100
  */
-CTEST(dgeadd, matrix_n_100_m_50)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, matrix_n_100_m_50) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = N;
-    blasint m = M / 2;
+  blasint n = N;
+  blasint m = M / 2;
 
-    blasint lda = m;
-    blasint ldc = m;
+  blasint lda = m;
+  blasint ldc = m;
 
-    double alpha = 1.0;
-    double beta = 1.0;
+  double alpha = 1.0;
+  double beta = 1.0;
 
-    double norm = check_dgeadd('F', order, m, n, alpha, lda, beta, ldc);
+  double norm = check_dgeadd('F', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
 /**
@@ -298,20 +316,19 @@ CTEST(dgeadd, matrix_n_100_m_50)
  * number of columns of A and C
  * Must be at least zero.
  */
-CTEST(dgeadd, xerbla_n_invalid)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, xerbla_n_invalid) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = INVALID;
-    blasint m = 1;
+  blasint n = INVALID;
+  blasint m = 1;
 
-    blasint lda = m;
-    blasint ldc = m;
+  blasint lda = m;
+  blasint ldc = m;
 
-    int expected_info = 2;
+  int expected_info = 2;
 
-    int passed = check_badargs('F', order, m, n, lda, ldc, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
+  int passed = check_badargs('F', order,CblasNoTrans, CblasNoTrans, m, n, lda, ldc, expected_info);
+  ASSERT_EQUAL(TRUE, passed);
 }
 
 /**
@@ -320,20 +337,19 @@ CTEST(dgeadd, xerbla_n_invalid)
  * number of rows of A and C
  * Must be at least zero.
  */
-CTEST(dgeadd, xerbla_m_invalid)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, xerbla_m_invalid) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = 1;
-    blasint m = INVALID;
+  blasint n = 1;
+  blasint m = INVALID;
 
-    blasint lda = 1;
-    blasint ldc = 1;
+  blasint lda = 1;
+  blasint ldc = 1;
 
-    int expected_info = 1;
+  int expected_info = 1;
 
-    int passed = check_badargs('F', order, m, n, lda, ldc, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
+  int passed = check_badargs('F', order,CblasNoTrans, CblasNoTrans, m, n, lda, ldc, expected_info);
+  ASSERT_EQUAL(TRUE, passed);
 }
 
 /**
@@ -341,20 +357,19 @@ CTEST(dgeadd, xerbla_m_invalid)
  * Test error function for an invalid param lda -
  * specifies the leading dimension of A. Must be at least MAX(1, m).
  */
-CTEST(dgeadd, xerbla_lda_invalid)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, xerbla_lda_invalid) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = 1;
-    blasint m = 1;
+  blasint n = 1;
+  blasint m = 1;
 
-    blasint lda = INVALID;
-    blasint ldc = 1;
+  blasint lda = INVALID;
+  blasint ldc = 1;
 
-    int expected_info = 5;
+  int expected_info = 5;
 
-    int passed = check_badargs('F', order, m, n, lda, ldc, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
+  int passed = check_badargs('F', order,CblasNoTrans, CblasNoTrans, m, n, lda, ldc, expected_info);
+  ASSERT_EQUAL(TRUE, passed);
 }
 
 /**
@@ -362,64 +377,61 @@ CTEST(dgeadd, xerbla_lda_invalid)
  * Test error function for an invalid param ldc -
  * specifies the leading dimension of C. Must be at least MAX(1, m).
  */
-CTEST(dgeadd, xerbla_ldc_invalid)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, xerbla_ldc_invalid) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = 1;
-    blasint m = 1;
+  blasint n = 1;
+  blasint m = 1;
 
-    blasint lda = 1;
-    blasint ldc = INVALID;
+  blasint lda = 1;
+  blasint ldc = INVALID;
 
-    int expected_info = 8;
+  int expected_info = 8;
 
-    int passed = check_badargs('F', order, m, n, lda, ldc, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
+  int passed = check_badargs('F', order,CblasNoTrans, CblasNoTrans, m, n, lda, ldc, expected_info);
+  ASSERT_EQUAL(TRUE, passed);
 }
 
 /**
  * Fortran API specific test
  * Check if n - number of columns of A, C equal zero.
  */
-CTEST(dgeadd, n_zero)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, n_zero) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = 0;
-    blasint m = 1;
+  blasint n = 0;
+  blasint m = 1;
 
-    blasint lda = 1;
-    blasint ldc = 1;
+  blasint lda = 1;
+  blasint ldc = 1;
 
-    double alpha = 1.0;
-    double beta = 1.0;
+  double alpha = 1.0;
+  double beta = 1.0;
 
-    double norm = check_dgeadd('F', order, m, n, alpha, lda, beta, ldc);
+  double norm = check_dgeadd('F', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
 /**
  * Fortran API specific test
  * Check if m - number of rows of A and C equal zero.
  */
-CTEST(dgeadd, m_zero)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, m_zero) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = 1;
-    blasint m = 0;
+  blasint n = 1;
+  blasint m = 0;
 
-    blasint lda = 1;
-    blasint ldc = 1;
+  blasint lda = 1;
+  blasint ldc = 1;
 
-    double alpha = 1.0;
-    double beta = 1.0;
+  double alpha = 1.0;
+  double beta = 1.0;
 
-    double norm = check_dgeadd('F', order, m, n, alpha, lda, beta, ldc);
+  double norm = check_dgeadd('F', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
 #ifndef NO_CBLAS
@@ -433,23 +445,21 @@ CTEST(dgeadd, m_zero)
  * For A number of rows is 100, number of colums is 100
  * For C number of rows is 100, number of colums is 100
  */
-CTEST(dgeadd, c_api_matrix_n_100_m_100)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, c_api_matrix_n_100_m_100) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = N;
-    blasint m = M;
+  blasint n = N;
+  blasint m = M;
 
-    blasint lda = m;
-    blasint ldc = m;
+  blasint lda = m;
+  blasint ldc = m;
 
-    double alpha = 2.0;
-    double beta = 3.0;
+  double alpha = 2.0;
+  double beta = 3.0;
 
-    double norm = check_dgeadd('C', order, m, n, alpha,
-                                    lda, beta, ldc);
+  double norm = check_dgeadd('C', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
 /**
@@ -461,23 +471,21 @@ CTEST(dgeadd, c_api_matrix_n_100_m_100)
  * For A number of rows is 100, number of colums is 100
  * For C number of rows is 100, number of colums is 100
  */
-CTEST(dgeadd, c_api_matrix_n_100_m_100_row_major)
-{
-    CBLAS_ORDER order = CblasRowMajor;
+CTEST(dgeadd, c_api_matrix_n_100_m_100_row_major) {
+  CBLAS_ORDER order = CblasRowMajor;
 
-    blasint n = N;
-    blasint m = M;
+  blasint n = N;
+  blasint m = M;
 
-    blasint lda = m;
-    blasint ldc = m;
+  blasint lda = m;
+  blasint ldc = m;
 
-    double alpha = 4.0;
-    double beta = 2.0;
+  double alpha = 4.0;
+  double beta = 2.0;
 
-    double norm = check_dgeadd('C', order, m, n, alpha,
-                                    lda, beta, ldc);
+  double norm = check_dgeadd('C', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
 /**
@@ -489,23 +497,21 @@ CTEST(dgeadd, c_api_matrix_n_100_m_100_row_major)
  * For A number of rows is 50, number of colums is 100
  * For C number of rows is 50, number of colums is 100
  */
-CTEST(dgeadd, c_api_matrix_n_50_m_100_row_major)
-{
-    CBLAS_ORDER order = CblasRowMajor;
+CTEST(dgeadd, c_api_matrix_n_50_m_100_row_major) {
+  CBLAS_ORDER order = CblasRowMajor;
 
-    blasint n = N / 2;
-    blasint m = M;
+  blasint n = N / 2;
+  blasint m = M;
 
-    blasint lda = n;
-    blasint ldc = n;
+  blasint lda = n;
+  blasint ldc = n;
 
-    double alpha = 3.0;
-    double beta = 1.0;
+  double alpha = 3.0;
+  double beta = 1.0;
 
-    double norm = check_dgeadd('C', order, m, n, alpha,
-                                    lda, beta, ldc);
+  double norm = check_dgeadd('C', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
 /**
@@ -518,23 +524,21 @@ CTEST(dgeadd, c_api_matrix_n_50_m_100_row_major)
  * For C number of rows is 100, number of colums is 100
  * Scalar alpha is zero (operation is C:=beta*C)
  */
-CTEST(dgeadd, c_api_matrix_n_100_m_100_alpha_zero)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, c_api_matrix_n_100_m_100_alpha_zero) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = N;
-    blasint m = M;
+  blasint n = N;
+  blasint m = M;
 
-    blasint lda = m;
-    blasint ldc = m;
+  blasint lda = m;
+  blasint ldc = m;
 
-    double alpha = 0.0;
-    double beta = 1.0;
+  double alpha = 0.0;
+  double beta = 1.0;
 
-    double norm = check_dgeadd('C', order, m, n, alpha,
-                                    lda, beta, ldc);
+  double norm = check_dgeadd('C', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
 /**
@@ -547,23 +551,21 @@ CTEST(dgeadd, c_api_matrix_n_100_m_100_alpha_zero)
  * For C number of rows is 100, number of colums is 100
  * Scalar beta is zero (operation is C:=alpha*A)
  */
-CTEST(dgeadd, c_api_matrix_n_100_m_100_beta_zero)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, c_api_matrix_n_100_m_100_beta_zero) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = N;
-    blasint m = M;
+  blasint n = N;
+  blasint m = M;
 
-    blasint lda = m;
-    blasint ldc = m;
+  blasint lda = m;
+  blasint ldc = m;
 
-    double alpha = 3.0;
-    double beta = 0.0;
+  double alpha = 3.0;
+  double beta = 0.0;
 
-    double norm = check_dgeadd('C', order, m, n, alpha,
-                                    lda, beta, ldc);
+  double norm = check_dgeadd('C', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
 /**
@@ -576,23 +578,21 @@ CTEST(dgeadd, c_api_matrix_n_100_m_100_beta_zero)
  * For C number of rows is 100, number of colums is 100
  * Scalars alpha, beta is zero (operation is C:= 0)
  */
-CTEST(dgeadd, c_api_matrix_n_100_m_100_alpha_beta_zero)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, c_api_matrix_n_100_m_100_alpha_beta_zero) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = N;
-    blasint m = M;
+  blasint n = N;
+  blasint m = M;
 
-    blasint lda = m;
-    blasint ldc = m;
+  blasint lda = m;
+  blasint ldc = m;
 
-    double alpha = 0.0;
-    double beta = 0.0;
+  double alpha = 0.0;
+  double beta = 0.0;
 
-    double norm = check_dgeadd('C', order, m, n, alpha,
-                                    lda, beta, ldc);
+  double norm = check_dgeadd('C', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
 /**
@@ -603,23 +603,21 @@ CTEST(dgeadd, c_api_matrix_n_100_m_100_alpha_beta_zero)
  * For A number of rows is 50, number of colums is 100
  * For C number of rows is 50, number of colums is 100
  */
-CTEST(dgeadd, c_api_matrix_n_100_m_50)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, c_api_matrix_n_100_m_50) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = N;
-    blasint m = M / 2;
+  blasint n = N;
+  blasint m = M / 2;
 
-    blasint lda = m;
-    blasint ldc = m;
+  blasint lda = m;
+  blasint ldc = m;
 
-    double alpha = 3.0;
-    double beta = 4.0;
+  double alpha = 3.0;
+  double beta = 4.0;
 
-    double norm = check_dgeadd('C', order, m, n, alpha,
-                                    lda, beta, ldc);
+  double norm = check_dgeadd('C', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
 /**
@@ -628,20 +626,19 @@ CTEST(dgeadd, c_api_matrix_n_100_m_50)
  * specifies whether A and C stored in
  * row-major order or column-major order
  */
-CTEST(dgeadd, c_api_xerbla_invalid_order)
-{
-    CBLAS_ORDER order = INVALID;
+CTEST(dgeadd, c_api_xerbla_invalid_order) {
+  CBLAS_ORDER order = INVALID;
 
-    blasint n = 1;
-    blasint m = 1;
+  blasint n = 1;
+  blasint m = 1;
 
-    blasint lda = 1;
-    blasint ldc = 1;
+  blasint lda = 1;
+  blasint ldc = 1;
 
-    int expected_info = 0;
+  int expected_info = 0;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
+  int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans, m, n, lda, ldc, expected_info);
+  ASSERT_EQUAL(TRUE, passed);
 }
 
 /**
@@ -652,20 +649,19 @@ CTEST(dgeadd, c_api_xerbla_invalid_order)
  *
  * c api option order is column-major order
  */
-CTEST(dgeadd, c_api_xerbla_n_invalid)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, c_api_xerbla_n_invalid) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = INVALID;
-    blasint m = 1;
+  blasint n = INVALID;
+  blasint m = 1;
 
-    blasint lda = 1;
-    blasint ldc = 1;
+  blasint lda = 1;
+  blasint ldc = 1;
 
-    int expected_info = 2;
+  int expected_info = 2;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
+  int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans, m, n, lda, ldc, expected_info);
+  ASSERT_EQUAL(TRUE, passed);
 }
 
 /**
@@ -676,20 +672,19 @@ CTEST(dgeadd, c_api_xerbla_n_invalid)
  *
  * c api option order is row-major order
  */
-CTEST(dgeadd, c_api_xerbla_n_invalid_row_major)
-{
-    CBLAS_ORDER order = CblasRowMajor;
+CTEST(dgeadd, c_api_xerbla_n_invalid_row_major) {
+  CBLAS_ORDER order = CblasRowMajor;
 
-    blasint n = INVALID;
-    blasint m = 1;
+  blasint n = INVALID;
+  blasint m = 1;
 
-    blasint lda = 1;
-    blasint ldc = 1;
+  blasint lda = 1;
+  blasint ldc = 1;
 
-    int expected_info = 2;
+  int expected_info = 2;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
+  int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans, m, n, lda, ldc, expected_info);
+  ASSERT_EQUAL(TRUE, passed);
 }
 
 /**
@@ -700,20 +695,19 @@ CTEST(dgeadd, c_api_xerbla_n_invalid_row_major)
  *
  * c api option order is column-major order
  */
-CTEST(dgeadd, c_api_xerbla_m_invalid)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, c_api_xerbla_m_invalid) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = 1;
-    blasint m = INVALID;
+  blasint n = 1;
+  blasint m = INVALID;
 
-    blasint lda = 1;
-    blasint ldc = 1;
+  blasint lda = 1;
+  blasint ldc = 1;
 
-    int expected_info = 1;
+  int expected_info = 1;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
+  int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans, m, n, lda, ldc, expected_info);
+  ASSERT_EQUAL(TRUE, passed);
 }
 
 /**
@@ -724,20 +718,19 @@ CTEST(dgeadd, c_api_xerbla_m_invalid)
  *
  * c api option order is row-major order
  */
-CTEST(dgeadd, c_api_xerbla_m_invalid_row_major)
-{
-    CBLAS_ORDER order = CblasRowMajor;
+CTEST(dgeadd, c_api_xerbla_m_invalid_row_major) {
+  CBLAS_ORDER order = CblasRowMajor;
 
-    blasint n = 1;
-    blasint m = INVALID;
+  blasint n = 1;
+  blasint m = INVALID;
 
-    blasint lda = 1;
-    blasint ldc = 1;
+  blasint lda = 1;
+  blasint ldc = 1;
 
-    int expected_info = 1;
+  int expected_info = 1;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
+  int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans, m, n, lda, ldc, expected_info);
+  ASSERT_EQUAL(TRUE, passed);
 }
 
 /**
@@ -747,20 +740,19 @@ CTEST(dgeadd, c_api_xerbla_m_invalid_row_major)
  *
  * c api option order is column-major order
  */
-CTEST(dgeadd, c_api_xerbla_lda_invalid)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, c_api_xerbla_lda_invalid) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = 1;
-    blasint m = 1;
+  blasint n = 1;
+  blasint m = 1;
 
-    blasint lda = INVALID;
-    blasint ldc = 1;
+  blasint lda = INVALID;
+  blasint ldc = 1;
 
-    int expected_info = 5;
+  int expected_info = 5;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
+  int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans, m, n, lda, ldc, expected_info);
+  ASSERT_EQUAL(TRUE, passed);
 }
 
 /**
@@ -770,20 +762,19 @@ CTEST(dgeadd, c_api_xerbla_lda_invalid)
  *
  * c api option order is row-major order
  */
-CTEST(dgeadd, c_api_xerbla_lda_invalid_row_major)
-{
-    CBLAS_ORDER order = CblasRowMajor;
+CTEST(dgeadd, c_api_xerbla_lda_invalid_row_major) {
+  CBLAS_ORDER order = CblasRowMajor;
 
-    blasint n = 1;
-    blasint m = 1;
+  blasint n = 1;
+  blasint m = 1;
 
-    blasint lda = INVALID;
-    blasint ldc = 1;
+  blasint lda = INVALID;
+  blasint ldc = 1;
 
-    int expected_info = 5;
+  int expected_info = 5;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
+  int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans, m, n, lda, ldc, expected_info);
+  ASSERT_EQUAL(TRUE, passed);
 }
 
 /**
@@ -793,20 +784,19 @@ CTEST(dgeadd, c_api_xerbla_lda_invalid_row_major)
  *
  * c api option order is column-major order
  */
-CTEST(dgeadd, c_api_xerbla_ldc_invalid)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, c_api_xerbla_ldc_invalid) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = 1;
-    blasint m = 1;
+  blasint n = 1;
+  blasint m = 1;
 
-    blasint lda = 1;
-    blasint ldc = INVALID;
+  blasint lda = 1;
+  blasint ldc = INVALID;
 
-    int expected_info = 8;
+  int expected_info = 8;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
+  int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans, m, n, lda, ldc, expected_info);
+  ASSERT_EQUAL(TRUE, passed);
 }
 
 /**
@@ -816,20 +806,19 @@ CTEST(dgeadd, c_api_xerbla_ldc_invalid)
  *
  * c api option order is row-major order
  */
-CTEST(dgeadd, c_api_xerbla_ldc_invalid_row_major)
-{
-    CBLAS_ORDER order = CblasRowMajor;
+CTEST(dgeadd, c_api_xerbla_ldc_invalid_row_major) {
+  CBLAS_ORDER order = CblasRowMajor;
 
-    blasint n = 1;
-    blasint m = 1;
+  blasint n = 1;
+  blasint m = 1;
 
-    blasint lda = 1;
-    blasint ldc = INVALID;
+  blasint lda = 1;
+  blasint ldc = INVALID;
 
-    int expected_info = 8;
+  int expected_info = 8;
 
-    int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
+  int passed = check_badargs('C', order,CblasNoTrans, CblasNoTrans, m, n, lda, ldc, expected_info);
+  ASSERT_EQUAL(TRUE, passed);
 }
 
 /**
@@ -838,23 +827,21 @@ CTEST(dgeadd, c_api_xerbla_ldc_invalid_row_major)
  *
  * c api option order is column-major order
  */
-CTEST(dgeadd, c_api_n_zero)
-{
-    CBLAS_ORDER order = CblasColMajor;
+CTEST(dgeadd, c_api_n_zero) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = 0;
-    blasint m = 1;
+  blasint n = 0;
+  blasint m = 1;
 
-    blasint lda = 1;
-    blasint ldc = 1;
+  blasint lda = 1;
+  blasint ldc = 1;
 
-    double alpha = 1.0;
-    double beta = 1.0;
+  double alpha = 1.0;
+  double beta = 1.0;
 
-    double norm = check_dgeadd('C', order, m, n, alpha,
-                                    lda, beta, ldc);
+  double norm = check_dgeadd('C', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
 /**
@@ -863,23 +850,109 @@ CTEST(dgeadd, c_api_n_zero)
  *
  * c api option order is column-major order
  */
-CTEST(dgeadd, c_api_m_zero)
-{
-    CBLAS_ORDER order = CblasColMajor;
 
-    blasint n = 1;
-    blasint m = 0;
+CTEST(dgeadd, c_api_m_zero) {
+  CBLAS_ORDER order = CblasColMajor;
 
-    blasint lda = 1;
-    blasint ldc = 1;
+  blasint n = 1;
+  blasint m = 0;
 
-    double alpha = 1.0;
-    double beta = 1.0;
+  blasint lda = 1;
+  blasint ldc = 1;
 
-    double norm = check_dgeadd('C', order, m, n, alpha,
-                                    lda, beta, ldc);
+  double alpha = 1.0;
+  double beta = 1.0;
 
-    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+  double norm = check_dgeadd('C', order,CblasNoTrans, CblasNoTrans, m, n, alpha, lda, beta, ldc);
+
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
+
+
+
+
+/**
+ * Custom C API specific test
+ * Test A transposed (C = A^T) with a simple 2x2 matrix
+ * This verifies the inner stride (lda) jump logic in the bare-metal kernel.
+ */
+
+CTEST(dgeadd, c_api_matrix_2x2_transA) {
+  blasint m = 2;
+  blasint n = 2;
+  blasint lda = 2;
+  blasint ldc = 2;
+
+  double alpha = 1.0;
+  double beta = 0.0;
+
+  double a_test[4] = {1.0, 2.0, 3.0, 4.0};
+
+  double c_test[4] = {0.0, 0.0, 0.0, 0.0};
+  double c_verify[4] = {1.0, 3.0, 2.0, 4.0};
+
+  cblas_dgeadd(CblasColMajor, CblasTrans, CblasNoTrans, m, n, alpha, a_test,
+               lda, beta, c_test, ldc);
+
+  blasint i;
+  for (i = 0; i < 4; i++) {
+    ASSERT_DBL_NEAR_TOL(c_verify[i], c_test[i], DOUBLE_EPS);
+  }
+}
+
+/**
+ * Custom C API specific test
+ * Test BOTH transposed (C^T = A^T) with a simple 2x2 matrix
+ * This verifies the logic where both inner strides are used.
+ */
+
+CTEST(dgeadd, c_api_matrix_2x2_transA_transC) {
+  blasint m = 2;
+  blasint n = 2;
+  blasint lda = 2;
+  blasint ldc = 2;
+
+  double alpha = 1.0;
+  double beta = 0.0;
+
+  double a_test[4] = {1.0, 2.0, 3.0, 4.0};
+
+  double c_test[4] = {0.0, 0.0, 0.0, 0.0};
+  double  c_verify[4] = {1.0, 2.0, 3.0, 4.0};
+
+  cblas_dgeadd(CblasColMajor, CblasTrans, CblasTrans, m, n, alpha, a_test, lda,
+               beta, c_test, ldc);
+
+  blasint i;
+  for (i = 0; i < 4; i++) {
+    ASSERT_DBL_NEAR_TOL(c_verify[i], c_test[i],DOUBLE_EPS);
+  }
+}
+
+
+/**
+ * C API specific test - Transposed A (Double Precision)
+ * Test A transposed against a large randomized 100x100 matrix
+  */
+
+CTEST(dgeadd, c_api_matrix_n_100_m_100_transA) {
+  CBLAS_ORDER order = CblasColMajor;
+
+  blasint n = N;
+  blasint m = M;
+
+  blasint lda = n; 
+  blasint ldc = m;
+
+  double alpha = 2.0;
+  double beta = 3.0;
+
+  double norm = check_dgeadd('C', order, CblasTrans, CblasNoTrans, m, n, alpha,
+                             lda, beta, ldc);
+
+  ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+}
+
+
 #endif
 #endif

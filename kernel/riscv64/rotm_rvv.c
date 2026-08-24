@@ -62,6 +62,58 @@ int CNAME(BLASLONG n, FLOAT *dx, BLASLONG incx, FLOAT *dy, BLASLONG incy, FLOAT 
   	dflag = dparam[1];
     if (n <= 0 || dflag == - 2.0) goto L140;
 
+    if (incx == 0 || incy == 0) {
+        BLASLONG i;
+        FLOAT w, z;
+
+        kx = 1;
+        ky = 1;
+        if (incx < 0) {
+            kx = (1 - n) * incx + 1;
+        }
+        if (incy < 0) {
+            ky = (1 - n) * incy + 1;
+        }
+
+        if (dflag < 0.) {
+            dh11 = dparam[2];
+            dh12 = dparam[4];
+            dh21 = dparam[3];
+            dh22 = dparam[5];
+            for (i = 0; i < n; ++i) {
+                w = dx[kx];
+                z = dy[ky];
+                dx[kx] = w * dh11 + z * dh12;
+                dy[ky] = w * dh21 + z * dh22;
+                kx += incx;
+                ky += incy;
+            }
+        } else if (dflag == 0) {
+            dh12 = dparam[4];
+            dh21 = dparam[3];
+            for (i = 0; i < n; ++i) {
+                w = dx[kx];
+                z = dy[ky];
+                dx[kx] = w + z * dh12;
+                dy[ky] = w * dh21 + z;
+                kx += incx;
+                ky += incy;
+            }
+        } else {
+            dh11 = dparam[2];
+            dh22 = dparam[5];
+            for (i = 0; i < n; ++i) {
+                w = dx[kx];
+                z = dy[ky];
+                dx[kx] = w * dh11 + z;
+                dy[ky] = -w + dh22 * z;
+                kx += incx;
+                ky += incy;
+            }
+        }
+        goto L140;
+    }
+
     if (!(incx == incy && incx > 0)) goto L70;
 
     nsteps = n * incx;
@@ -177,14 +229,6 @@ L70:
 L80:
     dh12 = dparam[4];
     dh21 = dparam[3];
-    if(incx < 0){
-        incx = -incx;
-        dx -= n*incx;
-    }
-    if(incy < 0){
-        incy = -incy;
-        dy -= n*incy;
-    }
     stride_x = incx * sizeof(FLOAT);
     stride_y = incy * sizeof(FLOAT);
     for (size_t vl; n > 0; n -= vl, dx += vl*incx, dy += vl*incy) {
@@ -203,14 +247,6 @@ L80:
 L100:
     dh11 = dparam[2];
     dh22 = dparam[5];
-    if(incx < 0){
-        incx = -incx;
-        dx -= n*incx;
-    }
-    if(incy < 0){
-        incy = -incy;
-        dy -= n*incy;
-    }
     stride_x = incx * sizeof(FLOAT);
     stride_y = incy * sizeof(FLOAT);
     for (size_t vl; n > 0; n -= vl, dx += vl*incx, dy += vl*incy) {
@@ -231,14 +267,6 @@ L120:
     dh12 = dparam[4];
     dh21 = dparam[3];
     dh22 = dparam[5];
-    if(incx < 0){
-        incx = -incx;
-        dx -= n*incx;
-    }
-    if(incy < 0){
-        incy = -incy;
-        dy -= n*incy;
-    }
     stride_x = incx * sizeof(FLOAT);
     stride_y = incy * sizeof(FLOAT);
     for (size_t vl; n > 0; n -= vl, dx += vl*incx, dy += vl*incy) {

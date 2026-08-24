@@ -110,7 +110,7 @@ Zaheer has fixed this bug. You can now use the structure instead of C99 complex 
 
 ### <a name="Linux_SEGFAULT"></a>I get a SEGFAULT with multi-threading on Linux. What's wrong?
 
-This may be related to a bug in the Linux kernel 2.6.32 (?). Try applying the patch segaults.patch to disable mbind using
+This may be related to a bug in the Linux kernel 2.6.32 (?). Try applying the patch segfaults.patch to disable mbind using
 
      patch < segfaults.patch
 
@@ -213,7 +213,7 @@ AVX-512 (SKYLAKEX) support requires devtoolset-8-gcc-gfortran (which exceeds for
 
 ### <a name="qemu"></a>Building OpenBLAS in QEMU/KVM/XEN
 
-By default, QEMU reports the CPU as "QEMU Virtual CPU version 2.2.0", which shares CPUID with existing 32bit CPU even in 64bit virtual machine, and OpenBLAS recognizes it as PENTIUM2. Depending on the exact combination of CPU features the hypervisor choses to expose, this may not correspond to any CPU that exists, and OpenBLAS will error when trying to build. To fix this, pass `-cpu host` or `-cpu passthough` to QEMU, or another CPU model.
+By default, QEMU reports the CPU as "QEMU Virtual CPU version 2.2.0", which shares CPUID with existing 32bit CPU even in 64bit virtual machine, and OpenBLAS recognizes it as PENTIUM2. Depending on the exact combination of CPU features the hypervisor chooses to expose, this may not correspond to any CPU that exists, and OpenBLAS will error when trying to build. To fix this, pass `-cpu host` to QEMU, or choose another CPU model.
 Similarly, the XEN hypervisor may not pass through all features of the host cpu while reporting the cpu type itself correctly, which can
 lead to compiler error messages about an "ABI change" when compiling AVX512 code. Again changing the Xen configuration by running e.g. 
 "xen-cmdline --set-xen cpuid=avx512" should get around this (as would building OpenBLAS for an older cpu lacking that particular feature, e.g. TARGET=HASWELL)
@@ -290,7 +290,7 @@ There have been a few reports of wrong calculation results and build-time test f
 
 ### <a name="allocmorebuffers"></a>Program is Terminated. Because you tried to allocate too many memory regions
 
-In OpenBLAS, we mange a pool of memory buffers and allocate the number of buffers as the following.
+In OpenBLAS, we manage a pool of memory buffers and set the number of buffers as follows.
 ```
 #define NUM_BUFFERS (MAX_CPU_NUMBER * 2)
 ```
@@ -301,7 +301,7 @@ In `Makefile.system`, we will set `MAX_CPU_NUMBER=NUM_THREADS`.
 
 ### <a name="choose_target_dynamic"></a>How to choose TARGET manually at runtime when compiled with DYNAMIC_ARCH
 
-The environment variable which control the kernel selection is `OPENBLAS_CORETYPE` (see `driver/others/dynamic.c`)
+The environment variable that controls the kernel selection is `OPENBLAS_CORETYPE` (see `driver/others/dynamic.c`)
 e.g. `export OPENBLAS_CORETYPE=Haswell`. And the function `char* openblas_get_corename()` returns the used target.
 
 ### <a name="missgoto"></a>After updating the installed OpenBLAS, a program complains about "undefined symbol gotoblas"
@@ -325,7 +325,7 @@ Specifying the "correct" library location with the `-L` flag (like `-L /opt/Open
 
 ### <a name="cudahpl"></a>I want to use OpenBLAS with CUDA in the HPL 2.3 benchmark code but it keeps looking for Intel MKL
 
-You need to edit file src/cuda/cuda_dgemm.c in the NVIDIA version of HPL, change the "handle2" and "handle" dlopen calls to use libopenblas.so instead of libmkl_intel_lp64.so, and add an trailing underscore in the dlsym lines for dgemm_mkl and dtrsm_mkl (like  `dgemm_mkl = (void(*)())dlsym(handle, “dgemm_”);`)
+You need to edit file src/cuda/cuda_dgemm.c in the NVIDIA version of HPL, change the "handle2" and "handle" dlopen calls to use libopenblas.so instead of libmkl_intel_lp64.so, and add a trailing underscore in the dlsym lines for dgemm_mkl and dtrsm_mkl (like  `dgemm_mkl = (void(*)())dlsym(handle, "dgemm_");`)
 
 ### <a name="cpusoffline"></a>Multithreaded OpenBLAS runs no faster or is even slower than singlethreaded on my ARMV7 board
 

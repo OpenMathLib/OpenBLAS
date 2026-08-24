@@ -182,6 +182,7 @@ misc_no_underscore_objs="
     openblas_get_config
     openblas_get_corename
     openblas_set_threads_callback_function
+    openblas_set_xerbla
 "
 
 misc_underscore_objs=""
@@ -4111,10 +4112,13 @@ case "$p1" in
         done
 
         for obj in $no_underscore_objs; do
+            [ "$obj" = "openblas_set_xerbla" ] && continue
             printf '\t%s%s%s=%s  @%s\n' \
                 "$symbolprefix" "$obj" "$symbolsuffix" "$obj" "$count"
             count=`expr $count + 1`
         done
+        printf '\t%sopenblas_set_xerbla%s=openblas_set_xerbla  @%s\n' \
+            "$symbolprefix" "$symbolsuffix" "$count"
     ;;
 
     win2khpl)

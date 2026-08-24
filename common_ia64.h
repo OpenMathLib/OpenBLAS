@@ -56,6 +56,7 @@
 #define RPCC64BIT
 
 #ifndef __ECC
+#ifndef BLAS_LOCK_DEFINED
 static __inline void blas_lock(volatile unsigned long *address){
 
   unsigned long ret;
@@ -70,6 +71,7 @@ static __inline void blas_lock(volatile unsigned long *address){
   } while (ret);
 }
 #define BLAS_LOCK_DEFINED
+#endif
 
 static __inline unsigned long rpcc(void) {
   unsigned long clocks;
@@ -98,11 +100,13 @@ static __inline void ldmxcsr(unsigned long fp) {
 
 #else
 
+#ifndef BLAS_LOCK_DEFINED
 static __inline void blas_lock(volatile unsigned long *address){
   while (*address || _InterlockedCompareExchange((volatile int *) address,1,0))
     ;
 }
 #define BLAS_LOCK_DEFINED
+#endif
 
 static __inline unsigned int rpcc(void) {
   return __getReg(_IA64_REG_AR_ITC);

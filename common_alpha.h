@@ -45,6 +45,7 @@
 #define WMB asm("wmb")
 #define RMB asm("mb")
 
+#ifndef BLAS_LOCK_DEFINED
 static __inline void blas_lock(unsigned long *address){
 #ifndef __DECC
   unsigned long tmp1, tmp2;
@@ -78,6 +79,7 @@ static __inline void blas_lock(unsigned long *address){
 #endif
 }
 #define BLAS_LOCK_DEFINED
+#endif
 
 static __inline unsigned int rpcc(void){
 

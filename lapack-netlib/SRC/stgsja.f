@@ -409,17 +409,19 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      REAL               SLAMCH
+      EXTERNAL           LSAME, SLAMCH
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SCOPY, SLAGS2, SLAPLL, SLARTG, SLASET, SROT,
      $                   SSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, MIN, HUGE
-      PARAMETER          ( HUGENUM = HUGE(ZERO) )
+      INTRINSIC          ABS, MAX, MIN
 *     ..
 *     .. Executable Statements ..
+*
+      HUGENUM = SLAMCH( 'O' )
 *
 *     Decode and test the input parameters
 *

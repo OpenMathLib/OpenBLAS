@@ -59,6 +59,20 @@ typedef void (*openblas_dojob_callback)(int thread_num, void *jobdata, int dojob
 typedef void (*openblas_threads_callback)(int sync, openblas_dojob_callback dojob, int numjobs, size_t jobdata_elsize, void *jobdata, int dojob_data);
 void openblas_set_threads_callback_function(openblas_threads_callback callback);
 
+/* Replace the XERBLA handler for this OpenBLAS instance and return the
+ * previous handler. Passing NULL restores the default. Callbacks may run
+ * concurrently and must be thread-safe. The name and info pointers are valid
+ * only during the callback; name spans name_length bytes and need not be
+ * NUL-terminated. Replacement is thread-safe but does not wait for in-flight
+ * calls, so the previous handler must remain loaded until they complete. */
+#ifndef OPENBLAS_XERBLA_HANDLER_DEFINED
+#define OPENBLAS_XERBLA_HANDLER_DEFINED
+typedef void (*openblas_xerbla_handler)(const char *name,
+                                        const blasint *info,
+                                        size_t name_length);
+#endif
+openblas_xerbla_handler openblas_set_xerbla(openblas_xerbla_handler handler);
+
 #ifdef OPENBLAS_OS_LINUX
 /* Sets thread affinity for OpenBLAS threads. `thread_idx` is in [0, openblas_get_num_threads()-1]. */
 int openblas_setaffinity(int thread_idx, size_t cpusetsize, cpu_set_t* cpu_set);
@@ -435,13 +449,13 @@ void cblas_cimatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum
 void cblas_zimatcopy(OPENBLAS_CONST enum CBLAS_ORDER CORDER, OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS, OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double* calpha, double* a, 
 		     OPENBLAS_CONST blasint clda, OPENBLAS_CONST blasint cldb); 
 
-void cblas_sgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float calpha, OPENBLAS_CONST float *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST float cbeta, 
-		  float *c, OPENBLAS_CONST blasint cldc); 
-void cblas_dgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double calpha, OPENBLAS_CONST double *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST double cbeta, 
+void cblas_sgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS_A,OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS_C,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float calpha, OPENBLAS_CONST float *a, OPENBLAS_CONST blasint clda,OPENBLAS_CONST float cbeta, float *c, 
+                  OPENBLAS_CONST blasint cldc);
+void cblas_dgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS_A,OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS_C,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double calpha, OPENBLAS_CONST double *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST double cbeta, 
 		  double *c, OPENBLAS_CONST blasint cldc); 
-void cblas_cgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float *calpha, OPENBLAS_CONST float *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST float *cbeta, 
+void cblas_cgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS_A,OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS_C,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST float *calpha, OPENBLAS_CONST float *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST float *cbeta, 
 		  float *c, OPENBLAS_CONST blasint cldc); 
-void cblas_zgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double *calpha, OPENBLAS_CONST double *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST double *cbeta, 
+void cblas_zgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS_A,OPENBLAS_CONST enum CBLAS_TRANSPOSE CTRANS_C,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double *calpha, OPENBLAS_CONST double *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST double *cbeta, 
 		  double *c, OPENBLAS_CONST blasint cldc); 
 
 void cblas_sgemm_batch(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_CONST enum CBLAS_TRANSPOSE * TransA_array, OPENBLAS_CONST enum CBLAS_TRANSPOSE * TransB_array, OPENBLAS_CONST blasint * M_array, OPENBLAS_CONST blasint * N_array, OPENBLAS_CONST blasint * K_array,
