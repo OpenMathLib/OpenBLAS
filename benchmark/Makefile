@@ -691,17 +691,17 @@ endif
 sgemm.goto : sgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-cblas_sgemm.goto : cblas_sgemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cblas_sgemm.goto : cblas_sgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-cblas_dgemm.goto : cblas_dgemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cblas_dgemm.goto : cblas_dgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-cblas_cgemm.goto : cblas_cgemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cblas_cgemm.goto : cblas_cgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-cblas_zgemm.goto : cblas_zgemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cblas_zgemm.goto : cblas_zgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 sgemm.acml : sgemm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
