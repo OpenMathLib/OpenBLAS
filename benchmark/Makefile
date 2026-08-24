@@ -29,6 +29,10 @@
 TOPDIR	= ..
 include $(TOPDIR)/Makefile.system
 
+ifndef OPENBLAS_LIB
+  OPENBLAS_LIB_DEP = ../$(LIBNAME)
+endif
+
 # ACML standard
 #ACML=/opt/acml5.3.1/gfortran64_mp/lib
 #LIBACML = -fopenmp $(ACML)/libacml_mp.a -lgfortran -lm
@@ -509,8 +513,8 @@ exe :
 	@./Make_exe.sh
 
 ##################################### Slinpack ####################################################
-slinpack.goto : slinpack.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+slinpack.goto : slinpack.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 slinpack.acml : slinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -528,8 +532,8 @@ slinpack.essl : slinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dlinpack ####################################################
-dlinpack.goto : dlinpack.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dlinpack.goto : dlinpack.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dlinpack.acml : dlinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -548,8 +552,8 @@ dlinpack.essl : dlinpack.$(SUFFIX)
 
 ##################################### Clinpack ####################################################
 
-clinpack.goto : clinpack.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+clinpack.goto : clinpack.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 clinpack.acml : clinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -568,8 +572,8 @@ clinpack.essl : clinpack.$(SUFFIX)
 
 ##################################### Zlinpack ####################################################
 
-zlinpack.goto : zlinpack.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zlinpack.goto : zlinpack.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zlinpack.acml : zlinpack.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -588,8 +592,8 @@ zlinpack.essl : zlinpack.$(SUFFIX)
 
 ##################################### Scholesky ###################################################
 
-scholesky.goto : scholesky.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+scholesky.goto : scholesky.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 scholesky.acml : scholesky.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -608,8 +612,8 @@ scholesky.essl : scholesky.$(SUFFIX)
 
 ##################################### Dcholesky ###################################################
 
-dcholesky.goto : dcholesky.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dcholesky.goto : dcholesky.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dcholesky.acml : dcholesky.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -628,8 +632,8 @@ dcholesky.essl : dcholesky.$(SUFFIX)
 
 ##################################### Ccholesky ###################################################
 
-ccholesky.goto : ccholesky.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ccholesky.goto : ccholesky.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ccholesky.acml : ccholesky.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -649,8 +653,8 @@ ccholesky.essl : ccholesky.$(SUFFIX)
 
 ##################################### Zcholesky ###################################################
 
-zcholesky.goto : zcholesky.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zcholesky.goto : zcholesky.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zcholesky.acml : zcholesky.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -669,35 +673,35 @@ zcholesky.essl : zcholesky.$(SUFFIX)
 
 ##################################### Sgemm ####################################################
 ifeq ($(BUILD_BFLOAT16),1)
-bgemm.goto : bgemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
-sbgemm.goto : sbgemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
-bgemv.goto : bgemv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
-sbgemv.goto : sbgemv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+bgemm.goto : bgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sbgemm.goto : sbgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+bgemv.goto : bgemv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sbgemv.goto : sbgemv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 endif
 
 ifeq ($(BUILD_HFLOAT16),1)
-shgemm.goto : shgemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+shgemm.goto : shgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 endif
 
-sgemm.goto : sgemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sgemm.goto : sgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-cblas_sgemm.goto : cblas_sgemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cblas_sgemm.goto : cblas_sgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-cblas_dgemm.goto : cblas_dgemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cblas_dgemm.goto : cblas_dgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-cblas_cgemm.goto : cblas_cgemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cblas_cgemm.goto : cblas_cgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-cblas_zgemm.goto : cblas_zgemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cblas_zgemm.goto : cblas_zgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 sgemm.acml : sgemm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -715,8 +719,8 @@ sgemm.essl : sgemm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dgemm ####################################################
-dgemm.goto : dgemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dgemm.goto : dgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dgemm.acml : dgemm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -735,8 +739,8 @@ dgemm.essl : dgemm.$(SUFFIX)
 
 ##################################### Cgemm ####################################################
 
-cgemm.goto : cgemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cgemm.goto : cgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 cgemm.acml : cgemm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -755,8 +759,8 @@ cgemm.essl : cgemm.$(SUFFIX)
 
 ##################################### Zgemm ####################################################
 
-zgemm.goto : zgemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zgemm.goto : zgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zgemm.acml : zgemm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -774,8 +778,8 @@ zgemm.essl : zgemm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Ssymm ####################################################
-ssymm.goto : ssymm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ssymm.goto : ssymm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ssymm.acml : ssymm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -790,8 +794,8 @@ ssymm.veclib : ssymm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dsymm ####################################################
-dsymm.goto : dsymm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dsymm.goto : dsymm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dsymm.acml : dsymm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -807,8 +811,8 @@ dsymm.veclib : dsymm.$(SUFFIX)
 
 ##################################### Csymm ####################################################
 
-csymm.goto : csymm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+csymm.goto : csymm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 csymm.acml : csymm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -824,8 +828,8 @@ csymm.veclib : csymm.$(SUFFIX)
 
 ##################################### Zsymm ####################################################
 
-zsymm.goto : zsymm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zsymm.goto : zsymm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zsymm.acml : zsymm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -840,8 +844,8 @@ zsymm.veclib : zsymm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Strmm ####################################################
-strmm.goto : strmm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+strmm.goto : strmm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 strmm.acml : strmm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -859,8 +863,8 @@ strmm.essl : strmm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dtrmm ####################################################
-dtrmm.goto : dtrmm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dtrmm.goto : dtrmm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dtrmm.acml : dtrmm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -879,8 +883,8 @@ dtrmm.essl : dtrmm.$(SUFFIX)
 
 ##################################### Ctrmm ####################################################
 
-ctrmm.goto : ctrmm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ctrmm.goto : ctrmm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ctrmm.acml : ctrmm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -899,8 +903,8 @@ ctrmm.essl : ctrmm.$(SUFFIX)
 
 ##################################### Ztrmm ####################################################
 
-ztrmm.goto : ztrmm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ztrmm.goto : ztrmm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ztrmm.acml : ztrmm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -918,8 +922,8 @@ ztrmm.essl : ztrmm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Strsm ####################################################
-strsm.goto : strsm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+strsm.goto : strsm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 strsm.acml : strsm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -937,8 +941,8 @@ strsm.essl : strsm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dtrsm ####################################################
-dtrsm.goto : dtrsm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dtrsm.goto : dtrsm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dtrsm.acml : dtrsm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -957,8 +961,8 @@ dtrsm.essl : dtrsm.$(SUFFIX)
 
 ##################################### Ctrsm ####################################################
 
-ctrsm.goto : ctrsm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ctrsm.goto : ctrsm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ctrsm.acml : ctrsm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -977,8 +981,8 @@ ctrsm.essl : ctrsm.$(SUFFIX)
 
 ##################################### Ztrsm ####################################################
 
-ztrsm.goto : ztrsm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ztrsm.goto : ztrsm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ztrsm.acml : ztrsm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -995,8 +999,8 @@ ztrsm.veclib : ztrsm.$(SUFFIX)
 ztrsm.essl : ztrsm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 ##################################### Ssyr ####################################################
-ssyr.goto : ssyr.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ssyr.goto : ssyr.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ssyr.acml : ssyr.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1010,8 +1014,8 @@ ssyr.mkl : ssyr.$(SUFFIX)
 ssyr.veclib : ssyr.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 ##################################### Dsyr ####################################################
-dsyr.goto : dsyr.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dsyr.goto : dsyr.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dsyr.acml : dsyr.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1026,8 +1030,8 @@ dsyr.veclib : dsyr.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 	
 ##################################### Sspr ####################################################
-sspr.goto : sspr.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sspr.goto : sspr.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 sspr.acml : sspr.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1042,8 +1046,8 @@ sspr.veclib : sspr.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 	
 ##################################### Dspr ####################################################
-dspr.goto : dspr.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dspr.goto : dspr.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dspr.acml : dspr.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1058,8 +1062,8 @@ dspr.veclib : dspr.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 	
 ##################################### Sspr2 ####################################################
-sspr2.goto : sspr2.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sspr2.goto : sspr2.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 sspr2.acml : sspr2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1074,8 +1078,8 @@ sspr2.veclib : sspr2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 	
 ##################################### Dspr2 ####################################################
-dspr2.goto : dspr2.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dspr2.goto : dspr2.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dspr2.acml : dspr2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1089,8 +1093,8 @@ dspr2.mkl : dspr2.$(SUFFIX)
 dspr2.veclib : dspr2.$(SUFFIX)
 
 ##################################### Ssyr2 ####################################################
-ssyr2.goto : ssyr2.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ssyr2.goto : ssyr2.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ssyr2.acml : ssyr2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1104,8 +1108,8 @@ ssyr2.mkl : ssyr2.$(SUFFIX)
 ssyr2.veclib : ssyr2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 ##################################### Dsyr2 ####################################################
-dsyr2.goto : dsyr2.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dsyr2.goto : dsyr2.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dsyr2.acml : dsyr2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1120,8 +1124,8 @@ dsyr2.veclib : dsyr2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Ssyrk ####################################################
-ssyrk.goto : ssyrk.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ssyrk.goto : ssyrk.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ssyrk.acml : ssyrk.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1136,8 +1140,8 @@ ssyrk.veclib : ssyrk.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dsyrk ####################################################
-dsyrk.goto : dsyrk.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dsyrk.goto : dsyrk.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dsyrk.acml : dsyrk.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1153,8 +1157,8 @@ dsyrk.veclib : dsyrk.$(SUFFIX)
 
 ##################################### Csyrk ####################################################
 
-csyrk.goto : csyrk.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+csyrk.goto : csyrk.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 csyrk.acml : csyrk.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1170,8 +1174,8 @@ csyrk.veclib : csyrk.$(SUFFIX)
 
 ##################################### Zsyrk ####################################################
 
-zsyrk.goto : zsyrk.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zsyrk.goto : zsyrk.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zsyrk.acml : zsyrk.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1186,8 +1190,8 @@ zsyrk.veclib : zsyrk.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Ssyr2k ####################################################
-ssyr2k.goto : ssyr2k.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ssyr2k.goto : ssyr2k.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ssyr2k.acml : ssyr2k.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1202,8 +1206,8 @@ ssyr2k.veclib : ssyr2k.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dsyr2k ####################################################
-dsyr2k.goto : dsyr2k.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dsyr2k.goto : dsyr2k.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dsyr2k.acml : dsyr2k.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1219,8 +1223,8 @@ dsyr2k.veclib : dsyr2k.$(SUFFIX)
 
 ##################################### Csyr2k ####################################################
 
-csyr2k.goto : csyr2k.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+csyr2k.goto : csyr2k.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 csyr2k.acml : csyr2k.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1236,8 +1240,8 @@ csyr2k.veclib : csyr2k.$(SUFFIX)
 
 ##################################### Zsyr2k ####################################################
 
-zsyr2k.goto : zsyr2k.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zsyr2k.goto : zsyr2k.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zsyr2k.acml : zsyr2k.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1253,8 +1257,8 @@ zsyr2k.veclib : zsyr2k.$(SUFFIX)
 
 ##################################### Chemm ####################################################
 
-chemm.goto : chemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+chemm.goto : chemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 chemm.acml : chemm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1270,8 +1274,8 @@ chemm.veclib : chemm.$(SUFFIX)
 
 ##################################### Zhemm ####################################################
 
-zhemm.goto : zhemm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zhemm.goto : zhemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zhemm.acml : zhemm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1287,8 +1291,8 @@ zhemm.veclib : zhemm.$(SUFFIX)
 
 ##################################### Cherk ####################################################
 
-cherk.goto : cherk.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cherk.goto : cherk.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 cherk.acml : cherk.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1304,8 +1308,8 @@ cherk.veclib : cherk.$(SUFFIX)
 
 ##################################### Zherk ####################################################
 
-zherk.goto : zherk.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zherk.goto : zherk.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zherk.acml : zherk.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1321,8 +1325,8 @@ zherk.veclib : zherk.$(SUFFIX)
 
 ##################################### Cher2k ####################################################
 
-cher2k.goto : cher2k.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cher2k.goto : cher2k.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 cher2k.acml : cher2k.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1338,8 +1342,8 @@ cher2k.veclib : cher2k.$(SUFFIX)
 
 ##################################### Zher2k ####################################################
 
-zher2k.goto : zher2k.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zher2k.goto : zher2k.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zher2k.acml : zher2k.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1355,8 +1359,8 @@ zher2k.veclib : zher2k.$(SUFFIX)
 
 ##################################### Cher ####################################################
 
-cher.goto : cher.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cher.goto : cher.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 cher.acml : cher.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1372,8 +1376,8 @@ cher.veclib : cher.$(SUFFIX)
 
 ##################################### Zher ####################################################
 
-zher.goto : zher.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zher.goto : zher.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zher.acml : zher.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1389,8 +1393,8 @@ zher.veclib : zher.$(SUFFIX)
 
 ##################################### Cher2 ####################################################
 
-cher2.goto : cher2.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cher2.goto : cher2.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 cher2.acml : cher2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1406,8 +1410,8 @@ cher2.veclib : cher2.$(SUFFIX)
 
 ##################################### Zher2 ####################################################
 
-zher2.goto : zher2.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zher2.goto : zher2.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zher2.acml : zher2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1422,8 +1426,8 @@ zher2.veclib : zher2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Sgemv ####################################################
-sgemv.goto : sgemv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sgemv.goto : sgemv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 sgemv.acml : sgemv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1438,8 +1442,8 @@ sgemv.veclib : sgemv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dgemv ####################################################
-dgemv.goto : dgemv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dgemv.goto : dgemv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dgemv.acml : dgemv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1455,8 +1459,8 @@ dgemv.veclib : dgemv.$(SUFFIX)
 
 ##################################### Cgemv ####################################################
 
-cgemv.goto : cgemv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cgemv.goto : cgemv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 cgemv.acml : cgemv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1472,8 +1476,8 @@ cgemv.veclib : cgemv.$(SUFFIX)
 
 ##################################### Zgemv ####################################################
 
-zgemv.goto : zgemv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zgemv.goto : zgemv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zgemv.acml : zgemv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1488,22 +1492,22 @@ zgemv.veclib : zgemv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Sspmv ####################################################
-sspmv.goto : sspmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sspmv.goto : sspmv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 sspmv.atlas : sspmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dspmv ####################################################
-dspmv.goto : dspmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dspmv.goto : dspmv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dspmv.atlas : dspmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Strmv ####################################################
-strmv.goto : strmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+strmv.goto : strmv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 strmv.acml : strmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1518,8 +1522,8 @@ strmv.veclib : strmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dtrmv ####################################################
-dtrmv.goto : dtrmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dtrmv.goto : dtrmv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dtrmv.acml : dtrmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1535,8 +1539,8 @@ dtrmv.veclib : dtrmv.$(SUFFIX)
 
 ##################################### Ctrmv ####################################################
 
-ctrmv.goto : ctrmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ctrmv.goto : ctrmv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ctrmv.acml : ctrmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1552,8 +1556,8 @@ ctrmv.veclib : ctrmv.$(SUFFIX)
 
 ##################################### Ztrmv ####################################################
 
-ztrmv.goto : ztrmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ztrmv.goto : ztrmv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ztrmv.acml : ztrmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1569,8 +1573,8 @@ ztrmv.veclib : ztrmv.$(SUFFIX)
 
 
 ##################################### Stpmv ####################################################
-stpmv.goto : stpmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+stpmv.goto : stpmv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 stpmv.acml : stpmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1585,8 +1589,8 @@ stpmv.veclib : stpmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dtpmv ####################################################
-dtpmv.goto : dtpmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dtpmv.goto : dtpmv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dtpmv.acml : dtpmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1602,8 +1606,8 @@ dtpmv.veclib : dtpmv.$(SUFFIX)
 
 ##################################### Ctpmv ####################################################
 
-ctpmv.goto : ctpmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ctpmv.goto : ctpmv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ctpmv.acml : ctpmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1619,8 +1623,8 @@ ctpmv.veclib : ctpmv.$(SUFFIX)
 
 ##################################### Ztpmv ####################################################
 
-ztpmv.goto : ztpmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ztpmv.goto : ztpmv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ztpmv.acml : ztpmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1635,8 +1639,8 @@ ztpmv.veclib : ztpmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Stpsv ####################################################
-stpsv.goto : stpsv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+stpsv.goto : stpsv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 stpsv.acml : stpsv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1651,8 +1655,8 @@ stpsv.veclib : stpsv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dtpsv ####################################################
-dtpsv.goto : dtpsv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dtpsv.goto : dtpsv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dtpsv.acml : dtpsv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1668,8 +1672,8 @@ dtpsv.veclib : dtpsv.$(SUFFIX)
 
 ##################################### Ctpsv ####################################################
 
-ctpsv.goto : ctpsv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ctpsv.goto : ctpsv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ctpsv.acml : ctpsv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1685,8 +1689,8 @@ ctpsv.veclib : ctpsv.$(SUFFIX)
 
 ##################################### Ztpsv ####################################################
 
-ztpsv.goto : ztpsv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ztpsv.goto : ztpsv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ztpsv.acml : ztpsv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1701,8 +1705,8 @@ ztpsv.veclib : ztpsv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Strsv ####################################################
-strsv.goto : strsv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+strsv.goto : strsv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 strsv.acml : strsv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1717,8 +1721,8 @@ strsv.veclib : strsv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dtrsv ####################################################
-dtrsv.goto : dtrsv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dtrsv.goto : dtrsv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dtrsv.acml : dtrsv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1734,8 +1738,8 @@ dtrsv.veclib : dtrsv.$(SUFFIX)
 
 ##################################### Ctrsv ####################################################
 
-ctrsv.goto : ctrsv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ctrsv.goto : ctrsv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ctrsv.acml : ctrsv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1751,8 +1755,8 @@ ctrsv.veclib : ctrsv.$(SUFFIX)
 
 ##################################### Ztrsv ####################################################
 
-ztrsv.goto : ztrsv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ztrsv.goto : ztrsv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ztrsv.acml : ztrsv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1767,8 +1771,8 @@ ztrsv.veclib : ztrsv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Sger ####################################################
-sger.goto : sger.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sger.goto : sger.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 sger.acml : sger.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1783,8 +1787,8 @@ sger.veclib : sger.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dger ####################################################
-dger.goto : dger.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dger.goto : dger.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dger.acml : dger.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1799,8 +1803,8 @@ dger.veclib : dger.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Cger ####################################################
-cger.goto : cger.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cger.goto : cger.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 cger.acml : cger.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1815,8 +1819,8 @@ cger.veclib : cger.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Zger ####################################################
-zger.goto : zger.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zger.goto : zger.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zger.acml : zger.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1831,8 +1835,8 @@ zger.veclib : zger.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Ssymv ####################################################
-ssymv.goto : ssymv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ssymv.goto : ssymv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ssymv.acml : ssymv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1847,8 +1851,8 @@ ssymv.veclib : ssymv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dsymv ####################################################
-dsymv.goto : dsymv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dsymv.goto : dsymv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dsymv.acml : dsymv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1863,8 +1867,8 @@ dsymv.veclib : dsymv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Csymv ####################################################
-csymv.goto : csymv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+csymv.goto : csymv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 csymv.acml : csymv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1879,8 +1883,8 @@ csymv.veclib : csymv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dsymv ####################################################
-zsymv.goto : zsymv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zsymv.goto : zsymv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zsymv.acml : zsymv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1895,8 +1899,8 @@ zsymv.veclib : zsymv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Sgeev ####################################################
-sgeev.goto : sgeev.$(SUFFIX) ../$(LIBNAME)
-	$(FC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sgeev.goto : sgeev.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(FC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 sgeev.acml : sgeev.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1911,8 +1915,8 @@ sgeev.veclib : sgeev.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dgeev ####################################################
-dgeev.goto : dgeev.$(SUFFIX) ../$(LIBNAME)
-	$(FC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dgeev.goto : dgeev.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(FC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dgeev.acml : dgeev.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1928,8 +1932,8 @@ dgeev.veclib : dgeev.$(SUFFIX)
 
 ##################################### Cgeev ####################################################
 
-cgeev.goto : cgeev.$(SUFFIX) ../$(LIBNAME)
-	$(FC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cgeev.goto : cgeev.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(FC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 cgeev.acml : cgeev.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1945,8 +1949,8 @@ cgeev.veclib : cgeev.$(SUFFIX)
 
 ##################################### Zgeev ####################################################
 
-zgeev.goto : zgeev.$(SUFFIX) ../$(LIBNAME)
-	$(FC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zgeev.goto : zgeev.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(FC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zgeev.acml : zgeev.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1961,8 +1965,8 @@ zgeev.veclib : zgeev.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Sgetri ####################################################
-sgetri.goto : sgetri.$(SUFFIX) ../$(LIBNAME)
-	$(FC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sgetri.goto : sgetri.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(FC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 sgetri.acml : sgetri.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1977,8 +1981,8 @@ sgetri.veclib : sgetri.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dgetri ####################################################
-dgetri.goto : dgetri.$(SUFFIX) ../$(LIBNAME)
-	$(FC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dgetri.goto : dgetri.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(FC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dgetri.acml : dgetri.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -1994,8 +1998,8 @@ dgetri.veclib : dgetri.$(SUFFIX)
 
 ##################################### Cgetri ####################################################
 
-cgetri.goto : cgetri.$(SUFFIX) ../$(LIBNAME)
-	$(FC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cgetri.goto : cgetri.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(FC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 cgetri.acml : cgetri.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2011,8 +2015,8 @@ cgetri.veclib : cgetri.$(SUFFIX)
 
 ##################################### Zgetri ####################################################
 
-zgetri.goto : zgetri.$(SUFFIX) ../$(LIBNAME)
-	$(FC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zgetri.goto : zgetri.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(FC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zgetri.acml : zgetri.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2027,8 +2031,8 @@ zgetri.veclib : zgetri.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Spotrf ####################################################
-spotrf.goto : spotrf.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+spotrf.goto : spotrf.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 spotrf.acml : spotrf.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2043,8 +2047,8 @@ spotrf.veclib : spotrf.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dpotrf ####################################################
-dpotrf.goto : dpotrf.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dpotrf.goto : dpotrf.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dpotrf.acml : dpotrf.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2060,8 +2064,8 @@ dpotrf.veclib : dpotrf.$(SUFFIX)
 
 ##################################### Cpotrf ####################################################
 
-cpotrf.goto : cpotrf.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cpotrf.goto : cpotrf.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 cpotrf.acml : cpotrf.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2077,8 +2081,8 @@ cpotrf.veclib : cpotrf.$(SUFFIX)
 
 ##################################### Zpotrf ####################################################
 
-zpotrf.goto : zpotrf.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zpotrf.goto : zpotrf.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zpotrf.acml : zpotrf.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2094,8 +2098,8 @@ zpotrf.veclib : zpotrf.$(SUFFIX)
 
 ##################################### Chemv ####################################################
 
-chemv.goto : chemv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+chemv.goto : chemv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 chemv.acml : chemv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2111,8 +2115,8 @@ chemv.veclib : chemv.$(SUFFIX)
 
 ##################################### Zhemv ####################################################
 
-zhemv.goto : zhemv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zhemv.goto : zhemv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zhemv.acml : zhemv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2127,8 +2131,8 @@ zhemv.veclib : zhemv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 ##################################### Chbmv ####################################################
 
-chbmv.goto : chbmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+chbmv.goto : chbmv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 chbmv.acml : chbmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2143,8 +2147,8 @@ chbmv.veclib : chbmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 ##################################### Zhbmv ####################################################
 
-zhbmv.goto : zhbmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zhbmv.goto : zhbmv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zhbmv.acml : zhbmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2159,8 +2163,8 @@ zhbmv.veclib : zhbmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 ##################################### Chpmv ####################################################
 
-chpmv.goto : chpmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+chpmv.goto : chpmv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 chpmv.acml : chpmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2175,8 +2179,8 @@ chpmv.veclib : chpmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 ##################################### Zhpmv ####################################################
 
-zhpmv.goto : zhpmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zhpmv.goto : zhpmv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zhpmv.acml : zhpmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2190,8 +2194,8 @@ zhpmv.mkl : zhpmv.$(SUFFIX)
 zhpmv.veclib : zhpmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 ##################################### Sdot ####################################################
-sdot.goto : sdot.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sdot.goto : sdot.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 sdot.acml : sdot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2206,8 +2210,8 @@ sdot.veclib : sdot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Ddot ####################################################
-ddot.goto : ddot.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ddot.goto : ddot.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ddot.acml : ddot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2222,8 +2226,8 @@ ddot.veclib : ddot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Cdot ####################################################
-cdot.goto : cdot.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cdot.goto : cdot.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 cdot.acml : cdot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2238,8 +2242,8 @@ cdot.veclib : cdot-intel.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Zdot ####################################################
-zdot.goto : zdot.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zdot.goto : zdot.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zdot.acml : zdot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2254,8 +2258,8 @@ zdot.veclib : zdot-intel.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Srot ####################################################
-srot.goto : srot.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+srot.goto : srot.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 srot.acml : srot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2270,8 +2274,8 @@ srot.veclib : srot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Drot ####################################################
-drot.goto : drot.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+drot.goto : drot.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 drot.acml : drot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2286,8 +2290,8 @@ drot.veclib : drot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### csrot ####################################################
-csrot.goto : csrot.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+csrot.goto : csrot.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 csrot.acml : csrot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2302,8 +2306,8 @@ csrot.veclib : csrot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### zdrot ####################################################
-zdrot.goto : zdrot.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zdrot.goto : zdrot.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zdrot.acml : zdrot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2318,8 +2322,8 @@ zdrot.veclib : zdrot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 	
 ##################################### srotm ####################################################
-srotm.goto : srotm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+srotm.goto : srotm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 srotm.acml : srotm.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2334,8 +2338,8 @@ srotm.veclib : srotm.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### drotm ####################################################
-drotm.goto : drotm.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+drotm.goto : drotm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 drotm.acml : drotm.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2350,8 +2354,8 @@ drotm.veclib : drotm.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Saxpy ####################################################
-saxpy.goto : saxpy.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+saxpy.goto : saxpy.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 saxpy.acml : saxpy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2366,8 +2370,8 @@ saxpy.veclib : saxpy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Daxpy ####################################################
-daxpy.goto : daxpy.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+daxpy.goto : daxpy.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 daxpy.acml : daxpy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2383,8 +2387,8 @@ daxpy.veclib : daxpy.$(SUFFIX)
 
 ##################################### Caxpy ####################################################
 
-caxpy.goto : caxpy.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+caxpy.goto : caxpy.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 caxpy.acml : caxpy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2400,8 +2404,8 @@ caxpy.veclib : caxpy.$(SUFFIX)
 
 ##################################### Zaxpy ####################################################
 
-zaxpy.goto : zaxpy.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zaxpy.goto : zaxpy.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zaxpy.acml : zaxpy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2416,8 +2420,8 @@ zaxpy.veclib : zaxpy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Saxpby ####################################################
-saxpby.goto : saxpby.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+saxpby.goto : saxpby.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 saxpby.acml : saxpby.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2432,8 +2436,8 @@ saxpby.veclib : saxpby.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Daxpby ####################################################
-daxpby.goto : daxpby.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+daxpby.goto : daxpby.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 daxpby.acml : daxpby.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2449,8 +2453,8 @@ daxpby.veclib : daxpby.$(SUFFIX)
 
 ##################################### Caxpby ####################################################
 
-caxpby.goto : caxpby.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+caxpby.goto : caxpby.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 caxpby.acml : caxpby.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2466,8 +2470,8 @@ caxpby.veclib : caxpby.$(SUFFIX)
 
 ##################################### Zaxpby ####################################################
 
-zaxpby.goto : zaxpby.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zaxpby.goto : zaxpby.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zaxpby.acml : zaxpby.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2482,8 +2486,8 @@ zaxpby.veclib : zaxpby.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 	
 ##################################### Scopy ####################################################
-scopy.goto : scopy.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+scopy.goto : scopy.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 scopy.acml : scopy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2498,8 +2502,8 @@ scopy.veclib : scopy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dcopy ####################################################
-dcopy.goto : dcopy.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dcopy.goto : dcopy.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dcopy.acml : dcopy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2515,8 +2519,8 @@ dcopy.veclib : dcopy.$(SUFFIX)
 
 ##################################### Ccopy ####################################################
 
-ccopy.goto : ccopy.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ccopy.goto : ccopy.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ccopy.acml : ccopy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2532,8 +2536,8 @@ ccopy.veclib : ccopy.$(SUFFIX)
 
 ##################################### Zcopy ####################################################
 
-zcopy.goto : zcopy.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zcopy.goto : zcopy.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zcopy.acml : zcopy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2548,8 +2552,8 @@ zcopy.veclib : zcopy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Sscal ####################################################
-sscal.goto : sscal.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sscal.goto : sscal.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 sscal.acml : sscal.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2564,8 +2568,8 @@ sscal.veclib : sscal.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dscal ####################################################
-dscal.goto : dscal.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dscal.goto : dscal.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dscal.acml : dscal.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2581,8 +2585,8 @@ dscal.veclib : dscal.$(SUFFIX)
 
 ##################################### Cscal ####################################################
 
-cscal.goto : cscal.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cscal.goto : cscal.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 cscal.acml : cscal.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2598,8 +2602,8 @@ cscal.veclib : cscal.$(SUFFIX)
 
 ##################################### Zscal ####################################################
 
-zscal.goto : zscal.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zscal.goto : zscal.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zscal.acml : zscal.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2614,8 +2618,8 @@ zscal.veclib : zscal.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Sasum ####################################################
-sasum.goto : sasum.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sasum.goto : sasum.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 sasum.acml : sasum.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2630,8 +2634,8 @@ sasum.veclib : sasum.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dasum ####################################################
-dasum.goto : dasum.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dasum.goto : dasum.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dasum.acml : dasum.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2647,8 +2651,8 @@ dasum.veclib : dasum.$(SUFFIX)
 
 ##################################### Casum ####################################################
 
-casum.goto : casum.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+casum.goto : casum.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 casum.acml : casum.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2664,8 +2668,8 @@ casum.veclib : casum.$(SUFFIX)
 
 ##################################### Zasum ####################################################
 
-zasum.goto : zasum.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zasum.goto : zasum.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zasum.acml : zasum.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2680,8 +2684,8 @@ zasum.veclib : zasum.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Sswap ####################################################
-sswap.goto : sswap.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sswap.goto : sswap.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 sswap.acml : sswap.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2696,8 +2700,8 @@ sswap.veclib : sswap.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dswap ####################################################
-dswap.goto : dswap.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dswap.goto : dswap.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dswap.acml : dswap.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2713,8 +2717,8 @@ dswap.veclib : dswap.$(SUFFIX)
 
 ##################################### Cswap ####################################################
 
-cswap.goto : cswap.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cswap.goto : cswap.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 cswap.acml : cswap.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2730,8 +2734,8 @@ cswap.veclib : cswap.$(SUFFIX)
 
 ##################################### Zswap ####################################################
 
-zswap.goto : zswap.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zswap.goto : zswap.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zswap.acml : zswap.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2747,8 +2751,8 @@ zswap.veclib : zswap.$(SUFFIX)
 
 
 ##################################### Sgesv ####################################################
-sgesv.goto : sgesv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+sgesv.goto : sgesv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 sgesv.acml : sgesv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2763,8 +2767,8 @@ sgesv.veclib : sgesv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dgesv ####################################################
-dgesv.goto : dgesv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dgesv.goto : dgesv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dgesv.acml : dgesv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2780,8 +2784,8 @@ dgesv.veclib : dgesv.$(SUFFIX)
 
 ##################################### Cgesv ####################################################
 
-cgesv.goto : cgesv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cgesv.goto : cgesv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 cgesv.acml : cgesv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2797,8 +2801,8 @@ cgesv.veclib : cgesv.$(SUFFIX)
 
 ##################################### Zgesv ####################################################
 
-zgesv.goto : zgesv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zgesv.goto : zgesv.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zgesv.acml : zgesv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2815,8 +2819,8 @@ zgesv.veclib : zgesv.$(SUFFIX)
 
 ##################################### Cgemm3m ####################################################
 
-cgemm3m.goto : cgemm3m.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+cgemm3m.goto : cgemm3m.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 cgemm3m.mkl : cgemm3m.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2826,8 +2830,8 @@ cgemm3m.veclib : cgemm3m.$(SUFFIX)
 
 ##################################### Zgemm3m ####################################################
 
-zgemm3m.goto : zgemm3m.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zgemm3m.goto : zgemm3m.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 zgemm3m.mkl : zgemm3m.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2836,137 +2840,137 @@ zgemm3m.veclib : zgemm3m.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ############################################## ISAMAX ##############################################
-isamax.goto : isamax.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+isamax.goto : isamax.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 isamax.atlas : isamax.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ############################################## IDAMAX ##############################################
-idamax.goto : idamax.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+idamax.goto : idamax.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 idamax.atlas : idamax.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ############################################## ICAMAX ##############################################
-icamax.goto : icamax.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+icamax.goto : icamax.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 icamax.atlas : icamax.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ############################################## IZAMAX ##############################################
-izamax.goto : izamax.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+izamax.goto : izamax.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 izamax.atlas : izamax.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ############################################## ISMAX ##############################################
-ismax.goto : ismax.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ismax.goto : ismax.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## IDMAX ##############################################
-idmax.goto : idmax.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+idmax.goto : idmax.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 	
 ############################################## ISAMIN ##############################################
-isamin.goto : isamin.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+isamin.goto : isamin.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## IDAMIN ##############################################
-idamin.goto : idamin.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+idamin.goto : idamin.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## ICAMIN ##############################################
-icamin.goto : icamin.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+icamin.goto : icamin.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## IZAMIN ##############################################
-izamin.goto : izamin.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+izamin.goto : izamin.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## ISMIN ##############################################
-ismin.goto : ismin.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+ismin.goto : ismin.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## IDMIN ##############################################
-idmin.goto : idmin.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+idmin.goto : idmin.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## SAMAX ##############################################
-samax.goto : samax.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+samax.goto : samax.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## DAMAX ##############################################
-damax.goto : damax.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+damax.goto : damax.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## CAMAX ##############################################
-camax.goto : camax.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+camax.goto : camax.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## ZAMAX ##############################################
-zamax.goto : zamax.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zamax.goto : zamax.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## SMAX ##############################################
-smax.goto : smax.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+smax.goto : smax.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## DMAX ##############################################
-dmax.goto : dmax.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dmax.goto : dmax.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## SAMIN ##############################################
-samin.goto : samin.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+samin.goto : samin.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## DAMIN ##############################################
-damin.goto : damin.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+damin.goto : damin.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## CAMIN ##############################################
-camin.goto : camin.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+camin.goto : camin.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## ZAMIN ##############################################
-zamin.goto : zamin.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zamin.goto : zamin.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## SMIN ##############################################
-smin.goto : smin.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+smin.goto : smin.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## DMIN ##############################################
-dmin.goto : dmin.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dmin.goto : dmin.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## SNRM2 ##############################################
-snrm2.goto : snrm2.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+snrm2.goto : snrm2.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 snrm2.atlas : snrm2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ############################################## DNRM2 ##############################################
-dnrm2.goto : dnrm2.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dnrm2.goto : dnrm2.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dnrm2.atlas : dnrm2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ############################################## Sscnrm2 ##############################################
-scnrm2.goto : scnrm2.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+scnrm2.goto : scnrm2.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 scnrm2.atlas : scnrm2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ############################################## Ddznrm2 ##############################################
-dznrm2.goto : dznrm2.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+dznrm2.goto : dznrm2.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dznrm2.atlas : dznrm2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -2974,26 +2978,26 @@ dznrm2.atlas : dznrm2.$(SUFFIX)
 ###################################################################################################
 
 ############################################ SOMATCOPY ############################################
-somatcopy.goto : somatcopy.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+somatcopy.goto : somatcopy.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ###################################################################################################
 
 ############################################ DOMATCOPY ############################################
-domatcopy.goto : domatcopy.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+domatcopy.goto : domatcopy.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ###################################################################################################
 
 ############################################ COMATCOPY ############################################
-comatcopy.goto : comatcopy.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+comatcopy.goto : comatcopy.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ###################################################################################################
 
 ############################################ ZOMATCOPY ############################################
-zomatcopy.goto : zomatcopy.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+zomatcopy.goto : zomatcopy.$(SUFFIX) $(OPENBLAS_LIB_DEP)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ###################################################################################################
 
@@ -3562,11 +3566,11 @@ zomatcopy.$(SUFFIX) : omatcopy.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 
-smallscaling: smallscaling.c ../$(LIBNAME)
+smallscaling: smallscaling.c $(OPENBLAS_LIB_DEP)
 ifeq ($(C_COMPILER), GCC)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(EXTRALIB) -fopenmp -lm -lpthread
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(EXTRALIB) -fopenmp -lm -lpthread
 else
-	$(CC) $(CFLAGS) -o $(@F) $^ $(EXTRALIB) -quak -openmp -lm -lpthread
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(EXTRALIB) -quak -openmp -lm -lpthread
 endif
 
 clean ::
