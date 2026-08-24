@@ -3062,7 +3062,42 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYMV_P  16
 #endif
 
-#if defined(RISCV64_GENERIC) || defined(WASM128_GENERIC)
+#if defined(WASM128_GENERIC)
+#define GEMM_DEFAULT_OFFSET_A 0
+#define GEMM_DEFAULT_OFFSET_B 0
+#define GEMM_DEFAULT_ALIGN (BLASLONG)0x03fffUL
+
+#define SGEMM_DEFAULT_UNROLL_M  4
+#define SGEMM_DEFAULT_UNROLL_N  4
+
+#define DGEMM_DEFAULT_UNROLL_M  4
+#define DGEMM_DEFAULT_UNROLL_N  4
+
+#define CGEMM_DEFAULT_UNROLL_M  2
+#define CGEMM_DEFAULT_UNROLL_N  2
+
+#define ZGEMM_DEFAULT_UNROLL_M  2
+#define ZGEMM_DEFAULT_UNROLL_N  2
+
+#define SGEMM_DEFAULT_P	128
+#define DGEMM_DEFAULT_P	128
+#define CGEMM_DEFAULT_P 96
+#define ZGEMM_DEFAULT_P 64
+
+#define SGEMM_DEFAULT_Q 240
+#define DGEMM_DEFAULT_Q 120
+#define CGEMM_DEFAULT_Q 120
+#define ZGEMM_DEFAULT_Q 120
+
+#define SGEMM_DEFAULT_R 12288
+#define DGEMM_DEFAULT_R 8192
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 4096
+
+#define SYMV_P	16
+#endif
+
+#if defined(RISCV64_GENERIC)
 #define GEMM_DEFAULT_OFFSET_A 0
 #define GEMM_DEFAULT_OFFSET_B 0
 #define GEMM_DEFAULT_ALIGN (BLASLONG)0x03fffUL
@@ -3464,8 +3499,55 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SYMV_P	16
 
-#if defined(CORTEXA57) || defined(CORTEXX1) || \
-    defined(CORTEXA72) || defined(CORTEXA73) || \
+#if defined(CORTEXA72)
+
+/* Cortex-A72 (e.g. AWS Graviton1): dedicated DGEMM 6x8 ukernel + blocking.
+ * Stock OpenBLAS aliased A72 to A57 (8x4) and shared the NUM_CORES>8
+ * "server" Q=512 path, which is a poor fit for A72's ~2 MiB shared L2
+ * per 4-core cluster.
+ *
+ * Measured on a1.metal (16 cores, HPL N=52000, NB=192, 2026-08-09):
+ *   6x8 + P=120 Q=240 R=4096 -> 103.40 GFLOPS
+ *   prior 6x8 P=168 Q=128     -> ~100 GFLOPS
+ *   archived 8x4 custom       -> ~90 GFLOPS
+ *   BLIS cortexa57 (archived) -> ~107 GFLOPS
+ * An 8x8 NEON experiment spilled C and was rejected (~58 GFLOPS HPL).
+ * Single-core slice (NUM_CORES<=2) keeps Q=240 but caps R=768 so the
+ * packed B panel stays within a privately owned 2 MiB L2. */
+
+#define SGEMM_DEFAULT_UNROLL_M  16
+#define SGEMM_DEFAULT_UNROLL_N  4
+
+#define DGEMM_DEFAULT_UNROLL_M  6
+#define DGEMM_DEFAULT_UNROLL_N  8
+
+#define CGEMM_DEFAULT_UNROLL_M  8
+#define CGEMM_DEFAULT_UNROLL_N  4
+
+#define ZGEMM_DEFAULT_UNROLL_M  4
+#define ZGEMM_DEFAULT_UNROLL_N  4
+
+#define SGEMM_DEFAULT_P 128
+#define DGEMM_DEFAULT_P 120
+#define CGEMM_DEFAULT_P 128
+#define ZGEMM_DEFAULT_P 128
+
+#define SGEMM_DEFAULT_Q 352
+#define DGEMM_DEFAULT_Q 240
+#define CGEMM_DEFAULT_Q 224
+#define ZGEMM_DEFAULT_Q 112
+
+#define SGEMM_DEFAULT_R 4096
+#if NUM_CORES > 2
+#define DGEMM_DEFAULT_R 4096
+#else
+#define DGEMM_DEFAULT_R 768
+#endif
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 2048
+
+#elif defined(CORTEXA57) || defined(CORTEXX1) || \
+    defined(CORTEXA73) || \
     defined(FALKOR)    || defined(TSV110) || defined(EMAG8180) || defined(VORTEX) || defined(FT2000) || defined(VORTEXM4)
 
 #define SGEMM_DEFAULT_UNROLL_M  16

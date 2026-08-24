@@ -1,3 +1,28 @@
 include $(KERNELDIR)/KERNEL.CORTEXA57
 
+# Cortex-A72 DGEMM uses a dedicated 6x8 microkernel (see
+# dgemm_kernel_6x8_cortexa72.S). Stock TARGET=CORTEXA72 previously
+# aliased CORTEXA57 (8x4). Keep SGEMM/CGEMM/ZGEMM from A57 for now.
+#
+# Stock generic/gemm_{t,n}copy_6.c packs as 4+2, not contiguous MR=6 —
+# use the panel packers. NR=8 reuses the asm dgemm_{n,t}copy_8.S.
+# No dtrmm_kernel_6x8.S yet; fall back to generic 2x2 for DTRMM.
+# Stock generic/trsm_kernel_*.c assumes power-of-2 UNROLL_M; use the
+# UNROLLM6-aware kernels (same idea as loongarch64 UNROLLN6).
+DGEMMKERNEL    =  dgemm_kernel_6x8_cortexa72.S
+DTRMMKERNEL    =  ../generic/trmmkernel_2x2.c
 
+DTRSMKERNEL_LN =  trsm_kernel_LN_UNROLLM6.c
+DTRSMKERNEL_LT =  trsm_kernel_LT_UNROLLM6.c
+DTRSMKERNEL_RN =  trsm_kernel_RN_UNROLLM6.c
+DTRSMKERNEL_RT =  trsm_kernel_RT_UNROLLM6.c
+
+DGEMMINCOPY    =  gemm_ncopy_6_panel.c
+DGEMMITCOPY    =  gemm_tcopy_6_panel.c
+DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
+DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
+
+DGEMMONCOPY    =  dgemm_ncopy_8.S
+DGEMMOTCOPY    =  dgemm_tcopy_8.S
+DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
+DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)

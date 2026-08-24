@@ -311,8 +311,9 @@ static DWORD WINAPI blas_thread_server(void *arg){
             /* Other types in future */
 	    }
 	}
-	queue->sb=sb;
       }
+
+      queue->worker_sb = sb;
 
 #ifdef MONITOR
       main_status[cpu] = MAIN_RUNNING2;
@@ -483,6 +484,7 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
   if ((num > 1) && queue -> next) exec_blas_async(1, queue -> next);
 
   routine = queue -> routine;
+  queue->worker_sb = queue->sb;
 
   if (queue -> mode & BLAS_LEGACY) {
     legacy_exec(routine, queue -> mode, queue -> args, queue -> sb);

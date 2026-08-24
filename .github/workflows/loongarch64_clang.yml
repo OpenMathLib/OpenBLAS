@@ -92,12 +92,6 @@ jobs:
           echo "compression = true" >> ~/.ccache/ccache.conf
           ccache -s
 
-      - name: Disable utest dsdot:dsdot_n_1
-        run: |
-          echo -n > utest/test_dsdot.c
-          echo "Due to the qemu versions 7.2 causing utest cases to fail,"
-          echo "the utest dsdot:dsdot_n_1 have been temporarily disabled."
-
       - name: Build OpenBLAS
         run: make CC='ccache clang --target=loongarch64-linux-gnu --sysroot=/opt/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.3/loongarch64-linux-gnu/sysroot/ -static' FC='ccache loongarch64-linux-gnu-gfortran -static' HOSTCC='ccache clang' CROSS_SUFFIX=llvm-  NO_SHARED=1 ${{ matrix.opts }} -j$(nproc)
 

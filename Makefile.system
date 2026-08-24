@@ -285,7 +285,7 @@ GEMM_GEMV_FORWARD = 1
 SBGEMM_GEMV_FORWARD = 1
 BGEMM_GEMV_FORWARD = 1
 endif
-ifeq ($(ARCH), riscv)
+ifeq ($(ARCH), riscv64)
 GEMM_GEMV_FORWARD = 1
 endif
 ifeq ($(ARCH), power)

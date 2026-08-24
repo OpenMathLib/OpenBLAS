@@ -114,6 +114,7 @@
 #define	DGEMM_BETA		dgemm_beta
 
 #define	DGEMM_KERNEL		dgemm_kernel
+#define SME_DGEMM_KERNEL	sme_dgemm_kernel
 
 #define	DTRMM_KERNEL_LN		dtrmm_kernel_LN
 #define	DTRMM_KERNEL_LT		dtrmm_kernel_LT
@@ -246,6 +247,7 @@
 
 #define	DGEMM_BETA		gotoblas -> dgemm_beta
 #define	DGEMM_KERNEL		gotoblas -> dgemm_kernel
+#define	SME_DGEMM_KERNEL	gotoblas -> sme_dgemm_kernel
 
 #define	DTRMM_KERNEL_LN		gotoblas -> dtrmm_kernel_LN
 #define	DTRMM_KERNEL_LT		gotoblas -> dtrmm_kernel_LT

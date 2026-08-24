@@ -119,6 +119,7 @@
 #endif
 
 #define	ZGEMM_BETA		zgemm_beta
+#define	SME_ZGEMM_KERNEL	sme_zgemm_kernel
 
 #define	ZGEMM_KERNEL_N		zgemm_kernel_n
 #define	ZGEMM_KERNEL_L		zgemm_kernel_l
@@ -326,6 +327,7 @@
 #define	ZTRSM_ILTNCOPY		gotoblas -> ztrsm_iltncopy
 
 #define	ZGEMM_BETA		gotoblas -> zgemm_beta
+#define	SME_ZGEMM_KERNEL	gotoblas -> sme_zgemm_kernel
 #define	ZGEMM_KERNEL_N		gotoblas -> zgemm_kernel_n
 #define	ZGEMM_KERNEL_L		gotoblas -> zgemm_kernel_l
 #define	ZGEMM_KERNEL_R		gotoblas -> zgemm_kernel_r

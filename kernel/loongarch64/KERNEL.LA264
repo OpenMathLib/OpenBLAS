@@ -143,4 +143,25 @@ ZTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
 ZTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
 ZTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
 ZTRSMKERNEL_RT  = ../generic/trsm_kernel_RT.c
+
+SGEMM_SMALL_M_PERMIT = sgemm_small_matrix_permit.c
+SGEMM_SMALL_K_NN = sgemm_small_kernel_nn_lsx.S
+SGEMM_SMALL_K_B0_NN = sgemm_small_kernel_nn_lsx.S
+SGEMM_SMALL_K_NT = sgemm_small_kernel_nt_lsx.S
+SGEMM_SMALL_K_B0_NT = sgemm_small_kernel_nt_lsx.S
+SGEMM_SMALL_K_TN = sgemm_small_kernel_tn_lsx.S
+SGEMM_SMALL_K_B0_TN = sgemm_small_kernel_tn_lsx.S
+SGEMM_SMALL_K_TT = sgemm_small_kernel_tt_lsx.S
+SGEMM_SMALL_K_B0_TT = sgemm_small_kernel_tt_lsx.S
+
+DGEMM_SMALL_M_PERMIT = dgemm_small_matrix_permit.c
+DGEMM_SMALL_K_NN = dgemm_small_kernel_nn_lsx.S
+DGEMM_SMALL_K_B0_NN = dgemm_small_kernel_nn_lsx.S
+DGEMM_SMALL_K_NT = dgemm_small_kernel_nt_lsx.S
+DGEMM_SMALL_K_B0_NT = dgemm_small_kernel_nt_lsx.S
+DGEMM_SMALL_K_TN = dgemm_small_kernel_tn_lsx.S
+DGEMM_SMALL_K_B0_TN = dgemm_small_kernel_tn_lsx.S
+DGEMM_SMALL_K_TT = dgemm_small_kernel_tt_lsx.S
+DGEMM_SMALL_K_B0_TT = dgemm_small_kernel_tt_lsx.S
+
 endif

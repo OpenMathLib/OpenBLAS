@@ -329,7 +329,6 @@ static void exec_threads(int thread_num, blas_queue_t *queue, int buf_index){
 
     if (sa == NULL) {
       sa = (void *)((BLASLONG)buffer + GEMM_OFFSET_A);
-      queue->sa=sa;
     }
 
     if (sb == NULL) {
@@ -378,9 +377,10 @@ fprintf(stderr,"UNHANDLED COMPLEX\n");
           /* Other types in future */
 	  }
       }
-      queue->sb=sb;
     }
   }
+
+  queue->worker_sb = sb;
 
   if (queue -> mode & BLAS_LEGACY) {
     legacy_exec(queue -> routine, queue -> mode, queue -> args, sb);

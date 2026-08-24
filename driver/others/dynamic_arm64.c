@@ -171,6 +171,8 @@ extern gotoblas_t  gotoblas_CORTEXA53;
 #else
 extern gotoblas_t  gotoblas_CORTEXA57;
 #endif
+/* Keep A72 out of the default DYNAMIC_CORE set (see #4389); opt in via
+ * DYNAMIC_LIST=CORTEXA72. Default DYNAMIC_ARCH continues to alias A57. */
 #define gotoblas_CORTEXA72 gotoblas_CORTEXA57
 #define gotoblas_CORTEXA73 gotoblas_CORTEXA57
 #define gotoblas_FALKOR gotoblas_CORTEXA57

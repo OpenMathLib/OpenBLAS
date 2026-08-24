@@ -27,7 +27,7 @@ endif
 
 ifdef TARGET_CORE
 ifeq ($(TARGET_CORE), ARMV9SME)
- override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=armv9-a+sve2+sme
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=armv9-a+sve2+sme+sme-f64f64
  ifdef OS_WINDOWS
  ifeq ($(C_COMPILER), CLANG)
    override CFLAGS += --aarch64-stack-hazard-size=0
@@ -38,7 +38,7 @@ ifeq ($(TARGET_CORE), VORTEXM4)
   ifeq ($(C_COMPILER), GCC)
     override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -UHAVE_SME -march=armv8.4-a
   else
-    override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=armv8.4-a+sme
+    override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=armv8.4-a+sme+sme-f64f64
 #   ifneq ($(APPLECLANG),1)
 #     override LDFLAGS += -lclang_rt_builtins-aarch64
 #   endif

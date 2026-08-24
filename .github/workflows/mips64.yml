@@ -56,7 +56,7 @@ jobs:
         with:
           repository: qemu/qemu
           path: qemu
-          ref: ae35f033b874c627d81d51070187fbf55f0bf1a7
+          ref: 3e0bcba1ca7d6607ca49a988d165f052a3a53323
 
       - name: build qemu
         run: |

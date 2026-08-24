@@ -40,8 +40,12 @@ DSUMKERNEL  = ../arm/sum.c
 CSUMKERNEL  = ../arm/zsum.c
 ZSUMKERNEL  = ../arm/zsum.c
 
+ifndef SAXPYKERNEL
 SAXPYKERNEL  = ../riscv64/axpy.c
+endif
+ifndef DAXPYKERNEL
 DAXPYKERNEL  = ../riscv64/axpy.c
+endif
 CAXPYKERNEL  = ../riscv64/zaxpy.c
 ZAXPYKERNEL  = ../riscv64/zaxpy.c
 
@@ -85,20 +89,38 @@ DSWAPKERNEL  = ../riscv64/swap.c
 CSWAPKERNEL  = ../riscv64/zswap.c
 ZSWAPKERNEL  = ../riscv64/zswap.c
 
+ifndef SGEMVNKERNEL
 SGEMVNKERNEL = ../riscv64/gemv_n.c
+endif
+ifndef DGEMVNKERNEL
 DGEMVNKERNEL = ../riscv64/gemv_n.c
+endif
 CGEMVNKERNEL = ../riscv64/zgemv_n.c
 ZGEMVNKERNEL = ../riscv64/zgemv_n.c
 
+ifndef SGEMVTKERNEL
 SGEMVTKERNEL = ../riscv64/gemv_t.c
+endif
+ifndef DGEMVTKERNEL
 DGEMVTKERNEL = ../riscv64/gemv_t.c
+endif
 CGEMVTKERNEL = ../riscv64/zgemv_t.c
 ZGEMVTKERNEL = ../riscv64/zgemv_t.c
 
+# KERNEL.$(TARGET_CORE) is included first; keep its TRMM width if set.
+# Unroll-4 GEMM packing uses trmm_*copy_4, which is wrong with a 2x2 kernel.
+ifndef STRMMKERNEL
 STRMMKERNEL	= ../generic/trmmkernel_2x2.c
+endif
+ifndef DTRMMKERNEL
 DTRMMKERNEL	= ../generic/trmmkernel_2x2.c
+endif
+ifndef CTRMMKERNEL
 CTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
+endif
+ifndef ZTRMMKERNEL
 ZTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
+endif
 
 ifndef SGEMMKERNEL
 SGEMMKERNEL    =  ../generic/gemmkernel_2x2.c
@@ -132,17 +154,37 @@ ifndef DGEMMOTCOPYOBJ
 DGEMMOTCOPYOBJ = dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 endif
 
+ifndef CGEMMKERNEL
 CGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
+endif
+ifndef CGEMMONCOPY
 CGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
+endif
+ifndef CGEMMOTCOPY
 CGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
+endif
+ifndef CGEMMONCOPYOBJ
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
+endif
+ifndef CGEMMOTCOPYOBJ
 CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
+endif
 
+ifndef ZGEMMKERNEL
 ZGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
+endif
+ifndef ZGEMMONCOPY
 ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
+endif
+ifndef ZGEMMOTCOPY
 ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
+endif
+ifndef ZGEMMONCOPYOBJ
 ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
+endif
+ifndef ZGEMMOTCOPYOBJ
 ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
+endif
 
 ifndef STRSMKERNEL_LN
 STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c

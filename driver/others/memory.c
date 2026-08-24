@@ -2099,7 +2099,7 @@ int openblas_get_num_threads(void) {
 
 struct release_t {
   void *address;
-  void (*func)(struct release_t *);
+  void (* _Atomic func)(struct release_t *);
   long attr;
 };
 
@@ -2122,6 +2122,37 @@ static pthread_spinlock_t alloc_lock = 0;
 #else
 static BLASULONG  alloc_lock = 0UL;
 #endif
+
+static void blas_release_register(void *address, void (*func)(struct release_t *), long attr) {
+
+  struct release_t *release;
+  int rpos;
+
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+  LOCK_COMMAND(&alloc_lock);
+#endif
+#if defined(HAVE_C11) && !defined(__cplusplus)
+  rpos = atomic_fetch_add(&release_pos, 1);
+#elif defined(__GNUC__)
+  rpos = __sync_fetch_and_add(&release_pos, 1);
+#elif defined(OS_WINDOWS)
+  rpos = InterlockedIncrement((LONG volatile *)&release_pos) - 1;
+#else
+  rpos = release_pos++;
+#endif
+  if (likely(rpos < NUM_BUFFERS)) {
+    release = &release_info[rpos];
+  } else {
+    release = &new_release_info[rpos - NUM_BUFFERS];
+  }
+  release->address = address;
+  release->attr    = attr;
+  WMB;
+  release->func    = func;
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+  UNLOCK_COMMAND(&alloc_lock);
+#endif
+}
 
 #ifdef ALLOC_MMAP
 
@@ -2154,20 +2185,7 @@ static void *alloc_mmap(void *address){
   }
 
   if (map_address != (void *)-1) {
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
-    LOCK_COMMAND(&alloc_lock);
-#endif
-    int rpos = release_pos++;
-    if (likely(rpos < NUM_BUFFERS)) {
-    release_info[rpos].address = map_address;
-    release_info[rpos].func    = alloc_mmap_free;
-    } else {
-    new_release_info[rpos-NUM_BUFFERS].address = map_address;
-    new_release_info[rpos-NUM_BUFFERS].func    = alloc_mmap_free;
-    }
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
-    UNLOCK_COMMAND(&alloc_lock);
-#endif
+    blas_release_register(map_address, alloc_mmap_free, 0);
   } else {
 #ifdef DEBUG
         int errsv=errno;
@@ -2323,20 +2341,7 @@ static void *alloc_mmap(void *address){
 #endif
 
   if (map_address != (void *)-1) {
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
-    LOCK_COMMAND(&alloc_lock);
-#endif
-    int rpos = release_pos++;
-    if (likely(rpos < NUM_BUFFERS)) {
-    release_info[rpos].address = map_address;
-    release_info[rpos].func    = alloc_mmap_free;
-    } else {
-    new_release_info[rpos-NUM_BUFFERS].address = map_address;
-    new_release_info[rpos-NUM_BUFFERS].func    = alloc_mmap_free;
-    }
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
-    UNLOCK_COMMAND(&alloc_lock);
-#endif
+    blas_release_register(map_address, alloc_mmap_free, 0);
   }
 
   return map_address;
@@ -2364,14 +2369,7 @@ static void *alloc_malloc(void *address){
   if (map_address == (void *)NULL) map_address = (void *)-1;
 
   if (map_address != (void *)-1) {
-    int rpos = release_pos++;
-    if (likely(rpos < NUM_BUFFERS)) {
-    release_info[rpos].address = map_address;
-    release_info[rpos].func    = alloc_malloc_free;
-    } else {
-    new_release_info[rpos-NUM_BUFFERS].address = map_address;
-    new_release_info[rpos-NUM_BUFFERS].func    = alloc_malloc_free;
-    }
+    blas_release_register(map_address, alloc_malloc_free, 0);
   }
 
   return map_address;
@@ -2403,14 +2401,7 @@ static void *alloc_qalloc(void *address){
   if (map_address == (void *)NULL) map_address = (void *)-1;
 
   if (map_address != (void *)-1) {
-    int rpos = release_pos++;
-    if (likely(rpos < NUM_BUFFERS)) {
-    release_info[rpos].address = map_address;
-    release_info[rpos].func    = alloc_qalloc_free;
-    } else {
-    new_release_info[rpos-NUM_BUFFERS].address = map_address;
-    new_release_info[rpos-NUM_BUFFERS].func    = alloc_qalloc_free;
-    }
+    blas_release_register(map_address, alloc_qalloc_free, 0);
   }
 
   return (void *)(((BLASULONG)map_address + FIXED_PAGESIZE - 1) & ~(FIXED_PAGESIZE - 1));
@@ -2437,14 +2428,7 @@ static void *alloc_windows(void *address){
   if (map_address == (void *)NULL) map_address = (void *)-1;
 
   if (map_address != (void *)-1) {
-    int rpos = release_pos++;
-    if (likely(rpos < NUM_BUFFERS)) {
-    release_info[rpos].address = map_address;
-    release_info[rpos].func    = alloc_windows_free;
-    } else {
-    new_release_info[rpos-NUM_BUFFERS].address = map_address;
-    new_release_info[rpos-NUM_BUFFERS].func    = alloc_windows_free;
-    }
+    blas_release_register(map_address, alloc_windows_free, 0);
   }
 
   return map_address;
@@ -2486,16 +2470,7 @@ static void *alloc_devicedirver(void *address){
                      fd, 0);
 
   if (map_address != (void *)-1) {
-    int rpos = release_pos++;
-    if (likely(rpos < NUM_BUFFERS)) {
-    release_info[rpos].address = map_address;
-    release_info[rpos].attr    = fd;
-    release_info[rpos].func    = alloc_devicedirver_free;
-    } else {
-    new_release_info[rpos-NUM_BUFFERS].address = map_address;
-    new_release_info[rpos-NUM_BUFFERS].attr    = fd;
-    new_release_info[rpos-NUM_BUFFERS].func    = alloc_devicedirver_free;
-    }
+    blas_release_register(map_address, alloc_devicedirver_free, fd);
   }
 
   return map_address;
@@ -2530,16 +2505,7 @@ static void *alloc_shm(void *address){
 
     shmctl(shmid, IPC_RMID, 0);
 
-    int rpos = release_pos++;
-    if (likely(rpos < NUM_BUFFERS)) {
-    release_info[rpos].address = map_address;
-    release_info[rpos].attr    = shmid;
-    release_info[rpos].func    = alloc_shm_free;
-    } else {
-    new_release_info[rpos-NUM_BUFFERS].address = map_address;
-    new_release_info[rpos-NUM_BUFFERS].attr    = shmid;
-    new_release_info[rpos-NUM_BUFFERS].func    = alloc_shm_free;
-    }
+    blas_release_register(map_address, alloc_shm_free, shmid);
   }
 
   return map_address;
@@ -2647,14 +2613,7 @@ fprintf(stderr,"alloc_hugetlb got called\n");
 #endif
 
   if (map_address != (void *)-1){
-    int rpos = release_pos++;
-    if (likely(rpos < NUM_BUFFERS)) {
-    release_info[rpos].address = map_address;
-    release_info[rpos].func    = alloc_hugetlb_free;
-    } else {
-    new_release_info[rpos-NUM_BUFFERS].address = map_address;
-    new_release_info[rpos-NUM_BUFFERS].func    = alloc_hugetlb_free;
-    }
+    blas_release_register(map_address, alloc_hugetlb_free, 0);
   }
 
   return map_address;
@@ -2699,16 +2658,7 @@ static void *alloc_hugetlbfile(void *address){
                      fd, 0);
 
   if (map_address != (void *)-1) {
-    int rpos = release_pos++;
-    if (likely(rpos < NUM_BUFFERS)) {
-    release_info[rpos].address = map_address;
-    release_info[rpos].attr    = fd;
-    release_info[rpos].func    = alloc_hugetlbfile_free;
-    } else {
-    new_release_info[rpos-NUM_BUFFERS].address = map_address;
-    new_release_info[rpos-NUM_BUFFERS].attr    = fd;
-    new_release_info[rpos-NUM_BUFFERS].func    = alloc_hugetlbfile_free;
-    }
+    blas_release_register(map_address, alloc_hugetlbfile_free, fd);
   }
 
   return map_address;
@@ -3056,7 +3006,9 @@ void *blas_memory_alloc(int procpos){
 #endif
   memory_overflowed=1;
   MB;
-  new_release_info = (struct release_t*) malloc(NEW_BUFFERS * sizeof(struct release_t));
+  /* zeroed so blas_shutdown sees NULL func in slots that were reserved but
+     never published */
+  new_release_info = (struct release_t*) calloc(NEW_BUFFERS, sizeof(struct release_t));
   newmemory = (struct newmemstruct*) malloc(NEW_BUFFERS * sizeof(struct newmemstruct));
   for (i = 0; i < NEW_BUFFERS; i++) {
   newmemory[i].addr   = (void *)0;
@@ -3240,9 +3192,41 @@ void blas_memory_free_nolock(void * map_address) {
   free(map_address);
 }
 
+#if defined(OS_WINDOWS) && !defined(OS_CYGWIN_NT)
+/* During process termination Windows has already killed every other thread,
+   possibly while one held alloc_lock or a blas server lock, so any cleanup
+   here can only deadlock or crash; the OS reclaims the memory anyway.
+
+   Nothing in the SDK reports this from a destructor. DllMain's lpReserved
+   distinguishes the two cases, but outside MSVC gotoblas_quit runs from the
+   CRT's fini array via __attribute__((destructor)) and never sees
+   it. RtlDllShutdownInProgress is documented under Win32 Dev Notes but
+   deliberately absent from the SDK headers, so callers declare it themselves
+   If it cannot be resolved we fall back to the previous behaviour. */
+typedef BOOLEAN (WINAPI *rtl_dll_shutdown_in_progress_t)(VOID);
+static rtl_dll_shutdown_in_progress_t rtl_dll_shutdown_in_progress = NULL;
+
+/* Resolved at init, not on the way out: GetModuleHandle takes LdrpSnapsLock,
+   which ExitProcess does not release before it kills the other threads. */
+static void blas_shutdown_check_init(void) {
+  HMODULE ntdll = GetModuleHandleA("ntdll.dll");
+  if (!ntdll) return;
+  rtl_dll_shutdown_in_progress = (rtl_dll_shutdown_in_progress_t)(void *)
+      GetProcAddress(ntdll, "RtlDllShutdownInProgress");
+}
+
+static int blas_process_is_terminating(void) {
+  return rtl_dll_shutdown_in_progress && rtl_dll_shutdown_in_progress();
+}
+#endif
+
 void blas_shutdown(void){
 
-  int pos;
+  int pos, release_count;
+
+#if defined(OS_WINDOWS) && !defined(OS_CYGWIN_NT)
+  if (blas_process_is_terminating()) return;
+#endif
 
 #ifdef SMP
   BLASFUNC(blas_thread_shutdown)();
@@ -3250,12 +3234,18 @@ void blas_shutdown(void){
 
   LOCK_COMMAND(&alloc_lock);
 
-  for (pos = 0; pos < release_pos; pos ++) {
-    if (likely(pos < NUM_BUFFERS))
-    release_info[pos].func(&release_info[pos]);
-    else
-    new_release_info[pos-NUM_BUFFERS].func(&new_release_info[pos-NUM_BUFFERS]);
+  release_count = release_pos;
+  for (pos = 0; pos < release_count; pos ++) {
+    struct release_t *release = likely(pos < NUM_BUFFERS) ?
+        &release_info[pos] : &new_release_info[pos-NUM_BUFFERS];
+    void (*func)(struct release_t *) = release->func;
+    RMB;
+    if (func == NULL) continue; /* reserved but never published: owner died mid-allocation */
+    func(release);
+    release->func = NULL;
+    release->address = NULL;
   }
+  release_pos = 0;
 
 #ifdef SEEK_ADDRESS
   base_address      = 0UL;
@@ -3282,6 +3272,8 @@ void blas_shutdown(void){
     }
     free((void*)newmemory);
     newmemory = NULL;
+    free(new_release_info);
+    new_release_info = NULL;
     memory_overflowed = 0;
   }
 
@@ -3405,6 +3397,10 @@ extern void openblas_read_env(void);
 void CONSTRUCTOR gotoblas_init(void) {
 
   if (gotoblas_initialized) return;
+
+#if defined(OS_WINDOWS) && !defined(OS_CYGWIN_NT)
+  blas_shutdown_check_init();
+#endif
 
 #ifdef SMP
   openblas_fork_handler();

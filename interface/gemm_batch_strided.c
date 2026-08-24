@@ -229,13 +229,16 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE transa, enum CBLAS_TRANS
     group_transb = -1;
     info   = 0;
    
-#if defined(CBLAS) 
+#if defined(CBLAS)
     if (order == CblasColMajor) {
       group_m = m;
       group_n = n;
       group_k = k;
 
-      
+      group_lda = lda;
+      group_ldb = ldb;
+      group_ldc = ldc;
+
       if (transa == CblasNoTrans)     group_transa = 0;
       if (transa == CblasTrans)       group_transa = 1;
 #ifndef COMPLEX

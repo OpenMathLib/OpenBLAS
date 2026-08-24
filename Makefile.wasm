@@ -1,1 +1,1 @@
-CCOMMON_OPT += -msimd128
+CCOMMON_OPT += -msimd128 -mrelaxed-simd

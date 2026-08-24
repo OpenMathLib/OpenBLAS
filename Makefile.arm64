@@ -59,7 +59,7 @@ endif
 endif
 
 ifeq ($(CORE), ARMV9SME)
-CCOMMON_OPT += -march=armv9-a+sve2+sme
+CCOMMON_OPT += -march=armv9-a+sve2+sme+sme-f64f64
 FCOMMON_OPT += -march=armv9-a+sve2
 ifdef OS_WINDOWS
 ifeq ($(C_COMPILER), CLANG)
@@ -310,7 +310,7 @@ endif
 
 ifeq ($(CORE), VORTEXM4)
 ifneq ($(C_COMPILER), GCC)
-CCOMMON_OPT += -march=armv8.4-a+sme
+CCOMMON_OPT += -march=armv8.4-a+sme+sme-f64f64
 #ifneq ($(APPLECLANG),1)
 #override LDFLAGS += -lclang_rt_builtins-aarch64
 #endif

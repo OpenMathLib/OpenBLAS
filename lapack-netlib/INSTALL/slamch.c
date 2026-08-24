@@ -1,3 +1,4 @@
+#include <float.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -353,29 +354,13 @@ static real c_b32 = 0.f;
 /*  ===================================================================== */
 real slamch_(char *cmach)
 {
-    /* Initialized data */
-
-    static logical first = TRUE_;
-
     /* System generated locals */
-    integer i__1;
     real ret_val;
 
     /* Local variables */
-    static real base;
-    integer beta;
-    static real emin, prec, emax;
-    integer imin, imax;
-    logical lrnd;
-    static real rmin, rmax, t;
     real rmach;
     extern logical lsame_(char *, char *);
-    real small;
-    static real sfmin;
-    extern /* Subroutine */ int slamc2_(integer *, integer *, logical *, real 
-	    *, integer *, real *, integer *, real *);
-    integer it;
-    static real rnd, eps;
+    real small, sfmin, eps;
 
 
 /*  -- LAPACK auxiliary routine (version 3.7.0) -- */
@@ -384,24 +369,23 @@ real slamch_(char *cmach)
 /*     April 2012 */
 
 
-    if (first) {
-	slamc2_(&beta, &it, &lrnd, &eps, &imin, &rmin, &imax, &rmax);
-	base = (real) beta;
-	t = (real) it;
-	if (lrnd) {
-	    rnd = 1.f;
-	    i__1 = 1 - it;
-	    eps = pow_ri(&base, &i__1) / 2;
-	} else {
-	    rnd = 0.f;
-	    i__1 = 1 - it;
-	    eps = pow_ri(&base, &i__1);
-	}
-	prec = eps * base;
-	emin = (real) imin;
-	emax = (real) imax;
-	sfmin = rmin;
-	small = 1.f / rmax;
+/*     The values below are those returned by the current slamch.f, which */
+/*     obtains them from the Fortran 90 inquiry intrinsics.  They replace the */
+/*     slamc1/slamc2 probe of the deprecated slamchf77.f, which measures the */
+/*     format at run time and is only correct if intermediates are genuinely */
+/*     rounded to single.  That does not hold on x87: the probe measures the */
+/*     80 bit register format instead, and slamch then returns 0 for the safe */
+/*     minimum and +Inf for the overflow threshold.  Reading the constants */
+/*     also makes this routine thread safe, which the cached, probed version */
+/*     was not. */
+
+    eps = FLT_EPSILON * 0.5f;
+
+    if (lsame_(cmach, "E")) {
+	rmach = eps;
+    } else if (lsame_(cmach, "S")) {
+	sfmin = FLT_MIN;
+	small = 1.f / FLT_MAX;
 	if (small >= sfmin) {
 
 /*           Use SMALL plus a bit, to avoid the possibility of rounding */
@@ -409,32 +393,28 @@ real slamch_(char *cmach)
 
 	    sfmin = small * (eps + 1.f);
 	}
-    }
-
-    if (lsame_(cmach, "E")) {
-	rmach = eps;
-    } else if (lsame_(cmach, "S")) {
 	rmach = sfmin;
     } else if (lsame_(cmach, "B")) {
-	rmach = base;
+	rmach = FLT_RADIX;
     } else if (lsame_(cmach, "P")) {
-	rmach = prec;
+	rmach = eps * FLT_RADIX;
     } else if (lsame_(cmach, "N")) {
-	rmach = t;
+	rmach = FLT_MANT_DIG;
     } else if (lsame_(cmach, "R")) {
-	rmach = rnd;
+	rmach = 1.f;
     } else if (lsame_(cmach, "M")) {
-	rmach = emin;
+	rmach = FLT_MIN_EXP;
     } else if (lsame_(cmach, "U")) {
-	rmach = rmin;
+	rmach = FLT_MIN;
     } else if (lsame_(cmach, "L")) {
-	rmach = emax;
+	rmach = FLT_MAX_EXP;
     } else if (lsame_(cmach, "O")) {
-	rmach = rmax;
+	rmach = FLT_MAX;
+    } else {
+	rmach = 0.f;
     }
 
     ret_val = rmach;
-    first = FALSE_;
     return ret_val;
 
 /*     End of SLAMCH */

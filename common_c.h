@@ -119,6 +119,7 @@
 #endif
 
 #define	CGEMM_BETA		cgemm_beta
+#define	SME_CGEMM_KERNEL	sme_cgemm_kernel
 
 #define	CGEMM_KERNEL_N		cgemm_kernel_n
 #define	CGEMM_KERNEL_L		cgemm_kernel_l
@@ -326,6 +327,7 @@
 #define	CTRSM_ILTNCOPY		gotoblas -> ctrsm_iltncopy
 
 #define	CGEMM_BETA		gotoblas -> cgemm_beta
+#define	SME_CGEMM_KERNEL	gotoblas -> sme_cgemm_kernel
 #define	CGEMM_KERNEL_N		gotoblas -> cgemm_kernel_n
 #define	CGEMM_KERNEL_L		gotoblas -> cgemm_kernel_l
 #define	CGEMM_KERNEL_R		gotoblas -> cgemm_kernel_r

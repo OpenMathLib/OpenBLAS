@@ -99,10 +99,15 @@ else
 GOTO_HFLOAT_TARGETS=
 endif
 
+ifeq ($(USE_OPENMP), 1)
+SMALLSCALING=smallscaling
+endif
+
 ifeq ($(OSNAME), WINNT)
 
 goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        scholesky.goto dcholesky.goto ccholesky.goto zcholesky.goto \
+       cblas_sgemm.goto cblas_dgemm.goto cblas_cgemm.goto cblas_zgemm.goto \
        sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        strmm.goto dtrmm.goto ctrmm.goto ztrmm.goto \
        strsm.goto dtrsm.goto ctrsm.goto ztrsm.goto \
@@ -272,6 +277,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
 else
 
 goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
+       cblas_sgemm.goto cblas_dgemm.goto cblas_cgemm.goto cblas_zgemm.goto \
        strmm.goto dtrmm.goto ctrmm.goto ztrmm.goto \
        strsm.goto dtrsm.goto ctrsm.goto ztrsm.goto \
        sspr.goto dspr.goto \
@@ -305,7 +311,7 @@ goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        stpsv.goto dtpsv.goto ctpsv.goto ztpsv.goto \
        strsv.goto dtrsv.goto ctrsv.goto ztrsv.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto \
-       smallscaling \
+       $(SMALLSCALING) \
        isamax.goto idamax.goto icamax.goto izamax.goto \
        ismax.goto idmax.goto \
        isamin.goto idamin.goto icamin.goto izamin.goto \
@@ -684,6 +690,18 @@ endif
 
 sgemm.goto : sgemm.$(SUFFIX) $(OPENBLAS_LIB_DEP)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+cblas_sgemm.goto : cblas_sgemm.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+cblas_dgemm.goto : cblas_dgemm.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+cblas_cgemm.goto : cblas_cgemm.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+cblas_zgemm.goto : cblas_zgemm.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 sgemm.acml : sgemm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
@@ -3031,6 +3049,18 @@ cgemm.$(SUFFIX) : gemm.c
 zgemm.$(SUFFIX) : gemm.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
+cblas_sgemm.$(SUFFIX) : cblasgemm.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+cblas_dgemm.$(SUFFIX) : cblasgemm.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+cblas_cgemm.$(SUFFIX) : cblasgemm.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+cblas_zgemm.$(SUFFIX) : cblasgemm.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
 ssymm.$(SUFFIX) : symm.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
 
@@ -3537,7 +3567,11 @@ zomatcopy.$(SUFFIX) : omatcopy.c
 
 
 smallscaling: smallscaling.c $(OPENBLAS_LIB_DEP)
+ifeq ($(C_COMPILER), GCC)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(EXTRALIB) -fopenmp -lm -lpthread
+else
+	$(CC) $(CFLAGS) -o $(@F) $^ $(OPENBLAS_LIB) $(EXTRALIB) -quak -openmp -lm -lpthread
+endif
 
 clean ::
 	@rm -f *.goto *.mkl *.acml *.atlas *.veclib *.essl smallscaling

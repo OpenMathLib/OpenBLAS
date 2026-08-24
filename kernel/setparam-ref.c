@@ -238,6 +238,11 @@ gotoblas_t TABLE_NAME = {
   ssyr2k_direct_alpha_betaUTTS,
   ssyr2k_direct_alpha_betaLNTS,
   ssyr2k_direct_alpha_betaLTTS,
+#ifdef HAVE_SME
+  sme_sgemm_kernelTS,
+#else
+  NULL,
+#endif
 #endif
 
   sgemm_kernelTS, sgemm_betaTS,
@@ -332,6 +337,13 @@ gotoblas_t TABLE_NAME = {
 #endif
 
 #if  (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+#ifdef ARCH_ARM64
+#ifdef HAVE_SME
+  sme_dgemm_kernelTS,
+#else
+  NULL,
+#endif
+#endif
   dgemm_kernelTS, dgemm_betaTS,
 #if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
   dgemm_incopyTS, dgemm_itcopyTS,
@@ -476,6 +488,13 @@ gotoblas_t TABLE_NAME = {
   chemv_LTS, chemv_UTS, chemv_MTS, chemv_VTS,
 #endif
 #if (BUILD_COMPLEX)
+#ifdef ARCH_ARM64
+#ifdef HAVE_SME
+  sme_cgemm_kernelTS,
+#else
+  NULL,
+#endif
+#endif
   cgemm_kernel_nTS, cgemm_kernel_lTS, cgemm_kernel_rTS, cgemm_kernel_bTS,
   cgemm_betaTS,
 #if CGEMM_DEFAULT_UNROLL_M != CGEMM_DEFAULT_UNROLL_N
@@ -631,7 +650,13 @@ gotoblas_t TABLE_NAME = {
   zgeru_kTS, zgerc_kTS, zgerv_kTS, zgerd_kTS,
   zsymv_LTS, zsymv_UTS,
   zhemv_LTS, zhemv_UTS, zhemv_MTS, zhemv_VTS,
-
+#ifdef ARCH_ARM64
+#ifdef HAVE_SME
+  sme_zgemm_kernelTS,
+#else
+  NULL,
+#endif
+#endif
   zgemm_kernel_nTS, zgemm_kernel_lTS, zgemm_kernel_rTS, zgemm_kernel_bTS,
   zgemm_betaTS,
 

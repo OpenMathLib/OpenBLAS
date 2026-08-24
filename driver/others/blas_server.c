@@ -837,6 +837,7 @@ if (openblas_threads_callback_) {
 #endif
 
   routine = (int (*)(blas_arg_t *, void *, void *, double *, double *, BLASLONG))queue -> routine;
+  queue->worker_sb = queue->sb;
 
   if (queue -> mode & BLAS_LEGACY) {
     legacy_exec(routine, queue -> mode, queue -> args, queue -> sb);
@@ -1140,8 +1141,9 @@ if (!(queue -> mode & BLAS_COMPLEX)){
         /* Other types in future */
     }
 }
-queue->sb=sb;
     }
+
+    queue->worker_sb = sb;
 
 #ifdef MONITOR
 main_status[cpu] = MAIN_RUNNING2;

@@ -135,6 +135,31 @@ void ssyr2k_direct_alpha_betaLT(BLASLONG N, BLASLONG K,
 	float beta,
 	float * R, BLASLONG strideR);
 
+void sme_sgemm_kernel(char*, char*, BLASLONG M, BLASLONG N, BLASLONG K,
+	float * alpha,
+	float * A, BLASLONG ldA,
+	float * B, BLASLONG ldB,
+	float * beta,
+	float * C, BLASLONG ldC);
+void sme_dgemm_kernel(const char*, const char*, const BLASLONG M, const BLASLONG N, const BLASLONG K,
+	const double * alpha,
+	const double * A, const BLASLONG ldA,
+	const double * B, const BLASLONG ldB,
+	const double * beta,
+	double * C, const BLASLONG ldC);
+void sme_cgemm_kernel(const char*, const char*, const BLASLONG M, const BLASLONG N, const BLASLONG K,
+	const float alpha_r, const float alpha_i,
+	const float * A, const BLASLONG ldA,
+	const float * B, const BLASLONG ldB,
+	const float beta_r, const float beta_i,
+	float * C, const BLASLONG ldC);
+void sme_zgemm_kernel(const char*, const char*, const BLASLONG M, const BLASLONG N, const BLASLONG K,
+	const double alpha_r, const double alpha_i,
+	const double * A, const BLASLONG ldA,
+	const double * B, const BLASLONG ldB,
+	const double beta_r, const double beta_i,
+	double * C, const BLASLONG ldC);
+
 int sgemm_direct_performant(BLASLONG M, BLASLONG N, BLASLONG K);
 
 int shgemm_beta(BLASLONG, BLASLONG, BLASLONG, float,

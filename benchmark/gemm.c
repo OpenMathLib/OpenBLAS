@@ -1,3 +1,4 @@
+//#pragma clang optimize off
 /***************************************************************************
 Copyright (c) 2014, The OpenBLAS Project
 All rights reserved.
@@ -45,6 +46,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define IFLOAT hfloat16
 #else
 #define GEMM   BLASFUNC(sgemm)
+#undef IFLOAT
 #define IFLOAT float
 #endif
 
@@ -186,7 +188,7 @@ int main(int argc, char *argv[]){
 
     timeg = time1/loops;
     fprintf(stderr,
-	    " %10.2f MFlops %10.6f sec\n",
+	    " %10.2lf MFlops %10.6f sec\n",
 	    COMPSIZE * COMPSIZE * 2. * (double)k * (double)m * (double)n / timeg * 1.e-6, time1);
     
   }

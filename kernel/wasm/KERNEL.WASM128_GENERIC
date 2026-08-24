@@ -40,8 +40,8 @@ DSUMKERNEL  = ../arm/sum.c
 CSUMKERNEL  = ../arm/zsum.c
 ZSUMKERNEL  = ../arm/zsum.c
 
-SAXPYKERNEL  = ../x86_64/saxpy.c
-DAXPYKERNEL  = ../x86_64/daxpy.c
+SAXPYKERNEL  = axpy.c
+DAXPYKERNEL  = axpy.c
 CAXPYKERNEL  = ../riscv64/zaxpy.c
 ZAXPYKERNEL  = ../riscv64/zaxpy.c
 
@@ -85,40 +85,40 @@ DSWAPKERNEL  = ../riscv64/swap.c
 CSWAPKERNEL  = ../riscv64/zswap.c
 ZSWAPKERNEL  = ../riscv64/zswap.c
 
-SGEMVNKERNEL = ../riscv64/gemv_n.c
-DGEMVNKERNEL = ../riscv64/gemv_n.c
+SGEMVNKERNEL = gemv_n.c
+DGEMVNKERNEL = gemv_n.c
 CGEMVNKERNEL = ../riscv64/zgemv_n.c
 ZGEMVNKERNEL = ../riscv64/zgemv_n.c
 
-SGEMVTKERNEL = ../riscv64/gemv_t.c
-DGEMVTKERNEL = ../riscv64/gemv_t.c
+SGEMVTKERNEL = gemv_t.c
+DGEMVTKERNEL = gemv_t.c
 CGEMVTKERNEL = ../riscv64/zgemv_t.c
 ZGEMVTKERNEL = ../riscv64/zgemv_t.c
 
-STRMMKERNEL	= ../generic/trmmkernel_2x2.c
-DTRMMKERNEL	= ../generic/trmmkernel_2x2.c
+STRMMKERNEL	= ../generic/trmmkernel_4x4.c
+DTRMMKERNEL	= trmmkernel_4x4_wasm128.c
 CTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
 ZTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
 
-SGEMMKERNEL    =  gemmkernel_wasm128.c
-SGEMMONCOPY    =  ../generic/gemm_ncopy_2.c
-SGEMMOTCOPY    =  ../generic/gemm_tcopy_2.c
+SGEMMKERNEL    =  gemmkernel_4x4_wasm128.c
+SGEMMONCOPY    =  ../generic/gemm_ncopy_4.c
+SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-DGEMMKERNEL    =  gemmkernel_wasm128.c
-DGEMMONCOPY    = ../generic/gemm_ncopy_2.c
-DGEMMOTCOPY    = ../generic/gemm_tcopy_2.c
+DGEMMKERNEL    =  gemmkernel_4x4_wasm128.c
+DGEMMONCOPY    = ../generic/gemm_ncopy_4.c
+DGEMMOTCOPY    = ../generic/gemm_tcopy_4.c
 DGEMMONCOPYOBJ = dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ = dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-CGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
+CGEMMKERNEL    = zgemmkernel_2x2_wasm128.c
 CGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
 CGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
 CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-ZGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
+ZGEMMKERNEL    = zgemmkernel_2x2_wasm128.c
 ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
 ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
 ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)

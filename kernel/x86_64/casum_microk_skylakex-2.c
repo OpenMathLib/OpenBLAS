@@ -130,7 +130,7 @@ static FLOAT casum_kernel(BLASLONG n, FLOAT *x)
         accum_2 = _mm512_setzero_ps();
         accum_3 = _mm512_setzero_ps();
 
-        // alignment has side-effect when the size of input array is not large enough
+        // shorter unrolled path for small inputs
         if (n2 < 256) {
             if (n2 >= 128) {
                 x00 = _mm512_loadu_ps(&x1[  0]);
@@ -217,29 +217,22 @@ static FLOAT casum_kernel(BLASLONG n, FLOAT *x)
 
             sumf =  _mm512_reduce_add_ps(accum_0);
         }
-        // n2 >= 256, doing alignment
+        /* n2 >= 256. Deliberately no peeling to an alignment boundary:
+           peeling makes the grouping of the sum into accumulators - and
+           hence the rounding of the result - depend on the buffer address.
+           Unaligned loads keep the result a function of n alone, and cost
+           the same as aligned loads when the address happens to be
+           aligned. */
         else {
 
-            int align_header = ((64 - ((uintptr_t)x1 & (uintptr_t)0x3f)) >> 2) & 0xf;
-
-            if (0 != align_header) {
-                uint16_t align_mask16 = (((uint16_t)0xffff) >> (16 - align_header));
-                x00 = _mm512_maskz_loadu_ps(*((__mmask16*) &align_mask16), &x1[0]);
-                x00 = _mm512_and_ps(x00, abs_mask);
-                accum_0 = _mm512_add_ps(accum_0, x00);
-
-                n2 -= align_header;
-                x1 += align_header;
-            }
-
-            x00 = _mm512_load_ps(&x1[  0]);
-            x01 = _mm512_load_ps(&x1[ 16]);
-            x02 = _mm512_load_ps(&x1[ 32]);
-            x03 = _mm512_load_ps(&x1[ 48]);
-            x04 = _mm512_load_ps(&x1[ 64]);
-            x05 = _mm512_load_ps(&x1[ 80]);
-            x06 = _mm512_load_ps(&x1[ 96]);
-            x07 = _mm512_load_ps(&x1[112]);
+            x00 = _mm512_loadu_ps(&x1[  0]);
+            x01 = _mm512_loadu_ps(&x1[ 16]);
+            x02 = _mm512_loadu_ps(&x1[ 32]);
+            x03 = _mm512_loadu_ps(&x1[ 48]);
+            x04 = _mm512_loadu_ps(&x1[ 64]);
+            x05 = _mm512_loadu_ps(&x1[ 80]);
+            x06 = _mm512_loadu_ps(&x1[ 96]);
+            x07 = _mm512_loadu_ps(&x1[112]);
             
             n2 -= 128;
             x1 += 128;
@@ -251,26 +244,26 @@ static FLOAT casum_kernel(BLASLONG n, FLOAT *x)
                 x03 = _mm512_and_ps(x03, abs_mask);
                 
                 accum_0 = _mm512_add_ps(accum_0, x00);
-                x00 = _mm512_load_ps(&x1[  0]);
+                x00 = _mm512_loadu_ps(&x1[  0]);
                 accum_1 = _mm512_add_ps(accum_1, x01);
-                x01 = _mm512_load_ps(&x1[ 16]);
+                x01 = _mm512_loadu_ps(&x1[ 16]);
                 accum_2 = _mm512_add_ps(accum_2, x02);
-                x02 = _mm512_load_ps(&x1[ 32]);
+                x02 = _mm512_loadu_ps(&x1[ 32]);
                 accum_3 = _mm512_add_ps(accum_3, x03);
-                x03 = _mm512_load_ps(&x1[ 48]);
+                x03 = _mm512_loadu_ps(&x1[ 48]);
                 
                 x04 = _mm512_and_ps(x04, abs_mask);
                 x05 = _mm512_and_ps(x05, abs_mask);
                 x06 = _mm512_and_ps(x06, abs_mask);
                 x07 = _mm512_and_ps(x07, abs_mask);
                 accum_0 = _mm512_add_ps(accum_0, x04);
-                x04 = _mm512_load_ps(&x1[ 64]);
+                x04 = _mm512_loadu_ps(&x1[ 64]);
                 accum_1 = _mm512_add_ps(accum_1, x05);
-                x05 = _mm512_load_ps(&x1[ 80]);
+                x05 = _mm512_loadu_ps(&x1[ 80]);
                 accum_2 = _mm512_add_ps(accum_2, x06);
-                x06 = _mm512_load_ps(&x1[ 96]);
+                x06 = _mm512_loadu_ps(&x1[ 96]);
                 accum_3 = _mm512_add_ps(accum_3, x07);
-                x07 = _mm512_load_ps(&x1[112]);
+                x07 = _mm512_loadu_ps(&x1[112]);
 
                 n2 -= 128;
                 x1 += 128;
@@ -296,10 +289,10 @@ static FLOAT casum_kernel(BLASLONG n, FLOAT *x)
             accum_3 = _mm512_add_ps(accum_3, x07);
 
             if (n2 >= 64) {
-                x00 = _mm512_load_ps(&x1[ 0]);
-                x01 = _mm512_load_ps(&x1[16]);
-                x02 = _mm512_load_ps(&x1[32]);
-                x03 = _mm512_load_ps(&x1[48]);
+                x00 = _mm512_loadu_ps(&x1[ 0]);
+                x01 = _mm512_loadu_ps(&x1[16]);
+                x02 = _mm512_loadu_ps(&x1[32]);
+                x03 = _mm512_loadu_ps(&x1[48]);
                 x00 = _mm512_and_ps(x00, abs_mask);
                 x01 = _mm512_and_ps(x01, abs_mask);
                 x02 = _mm512_and_ps(x02, abs_mask);
@@ -314,8 +307,8 @@ static FLOAT casum_kernel(BLASLONG n, FLOAT *x)
             }
 
             if (n2 >= 32) {
-                x00 = _mm512_load_ps(&x1[ 0]);
-                x01 = _mm512_load_ps(&x1[16]);
+                x00 = _mm512_loadu_ps(&x1[ 0]);
+                x01 = _mm512_loadu_ps(&x1[16]);
                 x00 = _mm512_and_ps(x00, abs_mask);
                 x01 = _mm512_and_ps(x01, abs_mask);
                 accum_0 = _mm512_add_ps(accum_0, x00);
@@ -326,7 +319,7 @@ static FLOAT casum_kernel(BLASLONG n, FLOAT *x)
             }
 
             if (n2 >= 16) {
-                x00 = _mm512_load_ps(&x1[ 0]);
+                x00 = _mm512_loadu_ps(&x1[ 0]);
                 x00 = _mm512_and_ps(x00, abs_mask);
                 accum_0 = _mm512_add_ps(accum_0, x00);
 
@@ -336,7 +329,7 @@ static FLOAT casum_kernel(BLASLONG n, FLOAT *x)
 
             if (n2) {
                 uint16_t tail_mask16 = (((uint16_t) 0xffff) >> (16 - n2));
-                x00 = _mm512_maskz_load_ps(*((__mmask16*) &tail_mask16), &x1[ 0]);
+                x00 = _mm512_maskz_loadu_ps(*((__mmask16*) &tail_mask16), &x1[ 0]);
                 x00 = _mm512_and_ps(x00, abs_mask);
                 accum_0 = _mm512_add_ps(accum_0, x00);
             }

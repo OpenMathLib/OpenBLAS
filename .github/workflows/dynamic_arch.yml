@@ -593,7 +593,7 @@ jobs:
       - name: Build OpenBLAS
         run: |
           cd build
-          cmake --build . --target dgemm_thread_safety dgemm_thread_safety_mixed dgemv_thread_safety
+          cmake --build . --target dgemm_thread_safety dgemm_thread_safety_mixed dgemm_thread_safety_shutdown dgemv_thread_safety
 
       - name: Show ccache status
         continue-on-error: true
@@ -611,7 +611,7 @@ jobs:
         run: |
           cd build
           export PATH="$PWD/lib:$PATH"
-          OPENBLAS_NUM_THREADS=8 OMP_NUM_THREADS=16 ctest -R 'dgemm_thread_safety|dgemm_thread_safety_mixed|dgemv_thread_safety' --output-on-failure
+          OPENBLAS_NUM_THREADS=8 OMP_NUM_THREADS=16 ctest -R 'dgemm_thread_safety|dgemm_thread_safety_mixed|dgemm_thread_safety_shutdown|dgemv_thread_safety' --output-on-failure
 
 
   cross_build:

@@ -68,7 +68,7 @@ static FLOAT dm1 = -1.;
 #define GEMM_PQ  MAX(GEMM_P, GEMM_Q)
 
 //leave some space for GEMM_ALIGN in sb2
-#define REAL_GEMM_R (GEMM_R - 2*GEMM_PQ)
+#define REAL_GEMM_R (MAX(GEMM_R, GEMM_PQ + 96) - GEMM_PQ)
 
 #if 0
 #define SHARED_ARRAY

@@ -158,6 +158,9 @@ x86_64:
 
 wasm:
  - added optimized kernels for STRSM and DTRSM
+ - added a 4x4 WASM SIMD128 GEMM microkernel for SGEMM/DGEMM with matching
+   4-wide packing and TRMM, using relaxed SIMD madd in the inner loop
+ - gated leftover WASM TRSM call counters behind OPENBLAS_WASM_TRSM_PROFILE
 
 ====================================================================
 Version 0.3.32

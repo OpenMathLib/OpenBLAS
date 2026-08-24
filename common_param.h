@@ -276,6 +276,7 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   void (*ssyr2k_direct_alpha_betaUT) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float *, BLASLONG);
   void (*ssyr2k_direct_alpha_betaLN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float *, BLASLONG);
   void (*ssyr2k_direct_alpha_betaLT) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float *, BLASLONG);
+  void (*sme_sgemm_kernel) (char*, char*, BLASLONG, BLASLONG, BLASLONG, float*, float *, BLASLONG , float *, BLASLONG ,float*, float *, BLASLONG);
 #endif
 
   
@@ -401,6 +402,9 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*dsymv_U) (BLASLONG, BLASLONG, double,  double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
 #endif
 #if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+#ifdef ARCH_ARM64
+  void (*sme_dgemm_kernel) (const char*, const char*, const BLASLONG, const BLASLONG, const BLASLONG, const double*, const double *, const BLASLONG , const double *, const BLASLONG ,const double*, double *, const BLASLONG);
+#endif
   int    (*dgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG);
   int    (*dgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double  *, BLASLONG);
 
@@ -616,6 +620,9 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*chemv_M) (BLASLONG, BLASLONG, float,  float, float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
   int    (*chemv_V) (BLASLONG, BLASLONG, float,  float, float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
 
+#ifdef ARCH_ARM64
+  void (*sme_cgemm_kernel) (const char*, const char*, const BLASLONG, const BLASLONG, const BLASLONG, const float, const float, const float *, const BLASLONG , const float *, const BLASLONG, const float, const float, float *, const BLASLONG);
+#endif
   int    (*cgemm_kernel_n )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
   int    (*cgemm_kernel_l )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
   int    (*cgemm_kernel_r )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
@@ -825,6 +832,10 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*zhemv_U) (BLASLONG, BLASLONG, double,  double, double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
   int    (*zhemv_M) (BLASLONG, BLASLONG, double,  double, double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
   int    (*zhemv_V) (BLASLONG, BLASLONG, double,  double, double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
+
+#ifdef ARCH_ARM64
+  void (*sme_zgemm_kernel) (const char*, const char*, const BLASLONG, const BLASLONG, const BLASLONG, const double, const double, const double *, const BLASLONG , const double *, const BLASLONG, const double, const double, double *, const BLASLONG);
+#endif
 
   int    (*zgemm_kernel_n )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
   int    (*zgemm_kernel_l )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);

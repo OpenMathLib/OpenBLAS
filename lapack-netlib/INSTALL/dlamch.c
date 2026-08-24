@@ -1,3 +1,4 @@
+#include <float.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -354,29 +355,13 @@ static doublereal c_b32 = 0.;
 /*  ===================================================================== */
 doublereal dlamch_(char *cmach)
 {
-    /* Initialized data */
-
-    static logical first = TRUE_;
-
     /* System generated locals */
-    integer i__1;
     doublereal ret_val;
 
     /* Local variables */
-    static doublereal base;
-    integer beta;
-    static doublereal emin, prec, emax;
-    integer imin, imax;
-    logical lrnd;
-    static doublereal rmin, rmax, t;
     doublereal rmach;
     extern logical lsame_(char *, char *);
-    doublereal small;
-    static doublereal sfmin;
-    extern /* Subroutine */ int dlamc2_(integer *, integer *, logical *, 
-	    doublereal *, integer *, doublereal *, integer *, doublereal *);
-    integer it;
-    static doublereal rnd, eps;
+    doublereal small, sfmin, eps;
 
 
 /*  -- LAPACK auxiliary routine (version 3.7.0) -- */
@@ -385,24 +370,23 @@ doublereal dlamch_(char *cmach)
 /*     April 2012 */
 
 
-    if (first) {
-	dlamc2_(&beta, &it, &lrnd, &eps, &imin, &rmin, &imax, &rmax);
-	base = (doublereal) beta;
-	t = (doublereal) it;
-	if (lrnd) {
-	    rnd = 1.;
-	    i__1 = 1 - it;
-	    eps = pow_di(&base, &i__1) / 2;
-	} else {
-	    rnd = 0.;
-	    i__1 = 1 - it;
-	    eps = pow_di(&base, &i__1);
-	}
-	prec = eps * base;
-	emin = (doublereal) imin;
-	emax = (doublereal) imax;
-	sfmin = rmin;
-	small = 1. / rmax;
+/*     The values below are those returned by the current dlamch.f, which */
+/*     obtains them from the Fortran 90 inquiry intrinsics.  They replace the */
+/*     dlamc1/dlamc2 probe of the deprecated dlamchf77.f, which measures the */
+/*     format at run time and is only correct if double intermediates are */
+/*     genuinely rounded to double.  That does not hold on x87: the probe */
+/*     measures the 80 bit register format instead, and dlamch then returns 0 */
+/*     for the safe minimum and +Inf for the overflow threshold.  Reading the */
+/*     constants also makes this routine thread safe, which the cached, */
+/*     probed version was not. */
+
+    eps = DBL_EPSILON * 0.5;
+
+    if (lsame_(cmach, "E")) {
+	rmach = eps;
+    } else if (lsame_(cmach, "S")) {
+	sfmin = DBL_MIN;
+	small = 1. / DBL_MAX;
 	if (small >= sfmin) {
 
 /*           Use SMALL plus a bit, to avoid the possibility of rounding */
@@ -410,32 +394,28 @@ doublereal dlamch_(char *cmach)
 
 	    sfmin = small * (eps + 1.);
 	}
-    }
-
-    if (lsame_(cmach, "E")) {
-	rmach = eps;
-    } else if (lsame_(cmach, "S")) {
 	rmach = sfmin;
     } else if (lsame_(cmach, "B")) {
-	rmach = base;
+	rmach = FLT_RADIX;
     } else if (lsame_(cmach, "P")) {
-	rmach = prec;
+	rmach = eps * FLT_RADIX;
     } else if (lsame_(cmach, "N")) {
-	rmach = t;
+	rmach = DBL_MANT_DIG;
     } else if (lsame_(cmach, "R")) {
-	rmach = rnd;
+	rmach = 1.;
     } else if (lsame_(cmach, "M")) {
-	rmach = emin;
+	rmach = DBL_MIN_EXP;
     } else if (lsame_(cmach, "U")) {
-	rmach = rmin;
+	rmach = DBL_MIN;
     } else if (lsame_(cmach, "L")) {
-	rmach = emax;
+	rmach = DBL_MAX_EXP;
     } else if (lsame_(cmach, "O")) {
-	rmach = rmax;
+	rmach = DBL_MAX;
+    } else {
+	rmach = 0.;
     }
 
     ret_val = rmach;
-    first = FALSE_;
     return ret_val;
 
 /*     End of DLAMCH */

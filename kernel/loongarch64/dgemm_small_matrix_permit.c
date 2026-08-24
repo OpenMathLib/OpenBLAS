@@ -31,6 +31,7 @@ int CNAME(int transa, int transb, BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alph
 {
   double MNK = (double) M * (double) N * (double) K;
 
+#ifdef LA464
   if (transa) {
     if (MNK <= 24.0 * 24.0 * 24.0)
       return 1;
@@ -38,6 +39,17 @@ int CNAME(int transa, int transb, BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alph
     if (MNK <= 64.0 * 64.0 * 64.0)
       return 1;
   }
+#endif
+
+#ifdef LA264
+  if (transa) {
+    if (MNK <= 24.0 * 24.0 * 24.0)
+      return 1;
+  } else {
+    if (MNK <= 80.0 * 80.0 * 80.0)
+      return 1;
+  }
+#endif
 
   return 0;
 }

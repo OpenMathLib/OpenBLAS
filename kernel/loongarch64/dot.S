@@ -54,8 +54,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    LDINT   INCY,  0(INCY)
 #endif
 
-   MTC  s1, $r0
-   MTC  s2, $r0
+   movgr2fr.d  s1, $r0
+   movgr2fr.d  s2, $r0
    slli.d  INCX, INCX, BASE_SHIFT
    li.d  TEMP, SIZE
    slli.d INCY, INCY, BASE_SHIFT

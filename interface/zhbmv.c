@@ -204,6 +204,11 @@ void CNAME(enum CBLAS_ORDER order,
   if (incy < 0 ) y -= (n - 1) * incy * COMPSIZE;
 
   buffer = (FLOAT *)blas_memory_alloc(1);
+  if (!buffer) {
+    info = -999;
+    BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
+    return;
+  }
 
 #ifdef SMPBUG
   nthreads = num_cpu_avail(2);

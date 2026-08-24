@@ -14,6 +14,21 @@
 #endif
 #include "cpp_thread_safety_common.h"
 
+std::atomic<uint32_t> callbackInvocations(0);
+
+void thread_callback(int sync, openblas_dojob_callback doJob, int numJobs,
+                     size_t jobDataElementSize, void* jobData, int doJobData){
+	(void)sync;
+	callbackInvocations.fetch_add(1, std::memory_order_relaxed);
+	std::vector<std::thread> workers;
+	workers.reserve(numJobs);
+	char* jobs = static_cast<char*>(jobData);
+	for(int i=0; i<numJobs; i++)
+		workers.emplace_back(doJob, i, jobs + i * jobDataElementSize, doJobData);
+	for(auto& worker : workers)
+		worker.join();
+}
+
 void compute_dgemm_pair(std::vector<double>& transA, std::vector<double>& noTransA, std::vector<double>& B, double* firstOutput, double* secondOutput, const blasint randomMatSize, const bool sameVariant){
 	cblas_dgemm(CblasRowMajor, CblasTrans, CblasNoTrans, randomMatSize, 2, 2, 1.0, &transA[0], randomMatSize, &B[0], 2, 0.0, firstOutput, 2);
 	if (sameVariant)
@@ -48,26 +63,31 @@ int main(int argc, char* argv[]){
 	uint32_t numTestRounds = 200;
 	uint32_t maxHwThreads = GetMaxHwThreads();
 	bool sameVariant = false;
+	bool useCallback = false;
 
 	if (maxHwThreads < numConcurrentThreads)
 		numConcurrentThreads = maxHwThreads;
 
-	if (argc != 1 && argc != 4 && argc != 5){
-		std::cout<<"ERROR: expected zero arguments, or: <M> <threads> <rounds> [sameVariant]"<<std::endl;
+	std::vector<std::string> positionalArgs;
+	for (int i = 1; i < argc; i++){
+		std::cout<<argv[i]<<std::endl;
+		if (std::string(argv[i]) == "--callback")
+			useCallback = true;
+		else
+			positionalArgs.push_back(argv[i]);
+	}
+
+	if (!positionalArgs.empty() && positionalArgs.size() != 3 && positionalArgs.size() != 4){
+		std::cout<<"ERROR: expected: [<M> <threads> <rounds> [sameVariant]] [--callback]"<<std::endl;
 		return 1;
 	}
 
-	if(argc == 4 || argc == 5){
-		std::vector<std::string> cliArgs;
-		for (int i = 1; i < argc; i++){
-			cliArgs.push_back(argv[i]);
-			std::cout<<argv[i]<<std::endl;
-		}
-		randomMatSize = std::stoul(cliArgs[0]);
-		numConcurrentThreads = std::stoul(cliArgs[1]);
-		numTestRounds = std::stoul(cliArgs[2]);
-		if (argc == 5)
-			sameVariant = std::stoul(cliArgs[3]) != 0;
+	if(!positionalArgs.empty()){
+		randomMatSize = std::stoul(positionalArgs[0]);
+		numConcurrentThreads = std::stoul(positionalArgs[1]);
+		numTestRounds = std::stoul(positionalArgs[2]);
+		if (positionalArgs.size() == 4)
+			sameVariant = std::stoul(positionalArgs[3]) != 0;
 	}
 
 	FailIfThreadsAreZero(numConcurrentThreads);
@@ -92,6 +112,8 @@ int main(int argc, char* argv[]){
 	std::cout<<"Number of testing rounds : "<<numTestRounds<<'\n';
 	std::cout<<"Second DGEMM uses "<<(sameVariant ? "the same transpose variant" : "a different transpose variant")<<'\n';
 	std::cout<<"OpenBLAS internal threads : "<<openblas_get_num_threads()<<'\n';
+	if (useCallback)
+		std::cout<<"Thread execution backend : caller callback\n";
 	std::cout<<"This test will need "<<(static_cast<uint64_t>(matrixElements) * 2 * 8 + static_cast<uint64_t>(outputElements) * (2 + 2 * numConcurrentThreads) * 8)/static_cast<double>(1024*1024)<<" MiB of RAM\n"<<std::endl;
 
 	std::cout<<"Filling matrices with deterministic values..."<<std::flush;
@@ -110,6 +132,9 @@ int main(int argc, char* argv[]){
 	compute_dgemm_pair(transA, noTransA, B, &referenceFirst[0], &referenceSecond[0], randomMatSize, sameVariant);
 	std::cout<<"done\n";
 
+	if (useCallback)
+		openblas_set_threads_callback_function(thread_callback);
+
 	std::cout<<"Testing mixed CBLAS DGEMM thread safety\n";
 	std::cout<<"Launching "<<numConcurrentThreads<<" worker threads..."<<std::flush;
 	for(uint32_t i=0; i<numConcurrentThreads; i++){
@@ -127,6 +152,15 @@ int main(int argc, char* argv[]){
 		mismatches += mismatchBlock[i];
 	}
 	std::cout<<"done\n";
+
+	if (useCallback) {
+		const uint32_t invocations = callbackInvocations.load();
+		std::cout<<"Thread callback invocations: "<<invocations<<std::endl;
+		if (invocations == 0) {
+			std::cout<<"Thread callback was not invoked!"<<std::endl;
+			return 1;
+		}
+	}
 
 	std::cout<<"Mixed DGEMM mismatches: "<<mismatches<<std::endl;
 	if (mismatches != 0) {

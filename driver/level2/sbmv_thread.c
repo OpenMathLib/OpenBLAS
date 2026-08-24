@@ -349,7 +349,7 @@ int CNAME(BLASLONG n, BLASLONG k, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x
 #else
 	    ONE, ZERO,
 #endif
-	    (FLOAT*)(queue[i].sb), 1, buffer, 1, NULL, 0);
+	    (FLOAT*)(queue[i].worker_sb), 1, buffer, 1, NULL, 0);
   }
 
   AXPYU_K(n, 0, 0,

@@ -264,7 +264,11 @@ SKERNELOBJS += \
 ifdef USE_SME
 SKERNELOBJS += \
 	sgemm_direct_sme1_2VLx2VL$(TSUFFIX).$(SUFFIX) \
-	sgemm_direct_sme1_preprocess$(TSUFFIX).$(SUFFIX)
+	sgemm_direct_sme1_preprocess$(TSUFFIX).$(SUFFIX) \
+	sme_sgemm_kernel$(TSUFFIX).$(SUFFIX) \
+	sme_dgemm_kernel$(TSUFFIX).$(SUFFIX) \
+	sme_cgemm_kernel$(TSUFFIX).$(SUFFIX) \
+	sme_zgemm_kernel$(TSUFFIX).$(SUFFIX)
 endif
 endif
 endif
@@ -1064,6 +1068,14 @@ $(KDIR)sgemm_direct_sme1_2VLx2VL$(TSUFFIX).$(SUFFIX) :
 	$(CC) $(CFLAGS) -c $(KERNELDIR)/sgemm_direct_sme1_2VLx2VL.S -UDOUBLE -UCOMPLEX  -o $@
 $(KDIR)sgemm_direct_sme1_preprocess$(TSUFFIX).$(SUFFIX) : 
 	$(CC) $(CFLAGS) -c $(KERNELDIR)/sgemm_direct_sme1_preprocess.S -UDOUBLE -UCOMPLEX  -o $@
+$(KDIR)sme_sgemm_kernel$(TSUFFIX).$(SUFFIX) : 
+	$(CC) $(CFLAGS) -c $(KERNELDIR)/sme_sgemm_kernel.c -UDOUBLE -UCOMPLEX  -o $@
+$(KDIR)sme_dgemm_kernel$(TSUFFIX).$(SUFFIX) : 
+	$(CC) $(CFLAGS) -c $(KERNELDIR)/sme_dgemm_kernel.c -DDOUBLE -UCOMPLEX  -o $@
+$(KDIR)sme_cgemm_kernel$(TSUFFIX).$(SUFFIX) : 
+	$(CC) $(CFLAGS) -c $(KERNELDIR)/sme_cgemm_kernel.c -UDOUBLE -DCOMPLEX  -o $@
+$(KDIR)sme_zgemm_kernel$(TSUFFIX).$(SUFFIX) : 
+	$(CC) $(CFLAGS) -c $(KERNELDIR)/sme_zgemm_kernel.c -DDOUBLE -DCOMPLEX  -o $@
 endif
 endif
 endif

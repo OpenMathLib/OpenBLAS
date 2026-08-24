@@ -268,7 +268,6 @@ void NAME(char *TRANSA, char *TRANSB,
 
   int transa, transb, nrowa, nrowb;
   blasint info;
-  int order = -1;
 
   char transA, transB;
   IFLOAT *buffer;
@@ -317,7 +316,7 @@ void NAME(char *TRANSA, char *TRANSB,
 
   args.alpha = (void *)alpha;
   args.beta  = (void *)beta;
-
+  
   transA = *TRANSA;
   transB = *TRANSB;
 
@@ -346,7 +345,6 @@ void NAME(char *TRANSA, char *TRANSB,
   if (transB == 'R') transb = 2;
   if (transB == 'C') transb = 3;
 #endif
-
   nrowa = args.m;
   if (transa & 1) nrowa = args.k;
   nrowb = args.k;
@@ -562,22 +560,80 @@ if (strcmp(gotoblas_corename(), "armv9sme") == 0
  || strcmp(gotoblas_corename(), "vortexm4") == 0
 #endif
 )
-// if (support_sme1())
 #endif
+
   if (order == CblasRowMajor && k==lda && n==ldb && n==ldc && beta == 0 && alpha == 1.0 && TransA == CblasNoTrans && TransB == CblasNoTrans && SGEMM_DIRECT_PERFORMANT(m,n,k)) {
         SGEMM_DIRECT(m, n, k, a, lda, b, ldb, c, ldc);
         return;
   }
-else
- if (order == CblasRowMajor && k==lda && n==ldb && n==ldc && TransA == CblasNoTrans && TransB == CblasNoTrans && SGEMM_DIRECT_PERFORMANT(m,n,k)) {
+else if (order == CblasRowMajor && k==lda && n==ldb && n==ldc && TransA == CblasNoTrans && TransB == CblasNoTrans && SGEMM_DIRECT_PERFORMANT(m,n,k)) {
         SGEMM_DIRECT_ALPHA_BETA(m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
         return;
   }
 
-#endif
-#endif
+#endif //defined arm64
+#endif //defined complex
 
+
+#endif //defined CBLAS
+
+#if !defined(BFLOAT16)  && !defined(HFLOAT16)
+#if defined(ARCH_ARM64) && (defined(USE_SGEMM_KERNEL_DIRECT)||defined(DYNAMIC_ARCH))
+#if defined(DYNAMIC_ARCH)
+if (strcmp(gotoblas_corename(), "armv9sme") == 0
+#if defined(__clang__)
+ || strcmp(gotoblas_corename(), "vortexm4") == 0
 #endif
+)
+#endif //defined dynarch
+{
+char* TA,*TB;
+      if (transa & 1) 
+        TA = "T";
+	else 
+	TA= "N";
+      if (transb & 1) 
+        TB = "T";
+	else 
+	TB= "N";
+#ifndef COMPLEX
+      if (transa == 3) 
+	TA= "T";
+      if (transb == 3) 
+	TB= "T";
+FLOAT* al=(FLOAT*)args.alpha;
+FLOAT* be=(FLOAT*)args.beta;
+#ifndef DOUBLE
+        SME_SGEMM_KERNEL(TA,TB, args.m, args.n, args.k, al, args.a, args.lda, args.b, args.ldb, be, args.c, args.ldc);
+#else
+        SME_DGEMM_KERNEL(TA,TB, args.m, args.n, args.k, al, args.a, args.lda, args.b, args.ldb, be, args.c, args.ldc);
+#endif
+#else
+      if (transa == 2) 
+	TA= "R";
+      if (transb == 2) 
+	TB= "R";
+      if (transa == 3) 
+	TA= "C";
+      if (transb == 3) 
+	TB= "C";
+FLOAT* al=(FLOAT*)args.alpha;
+FLOAT* be=(FLOAT*)args.beta;
+#ifndef DOUBLE
+float _Complex c_al={al[0],al[1]};
+float _Complex c_be={be[0],be[1]};
+        SME_CGEMM_KERNEL(TA,TB, args.m, args.n, args.k, al[0],al[1], args.a, args.lda, args.b, args.ldb, be[0],be[1], args.c, args.ldc);
+#else
+double _Complex c_al={al[0],al[1]};
+double _Complex c_be={be[0],be[1]};
+        SME_ZGEMM_KERNEL(TA,TB, args.m, args.n, args.k, al[0],al[1], args.a, args.lda, args.b, args.ldb, be[0],be[1], args.c, args.ldc);
+#endif
+#endif
+	return;
+}
+#endif //defined arm64
+
+#endif //defined b/hfloat16 
 
 #if defined(__linux__) && defined(__x86_64__) && defined(BFLOAT16)
 #if defined(DYNAMIC_ARCH)
@@ -679,6 +735,7 @@ else
 #if USE_SMALL_MATRIX_OPT
 #if !defined(COMPLEX)
   if(GEMM_SMALL_MATRIX_PERMIT(transa, transb, args.m, args.n, args.k, *(FLOAT *)(args.alpha), *(FLOAT *)(args.beta))){
+
 	  if(*(FLOAT *)(args.beta) == 0.0){
 		(GEMM_SMALL_KERNEL_B0((transb << 2) | transa))(args.m, args.n, args.k, args.a, args.lda, *(FLOAT *)(args.alpha), args.b, args.ldb, args.c, args.ldc);
 	  }else{
@@ -699,7 +756,6 @@ else
 #endif
 
   buffer = (XFLOAT *)blas_memory_alloc(0);
-
 //For LOONGARCH64, applying an offset to the buffer is essential
 //for minimizing cache conflicts and optimizing performance.
 #if defined(ARCH_LOONGARCH64) && !defined(NO_AFFINITY)

@@ -168,6 +168,11 @@ SCABS_KERNEL	= ../generic/cabs.c
 DCABS_KERNEL	= ../generic/cabs.c
 QCABS_KERNEL	= ../generic/cabs.c
 
+SOMATCOPY_CT = ../arm/omatcopy_ct.c
+SOMATCOPY_RT = ../arm/omatcopy_rt.c
+DOMATCOPY_CT = ../arm/omatcopy_ct.c
+DOMATCOPY_RT = ../arm/omatcopy_rt.c
+
 #Dump kernel
 CGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c
 ZGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c
