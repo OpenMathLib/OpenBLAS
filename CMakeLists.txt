@@ -7,6 +7,11 @@ cmake_minimum_required(VERSION 3.16.0)
 set (CMAKE_ASM_SOURCE_FILE_EXTENSIONS "S")
 project(OpenBLAS C ASM)
 
+# Prevent in-tree builds to avoid overwriting Makefiles
+if (CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+  message(FATAL_ERROR "In-tree builds are not allowed. Use: cmake -B build -S .")
+endif ()
+
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
 set(OpenBLAS_PATCH_VERSION 34.dev)
@@ -29,6 +34,10 @@ set(LAPACK_STRLEN "" CACHE STRING "When building LAPACK, use this type (e.g. \"i
 
 option(BUILD_TESTING "Build LAPACK testsuite when building LAPACK" ON)
 
+option(BUILD_TESTS "Build the BLAS test suite (test/ and ctest/ directories)" ON)
+
+option(BUILD_UTESTS "Build the unit tests (utest/ directory)" ON)
+
 option(BUILD_BENCHMARKS "Build the collection of BLAS/LAPACK benchmarks" OFF)
 
 option(C_LAPACK "Build LAPACK from C sources instead of the original Fortran" OFF)
@@ -39,7 +48,13 @@ option(DYNAMIC_ARCH "Include support for multiple CPU targets, with automatic se
 
 option(DYNAMIC_OLDER "Include specific support for older x86 cpu models (Penryn,Dunnington,Atom,Nano,Opteron) with DYNAMIC_ARCH" OFF)
 
+set(DYNAMIC_LIST "" CACHE STRING "Manually specify list of CPU targets for DYNAMIC_ARCH instead of default list (semicolon-separated, e.g., 'HASWELL;SKYLAKEX')")
+
+set(TARGET_CORE "" CACHE STRING "Override TARGET for DYNAMIC_ARCH kernel selection. Used to specify which CPU-specific kernels to build.")
+
 option(BUILD_RELAPACK "Build with ReLAPACK (recursive implementation of several LAPACK functions on top of standard LAPACK)" OFF)
+
+option(RELAPACK_REPLACE "Use ReLAPACK to replace standard LAPACK routines instead of adding RELAPACK_ prefixed equivalents (requires BUILD_RELAPACK)" OFF)
 
 option(USE_LOCKING "Use locks even in single-threaded builds to make them callable from multiple threads" OFF)
 
@@ -51,6 +66,7 @@ option(FIXED_LIBNAME "Use a non-versioned name for the library and no symbolic l
 
 set(LIBNAMEPREFIX "" CACHE STRING  "Add a prefix to the openblas part of the library name" )
 set(LIBNAMESUFFIX "" CACHE STRING  "Add a suffix after the openblas part of the library name" )
+set(LIBSONAMEBASE "openblas" CACHE STRING "Base name for shared library soname (default: openblas)")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   option(NO_AFFINITY "Disable support for CPU affinity masks to avoid binding processes from e.g. R or numpy/scipy to a single core" ON)
@@ -78,6 +94,73 @@ endif()
 set(SYMBOLPREFIX "" CACHE STRING  "Add a prefix to all exported symbol names in the shared library to avoid conflicts with other BLAS libraries" )
 
 set(SYMBOLSUFFIX "" CACHE STRING  "Add a suffix to all exported symbol names in the shared library, e.g. _64 for INTERFACE64 builds" )
+
+# Target architecture - auto-detected if not specified
+set(TARGET "" CACHE STRING "Target CPU architecture (e.g. HASWELL, SANDYBRIDGE, NEHALEM, ARMV8, POWER9). Auto-detected if not specified.")
+
+# Force architecture (normally auto-detected from system)
+set(ARCH "" CACHE STRING "Force architecture (x86, x86_64, arm, arm64, power, mips, mips64, zarch, loongarch64, riscv64). Auto-detected if not specified.")
+
+# Binary type (32-bit or 64-bit)
+set(BINARY "" CACHE STRING "Build a 32-bit or 64-bit library (32 or 64). Auto-detected if not specified. Note: 32-bit disables AVX.")
+
+# Threading options
+set(USE_THREAD "" CACHE STRING "Enable multi-threading (0=disabled, 1=enabled). Auto-detected based on NUM_THREADS if not specified.")
+option(USE_OPENMP "Use OpenMP for threading instead of pthreads" OFF)
+set(NUM_THREADS "" CACHE STRING "Maximum number of threads. Auto-detected from CPU cores if not specified.")
+set(NUM_PARALLEL "1" CACHE STRING "Number of parallel OpenBLAS instances when using OpenMP (default: 1)")
+set(OMP_SCHED "static" CACHE STRING "OpenMP schedule type (static, dynamic, guided, auto, runtime). Default: static")
+
+# 64-bit integer interface
+option(INTERFACE64 "Use 64-bit integers for array indices (equivalent to -i8 in ifort)" OFF)
+
+# Vector extension control
+option(NO_AVX "Disable AVX kernel support (use for compatibility with older systems)" OFF)
+option(NO_AVX2 "Disable AVX2 optimizations" OFF)
+option(NO_AVX512 "Disable AVX512 optimizations" OFF)
+option(NO_SVE "Disable ARM SVE (Scalable Vector Extension) optimizations" OFF)
+option(NO_SME "Disable ARM SME (Scalable Matrix Extension) optimizations" OFF)
+
+# Memory tuning options
+set(BUFFERSIZE "" CACHE STRING "Memory buffer size factor (32<<n bytes, default: architecture-dependent, typically 25)")
+set(MAX_STACK_ALLOC "2048" CACHE STRING "Maximum stack allocation in bytes (0 to disable, may reduce GER/GEMV performance)")
+set(BLAS3_MEM_ALLOC_THRESHOLD "32" CACHE STRING "Thread count threshold for heap allocation of job arrays (default: 32)")
+set(GEMM_MULTITHREAD_THRESHOLD "4" CACHE STRING "Threshold below which GEMM runs single-threaded (default: 4)")
+
+# Threading implementation options
+option(USE_SIMPLE_THREADED_LEVEL3 "Use legacy threaded Level 3 implementation" OFF)
+option(USE_TLS "Use thread-local storage instead of central memory buffer (requires glibc 2.21+)" OFF)
+option(CONSISTENT_FPCSR "Synchronize floating-point CSR between threads (x86/x86_64/aarch64 only)" OFF)
+set(THREAD_TIMEOUT "" CACHE STRING "Thread spin-wait timeout as power of 2 cycles, e.g. 26 means 2^26 cycles (~25ms at 3GHz). Range: 4-30. Empty = default (28).")
+
+# System configuration
+option(BIGNUMA "Support systems with more than 16 NUMA nodes or more than 256 CPUs (Linux only)" OFF)
+option(EMBEDDED "Build for embedded/bare-metal systems (requires custom malloc/free)" OFF)
+option(ARM_SOFTFP_ABI "Use soft floating-point ABI on ARM (for compatibility with soft-float systems)" OFF)
+
+# Precision type options (default: build all types if all OFF)
+option(BUILD_SINGLE "Build single precision (REAL) functions" OFF)
+option(BUILD_DOUBLE "Build double precision (DOUBLE PRECISION) functions" OFF)
+option(BUILD_COMPLEX "Build complex (COMPLEX) functions" OFF)
+option(BUILD_COMPLEX16 "Build double complex (COMPLEX*16) functions" OFF)
+option(BUILD_BFLOAT16 "Build experimental BFLOAT16 functions" OFF)
+option(BUILD_HFLOAT16 "Build experimental HFLOAT16 functions" OFF)
+option(QUAD_PRECISION "Build with IEEE quad precision support (experimental, x86_64 only)" OFF)
+
+# CBLAS-only mode
+option(ONLY_CBLAS "Build only CBLAS interface (no Fortran BLAS, implies NO_LAPACK)" OFF)
+
+# Profiling and debugging
+option(FUNCTION_PROFILE "Enable function-level performance profiling" OFF)
+option(SANITY_CHECK "Compare results against reference BLAS (slow, for testing only)" OFF)
+option(UTEST_CHECK "Enable unit test result checking (implies SANITY_CHECK)" OFF)
+
+# Memory allocation methods
+option(SHMEM_ALLOCATION "Use shared memory for buffer allocation" OFF)
+option(STATIC_ALLOCATION "Use static memory allocation (for single-threaded or embedded use)" OFF)
+option(HUGETLB_ALLOCATION "Use huge pages for thread buffers via shared memory" OFF)
+set(HUGETLBFILE_ALLOCATION "" CACHE STRING "Path to hugetlbfs mount for huge page allocation (e.g. /hugepages)")
+option(DEVICEDRIVER_ALLOCATION "Use device driver for physically contiguous memory allocation" OFF)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows" AND BUILD_SHARED_LIBS AND NOT ("${SYMBOLPREFIX}${SYMBOLSUFFIX}" STREQUAL ""))
 set (DELETE_STATIC_LIBS "")
@@ -120,8 +203,6 @@ if(MSVC AND MSVC_STATIC_CRT)
   endforeach()
 endif()
 
-message(WARNING "CMake support is experimental. It does not yet support all build options and may not produce the same Makefiles that OpenBLAS ships with.")
-
 include("${PROJECT_SOURCE_DIR}/cmake/utils.cmake")
 include("${PROJECT_SOURCE_DIR}/cmake/system.cmake")
 
@@ -138,7 +219,7 @@ if (NOT DYNAMIC_ARCH)
   list(APPEND BLASDIRS kernel)
 endif ()
 
-if (DEFINED SANITY_CHECK)
+if (SANITY_CHECK)
   list(APPEND BLASDIRS reference)
 endif ()
 
@@ -150,16 +231,10 @@ if (NOT NO_LAPACK)
   list(APPEND SUBDIRS lapack)
 endif ()
 
-if (NOT DEFINED BUILD_BFLOAT16)
- set (BUILD_BFLOAT16 false)
-endif ()
-if (NOT DEFINED BUILD_HFLOAT16)
- set (BUILD_HFLOAT16 false)
-endif ()
 # set which float types we want to build for
-if (NOT DEFINED BUILD_SINGLE AND NOT DEFINED BUILD_DOUBLE AND NOT DEFINED BUILD_COMPLEX AND NOT DEFINED BUILD_COMPLEX16)
-  # if none are defined, build for all
-  # set(BUILD_BFLOAT16 true)
+# If none of the BUILD_* precision options are ON, build all (except BFLOAT16)
+if (NOT BUILD_SINGLE AND NOT BUILD_DOUBLE AND NOT BUILD_COMPLEX AND NOT BUILD_COMPLEX16)
+  # if none are enabled, build for all
   set(BUILD_SINGLE true)
   set(BUILD_DOUBLE true)
   set(BUILD_COMPLEX true)
@@ -447,31 +522,41 @@ if (USE_THREAD)
   endif()
 endif()
 
-#if (MSVC OR NOT NOFORTRAN)
-if (NOT NO_CBLAS)
-  if (NOT ONLY_CBLAS)
-  # Broken without fortran on unix
-    add_subdirectory(utest)
-endif()
+# Build unit tests
+if (BUILD_UTESTS)
+  if (NOT NO_CBLAS)
+    if (NOT ONLY_CBLAS)
+      # Broken without fortran on unix
+      add_subdirectory(utest)
+    endif()
+  endif()
 endif()
 
+# Build BLAS test suite
+if (BUILD_TESTS)
+  if (NOT NOFORTRAN)
+    if (NOT ONLY_CBLAS)
+      # Build test and ctest
+      add_subdirectory(test)
+    endif()
+  endif()
+  if(NOT NO_CBLAS)
+    if (NOT ONLY_CBLAS)
+      add_subdirectory(ctest)
+    endif()
+  endif()
+endif()
+
+# Build LAPACK test suite
 if (NOT NOFORTRAN)
- if (NOT ONLY_CBLAS)
-  # Build test and ctest
-  add_subdirectory(test)
- endif()
- if (BUILD_TESTING AND NOT BUILD_WITHOUT_LAPACK)
+  if (BUILD_TESTING AND NOT BUILD_WITHOUT_LAPACK)
     add_subdirectory(lapack-netlib/TESTING)
   endif()
 endif()
-  if(NOT NO_CBLAS)
-   if (NOT ONLY_CBLAS)
-    add_subdirectory(ctest)
-   endif()
-  endif()
-  if (CPP_THREAD_SAFETY_TEST OR CPP_THREAD_SAFETY_GEMV)
-    add_subdirectory(cpp_thread_test)
-  endif()
+
+if (CPP_THREAD_SAFETY_TEST OR CPP_THREAD_SAFETY_GEMV)
+  add_subdirectory(cpp_thread_test)
+endif()
 
 if (NOT FIXED_LIBNAME)
 set_target_properties(${OpenBLAS_LIBS} PROPERTIES

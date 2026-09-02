@@ -34,20 +34,44 @@ set(NETLIB_LAPACK_DIR "${PROJECT_SOURCE_DIR}/lapack-netlib")
 # System detection, via CMake.
 include("${PROJECT_SOURCE_DIR}/cmake/system_check.cmake")
 
-if(CMAKE_CROSSCOMPILING AND NOT DEFINED TARGET)
+# Handle cache options that should be auto-detected if empty
+# We keep the cache entry visible in ccmake but treat empty values as "not set"
+set(_TARGET_SET FALSE)
+if (DEFINED TARGET AND NOT "${TARGET}" STREQUAL "")
+  set(_TARGET_SET TRUE)
+endif()
+
+if(CMAKE_CROSSCOMPILING AND NOT _TARGET_SET)
   # Detect target without running getarch
   if (ARM64)
     set(TARGET "ARMV8")
+    set(_TARGET_SET TRUE)
   elseif(ARM)
     set(TARGET "ARMV7") # TODO: Ask compiler which arch this is
+    set(_TARGET_SET TRUE)
   else()
     message(FATAL_ERROR "When cross compiling, a TARGET is required.")
   endif()
 endif()
 
+set(_BINARY_SET FALSE)
+if (DEFINED BINARY AND NOT "${BINARY}" STREQUAL "")
+  set(_BINARY_SET TRUE)
+endif()
+
+set(_USE_THREAD_SET FALSE)
+if (DEFINED USE_THREAD AND NOT "${USE_THREAD}" STREQUAL "")
+  set(_USE_THREAD_SET TRUE)
+endif()
+
+set(_NUM_THREADS_SET FALSE)
+if (DEFINED NUM_THREADS AND NOT "${NUM_THREADS}" STREQUAL "")
+  set(_NUM_THREADS_SET TRUE)
+endif()
+
 # Other files expect CORE, which is actually TARGET and will become TARGET_CORE for kernel build. Confused yet?
 # It seems we are meant to use TARGET as input and CORE internally as kernel.
-if(NOT DEFINED CORE AND DEFINED TARGET)
+if(NOT DEFINED CORE AND _TARGET_SET)
   if (${TARGET} STREQUAL "LOONGSON3R5")
     set(CORE "LA464")
   elseif (${TARGET} STREQUAL "LOONGSON2K1000")
@@ -60,12 +84,14 @@ if(NOT DEFINED CORE AND DEFINED TARGET)
 endif()
 
 # TARGET_CORE will override TARGET which is used in DYNAMIC_ARCH=1.
-if (DEFINED TARGET_CORE)
+if (DEFINED TARGET_CORE AND NOT "${TARGET_CORE}" STREQUAL "")
+  message(STATUS "Using TARGET_CORE=${TARGET_CORE} for kernel selection")
   set(TARGET ${TARGET_CORE})
+  set(_TARGET_SET TRUE)
 endif ()
 
 # Force fallbacks for 32bit
-if (DEFINED BINARY AND DEFINED TARGET AND BINARY EQUAL 32)
+if (_BINARY_SET AND _TARGET_SET AND BINARY EQUAL 32)
   message(STATUS "Compiling a ${BINARY}-bit binary.")
   set(NO_AVX 1)
   if (${TARGET} STREQUAL "HASWELL" OR ${TARGET} STREQUAL "ZEN" OR ${TARGET} STREQUAL "SANDYBRIDGE" OR ${TARGET} STREQUAL "SKYLAKEX" OR ${TARGET} STREQUAL "COOPERLAKE" OR ${TARGET} STREQUAL "SAPPHIRERAPIDS")
@@ -83,7 +109,7 @@ if (DEFINED BINARY AND DEFINED TARGET AND BINARY EQUAL 32)
 endif ()
 
 
-if (DEFINED TARGET)
+if (_TARGET_SET)
   message(STATUS "-- -- -- -- -- -- -- -- -- -- -- -- --")
   message(STATUS "Targeting the ${TARGET} architecture.")
   set(GETARCH_FLAGS "-DFORCE_${TARGET}")
@@ -175,7 +201,7 @@ if (NOT DEFINED NUM_PARALLEL)
   set(NUM_PARALLEL 1)
 endif()
 
-if (NOT DEFINED NUM_THREADS)
+if (NOT _NUM_THREADS_SET)
   if (DEFINED NUM_CORES AND NOT NUM_CORES EQUAL 0)
     # HT?
     set(NUM_THREADS ${NUM_CORES})
@@ -186,7 +212,7 @@ endif()
 
 if (${NUM_THREADS} LESS 2)
   set(USE_THREAD 0)
-elseif(NOT DEFINED USE_THREAD)
+elseif(NOT _USE_THREAD_SET)
   set(USE_THREAD 1)
 endif ()
 
@@ -205,7 +231,7 @@ if (C_LAPACK)
 endif ()
 
 include("${PROJECT_SOURCE_DIR}/cmake/prebuild.cmake")
-if (DEFINED TARGET)
+if (_TARGET_SET)
   if (${TARGET} STREQUAL COOPERLAKE AND NOT NO_AVX512)
     if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU")
         if (${CMAKE_C_COMPILER_VERSION} VERSION_GREATER 10.09)
@@ -458,6 +484,10 @@ endif ()
 if (USE_OPENMP)
   find_package(OpenMP COMPONENTS C REQUIRED)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DUSE_OPENMP")
+  # Set OpenMP schedule type (default is static)
+  if (OMP_SCHED AND NOT "${OMP_SCHED}" STREQUAL "static")
+    set(CCOMMON_OPT "${CCOMMON_OPT} -DOMP_SCHED=${OMP_SCHED}")
+  endif ()
   if (NOT NOFORTRAN)
     find_package(OpenMP COMPONENTS Fortran REQUIRED)
     # Avoid mixed OpenMP linkage
@@ -486,6 +516,11 @@ if(EMBEDDED)
   set(CCOMMON_OPT "${CCOMMON_OPT} -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16")
 endif()
 
+if (ARM_SOFTFP_ABI)
+  set(CCOMMON_OPT "${CCOMMON_OPT} -mfloat-abi=softfp")
+  set(FCOMMON_OPT "${FCOMMON_OPT} -mfloat-abi=softfp")
+endif ()
+
 if (NEED_PIC)
   if (${CMAKE_C_COMPILER} STREQUAL "IBM")
     set(CCOMMON_OPT "${CCOMMON_OPT} -qpic=large")
@@ -504,20 +539,21 @@ if (NEED_PIC)
   endif()
 endif ()
 
-if (X86_64 OR ${CORE} STREQUAL POWER10 OR ARM64 OR LOONGARCH64)
-  set(SMALL_MATRIX_OPT TRUE)
+# Auto-enable SMALL_MATRIX_OPT on supported architectures (internal, not user-configurable)
+if (X86_64 OR (DEFINED CORE AND ${CORE} STREQUAL POWER10) OR ARM64 OR LOONGARCH64)
+  set(SMALL_MATRIX_OPT ON)
 endif ()
+
+# Auto-enable GEMM_GEMV_FORWARD on supported architectures (internal, not user-configurable)
 if (ARM64)
-  set(GEMM_GEMV_FORWARD TRUE)
-  set(SBGEMM_GEMV_FORWARD TRUE)
-  set(BGEMM_GEMV_FORWARD TRUE)
-endif ()
-if (POWER)
-  set(GEMM_GEMV_FORWARD TRUE)
-  set(SBGEMM_GEMV_FORWARD TRUE)
-endif ()
-if (RISCV64)
-  set(GEMM_GEMV_FORWARD TRUE)
+  set(GEMM_GEMV_FORWARD ON)
+  set(SBGEMM_GEMV_FORWARD ON)
+  set(BGEMM_GEMV_FORWARD ON)
+elseif (POWER)
+  set(GEMM_GEMV_FORWARD ON)
+  set(SBGEMM_GEMV_FORWARD ON)
+elseif (RISCV64)
+  set(GEMM_GEMV_FORWARD ON)
 endif ()
 
 if (GEMM_GEMV_FORWARD)
@@ -545,7 +581,8 @@ if (DYNAMIC_ARCH)
   endif ()
 endif ()
 
-if (DYNAMIC_LIST)
+if (DEFINED DYNAMIC_LIST AND NOT "${DYNAMIC_LIST}" STREQUAL "")
+  message(STATUS "Using custom DYNAMIC_LIST: ${DYNAMIC_LIST}")
   set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_LIST")
   foreach(DCORE ${DYNAMIC_LIST})
     set(CCOMMON_OPT "${CCOMMON_OPT} -DDYN_${DCORE}")
@@ -578,6 +615,14 @@ if (NO_AVX512)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DNO_AVX512")
 endif ()
 
+if (NO_SVE)
+  set(CCOMMON_OPT "${CCOMMON_OPT} -DNO_SVE")
+endif ()
+
+if (NO_SME)
+  set(CCOMMON_OPT "${CCOMMON_OPT} -DNO_SME")
+endif ()
+
 if (USE_THREAD)
   # USE_SIMPLE_THREADED_LEVEL3 = 1
   # NO_AFFINITY = 1
@@ -604,6 +649,10 @@ endif ()
 
 if (USE_TLS)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DUSE_TLS")
+endif ()
+
+if (DEFINED THREAD_TIMEOUT AND NOT "${THREAD_TIMEOUT}" STREQUAL "")
+  set(CCOMMON_OPT "${CCOMMON_OPT} -DTHREAD_TIMEOUT=${THREAD_TIMEOUT}")
 endif ()
 
 # Only for development
@@ -650,7 +699,12 @@ endif()
 endif()
 endif()
   
-set(LIBPREFIX "lib${LIBNAMEPREFIX}openblas")
+# Use LIBSONAMEBASE for library naming (default: openblas)
+if (NOT DEFINED LIBSONAMEBASE OR "${LIBSONAMEBASE}" STREQUAL "")
+  set(LIBSONAMEBASE "openblas")
+endif ()
+
+set(LIBPREFIX "lib${LIBNAMEPREFIX}${LIBSONAMEBASE}")
 
 if (DEFINED LIBNAMESUFFIX AND NOT "${LIBNAMESUFFIX}" STREQUAL "")
   set(LIBPREFIX "lib${LIBNAMEPREFIX}openblas${LIBNAMESUFFIX}")
@@ -697,8 +751,12 @@ if (HUGETLB_ALLOCATION)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DALLOC_HUGETLB")
 endif ()
 
-if (DEFINED HUGETLBFILE_ALLOCATION)
+if (DEFINED HUGETLBFILE_ALLOCATION AND NOT "${HUGETLBFILE_ALLOCATION}" STREQUAL "")
   set(CCOMMON_OPT "${CCOMMON_OPT} -DALLOC_HUGETLBFILE -DHUGETLB_FILE_NAME=${HUGETLBFILE_ALLOCATION})")
+endif ()
+
+if (SHMEM_ALLOCATION)
+  set(CCOMMON_OPT "${CCOMMON_OPT} -DALLOC_SHM")
 endif ()
 
 if (STATIC_ALLOCATION)

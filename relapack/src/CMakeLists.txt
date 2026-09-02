@@ -2,6 +2,13 @@ include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/relapack)
 
+# Set INCLUDE_ALL based on RELAPACK_REPLACE option
+if (RELAPACK_REPLACE)
+  add_definitions(-DINCLUDE_ALL=1)
+else ()
+  add_definitions(-DINCLUDE_ALL=0)
+endif ()
+
 set(RELAFILES
 clauum.c
 ctrsyl_rec2.c
