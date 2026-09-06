@@ -116,6 +116,15 @@ ifeq ($(OSNAME), FreeBSD)
 ifeq ($(CORE), $(filter $(CORE),POWER9 POWER10))
 CCOMMON_OPT += -Wa,-mpwr10
 endif
+ifeq ($(CORE), POWER8)
+CCOMMON_OPT += -Wa,-mpwr8
+endif
+ifeq ($(CORE), POWER6)
+CCOMMON_OPT += -Wa,-mpwr6 -Wa,-maltivec
+endif
+ifeq ($(CORE), PPC970)
+CCOMMON_OPT += -Wa,-mpwr4 -Wa,-maltivec
+endif
 endif
 endif
 # workaround for C->FORTRAN ABI violation in LAPACKE
