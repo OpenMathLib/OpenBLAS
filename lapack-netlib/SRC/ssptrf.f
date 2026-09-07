@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download SSPTRF + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssptrf.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssptrf.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -107,7 +105,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup hptrf
 *
 *> \par Further Details:
 *  =====================
@@ -154,6 +152,7 @@
 *>
 *  =====================================================================
       SUBROUTINE SSPTRF( UPLO, N, AP, IPIV, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -184,9 +183,9 @@
      $                   ROWMAX, T, WK, WKM1, WKP1
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
+      LOGICAL            LSAME, SISNAN
       INTEGER            ISAMAX
-      EXTERNAL           LSAME, ISAMAX
+      EXTERNAL           LSAME, ISAMAX, SISNAN
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SSCAL, SSPR, SSWAP, XERBLA
@@ -247,9 +246,11 @@
             COLMAX = ZERO
          END IF
 *
-         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO ) THEN
+         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR.
+     $       SISNAN(ABSAKK) ) THEN
 *
-*           Column K is zero: set INFO and continue
+*           Column K is zero or underflow, or contains a NaN:
+*           set INFO and continue
 *
             IF( INFO.EQ.0 )
      $         INFO = K
@@ -435,9 +436,11 @@
             COLMAX = ZERO
          END IF
 *
-         IF( MAX( ABSAKK, COLMAX ).EQ.ZERO ) THEN
+         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR.
+     $       SISNAN(ABSAKK) ) THEN
 *
-*           Column K is zero: set INFO and continue
+*           Column K is zero or underflow, or contains a NaN:
+*           set INFO and continue
 *
             IF( INFO.EQ.0 )
      $         INFO = K
@@ -498,7 +501,8 @@
 *              submatrix A(k:n,k:n)
 *
                IF( KP.LT.N )
-     $            CALL SSWAP( N-KP, AP( KNC+KP-KK+1 ), 1, AP( KPC+1 ),
+     $            CALL SSWAP( N-KP, AP( KNC+KP-KK+1 ), 1,
+     $                        AP( KPC+1 ),
      $                        1 )
                KX = KNC + KP - KK
                DO 80 J = KK + 1, KP - 1
