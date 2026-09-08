@@ -39,19 +39,6 @@ typedef float real;
 typedef double doublereal;
 typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
-#ifdef _MSC_VER
-static inline _Fcomplex Cf(complex *z) {_Fcomplex zz={z->r , z->i}; return zz;}
-static inline _Dcomplex Cd(doublecomplex *z) {_Dcomplex zz={z->r , z->i};return zz;}
-static inline _Fcomplex * _pCf(complex *z) {return (_Fcomplex*)z;}
-static inline _Dcomplex * _pCd(doublecomplex *z) {return (_Dcomplex*)z;}
-#else
-static inline _Complex float Cf(complex *z) {return z->r + z->i*_Complex_I;}
-static inline _Complex double Cd(doublecomplex *z) {return z->r + z->i*_Complex_I;}
-static inline _Complex float * _pCf(complex *z) {return (_Complex float*)z;}
-static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*)z;}
-#endif
-#define pCf(z) (*_pCf(z))
-#define pCd(z) (*_pCd(z))
 typedef int logical;
 typedef short int shortlogical;
 typedef char logical1;
@@ -187,33 +174,15 @@ typedef struct Namelist Namelist;
 #define bit_set(a,b)	((a) |  ((uinteger)1 << (b)))
 
 #define abort_() { sig_die("Fortran abort routine called", 1); }
-#define c_abs(z) (cabsf(Cf(z)))
-#define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
-#ifdef _MSC_VER
-#define c_div(c, a, b) {Cf(c)._Val[0] = (Cf(a)._Val[0]/Cf(b)._Val[0]); Cf(c)._Val[1]=(Cf(a)._Val[1]/Cf(b)._Val[1]);}
-#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/Cd(b)._Val[1]);}
-#else
-#define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
-#define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
-#endif
-#define c_exp(R, Z) {pCf(R) = cexpf(Cf(Z));}
-#define c_log(R, Z) {pCf(R) = clogf(Cf(Z));}
-#define c_sin(R, Z) {pCf(R) = csinf(Cf(Z));}
-//#define c_sqrt(R, Z) {*(R) = csqrtf(Cf(Z));}
-#define c_sqrt(R, Z) {pCf(R) = csqrtf(Cf(Z));}
 #define d_abs(x) (fabs(*(x)))
 #define d_acos(x) (acos(*(x)))
 #define d_asin(x) (asin(*(x)))
 #define d_atan(x) (atan(*(x)))
 #define d_atn2(x, y) (atan2(*(x),*(y)))
-#define d_cnjg(R, Z) { pCd(R) = conj(Cd(Z)); }
-#define r_cnjg(R, Z) { pCf(R) = conjf(Cf(Z)); }
 #define d_cos(x) (cos(*(x)))
 #define d_cosh(x) (cosh(*(x)))
 #define d_dim(__a, __b) ( *(__a) > *(__b) ? *(__a) - *(__b) : 0.0 )
 #define d_exp(x) (exp(*(x)))
-#define d_imag(z) (cimag(Cd(z)))
-#define r_imag(z) (cimagf(Cf(z)))
 #define d_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define r_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define d_lg10(x) ( 0.43429448190325182765 * log(*(x)) )
@@ -240,9 +209,6 @@ typedef struct Namelist Namelist;
 #define s_copy(A,B,C,D) { int __i,__m; for (__i=0, __m=f2cmin((C),(D)); __i<__m && (B)[__i] != 0; ++__i) (A)[__i] = (B)[__i]; }
 #define sig_die(s, kill) { exit(1); }
 #define s_stop(s, n) {exit(0);}
-#define z_abs(z) (cabs(Cd(z)))
-#define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
-#define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
 
 /* procedure parameter types for -A and -C++ */
 
@@ -382,7 +348,7 @@ static integer c__1 = 1;
 /* > \ingroup larf1l */
 
 /*  ===================================================================== */
-/* Subroutine */ int slarf1l_(char *side, integer *m, integer *n, real *v, 
+/* Subroutine */ void slarf1l_(char *side, integer *m, integer *n, real *v, 
 	integer *incv, real *tau, real *c__, integer *ldc, real *work)
 {
     /* System generated locals */
@@ -392,15 +358,15 @@ static integer c__1 = 1;
     /* Local variables */
     integer i__;
     logical applyleft;
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer lastc;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     integer lastv;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *);
     extern integer ilaslc_(integer *, integer *, real *, integer *), ilaslr_(
 	    integer *, integer *, real *, integer *);
@@ -449,7 +415,7 @@ static integer c__1 = 1;
 	}
     }
     if (lastc == 0) {
-	return 0;
+	return;
     }
     if (applyleft) {
 
@@ -522,7 +488,7 @@ static integer c__1 = 1;
 		    firstv * c_dim1 + 1], ldc);
 	}
     }
-    return 0;
+    return;
 
 /*     End of SLARF1L */
 
