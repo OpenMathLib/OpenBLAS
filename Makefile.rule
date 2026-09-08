@@ -311,6 +311,14 @@ COMMON_PROF = -pg
 # If you want to enable the experimental HFLOAT16 support
 # BUILD_HFLOAT16 = 1
 
+# WASM only: emit WebAssembly relaxed SIMD (for example f32x4.relaxed_madd)
+# in kernels that support it. Off by default because a module that contains
+# those opcodes will not instantiate on engines without the relaxed-simd
+# feature, including shipping Safari. See docs/install.md#webassembly and
+# https://webassembly.org/features/
+# WASM_RELAXED_SIMD = 1
+
+
 # Set the thread number threshold beyond which the job array for the threaded level3 BLAS
 # will be allocated on the heap rather than the stack. (This array alone requires 
 # NUM_THREADS*NUM_THREADS*128 bytes of memory so should not pose a problem at low cpu

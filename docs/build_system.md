@@ -73,6 +73,10 @@ though - please read the linked Makefiles if you want to see all variables.
 - `FCOMMON_OPT`: flags to add to all invocations of the target Fortran compiler
   (overrides `FFLAGS`)
 - `LDFLAGS`: flags to add to all target linker invocations
+- `WASM_RELAXED_SIMD`: WASM only; if set to `1`, pass `-mrelaxed-simd` so
+  kernels can emit relaxed SIMD FMA. Off by default because the binary will
+  not load on engines without the feature (see
+  [install.md](install.md#webassembly)).
 - `AR`, `AS`, `LD`, `RANLIB`: `TARGET` toolchain helpers used for compilation
   (can be cross-toolchains).
 - `HOSTCC`: compiler of build machine, needed to create proper config files for

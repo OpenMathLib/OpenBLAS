@@ -175,3 +175,11 @@ if (RISCV64)
   set(BINARY_DEFINED 1)
 endif ()
 
+if (WASM)
+  set(CCOMMON_OPT "${CCOMMON_OPT} -msimd128")
+  if (WASM_RELAXED_SIMD)
+    set(CCOMMON_OPT "${CCOMMON_OPT} -mrelaxed-simd")
+  endif ()
+endif ()
+
+

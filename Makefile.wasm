@@ -1,1 +1,9 @@
-CCOMMON_OPT += -msimd128 -mrelaxed-simd
+# Portable WASM SIMD128. Do not pass -mrelaxed-simd by default: the resulting
+# module contains opcodes that engines without the relaxed-simd feature reject
+# at instantiate time (shipping Safari / JavaScriptCore among them). Engine
+# support is tracked at https://webassembly.org/features/
+# Opt in with WASM_RELAXED_SIMD=1 (see Makefile.rule and docs/install.md).
+CCOMMON_OPT += -msimd128
+ifeq ($(WASM_RELAXED_SIMD), 1)
+CCOMMON_OPT += -mrelaxed-simd
+endif
