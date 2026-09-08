@@ -39,19 +39,6 @@ typedef float real;
 typedef double doublereal;
 typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
-#ifdef _MSC_VER
-static inline _Fcomplex Cf(complex *z) {_Fcomplex zz={z->r , z->i}; return zz;}
-static inline _Dcomplex Cd(doublecomplex *z) {_Dcomplex zz={z->r , z->i};return zz;}
-static inline _Fcomplex * _pCf(complex *z) {return (_Fcomplex*)z;}
-static inline _Dcomplex * _pCd(doublecomplex *z) {return (_Dcomplex*)z;}
-#else
-static inline _Complex float Cf(complex *z) {return z->r + z->i*_Complex_I;}
-static inline _Complex double Cd(doublecomplex *z) {return z->r + z->i*_Complex_I;}
-static inline _Complex float * _pCf(complex *z) {return (_Complex float*)z;}
-static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*)z;}
-#endif
-#define pCf(z) (*_pCf(z))
-#define pCd(z) (*_pCd(z))
 typedef blasint logical;
 
 typedef char logical1;
@@ -187,33 +174,15 @@ typedef struct Namelist Namelist;
 #define bit_set(a,b)	((a) |  ((uinteger)1 << (b)))
 
 #define abort_() { sig_die("Fortran abort routine called", 1); }
-#define c_abs(z) (cabsf(Cf(z)))
-#define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
-#ifdef _MSC_VER
-#define c_div(c, a, b) {Cf(c)._Val[0] = (Cf(a)._Val[0]/Cf(b)._Val[0]); Cf(c)._Val[1]=(Cf(a)._Val[1]/Cf(b)._Val[1]);}
-#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/Cd(b)._Val[1]);}
-#else
-#define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
-#define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
-#endif
-#define c_exp(R, Z) {pCf(R) = cexpf(Cf(Z));}
-#define c_log(R, Z) {pCf(R) = clogf(Cf(Z));}
-#define c_sin(R, Z) {pCf(R) = csinf(Cf(Z));}
-//#define c_sqrt(R, Z) {*(R) = csqrtf(Cf(Z));}
-#define c_sqrt(R, Z) {pCf(R) = csqrtf(Cf(Z));}
 #define d_abs(x) (fabs(*(x)))
 #define d_acos(x) (acos(*(x)))
 #define d_asin(x) (asin(*(x)))
 #define d_atan(x) (atan(*(x)))
 #define d_atn2(x, y) (atan2(*(x),*(y)))
-#define d_cnjg(R, Z) { pCd(R) = conj(Cd(Z)); }
-#define r_cnjg(R, Z) { pCf(R) = conjf(Cf(Z)); }
 #define d_cos(x) (cos(*(x)))
 #define d_cosh(x) (cosh(*(x)))
 #define d_dim(__a, __b) ( *(__a) > *(__b) ? *(__a) - *(__b) : 0.0 )
 #define d_exp(x) (exp(*(x)))
-#define d_imag(z) (cimag(Cd(z)))
-#define r_imag(z) (cimagf(Cf(z)))
 #define d_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define r_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define d_lg10(x) ( 0.43429448190325182765 * log(*(x)) )
@@ -239,18 +208,11 @@ typedef struct Namelist Namelist;
 #define pow_si(B,E) spow_ui(*(B),*(E))
 #define pow_ri(B,E) spow_ui(*(B),*(E))
 #define pow_di(B,E) dpow_ui(*(B),*(E))
-#define pow_zi(p, a, b) {pCd(p) = zpow_ui(Cd(a), *(b));}
-#define pow_ci(p, a, b) {pCf(p) = cpow_ui(Cf(a), *(b));}
-#define pow_zz(R,A,B) {pCd(R) = cpow(Cd(A),*(B));}
 #define s_cat(lpp, rpp, rnp, np, llp) { 	ftnlen i, nc, ll; char *f__rp, *lp; 	ll = (llp); lp = (lpp); 	for(i=0; i < (int)*(np); ++i) {         	nc = ll; 	        if((rnp)[i] < nc) nc = (rnp)[i]; 	        ll -= nc;         	f__rp = (rpp)[i]; 	        while(--nc >= 0) *lp++ = *(f__rp)++;         } 	while(--ll >= 0) *lp++ = ' '; }
 #define s_cmp(a,b,c,d) ((integer)strncmp((a),(b),f2cmin((c),(d))))
 #define s_copy(A,B,C,D) { int __i,__m; for (__i=0, __m=f2cmin((C),(D)); __i<__m && (B)[__i] != 0; ++__i) (A)[__i] = (B)[__i]; }
 #define sig_die(s, kill) { exit(1); }
 #define s_stop(s, n) {exit(0);}
-static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
-#define z_abs(z) (cabs(Cd(z)))
-#define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
-#define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
 #define myexit_() break;
 #define mycycle_() continue;
 #define myceiling_(w) {ceil(w)}
@@ -266,7 +228,7 @@ typedef logical (*L_fp)(...);
 #else
 typedef logical (*L_fp)();
 #endif
-
+#if 0
 static float spow_ui(float x, integer n) {
 	float pow=1.0; unsigned long int u;
 	if(n != 0) {
@@ -502,6 +464,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	pCd(z) = zdotc;
 }
 #endif
+#endif
 /*  -- translated by f2c (version 20000121).
    You must link the resulting object file with the libraries:
 	-lf2c -lm   (in that order)
@@ -523,7 +486,7 @@ static integer c__1 = 1;
 static integer c__0 = 0;
 static integer c__2 = 2;
 
-/* Subroutine */ int sgedmd_(char *jobs, char *jobz, char *jobr, char *jobf, 
+/* Subroutine */ void sgedmd_(char *jobs, char *jobz, char *jobr, char *jobf, 
 	integer *whtsvd, integer *m, integer *n, real *x, integer *ldx, real *
 	y, integer *ldy, integer *nrnk, real *tol, integer *k, real *reig, 
 	real *imeig, real *z__, integer *ldz, real *res, real *b, integer *
@@ -543,36 +506,35 @@ static integer c__2 = 2;
     integer i__, j;
     real scale;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical badxy;
     real small;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *), sgeev_(char *, char *, 
 	    integer *, real *, integer *, real *, real *, real *, integer *, 
 	    real *, integer *, real *, integer *, integer *);
     char jobzl[1];
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *);
     logical wntex;
     real ab[4]	/* was [2][2] */;
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
-    extern /* Subroutine */ int sgesdd_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgesdd_(char *, integer *, integer *, real *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
-	    integer *, integer *, integer *), xerbla_(char *, integer 
-	    *);
+	    integer *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
     char t_or_n__[1];
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     extern integer isamax_(integer *, real *, integer *);
     logical sccolx, sccoly;
     extern logical sisnan_(real *);
-    extern /* Subroutine */ int sgesvd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgesvd_(char *, char *, integer *, integer *, 
 	    real *, integer *, real *, real *, integer *, real *, integer *, 
 	    real *, integer *, integer *);
     integer lwrsdd, mwrsdd;
-    extern /* Subroutine */ int sgejsv_(char *, char *, char *, char *, char *
+    extern /* Subroutine */ void sgejsv_(char *, char *, char *, char *, char *
 	    , char *, integer *, integer *, real *, integer *, real *, real *,
 	     integer *, real *, integer *, real *, integer *, integer *, 
 	    integer *), 
@@ -586,11 +548,11 @@ static integer c__2 = 2;
     integer lwrsvd, mwrsvd;
     logical lquery, wntres;
     char jsvopt[1];
-    extern /* Subroutine */ int slassq_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slassq_(integer *, real *, integer *, real *, 
 	    real *), mecago_();
     integer mwrsvj, lwrsvq, mwrsvq;
     real rdummy2[2], ofl, one;
-    extern /* Subroutine */ int sgesvdq_(char *, char *, char *, char *, char 
+    extern /* Subroutine */ void sgesvdq_(char *, char *, char *, char *, char 
 	    *, integer *, integer *, real *, integer *, real *, real *, 
 	    integer *, real *, integer *, integer *, integer *, integer *, 
 	    real *, integer *, real *, integer *, integer *);
@@ -1050,7 +1012,7 @@ static integer c__2 = 2;
 	    jobz, "F"))) {
 	*info = -2;
     } else if (! (wntres || lsame_(jobr, "N")) || 
-	    wntres && ! wntvec) {
+	    (wntres && ! wntvec)) {
 	*info = -3;
     } else if (! (wntref || wntex || lsame_(jobf, "N")))
 	     {
@@ -1066,7 +1028,7 @@ static integer c__2 = 2;
 	*info = -9;
     } else if (*ldy < *m) {
 	*info = -11;
-    } else if (! (*nrnk == -2 || *nrnk == -1 || *nrnk >= 1 && *nrnk <= *n)) {
+    } else if (! (*nrnk == -2 || *nrnk == -1 || (*nrnk >= 1 && *nrnk <= *n))) {
 	*info = -12;
     } else if (*tol < zero || *tol >= one) {
 	*info = -13;
@@ -1098,7 +1060,7 @@ static integer c__2 = 2;
 		*k = 0;
 	    }
 	    *info = 1;
-	    return 0;
+	    return;
 	}
 	mlwork = f2cmax(2,*n);
 	olwork = f2cmax(2,*n);
@@ -1232,14 +1194,14 @@ static integer c__2 = 2;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SGEDMD", &i__1);
-	return 0;
+	xerbla_("SGEDMD", &i__1, (ftnlen)6);
+	return;
     } else if (lquery) {
 /*     Return minimal and optimal workspace sizes */
 	iwork[1] = iminwr;
 	work[1] = (real) mlwork;
 	work[2] = (real) olwork;
-	return 0;
+	return;
     }
 /* ............................................................ */
 
@@ -1263,7 +1225,7 @@ static integer c__2 = 2;
 		*k = 0;
 		*info = -8;
 		i__2 = -(*info);
-		xerbla_("SGEDMD", &i__2);
+		xerbla_("SGEDMD", &i__2,(ftnlen)6);
 	    }
 	    if (scale != zero && ssum != zero) {
 		rootsc = sqrt(ssum);
@@ -1301,8 +1263,8 @@ static integer c__2 = 2;
 	    *k = 0;
 	    *info = -8;
 	    i__1 = -(*info);
-	    xerbla_("SGEDMD", &i__1);
-	    return 0;
+	    xerbla_("SGEDMD", &i__1,(ftnlen)6);
+	    return;
 	}
 	i__1 = *n;
 	for (i__ = 1; i__ <= i__1; ++i__) {
@@ -1349,7 +1311,7 @@ static integer c__2 = 2;
 		*k = 0;
 		*info = -10;
 		i__2 = -(*info);
-		xerbla_("SGEDMD", &i__2);
+		xerbla_("SGEDMD", &i__2,(ftnlen)6);
 	    }
 	    if (scale != zero && ssum != zero) {
 		rootsc = sqrt(ssum);
@@ -1464,7 +1426,7 @@ static integer c__2 = 2;
 /* The SVD selected subroutine did not converge. */
 /* Return with an error code. */
 	*info = 2;
-	return 0;
+	return;
     }
 
     if (work[1] == zero) {
@@ -1474,8 +1436,8 @@ static integer c__2 = 2;
 	*k = 0;
 	*info = -8;
 	i__1 = -(*info);
-	xerbla_("SGEDMD", &i__1);
-	return 0;
+	xerbla_("SGEDMD", &i__1,(ftnlen)6);
+	return;
     }
 
 /* <3> Determine the numerical rank of the data */
@@ -1625,7 +1587,7 @@ static integer c__2 = 2;
 /* SGEEV failed to compute the eigenvalues and */
 /* eigenvectors of the Rayleigh quotient. */
 	*info = 3;
-	return 0;
+	return;
     }
 
 /* <6> Compute the eigenvectors (if requested) and, */
@@ -1740,7 +1702,7 @@ static integer c__2 = 2;
 	*info = 4;
     }
 /* ............................................................ */
-    return 0;
+    return;
 /*     ...... */
 } /* sgedmd_ */
 
