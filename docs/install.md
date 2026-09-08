@@ -894,6 +894,14 @@ make TARGET=WASM128_GENERIC WASM_RELAXED_SIMD=1 \
 
 With CMake, pass `-DWASM_RELAXED_SIMD=ON`.
 
+After the tree is configured for WASM (`ARCH=wasm` in `Makefile.conf`), check
+that the default build stays SIMD128-only and that the opt-in path emits
+`relaxed_madd`:
+
+```bash
+./kernel/wasm/test_relaxed_simd.sh
+```
+
 
 ### FreeBSD
 
