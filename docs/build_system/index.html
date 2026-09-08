@@ -9,9 +9,9 @@
 <link href="../developers/" rel="prev"/>
 <link href="../runtime_variables/" rel="next"/>
 <link href="../logo.svg" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Build system - OpenBLAS</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -564,6 +564,10 @@ though - please read the linked Makefiles if you want to see all variables.</p>
 <li><code>FCOMMON_OPT</code>: flags to add to all invocations of the target Fortran compiler
   (overrides <code>FFLAGS</code>)</li>
 <li><code>LDFLAGS</code>: flags to add to all target linker invocations</li>
+<li><code>WASM_RELAXED_SIMD</code>: WASM only; if set to <code>1</code>, pass <code>-mrelaxed-simd</code> so
+  kernels can emit relaxed SIMD FMA. Off by default because the binary will
+  not load on engines without the feature (see
+  <a href="../install/#webassembly">install.md</a>).</li>
 <li><code>AR</code>, <code>AS</code>, <code>LD</code>, <code>RANLIB</code>: <code>TARGET</code> toolchain helpers used for compilation
   (can be cross-toolchains).</li>
 <li><code>HOSTCC</code>: compiler of build machine, needed to create proper config files for
@@ -655,7 +659,7 @@ including deprecated functions, while
 <span class="md-icon" title="Last update">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
 </span>
-<span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 3, 2026 16:32:31 UTC">July 3, 2026</span>
+<span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 8, 2026 07:41:04 UTC">September 8, 2026</span>
 </span>
 <span class="md-source-file__fact">
 <span class="md-icon" title="Created">
@@ -699,7 +703,7 @@ including deprecated functions, while
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["header.autohide"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 <script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
 window.mermaidConfig = {default: {
     startOnLoad: false

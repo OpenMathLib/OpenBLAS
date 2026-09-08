@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../logo.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -593,6 +593,34 @@
     <span class="md-ellipsis">
       
         Compiler requirements for ZVL targets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webassembly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebAssembly
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="WebAssembly">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#relaxed-simd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relaxed SIMD
       
     </span>
   </a>
@@ -1171,6 +1199,34 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#webassembly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebAssembly
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="WebAssembly">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#relaxed-simd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relaxed SIMD
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#freebsd_1" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1418,7 +1474,7 @@ conda install -y cmake flang_win-64 clangdev perl libflang ninja
 <li>
 <p>Still in the Anaconda Command Prompt window, activate the 64-bit MSVC environment with <code>vcvarsall x64</code>.
     On Windows 11 with Visual Studio 2022, this would be done by invoking:</p>
-<div class="highlight"><pre><span></span><code><span class="s2">&quot;c:\Program Files\Microsoft Visual Studio\2022\Community\vc\Auxiliary\Build\vcvars64.bat&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="s2">"c:\Program Files\Microsoft Visual Studio\2022\Community\vc\Auxiliary\Build\vcvars64.bat"</span>
 </code></pre></div>
 <p>With VS2019, the command should be the same (except for the year number of course).
 For other versions of MSVC, please check the Visual Studio documentation for
@@ -1437,11 +1493,11 @@ proceeding to step 6. Failing to do so will lead to link errors like
 </li>
 <li>
 <p>Now configure the project with CMake. Starting in the project directory, execute the following:
-    <div class="highlight"><pre><span></span><code>set &quot;LIB=%CONDA_PREFIX%\Library\lib;%LIB%&quot;
-set &quot;CPATH=%CONDA_PREFIX%\Library\include;%CPATH%&quot;
+    <div class="highlight"><pre><span></span><code>set "LIB=%CONDA_PREFIX%\Library\lib;%LIB%"
+set "CPATH=%CONDA_PREFIX%\Library\include;%CPATH%"
 mkdir build
 cd build
-cmake .. -G &quot;Ninja&quot; -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DBUILD_WITHOUT_LAPACK=no -DNOFORTRAN=0 -DDYNAMIC_ARCH=ON -DCMAKE_BUILD_TYPE=Release
+cmake .. -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DBUILD_WITHOUT_LAPACK=no -DNOFORTRAN=0 -DDYNAMIC_ARCH=ON -DCMAKE_BUILD_TYPE=Release
 </code></pre></div></p>
 <p>You may want to add further options in the <code>cmake</code> command here. For
 instance, the default only produces a static <code>.lib</code> version of the library.
@@ -1508,7 +1564,7 @@ building for the 32-bit architecture using the GNU (MinGW) ABI instead.</p>
 <h5 id="cmake-visual-studio-integration">CMake &amp; Visual Studio integration</h5>
 <p>To generate Visual Studio solution files, ensure CMake is installed and then run:
 <div class="highlight"><pre><span></span><code># Do this from Powershell so cmake can find visual studio
-cmake -G &quot;Visual Studio 14 Win64&quot; -DCMAKE_BUILD_TYPE=Release .
+cmake -G "Visual Studio 14 Win64" -DCMAKE_BUILD_TYPE=Release .
 </code></pre></div></p>
 <p>To then build OpenBLAS using those solution files from within Visual Studio, we
 also need Perl. Please install it and ensure it's on the <code>PATH</code> (see, e.g.,
@@ -1529,7 +1585,7 @@ happens, you can work around the problem by building the projects that
 <p>Remove the generated <code>CMakeCache.txt</code> and the <code>CMakeFiles</code> directory from
     the OpenBLAS source directory, then re-run CMake with the following options:</p>
 <p><div class="highlight"><pre><span></span><code># do this to build UWP compatible solution files
-cmake -G &quot;Visual Studio 14 Win64&quot; -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=&quot;10.0&quot; -DCMAKE_SYSTEM_PROCESSOR=AMD64 -DVS_WINRT_COMPONENT=TRUE -DCMAKE_BUILD_TYPE=Release .
+cmake -G "Visual Studio 14 Win64" -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION="10.0" -DCMAKE_SYSTEM_PROCESSOR=AMD64 -DVS_WINRT_COMPONENT=TRUE -DCMAKE_BUILD_TYPE=Release .
 </code></pre></div>
 3.  Now build the solution with Visual Studio.</p>
 </li>
@@ -1644,7 +1700,7 @@ ninja -j16
 <p>Note that it is also possible to use the same setup to build OpenBLAS
    with Make, if you prefer Makefiles over the CMake build for some
    reason:</p>
-<div class="highlight"><pre><span></span><code>$ make CC=clang-cl FC=flang-new AR=&quot;llvm-ar&quot; TARGET=ARMV8 ARCH=arm64 RANLIB=&quot;llvm-ranlib&quot; MAKE=make
+<div class="highlight"><pre><span></span><code>$ make CC=clang-cl FC=flang-new AR="llvm-ar" TARGET=ARMV8 ARCH=arm64 RANLIB="llvm-ranlib" MAKE=make
 </code></pre></div>
 </li>
 </ol>
@@ -1670,7 +1726,7 @@ from a <code>.def</code> file using MSVC's <code>lib.exe</code>.</p>
 <p>MinGW import libraries have the suffix <code>.a</code>, just like static libraries.
 Our goal is to produce the file <code>libopenblas.dll.a</code>.</p>
 <p>You need to first insert a line <code>LIBRARY libopenblas.dll</code> in <code>libopenblas.def</code>:
-<div class="highlight"><pre><span></span><code>cat &lt;(echo &quot;LIBRARY libopenblas.dll&quot;) libopenblas.def &gt; libopenblas.def.1
+<div class="highlight"><pre><span></span><code>cat &lt;(echo "LIBRARY libopenblas.dll") libopenblas.def &gt; libopenblas.def.1
 mv libopenblas.def.1 libopenblas.def
 </code></pre></div></p>
 <p>Now the <code>.def</code> file probably looks like:
@@ -1711,13 +1767,13 @@ should no longer be necessary.</p>
 <span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span>/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:<span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span>/toolchains/llvm/prebuilt/linux-x86_64/bin:<span class="nv">$PATH</span>
 
 <span class="c1"># Set LDFLAGS so that the linker finds the appropriate libgcc</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">&quot;-L</span><span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span><span class="s2">/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.9.x&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">"-L</span><span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span><span class="s2">/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.9.x"</span>
 
 <span class="c1"># Set the clang cross compile flags</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CLANG_FLAGS</span><span class="o">=</span><span class="s2">&quot;-target arm-linux-androideabi -marm -mfpu=vfp -mfloat-abi=softfp --sysroot </span><span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span><span class="s2">/platforms/android-23/arch-arm -gcc-toolchain </span><span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span><span class="s2">/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CLANG_FLAGS</span><span class="o">=</span><span class="s2">"-target arm-linux-androideabi -marm -mfpu=vfp -mfloat-abi=softfp --sysroot </span><span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span><span class="s2">/platforms/android-23/arch-arm -gcc-toolchain </span><span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span><span class="s2">/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/"</span>
 
 <span class="c1">#OpenBLAS Compile</span>
-make<span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>ARMV7<span class="w"> </span><span class="nv">ONLY_CBLAS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">AR</span><span class="o">=</span>ar<span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="s2">&quot;clang </span><span class="si">${</span><span class="nv">CLANG_FLAGS</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="nv">ARM_SOFTFP_ABI</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>-j4
+make<span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>ARMV7<span class="w"> </span><span class="nv">ONLY_CBLAS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">AR</span><span class="o">=</span>ar<span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="s2">"clang </span><span class="si">${</span><span class="nv">CLANG_FLAGS</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="nv">ARM_SOFTFP_ABI</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>-j4
 </code></pre></div>
 <p>On macOS, it may also be necessary to give the complete path to the <code>ar</code>
 utility in the make command above, like so:
@@ -1735,13 +1791,13 @@ is assumed above.</p>
 <span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span>/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/:<span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span>/toolchains/llvm/prebuilt/linux-x86_64/bin:<span class="nv">$PATH</span>
 
 <span class="c1"># Setup LDFLAGS so that loader can find libgcc and pass -lm for sqrt</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">&quot;-L</span><span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span><span class="s2">/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/lib/gcc/aarch64-linux-android/4.9.x -lm&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">"-L</span><span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span><span class="s2">/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/lib/gcc/aarch64-linux-android/4.9.x -lm"</span>
 
 <span class="c1"># Setup the clang cross compile options</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CLANG_FLAGS</span><span class="o">=</span><span class="s2">&quot;-target aarch64-linux-android --sysroot </span><span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span><span class="s2">/platforms/android-23/arch-arm64 -gcc-toolchain </span><span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span><span class="s2">/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CLANG_FLAGS</span><span class="o">=</span><span class="s2">"-target aarch64-linux-android --sysroot </span><span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span><span class="s2">/platforms/android-23/arch-arm64 -gcc-toolchain </span><span class="si">${</span><span class="nv">NDK_BUNDLE_DIR</span><span class="si">}</span><span class="s2">/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/"</span>
 
 <span class="c1"># Compile</span>
-make<span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>ARMV8<span class="w"> </span><span class="nv">ONLY_CBLAS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">AR</span><span class="o">=</span>ar<span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="s2">&quot;clang </span><span class="si">${</span><span class="nv">CLANG_FLAGS</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span>-j4
+make<span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>ARMV8<span class="w"> </span><span class="nv">ONLY_CBLAS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">AR</span><span class="o">=</span>ar<span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="s2">"clang </span><span class="si">${</span><span class="nv">CLANG_FLAGS</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span>-j4
 </code></pre></div>
 Note: using <code>TARGET=CORTEXA57</code> in place of <code>ARMV8</code> will pick up better
 optimized routines. Implementations for the <code>CORTEXA57</code> target are compatible
@@ -1776,8 +1832,8 @@ make<span class="w"> </span>clean
 make<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span><span class="nv">TARGET</span><span class="o">=</span>ARMV7<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span><span class="nv">ONLY_CBLAS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="nv">CC</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$TOOLCHAIN</span><span class="s2">&quot;</span>/bin/armv7a-linux-androideabi21-clang<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="nv">AR</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$TOOLCHAIN</span><span class="s2">&quot;</span>/bin/arm-linux-androideabi-ar<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="nv">CC</span><span class="o">=</span><span class="s2">"</span><span class="nv">$TOOLCHAIN</span><span class="s2">"</span>/bin/armv7a-linux-androideabi21-clang<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="nv">AR</span><span class="o">=</span><span class="s2">"</span><span class="nv">$TOOLCHAIN</span><span class="s2">"</span>/bin/arm-linux-androideabi-ar<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span><span class="nv">ARM_SOFTFP_ABI</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-j4
@@ -1797,8 +1853,8 @@ make<span class="w"> </span>clean
 make<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span><span class="nv">TARGET</span><span class="o">=</span>ATOM<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span><span class="nv">ONLY_CBLAS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
-<span class="nv">CC</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$TOOLCHAIN</span><span class="s2">&quot;</span>/bin/i686-linux-android21-clang<span class="w"> </span><span class="se">\</span>
-<span class="nv">AR</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$TOOLCHAIN</span><span class="s2">&quot;</span>/bin/i686-linux-android-ar<span class="w"> </span><span class="se">\</span>
+<span class="nv">CC</span><span class="o">=</span><span class="s2">"</span><span class="nv">$TOOLCHAIN</span><span class="s2">"</span>/bin/i686-linux-android21-clang<span class="w"> </span><span class="se">\</span>
+<span class="nv">AR</span><span class="o">=</span><span class="s2">"</span><span class="nv">$TOOLCHAIN</span><span class="s2">"</span>/bin/i686-linux-android-ar<span class="w"> </span><span class="se">\</span>
 <span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="se">\</span>
 <span class="nv">ARM_SOFTFP_ABI</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
 -j4
@@ -1809,8 +1865,8 @@ make<span class="w"> </span>clean
 make<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span><span class="nv">TARGET</span><span class="o">=</span>ATOM<span class="w"> </span><span class="nv">BINARY</span><span class="o">=</span><span class="m">64</span><span class="se">\</span>
 <span class="nv">ONLY_CBLAS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
-<span class="nv">CC</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$TOOLCHAIN</span><span class="s2">&quot;</span>/bin/x86_64-linux-android21-clang<span class="w"> </span><span class="se">\</span>
-<span class="nv">AR</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$TOOLCHAIN</span><span class="s2">&quot;</span>/bin/x86_64-linux-android-ar<span class="w"> </span><span class="se">\</span>
+<span class="nv">CC</span><span class="o">=</span><span class="s2">"</span><span class="nv">$TOOLCHAIN</span><span class="s2">"</span>/bin/x86_64-linux-android21-clang<span class="w"> </span><span class="se">\</span>
+<span class="nv">AR</span><span class="o">=</span><span class="s2">"</span><span class="nv">$TOOLCHAIN</span><span class="s2">"</span>/bin/x86_64-linux-android-ar<span class="w"> </span><span class="se">\</span>
 <span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="se">\</span>
 <span class="nv">ARM_SOFTFP_ABI</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
 -j4
@@ -1823,11 +1879,11 @@ You can find full list of target architectures in <a href="https://github.com/Op
 was found to work in our Azure CI setup, but as far as we know this builds a
 fully working OpenBLAS for this platform.</p>
 <p>Go to the directory where you unpacked OpenBLAS,and enter the following commands:
-<div class="highlight"><pre><span></span><code><span class="nv">CC</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>xcrun<span class="w"> </span>--sdk<span class="w"> </span>iphoneos<span class="w"> </span>--find<span class="w"> </span>clang<span class="k">)</span><span class="s2">&quot;</span>
-<span class="nv">SDKROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>xcrun<span class="w"> </span>--sdk<span class="w"> </span>iphoneos<span class="w"> </span>--show-sdk-path<span class="k">)</span><span class="s2">&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="nv">CC</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>xcrun<span class="w"> </span>--sdk<span class="w"> </span>iphoneos<span class="w"> </span>--find<span class="w"> </span>clang<span class="k">)</span><span class="s2">"</span>
+<span class="nv">SDKROOT</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>xcrun<span class="w"> </span>--sdk<span class="w"> </span>iphoneos<span class="w"> </span>--show-sdk-path<span class="k">)</span><span class="s2">"</span>
 
 make<span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>ARMV8<span class="w"> </span><span class="nv">DYNAMIC_ARCH</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">NUM_THREADS</span><span class="o">=</span><span class="m">32</span><span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>clang<span class="w"> </span><span class="nv">NOFORTRAN</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="nv">CC</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">CC</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-O2 -Wno-macro-redefined -isysroot </span><span class="si">${</span><span class="nv">SDKROOT</span><span class="si">}</span><span class="s2"> -arch arm64 -miphoneos-version-min=10.0&quot;</span>
+<span class="w">  </span><span class="nv">CC</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">CC</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">"-O2 -Wno-macro-redefined -isysroot </span><span class="si">${</span><span class="nv">SDKROOT</span><span class="si">}</span><span class="s2"> -arch arm64 -miphoneos-version-min=10.0"</span>
 </code></pre></div>
 Adjust <code>-miphoneos-version-min</code> as necessary for your installation. E.g., change the version number
 to the minimum iOS version you want to target and execute this file to build the library.</p>
@@ -1853,7 +1909,7 @@ its toolchain file as a cmake option. Also set the build target for OpenBLAS to
 contains no Fortran compiler):
 <div class="highlight"><pre><span></span><code>/opt/ohos-sdk/linux/native/build-tools/cmake/bin/cmake<span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>-DCMAKE_TOOLCHAIN_FILE<span class="o">=</span>/opt/ohos-sdk/linux/native/build/cmake/ohos.toolchain.cmake<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>-DOHOS_ARCH<span class="o">=</span><span class="s2">&quot;arm64-v8a&quot;</span><span class="w"> </span>-DTARGET<span class="o">=</span>ARMV8<span class="w"> </span>-DNOFORTRAN<span class="o">=</span><span class="m">1</span><span class="w"> </span>..
+<span class="w">      </span>-DOHOS_ARCH<span class="o">=</span><span class="s2">"arm64-v8a"</span><span class="w"> </span>-DTARGET<span class="o">=</span>ARMV8<span class="w"> </span>-DNOFORTRAN<span class="o">=</span><span class="m">1</span><span class="w"> </span>..
 </code></pre></div>
 Additional OpenBLAS build options like <code>USE_OPENMP=1</code> or <code>DYNAMIC_ARCH=1</code>
 will probably work too. Finally do the build:
@@ -1866,29 +1922,29 @@ will probably work too. Finally do the build:
 <li>I6400, P6600 - IMG GNU/Linux Toolchain</li>
 </ul>
 <p>You can use following commandlines for builds:</p>
-<div class="highlight"><pre><span></span><code><span class="nv">IMG_TOOLCHAIN_DIR</span><span class="o">={</span>full<span class="w"> </span>IMG<span class="w"> </span>GNU/Linux<span class="w"> </span>Toolchain<span class="w"> </span>path<span class="w"> </span>including<span class="w"> </span><span class="s2">&quot;bin&quot;</span><span class="w"> </span>directory<span class="w"> </span>--<span class="w"> </span><span class="k">for</span><span class="w"> </span>example,<span class="w"> </span>/opt/linux_toolchain/bin<span class="o">}</span>
+<div class="highlight"><pre><span></span><code><span class="nv">IMG_TOOLCHAIN_DIR</span><span class="o">={</span>full<span class="w"> </span>IMG<span class="w"> </span>GNU/Linux<span class="w"> </span>Toolchain<span class="w"> </span>path<span class="w"> </span>including<span class="w"> </span><span class="s2">"bin"</span><span class="w"> </span>directory<span class="w"> </span>--<span class="w"> </span><span class="k">for</span><span class="w"> </span>example,<span class="w"> </span>/opt/linux_toolchain/bin<span class="o">}</span>
 <span class="nv">IMG_GCC_PREFIX</span><span class="o">=</span>mips-img-linux-gnu
 <span class="nv">IMG_TOOLCHAIN</span><span class="o">=</span><span class="si">${</span><span class="nv">IMG_TOOLCHAIN_DIR</span><span class="si">}</span>/<span class="si">${</span><span class="nv">IMG_GCC_PREFIX</span><span class="si">}</span>
 
 <span class="c1"># I6400 Build (n32):</span>
-make<span class="w"> </span><span class="nv">BINARY</span><span class="o">=</span><span class="m">32</span><span class="w"> </span><span class="nv">BINARY32</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-gcc<span class="w"> </span><span class="nv">AR</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ar<span class="w"> </span><span class="nv">FC</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$IMG_TOOLCHAIN</span><span class="s2">-gfortran -EL -mabi=n32&quot;</span><span class="w"> </span><span class="nv">RANLIB</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ranlib<span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-EL&quot;</span><span class="w"> </span><span class="nv">FFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>I6400
+make<span class="w"> </span><span class="nv">BINARY</span><span class="o">=</span><span class="m">32</span><span class="w"> </span><span class="nv">BINARY32</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-gcc<span class="w"> </span><span class="nv">AR</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ar<span class="w"> </span><span class="nv">FC</span><span class="o">=</span><span class="s2">"</span><span class="nv">$IMG_TOOLCHAIN</span><span class="s2">-gfortran -EL -mabi=n32"</span><span class="w"> </span><span class="nv">RANLIB</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ranlib<span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">"-EL"</span><span class="w"> </span><span class="nv">FFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>I6400
 
 <span class="c1"># I6400 Build (n64):</span>
-make<span class="w"> </span><span class="nv">BINARY</span><span class="o">=</span><span class="m">64</span><span class="w"> </span><span class="nv">BINARY64</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-gcc<span class="w"> </span><span class="nv">AR</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ar<span class="w"> </span><span class="nv">FC</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$IMG_TOOLCHAIN</span><span class="s2">-gfortran -EL&quot;</span><span class="w"> </span><span class="nv">RANLIB</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ranlib<span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-EL&quot;</span><span class="w"> </span><span class="nv">FFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>I6400
+make<span class="w"> </span><span class="nv">BINARY</span><span class="o">=</span><span class="m">64</span><span class="w"> </span><span class="nv">BINARY64</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-gcc<span class="w"> </span><span class="nv">AR</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ar<span class="w"> </span><span class="nv">FC</span><span class="o">=</span><span class="s2">"</span><span class="nv">$IMG_TOOLCHAIN</span><span class="s2">-gfortran -EL"</span><span class="w"> </span><span class="nv">RANLIB</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ranlib<span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">"-EL"</span><span class="w"> </span><span class="nv">FFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>I6400
 
 <span class="c1"># P6600 Build (n32):</span>
-make<span class="w"> </span><span class="nv">BINARY</span><span class="o">=</span><span class="m">32</span><span class="w"> </span><span class="nv">BINARY32</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-gcc<span class="w"> </span><span class="nv">AR</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ar<span class="w"> </span><span class="nv">FC</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$IMG_TOOLCHAIN</span><span class="s2">-gfortran -EL -mabi=n32&quot;</span><span class="w"> </span><span class="nv">RANLIB</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ranlib<span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-EL&quot;</span><span class="w"> </span><span class="nv">FFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>P6600
+make<span class="w"> </span><span class="nv">BINARY</span><span class="o">=</span><span class="m">32</span><span class="w"> </span><span class="nv">BINARY32</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-gcc<span class="w"> </span><span class="nv">AR</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ar<span class="w"> </span><span class="nv">FC</span><span class="o">=</span><span class="s2">"</span><span class="nv">$IMG_TOOLCHAIN</span><span class="s2">-gfortran -EL -mabi=n32"</span><span class="w"> </span><span class="nv">RANLIB</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ranlib<span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">"-EL"</span><span class="w"> </span><span class="nv">FFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>P6600
 
 <span class="c1"># P6600 Build (n64):</span>
-make<span class="w"> </span><span class="nv">BINARY</span><span class="o">=</span><span class="m">64</span><span class="w"> </span><span class="nv">BINARY64</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-gcc<span class="w"> </span><span class="nv">AR</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ar<span class="w"> </span><span class="nv">FC</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$IMG_TOOLCHAIN</span><span class="s2">-gfortran -EL&quot;</span><span class="w"> </span><span class="nv">RANLIB</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ranlib<span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-EL&quot;</span><span class="w"> </span><span class="nv">FFLAGS</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$CFLAGS</span><span class="s2">&quot;</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$CFLAGS</span><span class="s2">&quot;</span><span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>P6600
+make<span class="w"> </span><span class="nv">BINARY</span><span class="o">=</span><span class="m">64</span><span class="w"> </span><span class="nv">BINARY64</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-gcc<span class="w"> </span><span class="nv">AR</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ar<span class="w"> </span><span class="nv">FC</span><span class="o">=</span><span class="s2">"</span><span class="nv">$IMG_TOOLCHAIN</span><span class="s2">-gfortran -EL"</span><span class="w"> </span><span class="nv">RANLIB</span><span class="o">=</span><span class="nv">$IMG_TOOLCHAIN</span>-ranlib<span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">"-EL"</span><span class="w"> </span><span class="nv">FFLAGS</span><span class="o">=</span><span class="s2">"</span><span class="nv">$CFLAGS</span><span class="s2">"</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">"</span><span class="nv">$CFLAGS</span><span class="s2">"</span><span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>P6600
 
-<span class="nv">MTI_TOOLCHAIN_DIR</span><span class="o">={</span>full<span class="w"> </span>MTI<span class="w"> </span>GNU/Linux<span class="w"> </span>Toolchain<span class="w"> </span>path<span class="w"> </span>including<span class="w"> </span><span class="s2">&quot;bin&quot;</span><span class="w"> </span>directory<span class="w"> </span>--<span class="w"> </span><span class="k">for</span><span class="w"> </span>example,<span class="w"> </span>/opt/linux_toolchain/bin<span class="o">}</span>
+<span class="nv">MTI_TOOLCHAIN_DIR</span><span class="o">={</span>full<span class="w"> </span>MTI<span class="w"> </span>GNU/Linux<span class="w"> </span>Toolchain<span class="w"> </span>path<span class="w"> </span>including<span class="w"> </span><span class="s2">"bin"</span><span class="w"> </span>directory<span class="w"> </span>--<span class="w"> </span><span class="k">for</span><span class="w"> </span>example,<span class="w"> </span>/opt/linux_toolchain/bin<span class="o">}</span>
 <span class="nv">MTI_GCC_PREFIX</span><span class="o">=</span>mips-mti-linux-gnu
 <span class="nv">MTI_TOOLCHAIN</span><span class="o">=</span><span class="si">${</span><span class="nv">IMG_TOOLCHAIN_DIR</span><span class="si">}</span>/<span class="si">${</span><span class="nv">IMG_GCC_PREFIX</span><span class="si">}</span>
 
 <span class="c1"># P5600 Build:</span>
 
-make<span class="w"> </span><span class="nv">BINARY</span><span class="o">=</span><span class="m">32</span><span class="w"> </span><span class="nv">BINARY32</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="nv">$MTI_TOOLCHAIN</span>-gcc<span class="w"> </span><span class="nv">AR</span><span class="o">=</span><span class="nv">$MTI_TOOLCHAIN</span>-ar<span class="w"> </span><span class="nv">FC</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$MTI_TOOLCHAIN</span><span class="s2">-gfortran -EL&quot;</span><span class="w">    </span><span class="nv">RANLIB</span><span class="o">=</span><span class="nv">$MTI_TOOLCHAIN</span>-ranlib<span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-EL&quot;</span><span class="w"> </span><span class="nv">FFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>P5600
+make<span class="w"> </span><span class="nv">BINARY</span><span class="o">=</span><span class="m">32</span><span class="w"> </span><span class="nv">BINARY32</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="nv">$MTI_TOOLCHAIN</span>-gcc<span class="w"> </span><span class="nv">AR</span><span class="o">=</span><span class="nv">$MTI_TOOLCHAIN</span>-ar<span class="w"> </span><span class="nv">FC</span><span class="o">=</span><span class="s2">"</span><span class="nv">$MTI_TOOLCHAIN</span><span class="s2">-gfortran -EL"</span><span class="w">    </span><span class="nv">RANLIB</span><span class="o">=</span><span class="nv">$MTI_TOOLCHAIN</span>-ranlib<span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">"-EL"</span><span class="w"> </span><span class="nv">FFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="nv">$CFLAGS</span><span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>P5600
 </code></pre></div>
 <h3 id="risc-v">RISC-V</h3>
 <p>OpenBLAS supports several RISC-V targets. Target selection determines whether
@@ -1952,9 +2008,51 @@ Functional tests will pass on the resulting library; only
 disassembly-level verification detects the regression.</p>
 <p>For a correct <code>RISCV64_ZVL128B</code> build on OpenBLAS 0.3.33,</p>
 <div class="highlight"><pre><span></span><code>riscv64-linux-gnu-objdump<span class="w"> </span>-d<span class="w"> </span>libopenblas*.a<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>grep<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;vle64\|vfmacc\|vsetvli\|vlse64\|vfmul\|vfadd\|vfredosum&#39;</span>
+<span class="w">    </span>grep<span class="w"> </span>-c<span class="w"> </span><span class="s1">'vle64\|vfmacc\|vsetvli\|vlse64\|vfmul\|vfadd\|vfredosum'</span>
 </code></pre></div>
 <p>returns approximately 12,000-14,000 (GCC 14: ~12,691; GCC 15: ~14,355).</p>
+<h3 id="webassembly">WebAssembly</h3>
+<p>OpenBLAS can be cross-compiled with <a href="https://emscripten.org/">Emscripten</a>
+(<code>TARGET=WASM128_GENERIC</code>). <code>Makefile.wasm</code> always passes <code>-msimd128</code> so
+kernels can use the portable <a href="https://github.com/WebAssembly/simd">WASM SIMD128</a>
+instruction set (128-bit <code>v128</code> vectors).</p>
+<h4 id="relaxed-simd">Relaxed SIMD</h4>
+<p><a href="https://github.com/WebAssembly/relaxed-simd">Relaxed SIMD</a> is a follow-on
+proposal. It keeps the same 128-bit vectors but allows a few operations —
+in particular fused multiply-add (<code>f32x4.relaxed_madd</code> /
+<code>f64x2.relaxed_madd</code>) — to map to native hardware FMA. The result may use
+one rounding or two, depending on the CPU, so it is not bit-identical across
+engines.</p>
+<p>OpenBLAS kernels already select <code>relaxed_madd</code> when the compiler defines
+<code>__wasm_relaxed_simd__</code> (from <code>-mrelaxed-simd</code>), and fall back to a separate
+multiply then add otherwise. That compile-time split is not enough for a
+single portable binary: WebAssembly validates the whole module, so any
+relaxed-SIMD opcode causes instantiate to fail on an engine that does not
+implement the feature. There is no in-module runtime dispatch.</p>
+<p>Engine support is tracked at <a href="https://webassembly.org/features/">webassembly.org/features</a>.
+As of 2026, shipping Safari / JavaScriptCore still lacks relaxed SIMD
+(Safari Technology Preview has it; a page cannot enable the JSC flag
+<code>useWasmRelaxedSIMD</code> itself). Chrome/V8 and current Firefox do support it.</p>
+<p>For a library that must load in every current browser, leave relaxed SIMD
+<strong>off</strong> (the default). Opt in only when every target engine is known to
+support it, or when you ship a second binary and select it from JavaScript
+with <a href="https://github.com/GoogleChromeLabs/wasm-feature-detect">wasm-feature-detect</a>.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Portable default (SIMD128 only)</span>
+make<span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>WASM128_GENERIC<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="nv">CC</span><span class="o">=</span>emcc<span class="w"> </span><span class="nv">AR</span><span class="o">=</span>emar<span class="w"> </span><span class="nv">RANLIB</span><span class="o">=</span>emranlib<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="nv">USE_THREAD</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">NOFORTRAN</span><span class="o">=</span><span class="m">1</span>
+
+<span class="c1"># Relaxed SIMD (FMA); will not instantiate on engines without the feature</span>
+make<span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>WASM128_GENERIC<span class="w"> </span><span class="nv">WASM_RELAXED_SIMD</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="nv">HOSTCC</span><span class="o">=</span>gcc<span class="w"> </span><span class="nv">CC</span><span class="o">=</span>emcc<span class="w"> </span><span class="nv">AR</span><span class="o">=</span>emar<span class="w"> </span><span class="nv">RANLIB</span><span class="o">=</span>emranlib<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="nv">USE_THREAD</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">NOFORTRAN</span><span class="o">=</span><span class="m">1</span>
+</code></pre></div>
+<p>With CMake, pass <code>-DWASM_RELAXED_SIMD=ON</code>.</p>
+<p>After the tree is configured for WASM (<code>ARCH=wasm</code> in <code>Makefile.conf</code>), check
+that the default build stays SIMD128-only and that the opt-in path emits
+<code>relaxed_madd</code>:</p>
+<div class="highlight"><pre><span></span><code>./kernel/wasm/test_relaxed_simd.sh
+</code></pre></div>
 <h3 id="freebsd_1">FreeBSD</h3>
 <p>You will need to install the following tools from the FreeBSD ports tree:</p>
 <ul>
@@ -1977,10 +2075,10 @@ the following <code>toolchain.cmake</code> file:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_SYSTEM_NAME</span><span class="w"> </span><span class="s">Generic</span><span class="p">)</span>
 <span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_SYSTEM_PROCESSOR</span><span class="w"> </span><span class="s">arm</span><span class="p">)</span>
 
-<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_C_COMPILER</span><span class="w"> </span><span class="s2">&quot;arm-none-eabi-gcc.exe&quot;</span><span class="p">)</span>
-<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_CXX_COMPILER</span><span class="w"> </span><span class="s2">&quot;arm-none-eabi-g++.exe&quot;</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_C_COMPILER</span><span class="w"> </span><span class="s2">"arm-none-eabi-gcc.exe"</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_CXX_COMPILER</span><span class="w"> </span><span class="s2">"arm-none-eabi-g++.exe"</span><span class="p">)</span>
 
-<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_EXE_LINKER_FLAGS</span><span class="w"> </span><span class="s2">&quot;--specs=nosys.specs&quot;</span><span class="w"> </span><span class="s">CACHE</span><span class="w"> </span><span class="s">INTERNAL</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_EXE_LINKER_FLAGS</span><span class="w"> </span><span class="s2">"--specs=nosys.specs"</span><span class="w"> </span><span class="s">CACHE</span><span class="w"> </span><span class="s">INTERNAL</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span>
 
 <span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_FIND_ROOT_PATH_MODE_PROGRAM</span><span class="w"> </span><span class="s">NEVER</span><span class="p">)</span>
 <span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_FIND_ROOT_PATH_MODE_LIBRARY</span><span class="w"> </span><span class="s">ONLY</span><span class="p">)</span>
@@ -1988,7 +2086,7 @@ the following <code>toolchain.cmake</code> file:</p>
 <span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_FIND_ROOT_PATH_MODE_PACKAGE</span><span class="w"> </span><span class="s">ONLY</span><span class="p">)</span>
 </code></pre></div>
 <p>Then build OpenBLAS with:
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>cmake<span class="w"> </span>..<span class="w"> </span>-G<span class="w"> </span>Ninja<span class="w"> </span>-DCMAKE_C_COMPILER<span class="o">=</span>arm-none-eabi-gcc<span class="w"> </span>-DCMAKE_TOOLCHAIN_FILE:PATH<span class="o">=</span><span class="s2">&quot;toolchain.cmake&quot;</span><span class="w"> </span>-DNOFORTRAN<span class="o">=</span><span class="m">1</span><span class="w"> </span>-DTARGET<span class="o">=</span>ARMV5<span class="w"> </span>-DEMBEDDED<span class="o">=</span><span class="m">1</span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>cmake<span class="w"> </span>..<span class="w"> </span>-G<span class="w"> </span>Ninja<span class="w"> </span>-DCMAKE_C_COMPILER<span class="o">=</span>arm-none-eabi-gcc<span class="w"> </span>-DCMAKE_TOOLCHAIN_FILE:PATH<span class="o">=</span><span class="s2">"toolchain.cmake"</span><span class="w"> </span>-DNOFORTRAN<span class="o">=</span><span class="m">1</span><span class="w"> </span>-DTARGET<span class="o">=</span>ARMV5<span class="w"> </span>-DEMBEDDED<span class="o">=</span><span class="m">1</span>
 </code></pre></div></p>
 <p>In your embedded application, the following functions need to be provided for OpenBLAS to work correctly:
 <div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">free</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ptr</span><span class="p">);</span>
@@ -2033,7 +2131,7 @@ provides one implementation of <code>malloc</code> for embedded platforms.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 2, 2026 17:50:09 UTC">July 2, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 8, 2026 08:27:07 UTC">September 8, 2026</span>
   </span>
 
     
@@ -2126,7 +2224,7 @@ provides one implementation of <code>malloc</code> for embedded platforms.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["header.autohide"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

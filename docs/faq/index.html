@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../logo.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1812,27 +1812,27 @@ four data types will often vary with the optimization flags you supplied to the 
 <div class="highlight"><pre><span></span><code>gcc -static -I/opt/OpenBLAS/include -L/opt/OpenBLAS/lib -o my_program my_program.c -lopenblas -lpthread
 </code></pre></div>
 <p>Failing to add the <code>-lpthread</code> flag will cause errors such as:</p>
-<div class="highlight"><pre><span></span><code>/opt/OpenBLAS/libopenblas.a(memory.o): In function `_touch_memory&#39;:
-memory.c:(.text+0x15): undefined reference to `pthread_mutex_lock&#39;
-memory.c:(.text+0x41): undefined reference to `pthread_mutex_unlock&#39;
-/opt/OpenBLAS/libopenblas.a(memory.o): In function `openblas_fork_handler&#39;:
-memory.c:(.text+0x440): undefined reference to `pthread_atfork&#39;
-/opt/OpenBLAS/libopenblas.a(memory.o): In function `blas_memory_alloc&#39;:
-memory.c:(.text+0x7a5): undefined reference to `pthread_mutex_lock&#39;
-memory.c:(.text+0x825): undefined reference to `pthread_mutex_unlock&#39;
-/opt/OpenBLAS/libopenblas.a(memory.o): In function `blas_shutdown&#39;:
-memory.c:(.text+0x9e1): undefined reference to `pthread_mutex_lock&#39;
-memory.c:(.text+0xa6e): undefined reference to `pthread_mutex_unlock&#39;
-/opt/OpenBLAS/libopenblas.a(blas_server.o): In function `blas_thread_server&#39;:
-blas_server.c:(.text+0x273): undefined reference to `pthread_mutex_lock&#39;
-blas_server.c:(.text+0x287): undefined reference to `pthread_mutex_unlock&#39;
-blas_server.c:(.text+0x33f): undefined reference to `pthread_cond_wait&#39;
-/opt/OpenBLAS/libopenblas.a(blas_server.o): In function `blas_thread_init&#39;:
-blas_server.c:(.text+0x416): undefined reference to `pthread_mutex_lock&#39;
-blas_server.c:(.text+0x4be): undefined reference to `pthread_mutex_init&#39;
-blas_server.c:(.text+0x4ca): undefined reference to `pthread_cond_init&#39;
-blas_server.c:(.text+0x4e0): undefined reference to `pthread_create&#39;
-blas_server.c:(.text+0x50f): undefined reference to `pthread_mutex_unlock&#39;
+<div class="highlight"><pre><span></span><code>/opt/OpenBLAS/libopenblas.a(memory.o): In function `_touch_memory':
+memory.c:(.text+0x15): undefined reference to `pthread_mutex_lock'
+memory.c:(.text+0x41): undefined reference to `pthread_mutex_unlock'
+/opt/OpenBLAS/libopenblas.a(memory.o): In function `openblas_fork_handler':
+memory.c:(.text+0x440): undefined reference to `pthread_atfork'
+/opt/OpenBLAS/libopenblas.a(memory.o): In function `blas_memory_alloc':
+memory.c:(.text+0x7a5): undefined reference to `pthread_mutex_lock'
+memory.c:(.text+0x825): undefined reference to `pthread_mutex_unlock'
+/opt/OpenBLAS/libopenblas.a(memory.o): In function `blas_shutdown':
+memory.c:(.text+0x9e1): undefined reference to `pthread_mutex_lock'
+memory.c:(.text+0xa6e): undefined reference to `pthread_mutex_unlock'
+/opt/OpenBLAS/libopenblas.a(blas_server.o): In function `blas_thread_server':
+blas_server.c:(.text+0x273): undefined reference to `pthread_mutex_lock'
+blas_server.c:(.text+0x287): undefined reference to `pthread_mutex_unlock'
+blas_server.c:(.text+0x33f): undefined reference to `pthread_cond_wait'
+/opt/OpenBLAS/libopenblas.a(blas_server.o): In function `blas_thread_init':
+blas_server.c:(.text+0x416): undefined reference to `pthread_mutex_lock'
+blas_server.c:(.text+0x4be): undefined reference to `pthread_mutex_init'
+blas_server.c:(.text+0x4ca): undefined reference to `pthread_cond_init'
+blas_server.c:(.text+0x4e0): undefined reference to `pthread_create'
+blas_server.c:(.text+0x50f): undefined reference to `pthread_mutex_unlock'
 ...
 </code></pre></div>
 <p>The <code>-lpthread</code> is not required when linking dynamically against <code>libopenblas.so.0</code>.</p>
@@ -2060,7 +2060,7 @@ from the main thread of your program (i.e. outside of omp parallel constructs), 
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["header.autohide"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
