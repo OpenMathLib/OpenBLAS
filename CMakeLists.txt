@@ -41,6 +41,8 @@ option(DYNAMIC_OLDER "Include specific support for older x86 cpu models (Penryn,
 
 option(BUILD_RELAPACK "Build with ReLAPACK (recursive implementation of several LAPACK functions on top of standard LAPACK)" OFF)
 
+option(WASM_RELAXED_SIMD "WASM: emit relaxed SIMD opcodes (not portable to engines without the feature, including shipping Safari)" OFF)
+
 option(USE_LOCKING "Use locks even in single-threaded builds to make them callable from multiple threads" OFF)
 
 option(USE_PERL "Use the older PERL scripts for build preparation instead of universal shell scripts" OFF)

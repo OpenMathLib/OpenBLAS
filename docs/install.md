@@ -847,6 +847,62 @@ riscv64-linux-gnu-objdump -d libopenblas*.a | \
 returns approximately 12,000-14,000 (GCC 14: ~12,691; GCC 15: ~14,355).
 
 
+### WebAssembly
+
+OpenBLAS can be cross-compiled with [Emscripten](https://emscripten.org/)
+(`TARGET=WASM128_GENERIC`). `Makefile.wasm` always passes `-msimd128` so
+kernels can use the portable [WASM SIMD128](https://github.com/WebAssembly/simd)
+instruction set (128-bit `v128` vectors).
+
+#### Relaxed SIMD
+
+[Relaxed SIMD](https://github.com/WebAssembly/relaxed-simd) is a follow-on
+proposal. It keeps the same 128-bit vectors but allows a few operations —
+in particular fused multiply-add (`f32x4.relaxed_madd` /
+`f64x2.relaxed_madd`) — to map to native hardware FMA. The result may use
+one rounding or two, depending on the CPU, so it is not bit-identical across
+engines.
+
+OpenBLAS kernels already select `relaxed_madd` when the compiler defines
+`__wasm_relaxed_simd__` (from `-mrelaxed-simd`), and fall back to a separate
+multiply then add otherwise. That compile-time split is not enough for a
+single portable binary: WebAssembly validates the whole module, so any
+relaxed-SIMD opcode causes instantiate to fail on an engine that does not
+implement the feature. There is no in-module runtime dispatch.
+
+Engine support is tracked at [webassembly.org/features](https://webassembly.org/features/).
+As of 2026, shipping Safari / JavaScriptCore still lacks relaxed SIMD
+(Safari Technology Preview has it; a page cannot enable the JSC flag
+`useWasmRelaxedSIMD` itself). Chrome/V8 and current Firefox do support it.
+
+For a library that must load in every current browser, leave relaxed SIMD
+**off** (the default). Opt in only when every target engine is known to
+support it, or when you ship a second binary and select it from JavaScript
+with [wasm-feature-detect](https://github.com/GoogleChromeLabs/wasm-feature-detect).
+
+```bash
+# Portable default (SIMD128 only)
+make TARGET=WASM128_GENERIC \
+  HOSTCC=gcc CC=emcc AR=emar RANLIB=emranlib \
+  USE_THREAD=0 NOFORTRAN=1
+
+# Relaxed SIMD (FMA); will not instantiate on engines without the feature
+make TARGET=WASM128_GENERIC WASM_RELAXED_SIMD=1 \
+  HOSTCC=gcc CC=emcc AR=emar RANLIB=emranlib \
+  USE_THREAD=0 NOFORTRAN=1
+```
+
+With CMake, pass `-DWASM_RELAXED_SIMD=ON`.
+
+After the tree is configured for WASM (`ARCH=wasm` in `Makefile.conf`), check
+that the default build stays SIMD128-only and that the opt-in path emits
+`relaxed_madd`:
+
+```bash
+./kernel/wasm/test_relaxed_simd.sh
+```
+
+
 ### FreeBSD
 
 You will need to install the following tools from the FreeBSD ports tree:
