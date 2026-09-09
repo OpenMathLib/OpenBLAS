@@ -4,7 +4,10 @@ Deep CBLAS correctness checks for `TARGET=WASM128_GENERIC`, run under Node / Ems
 
 ## Oracle
 
-Results from OpenBLAS (public CBLAS API) are compared to a **hand-written scalar C reference** in `ref.c` (IEEE `*` / `+` only — no SIMD, no FMA intrinsics). This is not Netlib BLAS and not a second OpenBLAS build.
+Results from OpenBLAS (public CBLAS API) are compared to hand-written scalar
+C references in `ref_l1.c`, `ref_l2.c`, and `ref_l3.c` (IEEE `*` / `+` only —
+no SIMD or FMA intrinsics). This is not Netlib BLAS and not a second OpenBLAS
+build.
 
 Tolerances live in `tol.h`. Builds with `WASM_RELAXED_SIMD=1` use a slightly larger L2/L3 budget (`TEST_WASM_RELAXED`).
 
@@ -23,11 +26,26 @@ Requires `emcc` on `PATH`, or an emscripten-forge prefix via `OPENBLAS_EM_PREFIX
 
 CI runs the same script via `.github/workflows/wasm.yml` (Emscripten + Node on `ubuntu-latest`) on changes under `test/wasm/` and `kernel/wasm/`.
 
-## Coverage (MVP)
+## Coverage
 
-- L1: `saxpy` / `daxpy` (unit stride, non-unit, `inc==0`)
-- L2: `sgemv` / `dgemv` (N/T, square and rectangular, some non-unit strides)
-- L3: `sgemm` / `dgemm` / `cgemm` / `zgemm`, `ssyrk` / `dsyrk`, `strmm` / `dtrmm`, `strsm` / `dtrsm`
+The suite covers the complete standard CBLAS Level 1/2/3 families:
+
+- Level 1: rotations, swap, scaling, copy, axpy, dot products, norms, absolute
+  sums, and maximum-index operations for all applicable S/D/C/Z types.
+- Level 2 dense: general, symmetric, Hermitian, triangular, and rank-update
+  operations.
+- Level 2 banded and packed: general, symmetric/Hermitian, triangular, solve,
+  and rank-update operations.
+- Level 3: GEMM, SYMM/HEMM, SYRK/HERK, SYR2K/HER2K, and TRMM/TRSM.
+
+Matrices used by the full checks include off-diagonal values. Symmetric and
+Hermitian inputs are mirrored explicitly; triangular solve inputs are
+diagonally dominant; band and packed layouts include their off-diagonals.
+Triangular solves are checked by constructing a right-hand side with the
+matching scalar matrix product and recovering the original input.
+
+This scope is standard BLAS only. OpenBLAS extensions such as `axpby`, `gemmt`,
+`imatcopy`, and bfloat16 routines are intentionally excluded.
 
 Size grids emphasize tile remainders around 4×4 / 8×4 / 2×2 (see `cases.h`).
 

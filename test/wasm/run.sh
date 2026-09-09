@@ -14,19 +14,13 @@ activate_emscripten() {
     return 0
   fi
   local prefix="${OPENBLAS_EM_PREFIX:-}"
-  if [[ -z "$prefix" ]]; then
-    local cand
-    for cand in \
-      "$ROOT/.em-prefix" \
-      /home/jjerphan/dev/recipes/output/bld/rattler-build_openblas_*/build_env
-    do
-      if [[ -f "$cand/bin/activate_emscripten.sh" ]]; then
-        prefix="$cand"
-      fi
-    done
+  # Optional in-tree symlink/dir to an emscripten-forge prefix (not committed).
+  if [[ -z "$prefix" && -f "$ROOT/.em-prefix/bin/activate_emscripten.sh" ]]; then
+    prefix="$ROOT/.em-prefix"
   fi
   if [[ -z "$prefix" || ! -f "$prefix/bin/activate_emscripten.sh" ]]; then
-    echo "emcc not found. Set OPENBLAS_EM_PREFIX to an emscripten-forge env." >&2
+    echo "emcc not found. Set OPENBLAS_EM_PREFIX to an emscripten-forge env," >&2
+    echo "or put activate_emscripten.sh under \$ROOT/.em-prefix/bin/." >&2
     exit 1
   fi
   export CONDA_PREFIX="$prefix"
@@ -44,7 +38,9 @@ cd "$ROOT"
 
 SRCS=(
   "$DIR/main.c"
-  "$DIR/ref.c"
+  "$DIR/ref_l1.c"
+  "$DIR/ref_l2.c"
+  "$DIR/ref_l3.c"
   "$DIR/check_l1.c"
   "$DIR/check_l2.c"
   "$DIR/check_l3.c"

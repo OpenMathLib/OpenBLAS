@@ -52,6 +52,11 @@ static const int SIZES_CZ[] = {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 17, 31, 32, 33, 63, 64, 65};
 static const int NS_CZ = (int)(sizeof(SIZES_CZ) / sizeof(SIZES_CZ[0]));
 
+/* Full standard-BLAS coverage: broad remainder sampling without large cases. */
+static const int SIZES_FULL[] = {
+    1, 2, 3, 4, 5, 7, 8, 9, 15, 16, 17, 31, 32};
+static const int NS_FULL = (int)(sizeof(SIZES_FULL) / sizeof(SIZES_FULL[0]));
+
 static const int INCS[] = {0, 1, 2, 3};
 static const int NINCS = (int)(sizeof(INCS) / sizeof(INCS[0]));
 

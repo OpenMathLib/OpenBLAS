@@ -69,6 +69,37 @@ static inline void fill_c64(double *a, int n, int seed) {
   fill_f64(a, 2 * n, seed);
 }
 
+/* Dense triangular fixture for TRMV/TRSV/TRMM/TRSM tests (real only). */
+static inline void make_tri_f32(float *A, int n, int lda, enum CBLAS_UPLO uplo,
+                                int unit) {
+  for (int j = 0; j < n; j++)
+    for (int i = 0; i < n; i++) {
+      float v = 0.0f;
+      if (i == j)
+        v = unit ? 1.0f : (1.0f + 0.1f * (float)((i % 5) + 1));
+      else if (uplo == CblasLower && i > j)
+        v = 0.1f * (float)((i + j) % 5 + 1);
+      else if (uplo == CblasUpper && i < j)
+        v = 0.1f * (float)((i + j) % 5 + 1);
+      A[i + j * lda] = v;
+    }
+}
+
+static inline void make_tri_f64(double *A, int n, int lda, enum CBLAS_UPLO uplo,
+                                int unit) {
+  for (int j = 0; j < n; j++)
+    for (int i = 0; i < n; i++) {
+      double v = 0.0;
+      if (i == j)
+        v = unit ? 1.0 : (1.0 + 0.1 * (double)((i % 5) + 1));
+      else if (uplo == CblasLower && i > j)
+        v = 0.1 * (double)((i + j) % 5 + 1);
+      else if (uplo == CblasUpper && i < j)
+        v = 0.1 * (double)((i + j) % 5 + 1);
+      A[i + j * lda] = v;
+    }
+}
+
 static inline int close_f32(const float *got, const float *ref, int n, float tol,
                             float *out_maxe, float *out_maxv) {
   float maxe = 0.0f, maxv = 0.0f;
@@ -117,6 +148,40 @@ static inline void fail_f64(const char *msg, double maxe, double maxv,
                             double tol) {
   fprintf(stderr, "FAIL %s maxe=%.6g maxv=%.6g tol=%.6g\n", msg, maxe, maxv,
           tol);
+  g_fail++;
+}
+
+/* Pass if got[] matches the scalar reference within relative tolerance. */
+static inline void expect_close_f32(const char *name, const float *got,
+                                    const float *ref, int n, float tol) {
+  float maxe;
+  float maxv;
+
+  if (close_f32(got, ref, n, tol, &maxe, &maxv))
+    pass_one();
+  else
+    fail_f32(name, maxe, maxv, tol);
+}
+
+/* Pass if got[] matches the scalar reference within relative tolerance. */
+static inline void expect_close_f64(const char *name, const double *got,
+                                    const double *ref, int n, double tol) {
+  double maxe;
+  double maxv;
+
+  if (close_f64(got, ref, n, tol, &maxe, &maxv))
+    pass_one();
+  else
+    fail_f64(name, maxe, maxv, tol);
+}
+
+/* Pass if an integer-sized result matches the scalar reference exactly. */
+static inline void expect_eq_size(const char *name, size_t got, size_t ref) {
+  if (got == ref) {
+    pass_one();
+    return;
+  }
+  fprintf(stderr, "FAIL %s got=%zu ref=%zu\n", name, got, ref);
   g_fail++;
 }
 

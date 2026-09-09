@@ -31,9 +31,37 @@ POSSIBILITY OF SUCH DAMAGE.
 #ifndef TEST_WASM_TOL_H
 #define TEST_WASM_TOL_H
 
-/* WASM_RELAXED_SIMD builds may use f32x4.relaxed_madd / f64x2.relaxed_madd
- * in GEMM/TRMM-class kernels. Allow a modestly larger budget then. */
+/*
+ * Relative pass condition (see expect_close_* in common.h):
+ *
+ *   max_i |got[i] - ref[i]|  <=  tol * (1 + max_i |ref[i]|)
+ *
+ * So `tol` is a mixed absolute/relative budget: near zero it behaves like an
+ * absolute tolerance; for O(1) results it is relative.
+ *
+ * Choice of numbers
+ * -----------------
+ * The scalar oracle uses only IEEE `*` / `+` (no FMA). OpenBLAS WASM kernels
+ * may reorder sums and, under WASM_RELAXED_SIMD, use f32x4.relaxed_madd /
+ * f64x2.relaxed_madd, which need not match IEEE fused multiply-add.
+ *
+ * Machine epsilons are ~1.2e-7 (f32) and ~2.2e-16 (f64). The budgets below
+ * are intentionally larger than a few ulps so the suite gates kernel bugs
+ * (wrong tiles, strides, remainders) rather than benign rounding differences.
+ *
+ * L1 (AXPY and friends): current WASM L1 paths stay ordinary mul+add even
+ * with -mrelaxed-simd, so a fixed, tight budget is enough (~30 ulp at |ref|~1
+ * for f32). No dependence on n: depth of accumulation is small.
+ *
+ * L2 / L3: error can grow with the reduction length (inner dimension ~ n for
+ * the square cases we run). Budgets are therefore `SCALE * max(n, 1)`.
+ * IEEE SCALE is ~1.7e3 ulp (f32) / ~9e3 ulp (f64) per unit of n — loose
+ * enough for blocked GEMM/TRMM association, still far below what a wrong
+ * microkernel typically produces. Relaxed SCALE is 4× IEEE to cover
+ * relaxed_madd without hiding clear functional failures.
+ */
 
+/* L2/L3 scale factors; multiplied by problem size in tol_*_l2 / tol_*_l3. */
 #ifdef TEST_WASM_RELAXED
 #define TOL_S_SCALE 8e-4f
 #define TOL_D_SCALE 8e-12
@@ -42,13 +70,21 @@ POSSIBILITY OF SUCH DAMAGE.
 #define TOL_D_SCALE 2e-12
 #endif
 
-/* L1 (AXPY) stays IEEE mul+add even with -mrelaxed-simd in current kernels. */
-#define TOL_S_L1  4e-6f
-#define TOL_D_L1  4e-14
+/* Fixed L1 budgets (not scaled by n). */
+#define TOL_S_L1 4e-6f
+#define TOL_D_L1 4e-14
 
-static inline float tol_s_l3(int n) { return TOL_S_SCALE * (float)(n > 0 ? n : 1); }
-static inline double tol_d_l3(int n) { return TOL_D_SCALE * (double)(n > 0 ? n : 1); }
-static inline float tol_s_l2(int n) { return TOL_S_SCALE * (float)(n > 0 ? n : 1); }
-static inline double tol_d_l2(int n) { return TOL_D_SCALE * (double)(n > 0 ? n : 1); }
+static inline float tol_s_l3(int n) {
+  return TOL_S_SCALE * (float)(n > 0 ? n : 1);
+}
+static inline double tol_d_l3(int n) {
+  return TOL_D_SCALE * (double)(n > 0 ? n : 1);
+}
+static inline float tol_s_l2(int n) {
+  return TOL_S_SCALE * (float)(n > 0 ? n : 1);
+}
+static inline double tol_d_l2(int n) {
+  return TOL_D_SCALE * (double)(n > 0 ? n : 1);
+}
 
 #endif /* TEST_WASM_TOL_H */
