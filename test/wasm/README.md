@@ -21,6 +21,8 @@ This:
 
 Requires `emcc` on `PATH`, or an emscripten-forge prefix via `OPENBLAS_EM_PREFIX` / auto-discovery used by `benchmark/wasm/build.sh`.
 
+CI runs the same script via `.github/workflows/wasm.yml` (Emscripten + Node on `ubuntu-latest`) on changes under `test/wasm/` and `kernel/wasm/`.
+
 ## Coverage (MVP)
 
 - L1: `saxpy` / `daxpy` (unit stride, non-unit, `inc==0`)

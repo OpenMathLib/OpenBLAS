@@ -1,0 +1,58 @@
+name: wasm numerical suite
+
+on:
+  push:
+    paths:
+      - 'test/wasm/**'
+      - 'kernel/wasm/**'
+      - 'kernel/simd/intrin_wasm.h'
+      - 'kernel/simd/intrin.h'
+      - 'Makefile.wasm'
+      - '.github/workflows/wasm.yml'
+  pull_request:
+    paths:
+      - 'test/wasm/**'
+      - 'kernel/wasm/**'
+      - 'kernel/simd/intrin_wasm.h'
+      - 'kernel/simd/intrin.h'
+      - 'Makefile.wasm'
+      - '.github/workflows/wasm.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  numerical:
+    if: github.repository == 'OpenMathLib/OpenBLAS' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup Emscripten
+        uses: emscripten-core/setup-emsdk@v16
+        with:
+          version: 4.0.10
+          actions-cache-folder: emsdk-cache
+
+      - name: Verify toolchain
+        run: |
+          emcc -v
+          node -v
+          which emmake emar emranlib
+
+      - name: Run WASM numerical CBLAS suite
+        run: |
+          JOBS="$(nproc)" ./test/wasm/run.sh
