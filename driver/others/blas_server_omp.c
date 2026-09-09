@@ -152,7 +152,7 @@ extern int openblas_omp_num_threads_env(void);
 
   blas_get_cpu_number();
 
-  adjust_thread_buffers();
+  //adjust_thread_buffers();
 
   blas_server_avail = 1;
 
