@@ -31,6 +31,13 @@ jobs:
     if: github.repository == 'OpenMathLib/OpenBLAS' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        # Explicit IEEE vs relaxed-SIMD OpenBLAS builds (and matching suite tolerances).
+        wasm_relaxed_simd: ['0', '1']
+
+    name: numerical (WASM_RELAXED_SIMD=${{ matrix.wasm_relaxed_simd }})
 
     steps:
       - name: Checkout repository
@@ -54,5 +61,8 @@ jobs:
           which emmake emar emranlib
 
       - name: Run WASM numerical CBLAS suite
+        env:
+          WASM_RELAXED_SIMD: ${{ matrix.wasm_relaxed_simd }}
         run: |
+          echo "Running suite with WASM_RELAXED_SIMD=${WASM_RELAXED_SIMD}"
           JOBS="$(nproc)" ./test/wasm/run.sh

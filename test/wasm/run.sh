@@ -114,6 +114,24 @@ build_and_run() {
 }
 
 echo "test/wasm run.sh JOBS=$JOBS"
-build_and_run 0
-build_and_run 1
-echo "test/wasm: IEEE + relaxed suites passed"
+# If WASM_RELAXED_SIMD is set to 0 or 1, run only that mode (used by CI matrix).
+# Otherwise run both IEEE and relaxed builds.
+case "${WASM_RELAXED_SIMD-}" in
+  0)
+    build_and_run 0
+    echo "test/wasm: IEEE suite passed (WASM_RELAXED_SIMD=0)"
+    ;;
+  1)
+    build_and_run 1
+    echo "test/wasm: relaxed suite passed (WASM_RELAXED_SIMD=1)"
+    ;;
+  "")
+    build_and_run 0
+    build_and_run 1
+    echo "test/wasm: IEEE + relaxed suites passed"
+    ;;
+  *)
+    echo "WASM_RELAXED_SIMD must be unset, 0, or 1 (got: ${WASM_RELAXED_SIMD})" >&2
+    exit 1
+    ;;
+esac
