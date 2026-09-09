@@ -540,7 +540,7 @@ static integer c__1 = 1;
     integer nibble, nblock;
     extern real slamch_(char *);
     real safmin;
-    extern /* Subroutine */ void xerbla_(char *, integer *);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     real safmax;
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
@@ -647,7 +647,7 @@ static integer c__1 = 1;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SLAQZ0", &i__1);
+	xerbla_("SLAQZ0", &i__1,(ftnlen)6);
 	return;
     }
 
@@ -725,7 +725,7 @@ static integer c__1 = 1;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SLAQZ0", &i__1);
+	xerbla_("SLAQZ0", &i__1,(ftnlen)6);
 	return;
     }
 

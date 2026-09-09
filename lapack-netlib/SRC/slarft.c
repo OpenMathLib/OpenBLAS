@@ -228,7 +228,7 @@ typedef logical (*L_fp)(...);
 #else
 typedef logical (*L_fp)();
 #endif
-
+#if 0
 static float spow_ui(float x, integer n) {
 	float pow=1.0; unsigned long int u;
 	if(n != 0) {
@@ -284,7 +284,7 @@ static integer smaxloc_(float *w, integer s, integer e, integer *n)
 		if (w[i-1]>m) mi=i ,m=w[i-1];
 	return mi-s+1;
 }
-
+#endif
 /*  -- translated by f2c (version 20000121).
    You must link the resulting object file with the libraries:
 	-lf2c -lm   (in that order)

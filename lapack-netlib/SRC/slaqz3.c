@@ -513,7 +513,7 @@ static real c_b17 = 1.f;
 	    , integer *, integer *, integer *, real *, integer *);
     extern real slamch_(char *);
     real safmin;
-    extern /* Subroutine */ void xerbla_(char *, integer *);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     real safmax;
     extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *), slaset_(char *, integer *, 
@@ -599,7 +599,7 @@ static real c_b17 = 1.f;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SLAQZ3", &i__1);
+	xerbla_("SLAQZ3", &i__1, (ftnlen)6);
 	return;
     }
 /*     Get machine constants */

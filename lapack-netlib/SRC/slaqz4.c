@@ -261,7 +261,7 @@ static logical c_true = TRUE_;
 	    integer *, integer *, real *, integer *, integer *, integer *, 
 	    real *, integer *);
     static integer nblock;
-    extern /* Subroutine */ void xerbla_(char *, integer * /*, ftnlen*/);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     static integer ishift;
     extern /* Subroutine */ void slaset_(char *, integer *, integer *, real *, 
 	    real *, real *, integer * /*, ftnlen*/), slartg_(real *, real *, real *
@@ -315,7 +315,7 @@ static logical c_true = TRUE_;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SLAQZ4", &i__1 /*, (ftnlen)6*/);
+	xerbla_("SLAQZ4", &i__1 , (ftnlen)6);
 	return;
     }
 /*     Executable statements */

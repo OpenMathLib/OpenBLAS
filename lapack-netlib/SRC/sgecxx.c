@@ -39,19 +39,6 @@ typedef float real;
 typedef double doublereal;
 typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
-#ifdef _MSC_VER
-static inline _Fcomplex Cf(complex *z) {_Fcomplex zz={z->r , z->i}; return zz;}
-static inline _Dcomplex Cd(doublecomplex *z) {_Dcomplex zz={z->r , z->i};return zz;}
-static inline _Fcomplex * _pCf(complex *z) {return (_Fcomplex*)z;}
-static inline _Dcomplex * _pCd(doublecomplex *z) {return (_Dcomplex*)z;}
-#else
-static inline _Complex float Cf(complex *z) {return z->r + z->i*_Complex_I;}
-static inline _Complex double Cd(doublecomplex *z) {return z->r + z->i*_Complex_I;}
-static inline _Complex float * _pCf(complex *z) {return (_Complex float*)z;}
-static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*)z;}
-#endif
-#define pCf(z) (*_pCf(z))
-#define pCd(z) (*_pCd(z))
 typedef int logical;
 typedef short int shortlogical;
 typedef char logical1;
@@ -187,33 +174,15 @@ typedef struct Namelist Namelist;
 #define bit_set(a,b)	((a) |  ((uinteger)1 << (b)))
 
 #define abort_() { sig_die("Fortran abort routine called", 1); }
-#define c_abs(z) (cabsf(Cf(z)))
-#define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
-#ifdef _MSC_VER
-#define c_div(c, a, b) {Cf(c)._Val[0] = (Cf(a)._Val[0]/Cf(b)._Val[0]); Cf(c)._Val[1]=(Cf(a)._Val[1]/Cf(b)._Val[1]);}
-#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/Cd(b)._Val[1]);}
-#else
-#define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
-#define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
-#endif
-#define c_exp(R, Z) {pCf(R) = cexpf(Cf(Z));}
-#define c_log(R, Z) {pCf(R) = clogf(Cf(Z));}
-#define c_sin(R, Z) {pCf(R) = csinf(Cf(Z));}
-//#define c_sqrt(R, Z) {*(R) = csqrtf(Cf(Z));}
-#define c_sqrt(R, Z) {pCf(R) = csqrtf(Cf(Z));}
 #define d_abs(x) (fabs(*(x)))
 #define d_acos(x) (acos(*(x)))
 #define d_asin(x) (asin(*(x)))
 #define d_atan(x) (atan(*(x)))
 #define d_atn2(x, y) (atan2(*(x),*(y)))
-#define d_cnjg(R, Z) { pCd(R) = conj(Cd(Z)); }
-#define r_cnjg(R, Z) { pCf(R) = conjf(Cf(Z)); }
 #define d_cos(x) (cos(*(x)))
 #define d_cosh(x) (cosh(*(x)))
 #define d_dim(__a, __b) ( *(__a) > *(__b) ? *(__a) - *(__b) : 0.0 )
 #define d_exp(x) (exp(*(x)))
-#define d_imag(z) (cimag(Cd(z)))
-#define r_imag(z) (cimagf(Cf(z)))
 #define d_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define r_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define d_lg10(x) ( 0.43429448190325182765 * log(*(x)) )
@@ -239,18 +208,11 @@ typedef struct Namelist Namelist;
 #define pow_si(B,E) spow_ui(*(B),*(E))
 #define pow_ri(B,E) spow_ui(*(B),*(E))
 #define pow_di(B,E) dpow_ui(*(B),*(E))
-#define pow_zi(p, a, b) {pCd(p) = zpow_ui(Cd(a), *(b));}
-#define pow_ci(p, a, b) {pCf(p) = cpow_ui(Cf(a), *(b));}
-#define pow_zz(R,A,B) {pCd(R) = cpow(Cd(A),*(B));}
 #define s_cat(lpp, rpp, rnp, np, llp) { 	ftnlen i, nc, ll; char *f__rp, *lp; 	ll = (llp); lp = (lpp); 	for(i=0; i < (int)*(np); ++i) {         	nc = ll; 	        if((rnp)[i] < nc) nc = (rnp)[i]; 	        ll -= nc;         	f__rp = (rpp)[i]; 	        while(--nc >= 0) *lp++ = *(f__rp)++;         } 	while(--ll >= 0) *lp++ = ' '; }
 #define s_cmp(a,b,c,d) ((integer)strncmp((a),(b),f2cmin((c),(d))))
 #define s_copy(A,B,C,D) { int __i,__m; for (__i=0, __m=f2cmin((C),(D)); __i<__m && (B)[__i] != 0; ++__i) (A)[__i] = (B)[__i]; }
 #define sig_die(s, kill) { exit(1); }
 #define s_stop(s, n) {exit(0);}
-static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
-#define z_abs(z) (cabs(Cd(z)))
-#define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
-#define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
 #define myexit_() break;
 #define mycycle_() continue;
 #define myceiling_(w) {ceil(w)}
@@ -266,7 +228,7 @@ typedef logical (*L_fp)(...);
 #else
 typedef logical (*L_fp)();
 #endif
-
+#if 0
 static float spow_ui(float x, integer n) {
 	float pow=1.0; unsigned long int u;
 	if(n != 0) {
@@ -502,6 +464,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	pCd(z) = zdotc;
 }
 #endif
+#endif
 /*  -- translated by f2c (version 20000121).
    You must link the resulting object file with the libraries:
 	-lf2c -lm   (in that order)
@@ -530,7 +493,7 @@ static integer c__0 = 0;
 static real c_b15 = -1.f;
 static integer c__1 = 1;
 
-/* Subroutine */ int sgecxx_(char *fact, char *usesd, integer *m, integer *n, 
+/* Subroutine */ void sgecxx_(char *fact, char *usesd, integer *m, integer *n, 
 	integer *desel_rows__, integer *sel_desel_cols__, integer *kmaxfree, 
 	real *abstol, real *reltol, real *a, integer *lda, integer *k, real *
 	maxc2nrmk, real *relmaxc2nrmk, real *fnrmk, integer *ipiv, integer *
@@ -545,7 +508,7 @@ static integer c__1 = 1;
 
     /* Local variables */
     real maxc2nrm;
-    extern /* Subroutine */ int sgeqp3rk_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void sgeqp3rk_(integer *, integer *, integer *, 
 	    integer *, real *, real *, real *, integer *, integer *, real *, 
 	    real *, integer *, real *, real *, integer *, integer *, integer *
 	    );
@@ -562,7 +525,7 @@ static integer c__1 = 1;
     extern logical lsame_(char *, char *);
     real maxc2nrmkfree;
     integer iinfo, itemp, minmn;
-    extern /* Subroutine */ int sgels_(char *, integer *, integer *, integer *
+    extern /* Subroutine */ void sgels_(char *, integer *, integer *, integer *
 	    , real *, integer *, real *, integer *, real *, integer *, 
 	    integer *), scopy_(integer *, real *, integer *, real *, 
 	    integer *), sswap_(integer *, real *, integer *, real *, integer *
@@ -573,10 +536,10 @@ static integer c__1 = 1;
     extern real slange_(char *, integer *, integer *, real *, integer *, real 
 	    *);
     real safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern integer isamax_(integer *, real *, integer *);
     integer mresid, nresid;
-    extern /* Subroutine */ int sgeqrf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgeqrf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *), slacpy_(char *, integer 
 	    *, integer *, real *, integer *, real *, integer *);
     extern logical sisnan_(real *);
@@ -584,7 +547,7 @@ static integer c__1 = 1;
     logical usetol;
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
     logical use_desel_rows__;
@@ -711,13 +674,13 @@ static integer c__1 = 1;
 	} else if (*lda < f2cmax(1,*m)) {
 	    *info = -11;
 /*        This is a check for LDC */
-	} else if (returnc && *ldc < f2cmax(1,*m) || ! returnc && *ldc < 1) {
+	} else if ((returnc && *ldc < f2cmax(1,*m)) || (! returnc && *ldc < 1)) {
 	    *info = -20;
 /*        This is a check for LDQRC */
-	} else if (returnx && *ldqrc < f2cmax(1,*m) || ! returnx && *ldqrc < 1) {
+	} else if ((returnx && *ldqrc < f2cmax(1,*m)) || (! returnx && *ldqrc < 1)) {
 	    *info = -22;
 /*        This is a check for LDX */
-	} else if (returnx && *ldx < f2cmax(1,*m) || ! returnx && *ldx < 1) {
+	} else if ((returnx && *ldx < f2cmax(1,*m)) || (! returnx && *ldx < 1)) {
 	    *info = -24;
 	}
 
@@ -891,10 +854,10 @@ static integer c__1 = 1;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SGECXX", &i__1);
-	return 0;
+	xerbla_("SGECXX", &i__1, (ftnlen)6);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     ================================================================== */
@@ -911,7 +874,7 @@ static integer c__1 = 1;
 	*maxc2nrmk = 0.f;
 	*relmaxc2nrmk = 0.f;
 	*fnrmk = 0.f;
-	return 0;
+	return;
     }
 
 /*     ================================================================== */
@@ -1428,6 +1391,6 @@ static integer c__1 = 1;
 
 /*     End of SGECXX */
 
-    return 0;
+    return;
 } /* sgecxx_ */
 
