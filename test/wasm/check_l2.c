@@ -2649,6 +2649,7 @@ static void run_deep_gemv(void) {
 
   for (int s = 0; s < NS_L2; s++) {
     int n = SIZES_L2[s];
+    use_fill_case(s);
     /* Square and a few rectangular shapes. */
     int ms[3] = {n, n + (n > 1 ? 1 : 0), n > 2 ? n - 1 : n};
     int ns[3] = {n, n > 2 ? n - 1 : n, n + (n > 1 ? 2 : 0)};
@@ -2678,6 +2679,7 @@ static void run_compact_l2(void) {
 
   for (int i = 0; i < NS_FULL; i++) {
     int n = SIZES_FULL[i];
+    use_fill_case(i);
 
     test_sgemv_compact(n);
     test_ssymv(n);

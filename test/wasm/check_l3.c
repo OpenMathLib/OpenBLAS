@@ -1502,6 +1502,7 @@ static void run_deep_gemm(void) {
   printf("==> L3 GEMM\n");
   for (int s = 0; s < NS_L3; s++) {
     int n = SIZES_L3[s];
+    use_fill_case(s);
     for (int ia = 0; ia < 2; ia++)
       for (int ib = 0; ib < 2; ib++) {
         test_sgemm(tr[ia], tr[ib], n, n, n);
@@ -1524,6 +1525,7 @@ static void run_deep_complex_gemm(void) {
   printf("==> L3 CGEMM/ZGEMM\n");
   for (int s = 0; s < NS_CZ; s++) {
     int n = SIZES_CZ[s];
+    use_fill_case(s);
     for (int ia = 0; ia < 3; ia++)
       for (int ib = 0; ib < 3; ib++) {
         test_cgemm(ctr[ia], ctr[ib], n, n, n);
@@ -1539,6 +1541,7 @@ static void run_deep_syrk(void) {
   printf("==> L3 SYRK\n");
   for (int s = 0; s < NS_L3; s++) {
     int n = SIZES_L3[s];
+    use_fill_case(s);
     int k = n <= 36 ? n + 3 : n;
     for (int u = 0; u < 2; u++)
       for (int t = 0; t < 2; t++) {
@@ -1556,6 +1559,7 @@ static void run_deep_trmm(void) {
   printf("==> L3 TRMM\n");
   for (int s = 0; s < NS_L3; s++) {
     int n = SIZES_L3[s];
+    use_fill_case(s);
     for (int si = 0; si < 2; si++)
       for (int u = 0; u < 2; u++)
         for (int t = 0; t < 2; t++) {
@@ -1579,6 +1583,7 @@ static void run_deep_trsm(void) {
   printf("==> L3 TRSM\n");
   for (int s = 0; s < NS_L3; s++) {
     int n = SIZES_L3[s];
+    use_fill_case(s);
     for (int si = 0; si < 2; si++)
       for (int u = 0; u < 2; u++)
         for (int t = 0; t < 2; t++) {
@@ -1592,6 +1597,7 @@ static void run_compact_l3(void) {
   printf("==> L3 SYMM/HEMM/SYRK/HERK/SYR2K/HER2K/TRMM/TRSM (compact grid)\n");
   for (int i = 0; i < NS_FULL; i++) {
     int n = SIZES_FULL[i];
+    use_fill_case(i);
 
     test_ssymm_left(n);
     test_ssymm_right(n);

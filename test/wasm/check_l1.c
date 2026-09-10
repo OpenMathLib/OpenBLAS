@@ -1043,6 +1043,7 @@ static void run_deep_axpy(void) {
   printf("==> L1 AXPY (deep remainder / stride grid)\n");
   for (int s = 0; s < NS_L1; s++) {
     int n = SIZES_L1[s];
+    use_fill_case(s);
     test_saxpy(n, 1, 1);
     test_daxpy(n, 1, 1);
     for (int i = 0; i < NINCS; i++) {
@@ -1068,6 +1069,7 @@ static void run_compact_l1(void) {
   for (int i = 0; i < NS_FULL; i++) {
     int n = SIZES_FULL[i];
     int incs[2] = {1, 2};
+    use_fill_case(i);
 
     for (int j = 0; j < 2; j++) {
       int inc = incs[j];

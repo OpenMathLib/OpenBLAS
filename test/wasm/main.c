@@ -32,6 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 int g_fail;
 int g_pass;
+FillSpec g_fill = {FILL_REAL, FILL_NEAR};
 
 int main(void) {
   g_fail = 0;
