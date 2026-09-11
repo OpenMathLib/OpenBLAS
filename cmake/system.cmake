@@ -34,20 +34,44 @@ set(NETLIB_LAPACK_DIR "${PROJECT_SOURCE_DIR}/lapack-netlib")
 # System detection, via CMake.
 include("${PROJECT_SOURCE_DIR}/cmake/system_check.cmake")
 
-if(CMAKE_CROSSCOMPILING AND NOT DEFINED TARGET)
+# Handle cache options that should be auto-detected if empty
+# We keep the cache entry visible in ccmake but treat empty values as "not set"
+set(_TARGET_SET FALSE)
+if (DEFINED TARGET AND NOT "${TARGET}" STREQUAL "")
+  set(_TARGET_SET TRUE)
+endif()
+
+if(CMAKE_CROSSCOMPILING AND NOT _TARGET_SET)
   # Detect target without running getarch
   if (ARM64)
     set(TARGET "ARMV8")
+    set(_TARGET_SET TRUE)
   elseif(ARM)
     set(TARGET "ARMV7") # TODO: Ask compiler which arch this is
+    set(_TARGET_SET TRUE)
   else()
     message(FATAL_ERROR "When cross compiling, a TARGET is required.")
   endif()
 endif()
 
+set(_BINARY_SET FALSE)
+if (DEFINED BINARY AND NOT "${BINARY}" STREQUAL "")
+  set(_BINARY_SET TRUE)
+endif()
+
+set(_USE_THREAD_SET FALSE)
+if (DEFINED USE_THREAD AND NOT "${USE_THREAD}" STREQUAL "")
+  set(_USE_THREAD_SET TRUE)
+endif()
+
+set(_NUM_THREADS_SET FALSE)
+if (DEFINED NUM_THREADS AND NOT "${NUM_THREADS}" STREQUAL "")
+  set(_NUM_THREADS_SET TRUE)
+endif()
+
 # Other files expect CORE, which is actually TARGET and will become TARGET_CORE for kernel build. Confused yet?
 # It seems we are meant to use TARGET as input and CORE internally as kernel.
-if(NOT DEFINED CORE AND DEFINED TARGET)
+if(NOT DEFINED CORE AND _TARGET_SET)
   if (${TARGET} STREQUAL "LOONGSON3R5")
     set(CORE "LA464")
   elseif (${TARGET} STREQUAL "LOONGSON2K1000")
@@ -62,10 +86,11 @@ endif()
 # TARGET_CORE will override TARGET which is used in DYNAMIC_ARCH=1.
 if (DEFINED TARGET_CORE)
   set(TARGET ${TARGET_CORE})
+  set(_TARGET_SET TRUE)
 endif ()
 
 # Force fallbacks for 32bit
-if (DEFINED BINARY AND DEFINED TARGET AND BINARY EQUAL 32)
+if (_BINARY_SET AND _TARGET_SET AND BINARY EQUAL 32)
   message(STATUS "Compiling a ${BINARY}-bit binary.")
   set(NO_AVX 1)
   if (${TARGET} STREQUAL "HASWELL" OR ${TARGET} STREQUAL "ZEN" OR ${TARGET} STREQUAL "SANDYBRIDGE" OR ${TARGET} STREQUAL "SKYLAKEX" OR ${TARGET} STREQUAL "COOPERLAKE" OR ${TARGET} STREQUAL "SAPPHIRERAPIDS")
@@ -83,7 +108,7 @@ if (DEFINED BINARY AND DEFINED TARGET AND BINARY EQUAL 32)
 endif ()
 
 
-if (DEFINED TARGET)
+if (_TARGET_SET)
   message(STATUS "-- -- -- -- -- -- -- -- -- -- -- -- --")
   message(STATUS "Targeting the ${TARGET} architecture.")
   set(GETARCH_FLAGS "-DFORCE_${TARGET}")
@@ -175,7 +200,7 @@ if (NOT DEFINED NUM_PARALLEL)
   set(NUM_PARALLEL 1)
 endif()
 
-if (NOT DEFINED NUM_THREADS)
+if (NOT _NUM_THREADS_SET)
   if (DEFINED NUM_CORES AND NOT NUM_CORES EQUAL 0)
     # HT?
     set(NUM_THREADS ${NUM_CORES})
@@ -186,7 +211,7 @@ endif()
 
 if (${NUM_THREADS} LESS 2)
   set(USE_THREAD 0)
-elseif(NOT DEFINED USE_THREAD)
+elseif(NOT _USE_THREAD_SET)
   set(USE_THREAD 1)
 endif ()
 
@@ -205,7 +230,7 @@ if (C_LAPACK)
 endif ()
 
 include("${PROJECT_SOURCE_DIR}/cmake/prebuild.cmake")
-if (DEFINED TARGET)
+if (_TARGET_SET)
   if (${TARGET} STREQUAL COOPERLAKE AND NOT NO_AVX512)
     if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU")
         if (${CMAKE_C_COMPILER_VERSION} VERSION_GREATER 10.09)
@@ -697,7 +722,7 @@ if (HUGETLB_ALLOCATION)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DALLOC_HUGETLB")
 endif ()
 
-if (DEFINED HUGETLBFILE_ALLOCATION)
+if (DEFINED HUGETLBFILE_ALLOCATION AND NOT "${HUGETLBFILE_ALLOCATION}" STREQUAL "")
   set(CCOMMON_OPT "${CCOMMON_OPT} -DALLOC_HUGETLBFILE -DHUGETLB_FILE_NAME=${HUGETLBFILE_ALLOCATION})")
 endif ()
 
