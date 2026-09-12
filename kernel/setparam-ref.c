@@ -2119,7 +2119,8 @@ static void init_parameter(void) {
     cpuid(0, &eax, &ebx, &ecx, &edx);
 
     if ((ebx == 0x68747541) && (l3_kb > 0) && (l3_kb % 32768 == 0) && (l2_kb == 1024)) { //Auth AMD
-        
+      if (strcmp(gotoblas_corename(), "cooperlake") == 0 || strcmp(gotoblas_corename(), "skylakex") == 0 || strcmp(gotoblas_corename(), "sapphirerapids") == 0) {
+
         cpuid(7, &cpuid7_eax, &cpuid7_ebx, &cpuid7_ecx, &cpuid7_edx);
         
         if (cpuid7_ebx & (1 << 16)) { // avx512 - Zen 4, 5
@@ -2141,6 +2142,7 @@ static void init_parameter(void) {
 #endif
         }
     }
+  }
 }
 #endif
 
