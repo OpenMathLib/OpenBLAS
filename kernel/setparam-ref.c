@@ -40,6 +40,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "common.h"
+extern char* gotoblas_corename(void);
 
 #ifdef BUILD_KERNEL
 #include "kernelTS.h"
