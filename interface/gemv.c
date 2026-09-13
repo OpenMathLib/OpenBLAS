@@ -104,6 +104,25 @@ static inline int get_gemv_optimal_nthreads_neoversev2(BLASLONG MN, int ncpu) {
 }
 #endif
 
+#if defined(DYNAMIC_ARCH) || defined(POWER10)
+static inline int get_gemv_optimal_nthreads_power10(BLASLONG MN, int ncpu){
+  
+  #ifdef DOUBLE
+	return
+	MN < 459684L      ? 1
+	: MN <4000000L    ? MIN(ncpu, 32)
+	: MN < 10240000L  ? MIN(ncpu, 128)
+       	: ncpu;
+ #else
+ 	return
+	MN < 459684L      ? 1
+	: MN < 2890000L   ? MIN(ncpu, 32)
+	: MN < 10240000L  ? MIN(ncpu, 128)
+	: ncpu;
+ #endif
+}
+#endif
+
 static inline int get_gemv_optimal_nthreads(BLASLONG MN) {
   int ncpu = num_cpu_avail(3);
 #if defined(_WIN64) && defined(_M_ARM64)
@@ -111,7 +130,9 @@ static inline int get_gemv_optimal_nthreads(BLASLONG MN) {
     return num_cpu_avail(4);
   return 1;
 #endif
-#if defined(NEOVERSEV1) && !defined(COMPLEX) && !defined(BFLOAT16)
+#if defined(POWER10) && !defined(COMPLEX) && !defined(BFLOAT16)
+  return get_gemv_optimal_nthreads_power10(MN, ncpu);
+#elif defined(NEOVERSEV1) && !defined(COMPLEX) && !defined(BFLOAT16)
   return get_gemv_optimal_nthreads_neoversev1(MN, ncpu);
 #elif defined(NEOVERSEV2) && !defined(COMPLEX) && !defined(DOUBLE) && !defined(BFLOAT16)
   return get_gemv_optimal_nthreads_neoversev2(MN, ncpu);
