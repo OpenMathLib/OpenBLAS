@@ -109,11 +109,31 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 			dh12 =    dp2 /  dp1;
 
 			du   = ONE - dh12 * dh21;
+			if(du <= ZERO)
+			{
+				/* This can only happen through rounding: the
+				   branch was chosen on ABS(dq1) > ABS(dq2),
+				   which in exact arithmetic makes du positive.
+				   Matches the reference BLAS srotmg.f and the
+				   gonum implementation. */
+				dflag = -ONE;
+
+				dh11  = ZERO;
+				dh12  = ZERO;
+				dh21  = ZERO;
+				dh22  = ZERO;
+
+				*dd1  = ZERO;
+				*dd2  = ZERO;
+				*dx1  = ZERO;
+			}
+			else
+			{
 			dflag = ZERO;
 			*dd1  = *dd1 / du;
 			*dd2  = *dd2 / du;
 			*dx1  = *dx1 * du;
-			
+			}
 		}
 		else
 		{
