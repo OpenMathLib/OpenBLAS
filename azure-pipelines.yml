@@ -289,7 +289,7 @@ jobs:
     condition: ne(variables.CACHE_RESTORED, 'true')
   - script: | 
       source /opt/intel/oneapi/setvars.sh
-      make CC=clang-mp-23 FC=ifort
+      make CC=/opt/local/bin/clang-mp-23 FC=ifort
  
 - job: OSX_NDK_ARMV7
   pool:
