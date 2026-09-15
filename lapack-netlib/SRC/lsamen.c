@@ -42,6 +42,8 @@ typedef blasint logical;
 #define TRUE_ (1)
 #define FALSE_ (0)
 
+#define i_len(s, n) (n)
+
 /*  -- translated by f2c (version 20000121).
    You must link the resulting object file with the libraries:
 	-lf2c -lm   (in that order)
