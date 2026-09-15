@@ -218,7 +218,7 @@ jobs:
       export PATH=/opt/local/bin:$PATH
       hash -r
       sudo port install llvm-23 clang-23 flang-23
-      make TARGET=CORE2 USE_OPENMP=1 DYNAMIC_ARCH=1 DYNAMIC_LIST='NEHALEM HASWELL SKYLAKEX' CC=clang-mp-23[B NOFORTRAN=1
+      make TARGET=CORE2 USE_OPENMP=1 DYNAMIC_ARCH=1 DYNAMIC_LIST='NEHALEM HASWELL SKYLAKEX' CC=clang-mp-23 NOFORTRAN=1
 
 - job: OSX_OpenMP_Clang_cmake
   timeoutInMinutes: 100
@@ -289,7 +289,7 @@ jobs:
     condition: ne(variables.CACHE_RESTORED, 'true')
   - script: | 
       source /opt/intel/oneapi/setvars.sh
-      make CC=clang-mp-23[A FC=ifort
+      make CC=clang-mp-23 FC=ifort
  
 - job: OSX_NDK_ARMV7
   pool:
