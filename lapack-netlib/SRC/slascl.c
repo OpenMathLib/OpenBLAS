@@ -682,7 +682,7 @@ f"> */
 	*info = -5;
     } else if (*m < 0) {
 	*info = -6;
-    } else if (*n < 0 || itype == 4 && *n != *m || itype == 5 && *n != *m) {
+    } else if (*n < 0 || (itype == 4 && *n != *m) || (itype == 5 && *n != *m)) {
 	*info = -7;
     } else if (itype <= 3 && *lda < f2cmax(1,*m)) {
 	*info = -9;
@@ -694,11 +694,11 @@ f"> */
 	} else /* if(complicated condition) */ {
 /* Computing MAX */
 	    i__1 = *n - 1;
-	    if (*ku < 0 || *ku > f2cmax(i__1,0) || (itype == 4 || itype == 5) && 
-		    *kl != *ku) {
+	    if (*ku < 0 || *ku > f2cmax(i__1,0) || ((itype == 4 || itype == 5) && 
+		    *kl != *ku)) {
 		*info = -3;
-	    } else if (itype == 4 && *lda < *kl + 1 || itype == 5 && *lda < *
-		    ku + 1 || itype == 6 && *lda < (*kl << 1) + *ku + 1) {
+	    } else if ((itype == 4 && *lda < *kl + 1) || (itype == 5 && *lda < *
+		    ku + 1) || (itype == 6 && *lda < (*kl << 1) + *ku + 1)) {
 		*info = -9;
 	    }
 	}

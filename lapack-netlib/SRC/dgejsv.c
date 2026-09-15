@@ -876,12 +876,12 @@ f"> */
 /* Computing MAX */
 	i__11 = (*m << 1) + *n, i__12 = (*n << 2) + *n * *n, i__11 = f2cmax(
 		i__11,i__12), i__12 = (*n << 1) + *n * *n + 6;
-	if (! (lsvec || rsvec || errest) && *lwork < f2cmax(i__1,i__2) || ! (
-		lsvec || rsvec) && errest && *lwork < f2cmax(i__3,i__4) || lsvec 
-		&& ! rsvec && *lwork < f2cmax(i__5,i__6) || rsvec && ! lsvec && *
-		lwork < f2cmax(i__7,i__8) || lsvec && rsvec && ! jracc && *lwork 
-		< f2cmax(i__9,i__10) || lsvec && rsvec && jracc && *lwork < f2cmax(
-		i__11,i__12)) {
+	if ( (! (lsvec || rsvec || errest) && *lwork < f2cmax(i__1,i__2)) 
+	   || (! (lsvec || rsvec) && errest && *lwork < f2cmax(i__3,i__4)) 
+	   || (lsvec && ! rsvec && *lwork < f2cmax(i__5,i__6))
+	   || (rsvec && ! lsvec && *lwork < f2cmax(i__7,i__8)) 
+	   || (lsvec && rsvec && ! jracc && *lwork < f2cmax(i__9,i__10))
+	   || (lsvec && rsvec && jracc && *lwork < f2cmax(i__11,i__12))) {
 	    *info = -17;
 	} else {
 /*        #:) */
@@ -1366,10 +1366,10 @@ L3002:
 	temp1 = sqrt(sfmin);
 	i__1 = *n;
 	for (p = 2; p <= i__1; ++p) {
-	    if ((d__2 = a[p + p * a_dim1], abs(d__2)) < epsln * (d__1 = a[p - 
-		    1 + (p - 1) * a_dim1], abs(d__1)) || (d__3 = a[p + p * 
-		    a_dim1], abs(d__3)) < small || l2kill && (d__4 = a[p + p *
-		     a_dim1], abs(d__4)) < temp1) {
+	    if (((d__2 = a[p + p * a_dim1], abs(d__2)) < epsln * (d__1 = a[p - 
+		    1 + (p - 1) * a_dim1], abs(d__1))) ||( (d__3 = a[p + p * 
+		    a_dim1], abs(d__3)) < small) || (l2kill && (d__4 = a[p + p *
+		     a_dim1], abs(d__4)) < temp1)) {
 		goto L3402;
 	    }
 	    ++nr;
@@ -1389,8 +1389,8 @@ L3402:
 	temp1 = sqrt(sfmin);
 	i__1 = *n;
 	for (p = 2; p <= i__1; ++p) {
-	    if ((d__1 = a[p + p * a_dim1], abs(d__1)) < small || l2kill && (
-		    d__2 = a[p + p * a_dim1], abs(d__2)) < temp1) {
+	    if (((d__1 = a[p + p * a_dim1], abs(d__1)) < small) || (l2kill && (
+		    d__2 = a[p + p * a_dim1], abs(d__2)) < temp1)) {
 		goto L3302;
 	    }
 	    ++nr;
@@ -1508,8 +1508,8 @@ L3302:
 		    temp1 = xsc * (d__1 = a[q + q * a_dim1], abs(d__1));
 		    i__2 = *n;
 		    for (p = 1; p <= i__2; ++p) {
-			if (p > q && (d__1 = a[p + q * a_dim1], abs(d__1)) <= 
-				temp1 || p < q) {
+			if ((p > q && (d__1 = a[p + q * a_dim1], abs(d__1)) <= 
+				temp1) || p < q) {
 			    a[p + q * a_dim1] = d_sign(&temp1, &a[p + q * 
 				    a_dim1]);
 			}
@@ -1550,8 +1550,8 @@ L3302:
 		temp1 = xsc * (d__1 = a[q + q * a_dim1], abs(d__1));
 		i__2 = nr;
 		for (p = 1; p <= i__2; ++p) {
-		    if (p > q && (d__1 = a[p + q * a_dim1], abs(d__1)) <= 
-			    temp1 || p < q) {
+		    if ((p > q && (d__1 = a[p + q * a_dim1], abs(d__1)) <= 
+			    temp1) || p < q) {
 			a[p + q * a_dim1] = d_sign(&temp1, &a[p + q * a_dim1])
 				;
 		    }
@@ -1775,8 +1775,8 @@ L3302:
 			temp1 = xsc * (d__1 = v[q + q * v_dim1], abs(d__1));
 			i__2 = *n;
 			for (p = 1; p <= i__2; ++p) {
-			    if (p > q && (d__1 = v[p + q * v_dim1], abs(d__1))
-				     <= temp1 || p < q) {
+			    if ((p > q && (d__1 = v[p + q * v_dim1], abs(d__1))
+				     <= temp1) || p < q) {
 				v[p + q * v_dim1] = d_sign(&temp1, &v[p + q * 
 					v_dim1]);
 			    }
@@ -2344,8 +2344,8 @@ L3302:
 		    temp1 = xsc * (d__1 = v[q + q * v_dim1], abs(d__1));
 		    i__2 = *n;
 		    for (p = 1; p <= i__2; ++p) {
-			if (p > q && (d__1 = v[p + q * v_dim1], abs(d__1)) <= 
-				temp1 || p < q) {
+			if ((p > q && (d__1 = v[p + q * v_dim1], abs(d__1)) <= 
+				temp1) || p < q) {
 			    v[p + q * v_dim1] = d_sign(&temp1, &v[p + q * 
 				    v_dim1]);
 			}

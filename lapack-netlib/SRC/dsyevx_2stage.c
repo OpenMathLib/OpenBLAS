@@ -664,7 +664,7 @@ static integer c__4 = 4;
 	}
     }
     if (*info == 0) {
-	if (*ldz < 1 || wantz && *ldz < *n) {
+	if (*ldz < 1 || (wantz && *ldz < *n)) {
 	    *info = -15;
 	}
     }

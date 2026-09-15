@@ -632,7 +632,7 @@ f"> */
     real r__1, r__2;
 
     /* Local variables */
-    real s, a2, b1, b2;
+    real s=0.0, a2, b1, b2;
     integer i4, nn, np;
     real gam, gap1, gap2;
 

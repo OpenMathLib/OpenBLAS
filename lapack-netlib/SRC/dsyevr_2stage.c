@@ -764,7 +764,7 @@ static integer c_n1 = -1;
 	}
     }
     if (*info == 0) {
-	if (*ldz < 1 || wantz && *ldz < *n) {
+	if (*ldz < 1 || (wantz && *ldz < *n)) {
 	    *info = -15;
 	} else if (*lwork < lwmin && ! lquery) {
 	    *info = -18;
@@ -912,7 +912,7 @@ static integer c_n1 = -1;
 /*     If all eigenvalues are desired */
 /*     then call DSTERF or DSTEMR and DORMTR. */
 
-    if ((alleig || indeig && *il == 1 && *iu == *n) && ieeeok == 1) {
+    if ((alleig || (indeig && *il == 1 && *iu == *n)) && ieeeok == 1) {
 	if (! wantz) {
 	    dcopy_(n, &work[indd], &c__1, &w[1], &c__1);
 	    i__1 = *n - 1;

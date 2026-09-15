@@ -815,9 +815,9 @@ static logical c_false = FALSE_;
 	*info = -7;
     } else if (*lda < f2cmax(1,*m)) {
 	*info = -9;
-    } else if (*ldu < 1 || lsvc0 && *ldu < *m || wntuf && *ldu < *n) {
+    } else if (*ldu < 1 || (lsvc0 && *ldu < *m) || (wntuf && *ldu < *n)) {
 	*info = -12;
-    } else if (*ldv < 1 || rsvec && *ldv < *n || conda && *ldv < *n) {
+    } else if (*ldv < 1 || (rsvec && *ldv < *n) || (conda && *ldv < *n)) {
 	*info = -14;
     } else if (*liwork < iminwrk && ! lquery) {
 	*info = -17;

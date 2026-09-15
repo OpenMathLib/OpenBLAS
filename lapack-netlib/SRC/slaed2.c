@@ -711,7 +711,7 @@ f"> */
 	    integer *);
     integer n2;
     extern real slapy2_(real *, real *);
-    integer ct, nj, pj, js;
+    integer ct, nj, pj=0, js;
     extern real slamch_(char *);
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern integer isamax_(integer *, real *, integer *);

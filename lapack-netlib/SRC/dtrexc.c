@@ -428,9 +428,9 @@ f"> */
 	*info = -4;
     } else if (*ldq < 1 || (wantq && *ldq < f2cmax(1,*n))) {
 	*info = -6;
-    } else if ((*ifst < 1 || (*ifst > *n) && *n > 0)) {
+    } else if (*ifst < 1 || (*ifst > *n && *n > 0)) {
 	*info = -7;
-    } else if ((*ilst < 1 || (*ilst > *n) && *n > 0)) {
+    } else if (*ilst < 1 || (*ilst > *n && *n > 0)) {
 	*info = -8;
     }
     if (*info != 0) {

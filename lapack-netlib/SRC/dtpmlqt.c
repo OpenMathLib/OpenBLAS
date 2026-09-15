@@ -516,7 +516,7 @@ typedef struct Namelist Namelist;
 	*info = -5;
     } else if (*l < 0 || *l > *k) {
 	*info = -6;
-    } else if (*mb < 1 || *mb > *k && *k > 0) {
+    } else if (*mb < 1 || (*mb > *k && *k > 0)) {
 	*info = -7;
     } else if (*ldv < *k) {
 	*info = -9;

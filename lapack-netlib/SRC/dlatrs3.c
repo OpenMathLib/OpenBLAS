@@ -694,7 +694,7 @@ static doublereal c_b36 = 1.;
 /*        K1: column index of the first column in X( J, K ) */
 /*        K2: column index of the first column in X( J, K+1 ) */
 /*        so the K2 - K1 is the column count of the block X( J, K ) */
-	k1 = (k - 1 << 5) + 1;
+	k1 = ((k - 1) << 5) + 1;
 /* Computing MIN */
 	i__2 = k << 5;
 	k2 = f2cmin(i__2,*nrhs) + 1;

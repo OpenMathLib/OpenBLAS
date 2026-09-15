@@ -701,7 +701,7 @@ f"> */
 	*info = -7;
     } else if (*mv < 0) {
 	*info = -9;
-    } else if (rsvec && *ldv < *n || applv && *ldv < *mv) {
+    } else if ((rsvec && *ldv < *n) || (applv && *ldv < *mv)) {
 	*info = -11;
     } else if (uctol && work[1] <= 1.) {
 	*info = -12;
@@ -949,7 +949,7 @@ f"> */
 
     sn = sqrt(sfmin / epsln);
     temp1 = sqrt(big / (doublereal) (*n));
-    if (aapp <= sn || aaqq >= temp1 || sn <= aaqq && aapp <= temp1) {
+    if (aapp <= sn || aaqq >= temp1 || (sn <= aaqq && aapp <= temp1)) {
 /* Computing MIN */
 	d__1 = big, d__2 = temp1 / aapp;
 	temp1 = f2cmin(d__1,d__2);
@@ -2036,8 +2036,8 @@ L1995:
     }
 
 /*     Undo scaling, if necessary (and possible). */
-    if (skl > 1. && sva[1] < big / skl || skl < 1. && sva[f2cmax(n2,1)] > sfmin /
-	     skl) {
+    if ((skl > 1. && sva[1] < big / skl) || (skl < 1. && sva[f2cmax(n2,1)] > sfmin /
+	     skl)) {
 	i__1 = *n;
 	for (p = 1; p <= i__1; ++p) {
 	    sva[p] = skl * sva[p];

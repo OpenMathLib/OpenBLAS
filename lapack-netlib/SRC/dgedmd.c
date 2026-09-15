@@ -771,7 +771,7 @@ static integer c__2 = 2;
 	    jobz, "F"))) {
 	*info = -2;
     } else if (! (wntres || lsame_(jobr, "N")) || 
-	    wntres && ! wntvec) {
+	    (wntres && ! wntvec)) {
 	*info = -3;
     } else if (! (wntref || wntex || lsame_(jobf, "N")))
 	     {
@@ -787,7 +787,7 @@ static integer c__2 = 2;
 	*info = -9;
     } else if (*ldy < *m) {
 	*info = -11;
-    } else if (! (*nrnk == -2 || *nrnk == -1 || *nrnk >= 1 && *nrnk <= *n)) {
+    } else if (! (*nrnk == -2 || *nrnk == -1 || (*nrnk >= 1 && *nrnk <= *n))) {
 	*info = -12;
     } else if (*tol < zero || *tol >= one) {
 	*info = -13;

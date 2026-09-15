@@ -551,9 +551,9 @@ f"> */
 	*info = -2;
     } else if (*n < 0) {
 	*info = -3;
-    } else if (*ldu < 1 || icompq == 2 && *ldu < *n) {
+    } else if (*ldu < 1 || (icompq == 2 && *ldu < *n)) {
 	*info = -7;
-    } else if (*ldvt < 1 || icompq == 2 && *ldvt < *n) {
+    } else if (*ldvt < 1 || (icompq == 2 && *ldvt < *n)) {
 	*info = -9;
     }
     if (*info != 0) {

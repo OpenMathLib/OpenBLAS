@@ -561,7 +561,7 @@ f"> */
 	*info = -6;
     } else if ((rsvec || applv) && *mv < 0) {
 	*info = -9;
-    } else if (rsvec && *ldv < *n || applv && *ldv < *mv) {
+    } else if ((rsvec && *ldv < *n) || (applv && *ldv < *mv)) {
 	*info = -11;
     } else if (*tol <= *eps) {
 	*info = -14;

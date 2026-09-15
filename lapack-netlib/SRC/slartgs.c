@@ -589,7 +589,7 @@ he bidiagonal SVD problem. */
 /*     Compute the first column of B**T*B - SIGMA^2*I, up to a scale */
 /*     factor. */
 
-    if (*sigma == 0.f && abs(*x) < thresh || abs(*x) == *sigma && *y == 0.f) {
+    if ((*sigma == 0.f && abs(*x) < thresh) || (abs(*x) == *sigma && *y == 0.f)) {
 	z__ = 0.f;
 	w = 0.f;
     } else if (*sigma == 0.f) {

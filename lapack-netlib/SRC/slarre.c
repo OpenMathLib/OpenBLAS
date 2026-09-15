@@ -997,8 +997,8 @@ f"> */
 	in = iend - ibegin + 1;
 /*        1 X 1 block */
 	if (in == 1) {
-	    if (irange == 1 || irange == 3 && d__[ibegin] > *vl && d__[ibegin]
-		     <= *vu || irange == 2 && iblock[wbegin] == jblk) {
+	    if (irange == 1 || (irange == 3 && d__[ibegin] > *vl && d__[ibegin]
+		     <= *vu) || (irange == 2 && iblock[wbegin] == jblk)) {
 		++(*m);
 		w[*m] = d__[ibegin];
 		werr[*m] = 0.f;
@@ -1077,7 +1077,7 @@ L21:
 		indu = indexw[wend];
 	    }
 	}
-	if (irange == 1 && ! forceb || usedqd) {
+	if ((irange == 1 && ! forceb) || usedqd) {
 /*           Case of DQDS */
 /*           Find approximations to the extremal eigenvalues of the block */
 	    slarrk_(&in, &c__1, &gl, &gu, &d__[ibegin], &e2[ibegin], pivmin, &

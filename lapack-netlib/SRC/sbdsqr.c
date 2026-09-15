@@ -576,11 +576,11 @@ f"> */
 	*info = -4;
     } else if (*ncc < 0) {
 	*info = -5;
-    } else if (*ncvt == 0 && *ldvt < 1 || *ncvt > 0 && *ldvt < f2cmax(1,*n)) {
+    } else if ((*ncvt == 0 && *ldvt < 1) || (*ncvt > 0 && *ldvt < f2cmax(1,*n))) {
 	*info = -9;
     } else if (*ldu < f2cmax(1,*nru)) {
 	*info = -11;
-    } else if (*ncc == 0 && *ldc < 1 || *ncc > 0 && *ldc < f2cmax(1,*n)) {
+    } else if ((*ncc == 0 && *ldc < 1) || (*ncc > 0 && *ldc < f2cmax(1,*n))) {
 	*info = -13;
     }
     if (*info != 0) {
@@ -840,7 +840,7 @@ L90:
 /*        First apply standard test to bottom of matrix */
 
 	if ((r__2 = e[m - 1], abs(r__2)) <= abs(tol) * (r__1 = d__[m], abs(
-		r__1)) || tol < 0.f && (r__3 = e[m - 1], abs(r__3)) <= thresh)
+		r__1)) || (tol < 0.f && (r__3 = e[m - 1], abs(r__3)) <= thresh))
 		 {
 	    e[m - 1] = 0.f;
 	    goto L60;
@@ -872,7 +872,7 @@ L90:
 /*        First apply standard test to top of matrix */
 
 	if ((r__2 = e[ll], abs(r__2)) <= abs(tol) * (r__1 = d__[ll], abs(r__1)
-		) || tol < 0.f && (r__3 = e[ll], abs(r__3)) <= thresh) {
+		) || (tol < 0.f && (r__3 = e[ll], abs(r__3)) <= thresh)) {
 	    e[ll] = 0.f;
 	    goto L60;
 	}
