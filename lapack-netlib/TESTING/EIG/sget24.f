@@ -340,6 +340,7 @@
      $                   H, HT, WR, WI, WRT, WIT, WRTMP, WITMP, VS,
      $                   LDVS, VS1, RCDEIN, RCDVIN, NSLCT, ISLCT,
      $                   RESULT, WORK, LWORK, IWORK, BWORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -457,7 +458,24 @@
          CALL SGEESX( 'V', SORT, SSLECT, 'N', N, H, LDA, SDIM, WR, WI,
      $                VS, LDVS, RCONDE, RCONDV, WORK, LWORK, IWORK,
      $                LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'SGEESX1', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'SGEESX1', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            RETURN
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'SGEESX1', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'SGEESX1', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 1+RSUB ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
                WRITE( NOUNIT, FMT = 9998 )'SGEESX1', IINFO, N, JTYPE,
@@ -515,14 +533,15 @@
          WNORM = SLANGE( '1', N, N, VS1, LDVS, WORK )
 *
          IF( ANORM.GT.WNORM ) THEN
-            RESULT( 2+RSUB ) = ( WNORM / ANORM ) / ( N*ULP )
+            RESULT( 2+RSUB ) = ( WNORM / ANORM ) /
+     $                         ( REAL( N )*ULP )
          ELSE
             IF( ANORM.LT.ONE ) THEN
-               RESULT( 2+RSUB ) = ( MIN( WNORM, N*ANORM ) / ANORM ) /
-     $                            ( N*ULP )
+               RESULT( 2+RSUB ) = ( MIN( WNORM, REAL( N )*ANORM ) /
+     $                              ANORM ) / ( REAL( N )*ULP )
             ELSE
                RESULT( 2+RSUB ) = MIN( WNORM / ANORM, REAL( N ) ) /
-     $                            ( N*ULP )
+     $                            ( REAL( N )*ULP )
             END IF
          END IF
 *
@@ -566,7 +585,24 @@
          CALL SGEESX( 'N', SORT, SSLECT, 'N', N, HT, LDA, SDIM, WRT,
      $                WIT, VS, LDVS, RCONDE, RCONDV, WORK, LWORK, IWORK,
      $                LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'SGEESX2', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'SGEESX2', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            GO TO 250
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'SGEESX2', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'SGEESX2', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 5+RSUB ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
                WRITE( NOUNIT, FMT = 9998 )'SGEESX2', IINFO, N, JTYPE,
@@ -632,7 +668,24 @@
          CALL SGEESX( 'V', SORT, SSLECT, 'B', N, HT, LDA, SDIM1, WRT,
      $                WIT, VS1, LDVS, RCONDE, RCONDV, WORK, LWORK,
      $                IWORK, LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'SGEESX3', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'SGEESX3', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            GO TO 250
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'SGEESX3', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'SGEESX3', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 14 ) = ULPINV
             RESULT( 15 ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
@@ -667,7 +720,24 @@
          CALL SGEESX( 'N', SORT, SSLECT, 'B', N, HT, LDA, SDIM1, WRT,
      $                WIT, VS1, LDVS, RCNDE1, RCNDV1, WORK, LWORK,
      $                IWORK, LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'SGEESX4', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'SGEESX4', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            GO TO 250
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'SGEESX4', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'SGEESX4', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 14 ) = ULPINV
             RESULT( 15 ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
@@ -709,7 +779,24 @@
          CALL SGEESX( 'V', SORT, SSLECT, 'E', N, HT, LDA, SDIM1, WRT,
      $                WIT, VS1, LDVS, RCNDE1, RCNDV1, WORK, LWORK,
      $                IWORK, LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'SGEESX5', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'SGEESX5', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            GO TO 250
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'SGEESX5', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'SGEESX5', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 14 ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
                WRITE( NOUNIT, FMT = 9998 )'SGEESX5', IINFO, N, JTYPE,
@@ -748,7 +835,24 @@
          CALL SGEESX( 'N', SORT, SSLECT, 'E', N, HT, LDA, SDIM1, WRT,
      $                WIT, VS1, LDVS, RCNDE1, RCNDV1, WORK, LWORK,
      $                IWORK, LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'SGEESX6', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'SGEESX6', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            GO TO 250
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'SGEESX6', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'SGEESX6', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 14 ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
                WRITE( NOUNIT, FMT = 9998 )'SGEESX6', IINFO, N, JTYPE,
@@ -787,7 +891,24 @@
          CALL SGEESX( 'V', SORT, SSLECT, 'V', N, HT, LDA, SDIM1, WRT,
      $                WIT, VS1, LDVS, RCNDE1, RCNDV1, WORK, LWORK,
      $                IWORK, LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'SGEESX7', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'SGEESX7', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            GO TO 250
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'SGEESX7', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'SGEESX7', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 15 ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
                WRITE( NOUNIT, FMT = 9998 )'SGEESX7', IINFO, N, JTYPE,
@@ -826,7 +947,24 @@
          CALL SGEESX( 'N', SORT, SSLECT, 'V', N, HT, LDA, SDIM1, WRT,
      $                WIT, VS1, LDVS, RCNDE1, RCNDV1, WORK, LWORK,
      $                IWORK, LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'SGEESX8', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'SGEESX8', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            GO TO 250
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'SGEESX8', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'SGEESX8', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 15 ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
                WRITE( NOUNIT, FMT = 9998 )'SGEESX8', IINFO, N, JTYPE,
@@ -910,7 +1048,12 @@
          CALL SGEESX( 'N', 'S', SSLECT, 'B', N, HT, LDA, SDIM1, WRT,
      $                WIT, VS1, LDVS, RCONDE, RCONDV, WORK, LWORK,
      $                IWORK, LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            WRITE( NOUNIT, FMT = 9997 )'SGEESX9', IINFO, N, ISEED( 1 )
+            GO TO 300
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            WRITE( NOUNIT, FMT = 9995 )'SGEESX9', IINFO, N, ISEED( 1 )
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 16 ) = ULPINV
             RESULT( 17 ) = ULPINV
             WRITE( NOUNIT, FMT = 9999 )'SGEESX9', IINFO, N, ISEED( 1 )
@@ -984,6 +1127,22 @@
      $      I6, ', INPUT EXAMPLE NUMBER = ', I4 )
  9998 FORMAT( ' SGET24: ', A, ' returned INFO=', I6, '.', / 9X, 'N=',
      $      I6, ', JTYPE=', I6, ', ISEED=(', 3( I5, ',' ), I5, ')' )
+ 9997 FORMAT( ' SGET24: ', A, ' returned the known code N+1 =', I6,
+     $      ': eigenvalues too close', / 9X, 'to reorder; ill-',
+     $      'conditioned matrix, accepted as no error.', / 9X, 'N=',
+     $      I6, ', INPUT EXAMPLE NUMBER = ', I4 )
+ 9996 FORMAT( ' SGET24: ', A, ' returned the known code N+1 =', I6,
+     $      ': eigenvalues too close', / 9X, 'to reorder; ill-',
+     $      'conditioned matrix, accepted as no error.', / 9X, 'N=',
+     $      I6, ', JTYPE=', I6, ', ISEED=(', 3( I5, ',' ), I5, ')' )
+ 9995 FORMAT( ' SGET24: ', A, ' returned the known code N+2 =', I6,
+     $      ': roundoff undid the sort', / 9X, 'order; ill-conditioned',
+     $      ' matrix, accepted as no error.', / 9X, 'N=', I6,
+     $      ', INPUT EXAMPLE NUMBER = ', I4 )
+ 9994 FORMAT( ' SGET24: ', A, ' returned the known code N+2 =', I6,
+     $      ': roundoff undid the sort', / 9X, 'order; ill-conditioned',
+     $      ' matrix, accepted as no error.', / 9X, 'N=', I6,
+     $      ', JTYPE=', I6, ', ISEED=(', 3( I5, ',' ), I5, ')' )
 *
       RETURN
 *
