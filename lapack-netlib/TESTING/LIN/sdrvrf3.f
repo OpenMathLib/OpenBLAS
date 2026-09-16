@@ -115,6 +115,7 @@
 *  =====================================================================
       SUBROUTINE SDRVRF3( NOUT, NN, NVAL, THRESH, A, LDA, ARF, B1, B2,
      +                    S_WORK_SLANGE, S_WORK_SGEQRF, TAU )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -134,9 +135,10 @@
 *  =====================================================================
 *     ..
 *     .. Parameters ..
-      REAL               ZERO, ONE
+      REAL               ZERO, ONE, TWO
       PARAMETER          ( ZERO = ( 0.0E+0, 0.0E+0 ) ,
-     +                     ONE  = ( 1.0E+0, 0.0E+0 ) )
+     +                     ONE  = ( 1.0E+0, 0.0E+0 ),
+     +                     TWO  = 2.0E+0 )
       INTEGER            NTESTS
       PARAMETER          ( NTESTS = 1 )
 *     ..
@@ -144,7 +146,7 @@
       CHARACTER          UPLO, CFORM, DIAG, TRANS, SIDE
       INTEGER            I, IFORM, IIM, IIN, INFO, IUPLO, J, M, N, NA,
      +                   NFAIL, NRUN, ISIDE, IDIAG, IALPHA, ITRANS
-      REAL               EPS, ALPHA
+      REAL               EPS, ALPHA, SOLNRM
 *     ..
 *     .. Local Arrays ..
       CHARACTER          UPLOS( 2 ), FORMS( 2 ), TRANSS( 2 ),
@@ -158,7 +160,7 @@
       EXTERNAL           SLAMCH, SLANGE, SLARND, LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           STRTTF, SGEQRF, SGEQLF, STFSM, STRSM
+      EXTERNAL           STRTTF, SGEQRF, SGELQF, STFSM, STRSM
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, SQRT
@@ -282,7 +284,7 @@
                                     DO J = 1, NA
                                        DO I = 1, J
                                           A( I, J ) = A( I, J ) /
-     +                                            ( 2.0 * A( J, J ) )
+     +                                            ( TWO * A( J, J ) )
                                        END DO
                                     END DO
                                  END IF
@@ -305,7 +307,7 @@
                                     DO I = 1, NA
                                        DO J = 1, I
                                           A( I, J ) = A( I, J ) /
-     +                                            ( 2.0 * A( I, I ) )
+     +                                            ( TWO * A( I, I ) )
                                        END DO
                                     END DO
                                  END IF
@@ -345,6 +347,9 @@
 *
 *                             Check that the result agrees.
 *
+                              SOLNRM = SLANGE( 'I', M, N, B1, LDA,
+     +                                        S_WORK_SLANGE )
+*
                               DO J = 1, N
                                  DO I = 1, M
                                     B1( I, J ) = B2( I, J ) - B1( I, J )
@@ -355,7 +360,8 @@
      +                                            S_WORK_SLANGE )
 *
                               RESULT( 1 ) = RESULT( 1 ) / SQRT( EPS )
-     +                                    / MAX ( MAX( M, N ), 1 )
+     +                                    / REAL( MAX( M, N, 1 ) )
+     +                                    / MAX( SOLNRM, 1.0E+0 )
 *
                               IF( RESULT( 1 ).GE.THRESH ) THEN
                                  IF( NFAIL.EQ.0 ) THEN
