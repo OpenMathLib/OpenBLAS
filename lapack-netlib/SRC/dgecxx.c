@@ -428,13 +428,13 @@ static integer c__1 = 1;
 	} else if (*lda < f2cmax(1,*m)) {
 	    *info = -11;
 /*        This is a check for LDC */
-	} else if (returnc && *ldc < f2cmax(1,*m) || ! returnc && *ldc < 1) {
+	} else if ((returnc && *ldc < f2cmax(1,*m)) || (! returnc && *ldc < 1)) {
 	    *info = -20;
 /*        This is a check for LDQRC */
-	} else if (returnx && *ldqrc < f2cmax(1,*m) || ! returnx && *ldqrc < 1) {
+	} else if ((returnx && *ldqrc < f2cmax(1,*m)) || (! returnx && *ldqrc < 1)) {
 	    *info = -22;
 /*        This is a check for LDX */
-	} else if (returnx && *ldx < f2cmax(1,*m) || ! returnx && *ldx < 1) {
+	} else if ((returnx && *ldx < f2cmax(1,*m)) || (! returnx && *ldx < 1)) {
 	    *info = -24;
 	}
 

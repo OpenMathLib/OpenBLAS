@@ -464,9 +464,9 @@ f"> */
 	*info = -1;
     } else if (*n < 0) {
 	*info = -2;
-    } else if (*l < 0 || *l > f2cmin(*m,*n) && f2cmin(*m,*n) >= 0) {
+    } else if (*l < 0 || (*l > f2cmin(*m,*n) && f2cmin(*m,*n) >= 0)) {
 	*info = -3;
-    } else if (*mb < 1 || *mb > *m && *m > 0) {
+    } else if (*mb < 1 || (*mb > *m && *m > 0)) {
 	*info = -4;
     } else if (*lda < f2cmax(1,*m)) {
 	*info = -6;

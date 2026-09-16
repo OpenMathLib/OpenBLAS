@@ -784,7 +784,7 @@ static integer c_n1 = -1;
     } else if (! (wntvec || wntvcf || wntvcq || lsame_(jobz, "N"))) {
 	*info = -2;
     } else if (! (wntres || lsame_(jobr, "N")) || 
-	    wntres && lsame_(jobz, "N")) {
+	    (wntres && lsame_(jobz, "N"))) {
 	*info = -3;
     } else if (! (wantq || lsame_(jobq, "N"))) {
 	*info = -4;
@@ -806,7 +806,7 @@ static integer c_n1 = -1;
 	*info = -13;
     } else if (*ldy < minmn) {
 	*info = -15;
-    } else if (! (*nrnk == -2 || *nrnk == -1 || *nrnk >= 1 && *nrnk <= *n)) {
+    } else if (! (*nrnk == -2 || *nrnk == -1 || (*nrnk >= 1 && *nrnk <= *n))) {
 	*info = -16;
     } else if (*tol < zero || *tol >= one) {
 	*info = -17;

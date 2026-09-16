@@ -700,7 +700,7 @@ static doublereal c_b45 = 0.;
 	}
     }
     if (*info == 0) {
-	if (*ldz < 1 || wantz && *ldz < *n) {
+	if (*ldz < 1 || (wantz && *ldz < *n)) {
 	    *info = -18;
 	}
     }

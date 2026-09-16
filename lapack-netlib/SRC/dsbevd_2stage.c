@@ -580,7 +580,7 @@ static integer c__1 = 1;
 	*info = -4;
     } else if (*ldab < *kd + 1) {
 	*info = -6;
-    } else if (*ldz < 1 || wantz && *ldz < *n) {
+    } else if (*ldz < 1 || (wantz && *ldz < *n)) {
 	*info = -9;
     }
 

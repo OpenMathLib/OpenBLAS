@@ -764,11 +764,11 @@ f"> */
 	*info = -5;
     } else if (*ncc < 0) {
 	*info = -6;
-    } else if (*ncvt == 0 && *ldvt < 1 || *ncvt > 0 && *ldvt < f2cmax(1,*n)) {
+    } else if ((*ncvt == 0 && *ldvt < 1) || (*ncvt > 0 && *ldvt < f2cmax(1,*n))) {
 	*info = -10;
     } else if (*ldu < f2cmax(1,*nru)) {
 	*info = -12;
-    } else if (*ncc == 0 && *ldc < 1 || *ncc > 0 && *ldc < f2cmax(1,*n)) {
+    } else if ((*ncc == 0 && *ldc < 1) || (*ncc > 0 && *ldc < f2cmax(1,*n))) {
 	*info = -14;
     }
     if (*info != 0) {

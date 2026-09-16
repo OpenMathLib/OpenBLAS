@@ -769,7 +769,7 @@ f"> */
     integer idxi, idxj;
     extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
-    integer i__, j, m, n, idxjp, jprev, k2;
+    integer i__, j, m, n, idxjp, jprev=0, k2;
     extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     real z1;

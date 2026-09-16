@@ -1060,8 +1060,8 @@ f"> */
 	    if (*wu >= d__[ibegin] - *pivmin) {
 		++nwu;
 	    }
-	    if (irange == 1 || *wl < d__[ibegin] - *pivmin && *wu >= d__[
-		    ibegin] - *pivmin) {
+	    if (irange == 1 || (*wl < d__[ibegin] - *pivmin && *wu >= d__[
+		    ibegin] - *pivmin)) {
 		++(*m);
 		w[*m] = d__[ibegin];
 		werr[*m] = 0.f;
@@ -1330,7 +1330,7 @@ L70:
 	}
     }
 
-    if (irange == 1 && *m != *n || irange == 3 && *m != *iu - *il + 1) {
+    if ((irange == 1 && *m != *n) || (irange == 3 && *m != *iu - *il + 1)) {
 	toofew = TRUE_;
     }
 /*     If ORDER='B', do nothing the eigenvalues are already sorted by */
