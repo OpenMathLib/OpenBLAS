@@ -65,7 +65,7 @@
 *>
 *> \param[out] NINFO
 *> \verbatim
-*>          NINFO is INTEGER array, dimension (3)
+*>          NINFO is INTEGER array, dimension (2)
 *>          NINFO(1) = number of examples with INFO less than 0
 *>          NINFO(2) = number of examples with INFO greater than 0
 *> \endverbatim
@@ -88,6 +88,7 @@
 *
 *  =====================================================================
       SUBROUTINE DGET31( RMAX, LMAX, NINFO, KNT )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -116,8 +117,8 @@
 *     .. Local Scalars ..
       INTEGER            IA, IB, ICA, ID1, ID2, INFO, ISMIN, ITRANS,
      $                   IWI, IWR, NA, NW
-      DOUBLE PRECISION   BIGNUM, CA, D1, D2, DEN, EPS, RES, SCALE, SMIN,
-     $                   SMLNUM, TMP, UNFL, WI, WR, XNORM
+      DOUBLE PRECISION   BIGNUM, CA, CNORM, D1, D2, DEN, EPS, RES,
+     $                   SCALE, SMIN, SMLNUM, TMP, UNFL, WI, WR, XNORM
 *     ..
 *     .. Local Arrays ..
       LOGICAL            LTRANS( 0: 1 )
@@ -130,7 +131,7 @@
       EXTERNAL           DLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLABAD, DLALN2
+      EXTERNAL           DLALN2
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, SQRT
@@ -146,7 +147,6 @@
       UNFL = DLAMCH( 'U' )
       SMLNUM = DLAMCH( 'S' ) / EPS
       BIGNUM = ONE / SMLNUM
-      CALL DLABAD( SMLNUM, BIGNUM )
 *
 *     Set up test case parameters
 *
@@ -217,13 +217,13 @@
      $                           NINFO( 2 ) = NINFO( 2 ) + 1
                               RES = ABS( ( CA*A( 1, 1 )-WR*D1 )*
      $                              X( 1, 1 )-SCALE*B( 1, 1 ) )
+                              CNORM = ABS( CA*A( 1, 1 ) ) + ABS( WR*D1 )
                               IF( INFO.EQ.0 ) THEN
-                                 DEN = MAX( EPS*( ABS( ( CA*A( 1,
-     $                                 1 )-WR*D1 )*X( 1, 1 ) ) ),
+                                 DEN = MAX( EPS*CNORM*ABS( X( 1, 1 ) ),
      $                                 SMLNUM )
                               ELSE
-                                 DEN = MAX( SMIN*ABS( X( 1, 1 ) ),
-     $                                 SMLNUM )
+                                 DEN = MAX( MAX( SMIN, EPS*CNORM )*
+     $                                 ABS( X( 1, 1 ) ), SMLNUM )
                               END IF
                               RES = RES / DEN
                               IF( ABS( X( 1, 1 ) ).LT.UNFL .AND.
@@ -279,15 +279,16 @@
                                  RES = RES + ABS( ( -WI*D1 )*X( 1, 1 )+
      $                                 ( CA*A( 1, 1 )-WR*D1 )*X( 1, 2 )-
      $                                 SCALE*B( 1, 2 ) )
+                                 CNORM = ABS( CA*A( 1, 1 ) ) +
+     $                                   ABS( WR*D1 ) + ABS( WI*D1 )
                                  IF( INFO.EQ.0 ) THEN
-                                    DEN = MAX( EPS*( MAX( ABS( CA*A( 1,
-     $                                    1 )-WR*D1 ), ABS( D1*WI ) )*
+                                    DEN = MAX( EPS*CNORM*
      $                                    ( ABS( X( 1, 1 ) )+ABS( X( 1,
-     $                                    2 ) ) ) ), SMLNUM )
+     $                                    2 ) ) ), SMLNUM )
                                  ELSE
-                                    DEN = MAX( SMIN*( ABS( X( 1,
-     $                                    1 ) )+ABS( X( 1, 2 ) ) ),
-     $                                    SMLNUM )
+                                    DEN = MAX( MAX( SMIN, EPS*CNORM )*
+     $                                    ( ABS( X( 1, 1 ) )+ABS( X( 1,
+     $                                    2 ) ) ), SMLNUM )
                                  END IF
                                  RES = RES / DEN
                                  IF( ABS( X( 1, 1 ) ).LT.UNFL .AND.
