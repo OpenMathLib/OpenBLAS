@@ -769,7 +769,10 @@
 *>          printed about each test for which the test ratio is greater
 *>          than or equal to the threshold.
 *>
-*> lines  3-EOF:
+*> line  3: TSTERR, LOGICAL
+*>          Flag indicating whether or not to test the error exits.
+*>
+*> lines  4-EOF:
 *>
 *> Input for testing the eigencondition routines consists of a set of
 *> specially constructed test cases and their solutions.  The data
@@ -1103,13 +1106,12 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAREQ, CCHKBB, CCHKBD, CCHKBK, CCHKBL, CCHKEC,
-     $                   CCHKGG, CCHKGK, CCHKGL, CCHKHB, CCHKHS, CCHKST,
-     $                   CCKCSD, CCKGLM, CCKGQR, CCKGSV, CCKLSE, CDRGES,
-     $                   CDRGEV, CDRGSX, CDRGVX, CDRVBD, CDRVES, CDRVEV,
-     $                   CDRVSG, CDRVST, CDRVSX, CDRVVX, CERRBD,
-     $                   CERRED, CERRGG, CERRHS, CERRST, ILAVER, XLAENV,
-     $                   CDRGES3, CDRGEV3, 
-     $                   CCHKST2STG, CDRVST2STG, CCHKHB2STG
+     $                   CCHKGG, CCHKGK, CCHKGL, CCHKHS, CCHKST, CCKCSD,
+     $                   CCKGLM, CCKGQR, CCKGSV, CCKLSE, CDRGES, CDRGEV,
+     $                   CDRGSX, CDRGVX, CDRVBD, CDRVES, CDRVEV, CDRVST,
+     $                   CDRVSX, CDRVVX, CERRBD, CERRED, CERRGG, CERRHS,
+     $                   CERRST, ILAVER, XLAENV, CDRGES3, CDRGEV3,
+     $                   CCHKST2STG, CDRVST2STG, CCHKHB2STG, CDRVSG2STG
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          LEN, MIN
@@ -1139,17 +1141,35 @@
 *     .. Allocate memory dynamically ..
 *
       ALLOCATE ( S(NMAX*NMAX), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( A(NMAX*NMAX,NEED), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( B(NMAX*NMAX,5), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( C(NCMAX*NCMAX,NCMAX*NCMAX), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( RWORK(LWORK), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( WORK(LWORK), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
 *     ..
 *     .. Executable Statements ..
 *
@@ -1265,9 +1285,9 @@
 *        CEC:  Eigencondition estimation
 *
          READ( NIN, FMT = * )THRESH
+         READ( NIN, FMT = * )TSTERR
          CALL XLAENV( 1, 1 )
          CALL XLAENV( 12, 1 )
-         TSTERR = .TRUE.
          CALL CCHKEC( THRESH, TSTERR, NIN, NOUT )
          GO TO 380
       ELSE
@@ -1727,7 +1747,7 @@
 *
       IF( FATAL ) THEN
          WRITE( NOUT, FMT = 9999 )
-         STOP
+         STOP 1
       END IF
 *
 *     Read the input lines indicating the test path and its parameters.
@@ -1843,10 +1863,10 @@
             CALL CCHKHS( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
      $                   A( 1, 1 ), NMAX, A( 1, 2 ), A( 1, 3 ),
      $                   A( 1, 4 ), A( 1, 5 ), NMAX, A( 1, 6 ),
-     $                   A( 1, 7 ), DC( 1, 1 ), DC( 1, 2 ), A( 1, 8 ),
-     $                   A( 1, 9 ), A( 1, 10 ), A( 1, 11 ), A( 1, 12 ),
-     $                   DC( 1, 3 ), WORK, LWORK, RWORK, IWORK, LOGWRK,
-     $                   RESULT, INFO )
+     $                   A( 1, 7 ), DC( 1, 1 ), DC( 1, 4 ), DC( 1, 2 ),
+     $                   A( 1, 8 ), A( 1, 9 ), A( 1, 10 ), A( 1, 11 ),
+     $                   A( 1, 12 ), DC( 1, 3 ), WORK, LWORK, RWORK,
+     $                   IWORK, LOGWRK, RESULT, INFO )
             IF( INFO.NE.0 )
      $         WRITE( NOUT, FMT = 9980 )'CCHKHS', INFO
   270    CONTINUE
