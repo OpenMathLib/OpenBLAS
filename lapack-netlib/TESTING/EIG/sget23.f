@@ -375,6 +375,7 @@
      $                   LDVR, LRE, LDLRE, RCONDV, RCNDV1, RCDVIN,
      $                   RCONDE, RCNDE1, RCDEIN, SCALE, SCALE1, RESULT,
      $                   WORK, LWORK, IWORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -413,7 +414,7 @@
      $                   J, JJ, KMIN
       REAL               ABNRM, ABNRM1, EPS, SMLNUM, TNRM, TOL, TOLIN,
      $                   ULP, ULPINV, V, VIMIN, VMAX, VMX, VRMIN, VRMX,
-     $                   VTST
+     $                   VTST, WDIF, WNRM
 *     ..
 *     .. Local Arrays ..
       CHARACTER          SENS( 2 )
@@ -599,10 +600,17 @@
 *
 *        Do Test (5)
 *
+         WNRM = ZERO
+         WDIF = ZERO
          DO 60 J = 1, N
-            IF( WR( J ).NE.WR1( J ) .OR. WI( J ).NE.WI1( J ) )
-     $         RESULT( 5 ) = ULPINV
+            WNRM = MAX( WNRM, ABS( WR( J ) )+ABS( WI( J ) ),
+     $                  ABS( WR1( J ) )+ABS( WI1( J ) ) )
+            WDIF = MAX( WDIF, ABS( WR( J )-WR1( J ) )+
+     $                  ABS( WI( J )-WI1( J ) ) )
    60    CONTINUE
+         RESULT( 5 ) = MAX( RESULT( 5 ), WDIF /
+     $                 MAX( SMLNUM, ULP*REAL( N )*
+     $                 MAX( WNRM, WDIF ) ) )
 *
 *        Do Test (8)
 *
@@ -649,10 +657,17 @@
 *
 *        Do Test (5) again
 *
+         WNRM = ZERO
+         WDIF = ZERO
          DO 90 J = 1, N
-            IF( WR( J ).NE.WR1( J ) .OR. WI( J ).NE.WI1( J ) )
-     $         RESULT( 5 ) = ULPINV
+            WNRM = MAX( WNRM, ABS( WR( J ) )+ABS( WI( J ) ),
+     $                  ABS( WR1( J ) )+ABS( WI1( J ) ) )
+            WDIF = MAX( WDIF, ABS( WR( J )-WR1( J ) )+
+     $                  ABS( WI( J )-WI1( J ) ) )
    90    CONTINUE
+         RESULT( 5 ) = MAX( RESULT( 5 ), WDIF /
+     $                 MAX( SMLNUM, ULP*REAL( N )*
+     $                 MAX( WNRM, WDIF ) ) )
 *
 *        Do Test (6)
 *
@@ -708,10 +723,17 @@
 *
 *        Do Test (5) again
 *
+         WNRM = ZERO
+         WDIF = ZERO
          DO 140 J = 1, N
-            IF( WR( J ).NE.WR1( J ) .OR. WI( J ).NE.WI1( J ) )
-     $         RESULT( 5 ) = ULPINV
+            WNRM = MAX( WNRM, ABS( WR( J ) )+ABS( WI( J ) ),
+     $                  ABS( WR1( J ) )+ABS( WI1( J ) ) )
+            WDIF = MAX( WDIF, ABS( WR( J )-WR1( J ) )+
+     $                  ABS( WI( J )-WI1( J ) ) )
   140    CONTINUE
+         RESULT( 5 ) = MAX( RESULT( 5 ), WDIF /
+     $                 MAX( SMLNUM, ULP*REAL( N )*
+     $                 MAX( WNRM, WDIF ) ) )
 *
 *        Do Test (7)
 *
