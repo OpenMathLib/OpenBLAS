@@ -10,9 +10,9 @@
 *
 *       SUBROUTINE CCHKHS( NSIZES, NN, NTYPES, DOTYPE, ISEED, THRESH,
 *                          NOUNIT, A, LDA, H, T1, T2, U, LDU, Z, UZ, W1,
-*                          W3, EVECTL, EVECTR, EVECTY, EVECTX, UU, TAU,
-*                          WORK, NWORK, RWORK, IWORK, SELECT, RESULT,
-*                          INFO )
+*                          W2, W3, EVECTL, EVECTR, EVECTY, EVECTX, UU,
+*                          TAU, WORK, NWORK, RWORK, IWORK, SELECT,
+*                          RESULT, INFO )
 *
 *       .. Scalar Arguments ..
 *       INTEGER            INFO, LDA, LDU, NOUNIT, NSIZES, NTYPES, NWORK
@@ -21,13 +21,13 @@
 *       .. Array Arguments ..
 *       LOGICAL            DOTYPE( * ), SELECT( * )
 *       INTEGER            ISEED( 4 ), IWORK( * ), NN( * )
-*       REAL               RESULT( 16 ), RWORK( * )
+*       REAL               RESULT( 17 ), RWORK( * )
 *       COMPLEX            A( LDA, * ), EVECTL( LDU, * ),
 *      $                   EVECTR( LDU, * ), EVECTX( LDU, * ),
 *      $                   EVECTY( LDU, * ), H( LDA, * ), T1( LDA, * ),
 *      $                   T2( LDA, * ), TAU( * ), U( LDU, * ),
-*      $                   UU( LDU, * ), UZ( LDU, * ), W1( * ), W3( * ),
-*      $                   WORK( * ), Z( LDU, * )
+*      $                   UU( LDU, * ), UZ( LDU, * ), W1( * ), W2( * ),
+*      $                   W3( * ), WORK( * ), Z( LDU, * )
 *       ..
 *
 *
@@ -95,17 +95,21 @@
 *>
 *>    (10)    | L**H T - W**H L | / ( |T| |L| ulp )
 *>
-*>    (11)    | HX - XW | / ( |H| |X| ulp )
+*>    (11)    | ( W(Schur form) - W(eigenvalues only) ) s | / ( |W| ulp )
+*>            over the eigenvalues whose reciprocal condition number s
+*>            is at least sqrt(ulp); s = 1 for a normal matrix
 *>
-*>    (12)    | Y**H H - W**H Y | / ( |H| |Y| ulp )
+*>    (12)    | HX - XW | / ( |H| |X| ulp )
 *>
-*>    (13)    | AX - XW | / ( |A| |X| ulp )
+*>    (13)    | Y**H H - W**H Y | / ( |H| |Y| ulp )
 *>
-*>    (14)    | Y**H A - W**H Y | / ( |A| |Y| ulp )
+*>    (14)    | AX - XW | / ( |A| |X| ulp )
 *>
-*>    (15)    | AR - RW | / ( |A| |R| ulp )
+*>    (15)    | Y**H A - W**H Y | / ( |A| |Y| ulp )
 *>
-*>    (16)    | LA - WL | / ( |A| |L| ulp )
+*>    (16)    | AR - RW | / ( |A| |R| ulp )
+*>
+*>    (17)    | LA - WL | / ( |A| |L| ulp )
 *>
 *>    The "sizes" are specified by an array NN(1:NSIZES); the value of
 *>    each element NN(j) specifies one size.
@@ -286,6 +290,12 @@
 *>           eigenvalues of the matrix in A.
 *>           Modified.
 *>
+*>  W2     - COMPLEX array, dimension (max(NN))
+*>           The eigenvalues of A, as computed when T is computed but
+*>           not Z.  On exit, W2 contains the eigenvalues of the matrix
+*>           in A.
+*>           Modified.
+*>
 *>  W3     - COMPLEX array, dimension (max(NN))
 *>           The eigenvalues of A, as computed by a partial Schur
 *>           decomposition (Z not computed, T only computed as much
@@ -415,9 +425,10 @@
 *  =====================================================================
       SUBROUTINE CCHKHS( NSIZES, NN, NTYPES, DOTYPE, ISEED, THRESH,
      $                   NOUNIT, A, LDA, H, T1, T2, U, LDU, Z, UZ, W1,
-     $                   W3, EVECTL, EVECTR, EVECTY, EVECTX, UU, TAU,
-     $                   WORK, NWORK, RWORK, IWORK, SELECT, RESULT,
+     $                   W2, W3, EVECTL, EVECTR, EVECTY, EVECTX, UU,
+     $                   TAU, WORK, NWORK, RWORK, IWORK, SELECT, RESULT,
      $                   INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -430,13 +441,13 @@
 *     .. Array Arguments ..
       LOGICAL            DOTYPE( * ), SELECT( * )
       INTEGER            ISEED( 4 ), IWORK( * ), NN( * )
-      REAL               RESULT( 16 ), RWORK( * )
+      REAL               RESULT( 17 ), RWORK( * )
       COMPLEX            A( LDA, * ), EVECTL( LDU, * ),
      $                   EVECTR( LDU, * ), EVECTX( LDU, * ),
      $                   EVECTY( LDU, * ), H( LDA, * ), T1( LDA, * ),
      $                   T2( LDA, * ), TAU( * ), U( LDU, * ),
-     $                   UU( LDU, * ), UZ( LDU, * ), W1( * ), W3( * ),
-     $                   WORK( * ), Z( LDU, * )
+     $                   UU( LDU, * ), UZ( LDU, * ), W1( * ), W2( * ),
+     $                   W3( * ), WORK( * ), Z( LDU, * )
 *     ..
 *
 *  =====================================================================
@@ -456,7 +467,8 @@
      $                   JJ, JSIZE, JTYPE, K, MTYPES, N, N1, NERRS,
      $                   NMATS, NMAX, NTEST, NTESTT
       REAL               ANINV, ANORM, COND, CONDS, OVFL, RTOVFL, RTULP,
-     $                   RTULPI, RTUNFL, TEMP1, TEMP2, ULP, ULPINV, UNFL
+     $                   RTULPI, RTUNFL, SJ, TEMP1, TEMP2, ULP, ULPINV,
+     $                   UNFL, XNORM, YNORM
 *     ..
 *     .. Local Arrays ..
       INTEGER            IDUMMA( 1 ), IOLDSD( 4 ), KCONDS( MAXTYP ),
@@ -466,14 +478,15 @@
       COMPLEX            CDUMMA( 4 )
 *     ..
 *     .. External Functions ..
-      REAL               SLAMCH
-      EXTERNAL           SLAMCH
+      REAL               SCNRM2, SLAMCH
+      COMPLEX            CDOTC
+      EXTERNAL           CDOTC, SCNRM2, SLAMCH
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CCOPY, CGEHRD, CGEMM, CGET10, CGET22, CHSEIN,
      $                   CHSEQR, CHST01, CLACPY, CLASET, CLATME, CLATMR,
      $                   CLATMS, CTREVC, CTREVC3, CUNGHR, CUNMHR,
-     $                   SLABAD, SLAFTS, SLASUM, XERBLA
+     $                   SLAFTS, SLASUM, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN, REAL, SQRT
@@ -533,7 +546,6 @@
 *
       UNFL = SLAMCH( 'Safe minimum' )
       OVFL = SLAMCH( 'Overflow' )
-      CALL SLABAD( UNFL, OVFL )
       ULP = SLAMCH( 'Epsilon' )*SLAMCH( 'Base' )
       ULPINV = ONE / ULP
       RTUNFL = SQRT( UNFL )
@@ -612,7 +624,7 @@
             GO TO 70
 *
    60       CONTINUE
-            ANORM = RTUNFL*N*ULPINV
+            ANORM = RTUNFL*REAL( N )*ULPINV
             GO TO 70
 *
    70       CONTINUE
@@ -782,11 +794,11 @@
                END IF
             END IF
 *
-*           Eigenvalues (W1) and Full Schur Form (T2)
+*           Eigenvalues (W2) and Full Schur Form (T2)
 *
             CALL CLACPY( ' ', N, N, H, LDA, T2, LDA )
 *
-            CALL CHSEQR( 'S', 'N', N, ILO, IHI, T2, LDA, W1, UZ, LDU,
+            CALL CHSEQR( 'S', 'N', N, ILO, IHI, T2, LDA, W2, UZ, LDU,
      $                   WORK, NWORK, IINFO )
             IF( IINFO.NE.0 .AND. IINFO.LE.N+2 ) THEN
                WRITE( NOUNIT, FMT = 9999 )'CHSEQR(S)', IINFO, N, JTYPE,
@@ -832,13 +844,17 @@
             CALL CGET10( N, N, T2, LDA, T1, LDA, WORK, RWORK,
      $                   RESULT( 7 ) )
 *
-*           Do Test 8: | W3 - W1 | / ( max(|W1|,|W3|) ulp )
+*           Do Test 8: | W2 - W1 | / ( max(|W1|,|W2|) ulp )
+*
+*           Both lists come from JOB = 'S'; only COMPZ differs, and COMPZ
+*           decides nothing but whether Z is accumulated, so the two are
+*           expected to agree exactly.
 *
             TEMP1 = ZERO
             TEMP2 = ZERO
             DO 130 J = 1, N
-               TEMP1 = MAX( TEMP1, ABS( W1( J ) ), ABS( W3( J ) ) )
-               TEMP2 = MAX( TEMP2, ABS( W1( J )-W3( J ) ) )
+               TEMP1 = MAX( TEMP1, ABS( W1( J ) ), ABS( W2( J ) ) )
+               TEMP2 = MAX( TEMP2, ABS( W1( J )-W2( J ) ) )
   130       CONTINUE
 *
             RESULT( 8 ) = TEMP2 / MAX( UNFL, ULP*MAX( TEMP1, TEMP2 ) )
@@ -930,6 +946,38 @@
      $            N, JTYPE, IOLDSD
             END IF
 *
+*           Do Test 11: | ( W3 - W1 ) s | / ( max(|W1|,|W3|) ulp )
+*
+*           W1 comes from JOB = 'S' and W3 from JOB = 'E'.  Unlike test
+*           8, which varies only COMPZ, these two are not expected to
+*           agree exactly: the paths cover different index ranges and
+*           need not round alike.  s(j) = |y(j)**H x(j)| over
+*           ||y(j)|| ||x(j)||, the reciprocal condition number of
+*           eigenvalue j of T1, is what makes the comparison meaningful.
+*           A backward error eps in H moves that eigenvalue by
+*           eps / s(j), so the two can only be asked to agree to within
+*           |dW(j)| s(j); s(j) = 1 for a normal matrix.  Eigenvalues
+*           with s(j) < sqrt(ulp) are skipped: those are the ones the
+*           two paths have been seen to return in a different order,
+*           which the index-wise comparison could not tell apart from a
+*           real error.
+*
+            NTEST = 11
+            RESULT( 11 ) = ULPINV
+            TEMP1 = ZERO
+            TEMP2 = ZERO
+            DO 155 J = 1, N
+               XNORM = SCNRM2( N, EVECTR( 1, J ), 1 )
+               YNORM = SCNRM2( N, EVECTL( 1, J ), 1 )
+               SJ = ABS( CDOTC( N, EVECTL( 1, J ), 1,
+     $              EVECTR( 1, J ), 1 ) ) / MAX( XNORM*YNORM, UNFL )
+               TEMP1 = MAX( TEMP1, ABS( W1( J ) ), ABS( W3( J ) ) )
+               IF( SJ.GE.RTULP )
+     $            TEMP2 = MAX( TEMP2, SJ*ABS( W1( J )-W3( J ) ) )
+  155       CONTINUE
+*
+            RESULT( 11 ) = TEMP2 / MAX( UNFL, ULP*MAX( TEMP1, TEMP2 ) )
+*
 *           Compute selected left eigenvectors and confirm that
 *           they agree with previous left eigenvectors
 *
@@ -960,10 +1008,10 @@
      $         WRITE( NOUNIT, FMT = 9997 )'Left', 'CTREVC', N, JTYPE,
      $         IOLDSD
 *
-*           Call CHSEIN for Right eigenvectors of H, do test 11
+*           Call CHSEIN for Right eigenvectors of H, do test 12
 *
-            NTEST = 11
-            RESULT( 11 ) = ULPINV
+            NTEST = 12
+            RESULT( 12 ) = ULPINV
             DO 220 J = 1, N
                SELECT( J ) = .TRUE.
   220       CONTINUE
@@ -979,24 +1027,24 @@
      $            GO TO 240
             ELSE
 *
-*              Test 11:  | HX - XW | / ( |H| |X| ulp )
+*              Test 12:  | HX - XW | / ( |H| |X| ulp )
 *
 *                        (from inverse iteration)
 *
                CALL CGET22( 'N', 'N', 'N', N, H, LDA, EVECTX, LDU, W3,
      $                      WORK, RWORK, DUMMA( 1 ) )
                IF( DUMMA( 1 ).LT.ULPINV )
-     $            RESULT( 11 ) = DUMMA( 1 )*ANINV
+     $            RESULT( 12 ) = DUMMA( 1 )*ANINV
                IF( DUMMA( 2 ).GT.THRESH ) THEN
                   WRITE( NOUNIT, FMT = 9998 )'Right', 'CHSEIN',
      $               DUMMA( 2 ), N, JTYPE, IOLDSD
                END IF
             END IF
 *
-*           Call CHSEIN for Left eigenvectors of H, do test 12
+*           Call CHSEIN for Left eigenvectors of H, do test 13
 *
-            NTEST = 12
-            RESULT( 12 ) = ULPINV
+            NTEST = 13
+            RESULT( 13 ) = ULPINV
             DO 230 J = 1, N
                SELECT( J ) = .TRUE.
   230       CONTINUE
@@ -1012,24 +1060,24 @@
      $            GO TO 240
             ELSE
 *
-*              Test 12:  | YH - WY | / ( |H| |Y| ulp )
+*              Test 13:  | YH - WY | / ( |H| |Y| ulp )
 *
 *                        (from inverse iteration)
 *
                CALL CGET22( 'C', 'N', 'C', N, H, LDA, EVECTY, LDU, W3,
      $                      WORK, RWORK, DUMMA( 3 ) )
                IF( DUMMA( 3 ).LT.ULPINV )
-     $            RESULT( 12 ) = DUMMA( 3 )*ANINV
+     $            RESULT( 13 ) = DUMMA( 3 )*ANINV
                IF( DUMMA( 4 ).GT.THRESH ) THEN
                   WRITE( NOUNIT, FMT = 9998 )'Left', 'CHSEIN',
      $               DUMMA( 4 ), N, JTYPE, IOLDSD
                END IF
             END IF
 *
-*           Call CUNMHR for Right eigenvectors of A, do test 13
+*           Call CUNMHR for Right eigenvectors of A, do test 14
 *
-            NTEST = 13
-            RESULT( 13 ) = ULPINV
+            NTEST = 14
+            RESULT( 14 ) = ULPINV
 *
             CALL CUNMHR( 'Left', 'No transpose', N, N, ILO, IHI, UU,
      $                   LDU, TAU, EVECTX, LDU, WORK, NWORK, IINFO )
@@ -1041,20 +1089,20 @@
      $            GO TO 240
             ELSE
 *
-*              Test 13:  | AX - XW | / ( |A| |X| ulp )
+*              Test 14:  | AX - XW | / ( |A| |X| ulp )
 *
 *                        (from inverse iteration)
 *
                CALL CGET22( 'N', 'N', 'N', N, A, LDA, EVECTX, LDU, W3,
      $                      WORK, RWORK, DUMMA( 1 ) )
                IF( DUMMA( 1 ).LT.ULPINV )
-     $            RESULT( 13 ) = DUMMA( 1 )*ANINV
+     $            RESULT( 14 ) = DUMMA( 1 )*ANINV
             END IF
 *
-*           Call CUNMHR for Left eigenvectors of A, do test 14
+*           Call CUNMHR for Left eigenvectors of A, do test 15
 *
-            NTEST = 14
-            RESULT( 14 ) = ULPINV
+            NTEST = 15
+            RESULT( 15 ) = ULPINV
 *
             CALL CUNMHR( 'Left', 'No transpose', N, N, ILO, IHI, UU,
      $                   LDU, TAU, EVECTY, LDU, WORK, NWORK, IINFO )
@@ -1066,22 +1114,22 @@
      $            GO TO 240
             ELSE
 *
-*              Test 14:  | YA - WY | / ( |A| |Y| ulp )
+*              Test 15:  | YA - WY | / ( |A| |Y| ulp )
 *
 *                        (from inverse iteration)
 *
                CALL CGET22( 'C', 'N', 'C', N, A, LDA, EVECTY, LDU, W3,
      $                      WORK, RWORK, DUMMA( 3 ) )
                IF( DUMMA( 3 ).LT.ULPINV )
-     $            RESULT( 14 ) = DUMMA( 3 )*ANINV
+     $            RESULT( 15 ) = DUMMA( 3 )*ANINV
             END IF
 *
 *           Compute Left and Right Eigenvectors of A
 *
 *           Compute a Right eigenvector matrix:
 *
-            NTEST = 15
-            RESULT( 15 ) = ULPINV
+            NTEST = 16
+            RESULT( 16 ) = ULPINV
 *
             CALL CLACPY( ' ', N, N, UZ, LDU, EVECTR, LDU )
 *
@@ -1095,13 +1143,13 @@
                GO TO 250
             END IF
 *
-*           Test 15:  | AR - RW | / ( |A| |R| ulp )
+*           Test 16:  | AR - RW | / ( |A| |R| ulp )
 *
 *                     (from Schur decomposition)
 *
             CALL CGET22( 'N', 'N', 'N', N, A, LDA, EVECTR, LDU, W1,
      $                   WORK, RWORK, DUMMA( 1 ) )
-            RESULT( 15 ) = DUMMA( 1 )
+            RESULT( 16 ) = DUMMA( 1 )
             IF( DUMMA( 2 ).GT.THRESH ) THEN
                WRITE( NOUNIT, FMT = 9998 )'Right', 'CTREVC3',
      $            DUMMA( 2 ), N, JTYPE, IOLDSD
@@ -1109,8 +1157,8 @@
 *
 *           Compute a Left eigenvector matrix:
 *
-            NTEST = 16
-            RESULT( 16 ) = ULPINV
+            NTEST = 17
+            RESULT( 17 ) = ULPINV
 *
             CALL CLACPY( ' ', N, N, UZ, LDU, EVECTL, LDU )
 *
@@ -1124,13 +1172,13 @@
                GO TO 250
             END IF
 *
-*           Test 16:  | LA - WL | / ( |A| |L| ulp )
+*           Test 17:  | LA - WL | / ( |A| |L| ulp )
 *
 *                     (from Schur decomposition)
 *
             CALL CGET22( 'Conj', 'N', 'Conj', N, A, LDA, EVECTL, LDU,
      $                   W1, WORK, RWORK, DUMMA( 3 ) )
-            RESULT( 16 ) = DUMMA( 3 )
+            RESULT( 17 ) = DUMMA( 3 )
             IF( DUMMA( 4 ).GT.THRESH ) THEN
                WRITE( NOUNIT, FMT = 9998 )'Left', 'CTREVC3', DUMMA( 4 ),
      $            N, JTYPE, IOLDSD
