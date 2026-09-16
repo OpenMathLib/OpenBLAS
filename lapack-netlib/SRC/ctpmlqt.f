@@ -158,7 +158,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHERcomputational
+*> \ingroup tpmlqt
 *
 *> \par Further Details:
 *  =====================
@@ -194,8 +194,10 @@
 *> \endverbatim
 *>
 *  =====================================================================
-      SUBROUTINE CTPMLQT( SIDE, TRANS, M, N, K, L, MB, V, LDV, T, LDT,
+      SUBROUTINE CTPMLQT( SIDE, TRANS, M, N, K, L, MB, V, LDV, T,
+     $                    LDT,
      $                    A, LDA, B, LDB, WORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -283,7 +285,7 @@
             IF( I.GE.L ) THEN
                LB = 0
             ELSE
-               LB = 0
+               LB = NB-M+L-I+1
             END IF
             CALL CTPRFB( 'L', 'C', 'F', 'R', NB, N, IB, LB,
      $                   V( I, 1 ), LDV, T( 1, I ), LDT,
@@ -314,7 +316,7 @@
             IF( I.GE.L ) THEN
                LB = 0
             ELSE
-               LB = 0
+               LB = NB-M+L-I+1
             END IF
             CALL CTPRFB( 'L', 'N', 'F', 'R', NB, N, IB, LB,
      $                   V( I, 1 ), LDV, T( 1, I ), LDT,
