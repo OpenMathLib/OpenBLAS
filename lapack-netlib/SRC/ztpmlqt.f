@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download ZTPMLQT + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ztpmlqt.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ztpmlqt.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -173,7 +171,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHERcomputational
+*> \ingroup tpmlqt
 *
 *> \par Further Details:
 *  =====================
@@ -209,8 +207,10 @@
 *> \endverbatim
 *>
 *  =====================================================================
-      SUBROUTINE ZTPMLQT( SIDE, TRANS, M, N, K, L, MB, V, LDV, T, LDT,
+      SUBROUTINE ZTPMLQT( SIDE, TRANS, M, N, K, L, MB, V, LDV, T,
+     $                    LDT,
      $                    A, LDA, B, LDB, WORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -298,7 +298,7 @@
             IF( I.GE.L ) THEN
                LB = 0
             ELSE
-               LB = 0
+               LB = NB-M+L-I+1
             END IF
             CALL ZTPRFB( 'L', 'C', 'F', 'R', NB, N, IB, LB,
      $                   V( I, 1 ), LDV, T( 1, I ), LDT,
@@ -329,7 +329,7 @@
             IF( I.GE.L ) THEN
                LB = 0
             ELSE
-               LB = 0
+               LB = NB-M+L-I+1
             END IF
             CALL ZTPRFB( 'L', 'N', 'F', 'R', NB, N, IB, LB,
      $                   V( I, 1 ), LDV, T( 1, I ), LDT,
