@@ -789,6 +789,7 @@
                 K    =  0
                 INFO = -8
                 CALL XERBLA('SGEDMD',-INFO)
+                RETURN
             END IF
             IF ( (SCALE /= ZERO) .AND. (SSUM /= ZERO) ) THEN
                ROOTSC = SQRT(SSUM)
@@ -865,6 +866,7 @@
                 K    =  0
                 INFO = -10
                 CALL XERBLA('SGEDMD',-INFO)
+                RETURN
             END IF
             IF ( SCALE /= ZERO  .AND. (SSUM /= ZERO) ) THEN
                ROOTSC = SQRT(SSUM)
