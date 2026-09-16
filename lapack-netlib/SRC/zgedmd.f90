@@ -558,8 +558,8 @@
 !     External functions (BLAS and LAPACK)
 !     ~~~~~~~~~~~~~~~~~
       REAL(KIND=WP) ZLANGE, DLAMCH, DZNRM2
-      EXTERNAL      ZLANGE, DLAMCH, DZNRM2, IZAMAX
-      INTEGER                               IZAMAX
+      EXTERNAL      DLAMCH, DZNRM2, IZAMAX
+      INTEGER                       IZAMAX
       LOGICAL       DISNAN, LSAME
       EXTERNAL      DISNAN, LSAME
 !
@@ -768,6 +768,7 @@
                 K    =  0
                 INFO = -8
                 CALL XERBLA('ZGEDMD',-INFO)
+                RETURN
             END IF
             IF ( (SCALE /= ZERO) .AND. (SSUM /= ZERO) ) THEN
                ROOTSC = SQRT(SSUM)
@@ -844,6 +845,7 @@
                 K    =  0
                 INFO = -10
                 CALL XERBLA('ZGEDMD',-INFO)
+                RETURN
             END IF
             IF ( SCALE /= ZERO  .AND. (SSUM /= ZERO) ) THEN
                ROOTSC = SQRT(SSUM)
