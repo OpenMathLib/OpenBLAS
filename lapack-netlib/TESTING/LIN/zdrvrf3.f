@@ -116,6 +116,7 @@
 *  =====================================================================
       SUBROUTINE ZDRVRF3( NOUT, NN, NVAL, THRESH, A, LDA, ARF, B1, B2,
      +                    D_WORK_ZLANGE, Z_WORK_ZGEQRF, TAU )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -137,8 +138,10 @@
 *     ..
 *     .. Parameters ..
       COMPLEX*16         ZERO, ONE
+      DOUBLE PRECISION   TWO
       PARAMETER          ( ZERO = ( 0.0D+0, 0.0D+0 ) ,
      +                     ONE  = ( 1.0D+0, 0.0D+0 ) )
+      PARAMETER          ( TWO  = 2.0D+0 )
       INTEGER            NTESTS
       PARAMETER          ( NTESTS = 1 )
 *     ..
@@ -147,7 +150,7 @@
       INTEGER            I, IFORM, IIM, IIN, INFO, IUPLO, J, M, N, NA,
      +                   NFAIL, NRUN, ISIDE, IDIAG, IALPHA, ITRANS
       COMPLEX*16         ALPHA
-      DOUBLE PRECISION   EPS
+      DOUBLE PRECISION   EPS, SOLNRM
 *     ..
 *     .. Local Arrays ..
       CHARACTER          UPLOS( 2 ), FORMS( 2 ), TRANSS( 2 ),
@@ -162,7 +165,7 @@
       EXTERNAL           DLAMCH, ZLARND, ZLANGE, LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZTRTTF, ZGEQRF, ZGEQLF, ZTFSM, ZTRSM
+      EXTERNAL           ZTRTTF, ZGEQRF, ZGELQF, ZTFSM, ZTRSM
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, SQRT
@@ -286,7 +289,7 @@
                                     DO J = 1, NA
                                        DO I = 1, J
                                           A( I, J ) = A( I, J ) /
-     +                                            ( 2.0 * A( J, J ) )
+     +                                            ( TWO * A( J, J ) )
                                        END DO
                                     END DO
                                  END IF
@@ -309,7 +312,7 @@
                                     DO I = 1, NA
                                        DO J = 1, I
                                           A( I, J ) = A( I, J ) /
-     +                                            ( 2.0 * A( I, I ) )
+     +                                            ( TWO * A( I, I ) )
                                        END DO
                                     END DO
                                  END IF
@@ -359,6 +362,9 @@
 *
 *                             Check that the result agrees.
 *
+                              SOLNRM = ZLANGE( 'I', M, N, B1, LDA,
+     +                                        D_WORK_ZLANGE )
+*
                               DO J = 1, N
                                  DO I = 1, M
                                     B1( I, J ) = B2( I, J ) - B1( I, J )
@@ -370,6 +376,7 @@
 *
                               RESULT( 1 ) = RESULT( 1 ) / SQRT( EPS )
      +                                    / MAX ( MAX( M, N ), 1 )
+     +                                    / MAX( SOLNRM, 1.0D+0 )
 *
                               IF( RESULT( 1 ).GE.THRESH ) THEN
                                  IF( NFAIL.EQ.0 ) THEN
