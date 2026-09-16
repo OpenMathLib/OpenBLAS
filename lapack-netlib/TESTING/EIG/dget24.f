@@ -340,6 +340,7 @@
      $                   H, HT, WR, WI, WRT, WIT, WRTMP, WITMP, VS,
      $                   LDVS, VS1, RCDEIN, RCDVIN, NSLCT, ISLCT,
      $                   RESULT, WORK, LWORK, IWORK, BWORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -457,7 +458,24 @@
          CALL DGEESX( 'V', SORT, DSLECT, 'N', N, H, LDA, SDIM, WR, WI,
      $                VS, LDVS, RCONDE, RCONDV, WORK, LWORK, IWORK,
      $                LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'DGEESX1', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'DGEESX1', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            RETURN
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'DGEESX1', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'DGEESX1', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 1+RSUB ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
                WRITE( NOUNIT, FMT = 9998 )'DGEESX1', IINFO, N, JTYPE,
@@ -566,7 +584,24 @@
          CALL DGEESX( 'N', SORT, DSLECT, 'N', N, HT, LDA, SDIM, WRT,
      $                WIT, VS, LDVS, RCONDE, RCONDV, WORK, LWORK, IWORK,
      $                LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'DGEESX2', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'DGEESX2', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            GO TO 250
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'DGEESX2', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'DGEESX2', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 5+RSUB ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
                WRITE( NOUNIT, FMT = 9998 )'DGEESX2', IINFO, N, JTYPE,
@@ -632,7 +667,24 @@
          CALL DGEESX( 'V', SORT, DSLECT, 'B', N, HT, LDA, SDIM1, WRT,
      $                WIT, VS1, LDVS, RCONDE, RCONDV, WORK, LWORK,
      $                IWORK, LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'DGEESX3', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'DGEESX3', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            GO TO 250
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'DGEESX3', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'DGEESX3', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 14 ) = ULPINV
             RESULT( 15 ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
@@ -667,7 +719,24 @@
          CALL DGEESX( 'N', SORT, DSLECT, 'B', N, HT, LDA, SDIM1, WRT,
      $                WIT, VS1, LDVS, RCNDE1, RCNDV1, WORK, LWORK,
      $                IWORK, LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'DGEESX4', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'DGEESX4', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            GO TO 250
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'DGEESX4', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'DGEESX4', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 14 ) = ULPINV
             RESULT( 15 ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
@@ -709,7 +778,24 @@
          CALL DGEESX( 'V', SORT, DSLECT, 'E', N, HT, LDA, SDIM1, WRT,
      $                WIT, VS1, LDVS, RCNDE1, RCNDV1, WORK, LWORK,
      $                IWORK, LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'DGEESX5', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'DGEESX5', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            GO TO 250
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'DGEESX5', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'DGEESX5', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 14 ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
                WRITE( NOUNIT, FMT = 9998 )'DGEESX5', IINFO, N, JTYPE,
@@ -748,7 +834,24 @@
          CALL DGEESX( 'N', SORT, DSLECT, 'E', N, HT, LDA, SDIM1, WRT,
      $                WIT, VS1, LDVS, RCNDE1, RCNDV1, WORK, LWORK,
      $                IWORK, LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'DGEESX6', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'DGEESX6', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            GO TO 250
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'DGEESX6', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'DGEESX6', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 14 ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
                WRITE( NOUNIT, FMT = 9998 )'DGEESX6', IINFO, N, JTYPE,
@@ -787,7 +890,24 @@
          CALL DGEESX( 'V', SORT, DSLECT, 'V', N, HT, LDA, SDIM1, WRT,
      $                WIT, VS1, LDVS, RCNDE1, RCNDV1, WORK, LWORK,
      $                IWORK, LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'DGEESX7', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'DGEESX7', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            GO TO 250
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'DGEESX7', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'DGEESX7', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 15 ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
                WRITE( NOUNIT, FMT = 9998 )'DGEESX7', IINFO, N, JTYPE,
@@ -826,7 +946,24 @@
          CALL DGEESX( 'N', SORT, DSLECT, 'V', N, HT, LDA, SDIM1, WRT,
      $                WIT, VS1, LDVS, RCNDE1, RCNDV1, WORK, LWORK,
      $                IWORK, LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9996 )'DGEESX8', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9997 )'DGEESX8', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+            GO TO 250
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            IF( JTYPE.NE.22 ) THEN
+               WRITE( NOUNIT, FMT = 9994 )'DGEESX8', IINFO, N, JTYPE,
+     $            ISEED
+            ELSE
+               WRITE( NOUNIT, FMT = 9995 )'DGEESX8', IINFO, N,
+     $            ISEED( 1 )
+            END IF
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 15 ) = ULPINV
             IF( JTYPE.NE.22 ) THEN
                WRITE( NOUNIT, FMT = 9998 )'DGEESX8', IINFO, N, JTYPE,
@@ -910,7 +1047,12 @@
          CALL DGEESX( 'N', 'S', DSLECT, 'B', N, HT, LDA, SDIM1, WRT,
      $                WIT, VS1, LDVS, RCONDE, RCONDV, WORK, LWORK,
      $                IWORK, LIWORK, BWORK, IINFO )
-         IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+         IF( IINFO.EQ.N+1 ) THEN
+            WRITE( NOUNIT, FMT = 9997 )'DGEESX9', IINFO, N, ISEED( 1 )
+            GO TO 300
+         ELSE IF( IINFO.EQ.N+2 ) THEN
+            WRITE( NOUNIT, FMT = 9995 )'DGEESX9', IINFO, N, ISEED( 1 )
+         ELSE IF( IINFO.NE.0 ) THEN
             RESULT( 16 ) = ULPINV
             RESULT( 17 ) = ULPINV
             WRITE( NOUNIT, FMT = 9999 )'DGEESX9', IINFO, N, ISEED( 1 )
@@ -984,6 +1126,22 @@
      $      I6, ', INPUT EXAMPLE NUMBER = ', I4 )
  9998 FORMAT( ' DGET24: ', A, ' returned INFO=', I6, '.', / 9X, 'N=',
      $      I6, ', JTYPE=', I6, ', ISEED=(', 3( I5, ',' ), I5, ')' )
+ 9997 FORMAT( ' DGET24: ', A, ' returned the known code N+1 =', I6,
+     $      ': eigenvalues too close', / 9X, 'to reorder; ill-',
+     $      'conditioned matrix, accepted as no error.', / 9X, 'N=',
+     $      I6, ', INPUT EXAMPLE NUMBER = ', I4 )
+ 9996 FORMAT( ' DGET24: ', A, ' returned the known code N+1 =', I6,
+     $      ': eigenvalues too close', / 9X, 'to reorder; ill-',
+     $      'conditioned matrix, accepted as no error.', / 9X, 'N=',
+     $      I6, ', JTYPE=', I6, ', ISEED=(', 3( I5, ',' ), I5, ')' )
+ 9995 FORMAT( ' DGET24: ', A, ' returned the known code N+2 =', I6,
+     $      ': roundoff undid the sort', / 9X, 'order; ill-conditioned',
+     $      ' matrix, accepted as no error.', / 9X, 'N=', I6,
+     $      ', INPUT EXAMPLE NUMBER = ', I4 )
+ 9994 FORMAT( ' DGET24: ', A, ' returned the known code N+2 =', I6,
+     $      ': roundoff undid the sort', / 9X, 'order; ill-conditioned',
+     $      ' matrix, accepted as no error.', / 9X, 'N=', I6,
+     $      ', JTYPE=', I6, ', ISEED=(', 3( I5, ',' ), I5, ')' )
 *
       RETURN
 *
