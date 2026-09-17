@@ -38,7 +38,6 @@
 
 #define ASSEMBLER
 #include "common.h"
-
 #define M	ARG1	/* rdi */
 #define X	ARG2	/* rsi */
 #define INCX	ARG3	/* rdx */
@@ -68,11 +67,19 @@
 	testq	$SIZE, X
 	je	.L05
 
+#ifndef DOUBLE
 	movss	0 * SIZE(X), %xmm4
 	cvtss2sd %xmm4, %xmm6
+#else
+	movsd   0 * SIZE(X), %xmm6
+#endif
 	mulsd	 %xmm6, %xmm6
 	addsd	 %xmm6, %xmm3
+//#ifndef DOUBLE
 	addq	INCX, X
+//#else
+//	addq	$1 *SIZE, X
+//#endif
 	decq	M
 	jle	.L998
 	ALIGN_3
@@ -81,12 +88,23 @@
 	movq	M,  I
 	sarq	$3, I
 	jle	.L14
-
+#ifndef DOUBLE
 	movsd	0 * SIZE(X), %xmm4
 	movsd	2 * SIZE(X), %xmm5
 	movsd	4 * SIZE(X), %xmm6
 	movsd	6 * SIZE(X), %xmm7
 	addq	$8 * SIZE, X
+#else
+	movsd	0 * SIZE(X), %xmm4
+	movsd	1 * SIZE(X), %xmm5
+	movsd	2 * SIZE(X), %xmm6
+	movsd	3 * SIZE(X), %xmm7
+	movsd	4 * SIZE(X), %xmm8
+	movsd	5 * SIZE(X), %xmm9
+	movsd	6 * SIZE(X), %xmm10
+	movsd	7 * SIZE(X), %xmm11
+	addq	$8 * SIZE, X
+#endif
 	decq	I
 	jle	.L12
 	ALIGN_3
@@ -95,17 +113,27 @@
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
-
+#ifndef DOUBLE
 	cvtps2pd %xmm4, %xmm8
 	cvtps2pd %xmm5, %xmm9
 	cvtps2pd %xmm6, %xmm10
 	cvtps2pd %xmm7, %xmm11
-
+#else
+	mulpd %xmm4, %xmm4
+	mulpd %xmm5, %xmm5
+	mulpd %xmm6, %xmm6
+	mulpd %xmm7, %xmm7
+	addpd %xmm4, %xmm0
+	addpd %xmm5, %xmm1
+	addpd %xmm6, %xmm2
+	addpd %xmm7, %xmm3
+#endif
+#ifndef DOUBLE
 	movsd	0 * SIZE(X), %xmm4
 	movsd	2 * SIZE(X), %xmm5
 	movsd	4 * SIZE(X), %xmm6
 	movsd	6 * SIZE(X), %xmm7
-
+#endif
 	mulpd	 %xmm8,  %xmm8
 	mulpd	 %xmm9,  %xmm9
 	mulpd	 %xmm10, %xmm10
@@ -116,17 +144,38 @@
 	addpd	 %xmm10, %xmm2
 	addpd	 %xmm11, %xmm3
 
+#ifdef DOUBLE
+	movsd	0 * SIZE(X), %xmm4
+	movsd	1 * SIZE(X), %xmm5
+	movsd	2 * SIZE(X), %xmm6
+	movsd	3 * SIZE(X), %xmm7
+	movsd	4 * SIZE(X), %xmm8
+	movsd	5 * SIZE(X), %xmm9
+	movsd	6 * SIZE(X), %xmm10
+	movsd	7 * SIZE(X), %xmm11
+#endif
+
 	addq	$8 * SIZE, X
 	decq	I
 	jg	.L10
 	ALIGN_3
 
 .L12:
+#ifndef DOUBLE
 	cvtps2pd %xmm4, %xmm8
 	cvtps2pd %xmm5, %xmm9
 	cvtps2pd %xmm6, %xmm10
 	cvtps2pd %xmm7, %xmm11
-
+#else
+	mulpd %xmm4, %xmm4
+	mulpd %xmm5, %xmm5
+	mulpd %xmm6, %xmm6
+	mulpd %xmm7, %xmm7
+	addpd %xmm4, %xmm0
+	addpd %xmm5, %xmm1
+	addpd %xmm6, %xmm2
+	addpd %xmm7, %xmm3
+#endif
 	mulpd	 %xmm8,  %xmm8
 	mulpd	 %xmm9,  %xmm9
 	mulpd	 %xmm10, %xmm10
@@ -142,16 +191,30 @@
 .L14:
 	testq	$4,  M
 	je	.L15
-
+#ifndef DOUBLE
 	movsd	0 * SIZE(X), %xmm4
 	movsd	2 * SIZE(X), %xmm5
 	cvtps2pd %xmm4, %xmm6
 	cvtps2pd %xmm5, %xmm7
+#else
+	movupd	0 * SIZE(X), %xmm4
+	movupd	1 * SIZE(X), %xmm5
+	movupd	2 * SIZE(X), %xmm6
+	movupd	3 * SIZE(X), %xmm7
+	mulpd	 %xmm4, %xmm4
+	mulpd	 %xmm5, %xmm5
+	addpd	 %xmm4, %xmm0
+	addpd	 %xmm5, %xmm1
+#endif
 	mulpd	 %xmm6, %xmm6
 	mulpd	 %xmm7, %xmm7
 	addpd	 %xmm6, %xmm0
 	addpd	 %xmm7, %xmm1
+#ifndef DOUBLW
 	addq	$4 * SIZE, X
+#else
+	addq	$4 * SIZE, X
+#endif
 	ALIGN_3
 
 .L15:
@@ -159,18 +222,32 @@
 	je	.L16
 
 	movsd	0 * SIZE(X), %xmm4
+#ifndef DOUBLE
 	cvtps2pd %xmm4, %xmm6
+#else
+	movsd	1 * SIZE(X), %xmm6
+	mulpd	 %xmm4, %xmm4
+	addpd	 %xmm4, %xmm2
+#endif
 	mulpd	 %xmm6, %xmm6
 	addpd	 %xmm6, %xmm2
+#ifndef DOUBLE
 	addq	$2 * SIZE, X
+#else
+	addq	$2 * SIZE, X
+#endif
 	ALIGN_3
 
 .L16:
 	testq	$1,  M
 	je	.L998
 
+#ifndef DOUBLE
 	movss	0 * SIZE(X), %xmm4
 	cvtss2sd %xmm4, %xmm6
+#else
+	movsd   0 * SIZE(X), %xmm6
+#endif
 	mulsd	 %xmm6, %xmm6
 	addsd	 %xmm6, %xmm3
 	jmp	.L998
@@ -183,6 +260,7 @@
 	ALIGN_4
 
 .L41:
+#ifndef DOUBLE
 	movss	(X), %xmm4
 	addq	INCX, X
 	movss	(X), %xmm5
@@ -208,7 +286,24 @@
 	cvtss2sd %xmm9,  %xmm9
 	cvtss2sd %xmm10, %xmm10
 	cvtss2sd %xmm11, %xmm11
-
+#else
+	movsd	(X), %xmm4
+	addq	INCX, X
+	movsd	(X), %xmm5
+	addq	INCX, X
+	movsd	(X), %xmm6
+	addq	INCX, X
+	movsd	(X), %xmm7
+	addq	INCX, X
+	movsd	(X), %xmm8
+	addq	INCX, X
+	movsd	(X), %xmm9
+	addq	INCX, X
+	movsd	(X), %xmm10
+	addq	INCX, X
+	movsd	(X), %xmm11
+	addq	INCX, X
+#endif
 	mulsd	 %xmm4,  %xmm4
 	mulsd	 %xmm5,  %xmm5
 	mulsd	 %xmm6,  %xmm6
@@ -236,7 +331,7 @@
 .L44:
 	testq	$4,  M
 	je	.L45
-
+#ifndef DOUBLE
 	movss	(X), %xmm4
 	addq	INCX, X
 	movss	(X), %xmm5
@@ -250,7 +345,16 @@
 	cvtss2sd %xmm5, %xmm9
 	cvtss2sd %xmm6, %xmm10
 	cvtss2sd %xmm7, %xmm11
-
+#else
+	movsd	(X), %xmm8
+	addq	INCX, X
+	movsd	(X), %xmm9
+	addq	INCX, X
+	movsd	(X), %xmm10
+	addq	INCX, X
+	movsd	(X), %xmm11
+	addq	INCX, X
+#endif
 	mulsd	 %xmm8,  %xmm8
 	mulsd	 %xmm9,  %xmm9
 	mulsd	 %xmm10, %xmm10
@@ -265,7 +369,7 @@
 .L45:
 	testq	$2,  M
 	je	.L46
-
+#ifndef DOUBLE
 	movss	(X), %xmm4
 	addq	INCX, X
 	movss	(X), %xmm5
@@ -273,6 +377,12 @@
 
 	cvtss2sd %xmm4, %xmm6
 	cvtss2sd %xmm5, %xmm7
+#else
+	movsd	(X), %xmm6
+	addq	INCX, X
+	movsd	(X), %xmm7
+	addq	INCX, X
+#endif
 	mulsd	 %xmm6, %xmm6
 	mulsd	 %xmm7, %xmm7
 	addsd	 %xmm6, %xmm1
@@ -282,9 +392,12 @@
 .L46:
 	testq	$1,  M
 	je	.L998
-
+#ifndef DOUBLE
 	movss	(X), %xmm4
 	cvtss2sd %xmm4, %xmm6
+#else
+	movsd   (X), %xmm6
+#endif
 	mulsd	 %xmm6, %xmm6
 	addsd	 %xmm6, %xmm3
 	ALIGN_4
@@ -301,13 +414,14 @@
 #else
 	haddpd	%xmm0, %xmm0
 #endif
+
 	ALIGN_4
 
 .L999:
 	sqrtsd	%xmm0,  %xmm0
-
+#ifndef DOUBLE
 	cvtsd2ss %xmm0, %xmm0
-
+#endif
 	RESTOREREGISTERS
 
 	ret

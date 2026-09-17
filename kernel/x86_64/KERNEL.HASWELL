@@ -106,3 +106,7 @@ DASUMKERNEL = dasum.c
 
 SROTKERNEL = srot.c
 DROTKERNEL = drot.c
+
+SNRM2KERNEL = nrm2_sse.S
+DNRM2KERNEL = nrm2_sse.S
+
