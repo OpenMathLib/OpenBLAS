@@ -15,7 +15,7 @@ void CNAME(blasint p, char *rout, char *form, ...)
    va_start(args, form);
 
    if (p)
-      fprintf(stderr, "Parameter %d to routine %s was incorrect\n", p, rout);
+      fprintf(stderr, "Parameter %lld to routine %s was incorrect\n", (long long)p, rout);
    vfprintf(stderr, form, args);
    va_end(args);
    exit(-1);
