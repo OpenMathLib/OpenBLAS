@@ -11,6 +11,7 @@
 #endif
 
 #include "common.h"
+#include "cblas_test_fmt.h"
 
 typedef blasint integer;
 
@@ -390,11 +391,8 @@ int /* Main program */ main(void)
     fgets(line,80,stdin);
     sscanf(line,"'%s'",snaps);
     fgets(line,80,stdin);
-#ifdef USE64BITINT
-    sscanf(line,"%ld",&ntra);
-#else
-    sscanf(line,"%d",&ntra);
-#endif
+    sscanf(line,BIFS,&ntra);
+
     trace = ntra >= 0;
     if (trace) {
 /*	o__1.oerr = 0;
@@ -431,25 +429,17 @@ int /* Main program */ main(void)
 
 /*     Values of N */
    fgets(line,80,stdin);
-#ifdef USE64BITINT
-   sscanf(line,"%ld",&nidim);
-#else
-   sscanf(line,"%d",&nidim);
-#endif
+   sscanf(line,BIFS,&nidim);
 
     if (nidim < 1 || nidim > 9) {
 	fprintf(stderr,"NUMBER OF VALUES OF N IS LESS THAN 1 OR GREATER THAN 9");
 	goto L220;
     }
    fgets(line,80,stdin);
-#ifdef USE64BITINT
-   sscanf(line,"%ld %ld %ld %ld %ld %ld %ld %ld %ld",&idim[0],&idim[1],&idim[2],
+   sscanf(line,BIFS BIFS BIFS BIFS BIFS BIFS BIFS BIFS BIFS,&idim[0],&idim[1],&idim[2],
     &idim[3],&idim[4],&idim[5],&idim[6],&idim[7],&idim[8]);
-#else
-   sscanf(line,"%d %d %d %d %d %d %d %d %d",&idim[0],&idim[1],&idim[2],
-    &idim[3],&idim[4],&idim[5],&idim[6],&idim[7],&idim[8]);
-#endif
-    i__1 = nidim;
+
+   i__1 = nidim;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	if (idim[i__ - 1] < 0 || idim[i__ - 1] > 65) {
 	fprintf(stderr,"VALUE OF N IS LESS THAN 0 OR GREATER THAN 65\n");
@@ -459,12 +449,9 @@ int /* Main program */ main(void)
     }
 /*     Values of ALPHA */
    fgets(line,80,stdin);
-#ifdef USE64BITINT
-   sscanf(line,"%ld",&nalf);
-#else
-   sscanf(line,"%d",&nalf);
-#endif
-    if (nalf < 1 || nalf > 7) {
+   sscanf(line,BIFS,&nalf);
+
+   if (nalf < 1 || nalf > 7) {
 	fprintf(stderr,"VALUE OF ALPHA IS LESS THAN 0 OR GREATER THAN 7\n");
 	goto L220;
     }
@@ -478,12 +465,9 @@ int /* Main program */ main(void)
 //    }
 /*     Values of BETA */
    fgets(line,80,stdin);
-#ifdef USE64BITINT
-   sscanf(line,"%ld",&nbet);
-#else
-   sscanf(line,"%d",&nbet);
-#endif
-    if (nalf < 1 || nbet > 7) {
+   sscanf(line,BIFS,&nbet);
+
+   if (nalf < 1 || nbet > 7) {
 	fprintf(stderr,"VALUE OF BETA IS LESS THAN 0 OR GREATER THAN 7\n");
 	goto L220;
     }
