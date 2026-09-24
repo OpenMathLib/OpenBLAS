@@ -1,6 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
-/* Copyright 2023, 2025 The OpenBLAS Project.                        */
+/* Copyright 2023, 2025-2026 The OpenBLAS Project.                   */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -246,7 +246,7 @@ gotoblas_t TABLE_NAME = {
 #endif
 #endif
 
-  sgemm_kernelTS, sgemm_betaTS,
+  sgemm_kernelTS, sgemm_betaTS, ssymm_kernelTS, strmm_gemm_kernelTS,
 #if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
   sgemm_incopyTS, sgemm_itcopyTS,
 #else
@@ -284,6 +284,8 @@ gotoblas_t TABLE_NAME = {
   strmm_ounucopyTS, strmm_ounncopyTS, strmm_outucopyTS, strmm_outncopyTS,
   strmm_olnucopyTS, strmm_olnncopyTS, strmm_oltucopyTS, strmm_oltncopyTS,
 #endif
+  ssymm_incopyTS,   ssymm_itcopyTS,
+  strmm_incopyTS,  strmm_itcopyTS,
   strmm_ounucopyTS, strmm_ounncopyTS, strmm_outucopyTS, strmm_outncopyTS,
   strmm_olnucopyTS, strmm_olnncopyTS, strmm_oltucopyTS, strmm_oltncopyTS,
 #if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
@@ -345,7 +347,7 @@ gotoblas_t TABLE_NAME = {
   NULL,
 #endif
 #endif
-  dgemm_kernelTS, dgemm_betaTS,
+  dgemm_kernelTS, dgemm_betaTS, dsymm_kernelTS, dtrmm_gemm_kernelTS,
 #if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
   dgemm_incopyTS, dgemm_itcopyTS,
 #else
@@ -380,6 +382,8 @@ gotoblas_t TABLE_NAME = {
   dtrmm_ounucopyTS, dtrmm_ounncopyTS, dtrmm_outucopyTS, dtrmm_outncopyTS,
   dtrmm_olnucopyTS, dtrmm_olnncopyTS, dtrmm_oltucopyTS, dtrmm_oltncopyTS,
 #endif
+  dsymm_incopyTS,   dsymm_itcopyTS,
+  dtrmm_incopyTS,  dtrmm_itcopyTS,
   dtrmm_ounucopyTS, dtrmm_ounncopyTS, dtrmm_outucopyTS, dtrmm_outncopyTS,
   dtrmm_olnucopyTS, dtrmm_olnncopyTS, dtrmm_oltucopyTS, dtrmm_oltncopyTS,
 #if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
@@ -498,6 +502,8 @@ gotoblas_t TABLE_NAME = {
 #endif
   cgemm_kernel_nTS, cgemm_kernel_lTS, cgemm_kernel_rTS, cgemm_kernel_bTS,
   cgemm_betaTS,
+  csymm_kernel_nTS, csymm_kernel_lTS, csymm_kernel_rTS, csymm_kernel_bTS,
+  ctrmm_gemm_kernel_nTS, ctrmm_gemm_kernel_lTS, ctrmm_gemm_kernel_rTS, ctrmm_gemm_kernel_bTS,
 #if CGEMM_DEFAULT_UNROLL_M != CGEMM_DEFAULT_UNROLL_N
   cgemm_incopyTS, cgemm_itcopyTS,
 #else
@@ -543,6 +549,8 @@ gotoblas_t TABLE_NAME = {
   ctrmm_ounucopyTS,  ctrmm_ounncopyTS,  ctrmm_outucopyTS,  ctrmm_outncopyTS,
   ctrmm_olnucopyTS,  ctrmm_olnncopyTS,  ctrmm_oltucopyTS,  ctrmm_oltncopyTS,
 #endif
+  csymm_incopyTS,    csymm_itcopyTS,
+  ctrmm_incopyTS,   ctrmm_itcopyTS,
   ctrmm_ounucopyTS,  ctrmm_ounncopyTS,  ctrmm_outucopyTS,  ctrmm_outncopyTS,
   ctrmm_olnucopyTS,  ctrmm_olnncopyTS,  ctrmm_oltucopyTS,  ctrmm_oltncopyTS,
 
@@ -660,6 +668,8 @@ gotoblas_t TABLE_NAME = {
 #endif
   zgemm_kernel_nTS, zgemm_kernel_lTS, zgemm_kernel_rTS, zgemm_kernel_bTS,
   zgemm_betaTS,
+  zsymm_kernel_nTS, zsymm_kernel_lTS, zsymm_kernel_rTS, zsymm_kernel_bTS,
+  ztrmm_gemm_kernel_nTS, ztrmm_gemm_kernel_lTS, ztrmm_gemm_kernel_rTS, ztrmm_gemm_kernel_bTS,
 
 #if ZGEMM_DEFAULT_UNROLL_M != ZGEMM_DEFAULT_UNROLL_N
   zgemm_incopyTS, zgemm_itcopyTS,
@@ -703,6 +713,8 @@ gotoblas_t TABLE_NAME = {
   ztrmm_ounucopyTS,  ztrmm_ounncopyTS,  ztrmm_outucopyTS,  ztrmm_outncopyTS,
   ztrmm_olnucopyTS,  ztrmm_olnncopyTS,  ztrmm_oltucopyTS,  ztrmm_oltncopyTS,
 #endif
+  zsymm_incopyTS,     zsymm_itcopyTS,
+  ztrmm_incopyTS,   ztrmm_itcopyTS,
   ztrmm_ounucopyTS,  ztrmm_ounncopyTS,  ztrmm_outucopyTS,  ztrmm_outncopyTS,
   ztrmm_olnucopyTS,  ztrmm_olnncopyTS,  ztrmm_oltucopyTS,  ztrmm_oltncopyTS,
 
