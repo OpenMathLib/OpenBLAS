@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2025, The OpenBLAS Project
+# Copyright (c) 2025-2026, The OpenBLAS Project
 # All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -151,7 +151,8 @@ DGEMM_BETA     = dgemm_beta.S
 SGEMM_BETA     = sgemm_beta.S
 
 SGEMMKERNEL    =  sgemm_kernel_inter_sve_v2x$(SGEMM_UNROLL_N).S
-SCOMMKERNEL    =  sgemm_kernel_sve_v2x$(SGEMM_UNROLL_N).S
+SSYMMKERNEL    =  sgemm_kernel_sve_v2x$(SGEMM_UNROLL_N).S
+STRMMGEMMKERNEL =  sgemm_kernel_sve_v2x$(SGEMM_UNROLL_N).S
 STRMMKERNEL    =  strmm_kernel_sve_v1x$(SGEMM_UNROLL_N).S
 
 SGEMMINCOPY    =  gemm_ncopy_sve_v2x$(SGEMM_UNROLL_N).c
@@ -178,14 +179,17 @@ STRMMUNCOPY_M  =  trmm_uncopy_sve_v1.c
 STRMMLNCOPY_M  =  trmm_lncopy_sve_v1.c
 STRMMUTCOPY_M  =  trmm_utcopy_sve_v1.c
 STRMMLTCOPY_M  =  trmm_ltcopy_sve_v1.c
-SCOMMNCOPY    =  gemm_ncopy_sve_v1x$(SGEMM_UNROLL_N).c
-SCOMMTCOPY    =  gemm_tcopy_sve_v1x$(SGEMM_UNROLL_N).c
+SSYMMINCOPY    =  gemm_ncopy_sve_v1x$(SGEMM_UNROLL_N).c
+SSYMMITCOPY    =  gemm_tcopy_sve_v1x$(SGEMM_UNROLL_N).c
+STRMMINCOPY    =  gemm_ncopy_sve_v1x$(SGEMM_UNROLL_N).c
+STRMMITCOPY    =  gemm_tcopy_sve_v1x$(SGEMM_UNROLL_N).c
 
 SSYMMUCOPY_M    =  symm_ucopy_sve.c
 SSYMMLCOPY_M    =  symm_lcopy_sve.c
 
 DGEMMKERNEL    =  dgemm_kernel_inter_sve_v2x$(DGEMM_UNROLL_N).S
-DCOMMKERNEL    =  dgemm_kernel_sve_v2x$(DGEMM_UNROLL_N).S
+DSYMMKERNEL    =  dgemm_kernel_sve_v2x$(DGEMM_UNROLL_N).S
+DTRMMGEMMKERNEL =  dgemm_kernel_sve_v2x$(DGEMM_UNROLL_N).S
 DTRMMKERNEL    =  dtrmm_kernel_sve_v1x$(DGEMM_UNROLL_N).S
 
 DGEMMINCOPY    =  gemm_ncopy_sve_v2x$(DGEMM_UNROLL_N).c
@@ -212,14 +216,17 @@ DTRMMUNCOPY_M  =  trmm_uncopy_sve_v1.c
 DTRMMLNCOPY_M  =  trmm_lncopy_sve_v1.c
 DTRMMUTCOPY_M  =  trmm_utcopy_sve_v1.c
 DTRMMLTCOPY_M  =  trmm_ltcopy_sve_v1.c
-DCOMMNCOPY    =  gemm_ncopy_sve_v1x$(DGEMM_UNROLL_N).c
-DCOMMTCOPY    =  gemm_tcopy_sve_v1x$(DGEMM_UNROLL_N).c
+DSYMMINCOPY    =  gemm_ncopy_sve_v1x$(DGEMM_UNROLL_N).c
+DSYMMITCOPY    =  gemm_tcopy_sve_v1x$(DGEMM_UNROLL_N).c
+DTRMMINCOPY    =  gemm_ncopy_sve_v1x$(DGEMM_UNROLL_N).c
+DTRMMITCOPY    =  gemm_tcopy_sve_v1x$(DGEMM_UNROLL_N).c
 
 DSYMMUCOPY_M    =  symm_ucopy_sve.c
 DSYMMLCOPY_M    =  symm_lcopy_sve.c
 
 CGEMMKERNEL    =  cgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
-CCOMMKERNEL    =  cgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
+CSYMMKERNEL    =  cgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
+CTRMMGEMMKERNEL =  cgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
 CTRMMKERNEL    =  ctrmm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
 
 CGEMMINCOPY    =  gemm_ncopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
@@ -236,8 +243,10 @@ CTRMMUNCOPY_M  =  ztrmm_uncopy_sve_v1.c
 CTRMMLNCOPY_M  =  ztrmm_lncopy_sve_v1.c
 CTRMMUTCOPY_M  =  ztrmm_utcopy_sve_v1.c
 CTRMMLTCOPY_M  =  ztrmm_ltcopy_sve_v1.c
-CCOMMNCOPY    =  gemm_ncopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
-CCOMMTCOPY    =  gemm_tcopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
+CSYMMINCOPY    =  gemm_ncopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
+CSYMMITCOPY    =  gemm_tcopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
+CTRMMINCOPY    =  gemm_ncopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
+CTRMMITCOPY    =  gemm_tcopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
 
 CHEMMLTCOPY_M    =  zhemm_ltcopy_sve.c
 CHEMMUTCOPY_M    =  zhemm_utcopy_sve.c
@@ -246,7 +255,8 @@ CSYMMUCOPY_M    =  zsymm_ucopy_sve.c
 CSYMMLCOPY_M    =  zsymm_lcopy_sve.c
 
 ZGEMMKERNEL    =  zgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
-ZCOMMKERNEL    =  zgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
+ZSYMMKERNEL    =  zgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
+ZTRMMGEMMKERNEL =  zgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
 ZTRMMKERNEL    =  ztrmm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
 
 ZGEMMINCOPY    =  gemm_ncopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
@@ -263,8 +273,10 @@ ZTRMMUNCOPY_M  =  ztrmm_uncopy_sve_v1.c
 ZTRMMLNCOPY_M  =  ztrmm_lncopy_sve_v1.c
 ZTRMMUTCOPY_M  =  ztrmm_utcopy_sve_v1.c
 ZTRMMLTCOPY_M  =  ztrmm_ltcopy_sve_v1.c
-ZCOMMNCOPY    =  gemm_ncopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
-ZCOMMTCOPY    =  gemm_tcopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
+ZSYMMINCOPY    =  gemm_ncopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
+ZSYMMITCOPY    =  gemm_tcopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
+ZTRMMINCOPY    =  gemm_ncopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
+ZTRMMITCOPY    =  gemm_tcopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
 
 ZHEMMLTCOPY_M    =  zhemm_ltcopy_sve.c
 ZHEMMUTCOPY_M    =  zhemm_utcopy_sve.c

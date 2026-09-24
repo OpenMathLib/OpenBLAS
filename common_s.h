@@ -1,6 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
-/* Copyright 2025 The OpenBLAS Project.                              */
+/* Copyright 2025-2026 The OpenBLAS Project.                         */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -116,8 +116,10 @@
 #endif
 
 #define SME_SGEMM_KERNEL	sme_sgemm_kernel
-#define	SCOMM_NCOPY		    scomm_ncopy
-#define	SCOMM_TCOPY	    	scomm_tcopy
+#define	SSYMM_INCOPY		    ssymm_incopy
+#define	SSYMM_ITCOPY	    	ssymm_itcopy
+#define	STRMM_INCOPY		strmm_incopy
+#define	STRMM_ITCOPY		strmm_itcopy
 
 #define	STRMM_OUNUCOPY		strmm_ounucopy
 #define	STRMM_OUNNCOPY		strmm_ounncopy
@@ -178,7 +180,8 @@
 #define	SGEMM_BETA		sgemm_beta
 
 #define	SGEMM_KERNEL		sgemm_kernel
-#define	SCOMM_KERNEL		scomm_kernel
+#define	SSYMM_KERNEL		ssymm_kernel
+#define	STRMM_GEMM_KERNEL	strmm_gemm_kernel
 
 #define	STRMM_KERNEL_LN		strmm_kernel_LN
 #define	STRMM_KERNEL_LT		strmm_kernel_LT
@@ -331,8 +334,10 @@
 #define	STRMM_IUTNCOPY		gotoblas -> strmm_iutncopy
 #define	STRMM_ILNNCOPY		gotoblas -> strmm_ilnncopy
 #define	STRMM_ILTNCOPY		gotoblas -> strmm_iltncopy
-#define	SCOMM_NCOPY		    gotoblas -> scomm_ncopy
-#define	SCOMM_TCOPY	     	gotoblas -> scomm_tcopy
+#define	SSYMM_INCOPY		    gotoblas -> ssymm_incopy
+#define	SSYMM_ITCOPY	     	gotoblas -> ssymm_itcopy
+#define	STRMM_INCOPY		gotoblas -> strmm_incopy
+#define	STRMM_ITCOPY		gotoblas -> strmm_itcopy
 
 #define	STRSM_IUNNCOPY		gotoblas -> strsm_iunncopy
 #define	STRSM_IUTNCOPY		gotoblas -> strsm_iutncopy
@@ -341,7 +346,8 @@
 
 #define	SGEMM_BETA		    gotoblas -> sgemm_beta
 #define	SGEMM_KERNEL		gotoblas -> sgemm_kernel
-#define	SCOMM_KERNEL		gotoblas -> scomm_kernel
+#define	SSYMM_KERNEL		gotoblas -> ssymm_kernel
+#define	STRMM_GEMM_KERNEL	gotoblas -> strmm_gemm_kernel
 
 #define	STRMM_KERNEL_LN		gotoblas -> strmm_kernel_LN
 #define	STRMM_KERNEL_LT		gotoblas -> strmm_kernel_LT

@@ -1,6 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
-/* Copyright 2025 The OpenBLAS Project.                              */
+/* Copyright 2025-2026 The OpenBLAS Project.                         */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -94,8 +94,10 @@
 #define	DGEMM_ITCOPY		dgemm_itcopy
 #endif
 
-#define	DCOMM_NCOPY	    	dcomm_ncopy
-#define	DCOMM_TCOPY	    	dcomm_tcopy
+#define	DSYMM_INCOPY	    	dsymm_incopy
+#define	DSYMM_ITCOPY	    	dsymm_itcopy
+#define	DTRMM_INCOPY		dtrmm_incopy
+#define	DTRMM_ITCOPY		dtrmm_itcopy
 
 #define	DTRMM_OUNUCOPY		dtrmm_ounucopy
 #define	DTRMM_OUNNCOPY		dtrmm_ounncopy
@@ -157,7 +159,8 @@
 
 #define	DGEMM_KERNEL		dgemm_kernel
 #define SME_DGEMM_KERNEL	sme_dgemm_kernel
-#define	DCOMM_KERNEL		dcomm_kernel
+#define	DSYMM_KERNEL		dsymm_kernel
+#define	DTRMM_GEMM_KERNEL	dtrmm_gemm_kernel
 
 #define	DTRMM_KERNEL_LN		dtrmm_kernel_LN
 #define	DTRMM_KERNEL_LT		dtrmm_kernel_LT
@@ -283,8 +286,10 @@
 #define	DTRMM_IUTNCOPY		gotoblas -> dtrmm_iutncopy
 #define	DTRMM_ILNNCOPY		gotoblas -> dtrmm_ilnncopy
 #define	DTRMM_ILTNCOPY		gotoblas -> dtrmm_iltncopy
-#define	DCOMM_NCOPY		    gotoblas -> dcomm_ncopy
-#define	DCOMM_TCOPY		    gotoblas -> dcomm_tcopy
+#define	DSYMM_INCOPY		    gotoblas -> dsymm_incopy
+#define	DSYMM_ITCOPY		    gotoblas -> dsymm_itcopy
+#define	DTRMM_INCOPY		gotoblas -> dtrmm_incopy
+#define	DTRMM_ITCOPY		gotoblas -> dtrmm_itcopy
 
 #define	DTRSM_IUNNCOPY		gotoblas -> dtrsm_iunncopy
 #define	DTRSM_IUTNCOPY		gotoblas -> dtrsm_iutncopy
@@ -294,7 +299,8 @@
 #define	DGEMM_BETA	    	gotoblas -> dgemm_beta
 #define	DGEMM_KERNEL		gotoblas -> dgemm_kernel
 #define	SME_DGEMM_KERNEL	gotoblas -> sme_dgemm_kernel
-#define	DCOMM_KERNEL		gotoblas -> dcomm_kernel
+#define	DSYMM_KERNEL		gotoblas -> dsymm_kernel
+#define	DTRMM_GEMM_KERNEL	gotoblas -> dtrmm_gemm_kernel
 
 #define	DTRMM_KERNEL_LN		gotoblas -> dtrmm_kernel_LN
 #define	DTRMM_KERNEL_LT		gotoblas -> dtrmm_kernel_LT

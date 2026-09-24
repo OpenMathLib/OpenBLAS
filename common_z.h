@@ -1,6 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
-/* Copyright 2025 The OpenBLAS Project.                              */
+/* Copyright 2025-2026 The OpenBLAS Project.                         */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -101,8 +101,10 @@
 #define	ZGEMM_ITCOPY		zgemm_itcopy
 #endif
 
-#define	ZCOMM_NCOPY	    	zcomm_ncopy
-#define	ZCOMM_TCOPY	    	zcomm_tcopy
+#define	ZSYMM_INCOPY	    	zsymm_incopy
+#define	ZSYMM_ITCOPY	    	zsymm_itcopy
+#define	ZTRMM_INCOPY		ztrmm_incopy
+#define	ZTRMM_ITCOPY		ztrmm_itcopy
 
 #define	ZTRMM_OUNUCOPY		ztrmm_ounucopy
 #define	ZTRMM_OUNNCOPY		ztrmm_ounncopy
@@ -168,10 +170,14 @@
 #define	ZGEMM_KERNEL_R		zgemm_kernel_r
 #define	ZGEMM_KERNEL_B		zgemm_kernel_b
 
-#define	ZCOMM_KERNEL_N		zcomm_kernel_n
-#define	ZCOMM_KERNEL_L		zcomm_kernel_l
-#define	ZCOMM_KERNEL_R		zcomm_kernel_r
-#define	ZCOMM_KERNEL_B		zcomm_kernel_b
+#define	ZSYMM_KERNEL_N		zsymm_kernel_n
+#define	ZSYMM_KERNEL_L		zsymm_kernel_l
+#define	ZSYMM_KERNEL_R		zsymm_kernel_r
+#define	ZSYMM_KERNEL_B		zsymm_kernel_b
+#define	ZTRMM_GEMM_KERNEL_N	ztrmm_gemm_kernel_n
+#define	ZTRMM_GEMM_KERNEL_L	ztrmm_gemm_kernel_l
+#define	ZTRMM_GEMM_KERNEL_R	ztrmm_gemm_kernel_r
+#define	ZTRMM_GEMM_KERNEL_B	ztrmm_gemm_kernel_b
 
 #define	ZTRMM_KERNEL_LN		ztrmm_kernel_LN
 #define	ZTRMM_KERNEL_LT		ztrmm_kernel_LT
@@ -368,8 +374,10 @@
 #define	ZTRMM_IUTNCOPY		gotoblas -> ztrmm_iutncopy
 #define	ZTRMM_ILNNCOPY		gotoblas -> ztrmm_ilnncopy
 #define	ZTRMM_ILTNCOPY		gotoblas -> ztrmm_iltncopy
-#define	ZCOMM_NCOPY	    	gotoblas -> zcomm_ncopy
-#define	ZCOMM_TCOPY		    gotoblas -> zcomm_tcopy
+#define	ZSYMM_INCOPY	    	gotoblas -> zsymm_incopy
+#define	ZSYMM_ITCOPY		    gotoblas -> zsymm_itcopy
+#define	ZTRMM_INCOPY		gotoblas -> ztrmm_incopy
+#define	ZTRMM_ITCOPY		gotoblas -> ztrmm_itcopy
 
 #define	ZTRSM_IUNNCOPY		gotoblas -> ztrsm_iunncopy
 #define	ZTRSM_IUTNCOPY		gotoblas -> ztrsm_iutncopy
@@ -383,10 +391,14 @@
 #define	ZGEMM_KERNEL_R		gotoblas -> zgemm_kernel_r
 #define	ZGEMM_KERNEL_B		gotoblas -> zgemm_kernel_b
 
-#define	ZCOMM_KERNEL_N		gotoblas -> zcomm_kernel_n
-#define	ZCOMM_KERNEL_L		gotoblas -> zcomm_kernel_l
-#define	ZCOMM_KERNEL_R		gotoblas -> zcomm_kernel_r
-#define	ZCOMM_KERNEL_B		gotoblas -> zcomm_kernel_b
+#define	ZSYMM_KERNEL_N		gotoblas -> zsymm_kernel_n
+#define	ZSYMM_KERNEL_L		gotoblas -> zsymm_kernel_l
+#define	ZSYMM_KERNEL_R		gotoblas -> zsymm_kernel_r
+#define	ZSYMM_KERNEL_B		gotoblas -> zsymm_kernel_b
+#define	ZTRMM_GEMM_KERNEL_N	gotoblas -> ztrmm_gemm_kernel_n
+#define	ZTRMM_GEMM_KERNEL_L	gotoblas -> ztrmm_gemm_kernel_l
+#define	ZTRMM_GEMM_KERNEL_R	gotoblas -> ztrmm_gemm_kernel_r
+#define	ZTRMM_GEMM_KERNEL_B	gotoblas -> ztrmm_gemm_kernel_b
 
 #define	ZTRMM_KERNEL_LN		gotoblas -> ztrmm_kernel_LN
 #define	ZTRMM_KERNEL_LT		gotoblas -> ztrmm_kernel_LT

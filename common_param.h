@@ -1,6 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
-/* Copyright 2023, 2025 The OpenBLAS Project.                        */
+/* Copyright 2023, 2025-2026 The OpenBLAS Project.                   */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -282,7 +282,8 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   
   int    (*sgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG);
   int    (*sgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float  *, BLASLONG);
-  int    (*scomm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG);
+  int    (*ssymm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG);
+  int    (*strmm_gemm_kernel)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG);
 
   int    (*sgemm_incopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemm_itcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
@@ -340,8 +341,10 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*strmm_ilnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*strmm_iltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*strmm_iltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*scomm_ncopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-  int    (*scomm_tcopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*ssymm_incopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*ssymm_itcopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*strmm_incopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*strmm_itcopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*strmm_ounucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*strmm_ounncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*strmm_outucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
@@ -409,7 +412,8 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
 #endif
   int    (*dgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG);
   int    (*dgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double  *, BLASLONG);
-  int    (*dcomm_kernel   )(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG);
+  int    (*dsymm_kernel   )(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG);
+  int    (*dtrmm_gemm_kernel)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG);
 
   int    (*dgemm_incopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*dgemm_itcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
@@ -467,8 +471,10 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*dtrmm_ilnncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*dtrmm_iltucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*dtrmm_iltncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dcomm_ncopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-  int    (*dcomm_tcopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*dsymm_incopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*dsymm_itcopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*dtrmm_incopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*dtrmm_itcopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*dtrmm_ounucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*dtrmm_ounncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*dtrmm_outucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
@@ -634,10 +640,15 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*cgemm_kernel_b )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
   int    (*cgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float  *, BLASLONG);
 
-  int    (*ccomm_kernel_n )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
-  int    (*ccomm_kernel_l )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
-  int    (*ccomm_kernel_r )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
-  int    (*ccomm_kernel_b )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+  int    (*csymm_kernel_n )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+  int    (*csymm_kernel_l )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+  int    (*csymm_kernel_r )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+  int    (*csymm_kernel_b )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+
+  int    (*ctrmm_gemm_kernel_n)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+  int    (*ctrmm_gemm_kernel_l)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+  int    (*ctrmm_gemm_kernel_r)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+  int    (*ctrmm_gemm_kernel_b)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
 
   int    (*cgemm_incopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemm_itcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
@@ -731,8 +742,10 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*ctrmm_ilnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*ctrmm_iltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*ctrmm_iltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ccomm_ncopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-  int    (*ccomm_tcopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*csymm_incopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*csymm_itcopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*ctrmm_incopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*ctrmm_itcopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*ctrmm_ounucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*ctrmm_ounncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*ctrmm_outucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
@@ -855,10 +868,15 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*zgemm_kernel_b )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
   int    (*zgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double  *, BLASLONG);
 
-  int    (*zcomm_kernel_n )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
-  int    (*zcomm_kernel_l )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
-  int    (*zcomm_kernel_r )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
-  int    (*zcomm_kernel_b )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+  int    (*zsymm_kernel_n )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+  int    (*zsymm_kernel_l )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+  int    (*zsymm_kernel_r )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+  int    (*zsymm_kernel_b )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+
+  int    (*ztrmm_gemm_kernel_n)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+  int    (*ztrmm_gemm_kernel_l)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+  int    (*ztrmm_gemm_kernel_r)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+  int    (*ztrmm_gemm_kernel_b)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
 
   int    (*zgemm_incopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemm_itcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
@@ -952,8 +970,10 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*ztrmm_ilnncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*ztrmm_iltucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*ztrmm_iltncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*zcomm_ncopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-  int    (*zcomm_tcopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*zsymm_incopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*zsymm_itcopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*ztrmm_incopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*ztrmm_itcopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*ztrmm_ounucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*ztrmm_ounncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*ztrmm_outucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
