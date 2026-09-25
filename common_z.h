@@ -514,6 +514,46 @@
 #define	ZSYRK_KERNEL_U		zsyrk_kernel_U
 #define	ZSYRK_KERNEL_L		zsyrk_kernel_L
 
+#define	ZGEMMT_UNN		zgemmt_UNN
+#define	ZGEMMT_UNT		zgemmt_UNT
+#define	ZGEMMT_UNR		zgemmt_UNR
+#define	ZGEMMT_UNC		zgemmt_UNC
+#define	ZGEMMT_UTN		zgemmt_UTN
+#define	ZGEMMT_UTT		zgemmt_UTT
+#define	ZGEMMT_UTR		zgemmt_UTR
+#define	ZGEMMT_UTC		zgemmt_UTC
+#define	ZGEMMT_URN		zgemmt_URN
+#define	ZGEMMT_URT		zgemmt_URT
+#define	ZGEMMT_URR		zgemmt_URR
+#define	ZGEMMT_URC		zgemmt_URC
+#define	ZGEMMT_UCN		zgemmt_UCN
+#define	ZGEMMT_UCT		zgemmt_UCT
+#define	ZGEMMT_UCR		zgemmt_UCR
+#define	ZGEMMT_UCC		zgemmt_UCC
+#define	ZGEMMT_LNN		zgemmt_LNN
+#define	ZGEMMT_LNT		zgemmt_LNT
+#define	ZGEMMT_LNR		zgemmt_LNR
+#define	ZGEMMT_LNC		zgemmt_LNC
+#define	ZGEMMT_LTN		zgemmt_LTN
+#define	ZGEMMT_LTT		zgemmt_LTT
+#define	ZGEMMT_LTR		zgemmt_LTR
+#define	ZGEMMT_LTC		zgemmt_LTC
+#define	ZGEMMT_LRN		zgemmt_LRN
+#define	ZGEMMT_LRT		zgemmt_LRT
+#define	ZGEMMT_LRR		zgemmt_LRR
+#define	ZGEMMT_LRC		zgemmt_LRC
+#define	ZGEMMT_LCN		zgemmt_LCN
+#define	ZGEMMT_LCT		zgemmt_LCT
+#define	ZGEMMT_LCR		zgemmt_LCR
+#define	ZGEMMT_LCC		zgemmt_LCC
+
+#define	ZGEMMT_KERNEL_UCN	zgemmt_kernel_UCN
+#define	ZGEMMT_KERNEL_UNC	zgemmt_kernel_UNC
+#define	ZGEMMT_KERNEL_UCC	zgemmt_kernel_UCC
+#define	ZGEMMT_KERNEL_LCN	zgemmt_kernel_LCN
+#define	ZGEMMT_KERNEL_LNC	zgemmt_kernel_LNC
+#define	ZGEMMT_KERNEL_LCC	zgemmt_kernel_LCC
+
 #define	ZHERK_UN		zherk_UN
 #define	ZHERK_LN		zherk_LN
 #define	ZHERK_UC		zherk_UC

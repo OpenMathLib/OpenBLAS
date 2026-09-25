@@ -299,6 +299,15 @@
 #define	QSYRK_KERNEL_U		qsyrk_kernel_U
 #define	QSYRK_KERNEL_L		qsyrk_kernel_L
 
+#define	QGEMMT_UNN		qgemmt_UNN
+#define	QGEMMT_UNT		qgemmt_UNT
+#define	QGEMMT_UTN		qgemmt_UTN
+#define	QGEMMT_UTT		qgemmt_UTT
+#define	QGEMMT_LNN		qgemmt_LNN
+#define	QGEMMT_LNT		qgemmt_LNT
+#define	QGEMMT_LTN		qgemmt_LTN
+#define	QGEMMT_LTT		qgemmt_LTT
+
 #define	QHERK_UN		qsyrk_UN
 #define	QHERK_LN		qsyrk_LN
 #define	QHERK_UC		qsyrk_UT

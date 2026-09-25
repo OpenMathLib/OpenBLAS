@@ -423,6 +423,46 @@
 #define	XSYRK_KERNEL_U		xsyrk_kernel_U
 #define	XSYRK_KERNEL_L		xsyrk_kernel_L
 
+#define	XGEMMT_UNN		xgemmt_UNN
+#define	XGEMMT_UNT		xgemmt_UNT
+#define	XGEMMT_UNR		xgemmt_UNR
+#define	XGEMMT_UNC		xgemmt_UNC
+#define	XGEMMT_UTN		xgemmt_UTN
+#define	XGEMMT_UTT		xgemmt_UTT
+#define	XGEMMT_UTR		xgemmt_UTR
+#define	XGEMMT_UTC		xgemmt_UTC
+#define	XGEMMT_URN		xgemmt_URN
+#define	XGEMMT_URT		xgemmt_URT
+#define	XGEMMT_URR		xgemmt_URR
+#define	XGEMMT_URC		xgemmt_URC
+#define	XGEMMT_UCN		xgemmt_UCN
+#define	XGEMMT_UCT		xgemmt_UCT
+#define	XGEMMT_UCR		xgemmt_UCR
+#define	XGEMMT_UCC		xgemmt_UCC
+#define	XGEMMT_LNN		xgemmt_LNN
+#define	XGEMMT_LNT		xgemmt_LNT
+#define	XGEMMT_LNR		xgemmt_LNR
+#define	XGEMMT_LNC		xgemmt_LNC
+#define	XGEMMT_LTN		xgemmt_LTN
+#define	XGEMMT_LTT		xgemmt_LTT
+#define	XGEMMT_LTR		xgemmt_LTR
+#define	XGEMMT_LTC		xgemmt_LTC
+#define	XGEMMT_LRN		xgemmt_LRN
+#define	XGEMMT_LRT		xgemmt_LRT
+#define	XGEMMT_LRR		xgemmt_LRR
+#define	XGEMMT_LRC		xgemmt_LRC
+#define	XGEMMT_LCN		xgemmt_LCN
+#define	XGEMMT_LCT		xgemmt_LCT
+#define	XGEMMT_LCR		xgemmt_LCR
+#define	XGEMMT_LCC		xgemmt_LCC
+
+#define	XGEMMT_KERNEL_UCN	xgemmt_kernel_UCN
+#define	XGEMMT_KERNEL_UNC	xgemmt_kernel_UNC
+#define	XGEMMT_KERNEL_UCC	xgemmt_kernel_UCC
+#define	XGEMMT_KERNEL_LCN	xgemmt_kernel_LCN
+#define	XGEMMT_KERNEL_LNC	xgemmt_kernel_LNC
+#define	XGEMMT_KERNEL_LCC	xgemmt_kernel_LCC
+
 #define	XHERK_UN		xherk_UN
 #define	XHERK_LN		xherk_LN
 #define	XHERK_UC		xherk_UC
