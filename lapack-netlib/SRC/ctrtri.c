@@ -663,7 +663,7 @@ f"> */
     extern /* Subroutine */ void ctrti2_(char *, char *, integer *, complex *, 
 	    integer *, integer *);
     integer jb, nb, nn;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     logical nounit;

@@ -661,7 +661,7 @@ f"> */
 	    integer *);
     logical upper;
     integer jb, nb;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     extern /* Subroutine */ void cpotrf2_(char *, integer *, complex *, 
