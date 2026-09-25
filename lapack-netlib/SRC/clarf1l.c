@@ -41,17 +41,12 @@ typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
 #ifdef _MSC_VER
 static inline _Fcomplex Cf(complex *z) {_Fcomplex zz={z->r , z->i}; return zz;}
-static inline _Dcomplex Cd(doublecomplex *z) {_Dcomplex zz={z->r , z->i};return zz;}
 static inline _Fcomplex * _pCf(complex *z) {return (_Fcomplex*)z;}
-static inline _Dcomplex * _pCd(doublecomplex *z) {return (_Dcomplex*)z;}
 #else
 static inline _Complex float Cf(complex *z) {return z->r + z->i*_Complex_I;}
-static inline _Complex double Cd(doublecomplex *z) {return z->r + z->i*_Complex_I;}
 static inline _Complex float * _pCf(complex *z) {return (_Complex float*)z;}
-static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*)z;}
 #endif
 #define pCf(z) (*_pCf(z))
-#define pCd(z) (*_pCd(z))
 typedef int logical;
 typedef short int shortlogical;
 typedef char logical1;
@@ -383,7 +378,7 @@ static integer c__1 = 1;
 /* > \ingroup larf1f */
 
 /*  ===================================================================== */
-/* Subroutine */ int clarf1l_(char *side, integer *m, integer *n, complex *v, 
+/* Subroutine */ void clarf1l_(char *side, integer *m, integer *n, complex *v, 
 	integer *incv, complex *tau, complex *c__, integer *ldc, complex *
 	work)
 {
@@ -394,14 +389,14 @@ static integer c__1 = 1;
     /* Local variables */
     integer i__, j;
     logical applyleft;
-    extern /* Subroutine */ int cgerc_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgerc_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *),
 	     cscal_(integer *, complex *, complex *, integer *), cgemv_(char *
 	    , integer *, integer *, complex *, complex *, integer *, complex *
 	    , integer *, complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
     integer lastc;
-    extern /* Subroutine */ int caxpy_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     integer lastv;
     extern integer ilaclc_(integer *, integer *, complex *, integer *), 
@@ -454,7 +449,7 @@ static integer c__1 = 1;
 	}
     }
     if (lastc == 0) {
-	return 0;
+	return;
     }
     if (applyleft) {
 
@@ -543,7 +538,7 @@ static integer c__1 = 1;
 		    firstv * c_dim1 + 1], ldc);
 	}
     }
-    return 0;
+    return;
 
 /*     End of CLARF1L */
 
