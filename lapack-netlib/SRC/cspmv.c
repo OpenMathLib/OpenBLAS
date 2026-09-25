@@ -692,7 +692,7 @@ rix */
     integer i__, j, k;
     extern logical lsame_(char *, char *);
     integer kk, ix, iy, jx, jy, kx, ky;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK auxiliary routine (version 3.7.0) -- */
