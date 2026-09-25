@@ -1745,7 +1745,7 @@ cgemmt_URR.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DRR $< -o $(@F)
 
 cgemmt_URC.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DRC $< -o $(@F)
+	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DRC=RC $< -o $(@F)
 
 cgemmt_UCN.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DCN $< -o $(@F)
@@ -1754,7 +1754,7 @@ cgemmt_UCT.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DCT $< -o $(@F)
 
 cgemmt_UCR.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DCR $< -o $(@F)
+	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DCR=CR $< -o $(@F)
 
 cgemmt_UCC.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DCC $< -o $(@F)
@@ -1793,7 +1793,7 @@ cgemmt_LRR.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DRR $< -o $(@F)
 
 cgemmt_LRC.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DRC $< -o $(@F)
+	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DRC=RC $< -o $(@F)
 
 cgemmt_LCN.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DCN $< -o $(@F)
@@ -1802,7 +1802,7 @@ cgemmt_LCT.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DCT $< -o $(@F)
 
 cgemmt_LCR.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DCR $< -o $(@F)
+	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DCR=CR $< -o $(@F)
 
 cgemmt_LCC.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DCC $< -o $(@F)
@@ -1859,7 +1859,7 @@ zgemmt_URR.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DRR $< -o $(@F)
 
 zgemmt_URC.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DRC $< -o $(@F)
+	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DRC=RC $< -o $(@F)
 
 zgemmt_UCN.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DCN $< -o $(@F)
@@ -1868,7 +1868,7 @@ zgemmt_UCT.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DCT $< -o $(@F)
 
 zgemmt_UCR.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DCR $< -o $(@F)
+	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DCR=CR $< -o $(@F)
 
 zgemmt_UCC.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DCC $< -o $(@F)
@@ -1907,7 +1907,7 @@ zgemmt_LRR.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DRR $< -o $(@F)
 
 zgemmt_LRC.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DRC $< -o $(@F)
+	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DRC=RC $< -o $(@F)
 
 zgemmt_LCN.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DCN $< -o $(@F)
@@ -1916,7 +1916,7 @@ zgemmt_LCT.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DCT $< -o $(@F)
 
 zgemmt_LCR.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DCR $< -o $(@F)
+	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DCR=CR $< -o $(@F)
 
 zgemmt_LCC.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DCC $< -o $(@F)
@@ -1973,7 +1973,7 @@ xgemmt_URR.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DRR $< -o $(@F)
 
 xgemmt_URC.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DRC $< -o $(@F)
+	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DRC=RC $< -o $(@F)
 
 xgemmt_UCN.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DCN $< -o $(@F)
@@ -1982,7 +1982,7 @@ xgemmt_UCT.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DCT $< -o $(@F)
 
 xgemmt_UCR.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DCR $< -o $(@F)
+	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DCR=CR $< -o $(@F)
 
 xgemmt_UCC.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DCC $< -o $(@F)
@@ -2021,7 +2021,7 @@ xgemmt_LRR.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DRR $< -o $(@F)
 
 xgemmt_LRC.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DRC $< -o $(@F)
+	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DRC=RC $< -o $(@F)
 
 xgemmt_LCN.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DCN $< -o $(@F)
@@ -2030,7 +2030,7 @@ xgemmt_LCT.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DCT $< -o $(@F)
 
 xgemmt_LCR.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DCR $< -o $(@F)
+	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DCR=CR $< -o $(@F)
 
 xgemmt_LCC.$(SUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(CFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DCC $< -o $(@F)
@@ -4595,7 +4595,7 @@ cgemmt_URR.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DRR $< -o $(@F)
 
 cgemmt_URC.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DRC $< -o $(@F)
+	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DRC=RC $< -o $(@F)
 
 cgemmt_UCN.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DCN $< -o $(@F)
@@ -4604,7 +4604,7 @@ cgemmt_UCT.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DCT $< -o $(@F)
 
 cgemmt_UCR.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DCR $< -o $(@F)
+	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DCR=CR $< -o $(@F)
 
 cgemmt_UCC.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -ULOWER -DCC $< -o $(@F)
@@ -4643,7 +4643,7 @@ cgemmt_LRR.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DRR $< -o $(@F)
 
 cgemmt_LRC.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DRC $< -o $(@F)
+	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DRC=RC $< -o $(@F)
 
 cgemmt_LCN.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DCN $< -o $(@F)
@@ -4652,7 +4652,7 @@ cgemmt_LCT.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DCT $< -o $(@F)
 
 cgemmt_LCR.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DCR $< -o $(@F)
+	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DCR=CR $< -o $(@F)
 
 cgemmt_LCC.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -UDOUBLE -DCOMPLEX -DLOWER -DCC $< -o $(@F)
@@ -4709,7 +4709,7 @@ zgemmt_URR.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DRR $< -o $(@F)
 
 zgemmt_URC.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DRC $< -o $(@F)
+	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DRC=RC $< -o $(@F)
 
 zgemmt_UCN.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DCN $< -o $(@F)
@@ -4718,7 +4718,7 @@ zgemmt_UCT.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DCT $< -o $(@F)
 
 zgemmt_UCR.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DCR $< -o $(@F)
+	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DCR=CR $< -o $(@F)
 
 zgemmt_UCC.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -ULOWER -DCC $< -o $(@F)
@@ -4757,7 +4757,7 @@ zgemmt_LRR.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DRR $< -o $(@F)
 
 zgemmt_LRC.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DRC $< -o $(@F)
+	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DRC=RC $< -o $(@F)
 
 zgemmt_LCN.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DCN $< -o $(@F)
@@ -4766,7 +4766,7 @@ zgemmt_LCT.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DCT $< -o $(@F)
 
 zgemmt_LCR.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DCR $< -o $(@F)
+	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DCR=CR $< -o $(@F)
 
 zgemmt_LCC.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DDOUBLE -DCOMPLEX -DLOWER -DCC $< -o $(@F)
@@ -4823,7 +4823,7 @@ xgemmt_URR.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DRR $< -o $(@F)
 
 xgemmt_URC.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DRC $< -o $(@F)
+	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DRC=RC $< -o $(@F)
 
 xgemmt_UCN.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DCN $< -o $(@F)
@@ -4832,7 +4832,7 @@ xgemmt_UCT.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DCT $< -o $(@F)
 
 xgemmt_UCR.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DCR $< -o $(@F)
+	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DCR=CR $< -o $(@F)
 
 xgemmt_UCC.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -ULOWER -DCC $< -o $(@F)
@@ -4871,7 +4871,7 @@ xgemmt_LRR.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DRR $< -o $(@F)
 
 xgemmt_LRC.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DRC $< -o $(@F)
+	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DRC=RC $< -o $(@F)
 
 xgemmt_LCN.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DCN $< -o $(@F)
@@ -4880,7 +4880,7 @@ xgemmt_LCT.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DCT $< -o $(@F)
 
 xgemmt_LCR.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
-	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DCR $< -o $(@F)
+	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DCR=CR $< -o $(@F)
 
 xgemmt_LCC.$(PSUFFIX) : gemmt_k.c level3_gemmt.c ../../param.h
 	$(CC) -c $(PFLAGS) $(BLOCKS) -DXDOUBLE -DCOMPLEX -DLOWER -DCC $< -o $(@F)
