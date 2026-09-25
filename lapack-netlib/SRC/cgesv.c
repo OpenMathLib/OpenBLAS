@@ -649,7 +649,7 @@ iver) </b> */
 /* > \ingroup complexGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgesv_(integer *n, integer *nrhs, complex *a, integer *
+/* Subroutine */ void cgesv_(integer *n, integer *nrhs, complex *a, integer *
 	lda, integer *ipiv, complex *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -658,7 +658,7 @@ iver) </b> */
     /* Local variables */
     extern /* Subroutine */ void cgetrf_(integer *, integer *, complex *, 
 	    integer *, integer *, integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     extern void cgetrs_(char *, integer *, integer *, complex *, integer 
 	    *, integer *, complex *, integer *, integer *);
 
@@ -697,7 +697,7 @@ iver) </b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGESV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Compute the LU factorization of A. */
@@ -710,7 +710,7 @@ iver) </b> */
 	cgetrs_("No transpose", n, nrhs, &a[a_offset], lda, &ipiv[1], &b[
 		b_offset], ldb, info);
     }
-    return 0;
+    return;
 
 /*     End of CGESV */
 

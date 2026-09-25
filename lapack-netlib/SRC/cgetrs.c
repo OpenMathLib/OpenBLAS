@@ -665,7 +665,7 @@ f"> */
     extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     extern void claswp_(integer *, complex *, integer *, 
 	    integer *, integer *, integer *, integer *);
     logical notran;
