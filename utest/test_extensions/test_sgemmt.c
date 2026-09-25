@@ -33,6 +33,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "utest/openblas_utest.h"
 #include "common.h"
+#include <stdlib.h>
+#include <math.h>
 
 #define DATASIZE 100
 
@@ -1463,5 +1465,59 @@ CTEST(sgemmt, xerbla_c_api_rowmajor_ldc_invalid)
                             M, K, lda, ldb, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
+
+/**
+ * Test a size that is not a multiple of the register blocking and large
+ * enough to be split over several threads: the last block column of C then
+ * starts at an unaligned offset and its diagonal block has to be cut down
+ * by the kernel.  Verified against GEMM, which may only differ by rounding,
+ * and the untouched triangle must be bit-identical.
+ */
+CTEST(sgemmt, upper_M_257_K_64_a_notrans_b_notrans)
+{
+    blasint M = 257, K = 64, i, j, e;
+    blasint lda = M, ldb = K, ldc = M;
+    blasint size_c = 1 * M * ldc;
+    char transa = 'N', transb = 'N', uplo = 'U';
+    float alpha = 1.5, beta = 2.0;
+    float *a = (float *) malloc(1 * M * K * sizeof(float));
+    float *b = (float *) malloc(1 * K * M * sizeof(float));
+    float *c = (float *) malloc(size_c * sizeof(float));
+    float *c_gemm = (float *) malloc(size_c * sizeof(float));
+    float *c_orig = (float *) malloc(size_c * sizeof(float));
+    double sumsq = 0.0, norm;
+    int untouched_ok = 1;
+
+    ASSERT_TRUE(a != NULL && b != NULL && c != NULL && c_gemm != NULL && c_orig != NULL);
+
+    srand_generate(a, 1 * M * K);
+    srand_generate(b, 1 * K * M);
+    srand_generate(c, size_c);
+    for (i = 0; i < size_c; i++)
+        c_gemm[i] = c_orig[i] = c[i];
+
+    BLASFUNC(sgemmt)(&uplo, &transa, &transb, &M, &K, &alpha, a, &lda, b, &ldb,
+                         &beta, c, &ldc);
+    BLASFUNC(sgemm)(&transa, &transb, &M, &M, &K, &alpha, a, &lda, b, &ldb,
+                        &beta, c_gemm, &ldc);
+
+    for (j = 0; j < M; j++)              /* column */
+        for (i = 0; i < M; i++)          /* row    */
+            for (e = 0; e < 1; e++) {
+                blasint idx = 1 * (i + j * ldc) + e;
+                if (i <= j) {
+                    double d = (double)(c[idx] - c_gemm[idx]);
+                    sumsq += d * d;
+                } else if (c[idx] != c_orig[idx]) {
+                    untouched_ok = 0;
+                }
+            }
+
+    norm = sqrt(sumsq) / size_c;
+    free(a); free(b); free(c); free(c_gemm); free(c_orig);
+    ASSERT_EQUAL(1, untouched_ok);
+    ASSERT_DBL_NEAR_TOL(0.0, norm, SINGLE_EPS);
+}
+
 #endif
 #endif
