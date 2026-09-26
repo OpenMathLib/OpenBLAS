@@ -320,8 +320,6 @@ integer iparam2stage_(integer *ispec, char *name__, char *opts, integer *ni,
 	}
 #endif
 
-//fprintf(stderr,"iparam2stage, subnam gross #%s#\n",subnam);
-
 //	*(unsigned char *)prec = *(unsigned char *)subnam;
 	strncpy(prec,subnam,1);
 	strncpy(algo, subnam+3,3);
@@ -347,7 +345,6 @@ integer iparam2stage_(integer *ispec, char *name__, char *opts, integer *ni,
 
 
     if (*ispec == 17 || *ispec == 18) {
-//fprintf(stderr,"iparam2stage spec 17/18");
 /*     ISPEC = 17, 18:  block size KD, IB */
 /*     Could be also dependent from N but for now it */
 /*     depend only on sequential or parallel */
@@ -385,7 +382,6 @@ integer iparam2stage_(integer *ispec, char *name__, char *opts, integer *ni,
 	}
 
     } else if (*ispec == 19) {
-//fprintf(stderr,"iparam2stage spec 19\n");
 /*     ISPEC = 19: */
 /*     LHOUS length of the Houselholder representation */
 /*     matrix (V,T) of the second stage. should be >= 1. */
@@ -409,7 +405,6 @@ integer iparam2stage_(integer *ispec, char *name__, char *opts, integer *ni,
 	}
 
     } else if (*ispec == 20) {
-//fprintf(stderr,"iparam2stage spec 20\n");
 /*     ISPEC = 20: (21 for future use) */
 /*     LWORK length of the workspace for */
 /*     either or both stages for TRD and BRD. should be >= 1. */
@@ -424,11 +419,8 @@ integer iparam2stage_(integer *ispec, char *name__, char *opts, integer *ni,
 /*                    + f2cmax(2*KD*KD, KD*NTHREADS) */
 /*                    + (KD+1)*N */
 	lwork = -1;
-	char *subnam=malloc(7*sizeof(char));
-			strncpy(subnam,prec,1);
-			sprintf(subnam+1,"GEQRF");
-//	*(unsigned char *)subnam = *(unsigned char *)prec;
-//	s_copy(subnam + 1, "GEQRF", (ftnlen)5, (ftnlen)5);
+	strncpy(subnam,prec,1);
+	sprintf(subnam+1,"GEQRF");
 	qroptnb = ilaenv_(&c__1, subnam, " ", ni, nbi, &c_n1, &c_n1, (ftnlen)
 		12, (ftnlen)1);
 	sprintf(subnam+1,"GELQF");
