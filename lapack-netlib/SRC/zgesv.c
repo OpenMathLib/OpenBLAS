@@ -649,7 +649,7 @@ iver) </b> */
 /* > \ingroup complex16GEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgesv_(integer *n, integer *nrhs, doublecomplex *a, 
+/* Subroutine */ void zgesv_(integer *n, integer *nrhs, doublecomplex *a, 
 	integer *lda, integer *ipiv, doublecomplex *b, integer *ldb, integer *
 	info)
 {
@@ -657,7 +657,7 @@ iver) </b> */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern void zgetrf_(
 	    integer *, integer *, doublecomplex *, integer *, integer *, 
 	    integer *), zgetrs_(char *, integer *, integer *, doublecomplex *,
@@ -698,7 +698,7 @@ iver) </b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGESV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Compute the LU factorization of A. */
@@ -711,7 +711,7 @@ iver) </b> */
 	zgetrs_("No transpose", n, nrhs, &a[a_offset], lda, &ipiv[1], &b[
 		b_offset], ldb, info);
     }
-    return 0;
+    return;
 
 /*     End of ZGESV */
 
