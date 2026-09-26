@@ -1,12 +1,3 @@
-/* f2c.h  --  Standard Fortran to C header file */
-
-/**  barf  [ba:rf]  2.  "He suggested using FORTRAN, and everybody barfed."
-
-	- From The Shogakukan DICTIONARY OF NEW ENGLISH (Second edition) */
-
-#ifndef F2C_INCLUDE
-#define F2C_INCLUDE
-
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -399,4 +390,3 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	}
 	pCd(z) = zdotc;
 }
-#endif
