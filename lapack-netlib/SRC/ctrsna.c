@@ -41,6 +41,8 @@ typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
 #ifdef _MSC_VER
 static inline _Fcomplex Cf(complex *z) {_Fcomplex zz={z->r , z->i}; return zz;}
+static inline _Fcomplex * _pCf(complex *z) {return (_Fcomplex*)z;}
+#define pCf(z) (*_pCf(z))
 #else
 static inline _Complex float Cf(complex *z) {return z->r + z->i*_Complex_I;}
 #endif
