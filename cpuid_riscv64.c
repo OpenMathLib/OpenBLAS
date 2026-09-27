@@ -70,19 +70,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#define CPU_GENERIC         0
-#define CPU_C910V           1
-#define CPU_x280            2
-#define CPU_RISCV64_ZVL256B 3
-#define CPU_RISCV64_ZVL128B 4
-#define CPU_U74             5
+#define CPU_GENERIC          0
+#define CPU_C910V            1
+#define CPU_x280             2
+#define CPU_RISCV64_ZVL1024B 3
+#define CPU_RISCV64_ZVL256B  4
+#define CPU_RISCV64_ZVL128B  5
+#define CPU_U74              6
 
 static char *cpuname[] = {
   "RISCV64_GENERIC",
   "C910V",
   "x280",
-  "CPU_RISCV64_ZVL256B",
-  "CPU_RISCV64_ZVL128B",
+  "RISCV64_ZVL1024B",
+  "RISCV64_ZVL256B",
+  "RISCV64_ZVL128B",
   "U74"
 };
 
@@ -90,6 +92,7 @@ static char *cpuname_lower[] = {
   "riscv64_generic",
   "c910v",
   "x280",
+  "riscv64_zvl1024b",
   "riscv64_zvl256b",
   "riscv64_zvl128b",
   "u74"

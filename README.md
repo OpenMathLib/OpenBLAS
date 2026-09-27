@@ -223,10 +223,18 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 
 (For RVV 1.0 target selection and compiler requirements, see the [RISC-V section in docs/install.md](docs/install.md#risc-v).)
 
-- **ZVL???B**: Level-3 BLAS and Level-1,2 including vectorised kernels targeting generic RISCV cores with vector support with registers of at least the corresponding width; ZVL128B and ZVL256B are available.
+- **ZVL???B**: Level-3 BLAS and Level-1,2 including vectorised kernels targeting generic RISCV cores with vector support with registers of at least the corresponding width; ZVL128B, ZVL256B, and ZVL1024B are available.
 e.g.:
   ```sh
     make TARGET=RISCV64_ZVL256B CFLAGS="-DTARGET=RISCV64_ZVL256B" \
+    BINARY=64 ARCH=riscv64 CC='clang -target riscv64-unknown-linux-gnu' \
+    AR=riscv64-unknown-linux-gnu-ar AS=riscv64-unknown-linux-gnu-gcc \
+    LD=riscv64-unknown-linux-gnu-gcc FC=riscv64-unknown-linux-gnu-gfortran \
+    HOSTCC=gcc HOSTFC=gfortran -j
+  ```
+
+  ```sh
+    make TARGET=RISCV64_ZVL1024B CFLAGS="-DTARGET=RISCV64_ZVL1024B" \
     BINARY=64 ARCH=riscv64 CC='clang -target riscv64-unknown-linux-gnu' \
     AR=riscv64-unknown-linux-gnu-ar AS=riscv64-unknown-linux-gnu-gcc \
     LD=riscv64-unknown-linux-gnu-gcc FC=riscv64-unknown-linux-gnu-gfortran \
