@@ -40,17 +40,12 @@ typedef double doublereal;
 typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
 #ifdef _MSC_VER
-static inline _Fcomplex Cf(complex *z) {_Fcomplex zz={z->r , z->i}; return zz;}
 static inline _Dcomplex Cd(doublecomplex *z) {_Dcomplex zz={z->r , z->i};return zz;}
-static inline _Fcomplex * _pCf(complex *z) {return (_Fcomplex*)z;}
 static inline _Dcomplex * _pCd(doublecomplex *z) {return (_Dcomplex*)z;}
 #else
-static inline _Complex float Cf(complex *z) {return z->r + z->i*_Complex_I;}
 static inline _Complex double Cd(doublecomplex *z) {return z->r + z->i*_Complex_I;}
-static inline _Complex float * _pCf(complex *z) {return (_Complex float*)z;}
 static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*)z;}
 #endif
-#define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
 typedef int logical;
 typedef short int shortlogical;
@@ -244,15 +239,6 @@ typedef struct Namelist Namelist;
 #define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
 #define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
 
-/* procedure parameter types for -A and -C++ */
-
-#define F2C_proc_par_types 1
-#ifdef __cplusplus
-typedef logical (*L_fp)(...);
-#else
-typedef logical (*L_fp)();
-#endif
-
 /* Table of constant values */
 
 static doublecomplex c_b1 = {1.,0.};
@@ -413,7 +399,7 @@ static integer c__1 = 1;
 /* > \ingroup larf */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlarf1f_(char *side, integer *m, integer *n, 
+/* Subroutine */ void zlarf1f_(char *side, integer *m, integer *n, 
 	doublecomplex *v, integer *incv, doublecomplex *tau, doublecomplex *
 	c__, integer *ldc, doublecomplex *work)
 {
@@ -426,14 +412,14 @@ static integer c__1 = 1;
     logical applyleft;
     extern logical lsame_(char *, char *);
     integer lastc;
-    extern /* Subroutine */ int zgerc_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgerc_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     integer lastv;
-    extern /* Subroutine */ int zaxpy_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zaxpy_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     extern integer ilazlc_(integer *, integer *, doublecomplex *, integer *), 
 	    ilazlr_(integer *, integer *, doublecomplex *, integer *);
@@ -490,7 +476,7 @@ static integer c__1 = 1;
 	}
     }
     if (lastc == 0) {
-	return 0;
+	return;
     }
     if (applyleft) {
 
@@ -582,7 +568,7 @@ static integer c__1 = 1;
 		     &c__[(c_dim1 << 1) + 1], ldc);
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZLARF1F */
 
