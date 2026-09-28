@@ -540,7 +540,7 @@ f"> */
     logical upper;
     extern /* Subroutine */ void clacgv_(integer *, complex *, integer *), 
 	    csscal_(integer *, real *, complex *, integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     real aii;
 
 

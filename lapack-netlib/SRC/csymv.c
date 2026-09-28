@@ -698,7 +698,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     integer i__, j;
     extern logical lsame_(char *, char *);
     integer ix, iy, jx, jy, kx, ky;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK auxiliary routine (version 3.7.0) -- */
