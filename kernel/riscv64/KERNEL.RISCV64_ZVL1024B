@@ -106,7 +106,7 @@ endif
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 ifneq ($(SGEMM_UNROLL_M), $(SGEMM_UNROLL_N))
-ifneq ($(filter $(SGEMM_UNROLL_M),4 8 16),)
+ifneq ($(filter $(SGEMM_UNROLL_M),4 8 16 32 64),)
 SGEMMINCOPY    =  gemm_ncopy_$(SGEMM_UNROLL_M)_rvv.c
 SGEMMITCOPY    =  gemm_tcopy_$(SGEMM_UNROLL_M)_rvv.c
 else
@@ -127,11 +127,18 @@ endif
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 ifneq ($(DGEMM_UNROLL_M), $(DGEMM_UNROLL_N))
-DGEMMINCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_M).c
 ifneq ($(filter $(DGEMM_UNROLL_M),4 8 16),)
+DGEMMINCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_M).c
 DGEMMITCOPY    =  gemm_tcopy_$(DGEMM_UNROLL_M)_rvv.c
 else
+ifneq ($(filter $(DGEMM_UNROLL_M),32 64),)
+# Fixed-MR bitsliced packers (not VLMAX/contig) for 32x8 / 64x8 tiles
+DGEMMINCOPY    =  gemm_ncopy_$(DGEMM_UNROLL_M)_rvv.c
+DGEMMITCOPY    =  gemm_tcopy_$(DGEMM_UNROLL_M)_rvv.c
+else
+DGEMMINCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_M).c
 DGEMMITCOPY    =  ../generic/gemm_tcopy_$(DGEMM_UNROLL_M).c
+endif
 endif
 DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
 DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
@@ -291,3 +298,20 @@ endif
 
 SAXPBYKERNEL  = axpby_vector_v2.c
 DAXPBYKERNEL  = axpby_vector_v2.c
+
+# MR=32/64 bitsliced packers: power-of-two panels (…,16,8,4,2,1) matching
+# generate_kernel a_pack=bitsliced tails (not VLMAX-chunked rvv_v1).
+STRMMUNCOPY_M  =  trmm_uncopy_64_rvv.c
+STRMMLNCOPY_M  =  trmm_lncopy_64_rvv.c
+STRMMUTCOPY_M  =  trmm_utcopy_64_rvv.c
+STRMMLTCOPY_M  =  trmm_ltcopy_64_rvv.c
+SSYMMUCOPY_M   =  symm_ucopy_64_rvv.c
+SSYMMLCOPY_M   =  symm_lcopy_64_rvv.c
+
+DTRMMUNCOPY_M  =  trmm_uncopy_32_rvv.c
+DTRMMLNCOPY_M  =  trmm_lncopy_32_rvv.c
+DTRMMUTCOPY_M  =  trmm_utcopy_32_rvv.c
+DTRMMLTCOPY_M  =  trmm_ltcopy_32_rvv.c
+DSYMMUCOPY_M   =  symm_ucopy_32_rvv.c
+DSYMMLCOPY_M   =  symm_lcopy_32_rvv.c
+

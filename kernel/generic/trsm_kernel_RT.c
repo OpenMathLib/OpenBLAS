@@ -71,6 +71,14 @@ static FLOAT dm1 = -1.;
 #define GEMM_UNROLL_M_SHIFT 4
 #endif
 
+#if GEMM_DEFAULT_UNROLL_M == 32
+#define GEMM_UNROLL_M_SHIFT 5
+#endif
+
+#if GEMM_DEFAULT_UNROLL_M == 64
+#define GEMM_UNROLL_M_SHIFT 6
+#endif
+
 #if GEMM_DEFAULT_UNROLL_N == 1
 #define GEMM_UNROLL_N_SHIFT 0
 #endif
