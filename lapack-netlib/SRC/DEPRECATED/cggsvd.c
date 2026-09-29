@@ -637,7 +637,7 @@ f"> */
 	    complex *, integer *, real *, real *, real *, real *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     extern void cggsvp_(char *, char *, char *, integer *, 
 	    integer *, integer *, complex *, integer *, complex *, integer *, 
 	    real *, real *, integer *, integer *, complex *, integer *, 
@@ -701,16 +701,16 @@ f"> */
 	*info = -10;
     } else if (*ldb < f2cmax(1,*p)) {
 	*info = -12;
-    } else if (*ldu < 1 || wantu && *ldu < *m) {
+    } else if (*ldu < 1 || (wantu && *ldu < *m)) {
 	*info = -16;
-    } else if (*ldv < 1 || wantv && *ldv < *p) {
+    } else if (*ldv < 1 || (wantv && *ldv < *p)) {
 	*info = -18;
-    } else if (*ldq < 1 || wantq && *ldq < *n) {
+    } else if (*ldq < 1 || (wantq && *ldq < *n)) {
 	*info = -20;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CGGSVD", &i__1, 6);
+	xerbla_("CGGSVD", &i__1, (ftnlen)6);
 	return;
     }
 

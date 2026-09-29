@@ -79,9 +79,31 @@ static int inner_small_matrix_thread(blas_arg_t *args, BLASLONG *range_m, BLASLO
 int CNAME(blas_arg_t * args_array, BLASLONG nums){
   XFLOAT *buffer;
   XFLOAT *sa, *sb;
+  blasint info;
   int nthreads=1;
   int (*routine)(blas_arg_t *, void *, void *, XFLOAT *, XFLOAT *, BLASLONG);
   int i=0, /*j,*/ current_nums;
+
+#ifndef COMPLEX
+#ifdef XDOUBLE
+#define ERROR_NAME "QGEMM_BATCH "
+#elif defined(DOUBLE)
+#define ERROR_NAME "DGEMM_BATCH "
+#elif defined(BFLOAT16)
+#define ERROR_NAME "SBGEMM_BATCH "
+#else
+#define ERROR_NAME "SGEMM_BATCH "
+#endif
+#else
+#ifdef XDOUBLE
+#define ERROR_NAME "XGEMM_BATCH "
+#elif defined(DOUBLE)
+#define ERROR_NAME "ZGEMM_BATCH "
+#else
+#define ERROR_NAME "CGEMM_BATCH "
+#endif
+#endif
+
 
 #ifdef SMP
   blas_queue_t * queue=NULL;
@@ -90,6 +112,12 @@ int CNAME(blas_arg_t * args_array, BLASLONG nums){
   if(nums <=0 ) return 0;
 
   buffer = (XFLOAT *)blas_memory_alloc(0);
+  if (!buffer) {
+    info = -999;
+    BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
+    return(1); 
+  }
+
   sa = (XFLOAT *)((BLASLONG)buffer +GEMM_OFFSET_A);
   sb = (XFLOAT *)(((BLASLONG)sa + ((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
   
@@ -119,6 +147,9 @@ int CNAME(blas_arg_t * args_array, BLASLONG nums){
     queue=(blas_queue_t *)malloc((nums+1) * sizeof(blas_queue_t));
     if(queue == NULL){
       openblas_warning(0, "memory alloc failed!\n");
+      if (buffer) blas_memory_free(buffer);
+      info = -999;
+      BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
       return(1);
     }
     for(i=0; i<nums; i++){

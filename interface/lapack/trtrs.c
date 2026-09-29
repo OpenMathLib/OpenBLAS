@@ -61,7 +61,7 @@ static blasint (*trtrs_parallel[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *
 #endif
 
 OPENBLAS_EXPORT
-int NAME(char *UPLO, char* TRANS, char* DIAG, blasint *N, blasint *NRHS, FLOAT *a, blasint *ldA,
+void NAME(char *UPLO, char* TRANS, char* DIAG, blasint *N, blasint *NRHS, FLOAT *a, blasint *ldA,
   FLOAT *b, blasint *ldB, blasint *Info){
 
     char uplo_arg = *UPLO;
@@ -117,7 +117,7 @@ int NAME(char *UPLO, char* TRANS, char* DIAG, blasint *N, blasint *NRHS, FLOAT *
   if (info != 0) {
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME) - 1);
     *Info = - info;
-    return 0;
+    return;
   }
 
   args.alpha = NULL;
@@ -125,12 +125,12 @@ int NAME(char *UPLO, char* TRANS, char* DIAG, blasint *N, blasint *NRHS, FLOAT *
 
   *Info = 0;
 
-  if (args.m == 0) return 0;
+  if (args.m == 0) return;
 
   if (diag) {
     if (AMIN_K(args.m, args.a, args.lda + 1) == ZERO) {
       *Info = IAMIN_K(args.m, args.a, args.lda + 1);
-      return 0;
+      return;
     }
   }
 
@@ -173,6 +173,6 @@ int NAME(char *UPLO, char* TRANS, char* DIAG, blasint *N, blasint *NRHS, FLOAT *
 
   IDEBUG_END;
 
-  return 0;
+  return;
 
 }

@@ -49,6 +49,8 @@ Derived:
     #define S3  1
     #define VFMACC_RR __riscv_vfmsac
     #define VFMACC_RI __riscv_vfmacc
+    #define FOLD_OPA __riscv_vfmacc
+    #define FOLD_OPB __riscv_vfmacc
 #endif
 #if   defined(NR) || defined(NC) || defined(TR) || defined(TC)
     #define S0  1
@@ -57,6 +59,8 @@ Derived:
     #define S3 -1
     #define VFMACC_RR __riscv_vfmacc
     #define VFMACC_RI __riscv_vfmsac
+    #define FOLD_OPA __riscv_vfmacc
+    #define FOLD_OPB __riscv_vfnmsac
 #endif
 #if   defined(RN) || defined(RT) || defined(CN) || defined(CT)
     #define S0  1
@@ -65,6 +69,8 @@ Derived:
     #define S3  1
     #define VFMACC_RR __riscv_vfmacc
     #define VFMACC_RI __riscv_vfnmsac
+    #define FOLD_OPA __riscv_vfnmsac
+    #define FOLD_OPB __riscv_vfmacc
 #endif
 #if   defined(RR) || defined(RC) || defined(CR) || defined(CC)
     #define S0  1
@@ -73,6 +79,8 @@ Derived:
     #define S3 -1
     #define VFMACC_RR __riscv_vfmsac
     #define VFMACC_RI __riscv_vfnmacc
+    #define FOLD_OPA __riscv_vfnmsac
+    #define FOLD_OPB __riscv_vfnmsac
 #endif
 
 
@@ -212,54 +220,38 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alphar, FLOAT alphai, FLOAT*
                 A0i = __riscv_vlse32_v_f32m1( &A[ai+0*gvl*2+1], sizeof(FLOAT)*2, gvl );
                 ai += 8*2;
 
-                tmp0r = __riscv_vfmul_vf_f32m1( A0i, B0i, gvl);
-                tmp0i = __riscv_vfmul_vf_f32m1( A0r, B0i, gvl);
-                tmp1r = __riscv_vfmul_vf_f32m1( A0i, B1i, gvl);
-                tmp1i = __riscv_vfmul_vf_f32m1( A0r, B1i, gvl);
-                tmp2r = __riscv_vfmul_vf_f32m1( A0i, B2i, gvl);
-                tmp2i = __riscv_vfmul_vf_f32m1( A0r, B2i, gvl);
-                tmp3r = __riscv_vfmul_vf_f32m1( A0i, B3i, gvl);
-                tmp3i = __riscv_vfmul_vf_f32m1( A0r, B3i, gvl);
-                tmp0r = VFMACC_RR( tmp0r, B0r, A0r, gvl);
-                tmp0i = VFMACC_RI( tmp0i, B0r, A0i, gvl);
-                tmp1r = VFMACC_RR( tmp1r, B1r, A0r, gvl);
-                tmp1i = VFMACC_RI( tmp1i, B1r, A0i, gvl);
-                tmp2r = VFMACC_RR( tmp2r, B2r, A0r, gvl);
-                tmp2i = VFMACC_RI( tmp2i, B2r, A0i, gvl);
-                tmp3r = VFMACC_RR( tmp3r, B3r, A0r, gvl);
-                tmp3i = VFMACC_RI( tmp3i, B3r, A0i, gvl);
-                ACC0r = __riscv_vfadd( ACC0r, tmp0r, gvl);
-                ACC0i = __riscv_vfadd( ACC0i, tmp0i, gvl);
-                ACC1r = __riscv_vfadd( ACC1r, tmp1r, gvl);
-                ACC1i = __riscv_vfadd( ACC1i, tmp1i, gvl);
-                ACC2r = __riscv_vfadd( ACC2r, tmp2r, gvl);
-                ACC2i = __riscv_vfadd( ACC2i, tmp2i, gvl);
-                ACC3r = __riscv_vfadd( ACC3r, tmp3r, gvl);
-                ACC3i = __riscv_vfadd( ACC3i, tmp3i, gvl);
-                tmp0r = __riscv_vfmul_vf_f32m1( A0i, B4i, gvl);
-                tmp0i = __riscv_vfmul_vf_f32m1( A0r, B4i, gvl);
-                tmp1r = __riscv_vfmul_vf_f32m1( A0i, B5i, gvl);
-                tmp1i = __riscv_vfmul_vf_f32m1( A0r, B5i, gvl);
-                tmp2r = __riscv_vfmul_vf_f32m1( A0i, B6i, gvl);
-                tmp2i = __riscv_vfmul_vf_f32m1( A0r, B6i, gvl);
-                tmp3r = __riscv_vfmul_vf_f32m1( A0i, B7i, gvl);
-                tmp3i = __riscv_vfmul_vf_f32m1( A0r, B7i, gvl);
-                tmp0r = VFMACC_RR( tmp0r, B4r, A0r, gvl);
-                tmp0i = VFMACC_RI( tmp0i, B4r, A0i, gvl);
-                tmp1r = VFMACC_RR( tmp1r, B5r, A0r, gvl);
-                tmp1i = VFMACC_RI( tmp1i, B5r, A0i, gvl);
-                tmp2r = VFMACC_RR( tmp2r, B6r, A0r, gvl);
-                tmp2i = VFMACC_RI( tmp2i, B6r, A0i, gvl);
-                tmp3r = VFMACC_RR( tmp3r, B7r, A0r, gvl);
-                tmp3i = VFMACC_RI( tmp3i, B7r, A0i, gvl);
-                ACC4r = __riscv_vfadd( ACC4r, tmp0r, gvl);
-                ACC4i = __riscv_vfadd( ACC4i, tmp0i, gvl);
-                ACC5r = __riscv_vfadd( ACC5r, tmp1r, gvl);
-                ACC5i = __riscv_vfadd( ACC5i, tmp1i, gvl);
-                ACC6r = __riscv_vfadd( ACC6r, tmp2r, gvl);
-                ACC6i = __riscv_vfadd( ACC6i, tmp2i, gvl);
-                ACC7r = __riscv_vfadd( ACC7r, tmp3r, gvl);
-                ACC7i = __riscv_vfadd( ACC7i, tmp3i, gvl);
+                ACC0r = VFMACC_RR( ACC0r, B0i, A0i, gvl);
+                ACC0r = VFMACC_RR( ACC0r, B0r, A0r, gvl);
+                ACC0i = FOLD_OPA( ACC0i, B0r, A0i, gvl);
+                ACC0i = FOLD_OPB( ACC0i, B0i, A0r, gvl);
+                ACC1r = VFMACC_RR( ACC1r, B1i, A0i, gvl);
+                ACC1r = VFMACC_RR( ACC1r, B1r, A0r, gvl);
+                ACC1i = FOLD_OPA( ACC1i, B1r, A0i, gvl);
+                ACC1i = FOLD_OPB( ACC1i, B1i, A0r, gvl);
+                ACC2r = VFMACC_RR( ACC2r, B2i, A0i, gvl);
+                ACC2r = VFMACC_RR( ACC2r, B2r, A0r, gvl);
+                ACC2i = FOLD_OPA( ACC2i, B2r, A0i, gvl);
+                ACC2i = FOLD_OPB( ACC2i, B2i, A0r, gvl);
+                ACC3r = VFMACC_RR( ACC3r, B3i, A0i, gvl);
+                ACC3r = VFMACC_RR( ACC3r, B3r, A0r, gvl);
+                ACC3i = FOLD_OPA( ACC3i, B3r, A0i, gvl);
+                ACC3i = FOLD_OPB( ACC3i, B3i, A0r, gvl);
+                ACC4r = VFMACC_RR( ACC4r, B4i, A0i, gvl);
+                ACC4r = VFMACC_RR( ACC4r, B4r, A0r, gvl);
+                ACC4i = FOLD_OPA( ACC4i, B4r, A0i, gvl);
+                ACC4i = FOLD_OPB( ACC4i, B4i, A0r, gvl);
+                ACC5r = VFMACC_RR( ACC5r, B5i, A0i, gvl);
+                ACC5r = VFMACC_RR( ACC5r, B5r, A0r, gvl);
+                ACC5i = FOLD_OPA( ACC5i, B5r, A0i, gvl);
+                ACC5i = FOLD_OPB( ACC5i, B5i, A0r, gvl);
+                ACC6r = VFMACC_RR( ACC6r, B6i, A0i, gvl);
+                ACC6r = VFMACC_RR( ACC6r, B6r, A0r, gvl);
+                ACC6i = FOLD_OPA( ACC6i, B6r, A0i, gvl);
+                ACC6i = FOLD_OPB( ACC6i, B6i, A0r, gvl);
+                ACC7r = VFMACC_RR( ACC7r, B7i, A0i, gvl);
+                ACC7r = VFMACC_RR( ACC7r, B7r, A0r, gvl);
+                ACC7i = FOLD_OPA( ACC7i, B7r, A0i, gvl);
+                ACC7i = FOLD_OPB( ACC7i, B7i, A0r, gvl);
             }
 
 

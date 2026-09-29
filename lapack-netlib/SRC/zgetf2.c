@@ -657,7 +657,7 @@ f"> */
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     extern doublereal dlamch_(char *);
     integer jp;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern integer izamax_(integer *, doublecomplex *, integer *);
 
 

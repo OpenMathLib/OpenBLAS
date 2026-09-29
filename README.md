@@ -258,6 +258,9 @@ e.g.:
 
 - **WASM128_GENERIC**: Optimized SGEMM,DGEMM, DAXPY, SSUM/DSUM, SDOT/DDOT and SROT/DROT
 
+  Builds target [WASM SIMD128](https://github.com/WebAssembly/simd) (`-msimd128`) by default. Relaxed SIMD is **not** enabled globally: a module that contains those opcodes fails to instantiate on engines that do not implement the proposal (notably shipping Safari / JavaScriptCore). Engine support is listed at [webassembly.org/features](https://webassembly.org/features/). Pass `WASM_RELAXED_SIMD=1` (or `-DWASM_RELAXED_SIMD=ON` with CMake) to opt in. Details: [docs/install.md](docs/install.md#webassembly).
+
+
 
 ### Support for multiple targets in a single library
 

@@ -288,7 +288,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .align 5
 .L_N1:
     move      S1,    TS
+    andi      J,     N,   0x01
+    beq       ZERO,  J,   .L_N0
     beq       ZERO,  M,   .L_N0
+
 .L_N1_M1:
     fld.s       F0,    S1,  0x00
     PTR_ADDI    S1,    S1,  0x04

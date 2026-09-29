@@ -76,6 +76,9 @@ else
     	if [ -z "$data" ]; then
     		data=`$compiler -O2 -S ftest.f > /dev/null 2>&1 && cat ftest.c && rm -f ftest.c`
     	fi
+    	# Some compilers (e.g. Intel ifx) embed no vendor identity in the assembly;
+    	# append the --version banner so the vendor detection below can match them.
+    	ver=`$compiler --version 2>&1` && data=`printf '%s\n%s' "$data" "$ver"`
 
         case "$data" in *zhoge_*) bu=_ ;; esac
 

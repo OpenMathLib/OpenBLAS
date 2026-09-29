@@ -479,7 +479,7 @@ f"> */
     extern /* Subroutine */ void zunm2r_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     doublereal bignum;
@@ -544,7 +544,7 @@ f"> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZGELSX", &i__1, 6);
+	xerbla_("ZGELSX", &i__1, (ftnlen)6);
 	return;
     }
 

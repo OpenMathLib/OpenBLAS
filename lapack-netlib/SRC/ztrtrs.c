@@ -681,7 +681,7 @@ f"> */
     extern /* Subroutine */ void ztrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *); 
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     logical nounit;
 
 

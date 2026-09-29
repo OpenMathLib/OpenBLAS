@@ -19,8 +19,8 @@ void RELAPACK_chetrf(
     float *Work, const blasint *lWork, blasint *info
 ) {
 
-    // Required work size
-    const blasint cleanlWork = *n * (*n / 2);
+    // Required work size (CREC_SPLIT rounds up)
+    const blasint cleanlWork = *n * CREC_SPLIT(*n);
     blasint minlWork = cleanlWork;
 #if XSYTRF_ALLOW_MALLOC
     minlWork = 1;

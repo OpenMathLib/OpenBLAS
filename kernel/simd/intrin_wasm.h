@@ -21,11 +21,19 @@ typedef v128_t v_f64;
 #define v_mul_f32 wasm_f32x4_mul
 #define v_mul_f64 wasm_f64x2_mul
 
+#ifdef __wasm_relaxed_simd__
+BLAS_FINLINE v_f32 v_muladd_f32(v_f32 a, v_f32 b, v_f32 c)
+{ return wasm_f32x4_relaxed_madd(a, b, c); }
+
+BLAS_FINLINE v_f64 v_muladd_f64(v_f64 a, v_f64 b, v_f64 c)
+{ return wasm_f64x2_relaxed_madd(a, b, c); }
+#else
 BLAS_FINLINE v_f32 v_muladd_f32(v_f32 a, v_f32 b, v_f32 c)
 { return v_add_f32(v_mul_f32(a, b), c); }
 
 BLAS_FINLINE v_f64 v_muladd_f64(v_f64 a, v_f64 b, v_f64 c)
 { return v_add_f64(v_mul_f64(a, b), c); }
+#endif
 
 BLAS_FINLINE v_f32 v_mulsub_f32(v_f32 a, v_f32 b, v_f32 c)
 { return v_sub_f32(v_mul_f32(a, b), c); }

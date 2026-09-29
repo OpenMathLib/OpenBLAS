@@ -378,7 +378,7 @@ static doublecomplex c_b1 = {1.,0.};
 /* > \ingroup complex16_lin */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgeqrs_(integer *m, integer *n, integer *nrhs, 
+/* Subroutine */ void zgeqrs_(integer *m, integer *n, integer *nrhs, 
 	doublecomplex *a, integer *lda, doublecomplex *tau, doublecomplex *b, 
 	integer *ldb, doublecomplex *work, integer *lwork, integer *info)
 {
@@ -386,10 +386,10 @@ static doublecomplex c_b1 = {1.,0.};
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int ztrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *), 
-	    xerbla_(char *, integer *), zunmqr_(char *, char *, 
+	    xerbla_(char *, integer *, ftnlen), zunmqr_(char *, char *, 
 	    integer *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, integer *);
@@ -427,19 +427,19 @@ static doublecomplex c_b1 = {1.,0.};
 	*info = -5;
     } else if (*ldb < f2cmax(1,*m)) {
 	*info = -8;
-    } else if (*lwork < 1 || *lwork < *nrhs && *m > 0 && *n > 0) {
+    } else if (*lwork < 1 || (*lwork < *nrhs && *m > 0 && *n > 0)) {
 	*info = -10;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZGEQRS", &i__1);
-	return 0;
+	xerbla_("ZGEQRS", &i__1, (ftnlen)6);
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0 || *m == 0) {
-	return 0;
+	return;
     }
 
 /*     B := Q' * B */
@@ -452,7 +452,7 @@ static doublecomplex c_b1 = {1.,0.};
     ztrsm_("Left", "Upper", "No transpose", "Non-unit", n, nrhs, &c_b1, &a[
 	    a_offset], lda, &b[b_offset], ldb);
 
-    return 0;
+    return;
 
 /*     End of ZGEQRS */
 

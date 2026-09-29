@@ -518,6 +518,7 @@
      $                   VL, LDVL, VR, LDVR, LRE, LDLRE, RCONDV, RCNDV1,
      $                   RCDVIN, RCONDE, RCNDE1, RCDEIN, SCALE, SCALE1,
      $                   RESULT, WORK, NWORK, IWORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -568,8 +569,8 @@
       EXTERNAL           DLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DGET23, DLABAD, DLASET, DLASUM, DLATME, DLATMR,
-     $                   DLATMS, XERBLA
+      EXTERNAL           DGET23, DLASET, DLASUM, DLATME, DLATMR, DLATMS,
+     $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN, SQRT
@@ -644,7 +645,6 @@
 *
       UNFL = DLAMCH( 'Safe minimum' )
       OVFL = ONE / UNFL
-      CALL DLABAD( UNFL, OVFL )
       ULP = DLAMCH( 'Precision' )
       ULPINV = ONE / ULP
       RTULP = SQRT( ULP )
@@ -991,8 +991,7 @@
      $      / ' 2 = | transpose(A) VL - VL W | / ( n |A| ulp ) ',
      $      / ' 3 = | |VR(i)| - 1 | / ulp ',
      $      / ' 4 = | |VL(i)| - 1 | / ulp ',
-     $      / ' 5 = 0 if W same no matter if VR or VL computed,',
-     $      ' 1/ulp otherwise', /
+     $      / ' 5 = | W - W(other JOBVL/JOBVR) | / ( n |W| ulp ) ', /
      $      ' 6 = 0 if VR same no matter what else computed,',
      $      '  1/ulp otherwise', /
      $      ' 7 = 0 if VL same no matter what else computed,',

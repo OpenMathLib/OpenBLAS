@@ -37,6 +37,11 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
+#if defined(__loongarch__) && defined(LA464) && defined(DOUBLE)
+#undef GEMM_P
+#define GEMM_P 96
+#endif
+
 #ifndef CACHE_LINE_SIZE
 #define CACHE_LINE_SIZE 8
 #endif

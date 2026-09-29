@@ -656,7 +656,7 @@ f"> */
     logical upper;
     extern /* Subroutine */ void ztrmv_(char *, char *, char *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     logical nounit;
     doublecomplex ajj;
 

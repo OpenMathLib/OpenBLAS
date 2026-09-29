@@ -650,7 +650,7 @@
               TMP = ZERO
               DO i = 1, KQ
                   TMP = MAX( TMP, ABS(RES(i) - RES1(i)) * &
-                      SINGVQX(K)/(ANORM*SINGVQX(1)) )
+                      SINGVQX(KQ)/(ANORM*SINGVQX(1)) )
               END DO
               TMP_REZQ = MAX( TMP_REZQ, TMP )
               IF ( TMP > TOL2 ) THEN

@@ -657,7 +657,7 @@ f"> */
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer jb, nb;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     extern /* Subroutine */ void claswp_(integer *, complex *, integer *, 

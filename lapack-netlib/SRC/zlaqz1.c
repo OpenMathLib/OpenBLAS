@@ -1,12 +1,3 @@
-/* f2c.h  --  Standard Fortran to C header file */
-
-/**  barf  [ba:rf]  2.  "He suggested using FORTRAN, and everybody barfed."
-
-	- From The Shogakukan DICTIONARY OF NEW ENGLISH (Second edition) */
-
-#ifndef F2C_INCLUDE
-#define F2C_INCLUDE
-
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,14 +39,16 @@ typedef float real;
 typedef double doublereal;
 typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
-static inline _Complex float Cf(complex *z) {return z->r + z->i*_Complex_I;}
+#ifdef _MSC_VER
+static inline _Dcomplex Cd(doublecomplex *z) {_Dcomplex zz={z->r , z->i};return zz;}
+static inline _Dcomplex * _pCd(doublecomplex *z) {return (_Dcomplex*)z;}
+#else
 static inline _Complex double Cd(doublecomplex *z) {return z->r + z->i*_Complex_I;}
-static inline _Complex float * _pCf(complex *z) {return (_Complex float*)z;}
 static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*)z;}
-#define pCf(z) (*_pCf(z))
+#endif
 #define pCd(z) (*_pCd(z))
-typedef blasint logical;
-
+typedef int logical;
+typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
 
@@ -191,8 +184,13 @@ typedef struct Namelist Namelist;
 #define abort_() { sig_die("Fortran abort routine called", 1); }
 #define c_abs(z) (cabsf(Cf(z)))
 #define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
+#ifdef _MSC_VER
+#define c_div(c, a, b) {Cf(c)._Val[0] = (Cf(a)._Val[0]/Cf(b)._Val[0]); Cf(c)._Val[1]=(Cf(a)._Val[1]/Cf(b)._Val[1]);}
+#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/Cd(b)._Val[1]);}
+#else
 #define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
 #define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
+#endif
 #define c_exp(R, Z) {pCf(R) = cexpf(Cf(Z));}
 #define c_log(R, Z) {pCf(R) = clogf(Cf(Z));}
 #define c_sin(R, Z) {pCf(R) = csinf(Cf(Z));}
@@ -204,13 +202,13 @@ typedef struct Namelist Namelist;
 #define d_atan(x) (atan(*(x)))
 #define d_atn2(x, y) (atan2(*(x),*(y)))
 #define d_cnjg(R, Z) { pCd(R) = conj(Cd(Z)); }
-#define r_cnjg(R, Z) { pCf(R) = conj(Cf(Z)); }
+#define r_cnjg(R, Z) { pCf(R) = conjf(Cf(Z)); }
 #define d_cos(x) (cos(*(x)))
 #define d_cosh(x) (cosh(*(x)))
 #define d_dim(__a, __b) ( *(__a) > *(__b) ? *(__a) - *(__b) : 0.0 )
 #define d_exp(x) (exp(*(x)))
 #define d_imag(z) (cimag(Cd(z)))
-#define r_imag(z) (cimag(Cf(z)))
+#define r_imag(z) (cimagf(Cf(z)))
 #define d_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define r_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define d_lg10(x) ( 0.43429448190325182765 * log(*(x)) )
@@ -244,159 +242,146 @@ typedef struct Namelist Namelist;
 #define s_copy(A,B,C,D) { int __i,__m; for (__i=0, __m=f2cmin((C),(D)); __i<__m && (B)[__i] != 0; ++__i) (A)[__i] = (B)[__i]; }
 #define sig_die(s, kill) { exit(1); }
 #define s_stop(s, n) {exit(0);}
-static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
 #define z_abs(z) (cabs(Cd(z)))
 #define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
 #define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
 #define myexit_() break;
 #define mycycle_() continue;
-#define myceiling_(w) ceil(w)
-#define myhuge_(w) HUGE_VAL
+#define myceiling_(w) {ceil(w)}
+#define myhuge_(w) {HUGE_VAL}
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
 #define mymaxloc_(w,s,e,n) dmaxloc_(w,*(s),*(e),n)
 
-/* procedure parameter types for -A and -C++ */
+/*  -- translated by f2c (version 20200916).
+   You must link the resulting object file with libf2c:
+	on Microsoft Windows system, link with libf2c.lib;
+	on Linux or Unix systems, link with .../path/to/libf2c.a -lm
+	or, if you install libf2c.a in a standard place, with -lf2c -lm
+	-- in that order, at the end of the command line, as in
+		cc *.o -lf2c -lm
+	Source for libf2c is in /netlib/f2c/libf2c.zip, e.g.,
+
+		http://www.netlib.org/f2c/libf2c.zip
+*/
 
 
-#ifdef __cplusplus
-typedef logical (*L_fp)(...);
-#else
-typedef logical (*L_fp)();
-#endif
 
-static float spow_ui(float x, integer n) {
-	float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static double dpow_ui(double x, integer n) {
-	double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static _Complex float cpow_ui(_Complex float x, integer n) {
-	_Complex float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static _Complex double zpow_ui(_Complex double x, integer n) {
-	_Complex double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static integer pow_ii(integer x, integer n) {
-	integer pow; unsigned long int u;
-	if (n <= 0) {
-		if (n == 0 || x == 1) pow = 1;
-		else if (x != -1) pow = x == 0 ? 1/x : 0;
-		else n = -n;
-	}
-	if ((n > 0) || !(n == 0 || x == 1 || x != -1)) {
-		u = n;
-		for(pow = 1; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static integer dmaxloc_(double *w, integer s, integer e, integer *n)
+/* Table of constant values */
+
+static integer c__1 = 1;
+
+/* Subroutine */ void zlaqz1_(logical *ilq, logical *ilz, integer *k, integer *
+	istartm, integer *istopm, integer *ihi, doublecomplex *a, integer *
+	lda, doublecomplex *b, integer *ldb, integer *nq, integer *qstart, 
+	doublecomplex *q, integer *ldq, integer *nz, integer *zstart, 
+	doublecomplex *z__, integer *ldz)
 {
-	double m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-static integer smaxloc_(float *w, integer s, integer e, integer *n)
-{
-	float m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i])) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i*incx])) * Cf(&y[i*incy]);
-		}
+    /* System generated locals */
+    integer a_dim1, a_offset, b_dim1, b_offset, q_dim1, q_offset, z_dim1, 
+	    z_offset, i__1;
+    doublecomplex z__1;
+
+    /* Local variables */
+    doublereal c__;
+    doublecomplex s, temp;
+    extern /* Subroutine */ void zrot_(integer *, doublecomplex *, integer *, 
+	    doublecomplex *, integer *, doublereal *, doublecomplex *), 
+	    zlartg_(doublecomplex *, doublecomplex *, doublereal *, 
+	    doublecomplex *, doublecomplex *);
+
+
+/*     Arguments */
+
+/*     Parameters */
+
+/*     Local variables */
+
+/*     External Functions */
+
+    /* Parameter adjustments */
+    a_dim1 = *lda;
+    a_offset = 1 + a_dim1;
+    a -= a_offset;
+    b_dim1 = *ldb;
+    b_offset = 1 + b_dim1;
+    b -= b_offset;
+    q_dim1 = *ldq;
+    q_offset = 1 + q_dim1;
+    q -= q_offset;
+    z_dim1 = *ldz;
+    z_offset = 1 + z_dim1;
+    z__ -= z_offset;
+
+    /* Function Body */
+    if (*k + 1 == *ihi) {
+
+/*        Shift is located on the edge of the matrix, remove it */
+
+	zlartg_(&b[*ihi + *ihi * b_dim1], &b[*ihi + (*ihi - 1) * b_dim1], &
+		c__, &s, &temp);
+	i__1 = *ihi + *ihi * b_dim1;
+	b[i__1].r = temp.r, b[i__1].i = temp.i;
+	i__1 = *ihi + (*ihi - 1) * b_dim1;
+	b[i__1].r = 0., b[i__1].i = 0.;
+	i__1 = *ihi - *istartm;
+	zrot_(&i__1, &b[*istartm + *ihi * b_dim1], &c__1, &b[*istartm + (*ihi 
+		- 1) * b_dim1], &c__1, &c__, &s);
+	i__1 = *ihi - *istartm + 1;
+	zrot_(&i__1, &a[*istartm + *ihi * a_dim1], &c__1, &a[*istartm + (*ihi 
+		- 1) * a_dim1], &c__1, &c__, &s);
+	if (*ilz) {
+	    zrot_(nz, &z__[(*ihi - *zstart + 1) * z_dim1 + 1], &c__1, &z__[(*
+		    ihi - 1 - *zstart + 1) * z_dim1 + 1], &c__1, &c__, &s);
 	}
-	pCf(z) = zdotc;
-}
-static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i])) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i*incx])) * Cd(&y[i*incy]);
-		}
+
+    } else {
+
+/*        Normal operation, move bulge down */
+
+
+/*        Apply transformation from the right */
+
+	zlartg_(&b[*k + 1 + (*k + 1) * b_dim1], &b[*k + 1 + *k * b_dim1], &
+		c__, &s, &temp);
+	i__1 = *k + 1 + (*k + 1) * b_dim1;
+	b[i__1].r = temp.r, b[i__1].i = temp.i;
+	i__1 = *k + 1 + *k * b_dim1;
+	b[i__1].r = 0., b[i__1].i = 0.;
+	i__1 = *k + 2 - *istartm + 1;
+	zrot_(&i__1, &a[*istartm + (*k + 1) * a_dim1], &c__1, &a[*istartm + *
+		k * a_dim1], &c__1, &c__, &s);
+	i__1 = *k - *istartm + 1;
+	zrot_(&i__1, &b[*istartm + (*k + 1) * b_dim1], &c__1, &b[*istartm + *
+		k * b_dim1], &c__1, &c__, &s);
+	if (*ilz) {
+	    zrot_(nz, &z__[(*k + 1 - *zstart + 1) * z_dim1 + 1], &c__1, &z__[(
+		    *k - *zstart + 1) * z_dim1 + 1], &c__1, &c__, &s);
 	}
-	pCd(z) = zdotc;
-}	
-static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i]) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i*incx]) * Cf(&y[i*incy]);
-		}
+
+/*        Apply transformation from the left */
+
+	zlartg_(&a[*k + 1 + *k * a_dim1], &a[*k + 2 + *k * a_dim1], &c__, &s, 
+		&temp);
+	i__1 = *k + 1 + *k * a_dim1;
+	a[i__1].r = temp.r, a[i__1].i = temp.i;
+	i__1 = *k + 2 + *k * a_dim1;
+	a[i__1].r = 0., a[i__1].i = 0.;
+	i__1 = *istopm - *k;
+	zrot_(&i__1, &a[*k + 1 + (*k + 1) * a_dim1], lda, &a[*k + 2 + (*k + 1)
+		 * a_dim1], lda, &c__, &s);
+	i__1 = *istopm - *k;
+	zrot_(&i__1, &b[*k + 1 + (*k + 1) * b_dim1], ldb, &b[*k + 2 + (*k + 1)
+		 * b_dim1], ldb, &c__, &s);
+	if (*ilq) {
+	    d_cnjg(&z__1, &s);
+	    zrot_(nq, &q[(*k + 1 - *qstart + 1) * q_dim1 + 1], &c__1, &q[(*k 
+		    + 2 - *qstart + 1) * q_dim1 + 1], &c__1, &c__, &z__1);
 	}
-	pCf(z) = zdotc;
-}
-static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i]) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i*incx]) * Cd(&y[i*incy]);
-		}
-	}
-	pCd(z) = zdotc;
-}
-#endif
+
+    }
+
+/*     End of ZLAQZ1 */
+
+    return;
+} /* zlaqz1_ */
+

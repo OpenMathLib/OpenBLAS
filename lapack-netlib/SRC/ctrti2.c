@@ -656,7 +656,7 @@ f"> */
     logical upper;
     extern /* Subroutine */ void ctrmv_(char *, char *, char *, integer *, 
 	    complex *, integer *, complex *, integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     logical nounit;
     complex ajj;
 

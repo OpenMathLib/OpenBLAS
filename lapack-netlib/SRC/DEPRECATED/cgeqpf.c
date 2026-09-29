@@ -444,7 +444,7 @@ f"> */
     extern /* Subroutine */ void clarfg_(integer *, complex *, complex *, 
 	    integer *, complex *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern integer isamax_(integer *, real *, integer *);
     complex aii;
     integer pvt;
@@ -481,7 +481,7 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CGEQPF", &i__1, 6);
+	xerbla_("CGEQPF", &i__1, (ftnlen)6);
 	return;
     }
 

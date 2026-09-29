@@ -388,6 +388,7 @@
      $                   NOUNIT, A, LDA, H, W, W1, VL, LDVL, VR, LDVR,
      $                   LRE, LDLRE, RESULT, WORK, NWORK, RWORK, IWORK,
      $                   INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -428,7 +429,7 @@
      $                   JTYPE, MTYPES, N, NERRS, NFAIL, NMAX,
      $                   NNWORK, NTEST, NTESTF, NTESTT
       REAL               ANORM, COND, CONDS, OVFL, RTULP, RTULPI, TNRM,
-     $                   ULP, ULPINV, UNFL, VMX, VRMX, VTST
+     $                   ULP, ULPINV, UNFL, VMX, VRMX, VTST, WDIF, WNRM
 *     ..
 *     .. Local Arrays ..
       INTEGER            IDUMMA( 1 ), IOLDSD( 4 ), KCONDS( MAXTYP ),
@@ -443,7 +444,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CGEEV, CGET22, CLACPY, CLATME, CLATMR, CLATMS,
-     $                   CLASET, SLABAD, SLASUM, XERBLA
+     $                   CLASET, SLASUM, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, AIMAG, CMPLX, MAX, MIN, REAL, SQRT
@@ -515,7 +516,6 @@
 *
       UNFL = SLAMCH( 'Safe minimum' )
       OVFL = ONE / UNFL
-      CALL SLABAD( UNFL, OVFL )
       ULP = SLAMCH( 'Precision' )
       ULPINV = ONE / ULP
       RTULP = SQRT( ULP )
@@ -799,10 +799,15 @@
 *
 *              Do Test (5)
 *
+               WNRM = ZERO
+               WDIF = ZERO
                DO 150 J = 1, N
-                  IF( W( J ).NE.W1( J ) )
-     $               RESULT( 5 ) = ULPINV
+                  WNRM = MAX( WNRM, ABS( W( J ) ), ABS( W1( J ) ) )
+                  WDIF = MAX( WDIF, ABS( W( J )-W1( J ) ) )
   150          CONTINUE
+               RESULT( 5 ) = MAX( RESULT( 5 ), WDIF /
+     $                       MAX( UNFL, ULP*REAL( N )*
+     $                       MAX( WNRM, WDIF ) ) )
 *
 *              Compute eigenvalues and right eigenvectors, and test them
 *
@@ -819,10 +824,15 @@
 *
 *              Do Test (5) again
 *
+               WNRM = ZERO
+               WDIF = ZERO
                DO 160 J = 1, N
-                  IF( W( J ).NE.W1( J ) )
-     $               RESULT( 5 ) = ULPINV
+                  WNRM = MAX( WNRM, ABS( W( J ) ), ABS( W1( J ) ) )
+                  WDIF = MAX( WDIF, ABS( W( J )-W1( J ) ) )
   160          CONTINUE
+               RESULT( 5 ) = MAX( RESULT( 5 ), WDIF /
+     $                       MAX( UNFL, ULP*REAL( N )*
+     $                       MAX( WNRM, WDIF ) ) )
 *
 *              Do Test (6)
 *
@@ -848,10 +858,15 @@
 *
 *              Do Test (5) again
 *
+               WNRM = ZERO
+               WDIF = ZERO
                DO 190 J = 1, N
-                  IF( W( J ).NE.W1( J ) )
-     $               RESULT( 5 ) = ULPINV
+                  WNRM = MAX( WNRM, ABS( W( J ) ), ABS( W1( J ) ) )
+                  WDIF = MAX( WDIF, ABS( W( J )-W1( J ) ) )
   190          CONTINUE
+               RESULT( 5 ) = MAX( RESULT( 5 ), WDIF /
+     $                       MAX( UNFL, ULP*REAL( N )*
+     $                       MAX( WNRM, WDIF ) ) )
 *
 *              Do Test (7)
 *
@@ -932,8 +947,7 @@
      $      / ' 2 = | conj-trans(A) VL - VL conj-trans(W) | /',
      $      ' ( n |A| ulp ) ', / ' 3 = | |VR(i)| - 1 | / ulp ',
      $      / ' 4 = | |VL(i)| - 1 | / ulp ',
-     $      / ' 5 = 0 if W same no matter if VR or VL computed,',
-     $      ' 1/ulp otherwise', /
+     $      / ' 5 = | W - W(other JOBVL/JOBVR) | / ( n |W| ulp ) ', /
      $      ' 6 = 0 if VR same no matter if VL computed,',
      $      '  1/ulp otherwise', /
      $      ' 7 = 0 if VL same no matter if VR computed,',

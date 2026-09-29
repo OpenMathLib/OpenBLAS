@@ -92,7 +92,9 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         js --;
     }
 
-    if ((n - n/6) & 4) {
+    /* Remainder must be n%6, not (n - n/6). The latter is wrong for
+     * non-multiples of 6 (e.g. n=7 -> 6 instead of 1) and corrupts SYMM. */
+    if ((n % 6) & 4) {
 
         offset = posX - posY;
 
@@ -128,7 +130,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         posX += 4;
     }
 
-    if ((n - n/6) & 2) {
+    if ((n % 6) & 2) {
         offset = posX - posY;
 
         if (offset >  0) ao1 = a + posY + (posX + 0) * lda; else ao1 = a + posX + 0 + posY * lda;
@@ -155,7 +157,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         posX += 2;
     }
 
-    if ((n - n/6) & 1) {
+    if ((n % 6) & 1) {
         offset = posX - posY;
 
         if (offset >  0) ao1 = a + posY + (posX + 0) * lda; else ao1 = a + posX + 0 + posY * lda;

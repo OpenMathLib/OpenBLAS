@@ -69,7 +69,7 @@ static blasint (*lauum_parallel[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *
 #endif
 
 OPENBLAS_EXPORT
-int NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
+void NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
 
   blas_arg_t args;
 
@@ -102,12 +102,12 @@ int NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
   if (info) {
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME) - 1);
     *Info = - info;
-    return 0;
+    return;
   }
 
   *Info = 0;
 
-  if (args.n == 0) return 0;
+  if (args.n == 0) return;
 
   IDEBUG_START;
 
@@ -160,5 +160,5 @@ int NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
 
   IDEBUG_END;
 
-  return 0;
+  return;
 }

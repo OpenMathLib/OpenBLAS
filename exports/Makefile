@@ -228,6 +228,7 @@ endif
 endif
 
 #http://stackoverflow.com/questions/7656425/makefile-ifeq-logical-or
+# WASM build also ends up here as it has no OSNAME set
 ifeq ($(OSNAME), $(filter $(OSNAME),OpenBSD NetBSD))
 
 so : ../$(LIBSONAME)
@@ -242,7 +243,9 @@ endif
 	$(CC) $(CFLAGS) $(LDFLAGS)  -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive $< -Wl,--no-whole-archive \
 	$(FEXTRALIB) $(EXTRALIB)
+ifneq ($(ARCH),wasm)
 	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
+endif
 	rm -f linktest
 
 endif

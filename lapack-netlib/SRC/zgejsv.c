@@ -40,17 +40,12 @@ typedef double doublereal;
 typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
 #ifdef _MSC_VER
-static inline _Fcomplex Cf(complex *z) {_Fcomplex zz={z->r , z->i}; return zz;}
 static inline _Dcomplex Cd(doublecomplex *z) {_Dcomplex zz={z->r , z->i};return zz;}
-static inline _Fcomplex * _pCf(complex *z) {return (_Fcomplex*)z;}
 static inline _Dcomplex * _pCd(doublecomplex *z) {return (_Dcomplex*)z;}
 #else
-static inline _Complex float Cf(complex *z) {return z->r + z->i*_Complex_I;}
 static inline _Complex double Cd(doublecomplex *z) {return z->r + z->i*_Complex_I;}
-static inline _Complex float * _pCf(complex *z) {return (_Complex float*)z;}
 static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*)z;}
 #endif
-#define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
 typedef blasint logical;
 
@@ -247,7 +242,6 @@ typedef struct Namelist Namelist;
 #define s_copy(A,B,C,D) { int __i,__m; for (__i=0, __m=f2cmin((C),(D)); __i<__m && (B)[__i] != 0; ++__i) (A)[__i] = (B)[__i]; }
 #define sig_die(s, kill) { exit(1); }
 #define s_stop(s, n) {exit(0);}
-static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
 #define z_abs(z) (cabs(Cd(z)))
 #define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
 #define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
@@ -258,267 +252,6 @@ static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
 #define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
 
-/* procedure parameter types for -A and -C++ */
-
-
-#ifdef __cplusplus
-typedef logical (*L_fp)(...);
-#else
-typedef logical (*L_fp)();
-#endif
-
-static float spow_ui(float x, integer n) {
-	float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static double dpow_ui(double x, integer n) {
-	double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#ifdef _MSC_VER
-static _Fcomplex cpow_ui(complex x, integer n) {
-	complex pow={1.0,0.0}; unsigned long int u;
-		if(n != 0) {
-		if(n < 0) n = -n, x.r = 1/x.r, x.i=1/x.i;
-		for(u = n; ; ) {
-			if(u & 01) pow.r *= x.r, pow.i *= x.i;
-			if(u >>= 1) x.r *= x.r, x.i *= x.i;
-			else break;
-		}
-	}
-	_Fcomplex p={pow.r, pow.i};
-	return p;
-}
-#else
-static _Complex float cpow_ui(_Complex float x, integer n) {
-	_Complex float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-#ifdef _MSC_VER
-static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
-	_Dcomplex pow={1.0,0.0}; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x._Val[0] = 1/x._Val[0], x._Val[1] =1/x._Val[1];
-		for(u = n; ; ) {
-			if(u & 01) pow._Val[0] *= x._Val[0], pow._Val[1] *= x._Val[1];
-			if(u >>= 1) x._Val[0] *= x._Val[0], x._Val[1] *= x._Val[1];
-			else break;
-		}
-	}
-	_Dcomplex p = {pow._Val[0], pow._Val[1]};
-	return p;
-}
-#else
-static _Complex double zpow_ui(_Complex double x, integer n) {
-	_Complex double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-static integer pow_ii(integer x, integer n) {
-	integer pow; unsigned long int u;
-	if (n <= 0) {
-		if (n == 0 || x == 1) pow = 1;
-		else if (x != -1) pow = x == 0 ? 1/x : 0;
-		else n = -n;
-	}
-	if ((n > 0) || !(n == 0 || x == 1 || x != -1)) {
-		u = n;
-		for(pow = 1; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static integer dmaxloc_(double *w, integer s, integer e, integer *n)
-{
-	double m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-static integer smaxloc_(float *w, integer s, integer e, integer *n)
-{
-	float m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-
-static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Fcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0]
-				+ Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
-			zdotc._Val[1] -= Cf(&x[i])._Val[1] * Cf(&y[i])._Val[0]
-				- Cf(&x[i])._Val[0] * Cf(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0]
-				+ Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
-			zdotc._Val[1] -= Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1]
-				- Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[1];
-		}
-	}
-	pCf(z) = zdotc;
-}
-#else
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i])) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i*incx])) * Cf(&y[i*incy]);
-		}
-	}
-	pCf(z) = zdotc;
-}
-#endif
-static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Dcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0]
-				+ Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
-			zdotc._Val[1] -= Cd(&x[i])._Val[1] * Cd(&y[i])._Val[0]
-				- Cd(&x[i])._Val[0] * Cd(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0]
-				+ Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
-			zdotc._Val[1] -= Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[0]
-				- Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[1];
-		}
-	}
-	pCd(z) = zdotc;
-}
-#else
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i])) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i*incx])) * Cd(&y[i*incy]);
-		}
-	}
-	pCd(z) = zdotc;
-}
-#endif	
-static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Fcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0]
-				- Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
-			zdotc._Val[1] += Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1]
-				+ Cf(&x[i])._Val[0] * Cf(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0]
-				- Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
-			zdotc._Val[1] += Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1]
-				+ Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[1];
-		}
-	}
-	pCf(z) = zdotc;
-}
-#else
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i]) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i*incx]) * Cf(&y[i*incy]);
-		}
-	}
-	pCf(z) = zdotc;
-}
-#endif
-static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Dcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0]
-				- Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
-			zdotc._Val[1] += Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1]
-				+ Cd(&x[i])._Val[0] * Cd(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0]
-				- Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
-			zdotc._Val[1] += Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1]
-				+ Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[1];
-		}
-	}
-	pCd(z) = zdotc;
-}
-#else
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i]) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i*incx]) * Cd(&y[i*incy]);
-		}
-	}
-	pCd(z) = zdotc;
-}
-#endif
 /*  -- translated by f2c (version 20000121).
    You must link the resulting object file with the libraries:
 	-lf2c -lm   (in that order)
@@ -1162,7 +895,7 @@ f"> */
     doublereal scalem, sconda;
     logical goscal;
     doublereal aatmin, aatmax;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     logical noscal;
     extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *), zlacgv_(integer *, doublecomplex *, 
@@ -1200,7 +933,7 @@ f"> */
     extern /* Subroutine */ void zlassq_(integer *, doublecomplex *, integer *,
 	     doublereal *, doublereal *);
     logical lquery;
-    extern /* Subroutine */ int zlaswp_(integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void zlaswp_(integer *, doublecomplex *, integer *,
 	     integer *, integer *, integer *, integer *);
     logical rowpiv;
     integer optwrk;
@@ -1264,11 +997,11 @@ f"> */
 
     if (! (rowpiv || l2rank || l2aber || errest || lsame_(joba, "C"))) {
 	*info = -1;
-    } else if (! (lsvec || lsame_(jobu, "N") || lsame_(
-	    jobu, "W") && rsvec && l2tran)) {
+    } else if (! (lsvec || lsame_(jobu, "N") || (lsame_(
+	    jobu, "W") && rsvec && l2tran))) {
 	*info = -2;
-    } else if (! (rsvec || lsame_(jobv, "N") || lsame_(
-	    jobv, "W") && lsvec && l2tran)) {
+    } else if (! (rsvec || lsame_(jobv, "N") || (lsame_(
+	    jobv, "W") && lsvec && l2tran))) {
 	*info = -3;
     } else if (! (l2kill || defr)) {
 	*info = -4;
@@ -2307,8 +2040,8 @@ L3002:
 	i__1 = *n;
 	for (p = 2; p <= i__1; ++p) {
 	    if (z_abs(&a[p + p * a_dim1]) < epsln * z_abs(&a[p - 1 + (p - 1) *
-		     a_dim1]) || z_abs(&a[p + p * a_dim1]) < small || l2kill 
-		    && z_abs(&a[p + p * a_dim1]) < temp1) {
+		     a_dim1]) || z_abs(&a[p + p * a_dim1]) < small || (l2kill 
+		    && z_abs(&a[p + p * a_dim1]) < temp1)) {
 		goto L3402;
 	    }
 	    ++nr;
@@ -2328,8 +2061,8 @@ L3402:
 	temp1 = sqrt(sfmin);
 	i__1 = *n;
 	for (p = 2; p <= i__1; ++p) {
-	    if (z_abs(&a[p + p * a_dim1]) < small || l2kill && z_abs(&a[p + p 
-		    * a_dim1]) < temp1) {
+	    if (z_abs(&a[p + p * a_dim1]) < small || (l2kill && z_abs(&a[p + p 
+		    * a_dim1]) < temp1)) {
 		goto L3302;
 	    }
 	    ++nr;
@@ -2474,7 +2207,7 @@ L3302:
 		    ctemp.r = z__1.r, ctemp.i = z__1.i;
 		    i__2 = *n;
 		    for (p = 1; p <= i__2; ++p) {
-			if (p > q && z_abs(&a[p + q * a_dim1]) <= temp1 || p <
+			if ((p > q && z_abs(&a[p + q * a_dim1]) <= temp1) || p <
 				 q) {
 			    i__3 = p + q * a_dim1;
 			    a[i__3].r = ctemp.r, a[i__3].i = ctemp.i;
@@ -2521,7 +2254,7 @@ L3302:
 		ctemp.r = z__1.r, ctemp.i = z__1.i;
 		i__2 = nr;
 		for (p = 1; p <= i__2; ++p) {
-		    if (p > q && z_abs(&a[p + q * a_dim1]) <= temp1 || p < q) 
+		    if ((p > q && z_abs(&a[p + q * a_dim1]) <= temp1) || p < q) 
 			    {
 			i__3 = p + q * a_dim1;
 			a[i__3].r = ctemp.r, a[i__3].i = ctemp.i;
@@ -2548,7 +2281,7 @@ L3302:
 	numrank = i_dnnt(&rwork[2]);
 
 
-    } else if (rsvec && ! lsvec && ! jracc || jracc && ! lsvec && nr != *n) {
+    } else if ((rsvec && ! lsvec && ! jracc) || (jracc && ! lsvec && nr != *n)) {
 
 /*        -> Singular Values and Right Singular Vectors <- */
 
@@ -2770,7 +2503,7 @@ L3302:
 			ctemp.r = z__1.r, ctemp.i = z__1.i;
 			i__2 = *n;
 			for (p = 1; p <= i__2; ++p) {
-			    if (p > q && z_abs(&v[p + q * v_dim1]) <= temp1 ||
+			    if ((p > q && z_abs(&v[p + q * v_dim1]) <= temp1) ||
 				     p < q) {
 				i__3 = p + q * v_dim1;
 				v[i__3].r = ctemp.r, v[i__3].i = ctemp.i;
@@ -3376,7 +3109,7 @@ L3302:
 		    ctemp.r = z__1.r, ctemp.i = z__1.i;
 		    i__2 = *n;
 		    for (p = 1; p <= i__2; ++p) {
-			if (p > q && z_abs(&v[p + q * v_dim1]) <= temp1 || p <
+			if ((p > q && z_abs(&v[p + q * v_dim1]) <= temp1) || p <
 				 q) {
 			    i__3 = p + q * v_dim1;
 			    v[i__3].r = ctemp.r, v[i__3].i = ctemp.i;

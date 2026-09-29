@@ -52,7 +52,7 @@ jobs:
       - name: Configure OpenBLAS
         shell: cmd
         run: |
-          CALL "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsarm64.bat"
+          CALL "C:\Program Files\Microsoft Visual Studio\18\Enterprise\VC\Auxiliary\Build\vcvarsarm64.bat"
           set PATH=C:\Program Files\LLVM\bin;%PATH%
           
           mkdir build

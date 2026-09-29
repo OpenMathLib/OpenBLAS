@@ -332,13 +332,13 @@ static RETURN_TYPE dot_kernel_asimd(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT 
 
 	"9: //dot_kernel_L999:				\n"
 
-	: [DOT_]  "=&w" (dot)
-	: [N_]    "r"   (n),
-	  [X_]    "r"   (x),
-	  [INCX_] "r"   (inc_x),
-	  [Y_]    "r"   (y),
-	  [INCY_] "r"   (inc_y),
-          [J_]    "r"   (j)
+	: [DOT_]  "=&w" (dot),
+	  [X_]    "+&r" (x),
+	  [INCX_] "+&r" (inc_x),
+	  [Y_]    "+&r" (y),
+	  [INCY_] "+&r" (inc_y),
+	  [J_]    "+&r" (j)
+	: [N_]    "r"   (n)
 	: "cc",
 	  "memory",
 	  "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7",

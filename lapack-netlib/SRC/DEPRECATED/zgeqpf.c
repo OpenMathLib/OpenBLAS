@@ -445,7 +445,7 @@ f"> */
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern void zlarfg_(
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *);
@@ -484,7 +484,7 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZGEQPF", &i__1, 6);
+	xerbla_("ZGEQPF", &i__1, (ftnlen)6);
 	return;
     }
 

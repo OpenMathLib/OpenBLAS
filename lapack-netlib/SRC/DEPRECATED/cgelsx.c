@@ -485,7 +485,7 @@ f"> */
     extern real slamch_(char *);
     extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     real bignum;
     extern /* Subroutine */ void clatzm_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, complex *, complex *, integer *, complex 
@@ -542,7 +542,7 @@ f"> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CGELSX", &i__1, 6);
+	xerbla_("CGELSX", &i__1, (ftnlen)6);
 	return;
     }
 

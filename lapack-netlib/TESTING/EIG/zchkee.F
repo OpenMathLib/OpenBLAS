@@ -769,7 +769,10 @@
 *>          printed about each test for which the test ratio is greater
 *>          than or equal to the threshold.
 *>
-*> lines  3-EOF:
+*> line  3: TSTERR, LOGICAL
+*>          Flag indicating whether or not to test the error exits.
+*>
+*> lines  4-EOF:
 *>
 *> Input for testing the eigencondition routines consists of a set of
 *> specially constructed test cases and their solutions.  The data
@@ -1103,13 +1106,12 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAREQ, XLAENV, ZCHKBB, ZCHKBD, ZCHKBK, ZCHKBL,
-     $                   ZCHKEC, ZCHKGG, ZCHKGK, ZCHKGL, ZCHKHB, ZCHKHS,
-     $                   ZCHKST, ZCKCSD, ZCKGLM, ZCKGQR, ZCKGSV, ZCKLSE,
-     $                   ZDRGES, ZDRGEV, ZDRGSX, ZDRGVX, ZDRVBD, ZDRVES,
-     $                   ZDRVEV, ZDRVSG, ZDRVST, ZDRVSX, ZDRVVX,
-     $                   ZERRBD, ZERRED, ZERRGG, ZERRHS, ZERRST, ILAVER,
-     $                   ZDRGES3, ZDRGEV3, 
-     $                   ZCHKST2STG, ZDRVST2STG, ZCHKHB2STG
+     $                   ZCHKEC, ZCHKGG, ZCHKGK, ZCHKGL, ZCHKHS, ZCHKST,
+     $                   ZCKCSD, ZCKGLM, ZCKGQR, ZCKGSV, ZCKLSE, ZDRGES,
+     $                   ZDRGEV, ZDRGSX, ZDRGVX, ZDRVBD, ZDRVES, ZDRVEV,
+     $                   ZDRVST, ZDRVSX, ZDRVVX, ZERRBD, ZERRED, ZERRGG,
+     $                   ZERRHS, ZERRST, ILAVER, ZDRGES3, ZDRGEV3,
+     $                   ZCHKST2STG, ZDRVST2STG, ZCHKHB2STG, ZDRVSG2STG
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          LEN, MIN
@@ -1139,17 +1141,35 @@
 *     .. Allocate memory dynamically ..
 *
       ALLOCATE ( S(NMAX*NMAX), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( A(NMAX*NMAX,NEED), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( B(NMAX*NMAX,5), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( C(NCMAX*NCMAX,NCMAX*NCMAX), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( RWORK(LWORK), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( WORK(LWORK), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
 *     ..
 *     .. Executable Statements ..
 *
@@ -1265,9 +1285,9 @@
 *        ZEC:  Eigencondition estimation
 *
          READ( NIN, FMT = * )THRESH
+         READ( NIN, FMT = * )TSTERR
          CALL XLAENV( 1, 1 )
          CALL XLAENV( 12, 1 )
-         TSTERR = .TRUE.
          CALL ZCHKEC( THRESH, TSTERR, NIN, NOUT )
          GO TO 380
       ELSE
@@ -1727,7 +1747,7 @@
 *
       IF( FATAL ) THEN
          WRITE( NOUT, FMT = 9999 )
-         STOP
+         STOP 1
       END IF
 *
 *     Read the input lines indicating the test path and its parameters.
@@ -1843,15 +1863,15 @@
             CALL ZCHKHS( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
      $                   A( 1, 1 ), NMAX, A( 1, 2 ), A( 1, 3 ),
      $                   A( 1, 4 ), A( 1, 5 ), NMAX, A( 1, 6 ),
-     $                   A( 1, 7 ), DC( 1, 1 ), DC( 1, 2 ), A( 1, 8 ),
-     $                   A( 1, 9 ), A( 1, 10 ), A( 1, 11 ), A( 1, 12 ),
-     $                   DC( 1, 3 ), WORK, LWORK, RWORK, IWORK, LOGWRK,
-     $                   RESULT, INFO )
+     $                   A( 1, 7 ), DC( 1, 1 ), DC( 1, 4 ), DC( 1, 2 ),
+     $                   A( 1, 8 ), A( 1, 9 ), A( 1, 10 ), A( 1, 11 ),
+     $                   A( 1, 12 ), DC( 1, 3 ), WORK, LWORK, RWORK,
+     $                   IWORK, LOGWRK, RESULT, INFO )
             IF( INFO.NE.0 )
      $         WRITE( NOUT, FMT = 9980 )'ZCHKHS', INFO
   270    CONTINUE
 *
-      ELSE IF( LSAMEN( 3, C3, 'ZST' ) .OR. LSAMEN( 3, C3, 'SEP' ) 
+      ELSE IF( LSAMEN( 3, C3, 'ZST' ) .OR. LSAMEN( 3, C3, 'SEP' )
      $                                .OR. LSAMEN( 3, C3, 'SE2' ) ) THEN
 *
 *        ----------------------------------
@@ -2349,9 +2369,9 @@
 *     $                A( 1, 2 ), NMAX, WORK, LWORK, RWORK, RESULT,
 *     $                INFO )
          CALL ZCHKHB2STG( NN, NVAL, NK, KVAL, MAXTYP, DOTYPE, ISEED,
-     $                 THRESH, NOUT, A( 1, 1 ), NMAX, DR( 1, 1 ), 
+     $                 THRESH, NOUT, A( 1, 1 ), NMAX, DR( 1, 1 ),
      $                 DR( 1, 2 ), DR( 1, 3 ), DR( 1, 4 ), DR( 1, 5 ),
-     $                 A( 1, 2 ), NMAX, WORK, LWORK, RWORK, RESULT, 
+     $                 A( 1, 2 ), NMAX, WORK, LWORK, RWORK, RESULT,
      $                 INFO )
          IF( INFO.NE.0 )
      $      WRITE( NOUT, FMT = 9980 )'ZCHKHB', INFO

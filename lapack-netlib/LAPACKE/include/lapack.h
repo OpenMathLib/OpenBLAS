@@ -3680,28 +3680,28 @@ void LAPACK_zgedmdq_base(
 #endif
 
 #define LAPACK_cgesv LAPACK_GLOBAL(cgesv,CGESV)
-lapack_int LAPACK_cgesv(
+void LAPACK_cgesv(
     lapack_int const* n, lapack_int const* nrhs,
     lapack_complex_float* A, lapack_int const* lda, lapack_int* ipiv,
     lapack_complex_float* B, lapack_int const* ldb,
     lapack_int* info );
 
 #define LAPACK_dgesv LAPACK_GLOBAL(dgesv,DGESV)
-lapack_int LAPACK_dgesv(
+void LAPACK_dgesv(
     lapack_int const* n, lapack_int const* nrhs,
     double* A, lapack_int const* lda, lapack_int* ipiv,
     double* B, lapack_int const* ldb,
     lapack_int* info );
 
 #define LAPACK_sgesv LAPACK_GLOBAL(sgesv,SGESV)
-lapack_int LAPACK_sgesv(
+void LAPACK_sgesv(
     lapack_int const* n, lapack_int const* nrhs,
     float* A, lapack_int const* lda, lapack_int* ipiv,
     float* B, lapack_int const* ldb,
     lapack_int* info );
 
 #define LAPACK_zgesv LAPACK_GLOBAL(zgesv,ZGESV)
-lapack_int LAPACK_zgesv(
+void LAPACK_zgesv(
     lapack_int const* n, lapack_int const* nrhs,
     lapack_complex_double* A, lapack_int const* lda, lapack_int* ipiv,
     lapack_complex_double* B, lapack_int const* ldb,
@@ -4300,49 +4300,49 @@ void LAPACK_zgesvxx_base(
 #endif
 
 #define LAPACK_cgetf2 LAPACK_GLOBAL(cgetf2,CGETF2)
-lapack_int LAPACK_cgetf2(
+void LAPACK_cgetf2(
     lapack_int const* m, lapack_int const* n,
     lapack_complex_float* A, lapack_int const* lda, lapack_int* ipiv,
     lapack_int* info );
 
 #define LAPACK_dgetf2 LAPACK_GLOBAL(dgetf2,DGETF2)
-lapack_int LAPACK_dgetf2(
+void LAPACK_dgetf2(
     lapack_int const* m, lapack_int const* n,
     double* A, lapack_int const* lda, lapack_int* ipiv,
     lapack_int* info );
 
 #define LAPACK_sgetf2 LAPACK_GLOBAL(sgetf2,SGETF2)
-lapack_int LAPACK_sgetf2(
+void LAPACK_sgetf2(
     lapack_int const* m, lapack_int const* n,
     float* A, lapack_int const* lda, lapack_int* ipiv,
     lapack_int* info );
 
 #define LAPACK_zgetf2 LAPACK_GLOBAL(zgetf2,ZGETF2)
-lapack_int LAPACK_zgetf2(
+void LAPACK_zgetf2(
     lapack_int const* m, lapack_int const* n,
     lapack_complex_double* A, lapack_int const* lda, lapack_int* ipiv,
     lapack_int* info );
 
 #define LAPACK_cgetrf LAPACK_GLOBAL(cgetrf,CGETRF)
-lapack_int LAPACK_cgetrf(
+void LAPACK_cgetrf(
     lapack_int const* m, lapack_int const* n,
     lapack_complex_float* A, lapack_int const* lda, lapack_int* ipiv,
     lapack_int* info );
 
 #define LAPACK_dgetrf LAPACK_GLOBAL(dgetrf,DGETRF)
-lapack_int LAPACK_dgetrf(
+void LAPACK_dgetrf(
     lapack_int const* m, lapack_int const* n,
     double* A, lapack_int const* lda, lapack_int* ipiv,
     lapack_int* info );
 
 #define LAPACK_sgetrf LAPACK_GLOBAL(sgetrf,SGETRF)
-lapack_int LAPACK_sgetrf(
+void LAPACK_sgetrf(
     lapack_int const* m, lapack_int const* n,
     float* A, lapack_int const* lda, lapack_int* ipiv,
     lapack_int* info );
 
 #define LAPACK_zgetrf LAPACK_GLOBAL(zgetrf,ZGETRF)
-lapack_int LAPACK_zgetrf(
+void LAPACK_zgetrf(
     lapack_int const* m, lapack_int const* n,
     lapack_complex_double* A, lapack_int const* lda, lapack_int* ipiv,
     lapack_int* info );
@@ -4400,7 +4400,7 @@ void LAPACK_zgetri(
     lapack_int* info );
 
 #define LAPACK_cgetrs_base LAPACK_GLOBAL(cgetrs,CGETRS)
-lapack_int LAPACK_cgetrs_base(
+void LAPACK_cgetrs_base(
     char const* trans,
     lapack_int const* n, lapack_int const* nrhs,
     lapack_complex_float const* A, lapack_int const* lda, lapack_int const* ipiv,
@@ -4417,7 +4417,7 @@ lapack_int LAPACK_cgetrs_base(
 #endif
 
 #define LAPACK_dgetrs_base LAPACK_GLOBAL(dgetrs,DGETRS)
-lapack_int LAPACK_dgetrs_base(
+void LAPACK_dgetrs_base(
     char const* trans,
     lapack_int const* n, lapack_int const* nrhs,
     double const* A, lapack_int const* lda, lapack_int const* ipiv,
@@ -4434,7 +4434,7 @@ lapack_int LAPACK_dgetrs_base(
 #endif
 
 #define LAPACK_sgetrs_base LAPACK_GLOBAL(sgetrs,SGETRS)
-lapack_int LAPACK_sgetrs_base(
+void LAPACK_sgetrs_base(
     char const* trans,
     lapack_int const* n, lapack_int const* nrhs,
     float const* A, lapack_int const* lda, lapack_int const* ipiv,
@@ -4451,7 +4451,7 @@ lapack_int LAPACK_sgetrs_base(
 #endif
 
 #define LAPACK_zgetrs_base LAPACK_GLOBAL(zgetrs,ZGETRS)
-lapack_int LAPACK_zgetrs_base(
+void LAPACK_zgetrs_base(
     char const* trans,
     lapack_int const* n, lapack_int const* nrhs,
     lapack_complex_double const* A, lapack_int const* lda, lapack_int const* ipiv,
@@ -11302,22 +11302,22 @@ void LAPACK_zlassq(
     double* sumsq );
 
 #define LAPACK_claswp LAPACK_GLOBAL(claswp,CLASWP)
-lapack_int LAPACK_claswp(
+void LAPACK_claswp(
     lapack_int const* n,
     lapack_complex_float* A, lapack_int const* lda, lapack_int const* k1, lapack_int const* k2, lapack_int const* ipiv, lapack_int const* incx );
 
 #define LAPACK_dlaswp LAPACK_GLOBAL(dlaswp,DLASWP)
-lapack_int LAPACK_dlaswp(
+void LAPACK_dlaswp(
     lapack_int const* n,
     double* A, lapack_int const* lda, lapack_int const* k1, lapack_int const* k2, lapack_int const* ipiv, lapack_int const* incx );
 
 #define LAPACK_slaswp LAPACK_GLOBAL(slaswp,SLASWP)
-lapack_int LAPACK_slaswp(
+void LAPACK_slaswp(
     lapack_int const* n,
     float* A, lapack_int const* lda, lapack_int const* k1, lapack_int const* k2, lapack_int const* ipiv, lapack_int const* incx );
 
 #define LAPACK_zlaswp LAPACK_GLOBAL(zlaswp,ZLASWP)
-lapack_int LAPACK_zlaswp(
+void LAPACK_zlaswp(
     lapack_int const* n,
     lapack_complex_double* A, lapack_int const* lda, lapack_int const* k1, lapack_int const* k2, lapack_int const* ipiv, lapack_int const* incx );
 
@@ -11410,7 +11410,7 @@ void LAPACK_zlatms_base(
 #endif
 
 #define LAPACK_clauum_base LAPACK_GLOBAL(clauum,CLAUUM)
-lapack_int LAPACK_clauum_base(
+void LAPACK_clauum_base(
     char const* uplo,
     lapack_int const* n,
     lapack_complex_float* A, lapack_int const* lda,
@@ -11426,7 +11426,7 @@ lapack_int LAPACK_clauum_base(
 #endif
 
 #define LAPACK_dlauum_base LAPACK_GLOBAL(dlauum,DLAUUM)
-lapack_int LAPACK_dlauum_base(
+void LAPACK_dlauum_base(
     char const* uplo,
     lapack_int const* n,
     double* A, lapack_int const* lda,
@@ -11442,7 +11442,7 @@ lapack_int LAPACK_dlauum_base(
 #endif
 
 #define LAPACK_slauum_base LAPACK_GLOBAL(slauum,SLAUUM)
-lapack_int LAPACK_slauum_base(
+void LAPACK_slauum_base(
     char const* uplo,
     lapack_int const* n,
     float* A, lapack_int const* lda,
@@ -11458,7 +11458,7 @@ lapack_int LAPACK_slauum_base(
 #endif
 
 #define LAPACK_zlauum_base LAPACK_GLOBAL(zlauum,ZLAUUM)
-lapack_int LAPACK_zlauum_base(
+void LAPACK_zlauum_base(
     char const* uplo,
     lapack_int const* n,
     lapack_complex_double* A, lapack_int const* lda,
@@ -11474,7 +11474,7 @@ lapack_int LAPACK_zlauum_base(
 #endif
 
 #define LAPACK_ilaver LAPACK_GLOBAL(ilaver,ILAVER)
-lapack_int LAPACK_ilaver(
+void LAPACK_ilaver(
     lapack_int* vers_major, lapack_int* vers_minor, lapack_int* vers_patch );
 
 #define LAPACK_dopgtr_base LAPACK_GLOBAL(dopgtr,DOPGTR)
@@ -13751,7 +13751,7 @@ void LAPACK_zpotf2_base(
 #endif
 
 #define LAPACK_cpotrf_base LAPACK_GLOBAL(cpotrf,CPOTRF)
-lapack_int LAPACK_cpotrf_base(
+void LAPACK_cpotrf_base(
     char const* uplo,
     lapack_int const* n,
     lapack_complex_float* A, lapack_int const* lda,
@@ -13767,7 +13767,7 @@ lapack_int LAPACK_cpotrf_base(
 #endif
 
 #define LAPACK_dpotrf_base LAPACK_GLOBAL(dpotrf,DPOTRF)
-lapack_int LAPACK_dpotrf_base(
+void LAPACK_dpotrf_base(
     char const* uplo,
     lapack_int const* n,
     double* A, lapack_int const* lda,
@@ -13783,7 +13783,7 @@ lapack_int LAPACK_dpotrf_base(
 #endif
 
 #define LAPACK_spotrf_base LAPACK_GLOBAL(spotrf,SPOTRF)
-lapack_int LAPACK_spotrf_base(
+void LAPACK_spotrf_base(
     char const* uplo,
     lapack_int const* n,
     float* A, lapack_int const* lda,
@@ -13799,7 +13799,7 @@ lapack_int LAPACK_spotrf_base(
 #endif
 
 #define LAPACK_zpotrf_base LAPACK_GLOBAL(zpotrf,ZPOTRF)
-lapack_int LAPACK_zpotrf_base(
+void LAPACK_zpotrf_base(
     char const* uplo,
     lapack_int const* n,
     lapack_complex_double* A, lapack_int const* lda,
@@ -22457,7 +22457,7 @@ void LAPACK_ztrsyl3_base(
 #endif
 
 #define LAPACK_ctrtri_base LAPACK_GLOBAL(ctrtri,CTRTRI)
-lapack_int LAPACK_ctrtri_base(
+void LAPACK_ctrtri_base(
     char const* uplo, char const* diag,
     lapack_int const* n,
     lapack_complex_float* A, lapack_int const* lda,
@@ -22473,7 +22473,7 @@ lapack_int LAPACK_ctrtri_base(
 #endif
 
 #define LAPACK_dtrtri_base LAPACK_GLOBAL(dtrtri,DTRTRI)
-lapack_int LAPACK_dtrtri_base(
+void LAPACK_dtrtri_base(
     char const* uplo, char const* diag,
     lapack_int const* n,
     double* A, lapack_int const* lda,
@@ -22489,7 +22489,7 @@ lapack_int LAPACK_dtrtri_base(
 #endif
 
 #define LAPACK_strtri_base LAPACK_GLOBAL(strtri,STRTRI)
-lapack_int LAPACK_strtri_base(
+void LAPACK_strtri_base(
     char const* uplo, char const* diag,
     lapack_int const* n,
     float* A, lapack_int const* lda,
@@ -22505,7 +22505,7 @@ lapack_int LAPACK_strtri_base(
 #endif
 
 #define LAPACK_ztrtri_base LAPACK_GLOBAL(ztrtri,ZTRTRI)
-lapack_int LAPACK_ztrtri_base(
+void LAPACK_ztrtri_base(
     char const* uplo, char const* diag,
     lapack_int const* n,
     lapack_complex_double* A, lapack_int const* lda,

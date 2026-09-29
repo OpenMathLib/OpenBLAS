@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download ZLAEIN + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlaein.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlaein.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -141,11 +139,13 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERauxiliary
+*> \ingroup laein
 *
 *  =====================================================================
-      SUBROUTINE ZLAEIN( RIGHTV, NOINIT, N, H, LDH, W, V, B, LDB, RWORK,
+      SUBROUTINE ZLAEIN( RIGHTV, NOINIT, N, H, LDH, W, V, B, LDB,
+     $                   RWORK,
      $                   EPS3, SMLNUM, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -173,7 +173,8 @@
 *     .. Local Scalars ..
       CHARACTER          NORMIN, TRANS
       INTEGER            I, IERR, ITS, J
-      DOUBLE PRECISION   GROWTO, NRMSML, ROOTN, RTEMP, SCALE, VNORM
+      DOUBLE PRECISION   GROWTO, NRMSML, ROOTN, RTEMP, SCALE, V0NORM,
+     $                   V1NORM
       COMPLEX*16         CDUM, EI, EJ, TEMP, X
 *     ..
 *     .. External Functions ..
@@ -198,11 +199,13 @@
 *
       INFO = 0
 *
-*     GROWTO is the threshold used in the acceptance test for an
-*     eigenvector.
+*     Each starting vector gets one solve, from v0 to v1.  The residual
+*     of v1 is SCALE times the norm of v0, over the norm of v1, so
+*     GROWTO is the growth V1NORM/(SCALE*V0NORM) that the acceptance
+*     test below requires.
 *
       ROOTN = SQRT( DBLE( N ) )
-      GROWTO = TENTH / ROOTN
+      GROWTO = TENTH / ( DBLE( N )*EPS3 )
       NRMSML = MAX( ONE, EPS3*ROOTN )*SMLNUM
 *
 *     Form B = H - W*I (except that the subdiagonal elements are not
@@ -226,8 +229,9 @@
 *
 *        Scale supplied initial vector.
 *
-         VNORM = DZNRM2( N, V, 1 )
-         CALL ZDSCAL( N, ( EPS3*ROOTN ) / MAX( VNORM, NRMSML ), V, 1 )
+         V0NORM = DZNRM2( N, V, 1 )
+         CALL ZDSCAL( N, ( EPS3*ROOTN ) / MAX( V0NORM, NRMSML ), V,
+     $                1 )
       END IF
 *
       IF( RIGHTV ) THEN
@@ -308,19 +312,21 @@
 *
       NORMIN = 'N'
       DO 110 ITS = 1, N
+         V0NORM = DZASUM( N, V, 1 )
 *
 *        Solve U*x = scale*v for a right eigenvector
 *          or U**H *x = scale*v for a left eigenvector,
 *        overwriting x on v.
 *
-         CALL ZLATRS( 'Upper', TRANS, 'Nonunit', NORMIN, N, B, LDB, V,
+         CALL ZLATRS( 'Upper', TRANS, 'Nonunit', NORMIN, N, B, LDB,
+     $                V,
      $                SCALE, RWORK, IERR )
          NORMIN = 'Y'
 *
 *        Test for sufficient growth in the norm of v.
 *
-         VNORM = DZASUM( N, V, 1 )
-         IF( VNORM.GE.GROWTO*SCALE )
+         V1NORM = DZASUM( N, V, 1 )
+         IF( V1NORM.GE.GROWTO*SCALE*V0NORM )
      $      GO TO 120
 *
 *        Choose new orthogonal starting vector and try again.

@@ -19,8 +19,8 @@ void RELAPACK_zsytrf(
     double *Work, const blasint *lWork, blasint *info
 ) {
 
-    // Required work size
-    const blasint cleanlWork = *n * (*n / 2);
+    // Required work size (ZREC_SPLIT rounds up)
+    const blasint cleanlWork = *n * ZREC_SPLIT(*n);
     blasint minlWork = cleanlWork;
 #if XSYTRF_ALLOW_MALLOC
     minlWork = 1;

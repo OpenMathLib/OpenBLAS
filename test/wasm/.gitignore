@@ -1,0 +1,4 @@
+out/
+*.js
+*.wasm
+*.log

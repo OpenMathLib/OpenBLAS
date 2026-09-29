@@ -379,7 +379,7 @@ static doublecomplex c_b2 = {1.,0.};
 /* > \ingroup complex16_lin */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgelqs_(integer *m, integer *n, integer *nrhs, 
+/* Subroutine */ void zgelqs_(integer *m, integer *n, integer *nrhs, 
 	doublecomplex *a, integer *lda, doublecomplex *tau, doublecomplex *b, 
 	integer *ldb, doublecomplex *work, integer *lwork, integer *info)
 {
@@ -387,10 +387,10 @@ static doublecomplex c_b2 = {1.,0.};
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int ztrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *), 
-	    xerbla_(char *, integer *), zlaset_(char *, integer *, 
+	    xerbla_(char *, integer *, ftnlen), zlaset_(char *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, doublecomplex *, 
 	    integer *), zunmlq_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
@@ -429,19 +429,19 @@ static doublecomplex c_b2 = {1.,0.};
 	*info = -5;
     } else if (*ldb < f2cmax(1,*n)) {
 	*info = -8;
-    } else if (*lwork < 1 || *lwork < *nrhs && *m > 0 && *n > 0) {
+    } else if (*lwork < 1 || (*lwork < *nrhs && *m > 0 && *n > 0)) {
 	*info = -10;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZGELQS", &i__1);
-	return 0;
+	xerbla_("ZGELQS", &i__1, (ftnlen)6);
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0 || *m == 0) {
-	return 0;
+	return;
     }
 
 /*     Solve L*X = B(1:m,:) */
@@ -461,7 +461,7 @@ static doublecomplex c_b2 = {1.,0.};
     zunmlq_("Left", "Conjugate transpose", n, nrhs, m, &a[a_offset], lda, &
 	    tau[1], &b[b_offset], ldb, &work[1], lwork, info);
 
-    return 0;
+    return;
 
 /*     End of ZGELQS */
 

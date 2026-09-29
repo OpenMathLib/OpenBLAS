@@ -29,7 +29,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #ifdef RISCV64_ZVL256B
-#       define LMUL m2
+#       define LMUL m4
 #       if defined(DOUBLE)
 #               define ELEN 64
 #       else

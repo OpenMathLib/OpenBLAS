@@ -144,7 +144,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 
     int mm, nn;
 
-    mm = (loop & ~(GEMM_UNROLL_MN - 1));
+    /* Division form works for non-PoT UNROLL_MN (e.g. CORTEXA72 MN=24). */
+    mm = (loop / GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
     nn = MIN(GEMM_UNROLL_MN, n - loop);
 
 #ifndef LOWER

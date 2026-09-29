@@ -558,8 +558,8 @@
 !     External functions (BLAS and LAPACK)
 !     ~~~~~~~~~~~~~~~~~
       REAL(KIND=WP) CLANGE, SLAMCH, SCNRM2
-      EXTERNAL      CLANGE, SLAMCH, SCNRM2, ICAMAX
-      INTEGER                               ICAMAX
+      EXTERNAL      SLAMCH, SCNRM2, ICAMAX
+      INTEGER                       ICAMAX
       LOGICAL       SISNAN, LSAME
       EXTERNAL      SISNAN, LSAME
 !
@@ -768,6 +768,7 @@
                 K    =  0
                 INFO = -8
                 CALL XERBLA('CGEDMD',-INFO)
+                RETURN
             END IF
             IF ( (SCALE /= ZERO) .AND. (SSUM /= ZERO) ) THEN
                ROOTSC = SQRT(SSUM)
@@ -844,6 +845,7 @@
                 K    =  0
                 INFO = -10
                 CALL XERBLA('CGEDMD',-INFO)
+                RETURN
             END IF
             IF ( SCALE /= ZERO  .AND. (SSUM /= ZERO) ) THEN
                ROOTSC = SQRT(SSUM)

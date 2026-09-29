@@ -23,7 +23,7 @@
 *       INTEGER            ISEED( 4 ), IWORK( * ), NN( * )
 *       REAL               A( LDA, * ), EVECTL( LDU, * ),
 *      $                   EVECTR( LDU, * ), EVECTX( LDU, * ),
-*      $                   EVECTY( LDU, * ), H( LDA, * ), RESULT( 16 ),
+*      $                   EVECTY( LDU, * ), H( LDA, * ), RESULT( 17 ),
 *      $                   T1( LDA, * ), T2( LDA, * ), TAU( * ),
 *      $                   U( LDU, * ), UU( LDU, * ), UZ( LDU, * ),
 *      $                   WI1( * ), WI2( * ), WI3( * ), WORK( * ),
@@ -85,17 +85,21 @@
 *>
 *>    (10)    | L**H T - W**H L | / ( |T| |L| ulp )
 *>
-*>    (11)    | HX - XW | / ( |H| |X| ulp )
+*>    (11)    | ( W(Schur form) - W(eigenvalues only) ) s | / ( |W| ulp )
+*>            over the eigenvalues whose reciprocal condition number s
+*>            is at least sqrt(ulp); s = 1 for a normal matrix
 *>
-*>    (12)    | Y**H H - W**H Y | / ( |H| |Y| ulp )
+*>    (12)    | HX - XW | / ( |H| |X| ulp )
 *>
-*>    (13)    | AX - XW | / ( |A| |X| ulp )
+*>    (13)    | Y**H H - W**H Y | / ( |H| |Y| ulp )
 *>
-*>    (14)    | Y**H A - W**H Y | / ( |A| |Y| ulp )
+*>    (14)    | AX - XW | / ( |A| |X| ulp )
 *>
-*>    (15)    | AR - RW | / ( |A| |R| ulp )
+*>    (15)    | Y**H A - W**H Y | / ( |A| |Y| ulp )
 *>
-*>    (16)    | LA - WL | / ( |A| |L| ulp )
+*>    (16)    | AR - RW | / ( |A| |R| ulp )
+*>
+*>    (17)    | LA - WL | / ( |A| |L| ulp )
 *>
 *>    The "sizes" are specified by an array NN(1:NSIZES); the value of
 *>    each element NN(j) specifies one size.
@@ -418,6 +422,7 @@
      $                   WI1, WR2, WI2, WR3, WI3, EVECTL, EVECTR,
      $                   EVECTY, EVECTX, UU, TAU, WORK, NWORK, IWORK,
      $                   SELECT, RESULT, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -432,7 +437,7 @@
       INTEGER            ISEED( 4 ), IWORK( * ), NN( * )
       REAL               A( LDA, * ), EVECTL( LDU, * ),
      $                   EVECTR( LDU, * ), EVECTX( LDU, * ),
-     $                   EVECTY( LDU, * ), H( LDA, * ), RESULT( 16 ),
+     $                   EVECTY( LDU, * ), H( LDA, * ), RESULT( 17 ),
      $                   T1( LDA, * ), T2( LDA, * ), TAU( * ),
      $                   U( LDU, * ), UU( LDU, * ), UZ( LDU, * ),
      $                   WI1( * ), WI2( * ), WI3( * ), WORK( * ),
@@ -450,10 +455,11 @@
 *     .. Local Scalars ..
       LOGICAL            BADNN, MATCH
       INTEGER            I, IHI, IINFO, ILO, IMODE, IN, ITYPE, J, JCOL,
-     $                   JJ, JSIZE, JTYPE, K, MTYPES, N, N1, NERRS,
+     $                   JJ, JP, JSIZE, JTYPE, K, MTYPES, N, N1, NERRS,
      $                   NMATS, NMAX, NSELC, NSELR, NTEST, NTESTT
-      REAL               ANINV, ANORM, COND, CONDS, OVFL, RTOVFL, RTULP,
-     $                   RTULPI, RTUNFL, TEMP1, TEMP2, ULP, ULPINV, UNFL
+      REAL               ANINV, ANORM, COND, CONDS, OVFL, PRODI, PRODR,
+     $                   RTOVFL, RTULP, RTULPI, RTUNFL, SJ, TEMP1,
+     $                   TEMP2, ULP, ULPINV, UNFL, XNORM, YNORM
 *     ..
 *     .. Local Arrays ..
       CHARACTER          ADUMMA( 1 )
@@ -463,14 +469,14 @@
       REAL               DUMMA( 6 )
 *     ..
 *     .. External Functions ..
-      REAL               SLAMCH
-      EXTERNAL           SLAMCH
+      REAL               SDOT, SLAMCH, SLAPY2, SNRM2
+      EXTERNAL           SDOT, SLAMCH, SLAPY2, SNRM2
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SCOPY, SGEHRD, SGEMM, SGET10, SGET22, SHSEIN,
-     $                   SHSEQR, SHST01, SLABAD, SLACPY, SLAFTS, SLASET,
-     $                   SLASUM, SLATME, SLATMR, SLATMS, SORGHR, SORMHR,
-     $                   STREVC, STREVC3, XERBLA
+     $                   SHSEQR, SHST01, SLACPY, SLAFTS, SLASET, SLASUM,
+     $                   SLATME, SLATMR, SLATMS, SORGHR, SORMHR, STREVC,
+     $                   STREVC3, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN, REAL, SQRT
@@ -530,7 +536,6 @@
 *
       UNFL = SLAMCH( 'Safe minimum' )
       OVFL = SLAMCH( 'Overflow' )
-      CALL SLABAD( UNFL, OVFL )
       ULP = SLAMCH( 'Epsilon' )*SLAMCH( 'Base' )
       ULPINV = ONE / ULP
       RTUNFL = SQRT( UNFL )
@@ -609,7 +614,7 @@
             GO TO 70
 *
    60       CONTINUE
-            ANORM = RTUNFL*N*ULPINV
+            ANORM = RTUNFL*REAL( N )*ULPINV
             GO TO 70
 *
    70       CONTINUE
@@ -962,6 +967,62 @@
      $            N, JTYPE, IOLDSD
             END IF
 *
+*           Do Test 11: | ( W3 - W1 ) s | / ( max(|W1|,|W3|) ulp )
+*
+*           W1 comes from JOB = 'S' and W3 from JOB = 'E'.  Unlike test
+*           8, which varies only COMPZ, these two are not expected to
+*           agree exactly: the paths cover different index ranges and
+*           need not round alike.  s(j) = |y(j)**H x(j)| over
+*           ||y(j)|| ||x(j)||, the reciprocal condition number of
+*           eigenvalue j of T1, is what makes the comparison meaningful.
+*           A backward error eps in H moves that eigenvalue by
+*           eps / s(j), so the two can only be asked to agree to within
+*           |dW(j)| s(j); s(j) = 1 for a normal matrix.  Eigenvalues
+*           with s(j) < sqrt(ulp) are skipped: those are the ones the
+*           two paths have been seen to return in a different order,
+*           which the index-wise comparison could not tell apart from a
+*           real error.
+*
+            NTEST = 11
+            RESULT( 11 ) = ULPINV
+            TEMP1 = ZERO
+            TEMP2 = ZERO
+            DO 155 J = 1, N
+               IF( WI1( J ).LT.ZERO ) THEN
+                  JP = J - 1
+               ELSE
+                  JP = J
+               END IF
+               IF( WI1( JP ).EQ.ZERO ) THEN
+                  XNORM = SNRM2( N, EVECTR( 1, JP ), 1 )
+                  YNORM = SNRM2( N, EVECTL( 1, JP ), 1 )
+                  SJ = ABS( SDOT( N, EVECTL( 1, JP ), 1,
+     $                 EVECTR( 1, JP ), 1 ) )
+               ELSE
+                  XNORM = SLAPY2( SNRM2( N, EVECTR( 1, JP ), 1 ),
+     $                    SNRM2( N, EVECTR( 1, JP+1 ), 1 ) )
+                  YNORM = SLAPY2( SNRM2( N, EVECTL( 1, JP ), 1 ),
+     $                    SNRM2( N, EVECTL( 1, JP+1 ), 1 ) )
+                  PRODR = SDOT( N, EVECTL( 1, JP ), 1,
+     $                    EVECTR( 1, JP ), 1 )
+                  PRODR = PRODR + SDOT( N, EVECTL( 1, JP+1 ), 1,
+     $                    EVECTR( 1, JP+1 ), 1 )
+                  PRODI = SDOT( N, EVECTL( 1, JP ), 1,
+     $                    EVECTR( 1, JP+1 ), 1 )
+                  PRODI = PRODI - SDOT( N, EVECTL( 1, JP+1 ), 1,
+     $                    EVECTR( 1, JP ), 1 )
+                  SJ = SLAPY2( PRODR, PRODI )
+               END IF
+               SJ = SJ / MAX( XNORM*YNORM, UNFL )
+               TEMP1 = MAX( TEMP1, ABS( WR1( J ) )+ABS( WI1( J ) ),
+     $                 ABS( WR3( J ) )+ABS( WI3( J ) ) )
+               IF( SJ.GE.RTULP )
+     $            TEMP2 = MAX( TEMP2, SJ*( ABS( WR1( J )-WR3( J ) )+
+     $                 ABS( WI1( J )-WI3( J ) ) ) )
+  155       CONTINUE
+*
+            RESULT( 11 ) = TEMP2 / MAX( UNFL, ULP*MAX( TEMP1, TEMP2 ) )
+*
 *           Compute selected left eigenvectors and confirm that
 *           they agree with previous left eigenvectors
 *
@@ -1001,10 +1062,10 @@
      $         WRITE( NOUNIT, FMT = 9997 )'Left', 'STREVC', N, JTYPE,
      $         IOLDSD
 *
-*           Call SHSEIN for Right eigenvectors of H, do test 11
+*           Call SHSEIN for Right eigenvectors of H, do test 12
 *
-            NTEST = 11
-            RESULT( 11 ) = ULPINV
+            NTEST = 12
+            RESULT( 12 ) = ULPINV
             DO 230 J = 1, N
                SELECT( J ) = .TRUE.
   230       CONTINUE
@@ -1020,24 +1081,24 @@
      $            GO TO 250
             ELSE
 *
-*              Test 11:  | HX - XW | / ( |H| |X| ulp )
+*              Test 12:  | HX - XW | / ( |H| |X| ulp )
 *
 *                        (from inverse iteration)
 *
                CALL SGET22( 'N', 'N', 'N', N, H, LDA, EVECTX, LDU, WR3,
      $                      WI3, WORK, DUMMA( 1 ) )
                IF( DUMMA( 1 ).LT.ULPINV )
-     $            RESULT( 11 ) = DUMMA( 1 )*ANINV
+     $            RESULT( 12 ) = DUMMA( 1 )*ANINV
                IF( DUMMA( 2 ).GT.THRESH ) THEN
                   WRITE( NOUNIT, FMT = 9998 )'Right', 'SHSEIN',
      $               DUMMA( 2 ), N, JTYPE, IOLDSD
                END IF
             END IF
 *
-*           Call SHSEIN for Left eigenvectors of H, do test 12
+*           Call SHSEIN for Left eigenvectors of H, do test 13
 *
-            NTEST = 12
-            RESULT( 12 ) = ULPINV
+            NTEST = 13
+            RESULT( 13 ) = ULPINV
             DO 240 J = 1, N
                SELECT( J ) = .TRUE.
   240       CONTINUE
@@ -1053,24 +1114,24 @@
      $            GO TO 250
             ELSE
 *
-*              Test 12:  | YH - WY | / ( |H| |Y| ulp )
+*              Test 13:  | YH - WY | / ( |H| |Y| ulp )
 *
 *                        (from inverse iteration)
 *
                CALL SGET22( 'C', 'N', 'C', N, H, LDA, EVECTY, LDU, WR3,
      $                      WI3, WORK, DUMMA( 3 ) )
                IF( DUMMA( 3 ).LT.ULPINV )
-     $            RESULT( 12 ) = DUMMA( 3 )*ANINV
+     $            RESULT( 13 ) = DUMMA( 3 )*ANINV
                IF( DUMMA( 4 ).GT.THRESH ) THEN
                   WRITE( NOUNIT, FMT = 9998 )'Left', 'SHSEIN',
      $               DUMMA( 4 ), N, JTYPE, IOLDSD
                END IF
             END IF
 *
-*           Call SORMHR for Right eigenvectors of A, do test 13
+*           Call SORMHR for Right eigenvectors of A, do test 14
 *
-            NTEST = 13
-            RESULT( 13 ) = ULPINV
+            NTEST = 14
+            RESULT( 14 ) = ULPINV
 *
             CALL SORMHR( 'Left', 'No transpose', N, N, ILO, IHI, UU,
      $                   LDU, TAU, EVECTX, LDU, WORK, NWORK, IINFO )
@@ -1082,20 +1143,20 @@
      $            GO TO 250
             ELSE
 *
-*              Test 13:  | AX - XW | / ( |A| |X| ulp )
+*              Test 14:  | AX - XW | / ( |A| |X| ulp )
 *
 *                        (from inverse iteration)
 *
                CALL SGET22( 'N', 'N', 'N', N, A, LDA, EVECTX, LDU, WR3,
      $                      WI3, WORK, DUMMA( 1 ) )
                IF( DUMMA( 1 ).LT.ULPINV )
-     $            RESULT( 13 ) = DUMMA( 1 )*ANINV
+     $            RESULT( 14 ) = DUMMA( 1 )*ANINV
             END IF
 *
-*           Call SORMHR for Left eigenvectors of A, do test 14
+*           Call SORMHR for Left eigenvectors of A, do test 15
 *
-            NTEST = 14
-            RESULT( 14 ) = ULPINV
+            NTEST = 15
+            RESULT( 15 ) = ULPINV
 *
             CALL SORMHR( 'Left', 'No transpose', N, N, ILO, IHI, UU,
      $                   LDU, TAU, EVECTY, LDU, WORK, NWORK, IINFO )
@@ -1107,22 +1168,22 @@
      $            GO TO 250
             ELSE
 *
-*              Test 14:  | YA - WY | / ( |A| |Y| ulp )
+*              Test 15:  | YA - WY | / ( |A| |Y| ulp )
 *
 *                        (from inverse iteration)
 *
                CALL SGET22( 'C', 'N', 'C', N, A, LDA, EVECTY, LDU, WR3,
      $                      WI3, WORK, DUMMA( 3 ) )
                IF( DUMMA( 3 ).LT.ULPINV )
-     $            RESULT( 14 ) = DUMMA( 3 )*ANINV
+     $            RESULT( 15 ) = DUMMA( 3 )*ANINV
             END IF
 *
 *           Compute Left and Right Eigenvectors of A
 *
 *           Compute a Right eigenvector matrix:
 *
-            NTEST = 15
-            RESULT( 15 ) = ULPINV
+            NTEST = 16
+            RESULT( 16 ) = ULPINV
 *
             CALL SLACPY( ' ', N, N, UZ, LDU, EVECTR, LDU )
 *
@@ -1135,13 +1196,13 @@
                GO TO 250
             END IF
 *
-*           Test 15:  | AR - RW | / ( |A| |R| ulp )
+*           Test 16:  | AR - RW | / ( |A| |R| ulp )
 *
 *                     (from Schur decomposition)
 *
             CALL SGET22( 'N', 'N', 'N', N, A, LDA, EVECTR, LDU, WR1,
      $                   WI1, WORK, DUMMA( 1 ) )
-            RESULT( 15 ) = DUMMA( 1 )
+            RESULT( 16 ) = DUMMA( 1 )
             IF( DUMMA( 2 ).GT.THRESH ) THEN
                WRITE( NOUNIT, FMT = 9998 )'Right', 'STREVC3',
      $            DUMMA( 2 ), N, JTYPE, IOLDSD
@@ -1149,8 +1210,8 @@
 *
 *           Compute a Left eigenvector matrix:
 *
-            NTEST = 16
-            RESULT( 16 ) = ULPINV
+            NTEST = 17
+            RESULT( 17 ) = ULPINV
 *
             CALL SLACPY( ' ', N, N, UZ, LDU, EVECTL, LDU )
 *
@@ -1163,13 +1224,13 @@
                GO TO 250
             END IF
 *
-*           Test 16:  | LA - WL | / ( |A| |L| ulp )
+*           Test 17:  | LA - WL | / ( |A| |L| ulp )
 *
 *                     (from Schur decomposition)
 *
             CALL SGET22( 'Trans', 'N', 'Conj', N, A, LDA, EVECTL, LDU,
      $                   WR1, WI1, WORK, DUMMA( 3 ) )
-            RESULT( 16 ) = DUMMA( 3 )
+            RESULT( 17 ) = DUMMA( 3 )
             IF( DUMMA( 4 ).GT.THRESH ) THEN
                WRITE( NOUNIT, FMT = 9998 )'Left', 'STREVC3', DUMMA( 4 ),
      $            N, JTYPE, IOLDSD

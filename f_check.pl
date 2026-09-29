@@ -19,7 +19,7 @@ $nofortran = 0;
 
 $compiler = join(" ", @ARGV);
 $compiler_bin = shift(@ARGV);
- 
+
 # f77 is too ambiguous
 $compiler = "" if $compiler eq "f77";
 
@@ -66,6 +66,10 @@ if ($compiler eq "") {
 	$data = `$compiler -O2 -S ftest.f > /dev/null 2>&1 && cat ftest.s && rm -f ftest.s`;
 	if ($data eq "") {
 		$data = `$compiler -O2 -S ftest.f > /dev/null 2>&1 && cat ftest.c && rm -f ftest.c`;
+	}
+	my $ver = `$compiler --version 2>&1`;
+	if (!$?) {
+		$data = "$data\n$ver";
 	}
 	if ($data =~ /zhoge_/) {
 	    $bu       = "_";
@@ -323,7 +327,7 @@ $linker_a = "";
 if ($link ne "") {
 
     $link =~ s/\-Y\sP\,/\-Y/g;
-    
+
     $link =~ s/\-R\s*/\-rpath\%/g;
 
     $link =~ s/\-rpath\s+/\-rpath\%/g;

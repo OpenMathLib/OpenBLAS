@@ -11,6 +11,7 @@
 #endif
 
 #include "common.h"
+#include "cblas_test_fmt.h"
 
 typedef blasint integer;
 
@@ -408,11 +409,8 @@ static logical c_false = FALSE_;
     fgets(line,80,stdin);
     sscanf(line,"'%s'",snaps);
     fgets(line,80,stdin);
-#ifdef USE64BITINT
-    sscanf(line,"%ld",&ntra);
-#else
-    sscanf(line,"%d",&ntra);
-#endif
+    sscanf(line,BIFS,&ntra);
+
     trace = ntra >= 0;
     if (trace) {
 /*	o__1.oerr = 0;
@@ -452,25 +450,17 @@ static logical c_false = FALSE_;
 
 /*     Values of N */
    fgets(line,80,stdin);
-#ifdef USE64BITINT
-   sscanf(line,"%ld",&nidim);
-#else
-   sscanf(line,"%d",&nidim);
-#endif
+   sscanf(line,BIFS,&nidim);
 
     if (nidim < 1 || nidim > 9) {
         fprintf(stderr,"NUMBER OF VALUES OF N IS LESS THAN 1 OR GREATER THAN 9");
         goto L230;
     }
    fgets(line,80,stdin);
-#ifdef USE64BITINT
-   sscanf(line,"%ld %ld %ld %ld %ld %ld %ld %ld %ld",&idim[0],&idim[1],&idim[2],
+   sscanf(line,BIFS BIFS BIFS BIFS BIFS BIFS BIFS BIFS BIFS,&idim[0],&idim[1],&idim[2],
     &idim[3],&idim[4],&idim[5],&idim[6],&idim[7],&idim[8]);
-#else
-   sscanf(line,"%d %d %d %d %d %d %d %d %d",&idim[0],&idim[1],&idim[2],
-    &idim[3],&idim[4],&idim[5],&idim[6],&idim[7],&idim[8]);
-#endif
-    i__1 = nidim;
+
+   i__1 = nidim;
     for (i__ = 1; i__ <= i__1; ++i__) {
         if (idim[i__ - 1] < 0 || idim[i__ - 1] > 65) {
         fprintf(stderr,"VALUE OF N IS LESS THAN 0 OR GREATER THAN 65\n");
@@ -480,23 +470,16 @@ static logical c_false = FALSE_;
     }
 /*     Values of K */
    fgets(line,80,stdin);
-#ifdef USE64BITINT
-   sscanf(line,"%ld",&nkb);
-#else
-   sscanf(line,"%d",&nkb);
-#endif
+   sscanf(line,BIFS,&nkb);
 
     if (nkb < 1 || nkb > 7) {
         fprintf(stderr,"NUMBER OF VALUES OF K IS LESS THAN 1 OR GREATER THAN 7");
         goto L230;
     }
    fgets(line,80,stdin);
-#ifdef USE64BITINT
-   sscanf(line,"%ld %ld %ld %ld %ld %ld %ld",&kb[0],&kb[1],&kb[2],&kb[3],&kb[4],&kb[5],&kb[6]);
-#else
-   sscanf(line,"%d %d %d %d %d %d %d",&kb[0],&kb[1],&kb[2],&kb[3],&kb[4],&kb[5],&kb[6]);
-#endif
-    i__1 = nkb;
+   sscanf(line,BIFS BIFS BIFS BIFS BIFS BIFS BIFS,&kb[0],&kb[1],&kb[2],&kb[3],&kb[4],&kb[5],&kb[6]);
+
+   i__1 = nkb;
     for (i__ = 1; i__ <= i__1; ++i__) {
         if (kb[i__ - 1] < 0 ) {
         fprintf(stderr,"VALUE OF K IS LESS THAN 0\n");
@@ -506,24 +489,17 @@ static logical c_false = FALSE_;
     }
 /*     Values of INCX and INCY */
    fgets(line,80,stdin);
-#ifdef USE64BITINT
-   sscanf(line,"%ld",&ninc);
-#else
-   sscanf(line,"%d",&ninc);
-#endif
+   sscanf(line,BIFS,&ninc);
 
-    if (ninc < 1 || ninc > 7) {
+   if (ninc < 1 || ninc > 7) {
         fprintf(stderr,"NUMBER OF VALUES OF INCX AND INCY IS LESS THAN 1 OR GREATER THAN 7");
         goto L230;
-    }
+   }
 
    fgets(line,80,stdin);
-#ifdef USE64BITINT
-   sscanf(line,"%ld %ld %ld %ld %ld %ld %ld",&inc[0],&inc[1],&inc[2],&inc[3],&inc[4],&inc[5],&inc[6]);
-#else
-   sscanf(line,"%d %d %d %d %d %d %d",&inc[0],&inc[1],&inc[2],&inc[3],&inc[4],&inc[5],&inc[6]);
-#endif
-    i__1 = ninc;
+   sscanf(line,BIFS BIFS BIFS BIFS BIFS BIFS BIFS,&inc[0],&inc[1],&inc[2],&inc[3],&inc[4],&inc[5],&inc[6]);
+
+   i__1 = ninc;
     for (i__ = 1; i__ <= i__1; ++i__) {
         if (inc[i__ - 1] == 0 || (i__2 = inc[i__ - 1], abs(i__2)) > 2) {
             fprintf (stderr,"ABSOLUTE VALUE OF INCX OR INCY IS 0 OR GREATER THAN 2\n");

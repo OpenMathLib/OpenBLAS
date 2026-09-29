@@ -1,12 +1,3 @@
-/* f2c.h  --  Standard Fortran to C header file */
-
-/**  barf  [ba:rf]  2.  "He suggested using FORTRAN, and everybody barfed."
-
-	- From The Shogakukan DICTIONARY OF NEW ENGLISH (Second edition) */
-
-#ifndef F2C_INCLUDE
-#define F2C_INCLUDE
-
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,14 +39,16 @@ typedef float real;
 typedef double doublereal;
 typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
-static inline _Complex float Cf(complex *z) {return z->r + z->i*_Complex_I;}
+#ifdef _MSC_VER
+static inline _Dcomplex Cd(doublecomplex *z) {_Dcomplex zz={z->r , z->i};return zz;}
+static inline _Dcomplex * _pCd(doublecomplex *z) {return (_Dcomplex*)z;}
+#else
 static inline _Complex double Cd(doublecomplex *z) {return z->r + z->i*_Complex_I;}
-static inline _Complex float * _pCf(complex *z) {return (_Complex float*)z;}
 static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*)z;}
-#define pCf(z) (*_pCf(z))
+#endif
 #define pCd(z) (*_pCd(z))
-typedef blasint logical;
-
+typedef int logical;
+typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
 
@@ -191,8 +184,13 @@ typedef struct Namelist Namelist;
 #define abort_() { sig_die("Fortran abort routine called", 1); }
 #define c_abs(z) (cabsf(Cf(z)))
 #define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
+#ifdef _MSC_VER
+#define c_div(c, a, b) {Cf(c)._Val[0] = (Cf(a)._Val[0]/Cf(b)._Val[0]); Cf(c)._Val[1]=(Cf(a)._Val[1]/Cf(b)._Val[1]);}
+#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/Cd(b)._Val[1]);}
+#else
 #define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
 #define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
+#endif
 #define c_exp(R, Z) {pCf(R) = cexpf(Cf(Z));}
 #define c_log(R, Z) {pCf(R) = clogf(Cf(Z));}
 #define c_sin(R, Z) {pCf(R) = csinf(Cf(Z));}
@@ -204,13 +202,13 @@ typedef struct Namelist Namelist;
 #define d_atan(x) (atan(*(x)))
 #define d_atn2(x, y) (atan2(*(x),*(y)))
 #define d_cnjg(R, Z) { pCd(R) = conj(Cd(Z)); }
-#define r_cnjg(R, Z) { pCf(R) = conj(Cf(Z)); }
+#define r_cnjg(R, Z) { pCf(R) = conjf(Cf(Z)); }
 #define d_cos(x) (cos(*(x)))
 #define d_cosh(x) (cosh(*(x)))
 #define d_dim(__a, __b) ( *(__a) > *(__b) ? *(__a) - *(__b) : 0.0 )
 #define d_exp(x) (exp(*(x)))
 #define d_imag(z) (cimag(Cd(z)))
-#define r_imag(z) (cimag(Cf(z)))
+#define r_imag(z) (cimagf(Cf(z)))
 #define d_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define r_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define d_lg10(x) ( 0.43429448190325182765 * log(*(x)) )
@@ -244,26 +242,25 @@ typedef struct Namelist Namelist;
 #define s_copy(A,B,C,D) { int __i,__m; for (__i=0, __m=f2cmin((C),(D)); __i<__m && (B)[__i] != 0; ++__i) (A)[__i] = (B)[__i]; }
 #define sig_die(s, kill) { exit(1); }
 #define s_stop(s, n) {exit(0);}
-static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
 #define z_abs(z) (cabs(Cd(z)))
 #define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
 #define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
 #define myexit_() break;
 #define mycycle_() continue;
-#define myceiling_(w) ceil(w)
-#define myhuge_(w) HUGE_VAL
+#define myceiling_(w) {ceil(w)}
+#define myhuge_(w) {HUGE_VAL}
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
 #define mymaxloc_(w,s,e,n) dmaxloc_(w,*(s),*(e),n)
 
 /* procedure parameter types for -A and -C++ */
 
-
+#define F2C_proc_par_types 1
 #ifdef __cplusplus
 typedef logical (*L_fp)(...);
 #else
 typedef logical (*L_fp)();
 #endif
-
+#if 0
 static float spow_ui(float x, integer n) {
 	float pow=1.0; unsigned long int u;
 	if(n != 0) {
@@ -288,6 +285,21 @@ static double dpow_ui(double x, integer n) {
 	}
 	return pow;
 }
+#ifdef _MSC_VER
+static _Fcomplex cpow_ui(complex x, integer n) {
+	complex pow={1.0,0.0}; unsigned long int u;
+		if(n != 0) {
+		if(n < 0) n = -n, x.r = 1/x.r, x.i=1/x.i;
+		for(u = n; ; ) {
+			if(u & 01) pow.r *= x.r, pow.i *= x.i;
+			if(u >>= 1) x.r *= x.r, x.i *= x.i;
+			else break;
+		}
+	}
+	_Fcomplex p={pow.r, pow.i};
+	return p;
+}
+#else
 static _Complex float cpow_ui(_Complex float x, integer n) {
 	_Complex float pow=1.0; unsigned long int u;
 	if(n != 0) {
@@ -300,6 +312,22 @@ static _Complex float cpow_ui(_Complex float x, integer n) {
 	}
 	return pow;
 }
+#endif
+#ifdef _MSC_VER
+static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
+	_Dcomplex pow={1.0,0.0}; unsigned long int u;
+	if(n != 0) {
+		if(n < 0) n = -n, x._Val[0] = 1/x._Val[0], x._Val[1] =1/x._Val[1];
+		for(u = n; ; ) {
+			if(u & 01) pow._Val[0] *= x._Val[0], pow._Val[1] *= x._Val[1];
+			if(u >>= 1) x._Val[0] *= x._Val[0], x._Val[1] *= x._Val[1];
+			else break;
+		}
+	}
+	_Dcomplex p = {pow._Val[0], pow._Val[1]};
+	return p;
+}
+#else
 static _Complex double zpow_ui(_Complex double x, integer n) {
 	_Complex double pow=1.0; unsigned long int u;
 	if(n != 0) {
@@ -312,6 +340,7 @@ static _Complex double zpow_ui(_Complex double x, integer n) {
 	}
 	return pow;
 }
+#endif
 static integer pow_ii(integer x, integer n) {
 	integer pow; unsigned long int u;
 	if (n <= 0) {
@@ -345,6 +374,22 @@ static integer smaxloc_(float *w, integer s, integer e, integer *n)
 }
 static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef _MSC_VER
+	_Fcomplex zdotc = {0.0, 0.0};
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += conjf(Cf(&x[i]))._Val[0] * Cf(&y[i])._Val[0];
+			zdotc._Val[1] += conjf(Cf(&x[i]))._Val[1] * Cf(&y[i])._Val[1];
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += conjf(Cf(&x[i*incx]))._Val[0] * Cf(&y[i*incy])._Val[0];
+			zdotc._Val[1] += conjf(Cf(&x[i*incx]))._Val[1] * Cf(&y[i*incy])._Val[1];
+		}
+	}
+	pCf(z) = zdotc;
+}
+#else
 	_Complex float zdotc = 0.0;
 	if (incx == 1 && incy == 1) {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
@@ -357,8 +402,25 @@ static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, c
 	}
 	pCf(z) = zdotc;
 }
+#endif
 static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef _MSC_VER
+	_Dcomplex zdotc = {0.0, 0.0};
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += conj(Cd(&x[i]))._Val[0] * Cd(&y[i])._Val[0];
+			zdotc._Val[1] += conj(Cd(&x[i]))._Val[1] * Cd(&y[i])._Val[1];
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += conj(Cd(&x[i*incx]))._Val[0] * Cd(&y[i*incy])._Val[0];
+			zdotc._Val[1] += conj(Cd(&x[i*incx]))._Val[1] * Cd(&y[i*incy])._Val[1];
+		}
+	}
+	pCd(z) = zdotc;
+}
+#else
 	_Complex double zdotc = 0.0;
 	if (incx == 1 && incy == 1) {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
@@ -370,9 +432,26 @@ static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		}
 	}
 	pCd(z) = zdotc;
-}	
+}
+#endif	
 static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef _MSC_VER
+	_Fcomplex zdotc = {0.0, 0.0};
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0];
+			zdotc._Val[1] += Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0];
+			zdotc._Val[1] += Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
+		}
+	}
+	pCf(z) = zdotc;
+}
+#else
 	_Complex float zdotc = 0.0;
 	if (incx == 1 && incy == 1) {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
@@ -385,8 +464,25 @@ static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, c
 	}
 	pCf(z) = zdotc;
 }
+#endif
 static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef _MSC_VER
+	_Dcomplex zdotc = {0.0, 0.0};
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0];
+			zdotc._Val[1] += Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0];
+			zdotc._Val[1] += Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
+		}
+	}
+	pCd(z) = zdotc;
+}
+#else
 	_Complex double zdotc = 0.0;
 	if (incx == 1 && incy == 1) {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
@@ -400,3 +496,534 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	pCd(z) = zdotc;
 }
 #endif
+#endif
+/*  -- translated by f2c (version 20000121).
+   You must link the resulting object file with the libraries:
+	-lf2c -lm   (in that order)
+*/
+
+
+
+/*  -- translated by f2c (version 20200916).
+   You must link the resulting object file with libf2c:
+	on Microsoft Windows system, link with libf2c.lib;
+	on Linux or Unix systems, link with .../path/to/libf2c.a -lm
+	or, if you install libf2c.a in a standard place, with -lf2c -lm
+	-- in that order, at the end of the command line, as in
+		cc *.o -lf2c -lm
+	Source for libf2c is in /netlib/f2c/libf2c.zip, e.g.,
+
+		http://www.netlib.org/f2c/libf2c.zip
+*/
+
+
+
+/* Table of constant values */
+
+static doublecomplex c_b1 = {0.,0.};
+static doublecomplex c_b2 = {1.,0.};
+static integer c__12 = 12;
+static integer c__13 = 13;
+static integer c__14 = 14;
+static integer c__15 = 15;
+static integer c__17 = 17;
+static integer c_n1 = -1;
+static integer c__1 = 1;
+
+/* Subroutine */ void zlaqz0_(char *wants, char *wantq, char *wantz, integer *
+	n, integer *ilo, integer *ihi, doublecomplex *a, integer *lda, 
+	doublecomplex *b, integer *ldb, doublecomplex *alpha, doublecomplex *
+	beta, doublecomplex *q, integer *ldq, doublecomplex *z__, integer *
+	ldz, doublecomplex *work, integer *lwork, doublereal *rwork, integer *
+	rec, integer *info)
+{
+    /* System generated locals */
+    integer a_dim1, a_offset, b_dim1, b_offset, q_dim1, q_offset, z_dim1, 
+	    z_offset, i__1, i__2, i__3, i__4, i__5;
+    doublereal d__1, d__2;
+    doublecomplex z__1, z__2;
+
+    /* Local variables */
+    integer aed_info__, shiftpos, lworkreq, k;
+    doublereal c1;
+    integer k2;
+    doublecomplex s1;
+    integer norm_info__, ld, ns, n_deflated__, nw, sweep_info__, nbr;
+    logical ilq, ilz;
+    doublereal ulp;
+    integer nsr, nwr;
+    doublereal btol;
+    integer nmin;
+    doublecomplex temp;
+    integer n_undeflated__;
+    extern /* Subroutine */ void zrot_(integer *, doublecomplex *, integer *, 
+	    doublecomplex *, integer *, doublereal *, doublecomplex *);
+    extern logical lsame_(char *, char *);
+    integer iiter;
+    doublereal bnorm;
+    integer maxit, rcost, istop, itemp1, itemp2;
+    extern /* Subroutine */ void zlaqz2_(logical *, logical *, logical *, 
+	    integer *, integer *, integer *, integer *, doublecomplex *, 
+	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
+	     doublecomplex *, integer *, integer *, integer *, doublecomplex *
+	    , doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
+	    integer *, doublecomplex *, integer *, doublereal *, integer *, 
+	    integer *), zlaqz3_(logical *, logical *, logical *, integer *, 
+	    integer *, integer *, integer *, integer *, doublecomplex *, 
+	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
+	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
+	     doublecomplex *, integer *, doublecomplex *, integer *, 
+	    doublecomplex *, integer *, integer *);
+    extern doublereal dlamch_(char *);
+    integer nibble, nblock;
+    doublereal safmin;
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
+    doublereal safmax;
+    extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
+	    integer *, integer *, ftnlen, ftnlen);
+    doublecomplex eshift;
+    char jbcmpz[3];
+    extern doublereal zlanhs_(char *, integer *, doublecomplex *, integer *, 
+	    doublereal *);
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
+	    doublecomplex *, doublecomplex *, doublecomplex *, integer *);
+    integer iwantq;
+    extern /* Subroutine */ void zlartg_(doublecomplex *, doublecomplex *, 
+	    doublereal *, doublecomplex *, doublecomplex *);
+    integer iwants, istart;
+    extern /* Subroutine */ void zhgeqz_(char *, char *, char *, integer *, 
+	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
+	     integer *, doublecomplex *, doublecomplex *, doublecomplex *, 
+	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
+	     doublereal *, integer *);
+    doublereal smlnum;
+    integer istopm, iwantz;
+    integer istart2;
+    logical ilschur;
+    integer nshifts, istartm;
+
+/*     Arguments */
+/*     Parameters */
+/*     Local scalars */
+/*     External Functions */
+
+/*     Decode wantS,wantQ,wantZ */
+
+    /* Parameter adjustments */
+    a_dim1 = *lda;
+    a_offset = 1 + a_dim1;
+    a -= a_offset;
+    b_dim1 = *ldb;
+    b_offset = 1 + b_dim1;
+    b -= b_offset;
+    --alpha;
+    --beta;
+    q_dim1 = *ldq;
+    q_offset = 1 + q_dim1;
+    q -= q_offset;
+    z_dim1 = *ldz;
+    z_offset = 1 + z_dim1;
+    z__ -= z_offset;
+    --work;
+    --rwork;
+
+    /* Function Body */
+    if (lsame_(wants, "E")) {
+	ilschur = FALSE_;
+	iwants = 1;
+    } else if (lsame_(wants, "S")) {
+	ilschur = TRUE_;
+	iwants = 2;
+    } else {
+	iwants = 0;
+    }
+    if (lsame_(wantq, "N")) {
+	ilq = FALSE_;
+	iwantq = 1;
+    } else if (lsame_(wantq, "V")) {
+	ilq = TRUE_;
+	iwantq = 2;
+    } else if (lsame_(wantq, "I")) {
+	ilq = TRUE_;
+	iwantq = 3;
+    } else {
+	iwantq = 0;
+    }
+    if (lsame_(wantz, "N")) {
+	ilz = FALSE_;
+	iwantz = 1;
+    } else if (lsame_(wantz, "V")) {
+	ilz = TRUE_;
+	iwantz = 2;
+    } else if (lsame_(wantz, "I")) {
+	ilz = TRUE_;
+	iwantz = 3;
+    } else {
+	iwantz = 0;
+    }
+
+/*     Check Argument Values */
+
+    *info = 0;
+    if (iwants == 0) {
+	*info = -1;
+    } else if (iwantq == 0) {
+	*info = -2;
+    } else if (iwantz == 0) {
+	*info = -3;
+    } else if (*n < 0) {
+	*info = -4;
+    } else if (*ilo < 1) {
+	*info = -5;
+    } else if (*ihi > *n || *ihi < *ilo - 1) {
+	*info = -6;
+    } else if (*lda < *n) {
+	*info = -8;
+    } else if (*ldb < *n) {
+	*info = -10;
+    } else if (*ldq < 1 || (ilq && *ldq < *n)) {
+	*info = -15;
+    } else if (*ldz < 1 || (ilz && *ldz < *n)) {
+	*info = -17;
+    }
+    if (*info != 0) {
+	i__1 = -(*info);
+	xerbla_("ZLAQZ0", &i__1, (ftnlen)6);
+	return;
+    }
+
+/*     Quick return if possible */
+
+    if (*n <= 0) {
+	work[1].r = 1., work[1].i = 0.;
+	return;
+    }
+
+/*     Get the parameters */
+
+    *(unsigned char *)jbcmpz = *(unsigned char *)wants;
+    *(unsigned char *)&jbcmpz[1] = *(unsigned char *)wantq;
+    *(unsigned char *)&jbcmpz[2] = *(unsigned char *)wantz;
+    nmin = ilaenv_(&c__12, "ZLAQZ0", jbcmpz, n, ilo, ihi, lwork, (ftnlen)6, (
+	    ftnlen)3);
+    nwr = ilaenv_(&c__13, "ZLAQZ0", jbcmpz, n, ilo, ihi, lwork, (ftnlen)6, (
+	    ftnlen)3);
+    nwr = f2cmax(2,nwr);
+/* Computing MIN */
+    i__1 = *ihi - *ilo + 1, i__2 = (*n - 1) / 3, i__1 = f2cmin(i__1,i__2);
+    nwr = f2cmin(i__1,nwr);
+    nibble = ilaenv_(&c__14, "ZLAQZ0", jbcmpz, n, ilo, ihi, lwork, (ftnlen)6, 
+	    (ftnlen)3);
+    nsr = ilaenv_(&c__15, "ZLAQZ0", jbcmpz, n, ilo, ihi, lwork, (ftnlen)6, (
+	    ftnlen)3);
+/* Computing MIN */
+    i__1 = nsr, i__2 = (*n + 6) / 9, i__1 = f2cmin(i__1,i__2), i__2 = *ihi - *
+	    ilo;
+    nsr = f2cmin(i__1,i__2);
+/* Computing MAX */
+    i__1 = 2, i__2 = nsr - nsr % 2;
+    nsr = f2cmax(i__1,i__2);
+    rcost = ilaenv_(&c__17, "ZLAQZ0", jbcmpz, n, ilo, ihi, lwork, (ftnlen)6, (
+	    ftnlen)3);
+    itemp1 = (integer) (nsr / sqrt((nsr << 1) / ((doublereal) rcost / 100 * *
+	    n) + 1));
+    itemp1 = ((itemp1 - 1) / 4 << 2) + 4;
+    nbr = nsr + itemp1;
+    if (*n < nmin || *rec >= 2) {
+	zhgeqz_(wants, wantq, wantz, n, ilo, ihi, &a[a_offset], lda, &b[
+		b_offset], ldb, &alpha[1], &beta[1], &q[q_offset], ldq, &z__[
+		z_offset], ldz, &work[1], lwork, &rwork[1], info);
+	return;
+    }
+
+/*     Find out required workspace */
+
+/*     Workspace query to ZLAQZ2 */
+    nw = f2cmax(nwr,nmin);
+    zlaqz2_(&ilschur, &ilq, &ilz, n, ilo, ihi, &nw, &a[a_offset], lda, &b[
+	    b_offset], ldb, &q[q_offset], ldq, &z__[z_offset], ldz, &
+	    n_undeflated__, &n_deflated__, &alpha[1], &beta[1], &work[1], &nw,
+	     &work[1], &nw, &work[1], &c_n1, &rwork[1], rec, &aed_info__);
+    itemp1 = (integer) work[1].r;
+/*     Workspace query to ZLAQZ3 */
+    zlaqz3_(&ilschur, &ilq, &ilz, n, ilo, ihi, &nsr, &nbr, &alpha[1], &beta[1]
+	    , &a[a_offset], lda, &b[b_offset], ldb, &q[q_offset], ldq, &z__[
+	    z_offset], ldz, &work[1], &nbr, &work[1], &nbr, &work[1], &c_n1, &
+	    sweep_info__);
+    itemp2 = (integer) work[1].r;
+/* Computing MAX */
+/* Computing 2nd power */
+    i__3 = nw;
+/* Computing 2nd power */
+    i__4 = nbr;
+    i__1 = itemp1 + (i__3 * i__3 << 1), i__2 = itemp2 + (i__4 * i__4 << 1);
+    lworkreq = f2cmax(i__1,i__2);
+    if (*lwork == -1) {
+	d__1 = (doublereal) lworkreq;
+	work[1].r = d__1, work[1].i = 0.;
+	return;
+    } else if (*lwork < lworkreq) {
+	*info = -18;
+    }
+    if (*info != 0) {
+	i__1 = -(*info);
+	xerbla_("ZLAQZ0", &i__1, (ftnlen)6);
+	return;
+    }
+
+/*     Initialize Q and Z */
+
+    if (iwantq == 3) {
+	zlaset_("FULL", n, n, &c_b1, &c_b2, &q[q_offset], ldq);
+    }
+    if (iwantz == 3) {
+	zlaset_("FULL", n, n, &c_b1, &c_b2, &z__[z_offset], ldz);
+    }
+/*     Get machine constants */
+    safmin = dlamch_("SAFE MINIMUM");
+    safmax = 1. / safmin;
+    ulp = dlamch_("PRECISION");
+    smlnum = safmin * ((doublereal) (*n) / ulp);
+    i__1 = *ihi - *ilo + 1;
+    bnorm = zlanhs_("F", &i__1, &b[*ilo + *ilo * b_dim1], ldb, &rwork[1]);
+/* Computing MAX */
+    d__1 = safmin, d__2 = ulp * bnorm;
+    btol = f2cmax(d__1,d__2);
+    istart = *ilo;
+    istop = *ihi;
+    maxit = (*ihi - *ilo + 1) * 30;
+    ld = 0;
+    i__1 = maxit;
+    for (iiter = 1; iiter <= i__1; ++iiter) {
+	if (iiter >= maxit) {
+	    *info = istop + 1;
+	    goto L80;
+	}
+	if (istart + 1 >= istop) {
+	    istop = istart;
+	    myexit_();
+	}
+/*        Check deflations at the end */
+/* Computing MAX */
+	d__1 = smlnum, d__2 = ulp * (z_abs(&a[istop + istop * a_dim1]) + 
+		z_abs(&a[istop - 1 + (istop - 1) * a_dim1]));
+	if (z_abs(&a[istop + (istop - 1) * a_dim1]) <= f2cmax(d__1,d__2)) {
+	    i__2 = istop + (istop - 1) * a_dim1;
+	    a[i__2].r = 0., a[i__2].i = 0.;
+	    --istop;
+	    ld = 0;
+	    eshift.r = 0., eshift.i = 0.;
+	}
+/*        Check deflations at the start */
+/* Computing MAX */
+	d__1 = smlnum, d__2 = ulp * (z_abs(&a[istart + istart * a_dim1]) + 
+		z_abs(&a[istart + 1 + (istart + 1) * a_dim1]));
+	if (z_abs(&a[istart + 1 + istart * a_dim1]) <= f2cmax(d__1,d__2)) {
+	    i__2 = istart + 1 + istart * a_dim1;
+	    a[i__2].r = 0., a[i__2].i = 0.;
+	    ++istart;
+	    ld = 0;
+	    eshift.r = 0., eshift.i = 0.;
+	}
+	if (istart + 1 >= istop) {
+	    myexit_();
+	}
+/*        Check interior deflations */
+	istart2 = istart;
+	i__2 = istart + 1;
+	for (k = istop; k >= i__2; --k) {
+/* Computing MAX */
+	    d__1 = smlnum, d__2 = ulp * (z_abs(&a[k + k * a_dim1]) + z_abs(&a[
+		    k - 1 + (k - 1) * a_dim1]));
+	    if (z_abs(&a[k + (k - 1) * a_dim1]) <= f2cmax(d__1,d__2)) {
+		i__3 = k + (k - 1) * a_dim1;
+		a[i__3].r = 0., a[i__3].i = 0.;
+		istart2 = k;
+		myexit_();
+	    }
+	}
+/*        Get range to apply rotations to */
+	if (ilschur) {
+	    istartm = 1;
+	    istopm = *n;
+	} else {
+	    istartm = istart2;
+	    istopm = istop;
+	}
+/*        Check infinite eigenvalues, this is done without blocking so might */
+/*        slow down the method when many infinite eigenvalues are present */
+	k = istop;
+	while(k >= istart2) {
+	    if (z_abs(&b[k + k * b_dim1]) < btol) {
+/*              A diagonal element of B is negligible, move it */
+/*              to the top and deflate it */
+		i__2 = istart2 + 1;
+		for (k2 = k; k2 >= i__2; --k2) {
+		    zlartg_(&b[k2 - 1 + k2 * b_dim1], &b[k2 - 1 + (k2 - 1) * 
+			    b_dim1], &c1, &s1, &temp);
+		    i__3 = k2 - 1 + k2 * b_dim1;
+		    b[i__3].r = temp.r, b[i__3].i = temp.i;
+		    i__3 = k2 - 1 + (k2 - 1) * b_dim1;
+		    b[i__3].r = 0., b[i__3].i = 0.;
+		    i__3 = k2 - 2 - istartm + 1;
+		    zrot_(&i__3, &b[istartm + k2 * b_dim1], &c__1, &b[istartm 
+			    + (k2 - 1) * b_dim1], &c__1, &c1, &s1);
+/* Computing MIN */
+		    i__4 = k2 + 1;
+		    i__3 = f2cmin(i__4,istop) - istartm + 1;
+		    zrot_(&i__3, &a[istartm + k2 * a_dim1], &c__1, &a[istartm 
+			    + (k2 - 1) * a_dim1], &c__1, &c1, &s1);
+		    if (ilz) {
+			zrot_(n, &z__[k2 * z_dim1 + 1], &c__1, &z__[(k2 - 1) *
+				 z_dim1 + 1], &c__1, &c1, &s1);
+		    }
+		    if (k2 < istop) {
+			zlartg_(&a[k2 + (k2 - 1) * a_dim1], &a[k2 + 1 + (k2 - 
+				1) * a_dim1], &c1, &s1, &temp);
+			i__3 = k2 + (k2 - 1) * a_dim1;
+			a[i__3].r = temp.r, a[i__3].i = temp.i;
+			i__3 = k2 + 1 + (k2 - 1) * a_dim1;
+			a[i__3].r = 0., a[i__3].i = 0.;
+			i__3 = istopm - k2 + 1;
+			zrot_(&i__3, &a[k2 + k2 * a_dim1], lda, &a[k2 + 1 + 
+				k2 * a_dim1], lda, &c1, &s1);
+			i__3 = istopm - k2 + 1;
+			zrot_(&i__3, &b[k2 + k2 * b_dim1], ldb, &b[k2 + 1 + 
+				k2 * b_dim1], ldb, &c1, &s1);
+			if (ilq) {
+			    d_cnjg(&z__1, &s1);
+			    zrot_(n, &q[k2 * q_dim1 + 1], &c__1, &q[(k2 + 1) *
+				     q_dim1 + 1], &c__1, &c1, &z__1);
+			}
+		    }
+		}
+		if (istart2 < istop) {
+		    zlartg_(&a[istart2 + istart2 * a_dim1], &a[istart2 + 1 + 
+			    istart2 * a_dim1], &c1, &s1, &temp);
+		    i__2 = istart2 + istart2 * a_dim1;
+		    a[i__2].r = temp.r, a[i__2].i = temp.i;
+		    i__2 = istart2 + 1 + istart2 * a_dim1;
+		    a[i__2].r = 0., a[i__2].i = 0.;
+		    i__2 = istopm - (istart2 + 1) + 1;
+		    zrot_(&i__2, &a[istart2 + (istart2 + 1) * a_dim1], lda, &
+			    a[istart2 + 1 + (istart2 + 1) * a_dim1], lda, &c1,
+			     &s1);
+		    i__2 = istopm - (istart2 + 1) + 1;
+		    zrot_(&i__2, &b[istart2 + (istart2 + 1) * b_dim1], ldb, &
+			    b[istart2 + 1 + (istart2 + 1) * b_dim1], ldb, &c1,
+			     &s1);
+		    if (ilq) {
+			d_cnjg(&z__1, &s1);
+			zrot_(n, &q[istart2 * q_dim1 + 1], &c__1, &q[(istart2 
+				+ 1) * q_dim1 + 1], &c__1, &c1, &z__1);
+		    }
+		}
+		++istart2;
+	    }
+	    --k;
+	}
+/*        istart2 now points to the top of the bottom right */
+/*        unreduced Hessenberg block */
+	if (istart2 >= istop) {
+	    istop = istart2 - 1;
+	    ld = 0;
+	    eshift.r = 0., eshift.i = 0.;
+	    mycycle_();
+	}
+	nw = nwr;
+	nshifts = nsr;
+	nblock = nbr;
+	if (istop - istart2 + 1 < nmin) {
+/*           Setting nw to the size of the subblock will make AED deflate */
+/*           all the eigenvalues. This is slightly more efficient than just */
+/*           using qz_small because the off diagonal part gets updated via BLAS. */
+	    if (istop - istart + 1 < nmin) {
+		nw = istop - istart + 1;
+		istart2 = istart;
+	    } else {
+		nw = istop - istart2 + 1;
+	    }
+	}
+
+/*        Time for AED */
+
+/* Computing 2nd power */
+	i__2 = nw;
+/* Computing 2nd power */
+	i__3 = nw;
+/* Computing 2nd power */
+	i__5 = nw;
+	i__4 = *lwork - (i__5 * i__5 << 1);
+	zlaqz2_(&ilschur, &ilq, &ilz, n, &istart2, &istop, &nw, &a[a_offset], 
+		lda, &b[b_offset], ldb, &q[q_offset], ldq, &z__[z_offset], 
+		ldz, &n_undeflated__, &n_deflated__, &alpha[1], &beta[1], &
+		work[1], &nw, &work[i__2 * i__2 + 1], &nw, &work[(i__3 * i__3 
+		<< 1) + 1], &i__4, &rwork[1], rec, &aed_info__);
+	if (n_deflated__ > 0) {
+	    istop -= n_deflated__;
+	    ld = 0;
+	    eshift.r = 0., eshift.i = 0.;
+	}
+	if (n_deflated__ * 100 > nibble * (n_deflated__ + n_undeflated__) || 
+		istop - istart2 + 1 < nmin) {
+/*           AED has uncovered many eigenvalues. Skip a QZ sweep and run */
+/*           AED again. */
+	    mycycle_();
+	}
+	++ld;
+/* Computing MIN */
+	i__2 = nshifts, i__3 = istop - istart2;
+	ns = f2cmin(i__2,i__3);
+	ns = f2cmin(ns,n_undeflated__);
+	shiftpos = istop - n_undeflated__ + 1;
+	if (ld % 6 == 0) {
+
+/*           Exceptional shift.  Chosen for no particularly good reason. */
+
+	    if ((doublereal) maxit * safmin * z_abs(&a[istop + (istop - 1) * 
+		    a_dim1]) < z_abs(&a[istop - 1 + (istop - 1) * a_dim1])) {
+		z_div(&z__1, &a[istop + (istop - 1) * a_dim1], &b[istop - 1 + 
+			(istop - 1) * b_dim1]);
+		eshift.r = z__1.r, eshift.i = z__1.i;
+	    } else {
+		d__1 = safmin * (doublereal) maxit;
+		z__2.r = 1. / d__1, z__2.i = 0. / d__1;
+		z__1.r = eshift.r + z__2.r, z__1.i = eshift.i + z__2.i;
+		eshift.r = z__1.r, eshift.i = z__1.i;
+	    }
+	    i__2 = shiftpos;
+	    alpha[i__2].r = 1., alpha[i__2].i = 0.;
+	    i__2 = shiftpos;
+	    beta[i__2].r = eshift.r, beta[i__2].i = eshift.i;
+	    ns = 1;
+	}
+
+/*        Time for a QZ sweep */
+
+/* Computing 2nd power */
+	i__2 = nblock;
+/* Computing 2nd power */
+	i__3 = nblock;
+/* Computing 2nd power */
+	i__5 = nblock;
+	i__4 = *lwork - (i__5 * i__5 << 1);
+	zlaqz3_(&ilschur, &ilq, &ilz, n, &istart2, &istop, &ns, &nblock, &
+		alpha[shiftpos], &beta[shiftpos], &a[a_offset], lda, &b[
+		b_offset], ldb, &q[q_offset], ldq, &z__[z_offset], ldz, &work[
+		1], &nblock, &work[i__2 * i__2 + 1], &nblock, &work[(i__3 * 
+		i__3 << 1) + 1], &i__4, &sweep_info__);
+    }
+
+/*     Call ZHGEQZ to normalize the eigenvalue blocks and set the eigenvalues */
+/*     If all the eigenvalues have been found, ZHGEQZ will not do any iterations */
+/*     and only normalize the blocks. In case of a rare convergence failure, */
+/*     the single shift might perform better. */
+
+L80:
+    zhgeqz_(wants, wantq, wantz, n, ilo, ihi, &a[a_offset], lda, &b[b_offset],
+	     ldb, &alpha[1], &beta[1], &q[q_offset], ldq, &z__[z_offset], ldz,
+	     &work[1], lwork, &rwork[1], &norm_info__);
+    *info = norm_info__;
+    return;
+} /* zlaqz0_ */
+

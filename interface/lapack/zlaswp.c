@@ -53,7 +53,7 @@ static int (*laswp[])(BLASLONG, BLASLONG, BLASLONG, FLOAT, FLOAT, FLOAT *, BLASL
 };
 
 OPENBLAS_EXPORT
-int NAME(blasint *N, FLOAT *a, blasint *LDA, blasint *K1, blasint *K2, blasint *ipiv, blasint *INCX){
+void NAME(blasint *N, FLOAT *a, blasint *LDA, blasint *K1, blasint *K2, blasint *ipiv, blasint *INCX){
 
   blasint n    = *N;
   blasint lda  = *LDA;
@@ -70,7 +70,7 @@ int NAME(blasint *N, FLOAT *a, blasint *LDA, blasint *K1, blasint *K2, blasint *
 
   PRINT_DEBUG_NAME;
 
-  if (incx == 0 || n <= 0) return 0;
+  if (incx == 0 || n <= 0) return;
 
   IDEBUG_START;
 
@@ -109,5 +109,5 @@ int NAME(blasint *N, FLOAT *a, blasint *LDA, blasint *K1, blasint *K2, blasint *
 
   IDEBUG_END;
 
-  return 0;
+  return;
 }

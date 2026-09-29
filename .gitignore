@@ -5,6 +5,7 @@
 *.def
 *.o
 *.exe
+*.wasm
 *.out
 *.tmp
 lapack-3.1.1

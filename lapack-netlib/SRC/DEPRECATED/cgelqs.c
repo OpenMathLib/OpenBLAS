@@ -380,7 +380,7 @@ static complex c_b2 = {1.f,0.f};
 /* > \ingroup complex_lin */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgelqs_(integer *m, integer *n, integer *nrhs, complex *
+/* Subroutine */ void cgelqs_(integer *m, integer *n, integer *nrhs, complex *
 	a, integer *lda, complex *tau, complex *b, integer *ldb, complex *
 	work, integer *lwork, integer *info)
 {
@@ -388,10 +388,11 @@ static complex c_b2 = {1.f,0.f};
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *), claset_(char *, 
-	    integer *, integer *, complex *, complex *, complex *, integer *), xerbla_(char *, integer *), cunmlq_(char *, char 
+	    integer *, integer *, complex *, complex *, complex *, integer *), 
+	    xerbla_(char *, integer *, ftnlen), cunmlq_(char *, char 
 	    *, integer *, integer *, integer *, complex *, integer *, complex 
 	    *, complex *, integer *, complex *, integer *, integer *);
 
@@ -428,19 +429,19 @@ static complex c_b2 = {1.f,0.f};
 	*info = -5;
     } else if (*ldb < f2cmax(1,*n)) {
 	*info = -8;
-    } else if (*lwork < 1 || *lwork < *nrhs && *m > 0 && *n > 0) {
+    } else if (*lwork < 1 || (*lwork < *nrhs && *m > 0 && *n > 0)) {
 	*info = -10;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CGELQS", &i__1);
-	return 0;
+	xerbla_("CGELQS", &i__1, (ftnlen)6);
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0 || *m == 0) {
-	return 0;
+	return;
     }
 
 /*     Solve L*X = B(1:m,:) */
@@ -460,7 +461,7 @@ static complex c_b2 = {1.f,0.f};
     cunmlq_("Left", "Conjugate transpose", n, nrhs, m, &a[a_offset], lda, &
 	    tau[1], &b[b_offset], ldb, &work[1], lwork, info);
 
-    return 0;
+    return;
 
 /*     End of CGELQS */
 

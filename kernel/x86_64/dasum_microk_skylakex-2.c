@@ -19,21 +19,14 @@ static FLOAT dasum_kernel(BLASLONG n, FLOAT *x1)
     BLASLONG i = 0;
     FLOAT sumf = 0.0;
 
-    if (n >= 256) {
-        BLASLONG align_512 = ((64 - ((uintptr_t)x1 & (uintptr_t)0x3f)) >> 3) & 0x7;
-
-        for (i = 0; i < align_512; i++) {
-            sumf += ABS_K(x1[i]);
-        }
-        
-        n -= align_512;
-        x1 += align_512;
-    }
-
     BLASLONG tail_index_SSE = n&(~7);
     BLASLONG tail_index_AVX512 = n&(~255);
 
-    //
+    /* Deliberately no peeling to an alignment boundary: peeling makes the
+       grouping of the sum into accumulators - and hence the rounding of the
+       result - depend on the buffer address. Unaligned loads keep the result
+       a function of n alone, and cost the same as aligned loads when the
+       address happens to be aligned. */
     if ( n >= 256 ) {
 
         __m512d accum_0, accum_1, accum_2, accum_3;
@@ -42,10 +35,10 @@ static FLOAT dasum_kernel(BLASLONG n, FLOAT *x1)
         accum_2 = _mm512_setzero_pd();
         accum_3 = _mm512_setzero_pd();
         for (i = 0; i < tail_index_AVX512; i += 32) {
-            accum_0 += _mm512_abs_pd(_mm512_load_pd(&x1[i + 0]));
-            accum_1 += _mm512_abs_pd(_mm512_load_pd(&x1[i + 8]));
-            accum_2 += _mm512_abs_pd(_mm512_load_pd(&x1[i +16]));
-            accum_3 += _mm512_abs_pd(_mm512_load_pd(&x1[i +24]));
+            accum_0 += _mm512_abs_pd(_mm512_loadu_pd(&x1[i + 0]));
+            accum_1 += _mm512_abs_pd(_mm512_loadu_pd(&x1[i + 8]));
+            accum_2 += _mm512_abs_pd(_mm512_loadu_pd(&x1[i +16]));
+            accum_3 += _mm512_abs_pd(_mm512_loadu_pd(&x1[i +24]));
         }
 
         accum_0 = accum_0 + accum_1 + accum_2 + accum_3;

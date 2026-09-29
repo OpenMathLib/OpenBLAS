@@ -114,47 +114,95 @@ jobs:
           export QEMU_CPU=${{ matrix.qemu_cpu }}
           rm -rf ./test_out
           mkdir -p ./test_out
-          run_test() { local DIR=$1; local CMD=$2; local DATA=$3; local OUTPUT="./test_out/$DIR.$CMD"; \
-            echo "`pwd`/$DIR/$CMD $DIR/$DATA" >> $OUTPUT; \
-            if [[ -z $DATA ]]; then qemu-riscv64 ./$DIR/$CMD |& tee $OUTPUT ; \ 
-            else qemu-riscv64 ./$DIR/$CMD < ./$DIR/$DATA |& tee $OUTPUT ; fi ; \
-            RV=$? ; if [[ $RV != 0 ]]; then echo "*** FAIL: nonzero exit code $RV" >> $OUTPUT ; fi \
+          run_test() {
+            local dir=$1
+            local command=$2
+            local data=${3:-}
+            local output="./test_out/${dir}.${command}"
+            local status
+
+            printf '%s\n' "${PWD}/${dir}/${command} ${data:+${dir}/${data}}" > "$output"
+            if [[ -n "$data" ]]; then
+              if qemu-riscv64 "./${dir}/${command}" < "./${dir}/${data}" >> "$output" 2>&1; then
+                return 0
+              else
+                status=$?
+              fi
+            else
+              if qemu-riscv64 "./${dir}/${command}" >> "$output" 2>&1; then
+                return 0
+              else
+                status=$?
+              fi
+            fi
+            printf '*** FAIL: nonzero exit code %d\n' "$status" >> "$output"
+            return "$status"
           }
-          run_test test cblat1 &
-          run_test test cblat2 cblat2.dat &
-          run_test test cblat3 cblat3.dat &
-          run_test test dblat1 &
-          run_test test dblat2 dblat2.dat &
-          run_test test dblat3 dblat3.dat &
-          run_test test sblat1 &
-          run_test test sblat2 sblat2.dat &
-          run_test test sblat3 sblat3.dat &
-          run_test test zblat1 &
-          run_test test zblat2 zblat2.dat &
-          run_test test zblat3 zblat3.dat &
-          run_test ctest xccblat1 &
-          run_test ctest xccblat2 cin2 &
-          run_test ctest xccblat3 cin3 &
-          run_test ctest xdcblat1 &
-          run_test ctest xdcblat2 din2 &
-          run_test ctest xdcblat3 din3 &
-          run_test ctest xscblat1 &
-          run_test ctest xscblat2 sin2 &
-          run_test ctest xscblat3 sin3 &
-          run_test ctest xzcblat1 &
-          run_test ctest xzcblat2 zin2 &
-          run_test ctest xzcblat3 zin3 &
-          wait
-          while IFS= read -r -d $'\0' LOG; do cat $LOG ; FAILURES=1 ; done < <(grep -lZ FAIL ./test_out/*)
-          if [[ ! -z $FAILURES ]]; then echo "==========" ; echo "== FAIL ==" ; echo "==========" ; echo ; exit 1 ; fi
-          if [ "${{matrix.target}}" == "RISCV64_ZVL256B" ]; then
-          qemu-riscv64 test/test_sbgemm &
-          qemu-riscv64 test/test_sbgemv &
-          qemu-riscv64 test/test_shgemm &
-          qemu-riscv64 test/test_shgemv &
-          qemu-riscv64 test/test_bgemm
+
+          pids=()
+          failures=0
+          start_test() {
+            run_test "$@" &
+            pids+=("$!")
+          }
+
+          wait_for_tests() {
+            local pid
+            for pid in "${pids[@]}"; do
+              if ! wait "$pid"; then
+                failures=1
+              fi
+            done
+            pids=()
+          }
+
+          start_test test cblat1
+          start_test test cblat2 cblat2.dat
+          start_test test cblat3 cblat3.dat
+          start_test test dblat1
+          start_test test dblat2 dblat2.dat
+          start_test test dblat3 dblat3.dat
+          start_test test sblat1
+          start_test test sblat2 sblat2.dat
+          start_test test sblat3 sblat3.dat
+          start_test test zblat1
+          start_test test zblat2 zblat2.dat
+          start_test test zblat3 zblat3.dat
+          start_test ctest xccblat1
+          start_test ctest xccblat2 cin2
+          start_test ctest xccblat3 cin3
+          start_test ctest xdcblat1
+          start_test ctest xdcblat2 din2
+          start_test ctest xdcblat3 din3
+          start_test ctest xscblat1
+          start_test ctest xscblat2 sin2
+          start_test ctest xscblat3 sin3
+          start_test ctest xzcblat1
+          start_test ctest xzcblat2 zin2
+          start_test ctest xzcblat3 zin3
+          wait_for_tests
+
+          if [[ "${{ matrix.target }}" == "RISCV64_ZVL256B" ]]; then
+            start_test test test_sbgemm
+            start_test test test_sbgemv
+            start_test test test_shgemm
+            start_test test test_shgemv
+            start_test test test_bgemm
+            wait_for_tests
           fi
 
+          failure_pattern='(^|[^[:alpha:]])(FAIL|FAILED|FATAL|SUSPECT)([^[:alpha:]]|$)'
+          for log in ./test_out/*; do
+            cat "$log"
+            if grep -Eq "$failure_pattern" "$log"; then
+              failures=1
+            fi
+          done
+
+          if (( failures != 0 )); then
+            printf '%s\n' '==========' '== FAIL ==' '=========='
+            exit 1
+          fi
 
       - name: netlib tests
         shell: bash

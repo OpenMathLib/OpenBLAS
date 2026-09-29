@@ -114,6 +114,7 @@
 #define	DGEMM_BETA		dgemm_beta
 
 #define	DGEMM_KERNEL		dgemm_kernel
+#define SME_DGEMM_KERNEL	sme_dgemm_kernel
 
 #define	DTRMM_KERNEL_LN		dtrmm_kernel_LN
 #define	DTRMM_KERNEL_LT		dtrmm_kernel_LT
@@ -246,6 +247,7 @@
 
 #define	DGEMM_BETA		gotoblas -> dgemm_beta
 #define	DGEMM_KERNEL		gotoblas -> dgemm_kernel
+#define	SME_DGEMM_KERNEL	gotoblas -> sme_dgemm_kernel
 
 #define	DTRMM_KERNEL_LN		gotoblas -> dtrmm_kernel_LN
 #define	DTRMM_KERNEL_LT		gotoblas -> dtrmm_kernel_LT
@@ -338,6 +340,15 @@
 
 #define	DSYRK_KERNEL_U		dsyrk_kernel_U
 #define	DSYRK_KERNEL_L		dsyrk_kernel_L
+
+#define	DGEMMT_UNN		dgemmt_UNN
+#define	DGEMMT_UNT		dgemmt_UNT
+#define	DGEMMT_UTN		dgemmt_UTN
+#define	DGEMMT_UTT		dgemmt_UTT
+#define	DGEMMT_LNN		dgemmt_LNN
+#define	DGEMMT_LNT		dgemmt_LNT
+#define	DGEMMT_LTN		dgemmt_LTN
+#define	DGEMMT_LTT		dgemmt_LTT
 
 #define	DHERK_UN		dsyrk_UN
 #define	DHERK_LN		dsyrk_LN

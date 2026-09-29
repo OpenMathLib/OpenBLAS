@@ -538,7 +538,7 @@ rices</b> */
 	    *, integer *, complex *, integer *), claset_(char *, 
 	    integer *, integer *, complex *, complex *, complex *, integer *);
     real safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
@@ -633,21 +633,18 @@ rices</b> */
 	*info = -5;
     } else if (*ldb < f2cmax(1,*n)) {
 	*info = -7;
-    } else if (*ldvsl < 1 || ilvsl && *ldvsl < *n) {
+    } else if (*ldvsl < 1 || (ilvsl && *ldvsl < *n)) {
 	*info = -11;
-    } else if (*ldvsr < 1 || ilvsr && *ldvsr < *n) {
+    } else if (*ldvsr < 1 || (ilvsr && *ldvsr < *n)) {
 	*info = -13;
     } else if (*lwork < lwkmin && ! lquery) {
 	*info = -15;
     }
 
     if (*info == 0) {
-	nb1 = ilaenv_(&c__1, "CGEQRF", " ", n, n, &c_n1, &c_n1, (ftnlen)6, (
-		ftnlen)1);
-	nb2 = ilaenv_(&c__1, "CUNMQR", " ", n, n, n, &c_n1, (ftnlen)6, (
-		ftnlen)1);
-	nb3 = ilaenv_(&c__1, "CUNGQR", " ", n, n, n, &c_n1, (ftnlen)6, (
-		ftnlen)1);
+	nb1 = ilaenv_(&c__1, "CGEQRF", " ", n, n, &c_n1, &c_n1, (ftnlen)6, (ftnlen)1);
+	nb2 = ilaenv_(&c__1, "CUNMQR", " ", n, n, n, &c_n1, (ftnlen)6, (ftnlen)1);
+	nb3 = ilaenv_(&c__1, "CUNGQR", " ", n, n, n, &c_n1, (ftnlen)6, (ftnlen)1);
 /* Computing MAX */
 	i__1 = f2cmax(nb1,nb2);
 	nb = f2cmax(i__1,nb3);
@@ -657,7 +654,7 @@ rices</b> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CGEGS ", &i__1, 6);
+	xerbla_("CGEGS ", &i__1, (ftnlen)6);
 	return;
     } else if (lquery) {
 	return;

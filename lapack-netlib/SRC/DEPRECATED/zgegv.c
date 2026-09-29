@@ -587,7 +587,7 @@ rices</b> */
 	     doublecomplex *, integer *, doublecomplex *, integer *, integer *
 	    , integer *, doublereal *, doublereal *, doublereal *, integer *);
     doublereal salfar, safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     doublereal safmax;
     char chtemp[1];
     logical ldumma[1];
@@ -704,21 +704,18 @@ rices</b> */
 	*info = -5;
     } else if (*ldb < f2cmax(1,*n)) {
 	*info = -7;
-    } else if (*ldvl < 1 || ilvl && *ldvl < *n) {
+    } else if (*ldvl < 1 || (ilvl && *ldvl < *n)) {
 	*info = -11;
-    } else if (*ldvr < 1 || ilvr && *ldvr < *n) {
+    } else if (*ldvr < 1 || (ilvr && *ldvr < *n)) {
 	*info = -13;
     } else if (*lwork < lwkmin && ! lquery) {
 	*info = -15;
     }
 
     if (*info == 0) {
-	nb1 = ilaenv_(&c__1, "ZGEQRF", " ", n, n, &c_n1, &c_n1, (ftnlen)6, (
-		ftnlen)1);
-	nb2 = ilaenv_(&c__1, "ZUNMQR", " ", n, n, n, &c_n1, (ftnlen)6, (
-		ftnlen)1);
-	nb3 = ilaenv_(&c__1, "ZUNGQR", " ", n, n, n, &c_n1, (ftnlen)6, (
-		ftnlen)1);
+	nb1 = ilaenv_(&c__1, "ZGEQRF", " ", n, n, &c_n1, &c_n1, (ftnlen)6, (ftnlen)1);
+	nb2 = ilaenv_(&c__1, "ZUNMQR", " ", n, n, n, &c_n1, (ftnlen)6, (ftnlen)1);
+	nb3 = ilaenv_(&c__1, "ZUNGQR", " ", n, n, n, &c_n1, (ftnlen)6, (ftnlen)1);
 /* Computing MAX */
 	i__1 = f2cmax(nb1,nb2);
 	nb = f2cmax(i__1,nb3);
@@ -730,7 +727,7 @@ rices</b> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZGEGV ", &i__1, 6);
+	xerbla_("ZGEGV ", &i__1, (ftnlen)6);
 	return;
     } else if (lquery) {
 	return;

@@ -19,6 +19,7 @@ else ()
     test_amin.c
     test_axpby.c
     test_gemv.c
+    test_trmv.c
   )
 endif ()
 

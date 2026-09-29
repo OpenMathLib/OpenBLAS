@@ -1,12 +1,3 @@
-/* f2c.h  --  Standard Fortran to C header file */
-
-/**  barf  [ba:rf]  2.  "He suggested using FORTRAN, and everybody barfed."
-
-	- From The Shogakukan DICTIONARY OF NEW ENGLISH (Second edition) */
-
-#ifndef F2C_INCLUDE
-#define F2C_INCLUDE
-
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,14 +39,16 @@ typedef float real;
 typedef double doublereal;
 typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
+#ifdef _MSC_VER
+static inline _Fcomplex Cf(complex *z) {_Fcomplex zz={z->r , z->i}; return zz;}
+static inline _Fcomplex * _pCf(complex *z) {return (_Fcomplex*)z;}
+#else
 static inline _Complex float Cf(complex *z) {return z->r + z->i*_Complex_I;}
-static inline _Complex double Cd(doublecomplex *z) {return z->r + z->i*_Complex_I;}
 static inline _Complex float * _pCf(complex *z) {return (_Complex float*)z;}
-static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*)z;}
+#endif
 #define pCf(z) (*_pCf(z))
-#define pCd(z) (*_pCd(z))
-typedef blasint logical;
-
+typedef int logical;
+typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
 
@@ -191,8 +184,13 @@ typedef struct Namelist Namelist;
 #define abort_() { sig_die("Fortran abort routine called", 1); }
 #define c_abs(z) (cabsf(Cf(z)))
 #define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
+#ifdef _MSC_VER
+#define c_div(c, a, b) {Cf(c)._Val[0] = (Cf(a)._Val[0]/Cf(b)._Val[0]); Cf(c)._Val[1]=(Cf(a)._Val[1]/Cf(b)._Val[1]);}
+#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/Cd(b)._Val[1]);}
+#else
 #define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
 #define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
+#endif
 #define c_exp(R, Z) {pCf(R) = cexpf(Cf(Z));}
 #define c_log(R, Z) {pCf(R) = clogf(Cf(Z));}
 #define c_sin(R, Z) {pCf(R) = csinf(Cf(Z));}
@@ -204,13 +202,13 @@ typedef struct Namelist Namelist;
 #define d_atan(x) (atan(*(x)))
 #define d_atn2(x, y) (atan2(*(x),*(y)))
 #define d_cnjg(R, Z) { pCd(R) = conj(Cd(Z)); }
-#define r_cnjg(R, Z) { pCf(R) = conj(Cf(Z)); }
+#define r_cnjg(R, Z) { pCf(R) = conjf(Cf(Z)); }
 #define d_cos(x) (cos(*(x)))
 #define d_cosh(x) (cosh(*(x)))
 #define d_dim(__a, __b) ( *(__a) > *(__b) ? *(__a) - *(__b) : 0.0 )
 #define d_exp(x) (exp(*(x)))
 #define d_imag(z) (cimag(Cd(z)))
-#define r_imag(z) (cimag(Cf(z)))
+#define r_imag(z) (cimagf(Cf(z)))
 #define d_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define r_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define d_lg10(x) ( 0.43429448190325182765 * log(*(x)) )
@@ -244,26 +242,25 @@ typedef struct Namelist Namelist;
 #define s_copy(A,B,C,D) { int __i,__m; for (__i=0, __m=f2cmin((C),(D)); __i<__m && (B)[__i] != 0; ++__i) (A)[__i] = (B)[__i]; }
 #define sig_die(s, kill) { exit(1); }
 #define s_stop(s, n) {exit(0);}
-static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
 #define z_abs(z) (cabs(Cd(z)))
 #define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
 #define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
 #define myexit_() break;
 #define mycycle_() continue;
-#define myceiling_(w) ceil(w)
-#define myhuge_(w) HUGE_VAL
+#define myceiling_(w) {ceil(w)}
+#define myhuge_(w) {HUGE_VAL}
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
 #define mymaxloc_(w,s,e,n) dmaxloc_(w,*(s),*(e),n)
 
 /* procedure parameter types for -A and -C++ */
 
-
+#define F2C_proc_par_types 1
 #ifdef __cplusplus
 typedef logical (*L_fp)(...);
 #else
 typedef logical (*L_fp)();
 #endif
-
+#if 0
 static float spow_ui(float x, integer n) {
 	float pow=1.0; unsigned long int u;
 	if(n != 0) {
@@ -288,6 +285,21 @@ static double dpow_ui(double x, integer n) {
 	}
 	return pow;
 }
+#ifdef _MSC_VER
+static _Fcomplex cpow_ui(complex x, integer n) {
+	complex pow={1.0,0.0}; unsigned long int u;
+		if(n != 0) {
+		if(n < 0) n = -n, x.r = 1/x.r, x.i=1/x.i;
+		for(u = n; ; ) {
+			if(u & 01) pow.r *= x.r, pow.i *= x.i;
+			if(u >>= 1) x.r *= x.r, x.i *= x.i;
+			else break;
+		}
+	}
+	_Fcomplex p={pow.r, pow.i};
+	return p;
+}
+#else
 static _Complex float cpow_ui(_Complex float x, integer n) {
 	_Complex float pow=1.0; unsigned long int u;
 	if(n != 0) {
@@ -300,6 +312,22 @@ static _Complex float cpow_ui(_Complex float x, integer n) {
 	}
 	return pow;
 }
+#endif
+#ifdef _MSC_VER
+static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
+	_Dcomplex pow={1.0,0.0}; unsigned long int u;
+	if(n != 0) {
+		if(n < 0) n = -n, x._Val[0] = 1/x._Val[0], x._Val[1] =1/x._Val[1];
+		for(u = n; ; ) {
+			if(u & 01) pow._Val[0] *= x._Val[0], pow._Val[1] *= x._Val[1];
+			if(u >>= 1) x._Val[0] *= x._Val[0], x._Val[1] *= x._Val[1];
+			else break;
+		}
+	}
+	_Dcomplex p = {pow._Val[0], pow._Val[1]};
+	return p;
+}
+#else
 static _Complex double zpow_ui(_Complex double x, integer n) {
 	_Complex double pow=1.0; unsigned long int u;
 	if(n != 0) {
@@ -312,6 +340,7 @@ static _Complex double zpow_ui(_Complex double x, integer n) {
 	}
 	return pow;
 }
+#endif
 static integer pow_ii(integer x, integer n) {
 	integer pow; unsigned long int u;
 	if (n <= 0) {
@@ -345,6 +374,22 @@ static integer smaxloc_(float *w, integer s, integer e, integer *n)
 }
 static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef _MSC_VER
+	_Fcomplex zdotc = {0.0, 0.0};
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += conjf(Cf(&x[i]))._Val[0] * Cf(&y[i])._Val[0];
+			zdotc._Val[1] += conjf(Cf(&x[i]))._Val[1] * Cf(&y[i])._Val[1];
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += conjf(Cf(&x[i*incx]))._Val[0] * Cf(&y[i*incy])._Val[0];
+			zdotc._Val[1] += conjf(Cf(&x[i*incx]))._Val[1] * Cf(&y[i*incy])._Val[1];
+		}
+	}
+	pCf(z) = zdotc;
+}
+#else
 	_Complex float zdotc = 0.0;
 	if (incx == 1 && incy == 1) {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
@@ -357,8 +402,25 @@ static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, c
 	}
 	pCf(z) = zdotc;
 }
+#endif
 static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef _MSC_VER
+	_Dcomplex zdotc = {0.0, 0.0};
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += conj(Cd(&x[i]))._Val[0] * Cd(&y[i])._Val[0];
+			zdotc._Val[1] += conj(Cd(&x[i]))._Val[1] * Cd(&y[i])._Val[1];
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += conj(Cd(&x[i*incx]))._Val[0] * Cd(&y[i*incy])._Val[0];
+			zdotc._Val[1] += conj(Cd(&x[i*incx]))._Val[1] * Cd(&y[i*incy])._Val[1];
+		}
+	}
+	pCd(z) = zdotc;
+}
+#else
 	_Complex double zdotc = 0.0;
 	if (incx == 1 && incy == 1) {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
@@ -370,9 +432,26 @@ static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		}
 	}
 	pCd(z) = zdotc;
-}	
+}
+#endif	
 static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef _MSC_VER
+	_Fcomplex zdotc = {0.0, 0.0};
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0];
+			zdotc._Val[1] += Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0];
+			zdotc._Val[1] += Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
+		}
+	}
+	pCf(z) = zdotc;
+}
+#else
 	_Complex float zdotc = 0.0;
 	if (incx == 1 && incy == 1) {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
@@ -385,8 +464,25 @@ static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, c
 	}
 	pCf(z) = zdotc;
 }
+#endif
 static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef _MSC_VER
+	_Dcomplex zdotc = {0.0, 0.0};
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0];
+			zdotc._Val[1] += Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0];
+			zdotc._Val[1] += Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
+		}
+	}
+	pCd(z) = zdotc;
+}
+#else
 	_Complex double zdotc = 0.0;
 	if (incx == 1 && incy == 1) {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
@@ -400,3 +496,143 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	pCd(z) = zdotc;
 }
 #endif
+#endif
+/*  -- translated by f2c (version 20000121).
+   You must link the resulting object file with the libraries:
+	-lf2c -lm   (in that order)
+*/
+
+
+
+/*  -- translated by f2c (version 20200916).
+   You must link the resulting object file with libf2c:
+	on Microsoft Windows system, link with libf2c.lib;
+	on Linux or Unix systems, link with .../path/to/libf2c.a -lm
+	or, if you install libf2c.a in a standard place, with -lf2c -lm
+	-- in that order, at the end of the command line, as in
+		cc *.o -lf2c -lm
+	Source for libf2c is in /netlib/f2c/libf2c.zip, e.g.,
+
+		http://www.netlib.org/f2c/libf2c.zip
+*/
+
+
+
+/* Table of constant values */
+
+static integer c__1 = 1;
+
+/* Subroutine */ void claqz1_(logical *ilq, logical *ilz, integer *k, integer *
+	istartm, integer *istopm, integer *ihi, complex *a, integer *lda, 
+	complex *b, integer *ldb, integer *nq, integer *qstart, complex *q, 
+	integer *ldq, integer *nz, integer *zstart, complex *z__, integer *
+	ldz)
+{
+    /* System generated locals */
+    integer a_dim1, a_offset, b_dim1, b_offset, q_dim1, q_offset, z_dim1, 
+	    z_offset, i__1;
+    complex q__1;
+
+    /* Local variables */
+    real c__;
+    complex s, temp;
+    extern /* Subroutine */ void crot_(integer *, complex *, integer *, 
+	    complex *, integer *, real *, complex *), clartg_(complex *, 
+	    complex *, real *, complex *, complex *);
+
+
+/*     Arguments */
+
+/*     Parameters */
+
+/*     Local variables */
+
+/*     External Functions */
+
+    /* Parameter adjustments */
+    a_dim1 = *lda;
+    a_offset = 1 + a_dim1;
+    a -= a_offset;
+    b_dim1 = *ldb;
+    b_offset = 1 + b_dim1;
+    b -= b_offset;
+    q_dim1 = *ldq;
+    q_offset = 1 + q_dim1;
+    q -= q_offset;
+    z_dim1 = *ldz;
+    z_offset = 1 + z_dim1;
+    z__ -= z_offset;
+
+    /* Function Body */
+    if (*k + 1 == *ihi) {
+
+/*        Shift is located on the edge of the matrix, remove it */
+
+	clartg_(&b[*ihi + *ihi * b_dim1], &b[*ihi + (*ihi - 1) * b_dim1], &
+		c__, &s, &temp);
+	i__1 = *ihi + *ihi * b_dim1;
+	b[i__1].r = temp.r, b[i__1].i = temp.i;
+	i__1 = *ihi + (*ihi - 1) * b_dim1;
+	b[i__1].r = 0.f, b[i__1].i = 0.f;
+	i__1 = *ihi - *istartm;
+	crot_(&i__1, &b[*istartm + *ihi * b_dim1], &c__1, &b[*istartm + (*ihi 
+		- 1) * b_dim1], &c__1, &c__, &s);
+	i__1 = *ihi - *istartm + 1;
+	crot_(&i__1, &a[*istartm + *ihi * a_dim1], &c__1, &a[*istartm + (*ihi 
+		- 1) * a_dim1], &c__1, &c__, &s);
+	if (*ilz) {
+	    crot_(nz, &z__[(*ihi - *zstart + 1) * z_dim1 + 1], &c__1, &z__[(*
+		    ihi - 1 - *zstart + 1) * z_dim1 + 1], &c__1, &c__, &s);
+	}
+
+    } else {
+
+/*        Normal operation, move bulge down */
+
+
+/*        Apply transformation from the right */
+
+	clartg_(&b[*k + 1 + (*k + 1) * b_dim1], &b[*k + 1 + *k * b_dim1], &
+		c__, &s, &temp);
+	i__1 = *k + 1 + (*k + 1) * b_dim1;
+	b[i__1].r = temp.r, b[i__1].i = temp.i;
+	i__1 = *k + 1 + *k * b_dim1;
+	b[i__1].r = 0.f, b[i__1].i = 0.f;
+	i__1 = *k + 2 - *istartm + 1;
+	crot_(&i__1, &a[*istartm + (*k + 1) * a_dim1], &c__1, &a[*istartm + *
+		k * a_dim1], &c__1, &c__, &s);
+	i__1 = *k - *istartm + 1;
+	crot_(&i__1, &b[*istartm + (*k + 1) * b_dim1], &c__1, &b[*istartm + *
+		k * b_dim1], &c__1, &c__, &s);
+	if (*ilz) {
+	    crot_(nz, &z__[(*k + 1 - *zstart + 1) * z_dim1 + 1], &c__1, &z__[(
+		    *k - *zstart + 1) * z_dim1 + 1], &c__1, &c__, &s);
+	}
+
+/*        Apply transformation from the left */
+
+	clartg_(&a[*k + 1 + *k * a_dim1], &a[*k + 2 + *k * a_dim1], &c__, &s, 
+		&temp);
+	i__1 = *k + 1 + *k * a_dim1;
+	a[i__1].r = temp.r, a[i__1].i = temp.i;
+	i__1 = *k + 2 + *k * a_dim1;
+	a[i__1].r = 0.f, a[i__1].i = 0.f;
+	i__1 = *istopm - *k;
+	crot_(&i__1, &a[*k + 1 + (*k + 1) * a_dim1], lda, &a[*k + 2 + (*k + 1)
+		 * a_dim1], lda, &c__, &s);
+	i__1 = *istopm - *k;
+	crot_(&i__1, &b[*k + 1 + (*k + 1) * b_dim1], ldb, &b[*k + 2 + (*k + 1)
+		 * b_dim1], ldb, &c__, &s);
+	if (*ilq) {
+	    r_cnjg(&q__1, &s);
+	    crot_(nq, &q[(*k + 1 - *qstart + 1) * q_dim1 + 1], &c__1, &q[(*k 
+		    + 2 - *qstart + 1) * q_dim1 + 1], &c__1, &c__, &q__1);
+	}
+
+    }
+
+/*     End of CLAQZ1 */
+
+    return;
+} /* claqz1_ */
+

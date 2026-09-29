@@ -83,12 +83,6 @@ jobs:
             /usr/local/bin/qemu-loongarch64-static
           qemu-loongarch64-static --version
 
-      - name: Disable utest dsdot:dsdot_n_1
-        run: |
-          echo -n > utest/test_dsdot.c
-          echo "Due to the current version of qemu causing utest cases to fail,"
-          echo "the utest dsdot:dsdot_n_1 have been temporarily disabled."
-
       - name: Build OpenBLAS
         run: |
           make CC='ccache ${{ matrix.triple }}-gcc-14 -static' FC='ccache ${{ matrix.triple }}-gfortran-14 -static' \

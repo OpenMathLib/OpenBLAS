@@ -41,6 +41,8 @@ option(DYNAMIC_OLDER "Include specific support for older x86 cpu models (Penryn,
 
 option(BUILD_RELAPACK "Build with ReLAPACK (recursive implementation of several LAPACK functions on top of standard LAPACK)" OFF)
 
+option(WASM_RELAXED_SIMD "WASM: emit relaxed SIMD opcodes (not portable to engines without the feature, including shipping Safari)" OFF)
+
 option(USE_LOCKING "Use locks even in single-threaded builds to make them callable from multiple threads" OFF)
 
 option(USE_PERL "Use the older PERL scripts for build preparation instead of universal shell scripts" OFF)
@@ -89,6 +91,9 @@ if (NOT BUILD_STATIC_LIBS)
 endif ()
 endif()
 
+if (APPLE AND NOT BUILD_STATIC_LIBS)
+       set (BUILD_STATIC_LIBS ON CACHE BOOL "Build static library" FORCE)
+endif()
 
 #######
 if(BUILD_WITHOUT_LAPACK)
@@ -341,11 +346,13 @@ if (USE_OPENMP)
   endif()
 endif()
 
-# Second part of "Argument list too long" fix when static libraries are
-# built. See above for details.
-if(APPLE AND BUILD_STATIC_LIBS)
+# Fix "Argument list too long" for macOS - mostly seen with older OS versions on POWERPC or Intel CPUs 
+if(APPLE)
+  # Use response files
+  set(CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS 1)
   # Always build static library first
   set(STATIC_PATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${OpenBLAS_LIBNAME}.a")
+  
   # Handle differences in how many response files are generated and/or where
   # they are stored for Ninja / Unix Makefiles.
   if("${CMAKE_GENERATOR}" MATCHES "Ninja")
@@ -353,10 +360,11 @@ if(APPLE AND BUILD_STATIC_LIBS)
       "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/openblas_static.rsp | xargs -n 1024 ${CMAKE_AR} -ru ${STATIC_PATH} && exit 0' "
       "sh -c '${CMAKE_AR} -rs ${STATIC_PATH} ${CMAKE_BINARY_DIR}/driver/others/CMakeFiles/driver_others.dir/xerbla.c.o && exit 0' ")
   else()
-    set(CREATE_STATIC_LIBRARY_COMMAND
-      "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/${OpenBLAS_LIBNAME}_static.dir/objects*.rsp | xargs -n 1024 ${CMAKE_AR} -ru ${STATIC_PATH} && exit 0' "
-      "sh -c '${CMAKE_AR} -rs ${STATIC_PATH} ${CMAKE_BINARY_DIR}/driver/others/CMakeFiles/driver_others.dir/xerbla.c.o && exit 0' ")
+    set(STATIC_PATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${OpenBLAS_LIBNAME}.a")
   endif()
+  set(CREATE_STATIC_LIBRARY_COMMAND
+    "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/${OpenBLAS_LIBNAME}_static.dir/objects*.rsp | xargs -n 1024 ${CMAKE_AR} -ru ${STATIC_PATH} && exit 0' "
+    "sh -c '${CMAKE_AR} -rs ${STATIC_PATH} ${CMAKE_BINARY_DIR}/driver/others/CMakeFiles/driver_others.dir/xerbla.c.o && exit 0' ")
   if(BUILD_SHARED_LIBS)
     add_dependencies(${OpenBLAS_LIBNAME}_shared ${OpenBLAS_LIBNAME}_static)
     set(SHARED_PATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libopenblas.${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.dylib")
@@ -369,6 +377,9 @@ if(APPLE AND BUILD_STATIC_LIBS)
   if(NOT NOFORTRAN)
     set(CMAKE_Fortran_CREATE_STATIC_LIBRARY ${CREATE_STATIC_LIBRARY_COMMAND})
     if(BUILD_SHARED_LIBS)
+	  if (CMAKE_Fortran_COMPILER_ID STREQUAL "LLVMFlang")
+      set_target_properties (${OpenBLAS_LIBNAME}_shared PROPERTIES LINKER_LANGUAGE C)
+      endif()
       if(CMAKE_Fortran_COMPILER_ID MATCHES "GNU")
         set(CMAKE_Fortran_CREATE_SHARED_LIBRARY
           "sh -c 'echo \"\" | ${CMAKE_Fortran_COMPILER} -o dummy.o -c -x f95-cpp-input - '"

@@ -420,7 +420,7 @@ f"> */
     extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zaxpy_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     extern void zlarfg_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *), zlacgv_(integer *, 
 	    doublecomplex *, integer *);
@@ -454,7 +454,7 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZTZRQF", &i__1, 6);
+	xerbla_("ZTZRQF", &i__1, (ftnlen)6);
 	return;
     }
 

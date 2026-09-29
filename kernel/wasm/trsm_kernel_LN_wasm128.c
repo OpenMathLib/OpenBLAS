@@ -40,6 +40,7 @@
 
 static FLOAT dm1 = -1.;
 
+#ifdef OPENBLAS_WASM_TRSM_PROFILE
 #ifndef DOUBLE
 static unsigned long long openblas_wasm128_strsm_ln_calls = 0;
 unsigned long long openblas_wasm128_get_strsm_ln_calls(void) {
@@ -56,6 +57,7 @@ unsigned long long openblas_wasm128_get_dtrsm_ln_calls(void) {
 void openblas_wasm128_reset_dtrsm_ln_calls(void) {
   openblas_wasm128_dtrsm_ln_calls = 0;
 }
+#endif
 #endif
 
 #ifdef CONJ
@@ -257,10 +259,12 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k,  FLOAT dummy1,
 #endif
 	   FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG offset){
 
+#ifdef OPENBLAS_WASM_TRSM_PROFILE
 #ifndef DOUBLE
   openblas_wasm128_strsm_ln_calls += 1;
 #else
   openblas_wasm128_dtrsm_ln_calls += 1;
+#endif
 #endif
 
   BLASLONG i, j;

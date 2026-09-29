@@ -171,6 +171,8 @@ extern gotoblas_t  gotoblas_CORTEXA53;
 #else
 extern gotoblas_t  gotoblas_CORTEXA57;
 #endif
+/* Keep A72 out of the default DYNAMIC_CORE set (see #4389); opt in via
+ * DYNAMIC_LIST=CORTEXA72. Default DYNAMIC_ARCH continues to alias A57. */
 #define gotoblas_CORTEXA72 gotoblas_CORTEXA57
 #define gotoblas_CORTEXA73 gotoblas_CORTEXA57
 #define gotoblas_FALKOR gotoblas_CORTEXA57
@@ -539,7 +541,10 @@ static gotoblas_t *get_coretype(void) {
 
 #if !defined(NO_SME)
   if (support_sme1()) {
-    return &gotoblas_ARMV9SME;
+	if ((getauxval(AT_HWCAP) & HWCAP_SVE))
+      return &gotoblas_ARMV9SME;
+	else
+	  return &gotoblas_VORTEXM4;
   }
 #endif
 

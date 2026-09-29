@@ -561,7 +561,7 @@ f"> */
 	     doublecomplex *, integer *, doublecomplex *, integer *), zunmr2_(char *, char *, integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     extern void zgeqpf_(integer *, integer *, 
 	    doublecomplex *, integer *, integer *, doublecomplex *, 
 	    doublecomplex *, doublereal *, integer *), zlacpy_(char *, 
@@ -628,16 +628,16 @@ f"> */
 	*info = -8;
     } else if (*ldb < f2cmax(1,*p)) {
 	*info = -10;
-    } else if (*ldu < 1 || wantu && *ldu < *m) {
+    } else if (*ldu < 1 || (wantu && *ldu < *m)) {
 	*info = -16;
-    } else if (*ldv < 1 || wantv && *ldv < *p) {
+    } else if (*ldv < 1 || (wantv && *ldv < *p)) {
 	*info = -18;
-    } else if (*ldq < 1 || wantq && *ldq < *n) {
+    } else if (*ldq < 1 || (wantq && *ldq < *n)) {
 	*info = -20;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZGGSVP", &i__1, 6);
+	xerbla_("ZGGSVP", &i__1, (ftnlen)6);
 	return;
     }
 

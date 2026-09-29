@@ -132,7 +132,7 @@
 *
       DO 50 I = 1, N
          DO 40 J = 1, N
-            TEMP = MAX( A( I, J ), AIN( I, J ) )
+            TEMP = MAX( ABS( A( I, J ) ), ABS( AIN( I, J )  ) )
             TEMP = MAX( TEMP, SFMIN )
             VMAX = MAX( VMAX, ABS( A( I, J )-AIN( I, J ) ) / TEMP )
    40    CONTINUE

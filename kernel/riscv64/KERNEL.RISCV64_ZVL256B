@@ -138,7 +138,7 @@ DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
 
 CGEMMKERNEL    =  cgemm_kernel_$(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N)_zvl256b.c
-CGEMMONCOPY    =  ../generic/zgemm_ncopy_$(CGEMM_UNROLL_N).c
+CGEMMONCOPY    =  zgemm_ncopy_8_rvv.c
 CGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(CGEMM_UNROLL_N).c
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
 CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)

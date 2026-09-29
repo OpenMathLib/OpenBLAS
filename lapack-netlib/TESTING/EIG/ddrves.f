@@ -385,6 +385,7 @@
       SUBROUTINE DDRVES( NSIZES, NN, NTYPES, DOTYPE, ISEED, THRESH,
      $                   NOUNIT, A, LDA, H, HT, WR, WI, WRT, WIT, VS,
      $                   LDVS, RESULT, WORK, NWORK, IWORK, BWORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -444,8 +445,8 @@
       EXTERNAL           DSLECT, DLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DGEES, DHST01, DLABAD, DLACPY, DLASET, DLASUM,
-     $                   DLATME, DLATMR, DLATMS, XERBLA
+      EXTERNAL           DGEES, DHST01, DLACPY, DLASET, DLASUM, DLATME,
+     $                   DLATMR, DLATMS, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, SIGN, SQRT
@@ -514,7 +515,6 @@
 *
       UNFL = DLAMCH( 'Safe minimum' )
       OVFL = ONE / UNFL
-      CALL DLABAD( UNFL, OVFL )
       ULP = DLAMCH( 'Precision' )
       ULPINV = ONE / ULP
       RTULP = SQRT( ULP )
@@ -734,7 +734,14 @@
                   CALL DLACPY( 'F', N, N, A, LDA, H, LDA )
                   CALL DGEES( 'V', SORT, DSLECT, N, H, LDA, SDIM, WR,
      $                        WI, VS, LDVS, WORK, NNWORK, BWORK, IINFO )
-                  IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+                  IF( IINFO.EQ.N+1 ) THEN
+                     WRITE( NOUNIT, FMT = 9991 )'DGEES1', IINFO, N,
+     $                  JTYPE, IOLDSD
+                     GO TO 220
+                  ELSE IF( IINFO.EQ.N+2 ) THEN
+                     WRITE( NOUNIT, FMT = 9990 )'DGEES1', IINFO, N,
+     $                  JTYPE, IOLDSD
+                  ELSE IF( IINFO.NE.0 ) THEN
                      RESULT( 1+RSUB ) = ULPINV
                      WRITE( NOUNIT, FMT = 9992 )'DGEES1', IINFO, N,
      $                  JTYPE, IOLDSD
@@ -809,7 +816,14 @@
                   CALL DGEES( 'N', SORT, DSLECT, N, HT, LDA, SDIM, WRT,
      $                        WIT, VS, LDVS, WORK, NNWORK, BWORK,
      $                        IINFO )
-                  IF( IINFO.NE.0 .AND. IINFO.NE.N+2 ) THEN
+                  IF( IINFO.EQ.N+1 ) THEN
+                     WRITE( NOUNIT, FMT = 9991 )'DGEES2', IINFO, N,
+     $                  JTYPE, IOLDSD
+                     GO TO 220
+                  ELSE IF( IINFO.EQ.N+2 ) THEN
+                     WRITE( NOUNIT, FMT = 9990 )'DGEES2', IINFO, N,
+     $                  JTYPE, IOLDSD
+                  ELSE IF( IINFO.NE.0 ) THEN
                      RESULT( 5+RSUB ) = ULPINV
                      WRITE( NOUNIT, FMT = 9992 )'DGEES2', IINFO, N,
      $                  JTYPE, IOLDSD
@@ -950,6 +964,14 @@
      $      ' type ', I2, ', test(', I2, ')=', G10.3 )
  9992 FORMAT( ' DDRVES: ', A, ' returned INFO=', I6, '.', / 9X, 'N=',
      $      I6, ', JTYPE=', I6, ', ISEED=(', 3( I5, ',' ), I5, ')' )
+ 9991 FORMAT( ' DDRVES: ', A, ' returned the known code N+1 =', I6,
+     $      ': eigenvalues too close', / 9X, 'to reorder; ill-',
+     $      'conditioned matrix, accepted as no error.', / 9X, 'N=',
+     $      I6, ', JTYPE=', I6, ', ISEED=(', 3( I5, ',' ), I5, ')' )
+ 9990 FORMAT( ' DDRVES: ', A, ' returned the known code N+2 =', I6,
+     $      ': roundoff undid the sort', / 9X, 'order; ill-conditioned',
+     $      ' matrix, accepted as no error.', / 9X, 'N=', I6,
+     $      ', JTYPE=', I6, ', ISEED=(', 3( I5, ',' ), I5, ')' )
 *
       RETURN
 *

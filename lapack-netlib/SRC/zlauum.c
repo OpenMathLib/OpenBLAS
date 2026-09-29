@@ -658,7 +658,7 @@ f"> */
     integer ib, nb;
     extern /* Subroutine */ void zlauu2_(char *, integer *, doublecomplex *, 
 	    integer *, integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
 

@@ -422,7 +422,7 @@ f"> */
     integer m1;
     extern /* Subroutine */ void clarfg_(integer *, complex *, complex *, 
 	    integer *, complex *), clacgv_(integer *, complex *, integer *); 
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -453,7 +453,7 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CTZRQF", &i__1, 6);
+	xerbla_("CTZRQF", &i__1, (ftnlen)6);
 	return;
     }
 

@@ -70,8 +70,8 @@ jobs:
                 sudo ./llvm.sh 21
             fi
             if [ "${{ matrix.fortran }}" == "flang" ]; then
-              wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.2_amd64.deb
-              sudo apt install ./libtinfo5_6.3-2ubuntu0.2_amd64.deb
+              wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.3_amd64.deb
+              sudo apt install ./libtinfo5_6.3-2ubuntu0.3_amd64.deb
             else
               sudo apt-get install -y ${{ matrix.fortran }}
             fi
@@ -527,6 +527,7 @@ jobs:
           install: >-
             base-devel
             mingw-w64-ucrt-x86_64-cc
+            mingw-w64-ucrt-x86_64-libgomp
             mingw-w64-ucrt-x86_64-cmake
             mingw-w64-ucrt-x86_64-ninja
             mingw-w64-ucrt-x86_64-ccache

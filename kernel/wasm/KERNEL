@@ -1,104 +1,266 @@
+ifndef SAMAXKERNEL
 SAMAXKERNEL  = ../riscv64/amax.c
+endif
+ifndef DAMAXKERNEL
 DAMAXKERNEL  = ../riscv64/amax.c
+endif
+ifndef CAMAXKERNEL
 CAMAXKERNEL  = ../riscv64/zamax.c
+endif
+ifndef ZAMAXKERNEL
 ZAMAXKERNEL  = ../riscv64/zamax.c
+endif
 
+ifndef SAMINKERNEL
 SAMINKERNEL  = ../riscv64/amin.c
+endif
+ifndef DAMINKERNEL
 DAMINKERNEL  = ../riscv64/amin.c
+endif
+ifndef CAMINKERNEL
 CAMINKERNEL  = ../riscv64/zamin.c
+endif
+ifndef ZAMINKERNEL
 ZAMINKERNEL  = ../riscv64/zamin.c
+endif
 
+ifndef SMAXKERNEL
 SMAXKERNEL   = ../riscv64/max.c
+endif
+ifndef DMAXKERNEL
 DMAXKERNEL   = ../riscv64/max.c
+endif
 
+ifndef SMINKERNEL
 SMINKERNEL   = ../riscv64/min.c
+endif
+ifndef DMINKERNEL
 DMINKERNEL   = ../riscv64/min.c
+endif
 
+ifndef ISAMAXKERNEL
 ISAMAXKERNEL = ../riscv64/iamax.c
+endif
+ifndef IDAMAXKERNEL
 IDAMAXKERNEL = ../riscv64/iamax.c
+endif
+ifndef ICAMAXKERNEL
 ICAMAXKERNEL = ../riscv64/izamax.c
+endif
+ifndef IZAMAXKERNEL
 IZAMAXKERNEL = ../riscv64/izamax.c
+endif
 
+ifndef ISAMINKERNEL
 ISAMINKERNEL = ../riscv64/iamin.c
+endif
+ifndef IDAMINKERNEL
 IDAMINKERNEL = ../riscv64/iamin.c
+endif
+ifndef ICAMINKERNEL
 ICAMINKERNEL = ../riscv64/izamin.c
+endif
+ifndef IZAMINKERNEL
 IZAMINKERNEL = ../riscv64/izamin.c
+endif
 
+ifndef ISMAXKERNEL
 ISMAXKERNEL  = ../riscv64/imax.c
+endif
+ifndef IDMAXKERNEL
 IDMAXKERNEL  = ../riscv64/imax.c
+endif
 
+ifndef ISMINKERNEL
 ISMINKERNEL  = ../riscv64/imin.c
+endif
+ifndef IDMINKERNEL
 IDMINKERNEL  = ../riscv64/imin.c
+endif
 
+ifndef SASUMKERNEL
 SASUMKERNEL  = ../riscv64/asum.c
+endif
+ifndef DASUMKERNEL
 DASUMKERNEL  = ../riscv64/asum.c
+endif
+ifndef CASUMKERNEL
 CASUMKERNEL  = ../riscv64/zasum.c
+endif
+ifndef ZASUMKERNEL
 ZASUMKERNEL  = ../riscv64/zasum.c
+endif
 
+ifndef SSUMKERNEL
 SSUMKERNEL  = ../arm/sum.c
+endif
+ifndef DSUMKERNEL
 DSUMKERNEL  = ../arm/sum.c
+endif
+ifndef CSUMKERNEL
 CSUMKERNEL  = ../arm/zsum.c
+endif
+ifndef ZSUMKERNEL
 ZSUMKERNEL  = ../arm/zsum.c
+endif
 
+ifndef SAXPYKERNEL
 SAXPYKERNEL  = ../riscv64/axpy.c
+endif
+ifndef DAXPYKERNEL
 DAXPYKERNEL  = ../riscv64/axpy.c
+endif
+ifndef CAXPYKERNEL
 CAXPYKERNEL  = ../riscv64/zaxpy.c
+endif
+ifndef ZAXPYKERNEL
 ZAXPYKERNEL  = ../riscv64/zaxpy.c
+endif
 
+ifndef SAXPBYKERNEL
 SAXPBYKERNEL  = ../riscv64/axpby.c
+endif
+ifndef DAXPBYKERNEL
 DAXPBYKERNEL  = ../riscv64/axpby.c
+endif
+ifndef CAXPBYKERNEL
 CAXPBYKERNEL  = ../riscv64/zaxpby.c
+endif
+ifndef ZAXPBYKERNEL
 ZAXPBYKERNEL  = ../riscv64/zaxpby.c
+endif
 
+ifndef SCOPYKERNEL
 SCOPYKERNEL  = ../riscv64/copy.c
+endif
+ifndef DCOPYKERNEL
 DCOPYKERNEL  = ../riscv64/copy.c
+endif
+ifndef CCOPYKERNEL
 CCOPYKERNEL  = ../riscv64/zcopy.c
+endif
+ifndef ZCOPYKERNEL
 ZCOPYKERNEL  = ../riscv64/zcopy.c
+endif
 
+ifndef SDOTKERNEL
 SDOTKERNEL   = ../riscv64/dot.c
+endif
+ifndef DDOTKERNEL
 DDOTKERNEL   = ../riscv64/dot.c
+endif
+ifndef CDOTKERNEL
 CDOTKERNEL   = ../riscv64/zdot.c
+endif
+ifndef ZDOTKERNEL
 ZDOTKERNEL   = ../riscv64/zdot.c
+endif
+ifndef DSDOTKERNEL
 DSDOTKERNEL  = ../generic/dot.c
+endif
 
+ifndef SNRM2KERNEL
 SNRM2KERNEL  = ../riscv64/nrm2.c
+endif
+ifndef DNRM2KERNEL
 DNRM2KERNEL  = ../riscv64/nrm2.c
+endif
+ifndef CNRM2KERNEL
 CNRM2KERNEL  = ../riscv64/znrm2.c
+endif
+ifndef ZNRM2KERNEL
 ZNRM2KERNEL  = ../riscv64/znrm2.c
+endif
 
+ifndef SROTKERNEL
 SROTKERNEL   = ../riscv64/rot.c
+endif
+ifndef DROTKERNEL
 DROTKERNEL   = ../riscv64/rot.c
+endif
+ifndef CROTKERNEL
 CROTKERNEL   = ../riscv64/zrot.c
+endif
+ifndef ZROTKERNEL
 ZROTKERNEL   = ../riscv64/zrot.c
+endif
 
+ifndef SROTMKERNEL
 SROTMKERNEL  = ../generic/rotm.c
+endif
+ifndef DROTMKERNEL
 DROTMKERNEL  = ../generic/rotm.c
+endif
+ifndef QROTMKERNEL
 QROTMKERNEL = ../generic/rotm.c
+endif
 
+ifndef SSCALKERNEL
 SSCALKERNEL  = ../riscv64/scal.c
+endif
+ifndef DSCALKERNEL
 DSCALKERNEL  = ../riscv64/scal.c
+endif
+ifndef CSCALKERNEL
 CSCALKERNEL  = ../riscv64/zscal.c
+endif
+ifndef ZSCALKERNEL
 ZSCALKERNEL  = ../riscv64/zscal.c
+endif
 
+ifndef SSWAPKERNEL
 SSWAPKERNEL  = ../riscv64/swap.c
+endif
+ifndef DSWAPKERNEL
 DSWAPKERNEL  = ../riscv64/swap.c
+endif
+ifndef CSWAPKERNEL
 CSWAPKERNEL  = ../riscv64/zswap.c
+endif
+ifndef ZSWAPKERNEL
 ZSWAPKERNEL  = ../riscv64/zswap.c
+endif
 
+ifndef SGEMVNKERNEL
 SGEMVNKERNEL = ../riscv64/gemv_n.c
+endif
+ifndef DGEMVNKERNEL
 DGEMVNKERNEL = ../riscv64/gemv_n.c
+endif
+ifndef CGEMVNKERNEL
 CGEMVNKERNEL = ../riscv64/zgemv_n.c
+endif
+ifndef ZGEMVNKERNEL
 ZGEMVNKERNEL = ../riscv64/zgemv_n.c
+endif
 
+ifndef SGEMVTKERNEL
 SGEMVTKERNEL = ../riscv64/gemv_t.c
+endif
+ifndef DGEMVTKERNEL
 DGEMVTKERNEL = ../riscv64/gemv_t.c
+endif
+ifndef CGEMVTKERNEL
 CGEMVTKERNEL = ../riscv64/zgemv_t.c
+endif
+ifndef ZGEMVTKERNEL
 ZGEMVTKERNEL = ../riscv64/zgemv_t.c
+endif
 
+# KERNEL.$(TARGET_CORE) is included first; keep its TRMM width if set.
+# Unroll-4 GEMM packing uses trmm_*copy_4, which is wrong with a 2x2 kernel.
+ifndef STRMMKERNEL
 STRMMKERNEL	= ../generic/trmmkernel_2x2.c
+endif
+ifndef DTRMMKERNEL
 DTRMMKERNEL	= ../generic/trmmkernel_2x2.c
+endif
+ifndef CTRMMKERNEL
 CTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
+endif
+ifndef ZTRMMKERNEL
 ZTRMMKERNEL	= ../generic/ztrmmkernel_2x2.c
+endif
 
 ifndef SGEMMKERNEL
 SGEMMKERNEL    =  ../generic/gemmkernel_2x2.c
@@ -132,17 +294,37 @@ ifndef DGEMMOTCOPYOBJ
 DGEMMOTCOPYOBJ = dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 endif
 
+ifndef CGEMMKERNEL
 CGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
+endif
+ifndef CGEMMONCOPY
 CGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
+endif
+ifndef CGEMMOTCOPY
 CGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
+endif
+ifndef CGEMMONCOPYOBJ
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
+endif
+ifndef CGEMMOTCOPYOBJ
 CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
+endif
 
+ifndef ZGEMMKERNEL
 ZGEMMKERNEL    = ../generic/zgemmkernel_2x2.c
+endif
+ifndef ZGEMMONCOPY
 ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
+endif
+ifndef ZGEMMOTCOPY
 ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
+endif
+ifndef ZGEMMONCOPYOBJ
 ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
+endif
+ifndef ZGEMMOTCOPYOBJ
 ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
+endif
 
 ifndef STRSMKERNEL_LN
 STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
@@ -170,31 +352,71 @@ ifndef DTRSMKERNEL_RT
 DTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 endif
 
+ifndef CTRSMKERNEL_LN
 CTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
+endif
+ifndef CTRSMKERNEL_LT
 CTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
+endif
+ifndef CTRSMKERNEL_RN
 CTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
+endif
+ifndef CTRSMKERNEL_RT
 CTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+endif
 
+ifndef ZTRSMKERNEL_LN
 ZTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
+endif
+ifndef ZTRSMKERNEL_LT
 ZTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
+endif
+ifndef ZTRSMKERNEL_RN
 ZTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
+endif
+ifndef ZTRSMKERNEL_RT
 ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+endif
 
+ifndef SSYMV_U_KERNEL
 SSYMV_U_KERNEL =  ../generic/symv_k.c
+endif
+ifndef SSYMV_L_KERNEL
 SSYMV_L_KERNEL =  ../generic/symv_k.c
+endif
+ifndef DSYMV_U_KERNEL
 DSYMV_U_KERNEL =  ../generic/symv_k.c
+endif
+ifndef DSYMV_L_KERNEL
 DSYMV_L_KERNEL =  ../generic/symv_k.c
+endif
+ifndef CSYMV_U_KERNEL
 CSYMV_U_KERNEL =  ../generic/zsymv_k.c
+endif
+ifndef CSYMV_L_KERNEL
 CSYMV_L_KERNEL =  ../generic/zsymv_k.c
+endif
+ifndef ZSYMV_U_KERNEL
 ZSYMV_U_KERNEL =  ../generic/zsymv_k.c
+endif
+ifndef ZSYMV_L_KERNEL
 ZSYMV_L_KERNEL =  ../generic/zsymv_k.c
+endif
 
 
+ifndef LSAME_KERNEL
 LSAME_KERNEL = ../generic/lsame.c
+endif
 
+ifndef SCABS_KERNEL
 SCABS_KERNEL	= ../generic/cabs.c
+endif
+ifndef DCABS_KERNEL
 DCABS_KERNEL	= ../generic/cabs.c
+endif
+ifndef QCABS_KERNEL
 QCABS_KERNEL	= ../generic/cabs.c
+endif
 
 ifndef SGEMM_BETA
 SGEMM_BETA = ../generic/gemm_beta.c

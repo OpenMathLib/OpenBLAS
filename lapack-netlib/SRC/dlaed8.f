@@ -5,6 +5,7 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
+*> \htmlonly
 *> Download DLAED8 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlaed8.f">
 *> [TGZ]</a>
@@ -12,6 +13,7 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlaed8.f">
 *> [TXT]</a>
+*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -226,7 +228,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup laed8
+*> \ingroup auxOTHERcomputational
 *
 *> \par Contributors:
 *  ==================
@@ -238,7 +240,6 @@
       SUBROUTINE DLAED8( ICOMPQ, K, N, QSIZ, D, Q, LDQ, INDXQ, RHO,
      $                   CUTPNT, Z, DLAMBDA, Q2, LDQ2, W, PERM, GIVPTR,
      $                   GIVCOL, GIVNUM, INDXP, INDX, INFO )
-      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -274,8 +275,7 @@
       EXTERNAL           IDAMAX, DLAMCH, DLAPY2
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DLACPY, DLAMRG, DROT, DSCAL,
-     $                   XERBLA
+      EXTERNAL           DCOPY, DLACPY, DLAMRG, DROT, DSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN, SQRT
@@ -355,7 +355,7 @@
       IMAX = IDAMAX( N, Z, 1 )
       JMAX = IDAMAX( N, D, 1 )
       EPS = DLAMCH( 'Epsilon' )
-      TOL = EIGHT*EIGHT*EPS*ABS( D( JMAX ) )
+      TOL = EIGHT*EPS*ABS( D( JMAX ) )
 *
 *     If the rank-1 modifier is small enough, no more needs to be done
 *     except to reorganize Q so that its columns correspond with the
@@ -370,8 +370,7 @@
          ELSE
             DO 60 J = 1, N
                PERM( J ) = INDXQ( INDX( J ) )
-               CALL DCOPY( QSIZ, Q( 1, PERM( J ) ), 1, Q2( 1, J ),
-     $                     1 )
+               CALL DCOPY( QSIZ, Q( 1, PERM( J ) ), 1, Q2( 1, J ), 1 )
    60       CONTINUE
             CALL DLACPY( 'A', QSIZ, N, Q2( 1, 1 ), LDQ2, Q( 1, 1 ),
      $                   LDQ )

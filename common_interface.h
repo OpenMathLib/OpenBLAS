@@ -684,96 +684,96 @@ int OPENBLAS_API(xgemc)(char *, char *, blasint *, blasint *, blasint *, xdouble
 
 /* Lapack routines */
 
-int OPENBLAS_API(sgetf2)(blasint *, blasint *, float  *, blasint *, blasint *, blasint *);
-int OPENBLAS_API(dgetf2)(blasint *, blasint *, double *, blasint *, blasint *, blasint *);
-int OPENBLAS_API(qgetf2)(blasint *, blasint *, xdouble *, blasint *, blasint *, blasint *);
-int OPENBLAS_API(cgetf2)(blasint *, blasint *, float  *, blasint *, blasint *, blasint *);
-int OPENBLAS_API(zgetf2)(blasint *, blasint *, double *, blasint *, blasint *, blasint *);
-int OPENBLAS_API(xgetf2)(blasint *, blasint *, xdouble *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(sgetf2)(blasint *, blasint *, float  *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(dgetf2)(blasint *, blasint *, double *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(qgetf2)(blasint *, blasint *, xdouble *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(cgetf2)(blasint *, blasint *, float  *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(zgetf2)(blasint *, blasint *, double *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(xgetf2)(blasint *, blasint *, xdouble *, blasint *, blasint *, blasint *);
 
-int OPENBLAS_API(sgetrf)(blasint *, blasint *, float  *, blasint *, blasint *, blasint *);
-int OPENBLAS_API(dgetrf)(blasint *, blasint *, double *, blasint *, blasint *, blasint *);
-int OPENBLAS_API(qgetrf)(blasint *, blasint *, xdouble *, blasint *, blasint *, blasint *);
-int OPENBLAS_API(cgetrf)(blasint *, blasint *, float  *, blasint *, blasint *, blasint *);
-int OPENBLAS_API(zgetrf)(blasint *, blasint *, double *, blasint *, blasint *, blasint *);
-int OPENBLAS_API(xgetrf)(blasint *, blasint *, xdouble *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(sgetrf)(blasint *, blasint *, float  *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(dgetrf)(blasint *, blasint *, double *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(qgetrf)(blasint *, blasint *, xdouble *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(cgetrf)(blasint *, blasint *, float  *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(zgetrf)(blasint *, blasint *, double *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(xgetrf)(blasint *, blasint *, xdouble *, blasint *, blasint *, blasint *);
 
-int OPENBLAS_API(slaswp)(blasint *, float  *, blasint *, blasint *, blasint *, blasint *, blasint *);
-int OPENBLAS_API(dlaswp)(blasint *, double *, blasint *, blasint *, blasint *, blasint *, blasint *);
-int OPENBLAS_API(qlaswp)(blasint *, xdouble *, blasint *, blasint *, blasint *, blasint *, blasint *);
-int OPENBLAS_API(claswp)(blasint *, float  *, blasint *, blasint *, blasint *, blasint *, blasint *);
-int OPENBLAS_API(zlaswp)(blasint *, double *, blasint *, blasint *, blasint *, blasint *, blasint *);
-int OPENBLAS_API(xlaswp)(blasint *, xdouble *, blasint *, blasint *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(slaswp)(blasint *, float  *, blasint *, blasint *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(dlaswp)(blasint *, double *, blasint *, blasint *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(qlaswp)(blasint *, xdouble *, blasint *, blasint *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(claswp)(blasint *, float  *, blasint *, blasint *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(zlaswp)(blasint *, double *, blasint *, blasint *, blasint *, blasint *, blasint *);
+void OPENBLAS_API(xlaswp)(blasint *, xdouble *, blasint *, blasint *, blasint *, blasint *, blasint *);
 
-int OPENBLAS_API(sgetrs)(char *, blasint *, blasint *, float  *, blasint *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(dgetrs)(char *, blasint *, blasint *, double *, blasint *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(qgetrs)(char *, blasint *, blasint *, xdouble *, blasint *, blasint *, xdouble *, blasint *, blasint *);
-int OPENBLAS_API(cgetrs)(char *, blasint *, blasint *, float  *, blasint *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(zgetrs)(char *, blasint *, blasint *, double *, blasint *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(xgetrs)(char *, blasint *, blasint *, xdouble *, blasint *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(sgetrs)(char *, blasint *, blasint *, float  *, blasint *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(dgetrs)(char *, blasint *, blasint *, double *, blasint *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(qgetrs)(char *, blasint *, blasint *, xdouble *, blasint *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(cgetrs)(char *, blasint *, blasint *, float  *, blasint *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(zgetrs)(char *, blasint *, blasint *, double *, blasint *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(xgetrs)(char *, blasint *, blasint *, xdouble *, blasint *, blasint *, xdouble *, blasint *, blasint *);
 
-int OPENBLAS_API(sgesv)(blasint *, blasint *, float  *, blasint *, blasint *, float *, blasint *, blasint *);
-int OPENBLAS_API(dgesv)(blasint *, blasint *, double *, blasint *, blasint *, double*, blasint *, blasint *);
-int OPENBLAS_API(qgesv)(blasint *, blasint *, xdouble *, blasint *, blasint *, xdouble*, blasint *, blasint *);
-int OPENBLAS_API(cgesv)(blasint *, blasint *, float  *, blasint *, blasint *, float *, blasint *, blasint *);
-int OPENBLAS_API(zgesv)(blasint *, blasint *, double *, blasint *, blasint *, double*, blasint *, blasint *);
-int OPENBLAS_API(xgesv)(blasint *, blasint *, xdouble *, blasint *, blasint *, xdouble*, blasint *, blasint *);
+void OPENBLAS_API(sgesv)(blasint *, blasint *, float  *, blasint *, blasint *, float *, blasint *, blasint *);
+void OPENBLAS_API(dgesv)(blasint *, blasint *, double *, blasint *, blasint *, double*, blasint *, blasint *);
+void OPENBLAS_API(qgesv)(blasint *, blasint *, xdouble *, blasint *, blasint *, xdouble*, blasint *, blasint *);
+void OPENBLAS_API(cgesv)(blasint *, blasint *, float  *, blasint *, blasint *, float *, blasint *, blasint *);
+void OPENBLAS_API(zgesv)(blasint *, blasint *, double *, blasint *, blasint *, double*, blasint *, blasint *);
+void OPENBLAS_API(xgesv)(blasint *, blasint *, xdouble *, blasint *, blasint *, xdouble*, blasint *, blasint *);
 
-int OPENBLAS_API(spotf2)(char *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(dpotf2)(char *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(qpotf2)(char *, blasint *, xdouble *, blasint *, blasint *);
-int OPENBLAS_API(cpotf2)(char *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(zpotf2)(char *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(xpotf2)(char *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(spotf2)(char *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(dpotf2)(char *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(qpotf2)(char *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(cpotf2)(char *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(zpotf2)(char *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(xpotf2)(char *, blasint *, xdouble *, blasint *, blasint *);
 
-int OPENBLAS_API(spotrf)(char *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(dpotrf)(char *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(qpotrf)(char *, blasint *, xdouble *, blasint *, blasint *);
-int OPENBLAS_API(cpotrf)(char *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(zpotrf)(char *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(xpotrf)(char *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(spotrf)(char *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(dpotrf)(char *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(qpotrf)(char *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(cpotrf)(char *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(zpotrf)(char *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(xpotrf)(char *, blasint *, xdouble *, blasint *, blasint *);
 
-int OPENBLAS_API(spotri)(char *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(dpotri)(char *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(qpotri)(char *, blasint *, xdouble *, blasint *, blasint *);
-int OPENBLAS_API(cpotri)(char *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(zpotri)(char *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(xpotri)(char *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(spotri)(char *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(dpotri)(char *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(qpotri)(char *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(cpotri)(char *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(zpotri)(char *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(xpotri)(char *, blasint *, xdouble *, blasint *, blasint *);
 
-int OPENBLAS_API(spotrs)(char *, blasint *, blasint *, float   *, blasint *, float   *, blasint *, blasint *);
-int OPENBLAS_API(dpotrs)(char *, blasint *, blasint *, double  *, blasint *, double  *, blasint *, blasint *);
-int OPENBLAS_API(qpotrs)(char *, blasint *, blasint *, xdouble *, blasint *, xdouble *, blasint *, blasint *);
-int OPENBLAS_API(cpotrs)(char *, blasint *, blasint *, float   *, blasint *, float   *, blasint *, blasint *);
-int OPENBLAS_API(zpotrs)(char *, blasint *, blasint *, double  *, blasint *, double  *, blasint *, blasint *);
-int OPENBLAS_API(xpotrs)(char *, blasint *, blasint *, xdouble *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(spotrs)(char *, blasint *, blasint *, float   *, blasint *, float   *, blasint *, blasint *);
+void OPENBLAS_API(dpotrs)(char *, blasint *, blasint *, double  *, blasint *, double  *, blasint *, blasint *);
+void OPENBLAS_API(qpotrs)(char *, blasint *, blasint *, xdouble *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(cpotrs)(char *, blasint *, blasint *, float   *, blasint *, float   *, blasint *, blasint *);
+void OPENBLAS_API(zpotrs)(char *, blasint *, blasint *, double  *, blasint *, double  *, blasint *, blasint *);
+void OPENBLAS_API(xpotrs)(char *, blasint *, blasint *, xdouble *, blasint *, xdouble *, blasint *, blasint *);
 
-int OPENBLAS_API(slauu2)(char *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(dlauu2)(char *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(qlauu2)(char *, blasint *, xdouble *, blasint *, blasint *);
-int OPENBLAS_API(clauu2)(char *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(zlauu2)(char *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(xlauu2)(char *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(slauu2)(char *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(dlauu2)(char *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(qlauu2)(char *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(clauu2)(char *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(zlauu2)(char *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(xlauu2)(char *, blasint *, xdouble *, blasint *, blasint *);
 
-int OPENBLAS_API(slauum)(char *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(dlauum)(char *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(qlauum)(char *, blasint *, xdouble *, blasint *, blasint *);
-int OPENBLAS_API(clauum)(char *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(zlauum)(char *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(xlauum)(char *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(slauum)(char *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(dlauum)(char *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(qlauum)(char *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(clauum)(char *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(zlauum)(char *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(xlauum)(char *, blasint *, xdouble *, blasint *, blasint *);
 
-int OPENBLAS_API(strti2)(char *, char *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(dtrti2)(char *, char *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(qtrti2)(char *, char *, blasint *, xdouble *, blasint *, blasint *);
-int OPENBLAS_API(ctrti2)(char *, char *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(ztrti2)(char *, char *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(xtrti2)(char *, char *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(strti2)(char *, char *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(dtrti2)(char *, char *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(qtrti2)(char *, char *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(ctrti2)(char *, char *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(ztrti2)(char *, char *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(xtrti2)(char *, char *, blasint *, xdouble *, blasint *, blasint *);
 
-int OPENBLAS_API(strtri)(char *, char *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(dtrtri)(char *, char *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(qtrtri)(char *, char *, blasint *, xdouble *, blasint *, blasint *);
-int OPENBLAS_API(ctrtri)(char *, char *, blasint *, float  *, blasint *, blasint *);
-int OPENBLAS_API(ztrtri)(char *, char *, blasint *, double *, blasint *, blasint *);
-int OPENBLAS_API(xtrtri)(char *, char *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(strtri)(char *, char *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(dtrtri)(char *, char *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(qtrtri)(char *, char *, blasint *, xdouble *, blasint *, blasint *);
+void OPENBLAS_API(ctrtri)(char *, char *, blasint *, float  *, blasint *, blasint *);
+void OPENBLAS_API(ztrtri)(char *, char *, blasint *, double *, blasint *, blasint *);
+void OPENBLAS_API(xtrtri)(char *, char *, blasint *, xdouble *, blasint *, blasint *);
 
 
 FLOATRET  OPENBLAS_API(slamch)(char *);

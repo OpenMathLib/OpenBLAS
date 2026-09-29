@@ -76,6 +76,7 @@
 #define	SGEMM_ITCOPY		sgemm_itcopy
 #endif
 
+#define SME_SGEMM_KERNEL	sme_sgemm_kernel
 #define	STRMM_OUNUCOPY		strmm_ounucopy
 #define	STRMM_OUNNCOPY		strmm_ounncopy
 #define	STRMM_OUTUCOPY		strmm_outucopy
@@ -248,6 +249,7 @@
 #define  SSYR2K_DIRECT_ALPHA_BETA_UT     gotoblas -> ssyr2k_direct_alpha_betaUT
 #define  SSYR2K_DIRECT_ALPHA_BETA_LN     gotoblas -> ssyr2k_direct_alpha_betaLN
 #define  SSYR2K_DIRECT_ALPHA_BETA_LT     gotoblas -> ssyr2k_direct_alpha_betaLT
+#define SME_SGEMM_KERNEL	gotoblas -> sme_sgemm_kernel
 #endif
 
 #define	SGEMM_ONCOPY		gotoblas -> sgemm_oncopy
@@ -386,6 +388,15 @@
 
 #define	SSYRK_KERNEL_U		ssyrk_kernel_U
 #define	SSYRK_KERNEL_L		ssyrk_kernel_L
+
+#define	SGEMMT_UNN		sgemmt_UNN
+#define	SGEMMT_UNT		sgemmt_UNT
+#define	SGEMMT_UTN		sgemmt_UTN
+#define	SGEMMT_UTT		sgemmt_UTT
+#define	SGEMMT_LNN		sgemmt_LNN
+#define	SGEMMT_LNT		sgemmt_LNT
+#define	SGEMMT_LTN		sgemmt_LTN
+#define	SGEMMT_LTT		sgemmt_LTT
 
 #define	SHERK_UN		ssyrk_UN
 #define	SHERK_LN		ssyrk_LN

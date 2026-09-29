@@ -378,7 +378,7 @@ static complex c_b1 = {1.f,0.f};
 /* > \ingroup complex_lin */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgeqrs_(integer *m, integer *n, integer *nrhs, complex *
+/* Subroutine */ void cgeqrs_(integer *m, integer *n, integer *nrhs, complex *
 	a, integer *lda, complex *tau, complex *b, integer *ldb, complex *
 	work, integer *lwork, integer *info)
 {
@@ -386,10 +386,10 @@ static complex c_b1 = {1.f,0.f};
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *), xerbla_(char *, 
-	    integer *), cunmqr_(char *, char *, integer *, integer *, 
+	    integer *, ftnlen), cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
 
@@ -426,19 +426,19 @@ static complex c_b1 = {1.f,0.f};
 	*info = -5;
     } else if (*ldb < f2cmax(1,*m)) {
 	*info = -8;
-    } else if (*lwork < 1 || *lwork < *nrhs && *m > 0 && *n > 0) {
+    } else if (*lwork < 1 || (*lwork < *nrhs && *m > 0 && *n > 0)) {
 	*info = -10;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CGEQRS", &i__1);
-	return 0;
+	xerbla_("CGEQRS", &i__1, (ftnlen)6);
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0 || *m == 0) {
-	return 0;
+	return;
     }
 
 /*     B := Q' * B */
@@ -451,7 +451,7 @@ static complex c_b1 = {1.f,0.f};
     ctrsm_("Left", "Upper", "No transpose", "Non-unit", n, nrhs, &c_b1, &a[
 	    a_offset], lda, &b[b_offset], ldb);
 
-    return 0;
+    return;
 
 /*     End of CGEQRS */
 

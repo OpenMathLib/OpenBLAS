@@ -561,7 +561,7 @@ f"> */
 	    *, integer *, integer *, complex *, integer *, complex *, integer 
 	    *), claset_(char *, integer *, integer *, complex *, 
 	    complex *, complex *, integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     extern void clapmt_(logical *, integer *, integer *, complex *, 
 	    integer *, integer *);
     logical forwrd;
@@ -622,16 +622,16 @@ f"> */
 	*info = -8;
     } else if (*ldb < f2cmax(1,*p)) {
 	*info = -10;
-    } else if (*ldu < 1 || wantu && *ldu < *m) {
+    } else if (*ldu < 1 || (wantu && *ldu < *m)) {
 	*info = -16;
-    } else if (*ldv < 1 || wantv && *ldv < *p) {
+    } else if (*ldv < 1 || (wantv && *ldv < *p)) {
 	*info = -18;
-    } else if (*ldq < 1 || wantq && *ldq < *n) {
+    } else if (*ldq < 1 || (wantq && *ldq < *n)) {
 	*info = -20;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CGGSVP", &i__1, 6);
+	xerbla_("CGGSVP", &i__1, (ftnlen)6);
 	return;
     }
 

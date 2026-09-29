@@ -51,7 +51,7 @@
 #endif
 
 OPENBLAS_EXPORT
-int NAME(blasint *M, blasint *N, FLOAT *a, blasint *ldA, blasint *ipiv, blasint *Info){
+void NAME(blasint *M, blasint *N, FLOAT *a, blasint *ldA, blasint *ipiv, blasint *Info){
 
   blas_arg_t args;
 
@@ -77,11 +77,11 @@ int NAME(blasint *M, blasint *N, FLOAT *a, blasint *ldA, blasint *ipiv, blasint 
   if (info) {
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME) - 1);
     *Info = - info;
-    return 0;
+    return;
   }
 
   *Info = 0;
-  if (args.m == 0 || args.n == 0) return 0;
+  if (args.m == 0 || args.n == 0) return;
 
   IDEBUG_START;
 
@@ -106,5 +106,5 @@ int NAME(blasint *M, blasint *N, FLOAT *a, blasint *ldA, blasint *ipiv, blasint 
 
   IDEBUG_END;
 
-  return 0;
+  return;
 }
