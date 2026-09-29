@@ -341,6 +341,15 @@
 #define	DSYRK_KERNEL_U		dsyrk_kernel_U
 #define	DSYRK_KERNEL_L		dsyrk_kernel_L
 
+#define	DGEMMT_UNN		dgemmt_UNN
+#define	DGEMMT_UNT		dgemmt_UNT
+#define	DGEMMT_UTN		dgemmt_UTN
+#define	DGEMMT_UTT		dgemmt_UTT
+#define	DGEMMT_LNN		dgemmt_LNN
+#define	DGEMMT_LNT		dgemmt_LNT
+#define	DGEMMT_LTN		dgemmt_LTN
+#define	DGEMMT_LTT		dgemmt_LTT
+
 #define	DHERK_UN		dsyrk_UN
 #define	DHERK_LN		dsyrk_LN
 #define	DHERK_UC		dsyrk_UT

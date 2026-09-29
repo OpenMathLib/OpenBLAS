@@ -514,6 +514,46 @@
 #define	CSYRK_KERNEL_U		csyrk_kernel_U
 #define	CSYRK_KERNEL_L		csyrk_kernel_L
 
+#define	CGEMMT_UNN		cgemmt_UNN
+#define	CGEMMT_UNT		cgemmt_UNT
+#define	CGEMMT_UNR		cgemmt_UNR
+#define	CGEMMT_UNC		cgemmt_UNC
+#define	CGEMMT_UTN		cgemmt_UTN
+#define	CGEMMT_UTT		cgemmt_UTT
+#define	CGEMMT_UTR		cgemmt_UTR
+#define	CGEMMT_UTC		cgemmt_UTC
+#define	CGEMMT_URN		cgemmt_URN
+#define	CGEMMT_URT		cgemmt_URT
+#define	CGEMMT_URR		cgemmt_URR
+#define	CGEMMT_URC		cgemmt_URC
+#define	CGEMMT_UCN		cgemmt_UCN
+#define	CGEMMT_UCT		cgemmt_UCT
+#define	CGEMMT_UCR		cgemmt_UCR
+#define	CGEMMT_UCC		cgemmt_UCC
+#define	CGEMMT_LNN		cgemmt_LNN
+#define	CGEMMT_LNT		cgemmt_LNT
+#define	CGEMMT_LNR		cgemmt_LNR
+#define	CGEMMT_LNC		cgemmt_LNC
+#define	CGEMMT_LTN		cgemmt_LTN
+#define	CGEMMT_LTT		cgemmt_LTT
+#define	CGEMMT_LTR		cgemmt_LTR
+#define	CGEMMT_LTC		cgemmt_LTC
+#define	CGEMMT_LRN		cgemmt_LRN
+#define	CGEMMT_LRT		cgemmt_LRT
+#define	CGEMMT_LRR		cgemmt_LRR
+#define	CGEMMT_LRC		cgemmt_LRC
+#define	CGEMMT_LCN		cgemmt_LCN
+#define	CGEMMT_LCT		cgemmt_LCT
+#define	CGEMMT_LCR		cgemmt_LCR
+#define	CGEMMT_LCC		cgemmt_LCC
+
+#define	CGEMMT_KERNEL_UCN	cgemmt_kernel_UCN
+#define	CGEMMT_KERNEL_UNC	cgemmt_kernel_UNC
+#define	CGEMMT_KERNEL_UCC	cgemmt_kernel_UCC
+#define	CGEMMT_KERNEL_LCN	cgemmt_kernel_LCN
+#define	CGEMMT_KERNEL_LNC	cgemmt_kernel_LNC
+#define	CGEMMT_KERNEL_LCC	cgemmt_kernel_LCC
+
 #define	CHERK_UN		cherk_UN
 #define	CHERK_LN		cherk_LN
 #define	CHERK_UC		cherk_UC

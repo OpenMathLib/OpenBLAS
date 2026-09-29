@@ -389,6 +389,15 @@
 #define	SSYRK_KERNEL_U		ssyrk_kernel_U
 #define	SSYRK_KERNEL_L		ssyrk_kernel_L
 
+#define	SGEMMT_UNN		sgemmt_UNN
+#define	SGEMMT_UNT		sgemmt_UNT
+#define	SGEMMT_UTN		sgemmt_UTN
+#define	SGEMMT_UTT		sgemmt_UTT
+#define	SGEMMT_LNN		sgemmt_LNN
+#define	SGEMMT_LNT		sgemmt_LNT
+#define	SGEMMT_LTN		sgemmt_LTN
+#define	SGEMMT_LTT		sgemmt_LTT
+
 #define	SHERK_UN		ssyrk_UN
 #define	SHERK_LN		ssyrk_LN
 #define	SHERK_UC		ssyrk_UT
