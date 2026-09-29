@@ -586,6 +586,12 @@ if (strcmp(gotoblas_corename(), "armv9sme") == 0
 #endif
 )
 #endif //defined dynarch
+/* below this the NEON paths win over the cost of entering streaming mode (Apple M4: about 20^3, 16^3 in fp64) */
+#if defined(DOUBLE) && !defined(COMPLEX)
+if ((double)args.m * (double)args.n * (double)args.k >= 4000.)
+#else
+if ((double)args.m * (double)args.n * (double)args.k >= 8000.)
+#endif
 {
 char* TA,*TB;
       if (transa & 1) 
