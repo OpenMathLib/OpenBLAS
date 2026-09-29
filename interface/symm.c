@@ -121,6 +121,10 @@ extern char* gotoblas_corename(void);
 #endif
 #endif
 
+#if defined(ARCH_ARM64)
+#include "../kernel/arm64/sme_level3.h"
+#endif
+
 static int (*symm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLASLONG) = {
 #ifndef GEMM3M
 #ifndef HEMM
@@ -398,6 +402,10 @@ if (strcmp(gotoblas_corename(), "armv9sme") == 0
 #endif
 #endif
 
+#endif
+
+#ifdef SME_LEVEL3 /* arm64 SME: recursive blocking on the SME GEMM kernel */
+  if (s3_symm_hook(side, uplo, &args)) return;
 #endif
 
   IDEBUG_START;

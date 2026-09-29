@@ -77,6 +77,10 @@
 #define GEMM_MULTITHREAD_THRESHOLD 4
 #endif
 
+#if defined(ARCH_ARM64)
+#include "../kernel/arm64/sme_level3.h"
+#endif
+
 static int (*syrk[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLASLONG) = {
 #ifndef HEMM
   SYRK_UN, SYRK_UC, SYRK_LN, SYRK_LC,
@@ -370,6 +374,10 @@ if (strcmp(gotoblas_corename(), "armv9sme") == 0
 
 #endif
 
+
+#ifdef SME_LEVEL3 /* arm64 SME: recursive blocking on the SME GEMM kernel */
+  if (s3_syrk_hook(0, uplo, trans, &args)) return;
+#endif
 
   IDEBUG_START;
 

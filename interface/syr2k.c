@@ -71,6 +71,10 @@
 #endif
 #endif
 
+#if defined(ARCH_ARM64)
+#include "../kernel/arm64/sme_level3.h"
+#endif
+
 static int (*syr2k[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLASLONG) = {
 #ifndef HEMM
   SYR2K_UN, SYR2K_UC, SYR2K_LN, SYR2K_LC,
@@ -387,6 +391,10 @@ if (strcmp(gotoblas_corename(), "armv9sme") == 0
 
 #endif
 
+
+#ifdef SME_LEVEL3 /* arm64 SME: recursive blocking on the SME GEMM kernel */
+  if (s3_syrk_hook(1, uplo, trans, &args)) return;
+#endif
 
   IDEBUG_START;
 

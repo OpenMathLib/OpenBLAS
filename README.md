@@ -187,7 +187,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **Neoverse V3**: preliminary support
 - **Neoverse V3AE**: preliminary support
 - **Apple Vortex**: preliminary support based on ThunderX2/3
-- **Apple VortexM4**: preliminary support based on ThunderX2/3, SME kernels for SGEMM,SSYMM,STRMM,SSYRK,SSYR2K
+- **Apple VortexM4**: preliminary support based on ThunderX2/3, SME kernels for SGEMM,SSYMM,STRMM,SSYRK,SSYR2K; on SME2 cores with a 512-bit streaming vector length (tested on M4) an SME2 kernel for SGEMM and DGEMM, which S/D SYMM, SYRK, SYR2K, TRMM and TRSM also use
 - **A64FX**:  preliminary support, optimized Level-3 BLAS
 - **ARMV8SVE**: any ARMV8 cpu with SVE extensions 
 - **ARMV9SME**: any ARMV9 cpu with SVE and SME extensions 
