@@ -30,6 +30,17 @@ SBGEMMITCOPYOBJ =  sbgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SBGEMMONCOPYOBJ =  sbgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SBGEMMOTCOPYOBJ =  sbgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
+SHGEMM_BETA = ../generic/gemm_beta.c
+SHGEMMKERNEL    = shgemm_kernel_power10.c
+SHGEMMINCOPY    = sbgemm_ncopy_16_power10.c
+SHGEMMITCOPY    = sbgemm_tcopy_16_power10.c
+SHGEMMONCOPY    = sbgemm_ncopy_8_power10.c
+SHGEMMOTCOPY    = sbgemm_tcopy_8_power10.c
+SHGEMMINCOPYOBJ =  shgemm_incopy$(TSUFFIX).$(SUFFIX)
+SHGEMMITCOPYOBJ =  shgemm_itcopy$(TSUFFIX).$(SUFFIX)
+SHGEMMONCOPYOBJ =  shgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SHGEMMOTCOPYOBJ =  shgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
 STRMMKERNEL	= sgemm_kernel_power10.c
 DTRMMKERNEL	= dgemm_kernel_power10.c
 ifeq ($(OSNAME), AIX)
