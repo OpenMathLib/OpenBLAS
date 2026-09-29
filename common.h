@@ -288,7 +288,12 @@ typedef uint16_t bfloat16;
 
 #ifdef BUILD_HFLOAT16
   #ifndef hfloat16
+  #if defined(POWER8) || defined(POWER9) || defined(POWER10)
+  /* POWER does not have a native _Float16 ABI type; use uint16_t bit-pattern */
+  typedef uint16_t hfloat16;
+  #else
   typedef _Float16 hfloat16;
+  #endif
   #endif
 #else
   typedef uint16_t hfloat16;
