@@ -288,3 +288,7 @@ hheei <hheei@users.noreply.github.com>
 
 * Hugo Meiland <hugo@meiland.nl>
   * [2026-08-09] Add Cortex-A72 DGEMM 6x8 microkernel and blocking
+
+* Michael Tesch <https://github.com/tesch1>
+  * [2026-09-29] SME2 SGEMM/DGEMM kernel for Apple M4
+  * [2026-09-29] SME2 level-3 kernels (GEMM, TRMM and TRSM kernels and panel copies) for Apple M4
