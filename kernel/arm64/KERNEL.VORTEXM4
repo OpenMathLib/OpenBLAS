@@ -1,1 +1,54 @@
 include $(KERNELDIR)/KERNEL.NEOVERSEN1
+
+# SME2 level-3 kernels (GEMM_UNROLL_M 64, GEMM_UNROLL_N one streaming vector); GCC builds keep the NEON kernels
+ifneq ($(C_COMPILER), GCC)
+SGEMMKERNEL    = gemm_kernel_sme2.c
+STRMMKERNEL    = gemm_kernel_sme2.c
+SGEMMINCOPY    = gemm_ncopy_sme2.c
+SGEMMITCOPY    = gemm_tcopy_sme2.c
+SGEMMONCOPY    = ../generic/gemm_ncopy_$(SGEMM_UNROLL_N).c
+SGEMMOTCOPY    = ../generic/gemm_tcopy_$(SGEMM_UNROLL_N).c
+SGEMMINCOPYOBJ = sgemm_incopy$(TSUFFIX).$(SUFFIX)
+SGEMMITCOPYOBJ = sgemm_itcopy$(TSUFFIX).$(SUFFIX)
+SGEMMONCOPYOBJ = sgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SGEMMOTCOPYOBJ = sgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+DGEMMKERNEL    = gemm_kernel_sme2.c
+DTRMMKERNEL    = gemm_kernel_sme2.c
+DGEMMINCOPY    = gemm_ncopy_sme2.c
+DGEMMITCOPY    = gemm_tcopy_sme2.c
+DGEMMONCOPY    = ../generic/gemm_ncopy_$(DGEMM_UNROLL_N).c
+DGEMMOTCOPY    = ../generic/gemm_tcopy_$(DGEMM_UNROLL_N).c
+DGEMMINCOPYOBJ = dgemm_incopy$(TSUFFIX).$(SUFFIX)
+DGEMMITCOPYOBJ = dgemm_itcopy$(TSUFFIX).$(SUFFIX)
+DGEMMONCOPYOBJ = dgemm_oncopy$(TSUFFIX).$(SUFFIX)
+DGEMMOTCOPYOBJ = dgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+STRSMKERNEL_LN = trsm_kernel_sme2.c
+STRSMKERNEL_LT = trsm_kernel_sme2.c
+STRSMKERNEL_RN = trsm_kernel_sme2.c
+STRSMKERNEL_RT = trsm_kernel_sme2.c
+DTRSMKERNEL_LN = trsm_kernel_sme2.c
+DTRSMKERNEL_LT = trsm_kernel_sme2.c
+DTRSMKERNEL_RN = trsm_kernel_sme2.c
+DTRSMKERNEL_RT = trsm_kernel_sme2.c
+
+TRSMCOPYUN_M   = trsm_ncopy_sme2.c
+TRSMCOPYLN_M   = trsm_ncopy_sme2.c
+TRSMCOPYUT_M   = trsm_tcopy_sme2.c
+TRSMCOPYLT_M   = trsm_tcopy_sme2.c
+
+STRMMUNCOPY_M  = trmm_ncopy_sme2.c
+STRMMLNCOPY_M  = trmm_ncopy_sme2.c
+STRMMUTCOPY_M  = trmm_tcopy_sme2.c
+STRMMLTCOPY_M  = trmm_tcopy_sme2.c
+DTRMMUNCOPY_M  = trmm_ncopy_sme2.c
+DTRMMLNCOPY_M  = trmm_ncopy_sme2.c
+DTRMMUTCOPY_M  = trmm_tcopy_sme2.c
+DTRMMLTCOPY_M  = trmm_tcopy_sme2.c
+
+SSYMMUCOPY_M   = symm_copy_sme2.c
+SSYMMLCOPY_M   = symm_copy_sme2.c
+DSYMMUCOPY_M   = symm_copy_sme2.c
+DSYMMLCOPY_M   = symm_copy_sme2.c
+endif
