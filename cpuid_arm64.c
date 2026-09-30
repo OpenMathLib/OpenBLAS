@@ -154,6 +154,8 @@ static int cpuhiperf=0;
 
 int aliased = 0;
 
+int support_sme1(void);
+
 int get_feature(char *search)
 {
 
@@ -408,7 +410,11 @@ int detect(void)
 	if (value64 == 3660830781) return CPU_VORTEX; //A15/M2
         if (value64 == 2271604202) return CPU_VORTEX; //A16/M3
         if (value64 == 1867590060) return CPU_VORTEXM4; //M4
-	    if (value64 == 492472296) return CPU_VORTEXM4; //M5
+	if (value64 == 492472296) return CPU_VORTEXM4; //M5
+	if (support_sme1())
+	    return CPU_VORTEXM4;
+	else
+	    return CPU_VORTEX;	
 #else
 #ifdef OS_WINDOWS
 	HKEY reghandle;
@@ -861,3 +867,20 @@ void get_features(void)
 #endif
 	return;
 }
+
+int support_sme1(void) {
+        int ret = 0;
+
+#if (defined OS_LINUX || defined OS_ANDROID)
+        ret = getauxval(AT_HWCAP2) & HWCAP2_SME;
+        if(getauxval(AT_HWCAP2) & HWCAP2_SME){
+                ret = 1;
+        }
+#endif
+#if defined(__APPLE__)
+        sysctlbyname("hw.optional.arm.FEAT_SME",&value64,&length64,NULL,0);
+        ret = value64;
+#endif
+       return ret;
+}
+
