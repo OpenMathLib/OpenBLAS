@@ -52,6 +52,7 @@ OBJS += test_post_fork_async.o
 endif
 endif
 OBJS += test_post_fork.o
+OBJS += test_coretype.o
 endif
 
 ifeq ($(C_COMPILER), PGI)

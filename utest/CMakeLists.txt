@@ -116,6 +116,13 @@ set(OpenBLAS_utest_src
   )
 endif()
 
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+set(OpenBLAS_utest_src
+  ${OpenBLAS_utest_src}
+  test_coretype.c
+  )
+endif()
+
 if (NOT NO_LAPACK)
 set(OpenBLAS_utest_src
   ${OpenBLAS_utest_src}
