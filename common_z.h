@@ -290,46 +290,46 @@
 
 #else
 
-#define	ZAMAX_K			gotoblas -> zamax_k
-#define	ZAMIN_K			gotoblas -> zamin_k
+#define	ZAMAX_K			OPENBLAS_DISPATCH(zamax) -> zamax_k
+#define	ZAMIN_K			OPENBLAS_DISPATCH(zamin) -> zamin_k
 #define	ZMAX_K			gotoblas -> zmax_k
 #define	ZMIN_K			gotoblas -> zmin_k
-#define	IZAMAX_K		gotoblas -> izamax_k
-#define	IZAMIN_K		gotoblas -> izamin_k
+#define	IZAMAX_K		OPENBLAS_DISPATCH(izamax) -> izamax_k
+#define	IZAMIN_K		OPENBLAS_DISPATCH(izamin) -> izamin_k
 #define	IZMAX_K			gotoblas -> izmax_k
 #define	IZMIN_K			gotoblas -> izmin_k
-#define	ZASUM_K			gotoblas -> zasum_k
-#define	ZAXPYU_K		gotoblas -> zaxpy_k
-#define	ZAXPYC_K		gotoblas -> zaxpyc_k
-#define	ZCOPY_K			gotoblas -> zcopy_k
-#define	ZDOTU_K			gotoblas -> zdotu_k
-#define	ZDOTC_K			gotoblas -> zdotc_k
-#define	ZNRM2_K			gotoblas -> znrm2_k
-#define	ZSCAL_K			gotoblas -> zscal_k
-#define	ZSUM_K			gotoblas -> zsum_k
-#define	ZSWAP_K			gotoblas -> zswap_k
-#define	ZROT_K			gotoblas -> zdrot_k
+#define	ZASUM_K			OPENBLAS_DISPATCH(zasum) -> zasum_k
+#define	ZAXPYU_K		OPENBLAS_DISPATCH(zaxpy) -> zaxpy_k
+#define	ZAXPYC_K		OPENBLAS_DISPATCH(zaxpyc) -> zaxpyc_k
+#define	ZCOPY_K			OPENBLAS_DISPATCH(zcopy) -> zcopy_k
+#define	ZDOTU_K			OPENBLAS_DISPATCH(zdotu) -> zdotu_k
+#define	ZDOTC_K			OPENBLAS_DISPATCH(zdotc) -> zdotc_k
+#define	ZNRM2_K			OPENBLAS_DISPATCH(znrm2) -> znrm2_k
+#define	ZSCAL_K			OPENBLAS_DISPATCH(zscal) -> zscal_k
+#define	ZSUM_K			OPENBLAS_DISPATCH(zsum) -> zsum_k
+#define	ZSWAP_K			OPENBLAS_DISPATCH(zswap) -> zswap_k
+#define	ZROT_K			OPENBLAS_DISPATCH(zdrot) -> zdrot_k
 
-#define	ZGEMV_N			gotoblas -> zgemv_n
-#define	ZGEMV_T			gotoblas -> zgemv_t
-#define	ZGEMV_R			gotoblas -> zgemv_r
-#define	ZGEMV_C			gotoblas -> zgemv_c
-#define	ZGEMV_O			gotoblas -> zgemv_o
-#define	ZGEMV_U			gotoblas -> zgemv_u
-#define	ZGEMV_S			gotoblas -> zgemv_s
-#define	ZGEMV_D			gotoblas -> zgemv_d
+#define	ZGEMV_N			OPENBLAS_DISPATCH(zgemv) -> zgemv_n
+#define	ZGEMV_T			OPENBLAS_DISPATCH(zgemv) -> zgemv_t
+#define	ZGEMV_R			OPENBLAS_DISPATCH(zgemv) -> zgemv_r
+#define	ZGEMV_C			OPENBLAS_DISPATCH(zgemv) -> zgemv_c
+#define	ZGEMV_O			OPENBLAS_DISPATCH(zgemv) -> zgemv_o
+#define	ZGEMV_U			OPENBLAS_DISPATCH(zgemv) -> zgemv_u
+#define	ZGEMV_S			OPENBLAS_DISPATCH(zgemv) -> zgemv_s
+#define	ZGEMV_D			OPENBLAS_DISPATCH(zgemv) -> zgemv_d
 
-#define	ZGERU_K			gotoblas -> zgeru_k
-#define	ZGERC_K			gotoblas -> zgerc_k
-#define	ZGERV_K			gotoblas -> zgerv_k
-#define	ZGERD_K			gotoblas -> zgerd_k
+#define	ZGERU_K			OPENBLAS_DISPATCH(zgeru) -> zgeru_k
+#define	ZGERC_K			OPENBLAS_DISPATCH(zgerc) -> zgerc_k
+#define	ZGERV_K			OPENBLAS_DISPATCH(zgerv) -> zgerv_k
+#define	ZGERD_K			OPENBLAS_DISPATCH(zgerd) -> zgerd_k
 
-#define ZSYMV_U			gotoblas -> zsymv_U
-#define ZSYMV_L			gotoblas -> zsymv_L
-#define ZHEMV_U			gotoblas -> zhemv_U
-#define ZHEMV_L			gotoblas -> zhemv_L
-#define ZHEMV_V			gotoblas -> zhemv_V
-#define ZHEMV_M			gotoblas -> zhemv_M
+#define ZSYMV_U			OPENBLAS_DISPATCH(zsymv) -> zsymv_U
+#define ZSYMV_L			OPENBLAS_DISPATCH(zsymv) -> zsymv_L
+#define ZHEMV_U			OPENBLAS_DISPATCH(zhemv) -> zhemv_U
+#define ZHEMV_L			OPENBLAS_DISPATCH(zhemv) -> zhemv_L
+#define ZHEMV_V			OPENBLAS_DISPATCH(zhemv) -> zhemv_V
+#define ZHEMV_M			OPENBLAS_DISPATCH(zhemv) -> zhemv_M
 
 #define ZSYMV_THREAD_U		zsymv_thread_U
 #define ZSYMV_THREAD_L		zsymv_thread_L
@@ -338,209 +338,209 @@
 #define ZHEMV_THREAD_V		zhemv_thread_V
 #define ZHEMV_THREAD_M		zhemv_thread_M
 
-#define	ZGEMM_ONCOPY		gotoblas -> zgemm_oncopy
-#define	ZGEMM_OTCOPY		gotoblas -> zgemm_otcopy
-#define	ZGEMM_INCOPY		gotoblas -> zgemm_incopy
-#define	ZGEMM_ITCOPY		gotoblas -> zgemm_itcopy
+#define	ZGEMM_ONCOPY		OPENBLAS_DISPATCH(zgemm) -> zgemm_oncopy
+#define	ZGEMM_OTCOPY		OPENBLAS_DISPATCH(zgemm) -> zgemm_otcopy
+#define	ZGEMM_INCOPY		OPENBLAS_DISPATCH(zgemm) -> zgemm_incopy
+#define	ZGEMM_ITCOPY		OPENBLAS_DISPATCH(zgemm) -> zgemm_itcopy
 
-#define	ZTRMM_OUNUCOPY		gotoblas -> ztrmm_ounucopy
-#define	ZTRMM_OUTUCOPY		gotoblas -> ztrmm_outucopy
-#define	ZTRMM_OLNUCOPY		gotoblas -> ztrmm_olnucopy
-#define	ZTRMM_OLTUCOPY		gotoblas -> ztrmm_oltucopy
-#define	ZTRSM_OUNUCOPY		gotoblas -> ztrsm_ounucopy
-#define	ZTRSM_OUTUCOPY		gotoblas -> ztrsm_outucopy
-#define	ZTRSM_OLNUCOPY		gotoblas -> ztrsm_olnucopy
-#define	ZTRSM_OLTUCOPY		gotoblas -> ztrsm_oltucopy
+#define	ZTRMM_OUNUCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_ounucopy
+#define	ZTRMM_OUTUCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_outucopy
+#define	ZTRMM_OLNUCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_olnucopy
+#define	ZTRMM_OLTUCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_oltucopy
+#define	ZTRSM_OUNUCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_ounucopy
+#define	ZTRSM_OUTUCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_outucopy
+#define	ZTRSM_OLNUCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_olnucopy
+#define	ZTRSM_OLTUCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_oltucopy
 
-#define	ZTRMM_IUNUCOPY		gotoblas -> ztrmm_iunucopy
-#define	ZTRMM_IUTUCOPY		gotoblas -> ztrmm_iutucopy
-#define	ZTRMM_ILNUCOPY		gotoblas -> ztrmm_ilnucopy
-#define	ZTRMM_ILTUCOPY		gotoblas -> ztrmm_iltucopy
-#define	ZTRSM_IUNUCOPY		gotoblas -> ztrsm_iunucopy
-#define	ZTRSM_IUTUCOPY		gotoblas -> ztrsm_iutucopy
-#define	ZTRSM_ILNUCOPY		gotoblas -> ztrsm_ilnucopy
-#define	ZTRSM_ILTUCOPY		gotoblas -> ztrsm_iltucopy
+#define	ZTRMM_IUNUCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_iunucopy
+#define	ZTRMM_IUTUCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_iutucopy
+#define	ZTRMM_ILNUCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_ilnucopy
+#define	ZTRMM_ILTUCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_iltucopy
+#define	ZTRSM_IUNUCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_iunucopy
+#define	ZTRSM_IUTUCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_iutucopy
+#define	ZTRSM_ILNUCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_ilnucopy
+#define	ZTRSM_ILTUCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_iltucopy
 
-#define	ZTRMM_OUNNCOPY		gotoblas -> ztrmm_ounncopy
-#define	ZTRMM_OUTNCOPY		gotoblas -> ztrmm_outncopy
-#define	ZTRMM_OLNNCOPY		gotoblas -> ztrmm_olnncopy
-#define	ZTRMM_OLTNCOPY		gotoblas -> ztrmm_oltncopy
-#define	ZTRSM_OUNNCOPY		gotoblas -> ztrsm_ounncopy
-#define	ZTRSM_OUTNCOPY		gotoblas -> ztrsm_outncopy
-#define	ZTRSM_OLNNCOPY		gotoblas -> ztrsm_olnncopy
-#define	ZTRSM_OLTNCOPY		gotoblas -> ztrsm_oltncopy
+#define	ZTRMM_OUNNCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_ounncopy
+#define	ZTRMM_OUTNCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_outncopy
+#define	ZTRMM_OLNNCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_olnncopy
+#define	ZTRMM_OLTNCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_oltncopy
+#define	ZTRSM_OUNNCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_ounncopy
+#define	ZTRSM_OUTNCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_outncopy
+#define	ZTRSM_OLNNCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_olnncopy
+#define	ZTRSM_OLTNCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_oltncopy
 
-#define	ZTRMM_IUNNCOPY		gotoblas -> ztrmm_iunncopy
-#define	ZTRMM_IUTNCOPY		gotoblas -> ztrmm_iutncopy
-#define	ZTRMM_ILNNCOPY		gotoblas -> ztrmm_ilnncopy
-#define	ZTRMM_ILTNCOPY		gotoblas -> ztrmm_iltncopy
-#define	ZSYMM_INCOPY	    	gotoblas -> zsymm_incopy
-#define	ZSYMM_ITCOPY		    gotoblas -> zsymm_itcopy
-#define	ZTRMM_INCOPY		gotoblas -> ztrmm_incopy
-#define	ZTRMM_ITCOPY		gotoblas -> ztrmm_itcopy
+#define	ZTRMM_IUNNCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_iunncopy
+#define	ZTRMM_IUTNCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_iutncopy
+#define	ZTRMM_ILNNCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_ilnncopy
+#define	ZTRMM_ILTNCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_iltncopy
+#define	ZSYMM_INCOPY	    	OPENBLAS_DISPATCH(zsymm) -> zsymm_incopy
+#define	ZSYMM_ITCOPY		    OPENBLAS_DISPATCH(zsymm) -> zsymm_itcopy
+#define	ZTRMM_INCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_incopy
+#define	ZTRMM_ITCOPY		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_itcopy
 
-#define	ZTRSM_IUNNCOPY		gotoblas -> ztrsm_iunncopy
-#define	ZTRSM_IUTNCOPY		gotoblas -> ztrsm_iutncopy
-#define	ZTRSM_ILNNCOPY		gotoblas -> ztrsm_ilnncopy
-#define	ZTRSM_ILTNCOPY		gotoblas -> ztrsm_iltncopy
+#define	ZTRSM_IUNNCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_iunncopy
+#define	ZTRSM_IUTNCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_iutncopy
+#define	ZTRSM_ILNNCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_ilnncopy
+#define	ZTRSM_ILTNCOPY		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_iltncopy
 
-#define	ZGEMM_BETA		gotoblas -> zgemm_beta
-#define	SME_ZGEMM_KERNEL	gotoblas -> sme_zgemm_kernel
-#define	ZGEMM_KERNEL_N		gotoblas -> zgemm_kernel_n
-#define	ZGEMM_KERNEL_L		gotoblas -> zgemm_kernel_l
-#define	ZGEMM_KERNEL_R		gotoblas -> zgemm_kernel_r
-#define	ZGEMM_KERNEL_B		gotoblas -> zgemm_kernel_b
+#define	ZGEMM_BETA		OPENBLAS_DISPATCH(zgemm) -> zgemm_beta
+#define	SME_ZGEMM_KERNEL	OPENBLAS_DISPATCH(zgemm) -> sme_zgemm_kernel
+#define	ZGEMM_KERNEL_N		OPENBLAS_DISPATCH(zgemm) -> zgemm_kernel_n
+#define	ZGEMM_KERNEL_L		OPENBLAS_DISPATCH(zgemm) -> zgemm_kernel_l
+#define	ZGEMM_KERNEL_R		OPENBLAS_DISPATCH(zgemm) -> zgemm_kernel_r
+#define	ZGEMM_KERNEL_B		OPENBLAS_DISPATCH(zgemm) -> zgemm_kernel_b
 
-#define	ZSYMM_KERNEL_N		gotoblas -> zsymm_kernel_n
-#define	ZSYMM_KERNEL_L		gotoblas -> zsymm_kernel_l
-#define	ZSYMM_KERNEL_R		gotoblas -> zsymm_kernel_r
-#define	ZSYMM_KERNEL_B		gotoblas -> zsymm_kernel_b
-#define	ZTRMM_GEMM_KERNEL_N	gotoblas -> ztrmm_gemm_kernel_n
-#define	ZTRMM_GEMM_KERNEL_L	gotoblas -> ztrmm_gemm_kernel_l
-#define	ZTRMM_GEMM_KERNEL_R	gotoblas -> ztrmm_gemm_kernel_r
-#define	ZTRMM_GEMM_KERNEL_B	gotoblas -> ztrmm_gemm_kernel_b
+#define	ZSYMM_KERNEL_N		OPENBLAS_DISPATCH(zsymm) -> zsymm_kernel_n
+#define	ZSYMM_KERNEL_L		OPENBLAS_DISPATCH(zsymm) -> zsymm_kernel_l
+#define	ZSYMM_KERNEL_R		OPENBLAS_DISPATCH(zsymm) -> zsymm_kernel_r
+#define	ZSYMM_KERNEL_B		OPENBLAS_DISPATCH(zsymm) -> zsymm_kernel_b
+#define	ZTRMM_GEMM_KERNEL_N	OPENBLAS_DISPATCH(ztrmm) -> ztrmm_gemm_kernel_n
+#define	ZTRMM_GEMM_KERNEL_L	OPENBLAS_DISPATCH(ztrmm) -> ztrmm_gemm_kernel_l
+#define	ZTRMM_GEMM_KERNEL_R	OPENBLAS_DISPATCH(ztrmm) -> ztrmm_gemm_kernel_r
+#define	ZTRMM_GEMM_KERNEL_B	OPENBLAS_DISPATCH(ztrmm) -> ztrmm_gemm_kernel_b
 
-#define	ZTRMM_KERNEL_LN		gotoblas -> ztrmm_kernel_LN
-#define	ZTRMM_KERNEL_LT		gotoblas -> ztrmm_kernel_LT
-#define	ZTRMM_KERNEL_LR		gotoblas -> ztrmm_kernel_LR
-#define	ZTRMM_KERNEL_LC		gotoblas -> ztrmm_kernel_LC
-#define	ZTRMM_KERNEL_RN		gotoblas -> ztrmm_kernel_RN
-#define	ZTRMM_KERNEL_RT		gotoblas -> ztrmm_kernel_RT
-#define	ZTRMM_KERNEL_RR		gotoblas -> ztrmm_kernel_RR
-#define	ZTRMM_KERNEL_RC		gotoblas -> ztrmm_kernel_RC
+#define	ZTRMM_KERNEL_LN		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_kernel_LN
+#define	ZTRMM_KERNEL_LT		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_kernel_LT
+#define	ZTRMM_KERNEL_LR		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_kernel_LR
+#define	ZTRMM_KERNEL_LC		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_kernel_LC
+#define	ZTRMM_KERNEL_RN		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_kernel_RN
+#define	ZTRMM_KERNEL_RT		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_kernel_RT
+#define	ZTRMM_KERNEL_RR		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_kernel_RR
+#define	ZTRMM_KERNEL_RC		OPENBLAS_DISPATCH(ztrmm) -> ztrmm_kernel_RC
 
-#define	ZTRSM_KERNEL_LN		gotoblas -> ztrsm_kernel_LN
-#define	ZTRSM_KERNEL_LT		gotoblas -> ztrsm_kernel_LT
-#define	ZTRSM_KERNEL_LR		gotoblas -> ztrsm_kernel_LR
-#define	ZTRSM_KERNEL_LC		gotoblas -> ztrsm_kernel_LC
-#define	ZTRSM_KERNEL_RN		gotoblas -> ztrsm_kernel_RN
-#define	ZTRSM_KERNEL_RT		gotoblas -> ztrsm_kernel_RT
-#define	ZTRSM_KERNEL_RR		gotoblas -> ztrsm_kernel_RR
-#define	ZTRSM_KERNEL_RC		gotoblas -> ztrsm_kernel_RC
+#define	ZTRSM_KERNEL_LN		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_kernel_LN
+#define	ZTRSM_KERNEL_LT		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_kernel_LT
+#define	ZTRSM_KERNEL_LR		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_kernel_LR
+#define	ZTRSM_KERNEL_LC		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_kernel_LC
+#define	ZTRSM_KERNEL_RN		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_kernel_RN
+#define	ZTRSM_KERNEL_RT		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_kernel_RT
+#define	ZTRSM_KERNEL_RR		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_kernel_RR
+#define	ZTRSM_KERNEL_RC		OPENBLAS_DISPATCH(ztrsm) -> ztrsm_kernel_RC
 
-#define	ZSYMM_IUTCOPY		gotoblas -> zsymm_iutcopy
-#define	ZSYMM_ILTCOPY		gotoblas -> zsymm_iltcopy
-#define	ZSYMM_OUTCOPY		gotoblas -> zsymm_outcopy
-#define	ZSYMM_OLTCOPY		gotoblas -> zsymm_oltcopy
+#define	ZSYMM_IUTCOPY		OPENBLAS_DISPATCH(zsymm) -> zsymm_iutcopy
+#define	ZSYMM_ILTCOPY		OPENBLAS_DISPATCH(zsymm) -> zsymm_iltcopy
+#define	ZSYMM_OUTCOPY		OPENBLAS_DISPATCH(zsymm) -> zsymm_outcopy
+#define	ZSYMM_OLTCOPY		OPENBLAS_DISPATCH(zsymm) -> zsymm_oltcopy
 
-#define	ZHEMM_OUTCOPY		gotoblas -> zhemm_outcopy
-#define	ZHEMM_OLTCOPY		gotoblas -> zhemm_oltcopy
-#define	ZHEMM_IUTCOPY		gotoblas -> zhemm_iutcopy
-#define	ZHEMM_ILTCOPY		gotoblas -> zhemm_iltcopy
+#define	ZHEMM_OUTCOPY		OPENBLAS_DISPATCH(zhemm) -> zhemm_outcopy
+#define	ZHEMM_OLTCOPY		OPENBLAS_DISPATCH(zhemm) -> zhemm_oltcopy
+#define	ZHEMM_IUTCOPY		OPENBLAS_DISPATCH(zhemm) -> zhemm_iutcopy
+#define	ZHEMM_ILTCOPY		OPENBLAS_DISPATCH(zhemm) -> zhemm_iltcopy
 
-#define	ZGEMM3M_ONCOPYB		gotoblas -> zgemm3m_oncopyb
-#define	ZGEMM3M_ONCOPYR		gotoblas -> zgemm3m_oncopyr
-#define	ZGEMM3M_ONCOPYI		gotoblas -> zgemm3m_oncopyi
-#define	ZGEMM3M_OTCOPYB		gotoblas -> zgemm3m_otcopyb
-#define	ZGEMM3M_OTCOPYR		gotoblas -> zgemm3m_otcopyr
-#define	ZGEMM3M_OTCOPYI		gotoblas -> zgemm3m_otcopyi
+#define	ZGEMM3M_ONCOPYB		OPENBLAS_DISPATCH(zgemm3m) -> zgemm3m_oncopyb
+#define	ZGEMM3M_ONCOPYR		OPENBLAS_DISPATCH(zgemm3m) -> zgemm3m_oncopyr
+#define	ZGEMM3M_ONCOPYI		OPENBLAS_DISPATCH(zgemm3m) -> zgemm3m_oncopyi
+#define	ZGEMM3M_OTCOPYB		OPENBLAS_DISPATCH(zgemm3m) -> zgemm3m_otcopyb
+#define	ZGEMM3M_OTCOPYR		OPENBLAS_DISPATCH(zgemm3m) -> zgemm3m_otcopyr
+#define	ZGEMM3M_OTCOPYI		OPENBLAS_DISPATCH(zgemm3m) -> zgemm3m_otcopyi
 
-#define	ZGEMM3M_INCOPYB		gotoblas -> zgemm3m_incopyb
-#define	ZGEMM3M_INCOPYR		gotoblas -> zgemm3m_incopyr
-#define	ZGEMM3M_INCOPYI		gotoblas -> zgemm3m_incopyi
-#define	ZGEMM3M_ITCOPYB		gotoblas -> zgemm3m_itcopyb
-#define	ZGEMM3M_ITCOPYR		gotoblas -> zgemm3m_itcopyr
-#define	ZGEMM3M_ITCOPYI		gotoblas -> zgemm3m_itcopyi
+#define	ZGEMM3M_INCOPYB		OPENBLAS_DISPATCH(zgemm3m) -> zgemm3m_incopyb
+#define	ZGEMM3M_INCOPYR		OPENBLAS_DISPATCH(zgemm3m) -> zgemm3m_incopyr
+#define	ZGEMM3M_INCOPYI		OPENBLAS_DISPATCH(zgemm3m) -> zgemm3m_incopyi
+#define	ZGEMM3M_ITCOPYB		OPENBLAS_DISPATCH(zgemm3m) -> zgemm3m_itcopyb
+#define	ZGEMM3M_ITCOPYR		OPENBLAS_DISPATCH(zgemm3m) -> zgemm3m_itcopyr
+#define	ZGEMM3M_ITCOPYI		OPENBLAS_DISPATCH(zgemm3m) -> zgemm3m_itcopyi
 
-#define	ZSYMM3M_ILCOPYB		gotoblas -> zsymm3m_ilcopyb
-#define	ZSYMM3M_IUCOPYB		gotoblas -> zsymm3m_iucopyb
-#define	ZSYMM3M_ILCOPYR		gotoblas -> zsymm3m_ilcopyr
-#define	ZSYMM3M_IUCOPYR		gotoblas -> zsymm3m_iucopyr
-#define	ZSYMM3M_ILCOPYI		gotoblas -> zsymm3m_ilcopyi
-#define	ZSYMM3M_IUCOPYI		gotoblas -> zsymm3m_iucopyi
+#define	ZSYMM3M_ILCOPYB		OPENBLAS_DISPATCH(zsymm3m) -> zsymm3m_ilcopyb
+#define	ZSYMM3M_IUCOPYB		OPENBLAS_DISPATCH(zsymm3m) -> zsymm3m_iucopyb
+#define	ZSYMM3M_ILCOPYR		OPENBLAS_DISPATCH(zsymm3m) -> zsymm3m_ilcopyr
+#define	ZSYMM3M_IUCOPYR		OPENBLAS_DISPATCH(zsymm3m) -> zsymm3m_iucopyr
+#define	ZSYMM3M_ILCOPYI		OPENBLAS_DISPATCH(zsymm3m) -> zsymm3m_ilcopyi
+#define	ZSYMM3M_IUCOPYI		OPENBLAS_DISPATCH(zsymm3m) -> zsymm3m_iucopyi
 
-#define	ZSYMM3M_OLCOPYB		gotoblas -> zsymm3m_olcopyb
-#define	ZSYMM3M_OUCOPYB		gotoblas -> zsymm3m_oucopyb
-#define	ZSYMM3M_OLCOPYR		gotoblas -> zsymm3m_olcopyr
-#define	ZSYMM3M_OUCOPYR		gotoblas -> zsymm3m_oucopyr
-#define	ZSYMM3M_OLCOPYI		gotoblas -> zsymm3m_olcopyi
-#define	ZSYMM3M_OUCOPYI		gotoblas -> zsymm3m_oucopyi
+#define	ZSYMM3M_OLCOPYB		OPENBLAS_DISPATCH(zsymm3m) -> zsymm3m_olcopyb
+#define	ZSYMM3M_OUCOPYB		OPENBLAS_DISPATCH(zsymm3m) -> zsymm3m_oucopyb
+#define	ZSYMM3M_OLCOPYR		OPENBLAS_DISPATCH(zsymm3m) -> zsymm3m_olcopyr
+#define	ZSYMM3M_OUCOPYR		OPENBLAS_DISPATCH(zsymm3m) -> zsymm3m_oucopyr
+#define	ZSYMM3M_OLCOPYI		OPENBLAS_DISPATCH(zsymm3m) -> zsymm3m_olcopyi
+#define	ZSYMM3M_OUCOPYI		OPENBLAS_DISPATCH(zsymm3m) -> zsymm3m_oucopyi
 
-#define	ZHEMM3M_ILCOPYB		gotoblas -> zhemm3m_ilcopyb
-#define	ZHEMM3M_IUCOPYB		gotoblas -> zhemm3m_iucopyb
-#define	ZHEMM3M_ILCOPYR		gotoblas -> zhemm3m_ilcopyr
-#define	ZHEMM3M_IUCOPYR		gotoblas -> zhemm3m_iucopyr
-#define	ZHEMM3M_ILCOPYI		gotoblas -> zhemm3m_ilcopyi
-#define	ZHEMM3M_IUCOPYI		gotoblas -> zhemm3m_iucopyi
+#define	ZHEMM3M_ILCOPYB		OPENBLAS_DISPATCH(zhemm3m) -> zhemm3m_ilcopyb
+#define	ZHEMM3M_IUCOPYB		OPENBLAS_DISPATCH(zhemm3m) -> zhemm3m_iucopyb
+#define	ZHEMM3M_ILCOPYR		OPENBLAS_DISPATCH(zhemm3m) -> zhemm3m_ilcopyr
+#define	ZHEMM3M_IUCOPYR		OPENBLAS_DISPATCH(zhemm3m) -> zhemm3m_iucopyr
+#define	ZHEMM3M_ILCOPYI		OPENBLAS_DISPATCH(zhemm3m) -> zhemm3m_ilcopyi
+#define	ZHEMM3M_IUCOPYI		OPENBLAS_DISPATCH(zhemm3m) -> zhemm3m_iucopyi
 
-#define	ZHEMM3M_OLCOPYB		gotoblas -> zhemm3m_olcopyb
-#define	ZHEMM3M_OUCOPYB		gotoblas -> zhemm3m_oucopyb
-#define	ZHEMM3M_OLCOPYR		gotoblas -> zhemm3m_olcopyr
-#define	ZHEMM3M_OUCOPYR		gotoblas -> zhemm3m_oucopyr
-#define	ZHEMM3M_OLCOPYI		gotoblas -> zhemm3m_olcopyi
-#define	ZHEMM3M_OUCOPYI		gotoblas -> zhemm3m_oucopyi
+#define	ZHEMM3M_OLCOPYB		OPENBLAS_DISPATCH(zhemm3m) -> zhemm3m_olcopyb
+#define	ZHEMM3M_OUCOPYB		OPENBLAS_DISPATCH(zhemm3m) -> zhemm3m_oucopyb
+#define	ZHEMM3M_OLCOPYR		OPENBLAS_DISPATCH(zhemm3m) -> zhemm3m_olcopyr
+#define	ZHEMM3M_OUCOPYR		OPENBLAS_DISPATCH(zhemm3m) -> zhemm3m_oucopyr
+#define	ZHEMM3M_OLCOPYI		OPENBLAS_DISPATCH(zhemm3m) -> zhemm3m_olcopyi
+#define	ZHEMM3M_OUCOPYI		OPENBLAS_DISPATCH(zhemm3m) -> zhemm3m_oucopyi
 
-#define	ZGEMM3M_KERNEL		gotoblas -> zgemm3m_kernel
+#define	ZGEMM3M_KERNEL		OPENBLAS_DISPATCH(zgemm3m) -> zgemm3m_kernel
 
-#define ZNEG_TCOPY		gotoblas -> zneg_tcopy
-#define ZLASWP_NCOPY		gotoblas -> zlaswp_ncopy
+#define ZNEG_TCOPY		OPENBLAS_DISPATCH(zneg) -> zneg_tcopy
+#define ZLASWP_NCOPY		OPENBLAS_DISPATCH(zlaswp) -> zlaswp_ncopy
 
-#define ZAXPBY_K                gotoblas -> zaxpby_k
+#define ZAXPBY_K                OPENBLAS_DISPATCH(zaxpby) -> zaxpby_k
 
-#define ZOMATCOPY_K_CN          gotoblas -> zomatcopy_k_cn
-#define ZOMATCOPY_K_RN          gotoblas -> zomatcopy_k_rn
-#define ZOMATCOPY_K_CT          gotoblas -> zomatcopy_k_ct
-#define ZOMATCOPY_K_RT          gotoblas -> zomatcopy_k_rt
-#define ZOMATCOPY_K_CNC         gotoblas -> zomatcopy_k_cnc
-#define ZOMATCOPY_K_RNC         gotoblas -> zomatcopy_k_rnc
-#define ZOMATCOPY_K_CTC         gotoblas -> zomatcopy_k_ctc
-#define ZOMATCOPY_K_RTC         gotoblas -> zomatcopy_k_rtc
+#define ZOMATCOPY_K_CN          OPENBLAS_DISPATCH(zomatcopy) -> zomatcopy_k_cn
+#define ZOMATCOPY_K_RN          OPENBLAS_DISPATCH(zomatcopy) -> zomatcopy_k_rn
+#define ZOMATCOPY_K_CT          OPENBLAS_DISPATCH(zomatcopy) -> zomatcopy_k_ct
+#define ZOMATCOPY_K_RT          OPENBLAS_DISPATCH(zomatcopy) -> zomatcopy_k_rt
+#define ZOMATCOPY_K_CNC         OPENBLAS_DISPATCH(zomatcopy) -> zomatcopy_k_cnc
+#define ZOMATCOPY_K_RNC         OPENBLAS_DISPATCH(zomatcopy) -> zomatcopy_k_rnc
+#define ZOMATCOPY_K_CTC         OPENBLAS_DISPATCH(zomatcopy) -> zomatcopy_k_ctc
+#define ZOMATCOPY_K_RTC         OPENBLAS_DISPATCH(zomatcopy) -> zomatcopy_k_rtc
 
-#define ZIMATCOPY_K_CN          gotoblas -> zimatcopy_k_cn
-#define ZIMATCOPY_K_RN          gotoblas -> zimatcopy_k_rn
-#define ZIMATCOPY_K_CT          gotoblas -> zimatcopy_k_ct
-#define ZIMATCOPY_K_RT          gotoblas -> zimatcopy_k_rt
-#define ZIMATCOPY_K_CNC         gotoblas -> zimatcopy_k_cnc
-#define ZIMATCOPY_K_RNC         gotoblas -> zimatcopy_k_rnc
-#define ZIMATCOPY_K_CTC         gotoblas -> zimatcopy_k_ctc
-#define ZIMATCOPY_K_RTC         gotoblas -> zimatcopy_k_rtc
+#define ZIMATCOPY_K_CN          OPENBLAS_DISPATCH(zimatcopy) -> zimatcopy_k_cn
+#define ZIMATCOPY_K_RN          OPENBLAS_DISPATCH(zimatcopy) -> zimatcopy_k_rn
+#define ZIMATCOPY_K_CT          OPENBLAS_DISPATCH(zimatcopy) -> zimatcopy_k_ct
+#define ZIMATCOPY_K_RT          OPENBLAS_DISPATCH(zimatcopy) -> zimatcopy_k_rt
+#define ZIMATCOPY_K_CNC         OPENBLAS_DISPATCH(zimatcopy) -> zimatcopy_k_cnc
+#define ZIMATCOPY_K_RNC         OPENBLAS_DISPATCH(zimatcopy) -> zimatcopy_k_rnc
+#define ZIMATCOPY_K_CTC         OPENBLAS_DISPATCH(zimatcopy) -> zimatcopy_k_ctc
+#define ZIMATCOPY_K_RTC         OPENBLAS_DISPATCH(zimatcopy) -> zimatcopy_k_rtc
 
-#define ZGEADD_K                gotoblas -> zgeadd_k
+#define ZGEADD_K                OPENBLAS_DISPATCH(zgeadd) -> zgeadd_k
 
-#define ZGEMM_SMALL_MATRIX_PERMIT	gotoblas -> zgemm_small_matrix_permit
+#define ZGEMM_SMALL_MATRIX_PERMIT	OPENBLAS_DISPATCH(zgemm) -> zgemm_small_matrix_permit
 
 #endif
 
-#define ZGEMM_SMALL_KERNEL_BASE		FUNC_BASE(zgemm_small_kernel_nn)
-#define ZGEMM_SMALL_KERNEL_NN		FUNC_OFFSET(zgemm_small_kernel_nn)
-#define ZGEMM_SMALL_KERNEL_NT		FUNC_OFFSET(zgemm_small_kernel_nt)
-#define ZGEMM_SMALL_KERNEL_NR		FUNC_OFFSET(zgemm_small_kernel_nr)
-#define ZGEMM_SMALL_KERNEL_NC		FUNC_OFFSET(zgemm_small_kernel_nc)
+#define ZGEMM_SMALL_KERNEL_BASE		OPENBLAS_DISPATCH_BASE(zgemm)
+#define ZGEMM_SMALL_KERNEL_NN		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_nn)
+#define ZGEMM_SMALL_KERNEL_NT		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_nt)
+#define ZGEMM_SMALL_KERNEL_NR		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_nr)
+#define ZGEMM_SMALL_KERNEL_NC		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_nc)
 
-#define ZGEMM_SMALL_KERNEL_TN		FUNC_OFFSET(zgemm_small_kernel_tn)
-#define ZGEMM_SMALL_KERNEL_TT		FUNC_OFFSET(zgemm_small_kernel_tt)
-#define ZGEMM_SMALL_KERNEL_TR		FUNC_OFFSET(zgemm_small_kernel_tr)
-#define ZGEMM_SMALL_KERNEL_TC		FUNC_OFFSET(zgemm_small_kernel_tc)
+#define ZGEMM_SMALL_KERNEL_TN		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_tn)
+#define ZGEMM_SMALL_KERNEL_TT		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_tt)
+#define ZGEMM_SMALL_KERNEL_TR		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_tr)
+#define ZGEMM_SMALL_KERNEL_TC		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_tc)
 
-#define ZGEMM_SMALL_KERNEL_RN		FUNC_OFFSET(zgemm_small_kernel_rn)
-#define ZGEMM_SMALL_KERNEL_RT		FUNC_OFFSET(zgemm_small_kernel_rt)
-#define ZGEMM_SMALL_KERNEL_RR		FUNC_OFFSET(zgemm_small_kernel_rr)
-#define ZGEMM_SMALL_KERNEL_RC		FUNC_OFFSET(zgemm_small_kernel_rc)
+#define ZGEMM_SMALL_KERNEL_RN		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_rn)
+#define ZGEMM_SMALL_KERNEL_RT		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_rt)
+#define ZGEMM_SMALL_KERNEL_RR		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_rr)
+#define ZGEMM_SMALL_KERNEL_RC		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_rc)
 
-#define ZGEMM_SMALL_KERNEL_CN		FUNC_OFFSET(zgemm_small_kernel_cn)
-#define ZGEMM_SMALL_KERNEL_CT		FUNC_OFFSET(zgemm_small_kernel_ct)
-#define ZGEMM_SMALL_KERNEL_CR		FUNC_OFFSET(zgemm_small_kernel_cr)
-#define ZGEMM_SMALL_KERNEL_CC		FUNC_OFFSET(zgemm_small_kernel_cc)
+#define ZGEMM_SMALL_KERNEL_CN		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_cn)
+#define ZGEMM_SMALL_KERNEL_CT		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_ct)
+#define ZGEMM_SMALL_KERNEL_CR		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_cr)
+#define ZGEMM_SMALL_KERNEL_CC		OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_cc)
 
-#define ZGEMM_SMALL_KERNEL_B0_NN	FUNC_OFFSET(zgemm_small_kernel_b0_nn)
-#define ZGEMM_SMALL_KERNEL_B0_NT	FUNC_OFFSET(zgemm_small_kernel_b0_nt)
-#define ZGEMM_SMALL_KERNEL_B0_NR	FUNC_OFFSET(zgemm_small_kernel_b0_nr)
-#define ZGEMM_SMALL_KERNEL_B0_NC	FUNC_OFFSET(zgemm_small_kernel_b0_nc)
+#define ZGEMM_SMALL_KERNEL_B0_NN	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_nn)
+#define ZGEMM_SMALL_KERNEL_B0_NT	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_nt)
+#define ZGEMM_SMALL_KERNEL_B0_NR	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_nr)
+#define ZGEMM_SMALL_KERNEL_B0_NC	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_nc)
 
-#define ZGEMM_SMALL_KERNEL_B0_TN	FUNC_OFFSET(zgemm_small_kernel_b0_tn)
-#define ZGEMM_SMALL_KERNEL_B0_TT	FUNC_OFFSET(zgemm_small_kernel_b0_tt)
-#define ZGEMM_SMALL_KERNEL_B0_TR	FUNC_OFFSET(zgemm_small_kernel_b0_tr)
-#define ZGEMM_SMALL_KERNEL_B0_TC	FUNC_OFFSET(zgemm_small_kernel_b0_tc)
+#define ZGEMM_SMALL_KERNEL_B0_TN	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_tn)
+#define ZGEMM_SMALL_KERNEL_B0_TT	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_tt)
+#define ZGEMM_SMALL_KERNEL_B0_TR	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_tr)
+#define ZGEMM_SMALL_KERNEL_B0_TC	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_tc)
 
-#define ZGEMM_SMALL_KERNEL_B0_RN	FUNC_OFFSET(zgemm_small_kernel_b0_rn)
-#define ZGEMM_SMALL_KERNEL_B0_RT	FUNC_OFFSET(zgemm_small_kernel_b0_rt)
-#define ZGEMM_SMALL_KERNEL_B0_RR	FUNC_OFFSET(zgemm_small_kernel_b0_rr)
-#define ZGEMM_SMALL_KERNEL_B0_RC	FUNC_OFFSET(zgemm_small_kernel_b0_rc)
+#define ZGEMM_SMALL_KERNEL_B0_RN	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_rn)
+#define ZGEMM_SMALL_KERNEL_B0_RT	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_rt)
+#define ZGEMM_SMALL_KERNEL_B0_RR	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_rr)
+#define ZGEMM_SMALL_KERNEL_B0_RC	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_rc)
 
-#define ZGEMM_SMALL_KERNEL_B0_CN	FUNC_OFFSET(zgemm_small_kernel_b0_cn)
-#define ZGEMM_SMALL_KERNEL_B0_CT	FUNC_OFFSET(zgemm_small_kernel_b0_ct)
-#define ZGEMM_SMALL_KERNEL_B0_CR	FUNC_OFFSET(zgemm_small_kernel_b0_cr)
-#define ZGEMM_SMALL_KERNEL_B0_CC	FUNC_OFFSET(zgemm_small_kernel_b0_cc)
+#define ZGEMM_SMALL_KERNEL_B0_CN	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_cn)
+#define ZGEMM_SMALL_KERNEL_B0_CT	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_ct)
+#define ZGEMM_SMALL_KERNEL_B0_CR	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_cr)
+#define ZGEMM_SMALL_KERNEL_B0_CC	OPENBLAS_DISPATCH_OFFSET(zgemm, zgemm_small_kernel_b0_cc)
 
 
 #define	ZGEMM_NN		zgemm_nn

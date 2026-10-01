@@ -52,21 +52,14 @@ static void init_parameter(void);
 
 gotoblas_t TABLE_NAME = {
   .core = OPENBLAS_CORETS,
-
   .dtb_entries = DTB_DEFAULT_ENTRIES,
-
   .switch_ratio = SWITCH_RATIO,
-
   .divide_rate = GEMM_DIVIDE_RATE,
-
   .divide_limit = GEMM_DIVIDE_LIMIT,
-
   .preferred_size = GEMM_PREFERRED_SIZE,
-
   .offsetA = GEMM_DEFAULT_OFFSET_A,
   .offsetB = GEMM_DEFAULT_OFFSET_B,
   .align = GEMM_DEFAULT_ALIGN,
-
 #ifdef BUILD_HFLOAT16
   .shgemm_p = 0,
   .shgemm_q = 0,
@@ -78,21 +71,7 @@ gotoblas_t TABLE_NAME = {
 #else
  .shgemm_unroll_mn = MAX(SHGEMM_DEFAULT_UNROLL_M, SHGEMM_DEFAULT_UNROLL_N),
 #endif
-  .shgemm_kernel = shgemm_kernelTS,
-  .shgemm_beta = shgemm_betaTS,
-#if SHGEMM_DEFAULT_UNROLL_M != SHGEMM_DEFAULT_UNROLL_N
-  .shgemm_incopy = shgemm_incopyTS,
-  .shgemm_itcopy = shgemm_itcopyTS,
-#else
-  .shgemm_incopy = shgemm_oncopyTS,
-  .shgemm_itcopy = shgemm_otcopyTS,
 #endif
-  .shgemm_oncopy = shgemm_oncopyTS,
-  .shgemm_otcopy = shgemm_otcopyTS,
-  .shgemv_n = shgemv_nTS,
-  .shgemv_t = shgemv_tTS,
-#endif
-
 #ifdef BUILD_BFLOAT16
   .bgemm_p = 0,
   .bgemm_q = 0,
@@ -105,7 +84,6 @@ gotoblas_t TABLE_NAME = {
  .bgemm_unroll_mn = MAX(BGEMM_DEFAULT_UNROLL_M, BGEMM_DEFAULT_UNROLL_N),
 #endif
   .bgemm_align_k = BGEMM_ALIGN_K,
-
   .sbgemm_p = 0,
   .sbgemm_q = 0,
   .sbgemm_r = 0,
@@ -116,43 +94,330 @@ gotoblas_t TABLE_NAME = {
 #else
  .sbgemm_unroll_mn = MAX(SBGEMM_DEFAULT_UNROLL_M, SBGEMM_DEFAULT_UNROLL_N),
 #endif
-
   .sbgemm_align_k = SBGEMM_ALIGN_K,
   .need_amxtile_permission = 0, // need_amxtile_permission
+#endif
+#if ( BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1) || (BUILD_COMPLEX16==1)
+  .sgemm_p = 0,
+  .sgemm_q = 0,
+  .sgemm_r = 0,
+  .sgemm_unroll_m = SGEMM_DEFAULT_UNROLL_M,
+  .sgemm_unroll_n = SGEMM_DEFAULT_UNROLL_N,
+#ifdef SGEMM_DEFAULT_UNROLL_MN
+ .sgemm_unroll_mn = SGEMM_DEFAULT_UNROLL_MN,
+#else
+ .sgemm_unroll_mn = MAX(SGEMM_DEFAULT_UNROLL_M, SGEMM_DEFAULT_UNROLL_N),
+#endif
+#endif
+#ifdef HAVE_EXCLUSIVE_CACHE
+  .exclusive_cache = 1,
+#else
+  .exclusive_cache = 0,
+#endif
+#if  (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+  .dgemm_p = 0,
+  .dgemm_q = 0,
+  .dgemm_r = 0,
+  .dgemm_unroll_m = DGEMM_DEFAULT_UNROLL_M,
+  .dgemm_unroll_n = DGEMM_DEFAULT_UNROLL_N,
+#ifdef DGEMM_DEFAULT_UNROLL_MN
+ .dgemm_unroll_mn = DGEMM_DEFAULT_UNROLL_MN,
+#else
+ .dgemm_unroll_mn = MAX(DGEMM_DEFAULT_UNROLL_M, DGEMM_DEFAULT_UNROLL_N),
+#endif
+#endif
+#ifdef EXPRECISION
+  .qgemm_p = 0,
+  .qgemm_q = 0,
+  .qgemm_r = 0,
+  .qgemm_unroll_m = QGEMM_DEFAULT_UNROLL_M,
+  .qgemm_unroll_n = QGEMM_DEFAULT_UNROLL_N,
+  .qgemm_unroll_mn = MAX(QGEMM_DEFAULT_UNROLL_M, QGEMM_DEFAULT_UNROLL_N),
+#endif
+#if (BUILD_COMPLEX)
+  .cgemm_p = 0,
+  .cgemm_q = 0,
+  .cgemm_r = 0,
+  .cgemm_unroll_m = CGEMM_DEFAULT_UNROLL_M,
+  .cgemm_unroll_n = CGEMM_DEFAULT_UNROLL_N,
+#ifdef CGEMM_DEFAULT_UNROLL_MN
+ .cgemm_unroll_mn = CGEMM_DEFAULT_UNROLL_MN,
+#else
+ .cgemm_unroll_mn = MAX(CGEMM_DEFAULT_UNROLL_M, CGEMM_DEFAULT_UNROLL_N),
+#endif
+#endif
+#if (BUILD_COMPLEX)
+  .cgemm3m_p = 0,
+  .cgemm3m_q = 0,
+  .cgemm3m_r = 0,
+#if (USE_GEMM3M)
+#ifdef CGEMM3M_DEFAULT_UNROLL_M
+  .cgemm3m_unroll_m = CGEMM3M_DEFAULT_UNROLL_M,
+  .cgemm3m_unroll_n = CGEMM3M_DEFAULT_UNROLL_N,
+  .cgemm3m_unroll_mn = MAX(CGEMM3M_DEFAULT_UNROLL_M, CGEMM3M_DEFAULT_UNROLL_N),
+#else
+  .cgemm3m_unroll_m = SGEMM_DEFAULT_UNROLL_M,
+  .cgemm3m_unroll_n = SGEMM_DEFAULT_UNROLL_N,
+  .cgemm3m_unroll_mn = MAX(SGEMM_DEFAULT_UNROLL_M, SGEMM_DEFAULT_UNROLL_N),
+#endif
+#else
+  .cgemm3m_unroll_m = 0,
+  .cgemm3m_unroll_n = 0,
+  .cgemm3m_unroll_mn = 0,
+#endif
+#endif
+#if BUILD_COMPLEX16 == 1
+  .zgemm_p = 0,
+  .zgemm_q = 0,
+  .zgemm_r = 0,
+  .zgemm_unroll_m = ZGEMM_DEFAULT_UNROLL_M,
+  .zgemm_unroll_n = ZGEMM_DEFAULT_UNROLL_N,
+#ifdef ZGEMM_DEFAULT_UNROLL_MN
+ .zgemm_unroll_mn = ZGEMM_DEFAULT_UNROLL_MN,
+#else
+ .zgemm_unroll_mn = MAX(ZGEMM_DEFAULT_UNROLL_M, ZGEMM_DEFAULT_UNROLL_N),
+#endif
+  .zgemm3m_p = 0,
+  .zgemm3m_q = 0,
+  .zgemm3m_r = 0,
+#if (USE_GEMM3M)
+#ifdef ZGEMM3M_DEFAULT_UNROLL_M
+  .zgemm3m_unroll_m = ZGEMM3M_DEFAULT_UNROLL_M,
+  .zgemm3m_unroll_n = ZGEMM3M_DEFAULT_UNROLL_N,
+  .zgemm3m_unroll_mn = MAX(ZGEMM3M_DEFAULT_UNROLL_M, ZGEMM3M_DEFAULT_UNROLL_N),
+#else
+  .zgemm3m_unroll_m = DGEMM_DEFAULT_UNROLL_M,
+  .zgemm3m_unroll_n = DGEMM_DEFAULT_UNROLL_N,
+  .zgemm3m_unroll_mn = MAX(DGEMM_DEFAULT_UNROLL_M, DGEMM_DEFAULT_UNROLL_N),
+#endif
+#else
+  .zgemm3m_unroll_m = 0,
+  .zgemm3m_unroll_n = 0,
+  .zgemm3m_unroll_mn = 0,
+#endif
+#endif
+#ifdef EXPRECISION
+  .xgemm_p = 0,
+  .xgemm_q = 0,
+  .xgemm_r = 0,
+  .xgemm_unroll_m = XGEMM_DEFAULT_UNROLL_M,
+  .xgemm_unroll_n = XGEMM_DEFAULT_UNROLL_N,
+  .xgemm_unroll_mn = MAX(XGEMM_DEFAULT_UNROLL_M, XGEMM_DEFAULT_UNROLL_N),
+  .xgemm3m_p = 0,
+  .xgemm3m_q = 0,
+  .xgemm3m_r = 0,
+#if (USE_GEMM3M)
+  .xgemm3m_unroll_m = QGEMM_DEFAULT_UNROLL_M,
+  .xgemm3m_unroll_n = QGEMM_DEFAULT_UNROLL_N,
+  .xgemm3m_unroll_mn = MAX(QGEMM_DEFAULT_UNROLL_M, QGEMM_DEFAULT_UNROLL_N),
+#else
+  .xgemm3m_unroll_m = 0,
+  .xgemm3m_unroll_n = 0,
+  .xgemm3m_unroll_mn = 0,
+#endif
+#endif
+  .init = init_parameter,
+  .snum_opt = SNUMOPT,
+  .dnum_opt = DNUMOPT,
+  .qnum_opt = QNUMOPT,
+};
 
+#if BUILD_HFLOAT16 == 1
+const openblas_shgemm_dispatch_t openblas_shgemm_dispatchTS = {
+  .shgemm_kernel = shgemm_kernelTS,
+  .shgemm_beta = shgemm_betaTS,
+#if SHGEMM_DEFAULT_UNROLL_M != SHGEMM_DEFAULT_UNROLL_N
+  .shgemm_incopy = shgemm_incopyTS,
+  .shgemm_itcopy = shgemm_itcopyTS,
+#else
+  .shgemm_incopy = shgemm_oncopyTS,
+  .shgemm_itcopy = shgemm_otcopyTS,
+#endif
+  .shgemm_oncopy = shgemm_oncopyTS,
+  .shgemm_otcopy = shgemm_otcopyTS,
+};
+#endif
+
+#if BUILD_HFLOAT16 == 1
+const openblas_shgemv_dispatch_t openblas_shgemv_dispatchTS = {
+  .shgemv_n = shgemv_nTS,
+  .shgemv_t = shgemv_tTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbstobf16_dispatch_t openblas_sbstobf16_dispatchTS = {
   .sbstobf16_k = sbstobf16_kTS,
-  .sbdtobf16_k = sbdtobf16_kTS,
-  .sbf16tos_k = sbf16tos_kTS,
-  .dbf16tod_k = dbf16tod_kTS,
+};
+#endif
 
+#if BUILD_BFLOAT16 == 1
+const openblas_sbdtobf16_dispatch_t openblas_sbdtobf16_dispatchTS = {
+  .sbdtobf16_k = sbdtobf16_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbf16tos_dispatch_t openblas_sbf16tos_dispatchTS = {
+  .sbf16tos_k = sbf16tos_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_dbf16tod_dispatch_t openblas_dbf16tod_dispatchTS = {
+  .dbf16tod_k = dbf16tod_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbamax_dispatch_t openblas_sbamax_dispatchTS = {
   .sbamax_k = samax_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbamin_dispatch_t openblas_sbamin_dispatchTS = {
   .sbamin_k = samin_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbmax_dispatch_t openblas_sbmax_dispatchTS = {
   .sbmax_k = smax_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbmin_dispatch_t openblas_sbmin_dispatchTS = {
   .sbmin_k = smin_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_isbamax_dispatch_t openblas_isbamax_dispatchTS = {
   .isbamax_k = isamax_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_isbamin_dispatch_t openblas_isbamin_dispatchTS = {
   .isbamin_k = isamin_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_isbmax_dispatch_t openblas_isbmax_dispatchTS = {
   .isbmax_k = ismax_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_isbmin_dispatch_t openblas_isbmin_dispatchTS = {
   .isbmin_k = ismin_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbnrm2_dispatch_t openblas_sbnrm2_dispatchTS = {
   .sbnrm2_k = snrm2_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbasum_dispatch_t openblas_sbasum_dispatchTS = {
   .sbasum_k = sasum_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbsum_dispatch_t openblas_sbsum_dispatchTS = {
   .sbsum_k = ssum_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbcopy_dispatch_t openblas_sbcopy_dispatchTS = {
   .sbcopy_k = scopy_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbdot_dispatch_t openblas_sbdot_dispatchTS = {
   .sbdot_k = sbdot_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_dsbdot_dispatch_t openblas_dsbdot_dispatchTS = {
   .dsbdot_k = dsdot_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbrot_dispatch_t openblas_sbrot_dispatchTS = {
   .sbrot_k = srot_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbrotm_dispatch_t openblas_sbrotm_dispatchTS = {
   .sbrotm_k = srotm_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_bscal_dispatch_t openblas_bscal_dispatchTS = {
   .bscal_k = bscal_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbaxpy_dispatch_t openblas_sbaxpy_dispatchTS = {
   .sbaxpy_k = saxpy_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbscal_dispatch_t openblas_sbscal_dispatchTS = {
   .sbscal_k = sscal_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbswap_dispatch_t openblas_sbswap_dispatchTS = {
   .sbswap_k = sswap_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_bgemv_dispatch_t openblas_bgemv_dispatchTS = {
   .bgemv_n = bgemv_nTS,
   .bgemv_t = bgemv_tTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbgemv_dispatch_t openblas_sbgemv_dispatchTS = {
   .sbgemv_n = sbgemv_nTS,
   .sbgemv_t = sbgemv_tTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbger_dispatch_t openblas_sbger_dispatchTS = {
   .sbger_k = sger_kTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbsymv_dispatch_t openblas_sbsymv_dispatchTS = {
   .sbsymv_L = ssymv_LTS,
   .sbsymv_U = ssymv_UTS,
+};
+#endif
 
+#if BUILD_BFLOAT16 == 1
+const openblas_bgemm_dispatch_t openblas_bgemm_dispatchTS = {
   .bgemm_kernel = bgemm_kernelTS,
   .bgemm_beta = bgemm_betaTS,
 #if BGEMM_DEFAULT_UNROLL_M != BGEMM_DEFAULT_UNROLL_N
@@ -164,7 +429,11 @@ gotoblas_t TABLE_NAME = {
 #endif
   .bgemm_oncopy = bgemm_oncopyTS,
   .bgemm_otcopy = bgemm_otcopyTS,
+};
+#endif
 
+#if BUILD_BFLOAT16 == 1
+const openblas_sbgemm_dispatch_t openblas_sbgemm_dispatchTS = {
   .sbgemm_kernel = sbgemm_kernelTS,
   .sbgemm_beta = sbgemm_betaTS,
 #if SBGEMM_DEFAULT_UNROLL_M != SBGEMM_DEFAULT_UNROLL_N
@@ -176,7 +445,22 @@ gotoblas_t TABLE_NAME = {
 #endif
   .sbgemm_oncopy = sbgemm_oncopyTS,
   .sbgemm_otcopy = sbgemm_otcopyTS,
+#ifdef SMALL_MATRIX_OPT
+  .sbgemm_small_matrix_permit = sbgemm_small_matrix_permitTS,
+  .sbgemm_small_kernel_nn = sbgemm_small_kernel_nnTS,
+  .sbgemm_small_kernel_nt = sbgemm_small_kernel_ntTS,
+  .sbgemm_small_kernel_tn = sbgemm_small_kernel_tnTS,
+  .sbgemm_small_kernel_tt = sbgemm_small_kernel_ttTS,
+  .sbgemm_small_kernel_b0_nn = sbgemm_small_kernel_b0_nnTS,
+  .sbgemm_small_kernel_b0_nt = sbgemm_small_kernel_b0_ntTS,
+  .sbgemm_small_kernel_b0_tn = sbgemm_small_kernel_b0_tnTS,
+  .sbgemm_small_kernel_b0_tt = sbgemm_small_kernel_b0_ttTS,
+#endif
+};
+#endif
 
+#if BUILD_BFLOAT16 == 1
+const openblas_sbtrsm_dispatch_t openblas_sbtrsm_dispatchTS = {
   .sbtrsm_kernel_LN = strsm_kernel_LNTS,
   .sbtrsm_kernel_LT = strsm_kernel_LTTS,
   .sbtrsm_kernel_RN = strsm_kernel_RNTS,
@@ -208,6 +492,11 @@ gotoblas_t TABLE_NAME = {
   .sbtrsm_olnncopy = strsm_olnncopyTS,
   .sbtrsm_oltucopy = strsm_oltucopyTS,
   .sbtrsm_oltncopy = strsm_oltncopyTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbtrmm_dispatch_t openblas_sbtrmm_dispatchTS = {
   .sbtrmm_kernel_RN = strmm_kernel_RNTS,
   .sbtrmm_kernel_RT = strmm_kernel_RTTS,
   .sbtrmm_kernel_LN = strmm_kernel_LNTS,
@@ -239,6 +528,11 @@ gotoblas_t TABLE_NAME = {
   .sbtrmm_olnncopy = strmm_olnncopyTS,
   .sbtrmm_oltucopy = strmm_oltucopyTS,
   .sbtrmm_oltncopy = strmm_oltncopyTS,
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sbsymm_dispatch_t openblas_sbsymm_dispatchTS = {
 #if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
   .sbsymm_iutcopy = ssymm_iutcopyTS,
   .sbsymm_iltcopy = ssymm_iltcopyTS,
@@ -248,91 +542,159 @@ gotoblas_t TABLE_NAME = {
 #endif
   .sbsymm_outcopy = ssymm_outcopyTS,
   .sbsymm_oltcopy = ssymm_oltcopyTS,
+};
+#endif
 
+#if BUILD_BFLOAT16 == 1
+const openblas_sbneg_dispatch_t openblas_sbneg_dispatchTS = {
 #ifndef NO_LAPACK
   .sbneg_tcopy = sneg_tcopyTS,
-  .sblaswp_ncopy = slaswp_ncopyTS,
 #else
   .sbneg_tcopy = NULL,
+#endif
+};
+#endif
+
+#if BUILD_BFLOAT16 == 1
+const openblas_sblaswp_dispatch_t openblas_sblaswp_dispatchTS = {
+#ifndef NO_LAPACK
+  .sblaswp_ncopy = slaswp_ncopyTS,
+#else
   .sblaswp_ncopy = NULL,
 #endif
-#ifdef SMALL_MATRIX_OPT
-  .sbgemm_small_matrix_permit = sbgemm_small_matrix_permitTS,
-  .sbgemm_small_kernel_nn = sbgemm_small_kernel_nnTS,
-  .sbgemm_small_kernel_nt = sbgemm_small_kernel_ntTS,
-  .sbgemm_small_kernel_tn = sbgemm_small_kernel_tnTS,
-  .sbgemm_small_kernel_tt = sbgemm_small_kernel_ttTS,
-  .sbgemm_small_kernel_b0_nn = sbgemm_small_kernel_b0_nnTS,
-  .sbgemm_small_kernel_b0_nt = sbgemm_small_kernel_b0_ntTS,
-  .sbgemm_small_kernel_b0_tn = sbgemm_small_kernel_b0_tnTS,
-  .sbgemm_small_kernel_b0_tt = sbgemm_small_kernel_b0_ttTS,
-#endif
+};
 #endif
 
-#if ( BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1) || (BUILD_COMPLEX16==1)
-  .sgemm_p = 0,
-  .sgemm_q = 0,
-  .sgemm_r = 0,
-  .sgemm_unroll_m = SGEMM_DEFAULT_UNROLL_M,
-  .sgemm_unroll_n = SGEMM_DEFAULT_UNROLL_N,
-#ifdef SGEMM_DEFAULT_UNROLL_MN
- .sgemm_unroll_mn = SGEMM_DEFAULT_UNROLL_MN,
-#else
- .sgemm_unroll_mn = MAX(SGEMM_DEFAULT_UNROLL_M, SGEMM_DEFAULT_UNROLL_N),
-#endif
-#endif
-
-#ifdef HAVE_EXCLUSIVE_CACHE
-  .exclusive_cache = 1,
-#else
-  .exclusive_cache = 0,
-#endif
-
-#if (BUILD_SINGLE==1 ) || (BUILD_COMPLEX==1)
+#if (BUILD_SINGLE == 1) || (BUILD_COMPLEX == 1)
+const openblas_samax_dispatch_t openblas_samax_dispatchTS = {
   .samax_k = samax_kTS,
+};
+#endif
+
+#if (BUILD_SINGLE == 1) || (BUILD_COMPLEX == 1)
+const openblas_samin_dispatch_t openblas_samin_dispatchTS = {
   .samin_k = samin_kTS,
+};
+#endif
+
+#if (BUILD_SINGLE == 1) || (BUILD_COMPLEX == 1)
+const openblas_smax_dispatch_t openblas_smax_dispatchTS = {
   .smax_k = smax_kTS,
+};
+#endif
+
+#if (BUILD_SINGLE == 1) || (BUILD_COMPLEX == 1)
+const openblas_smin_dispatch_t openblas_smin_dispatchTS = {
   .smin_k = smin_kTS,
+};
 #endif
-#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE ==1) || (BUILD_COMPLEX==1)
+const openblas_isamax_dispatch_t openblas_isamax_dispatchTS = {
   .isamax_k = isamax_kTS,
+};
 #endif
-#if (BUILD_SINGLE==1 ) || (BUILD_COMPLEX==1)
+
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
+const openblas_isamin_dispatch_t openblas_isamin_dispatchTS = {
   .isamin_k = isamin_kTS,
-  .ismax_k = ismax_kTS,
-  .ismin_k = ismin_kTS,
-  .snrm2_k = snrm2_kTS,
-  .sasum_k = sasum_kTS,
+};
 #endif
-#if BUILD_SINGLE == 1
+
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
+const openblas_ismax_dispatch_t openblas_ismax_dispatchTS = {
+  .ismax_k = ismax_kTS,
+};
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
+const openblas_ismin_dispatch_t openblas_ismin_dispatchTS = {
+  .ismin_k = ismin_kTS,
+};
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
+const openblas_snrm2_dispatch_t openblas_snrm2_dispatchTS = {
+  .snrm2_k = snrm2_kTS,
+};
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
+const openblas_sasum_dispatch_t openblas_sasum_dispatchTS = {
+  .sasum_k = sasum_kTS,
+};
+#endif
+
+#if (BUILD_SINGLE==1)
+const openblas_ssum_dispatch_t openblas_ssum_dispatchTS = {
   .ssum_k = ssum_kTS,
+};
 #endif
 
 #if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+const openblas_scopy_dispatch_t openblas_scopy_dispatchTS = {
   .scopy_k = scopy_kTS,
-  .sdot_k = sdot_kTS,
-//  dsdot_kTS,
-  .srot_k = srot_kTS,
-  .srotm_k = srotm_kTS,
-  .saxpy_k = saxpy_kTS,
+};
 #endif
-#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1) || (BUILD_COMPLEX16==1)
-  .sscal_k = sscal_kTS,
-#endif
+
 #if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+const openblas_sdot_dispatch_t openblas_sdot_dispatchTS = {
+  .sdot_k = sdot_kTS,
+};
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+const openblas_srot_dispatch_t openblas_srot_dispatchTS = {
+  .srot_k = srot_kTS,
+};
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+const openblas_srotm_dispatch_t openblas_srotm_dispatchTS = {
+  .srotm_k = srotm_kTS,
+};
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+const openblas_saxpy_dispatch_t openblas_saxpy_dispatchTS = {
+  .saxpy_k = saxpy_kTS,
+};
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1) || (BUILD_COMPLEX16==1)
+const openblas_sscal_dispatch_t openblas_sscal_dispatchTS = {
+  .sscal_k = sscal_kTS,
+};
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+const openblas_sswap_dispatch_t openblas_sswap_dispatchTS = {
   .sswap_k = sswap_kTS,
+};
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+const openblas_sgemv_dispatch_t openblas_sgemv_dispatchTS = {
   .sgemv_n = sgemv_nTS,
   .sgemv_t = sgemv_tTS,
+};
 #endif
-#if BUILD_SINGLE == 1
+
+#if (BUILD_SINGLE==1)
+const openblas_sger_dispatch_t openblas_sger_dispatchTS = {
   .sger_k = sger_kTS,
+};
 #endif
-#if BUILD_SINGLE == 1
+
+#if (BUILD_SINGLE==1)
+const openblas_ssymv_dispatch_t openblas_ssymv_dispatchTS = {
   .ssymv_L = ssymv_LTS,
   .ssymv_U = ssymv_UTS,
+};
 #endif
 
 #if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+const openblas_sgemm_dispatch_t openblas_sgemm_dispatchTS = {
 #ifdef ARCH_X86_64
   .sgemm_direct = sgemm_directTS,
   .sgemm_direct_performant = sgemm_direct_performantTS,
@@ -341,31 +703,14 @@ gotoblas_t TABLE_NAME = {
   .sgemm_direct = sgemm_directTS,
   .sgemm_direct_performant = sgemm_direct_performantTS,
   .sgemm_direct_alpha_beta = sgemm_direct_alpha_betaTS,
-  .ssymm_direct_alpha_betaLU = ssymm_direct_alpha_betaLUTS,
-  .ssymm_direct_alpha_betaLL = ssymm_direct_alpha_betaLLTS,
-  .strmm_direct_LNUN = strmm_direct_LNUNTS,
-  .strmm_direct_LNLN = strmm_direct_LNLNTS,
-  .strmm_direct_LTUN = strmm_direct_LTUNTS,
-  .strmm_direct_LTLN = strmm_direct_LTLNTS,
-  .ssyrk_direct_alpha_betaUN = ssyrk_direct_alpha_betaUNTS,
-  .ssyrk_direct_alpha_betaUT = ssyrk_direct_alpha_betaUTTS,
-  .ssyrk_direct_alpha_betaLN = ssyrk_direct_alpha_betaLNTS,
-  .ssyrk_direct_alpha_betaLT = ssyrk_direct_alpha_betaLTTS,
-  .ssyr2k_direct_alpha_betaUN = ssyr2k_direct_alpha_betaUNTS,
-  .ssyr2k_direct_alpha_betaUT = ssyr2k_direct_alpha_betaUTTS,
-  .ssyr2k_direct_alpha_betaLN = ssyr2k_direct_alpha_betaLNTS,
-  .ssyr2k_direct_alpha_betaLT = ssyr2k_direct_alpha_betaLTTS,
 #ifdef HAVE_SME
   .sme_sgemm_kernel = sme_sgemm_kernelTS,
 #else
   .sme_sgemm_kernel = NULL,
 #endif
 #endif
-
   .sgemm_kernel = sgemm_kernelTS,
   .sgemm_beta = sgemm_betaTS,
-  .ssymm_kernel = ssymm_kernelTS,
-  .strmm_gemm_kernel = strmm_gemm_kernelTS,
 #if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
   .sgemm_incopy = sgemm_incopyTS,
   .sgemm_itcopy = sgemm_itcopyTS,
@@ -375,9 +720,6 @@ gotoblas_t TABLE_NAME = {
 #endif
   .sgemm_oncopy = sgemm_oncopyTS,
   .sgemm_otcopy = sgemm_otcopyTS,
-#endif
-
-#if BUILD_SINGLE == 1 || BUILD_DOUBLE == 1 || BUILD_COMPLEX == 1
 #ifdef SMALL_MATRIX_OPT
   .sgemm_small_matrix_permit = sgemm_small_matrix_permitTS,
   .sgemm_small_kernel_nn = sgemm_small_kernel_nnTS,
@@ -389,9 +731,103 @@ gotoblas_t TABLE_NAME = {
   .sgemm_small_kernel_b0_tn = sgemm_small_kernel_b0_tnTS,
   .sgemm_small_kernel_b0_tt = sgemm_small_kernel_b0_ttTS,
 #endif
+};
 #endif
 
-#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX == 1)
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+const openblas_ssymm_dispatch_t openblas_ssymm_dispatchTS = {
+#ifdef ARCH_ARM64
+  .ssymm_direct_alpha_betaLU = ssymm_direct_alpha_betaLUTS,
+  .ssymm_direct_alpha_betaLL = ssymm_direct_alpha_betaLLTS,
+#endif
+  .ssymm_kernel = ssymm_kernelTS,
+#if (BUILD_SINGLE==1)
+  .ssymm_incopy = ssymm_incopyTS,
+  .ssymm_itcopy = ssymm_itcopyTS,
+#if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
+  .ssymm_iutcopy = ssymm_iutcopyTS,
+  .ssymm_iltcopy = ssymm_iltcopyTS,
+#else
+  .ssymm_iutcopy = ssymm_outcopyTS,
+  .ssymm_iltcopy = ssymm_oltcopyTS,
+#endif
+  .ssymm_outcopy = ssymm_outcopyTS,
+  .ssymm_oltcopy = ssymm_oltcopyTS,
+#endif
+};
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+const openblas_strmm_dispatch_t openblas_strmm_dispatchTS = {
+#ifdef ARCH_ARM64
+  .strmm_direct_LNUN = strmm_direct_LNUNTS,
+  .strmm_direct_LNLN = strmm_direct_LNLNTS,
+  .strmm_direct_LTUN = strmm_direct_LTUNTS,
+  .strmm_direct_LTLN = strmm_direct_LTLNTS,
+#endif
+  .strmm_gemm_kernel = strmm_gemm_kernelTS,
+#if (BUILD_SINGLE==1)
+  .strmm_kernel_RN = strmm_kernel_RNTS,
+  .strmm_kernel_RT = strmm_kernel_RTTS,
+  .strmm_kernel_LN = strmm_kernel_LNTS,
+  .strmm_kernel_LT = strmm_kernel_LTTS,
+#if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
+  .strmm_iunucopy = strmm_iunucopyTS,
+  .strmm_iunncopy = strmm_iunncopyTS,
+  .strmm_iutucopy = strmm_iutucopyTS,
+  .strmm_iutncopy = strmm_iutncopyTS,
+  .strmm_ilnucopy = strmm_ilnucopyTS,
+  .strmm_ilnncopy = strmm_ilnncopyTS,
+  .strmm_iltucopy = strmm_iltucopyTS,
+  .strmm_iltncopy = strmm_iltncopyTS,
+#else
+  .strmm_iunucopy = strmm_ounucopyTS,
+  .strmm_iunncopy = strmm_ounncopyTS,
+  .strmm_iutucopy = strmm_outucopyTS,
+  .strmm_iutncopy = strmm_outncopyTS,
+  .strmm_ilnucopy = strmm_olnucopyTS,
+  .strmm_ilnncopy = strmm_olnncopyTS,
+  .strmm_iltucopy = strmm_oltucopyTS,
+  .strmm_iltncopy = strmm_oltncopyTS,
+#endif
+  .strmm_incopy = strmm_incopyTS,
+  .strmm_itcopy = strmm_itcopyTS,
+  .strmm_ounucopy = strmm_ounucopyTS,
+  .strmm_ounncopy = strmm_ounncopyTS,
+  .strmm_outucopy = strmm_outucopyTS,
+  .strmm_outncopy = strmm_outncopyTS,
+  .strmm_olnucopy = strmm_olnucopyTS,
+  .strmm_olnncopy = strmm_olnncopyTS,
+  .strmm_oltucopy = strmm_oltucopyTS,
+  .strmm_oltncopy = strmm_oltncopyTS,
+#endif
+};
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+#ifdef ARCH_ARM64
+const openblas_ssyrk_dispatch_t openblas_ssyrk_dispatchTS = {
+  .ssyrk_direct_alpha_betaUN = ssyrk_direct_alpha_betaUNTS,
+  .ssyrk_direct_alpha_betaUT = ssyrk_direct_alpha_betaUTTS,
+  .ssyrk_direct_alpha_betaLN = ssyrk_direct_alpha_betaLNTS,
+  .ssyrk_direct_alpha_betaLT = ssyrk_direct_alpha_betaLTTS,
+};
+#endif
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+#ifdef ARCH_ARM64
+const openblas_ssyr2k_dispatch_t openblas_ssyr2k_dispatchTS = {
+  .ssyr2k_direct_alpha_betaUN = ssyr2k_direct_alpha_betaUNTS,
+  .ssyr2k_direct_alpha_betaUT = ssyr2k_direct_alpha_betaUTTS,
+  .ssyr2k_direct_alpha_betaLN = ssyr2k_direct_alpha_betaLNTS,
+  .ssyr2k_direct_alpha_betaLT = ssyr2k_direct_alpha_betaLTTS,
+};
+#endif
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+const openblas_strsm_dispatch_t openblas_strsm_dispatchTS = {
   .strsm_kernel_LN = strsm_kernel_LNTS,
   .strsm_kernel_LT = strsm_kernel_LTTS,
   .strsm_kernel_RN = strsm_kernel_RNTS,
@@ -423,113 +859,165 @@ gotoblas_t TABLE_NAME = {
   .strsm_olnncopy = strsm_olnncopyTS,
   .strsm_oltucopy = strsm_oltucopyTS,
   .strsm_oltncopy = strsm_oltncopyTS,
+};
 #endif
+
 #if (BUILD_SINGLE==1)
-  .strmm_kernel_RN = strmm_kernel_RNTS,
-  .strmm_kernel_RT = strmm_kernel_RTTS,
-  .strmm_kernel_LN = strmm_kernel_LNTS,
-  .strmm_kernel_LT = strmm_kernel_LTTS,
-#if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
-  .strmm_iunucopy = strmm_iunucopyTS,
-  .strmm_iunncopy = strmm_iunncopyTS,
-  .strmm_iutucopy = strmm_iutucopyTS,
-  .strmm_iutncopy = strmm_iutncopyTS,
-  .strmm_ilnucopy = strmm_ilnucopyTS,
-  .strmm_ilnncopy = strmm_ilnncopyTS,
-  .strmm_iltucopy = strmm_iltucopyTS,
-  .strmm_iltncopy = strmm_iltncopyTS,
-#else
-  .strmm_iunucopy = strmm_ounucopyTS,
-  .strmm_iunncopy = strmm_ounncopyTS,
-  .strmm_iutucopy = strmm_outucopyTS,
-  .strmm_iutncopy = strmm_outncopyTS,
-  .strmm_ilnucopy = strmm_olnucopyTS,
-  .strmm_ilnncopy = strmm_olnncopyTS,
-  .strmm_iltucopy = strmm_oltucopyTS,
-  .strmm_iltncopy = strmm_oltncopyTS,
-#endif
-  .ssymm_incopy = ssymm_incopyTS,
-  .ssymm_itcopy = ssymm_itcopyTS,
-  .strmm_incopy = strmm_incopyTS,
-  .strmm_itcopy = strmm_itcopyTS,
-  .strmm_ounucopy = strmm_ounucopyTS,
-  .strmm_ounncopy = strmm_ounncopyTS,
-  .strmm_outucopy = strmm_outucopyTS,
-  .strmm_outncopy = strmm_outncopyTS,
-  .strmm_olnucopy = strmm_olnucopyTS,
-  .strmm_olnncopy = strmm_olnncopyTS,
-  .strmm_oltucopy = strmm_oltucopyTS,
-  .strmm_oltncopy = strmm_oltncopyTS,
-#if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
-  .ssymm_iutcopy = ssymm_iutcopyTS,
-  .ssymm_iltcopy = ssymm_iltcopyTS,
-#else
-  .ssymm_iutcopy = ssymm_outcopyTS,
-  .ssymm_iltcopy = ssymm_oltcopyTS,
-#endif
-  .ssymm_outcopy = ssymm_outcopyTS,
-  .ssymm_oltcopy = ssymm_oltcopyTS,
+const openblas_sneg_dispatch_t openblas_sneg_dispatchTS = {
 #ifndef NO_LAPACK
   .sneg_tcopy = sneg_tcopyTS,
-  .slaswp_ncopy = slaswp_ncopyTS,
 #else
   .sneg_tcopy = NULL,
+#endif
+};
+#endif
+
+#if (BUILD_SINGLE==1)
+const openblas_slaswp_dispatch_t openblas_slaswp_dispatchTS = {
+#ifndef NO_LAPACK
+  .slaswp_ncopy = slaswp_ncopyTS,
+#else
   .slaswp_ncopy = NULL,
 #endif
+};
 #endif
 
-#if  (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
-  .dgemm_p = 0,
-  .dgemm_q = 0,
-  .dgemm_r = 0,
-  .dgemm_unroll_m = DGEMM_DEFAULT_UNROLL_M,
-  .dgemm_unroll_n = DGEMM_DEFAULT_UNROLL_N,
-#ifdef DGEMM_DEFAULT_UNROLL_MN
- .dgemm_unroll_mn = DGEMM_DEFAULT_UNROLL_MN,
-#else
- .dgemm_unroll_mn = MAX(DGEMM_DEFAULT_UNROLL_M, DGEMM_DEFAULT_UNROLL_N),
-#endif
-#endif
-
-
-#if  (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_damax_dispatch_t openblas_damax_dispatchTS = {
   .damax_k = damax_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_damin_dispatch_t openblas_damin_dispatchTS = {
   .damin_k = damin_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_dmax_dispatch_t openblas_dmax_dispatchTS = {
   .dmax_k = dmax_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_dmin_dispatch_t openblas_dmin_dispatchTS = {
   .dmin_k = dmin_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_idamax_dispatch_t openblas_idamax_dispatchTS = {
   .idamax_k = idamax_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_idamin_dispatch_t openblas_idamin_dispatchTS = {
   .idamin_k = idamin_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_idmax_dispatch_t openblas_idmax_dispatchTS = {
   .idmax_k = idmax_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_idmin_dispatch_t openblas_idmin_dispatchTS = {
   .idmin_k = idmin_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_dnrm2_dispatch_t openblas_dnrm2_dispatchTS = {
   .dnrm2_k = dnrm2_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_dasum_dispatch_t openblas_dasum_dispatchTS = {
   .dasum_k = dasum_kTS,
+};
 #endif
-#if  (BUILD_DOUBLE==1)
+
+#if (BUILD_DOUBLE==1)
+const openblas_dsum_dispatch_t openblas_dsum_dispatchTS = {
   .dsum_k = dsum_kTS,
+};
 #endif
-#if  (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_dcopy_dispatch_t openblas_dcopy_dispatchTS = {
   .dcopy_k = dcopy_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_ddot_dispatch_t openblas_ddot_dispatchTS = {
   .ddot_k = ddot_kTS,
+};
 #endif
-#if  (BUILD_SINGLE==1) || (BUILD_DOUBLE==1)
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1)
+const openblas_dsdot_dispatch_t openblas_dsdot_dispatchTS = {
   .dsdot_k = dsdot_kTS,
+};
 #endif
-#if  (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_drot_dispatch_t openblas_drot_dispatchTS = {
   .drot_k = drot_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_drotm_dispatch_t openblas_drotm_dispatchTS = {
   .drotm_k = drotm_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_daxpy_dispatch_t openblas_daxpy_dispatchTS = {
   .daxpy_k = daxpy_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_dscal_dispatch_t openblas_dscal_dispatchTS = {
   .dscal_k = dscal_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_dswap_dispatch_t openblas_dswap_dispatchTS = {
   .dswap_k = dswap_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_dgemv_dispatch_t openblas_dgemv_dispatchTS = {
   .dgemv_n = dgemv_nTS,
   .dgemv_t = dgemv_tTS,
-#endif
-#if  (BUILD_DOUBLE==1)
-  .dger_k = dger_kTS,
-  .dsymv_L = dsymv_LTS,
-  .dsymv_U = dsymv_UTS,
+};
 #endif
 
-#if  (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+#if (BUILD_DOUBLE==1)
+const openblas_dger_dispatch_t openblas_dger_dispatchTS = {
+  .dger_k = dger_kTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1)
+const openblas_dsymv_dispatch_t openblas_dsymv_dispatchTS = {
+  .dsymv_L = dsymv_LTS,
+  .dsymv_U = dsymv_UTS,
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_dgemm_dispatch_t openblas_dgemm_dispatchTS = {
 #ifdef ARCH_ARM64
 #ifdef HAVE_SME
   .sme_dgemm_kernel = sme_dgemm_kernelTS,
@@ -539,8 +1027,6 @@ gotoblas_t TABLE_NAME = {
 #endif
   .dgemm_kernel = dgemm_kernelTS,
   .dgemm_beta = dgemm_betaTS,
-  .dsymm_kernel = dsymm_kernelTS,
-  .dtrmm_gemm_kernel = dtrmm_gemm_kernelTS,
 #if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
   .dgemm_incopy = dgemm_incopyTS,
   .dgemm_itcopy = dgemm_itcopyTS,
@@ -550,9 +1036,6 @@ gotoblas_t TABLE_NAME = {
 #endif
   .dgemm_oncopy = dgemm_oncopyTS,
   .dgemm_otcopy = dgemm_otcopyTS,
-#endif
-
-#if  (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
 #ifdef SMALL_MATRIX_OPT
   .dgemm_small_matrix_permit = dgemm_small_matrix_permitTS,
   .dgemm_small_kernel_nn = dgemm_small_kernel_nnTS,
@@ -564,8 +1047,71 @@ gotoblas_t TABLE_NAME = {
   .dgemm_small_kernel_b0_tn = dgemm_small_kernel_b0_tnTS,
   .dgemm_small_kernel_b0_tt = dgemm_small_kernel_b0_ttTS,
 #endif
+};
 #endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_dsymm_dispatch_t openblas_dsymm_dispatchTS = {
+  .dsymm_kernel = dsymm_kernelTS,
 #if  (BUILD_DOUBLE==1)
+  .dsymm_incopy = dsymm_incopyTS,
+  .dsymm_itcopy = dsymm_itcopyTS,
+#if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
+  .dsymm_iutcopy = dsymm_iutcopyTS,
+  .dsymm_iltcopy = dsymm_iltcopyTS,
+#else
+  .dsymm_iutcopy = dsymm_outcopyTS,
+  .dsymm_iltcopy = dsymm_oltcopyTS,
+#endif
+  .dsymm_outcopy = dsymm_outcopyTS,
+  .dsymm_oltcopy = dsymm_oltcopyTS,
+#endif
+};
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+const openblas_dtrmm_dispatch_t openblas_dtrmm_dispatchTS = {
+  .dtrmm_gemm_kernel = dtrmm_gemm_kernelTS,
+#if  (BUILD_DOUBLE==1)
+  .dtrmm_kernel_RN = dtrmm_kernel_RNTS,
+  .dtrmm_kernel_RT = dtrmm_kernel_RTTS,
+  .dtrmm_kernel_LN = dtrmm_kernel_LNTS,
+  .dtrmm_kernel_LT = dtrmm_kernel_LTTS,
+#if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
+  .dtrmm_iunucopy = dtrmm_iunucopyTS,
+  .dtrmm_iunncopy = dtrmm_iunncopyTS,
+  .dtrmm_iutucopy = dtrmm_iutucopyTS,
+  .dtrmm_iutncopy = dtrmm_iutncopyTS,
+  .dtrmm_ilnucopy = dtrmm_ilnucopyTS,
+  .dtrmm_ilnncopy = dtrmm_ilnncopyTS,
+  .dtrmm_iltucopy = dtrmm_iltucopyTS,
+  .dtrmm_iltncopy = dtrmm_iltncopyTS,
+#else
+  .dtrmm_iunucopy = dtrmm_ounucopyTS,
+  .dtrmm_iunncopy = dtrmm_ounncopyTS,
+  .dtrmm_iutucopy = dtrmm_outucopyTS,
+  .dtrmm_iutncopy = dtrmm_outncopyTS,
+  .dtrmm_ilnucopy = dtrmm_olnucopyTS,
+  .dtrmm_ilnncopy = dtrmm_olnncopyTS,
+  .dtrmm_iltucopy = dtrmm_oltucopyTS,
+  .dtrmm_iltncopy = dtrmm_oltncopyTS,
+#endif
+  .dtrmm_incopy = dtrmm_incopyTS,
+  .dtrmm_itcopy = dtrmm_itcopyTS,
+  .dtrmm_ounucopy = dtrmm_ounucopyTS,
+  .dtrmm_ounncopy = dtrmm_ounncopyTS,
+  .dtrmm_outucopy = dtrmm_outucopyTS,
+  .dtrmm_outncopy = dtrmm_outncopyTS,
+  .dtrmm_olnucopy = dtrmm_olnucopyTS,
+  .dtrmm_olnncopy = dtrmm_olnncopyTS,
+  .dtrmm_oltucopy = dtrmm_oltucopyTS,
+  .dtrmm_oltncopy = dtrmm_oltncopyTS,
+#endif
+};
+#endif
+
+#if (BUILD_DOUBLE==1)
+const openblas_dtrsm_dispatch_t openblas_dtrsm_dispatchTS = {
   .dtrsm_kernel_LN = dtrsm_kernel_LNTS,
   .dtrsm_kernel_LT = dtrsm_kernel_LTTS,
   .dtrsm_kernel_RN = dtrsm_kernel_RNTS,
@@ -597,93 +1143,159 @@ gotoblas_t TABLE_NAME = {
   .dtrsm_olnncopy = dtrsm_olnncopyTS,
   .dtrsm_oltucopy = dtrsm_oltucopyTS,
   .dtrsm_oltncopy = dtrsm_oltncopyTS,
-  .dtrmm_kernel_RN = dtrmm_kernel_RNTS,
-  .dtrmm_kernel_RT = dtrmm_kernel_RTTS,
-  .dtrmm_kernel_LN = dtrmm_kernel_LNTS,
-  .dtrmm_kernel_LT = dtrmm_kernel_LTTS,
-#if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
-  .dtrmm_iunucopy = dtrmm_iunucopyTS,
-  .dtrmm_iunncopy = dtrmm_iunncopyTS,
-  .dtrmm_iutucopy = dtrmm_iutucopyTS,
-  .dtrmm_iutncopy = dtrmm_iutncopyTS,
-  .dtrmm_ilnucopy = dtrmm_ilnucopyTS,
-  .dtrmm_ilnncopy = dtrmm_ilnncopyTS,
-  .dtrmm_iltucopy = dtrmm_iltucopyTS,
-  .dtrmm_iltncopy = dtrmm_iltncopyTS,
-#else
-  .dtrmm_iunucopy = dtrmm_ounucopyTS,
-  .dtrmm_iunncopy = dtrmm_ounncopyTS,
-  .dtrmm_iutucopy = dtrmm_outucopyTS,
-  .dtrmm_iutncopy = dtrmm_outncopyTS,
-  .dtrmm_ilnucopy = dtrmm_olnucopyTS,
-  .dtrmm_ilnncopy = dtrmm_olnncopyTS,
-  .dtrmm_iltucopy = dtrmm_oltucopyTS,
-  .dtrmm_iltncopy = dtrmm_oltncopyTS,
+};
 #endif
-  .dsymm_incopy = dsymm_incopyTS,
-  .dsymm_itcopy = dsymm_itcopyTS,
-  .dtrmm_incopy = dtrmm_incopyTS,
-  .dtrmm_itcopy = dtrmm_itcopyTS,
-  .dtrmm_ounucopy = dtrmm_ounucopyTS,
-  .dtrmm_ounncopy = dtrmm_ounncopyTS,
-  .dtrmm_outucopy = dtrmm_outucopyTS,
-  .dtrmm_outncopy = dtrmm_outncopyTS,
-  .dtrmm_olnucopy = dtrmm_olnucopyTS,
-  .dtrmm_olnncopy = dtrmm_olnncopyTS,
-  .dtrmm_oltucopy = dtrmm_oltucopyTS,
-  .dtrmm_oltncopy = dtrmm_oltncopyTS,
-#if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
-  .dsymm_iutcopy = dsymm_iutcopyTS,
-  .dsymm_iltcopy = dsymm_iltcopyTS,
-#else
-  .dsymm_iutcopy = dsymm_outcopyTS,
-  .dsymm_iltcopy = dsymm_oltcopyTS,
-#endif
-  .dsymm_outcopy = dsymm_outcopyTS,
-  .dsymm_oltcopy = dsymm_oltcopyTS,
 
+#if (BUILD_DOUBLE==1)
+const openblas_dneg_dispatch_t openblas_dneg_dispatchTS = {
 #ifndef NO_LAPACK
   .dneg_tcopy = dneg_tcopyTS,
-  .dlaswp_ncopy = dlaswp_ncopyTS,
 #else
   .dneg_tcopy = NULL,
-  .dlaswp_ncopy = NULL,
+#endif
+};
 #endif
 
+#if (BUILD_DOUBLE==1)
+const openblas_dlaswp_dispatch_t openblas_dlaswp_dispatchTS = {
+#ifndef NO_LAPACK
+  .dlaswp_ncopy = dlaswp_ncopyTS,
+#else
+  .dlaswp_ncopy = NULL,
+#endif
+};
 #endif
 
 #ifdef EXPRECISION
-
-  .qgemm_p = 0,
-  .qgemm_q = 0,
-  .qgemm_r = 0,
-  .qgemm_unroll_m = QGEMM_DEFAULT_UNROLL_M,
-  .qgemm_unroll_n = QGEMM_DEFAULT_UNROLL_N,
-  .qgemm_unroll_mn = MAX(QGEMM_DEFAULT_UNROLL_M, QGEMM_DEFAULT_UNROLL_N),
-
+const openblas_qamax_dispatch_t openblas_qamax_dispatchTS = {
   .qamax_k = qamax_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qamin_dispatch_t openblas_qamin_dispatchTS = {
   .qamin_k = qamin_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qmax_dispatch_t openblas_qmax_dispatchTS = {
   .qmax_k = qmax_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qmin_dispatch_t openblas_qmin_dispatchTS = {
   .qmin_k = qmin_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_iqamax_dispatch_t openblas_iqamax_dispatchTS = {
   .iqamax_k = iqamax_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_iqamin_dispatch_t openblas_iqamin_dispatchTS = {
   .iqamin_k = iqamin_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_iqmax_dispatch_t openblas_iqmax_dispatchTS = {
   .iqmax_k = iqmax_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_iqmin_dispatch_t openblas_iqmin_dispatchTS = {
   .iqmin_k = iqmin_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qnrm2_dispatch_t openblas_qnrm2_dispatchTS = {
   .qnrm2_k = qnrm2_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qasum_dispatch_t openblas_qasum_dispatchTS = {
   .qasum_k = qasum_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qsum_dispatch_t openblas_qsum_dispatchTS = {
   .qsum_k = qsum_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qcopy_dispatch_t openblas_qcopy_dispatchTS = {
   .qcopy_k = qcopy_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qdot_dispatch_t openblas_qdot_dispatchTS = {
   .qdot_k = qdot_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qrot_dispatch_t openblas_qrot_dispatchTS = {
   .qrot_k = qrot_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qrotm_dispatch_t openblas_qrotm_dispatchTS = {
   .qrotm_k = qrotm_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qaxpy_dispatch_t openblas_qaxpy_dispatchTS = {
   .qaxpy_k = qaxpy_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qscal_dispatch_t openblas_qscal_dispatchTS = {
   .qscal_k = qscal_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qswap_dispatch_t openblas_qswap_dispatchTS = {
   .qswap_k = qswap_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qgemv_dispatch_t openblas_qgemv_dispatchTS = {
   .qgemv_n = qgemv_nTS,
   .qgemv_t = qgemv_tTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qger_dispatch_t openblas_qger_dispatchTS = {
   .qger_k = qger_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qsymv_dispatch_t openblas_qsymv_dispatchTS = {
   .qsymv_L = qsymv_LTS,
   .qsymv_U = qsymv_UTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qgemm_dispatch_t openblas_qgemm_dispatchTS = {
   .qgemm_kernel = qgemm_kernelTS,
   .qgemm_beta = qgemm_betaTS,
 #if QGEMM_DEFAULT_UNROLL_M != QGEMM_DEFAULT_UNROLL_N
@@ -695,6 +1307,11 @@ gotoblas_t TABLE_NAME = {
 #endif
   .qgemm_oncopy = qgemm_oncopyTS,
   .qgemm_otcopy = qgemm_otcopyTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qtrsm_dispatch_t openblas_qtrsm_dispatchTS = {
   .qtrsm_kernel_LN = qtrsm_kernel_LNTS,
   .qtrsm_kernel_LT = qtrsm_kernel_LTTS,
   .qtrsm_kernel_RN = qtrsm_kernel_RNTS,
@@ -726,6 +1343,11 @@ gotoblas_t TABLE_NAME = {
   .qtrsm_olnncopy = qtrsm_olnncopyTS,
   .qtrsm_oltucopy = qtrsm_oltucopyTS,
   .qtrsm_oltncopy = qtrsm_oltncopyTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qtrmm_dispatch_t openblas_qtrmm_dispatchTS = {
   .qtrmm_kernel_RN = qtrmm_kernel_RNTS,
   .qtrmm_kernel_RT = qtrmm_kernel_RTTS,
   .qtrmm_kernel_LN = qtrmm_kernel_LNTS,
@@ -757,6 +1379,11 @@ gotoblas_t TABLE_NAME = {
   .qtrmm_olnncopy = qtrmm_olnncopyTS,
   .qtrmm_oltucopy = qtrmm_oltucopyTS,
   .qtrmm_oltncopy = qtrmm_oltncopyTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qsymm_dispatch_t openblas_qsymm_dispatchTS = {
 #if QGEMM_DEFAULT_UNROLL_M != QGEMM_DEFAULT_UNROLL_N
   .qsymm_iutcopy = qsymm_iutcopyTS,
   .qsymm_iltcopy = qsymm_iltcopyTS,
@@ -766,55 +1393,121 @@ gotoblas_t TABLE_NAME = {
 #endif
   .qsymm_outcopy = qsymm_outcopyTS,
   .qsymm_oltcopy = qsymm_oltcopyTS,
+};
+#endif
 
+#ifdef EXPRECISION
+const openblas_qneg_dispatch_t openblas_qneg_dispatchTS = {
 #ifndef NO_LAPACK
   .qneg_tcopy = qneg_tcopyTS,
-  .qlaswp_ncopy = qlaswp_ncopyTS,
 #else
   .qneg_tcopy = NULL,
+#endif
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_qlaswp_dispatch_t openblas_qlaswp_dispatchTS = {
+#ifndef NO_LAPACK
+  .qlaswp_ncopy = qlaswp_ncopyTS,
+#else
   .qlaswp_ncopy = NULL,
 #endif
-
+};
 #endif
 
-#if (BUILD_COMPLEX)
-  .cgemm_p = 0,
-  .cgemm_q = 0,
-  .cgemm_r = 0,
-  .cgemm_unroll_m = CGEMM_DEFAULT_UNROLL_M,
-  .cgemm_unroll_n = CGEMM_DEFAULT_UNROLL_N,
-#ifdef CGEMM_DEFAULT_UNROLL_MN
- .cgemm_unroll_mn = CGEMM_DEFAULT_UNROLL_MN,
-#else
- .cgemm_unroll_mn = MAX(CGEMM_DEFAULT_UNROLL_M, CGEMM_DEFAULT_UNROLL_N),
-#endif
-#if (BUILD_COMPLEX)
+#if (BUILD_COMPLEX==1)
+const openblas_camax_dispatch_t openblas_camax_dispatchTS = {
   .camax_k = camax_kTS,
-  .camin_k = camin_kTS,
+};
 #endif
-#if (BUILD_COMPLEX)
-  .icamax_k = icamax_kTS,
-#endif
-#if (BUILD_COMPLEX)
-  .icamin_k = icamin_kTS,
-  .cnrm2_k = cnrm2_kTS,
-  .casum_k = casum_kTS,
-  .csum_k = csum_kTS,
-#endif
-#if (BUILD_COMPLEX)
-  .ccopy_k = ccopy_kTS,
-  .cdotu_k = cdotu_kTS,
-  .cdotc_k = cdotc_kTS,
-#endif
-#if (BUILD_COMPLEX)
- .csrot_k = csrot_kTS,
-#endif
-#if (BUILD_COMPLEX)
-  .caxpy_k = caxpy_kTS,
-  .caxpyc_k = caxpyc_kTS,
-  .cscal_k = cscal_kTS,
-  .cswap_k = cswap_kTS,
 
+#if (BUILD_COMPLEX==1)
+const openblas_camin_dispatch_t openblas_camin_dispatchTS = {
+  .camin_k = camin_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_icamax_dispatch_t openblas_icamax_dispatchTS = {
+  .icamax_k = icamax_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_icamin_dispatch_t openblas_icamin_dispatchTS = {
+  .icamin_k = icamin_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_cnrm2_dispatch_t openblas_cnrm2_dispatchTS = {
+  .cnrm2_k = cnrm2_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_casum_dispatch_t openblas_casum_dispatchTS = {
+  .casum_k = casum_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_csum_dispatch_t openblas_csum_dispatchTS = {
+  .csum_k = csum_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_ccopy_dispatch_t openblas_ccopy_dispatchTS = {
+  .ccopy_k = ccopy_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_cdotu_dispatch_t openblas_cdotu_dispatchTS = {
+  .cdotu_k = cdotu_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_cdotc_dispatch_t openblas_cdotc_dispatchTS = {
+  .cdotc_k = cdotc_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_csrot_dispatch_t openblas_csrot_dispatchTS = {
+ .csrot_k = csrot_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_caxpy_dispatch_t openblas_caxpy_dispatchTS = {
+  .caxpy_k = caxpy_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_caxpyc_dispatch_t openblas_caxpyc_dispatchTS = {
+  .caxpyc_k = caxpyc_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_cscal_dispatch_t openblas_cscal_dispatchTS = {
+  .cscal_k = cscal_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_cswap_dispatch_t openblas_cswap_dispatchTS = {
+  .cswap_k = cswap_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_cgemv_dispatch_t openblas_cgemv_dispatchTS = {
   .cgemv_n = cgemv_nTS,
   .cgemv_t = cgemv_tTS,
   .cgemv_r = cgemv_rTS,
@@ -823,20 +1516,51 @@ gotoblas_t TABLE_NAME = {
   .cgemv_u = cgemv_uTS,
   .cgemv_s = cgemv_sTS,
   .cgemv_d = cgemv_dTS,
+};
 #endif
-#if (BUILD_COMPLEX)
+
+#if (BUILD_COMPLEX==1)
+const openblas_cgeru_dispatch_t openblas_cgeru_dispatchTS = {
   .cgeru_k = cgeru_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_cgerc_dispatch_t openblas_cgerc_dispatchTS = {
   .cgerc_k = cgerc_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_cgerv_dispatch_t openblas_cgerv_dispatchTS = {
   .cgerv_k = cgerv_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_cgerd_dispatch_t openblas_cgerd_dispatchTS = {
   .cgerd_k = cgerd_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_csymv_dispatch_t openblas_csymv_dispatchTS = {
   .csymv_L = csymv_LTS,
   .csymv_U = csymv_UTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_chemv_dispatch_t openblas_chemv_dispatchTS = {
   .chemv_L = chemv_LTS,
   .chemv_U = chemv_UTS,
   .chemv_M = chemv_MTS,
   .chemv_V = chemv_VTS,
+};
 #endif
-#if (BUILD_COMPLEX)
+
+#if (BUILD_COMPLEX==1)
+const openblas_cgemm_dispatch_t openblas_cgemm_dispatchTS = {
 #ifdef ARCH_ARM64
 #ifdef HAVE_SME
   .sme_cgemm_kernel = sme_cgemm_kernelTS,
@@ -849,14 +1573,6 @@ gotoblas_t TABLE_NAME = {
   .cgemm_kernel_r = cgemm_kernel_rTS,
   .cgemm_kernel_b = cgemm_kernel_bTS,
   .cgemm_beta = cgemm_betaTS,
-  .csymm_kernel_n = csymm_kernel_nTS,
-  .csymm_kernel_l = csymm_kernel_lTS,
-  .csymm_kernel_r = csymm_kernel_rTS,
-  .csymm_kernel_b = csymm_kernel_bTS,
-  .ctrmm_gemm_kernel_n = ctrmm_gemm_kernel_nTS,
-  .ctrmm_gemm_kernel_l = ctrmm_gemm_kernel_lTS,
-  .ctrmm_gemm_kernel_r = ctrmm_gemm_kernel_rTS,
-  .ctrmm_gemm_kernel_b = ctrmm_gemm_kernel_bTS,
 #if CGEMM_DEFAULT_UNROLL_M != CGEMM_DEFAULT_UNROLL_N
   .cgemm_incopy = cgemm_incopyTS,
   .cgemm_itcopy = cgemm_itcopyTS,
@@ -866,7 +1582,6 @@ gotoblas_t TABLE_NAME = {
 #endif
   .cgemm_oncopy = cgemm_oncopyTS,
   .cgemm_otcopy = cgemm_otcopyTS,
-
 #ifdef SMALL_MATRIX_OPT
   .cgemm_small_matrix_permit = cgemm_small_matrix_permitTS,
   .cgemm_small_kernel_nn = cgemm_small_kernel_nnTS,
@@ -902,7 +1617,77 @@ gotoblas_t TABLE_NAME = {
   .cgemm_small_kernel_b0_cr = cgemm_small_kernel_b0_crTS,
   .cgemm_small_kernel_b0_cc = cgemm_small_kernel_b0_ccTS,
 #endif
+};
+#endif
 
+#if (BUILD_COMPLEX==1)
+const openblas_csymm_dispatch_t openblas_csymm_dispatchTS = {
+  .csymm_kernel_n = csymm_kernel_nTS,
+  .csymm_kernel_l = csymm_kernel_lTS,
+  .csymm_kernel_r = csymm_kernel_rTS,
+  .csymm_kernel_b = csymm_kernel_bTS,
+  .csymm_incopy = csymm_incopyTS,
+  .csymm_itcopy = csymm_itcopyTS,
+#if CGEMM_DEFAULT_UNROLL_M != CGEMM_DEFAULT_UNROLL_N
+  .csymm_iutcopy = csymm_iutcopyTS,
+  .csymm_iltcopy = csymm_iltcopyTS,
+#else
+  .csymm_iutcopy = csymm_outcopyTS,
+  .csymm_iltcopy = csymm_oltcopyTS,
+#endif
+  .csymm_outcopy = csymm_outcopyTS,
+  .csymm_oltcopy = csymm_oltcopyTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_ctrmm_dispatch_t openblas_ctrmm_dispatchTS = {
+  .ctrmm_gemm_kernel_n = ctrmm_gemm_kernel_nTS,
+  .ctrmm_gemm_kernel_l = ctrmm_gemm_kernel_lTS,
+  .ctrmm_gemm_kernel_r = ctrmm_gemm_kernel_rTS,
+  .ctrmm_gemm_kernel_b = ctrmm_gemm_kernel_bTS,
+  .ctrmm_kernel_RN = ctrmm_kernel_RNTS,
+  .ctrmm_kernel_RT = ctrmm_kernel_RTTS,
+  .ctrmm_kernel_RR = ctrmm_kernel_RRTS,
+  .ctrmm_kernel_RC = ctrmm_kernel_RCTS,
+  .ctrmm_kernel_LN = ctrmm_kernel_LNTS,
+  .ctrmm_kernel_LT = ctrmm_kernel_LTTS,
+  .ctrmm_kernel_LR = ctrmm_kernel_LRTS,
+  .ctrmm_kernel_LC = ctrmm_kernel_LCTS,
+#if CGEMM_DEFAULT_UNROLL_M != CGEMM_DEFAULT_UNROLL_N
+  .ctrmm_iunucopy = ctrmm_iunucopyTS,
+  .ctrmm_iunncopy = ctrmm_iunncopyTS,
+  .ctrmm_iutucopy = ctrmm_iutucopyTS,
+  .ctrmm_iutncopy = ctrmm_iutncopyTS,
+  .ctrmm_ilnucopy = ctrmm_ilnucopyTS,
+  .ctrmm_ilnncopy = ctrmm_ilnncopyTS,
+  .ctrmm_iltucopy = ctrmm_iltucopyTS,
+  .ctrmm_iltncopy = ctrmm_iltncopyTS,
+#else
+  .ctrmm_iunucopy = ctrmm_ounucopyTS,
+  .ctrmm_iunncopy = ctrmm_ounncopyTS,
+  .ctrmm_iutucopy = ctrmm_outucopyTS,
+  .ctrmm_iutncopy = ctrmm_outncopyTS,
+  .ctrmm_ilnucopy = ctrmm_olnucopyTS,
+  .ctrmm_ilnncopy = ctrmm_olnncopyTS,
+  .ctrmm_iltucopy = ctrmm_oltucopyTS,
+  .ctrmm_iltncopy = ctrmm_oltncopyTS,
+#endif
+  .ctrmm_incopy = ctrmm_incopyTS,
+  .ctrmm_itcopy = ctrmm_itcopyTS,
+  .ctrmm_ounucopy = ctrmm_ounucopyTS,
+  .ctrmm_ounncopy = ctrmm_ounncopyTS,
+  .ctrmm_outucopy = ctrmm_outucopyTS,
+  .ctrmm_outncopy = ctrmm_outncopyTS,
+  .ctrmm_olnucopy = ctrmm_olnucopyTS,
+  .ctrmm_olnncopy = ctrmm_olnncopyTS,
+  .ctrmm_oltucopy = ctrmm_oltucopyTS,
+  .ctrmm_oltncopy = ctrmm_oltncopyTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_ctrsm_dispatch_t openblas_ctrsm_dispatchTS = {
   .ctrsm_kernel_LN = ctrsm_kernel_LNTS,
   .ctrsm_kernel_LT = ctrsm_kernel_LTTS,
   .ctrsm_kernel_LR = ctrsm_kernel_LRTS,
@@ -911,7 +1696,6 @@ gotoblas_t TABLE_NAME = {
   .ctrsm_kernel_RT = ctrsm_kernel_RTTS,
   .ctrsm_kernel_RR = ctrsm_kernel_RRTS,
   .ctrsm_kernel_RC = ctrsm_kernel_RCTS,
-
 #if CGEMM_DEFAULT_UNROLL_M != CGEMM_DEFAULT_UNROLL_N
   .ctrsm_iunucopy = ctrsm_iunucopyTS,
   .ctrsm_iunncopy = ctrsm_iunncopyTS,
@@ -939,60 +1723,11 @@ gotoblas_t TABLE_NAME = {
   .ctrsm_olnncopy = ctrsm_olnncopyTS,
   .ctrsm_oltucopy = ctrsm_oltucopyTS,
   .ctrsm_oltncopy = ctrsm_oltncopyTS,
+};
 #endif
-#endif
-#if (BUILD_COMPLEX)
 
-  .ctrmm_kernel_RN = ctrmm_kernel_RNTS,
-  .ctrmm_kernel_RT = ctrmm_kernel_RTTS,
-  .ctrmm_kernel_RR = ctrmm_kernel_RRTS,
-  .ctrmm_kernel_RC = ctrmm_kernel_RCTS,
-  .ctrmm_kernel_LN = ctrmm_kernel_LNTS,
-  .ctrmm_kernel_LT = ctrmm_kernel_LTTS,
-  .ctrmm_kernel_LR = ctrmm_kernel_LRTS,
-  .ctrmm_kernel_LC = ctrmm_kernel_LCTS,
-
-#if CGEMM_DEFAULT_UNROLL_M != CGEMM_DEFAULT_UNROLL_N
-  .ctrmm_iunucopy = ctrmm_iunucopyTS,
-  .ctrmm_iunncopy = ctrmm_iunncopyTS,
-  .ctrmm_iutucopy = ctrmm_iutucopyTS,
-  .ctrmm_iutncopy = ctrmm_iutncopyTS,
-  .ctrmm_ilnucopy = ctrmm_ilnucopyTS,
-  .ctrmm_ilnncopy = ctrmm_ilnncopyTS,
-  .ctrmm_iltucopy = ctrmm_iltucopyTS,
-  .ctrmm_iltncopy = ctrmm_iltncopyTS,
-#else
-  .ctrmm_iunucopy = ctrmm_ounucopyTS,
-  .ctrmm_iunncopy = ctrmm_ounncopyTS,
-  .ctrmm_iutucopy = ctrmm_outucopyTS,
-  .ctrmm_iutncopy = ctrmm_outncopyTS,
-  .ctrmm_ilnucopy = ctrmm_olnucopyTS,
-  .ctrmm_ilnncopy = ctrmm_olnncopyTS,
-  .ctrmm_iltucopy = ctrmm_oltucopyTS,
-  .ctrmm_iltncopy = ctrmm_oltncopyTS,
-#endif
-  .csymm_incopy = csymm_incopyTS,
-  .csymm_itcopy = csymm_itcopyTS,
-  .ctrmm_incopy = ctrmm_incopyTS,
-  .ctrmm_itcopy = ctrmm_itcopyTS,
-  .ctrmm_ounucopy = ctrmm_ounucopyTS,
-  .ctrmm_ounncopy = ctrmm_ounncopyTS,
-  .ctrmm_outucopy = ctrmm_outucopyTS,
-  .ctrmm_outncopy = ctrmm_outncopyTS,
-  .ctrmm_olnucopy = ctrmm_olnucopyTS,
-  .ctrmm_olnncopy = ctrmm_olnncopyTS,
-  .ctrmm_oltucopy = ctrmm_oltucopyTS,
-  .ctrmm_oltncopy = ctrmm_oltncopyTS,
-
-#if CGEMM_DEFAULT_UNROLL_M != CGEMM_DEFAULT_UNROLL_N
-  .csymm_iutcopy = csymm_iutcopyTS,
-  .csymm_iltcopy = csymm_iltcopyTS,
-#else
-  .csymm_iutcopy = csymm_outcopyTS,
-  .csymm_iltcopy = csymm_oltcopyTS,
-#endif
-  .csymm_outcopy = csymm_outcopyTS,
-  .csymm_oltcopy = csymm_oltcopyTS,
+#if (BUILD_COMPLEX==1)
+const openblas_chemm_dispatch_t openblas_chemm_dispatchTS = {
 #if CGEMM_DEFAULT_UNROLL_M != CGEMM_DEFAULT_UNROLL_N
   .chemm_iutcopy = chemm_iutcopyTS,
   .chemm_iltcopy = chemm_iltcopyTS,
@@ -1002,25 +1737,13 @@ gotoblas_t TABLE_NAME = {
 #endif
   .chemm_outcopy = chemm_outcopyTS,
   .chemm_oltcopy = chemm_oltcopyTS,
-
-  .cgemm3m_p = 0,
-  .cgemm3m_q = 0,
-  .cgemm3m_r = 0,
-
-#if (USE_GEMM3M)
-#ifdef CGEMM3M_DEFAULT_UNROLL_M
-  .cgemm3m_unroll_m = CGEMM3M_DEFAULT_UNROLL_M,
-  .cgemm3m_unroll_n = CGEMM3M_DEFAULT_UNROLL_N,
-  .cgemm3m_unroll_mn = MAX(CGEMM3M_DEFAULT_UNROLL_M, CGEMM3M_DEFAULT_UNROLL_N),
-#else
-  .cgemm3m_unroll_m = SGEMM_DEFAULT_UNROLL_M,
-  .cgemm3m_unroll_n = SGEMM_DEFAULT_UNROLL_N,
-  .cgemm3m_unroll_mn = MAX(SGEMM_DEFAULT_UNROLL_M, SGEMM_DEFAULT_UNROLL_N),
+};
 #endif
 
-
+#if (BUILD_COMPLEX==1)
+const openblas_cgemm3m_dispatch_t openblas_cgemm3m_dispatchTS = {
+#if (USE_GEMM3M)
   .cgemm3m_kernel = cgemm3m_kernelTS,
-
   .cgemm3m_incopyb = cgemm3m_incopybTS,
   .cgemm3m_incopyr = cgemm3m_incopyrTS,
   .cgemm3m_incopyi = cgemm3m_incopyiTS,
@@ -1033,40 +1756,8 @@ gotoblas_t TABLE_NAME = {
   .cgemm3m_otcopyb = cgemm3m_otcopybTS,
   .cgemm3m_otcopyr = cgemm3m_otcopyrTS,
   .cgemm3m_otcopyi = cgemm3m_otcopyiTS,
-
-  .csymm3m_iucopyb = csymm3m_iucopybTS,
-  .csymm3m_ilcopyb = csymm3m_ilcopybTS,
-  .csymm3m_iucopyr = csymm3m_iucopyrTS,
-  .csymm3m_ilcopyr = csymm3m_ilcopyrTS,
-  .csymm3m_iucopyi = csymm3m_iucopyiTS,
-  .csymm3m_ilcopyi = csymm3m_ilcopyiTS,
-  .csymm3m_oucopyb = csymm3m_oucopybTS,
-  .csymm3m_olcopyb = csymm3m_olcopybTS,
-  .csymm3m_oucopyr = csymm3m_oucopyrTS,
-  .csymm3m_olcopyr = csymm3m_olcopyrTS,
-  .csymm3m_oucopyi = csymm3m_oucopyiTS,
-  .csymm3m_olcopyi = csymm3m_olcopyiTS,
-
-  .chemm3m_iucopyb = chemm3m_iucopybTS,
-  .chemm3m_ilcopyb = chemm3m_ilcopybTS,
-  .chemm3m_iucopyr = chemm3m_iucopyrTS,
-  .chemm3m_ilcopyr = chemm3m_ilcopyrTS,
-  .chemm3m_iucopyi = chemm3m_iucopyiTS,
-  .chemm3m_ilcopyi = chemm3m_ilcopyiTS,
-
-  .chemm3m_oucopyb = chemm3m_oucopybTS,
-  .chemm3m_olcopyb = chemm3m_olcopybTS,
-  .chemm3m_oucopyr = chemm3m_oucopyrTS,
-  .chemm3m_olcopyr = chemm3m_olcopyrTS,
-  .chemm3m_oucopyi = chemm3m_oucopyiTS,
-  .chemm3m_olcopyi = chemm3m_olcopyiTS,
 #else
-  .cgemm3m_unroll_m = 0,
-  .cgemm3m_unroll_n = 0,
-  .cgemm3m_unroll_mn = 0,
-
   .cgemm3m_kernel = NULL,
-
   .cgemm3m_incopyb = NULL,
   .cgemm3m_incopyr = NULL,
   .cgemm3m_incopyi = NULL,
@@ -1079,7 +1770,26 @@ gotoblas_t TABLE_NAME = {
   .cgemm3m_otcopyb = NULL,
   .cgemm3m_otcopyr = NULL,
   .cgemm3m_otcopyi = NULL,
+#endif
+};
+#endif
 
+#if (BUILD_COMPLEX==1)
+const openblas_csymm3m_dispatch_t openblas_csymm3m_dispatchTS = {
+#if (USE_GEMM3M)
+  .csymm3m_iucopyb = csymm3m_iucopybTS,
+  .csymm3m_ilcopyb = csymm3m_ilcopybTS,
+  .csymm3m_iucopyr = csymm3m_iucopyrTS,
+  .csymm3m_ilcopyr = csymm3m_ilcopyrTS,
+  .csymm3m_iucopyi = csymm3m_iucopyiTS,
+  .csymm3m_ilcopyi = csymm3m_ilcopyiTS,
+  .csymm3m_oucopyb = csymm3m_oucopybTS,
+  .csymm3m_olcopyb = csymm3m_olcopybTS,
+  .csymm3m_oucopyr = csymm3m_oucopyrTS,
+  .csymm3m_olcopyr = csymm3m_olcopyrTS,
+  .csymm3m_oucopyi = csymm3m_oucopyiTS,
+  .csymm3m_olcopyi = csymm3m_olcopyiTS,
+#else
   .csymm3m_iucopyb = NULL,
   .csymm3m_ilcopyb = NULL,
   .csymm3m_iucopyr = NULL,
@@ -1092,14 +1802,32 @@ gotoblas_t TABLE_NAME = {
   .csymm3m_olcopyr = NULL,
   .csymm3m_oucopyi = NULL,
   .csymm3m_olcopyi = NULL,
+#endif
+};
+#endif
 
+#if (BUILD_COMPLEX==1)
+const openblas_chemm3m_dispatch_t openblas_chemm3m_dispatchTS = {
+#if (USE_GEMM3M)
+  .chemm3m_iucopyb = chemm3m_iucopybTS,
+  .chemm3m_ilcopyb = chemm3m_ilcopybTS,
+  .chemm3m_iucopyr = chemm3m_iucopyrTS,
+  .chemm3m_ilcopyr = chemm3m_ilcopyrTS,
+  .chemm3m_iucopyi = chemm3m_iucopyiTS,
+  .chemm3m_ilcopyi = chemm3m_ilcopyiTS,
+  .chemm3m_oucopyb = chemm3m_oucopybTS,
+  .chemm3m_olcopyb = chemm3m_olcopybTS,
+  .chemm3m_oucopyr = chemm3m_oucopyrTS,
+  .chemm3m_olcopyr = chemm3m_olcopyrTS,
+  .chemm3m_oucopyi = chemm3m_oucopyiTS,
+  .chemm3m_olcopyi = chemm3m_olcopyiTS,
+#else
   .chemm3m_iucopyb = NULL,
   .chemm3m_ilcopyb = NULL,
   .chemm3m_iucopyr = NULL,
   .chemm3m_ilcopyr = NULL,
   .chemm3m_iucopyi = NULL,
   .chemm3m_ilcopyi = NULL,
-
   .chemm3m_oucopyb = NULL,
   .chemm3m_olcopyb = NULL,
   .chemm3m_oucopyr = NULL,
@@ -1107,48 +1835,121 @@ gotoblas_t TABLE_NAME = {
   .chemm3m_oucopyi = NULL,
   .chemm3m_olcopyi = NULL,
 #endif
+};
 #endif
 
-#if (BUILD_COMPLEX)
+#if (BUILD_COMPLEX==1)
+const openblas_cneg_dispatch_t openblas_cneg_dispatchTS = {
 #ifndef NO_LAPACK
   .cneg_tcopy = cneg_tcopyTS,
-
-   .claswp_ncopy = claswp_ncopyTS,
 #else
   .cneg_tcopy = NULL,
+#endif
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_claswp_dispatch_t openblas_claswp_dispatchTS = {
+#ifndef NO_LAPACK
+   .claswp_ncopy = claswp_ncopyTS,
+#else
   .claswp_ncopy = NULL,
 #endif
-
+};
 #endif
 
-#if BUILD_COMPLEX16 == 1
-  .zgemm_p = 0,
-  .zgemm_q = 0,
-  .zgemm_r = 0,
-  .zgemm_unroll_m = ZGEMM_DEFAULT_UNROLL_M,
-  .zgemm_unroll_n = ZGEMM_DEFAULT_UNROLL_N,
-#ifdef ZGEMM_DEFAULT_UNROLL_MN
- .zgemm_unroll_mn = ZGEMM_DEFAULT_UNROLL_MN,
-#else
- .zgemm_unroll_mn = MAX(ZGEMM_DEFAULT_UNROLL_M, ZGEMM_DEFAULT_UNROLL_N),
-#endif
-
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zamax_dispatch_t openblas_zamax_dispatchTS = {
   .zamax_k = zamax_kTS,
-  .zamin_k = zamin_kTS,
-  .izamax_k = izamax_kTS,
-  .izamin_k = izamin_kTS,
-  .znrm2_k = znrm2_kTS,
-  .zasum_k = zasum_kTS,
-  .zsum_k = zsum_kTS,
-  .zcopy_k = zcopy_kTS,
-  .zdotu_k = zdotu_kTS,
-  .zdotc_k = zdotc_kTS,
-  .zdrot_k = zdrot_kTS,
-  .zaxpy_k = zaxpy_kTS,
-  .zaxpyc_k = zaxpyc_kTS,
-  .zscal_k = zscal_kTS,
-  .zswap_k = zswap_kTS,
+};
+#endif
 
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zamin_dispatch_t openblas_zamin_dispatchTS = {
+  .zamin_k = zamin_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_izamax_dispatch_t openblas_izamax_dispatchTS = {
+  .izamax_k = izamax_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_izamin_dispatch_t openblas_izamin_dispatchTS = {
+  .izamin_k = izamin_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_znrm2_dispatch_t openblas_znrm2_dispatchTS = {
+  .znrm2_k = znrm2_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zasum_dispatch_t openblas_zasum_dispatchTS = {
+  .zasum_k = zasum_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zsum_dispatch_t openblas_zsum_dispatchTS = {
+  .zsum_k = zsum_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zcopy_dispatch_t openblas_zcopy_dispatchTS = {
+  .zcopy_k = zcopy_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zdotu_dispatch_t openblas_zdotu_dispatchTS = {
+  .zdotu_k = zdotu_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zdotc_dispatch_t openblas_zdotc_dispatchTS = {
+  .zdotc_k = zdotc_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zdrot_dispatch_t openblas_zdrot_dispatchTS = {
+  .zdrot_k = zdrot_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zaxpy_dispatch_t openblas_zaxpy_dispatchTS = {
+  .zaxpy_k = zaxpy_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zaxpyc_dispatch_t openblas_zaxpyc_dispatchTS = {
+  .zaxpyc_k = zaxpyc_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zscal_dispatch_t openblas_zscal_dispatchTS = {
+  .zscal_k = zscal_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zswap_dispatch_t openblas_zswap_dispatchTS = {
+  .zswap_k = zswap_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zgemv_dispatch_t openblas_zgemv_dispatchTS = {
   .zgemv_n = zgemv_nTS,
   .zgemv_t = zgemv_tTS,
   .zgemv_r = zgemv_rTS,
@@ -1157,16 +1958,51 @@ gotoblas_t TABLE_NAME = {
   .zgemv_u = zgemv_uTS,
   .zgemv_s = zgemv_sTS,
   .zgemv_d = zgemv_dTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zgeru_dispatch_t openblas_zgeru_dispatchTS = {
   .zgeru_k = zgeru_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zgerc_dispatch_t openblas_zgerc_dispatchTS = {
   .zgerc_k = zgerc_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zgerv_dispatch_t openblas_zgerv_dispatchTS = {
   .zgerv_k = zgerv_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zgerd_dispatch_t openblas_zgerd_dispatchTS = {
   .zgerd_k = zgerd_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zsymv_dispatch_t openblas_zsymv_dispatchTS = {
   .zsymv_L = zsymv_LTS,
   .zsymv_U = zsymv_UTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zhemv_dispatch_t openblas_zhemv_dispatchTS = {
   .zhemv_L = zhemv_LTS,
   .zhemv_U = zhemv_UTS,
   .zhemv_M = zhemv_MTS,
   .zhemv_V = zhemv_VTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zgemm_dispatch_t openblas_zgemm_dispatchTS = {
 #ifdef ARCH_ARM64
 #ifdef HAVE_SME
   .sme_zgemm_kernel = sme_zgemm_kernelTS,
@@ -1179,15 +2015,6 @@ gotoblas_t TABLE_NAME = {
   .zgemm_kernel_r = zgemm_kernel_rTS,
   .zgemm_kernel_b = zgemm_kernel_bTS,
   .zgemm_beta = zgemm_betaTS,
-  .zsymm_kernel_n = zsymm_kernel_nTS,
-  .zsymm_kernel_l = zsymm_kernel_lTS,
-  .zsymm_kernel_r = zsymm_kernel_rTS,
-  .zsymm_kernel_b = zsymm_kernel_bTS,
-  .ztrmm_gemm_kernel_n = ztrmm_gemm_kernel_nTS,
-  .ztrmm_gemm_kernel_l = ztrmm_gemm_kernel_lTS,
-  .ztrmm_gemm_kernel_r = ztrmm_gemm_kernel_rTS,
-  .ztrmm_gemm_kernel_b = ztrmm_gemm_kernel_bTS,
-
 #if ZGEMM_DEFAULT_UNROLL_M != ZGEMM_DEFAULT_UNROLL_N
   .zgemm_incopy = zgemm_incopyTS,
   .zgemm_itcopy = zgemm_itcopyTS,
@@ -1197,7 +2024,6 @@ gotoblas_t TABLE_NAME = {
 #endif
   .zgemm_oncopy = zgemm_oncopyTS,
   .zgemm_otcopy = zgemm_otcopyTS,
-
 #ifdef SMALL_MATRIX_OPT
   .zgemm_small_matrix_permit = zgemm_small_matrix_permitTS,
   .zgemm_small_kernel_nn = zgemm_small_kernel_nnTS,
@@ -1233,7 +2059,77 @@ gotoblas_t TABLE_NAME = {
   .zgemm_small_kernel_b0_cr = zgemm_small_kernel_b0_crTS,
   .zgemm_small_kernel_b0_cc = zgemm_small_kernel_b0_ccTS,
 #endif
+};
+#endif
 
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zsymm_dispatch_t openblas_zsymm_dispatchTS = {
+  .zsymm_kernel_n = zsymm_kernel_nTS,
+  .zsymm_kernel_l = zsymm_kernel_lTS,
+  .zsymm_kernel_r = zsymm_kernel_rTS,
+  .zsymm_kernel_b = zsymm_kernel_bTS,
+  .zsymm_incopy = zsymm_incopyTS,
+  .zsymm_itcopy = zsymm_itcopyTS,
+#if ZGEMM_DEFAULT_UNROLL_M != ZGEMM_DEFAULT_UNROLL_N
+  .zsymm_iutcopy = zsymm_iutcopyTS,
+  .zsymm_iltcopy = zsymm_iltcopyTS,
+#else
+  .zsymm_iutcopy = zsymm_outcopyTS,
+  .zsymm_iltcopy = zsymm_oltcopyTS,
+#endif
+  .zsymm_outcopy = zsymm_outcopyTS,
+  .zsymm_oltcopy = zsymm_oltcopyTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_ztrmm_dispatch_t openblas_ztrmm_dispatchTS = {
+  .ztrmm_gemm_kernel_n = ztrmm_gemm_kernel_nTS,
+  .ztrmm_gemm_kernel_l = ztrmm_gemm_kernel_lTS,
+  .ztrmm_gemm_kernel_r = ztrmm_gemm_kernel_rTS,
+  .ztrmm_gemm_kernel_b = ztrmm_gemm_kernel_bTS,
+  .ztrmm_kernel_RN = ztrmm_kernel_RNTS,
+  .ztrmm_kernel_RT = ztrmm_kernel_RTTS,
+  .ztrmm_kernel_RR = ztrmm_kernel_RRTS,
+  .ztrmm_kernel_RC = ztrmm_kernel_RCTS,
+  .ztrmm_kernel_LN = ztrmm_kernel_LNTS,
+  .ztrmm_kernel_LT = ztrmm_kernel_LTTS,
+  .ztrmm_kernel_LR = ztrmm_kernel_LRTS,
+  .ztrmm_kernel_LC = ztrmm_kernel_LCTS,
+#if ZGEMM_DEFAULT_UNROLL_M != ZGEMM_DEFAULT_UNROLL_N
+  .ztrmm_iunucopy = ztrmm_iunucopyTS,
+  .ztrmm_iunncopy = ztrmm_iunncopyTS,
+  .ztrmm_iutucopy = ztrmm_iutucopyTS,
+  .ztrmm_iutncopy = ztrmm_iutncopyTS,
+  .ztrmm_ilnucopy = ztrmm_ilnucopyTS,
+  .ztrmm_ilnncopy = ztrmm_ilnncopyTS,
+  .ztrmm_iltucopy = ztrmm_iltucopyTS,
+  .ztrmm_iltncopy = ztrmm_iltncopyTS,
+#else
+  .ztrmm_iunucopy = ztrmm_ounucopyTS,
+  .ztrmm_iunncopy = ztrmm_ounncopyTS,
+  .ztrmm_iutucopy = ztrmm_outucopyTS,
+  .ztrmm_iutncopy = ztrmm_outncopyTS,
+  .ztrmm_ilnucopy = ztrmm_olnucopyTS,
+  .ztrmm_ilnncopy = ztrmm_olnncopyTS,
+  .ztrmm_iltucopy = ztrmm_oltucopyTS,
+  .ztrmm_iltncopy = ztrmm_oltncopyTS,
+#endif
+  .ztrmm_incopy = ztrmm_incopyTS,
+  .ztrmm_itcopy = ztrmm_itcopyTS,
+  .ztrmm_ounucopy = ztrmm_ounucopyTS,
+  .ztrmm_ounncopy = ztrmm_ounncopyTS,
+  .ztrmm_outucopy = ztrmm_outucopyTS,
+  .ztrmm_outncopy = ztrmm_outncopyTS,
+  .ztrmm_olnucopy = ztrmm_olnucopyTS,
+  .ztrmm_olnncopy = ztrmm_olnncopyTS,
+  .ztrmm_oltucopy = ztrmm_oltucopyTS,
+  .ztrmm_oltncopy = ztrmm_oltncopyTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_ztrsm_dispatch_t openblas_ztrsm_dispatchTS = {
   .ztrsm_kernel_LN = ztrsm_kernel_LNTS,
   .ztrsm_kernel_LT = ztrsm_kernel_LTTS,
   .ztrsm_kernel_LR = ztrsm_kernel_LRTS,
@@ -1242,7 +2138,6 @@ gotoblas_t TABLE_NAME = {
   .ztrsm_kernel_RT = ztrsm_kernel_RTTS,
   .ztrsm_kernel_RR = ztrsm_kernel_RRTS,
   .ztrsm_kernel_RC = ztrsm_kernel_RCTS,
-
 #if ZGEMM_DEFAULT_UNROLL_M != ZGEMM_DEFAULT_UNROLL_N
   .ztrsm_iunucopy = ztrsm_iunucopyTS,
   .ztrsm_iunncopy = ztrsm_iunncopyTS,
@@ -1270,57 +2165,11 @@ gotoblas_t TABLE_NAME = {
   .ztrsm_olnncopy = ztrsm_olnncopyTS,
   .ztrsm_oltucopy = ztrsm_oltucopyTS,
   .ztrsm_oltncopy = ztrsm_oltncopyTS,
-
-  .ztrmm_kernel_RN = ztrmm_kernel_RNTS,
-  .ztrmm_kernel_RT = ztrmm_kernel_RTTS,
-  .ztrmm_kernel_RR = ztrmm_kernel_RRTS,
-  .ztrmm_kernel_RC = ztrmm_kernel_RCTS,
-  .ztrmm_kernel_LN = ztrmm_kernel_LNTS,
-  .ztrmm_kernel_LT = ztrmm_kernel_LTTS,
-  .ztrmm_kernel_LR = ztrmm_kernel_LRTS,
-  .ztrmm_kernel_LC = ztrmm_kernel_LCTS,
-
-#if ZGEMM_DEFAULT_UNROLL_M != ZGEMM_DEFAULT_UNROLL_N
-  .ztrmm_iunucopy = ztrmm_iunucopyTS,
-  .ztrmm_iunncopy = ztrmm_iunncopyTS,
-  .ztrmm_iutucopy = ztrmm_iutucopyTS,
-  .ztrmm_iutncopy = ztrmm_iutncopyTS,
-  .ztrmm_ilnucopy = ztrmm_ilnucopyTS,
-  .ztrmm_ilnncopy = ztrmm_ilnncopyTS,
-  .ztrmm_iltucopy = ztrmm_iltucopyTS,
-  .ztrmm_iltncopy = ztrmm_iltncopyTS,
-#else
-  .ztrmm_iunucopy = ztrmm_ounucopyTS,
-  .ztrmm_iunncopy = ztrmm_ounncopyTS,
-  .ztrmm_iutucopy = ztrmm_outucopyTS,
-  .ztrmm_iutncopy = ztrmm_outncopyTS,
-  .ztrmm_ilnucopy = ztrmm_olnucopyTS,
-  .ztrmm_ilnncopy = ztrmm_olnncopyTS,
-  .ztrmm_iltucopy = ztrmm_oltucopyTS,
-  .ztrmm_iltncopy = ztrmm_oltncopyTS,
+};
 #endif
-  .zsymm_incopy = zsymm_incopyTS,
-  .zsymm_itcopy = zsymm_itcopyTS,
-  .ztrmm_incopy = ztrmm_incopyTS,
-  .ztrmm_itcopy = ztrmm_itcopyTS,
-  .ztrmm_ounucopy = ztrmm_ounucopyTS,
-  .ztrmm_ounncopy = ztrmm_ounncopyTS,
-  .ztrmm_outucopy = ztrmm_outucopyTS,
-  .ztrmm_outncopy = ztrmm_outncopyTS,
-  .ztrmm_olnucopy = ztrmm_olnucopyTS,
-  .ztrmm_olnncopy = ztrmm_olnncopyTS,
-  .ztrmm_oltucopy = ztrmm_oltucopyTS,
-  .ztrmm_oltncopy = ztrmm_oltncopyTS,
 
-#if ZGEMM_DEFAULT_UNROLL_M != ZGEMM_DEFAULT_UNROLL_N
-  .zsymm_iutcopy = zsymm_iutcopyTS,
-  .zsymm_iltcopy = zsymm_iltcopyTS,
-#else
-  .zsymm_iutcopy = zsymm_outcopyTS,
-  .zsymm_iltcopy = zsymm_oltcopyTS,
-#endif
-  .zsymm_outcopy = zsymm_outcopyTS,
-  .zsymm_oltcopy = zsymm_oltcopyTS,
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zhemm_dispatch_t openblas_zhemm_dispatchTS = {
 #if ZGEMM_DEFAULT_UNROLL_M != ZGEMM_DEFAULT_UNROLL_N
   .zhemm_iutcopy = zhemm_iutcopyTS,
   .zhemm_iltcopy = zhemm_iltcopyTS,
@@ -1330,24 +2179,13 @@ gotoblas_t TABLE_NAME = {
 #endif
   .zhemm_outcopy = zhemm_outcopyTS,
   .zhemm_oltcopy = zhemm_oltcopyTS,
-
-  .zgemm3m_p = 0,
-  .zgemm3m_q = 0,
-  .zgemm3m_r = 0,
-#if (USE_GEMM3M)
-#ifdef ZGEMM3M_DEFAULT_UNROLL_M
-  .zgemm3m_unroll_m = ZGEMM3M_DEFAULT_UNROLL_M,
-  .zgemm3m_unroll_n = ZGEMM3M_DEFAULT_UNROLL_N,
-  .zgemm3m_unroll_mn = MAX(ZGEMM3M_DEFAULT_UNROLL_M, ZGEMM3M_DEFAULT_UNROLL_N),
-#else
-  .zgemm3m_unroll_m = DGEMM_DEFAULT_UNROLL_M,
-  .zgemm3m_unroll_n = DGEMM_DEFAULT_UNROLL_N,
-  .zgemm3m_unroll_mn = MAX(DGEMM_DEFAULT_UNROLL_M, DGEMM_DEFAULT_UNROLL_N),
+};
 #endif
 
-
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zgemm3m_dispatch_t openblas_zgemm3m_dispatchTS = {
+#if (USE_GEMM3M)
   .zgemm3m_kernel = zgemm3m_kernelTS,
-
   .zgemm3m_incopyb = zgemm3m_incopybTS,
   .zgemm3m_incopyr = zgemm3m_incopyrTS,
   .zgemm3m_incopyi = zgemm3m_incopyiTS,
@@ -1360,40 +2198,8 @@ gotoblas_t TABLE_NAME = {
   .zgemm3m_otcopyb = zgemm3m_otcopybTS,
   .zgemm3m_otcopyr = zgemm3m_otcopyrTS,
   .zgemm3m_otcopyi = zgemm3m_otcopyiTS,
-
-  .zsymm3m_iucopyb = zsymm3m_iucopybTS,
-  .zsymm3m_ilcopyb = zsymm3m_ilcopybTS,
-  .zsymm3m_iucopyr = zsymm3m_iucopyrTS,
-  .zsymm3m_ilcopyr = zsymm3m_ilcopyrTS,
-  .zsymm3m_iucopyi = zsymm3m_iucopyiTS,
-  .zsymm3m_ilcopyi = zsymm3m_ilcopyiTS,
-  .zsymm3m_oucopyb = zsymm3m_oucopybTS,
-  .zsymm3m_olcopyb = zsymm3m_olcopybTS,
-  .zsymm3m_oucopyr = zsymm3m_oucopyrTS,
-  .zsymm3m_olcopyr = zsymm3m_olcopyrTS,
-  .zsymm3m_oucopyi = zsymm3m_oucopyiTS,
-  .zsymm3m_olcopyi = zsymm3m_olcopyiTS,
-
-  .zhemm3m_iucopyb = zhemm3m_iucopybTS,
-  .zhemm3m_ilcopyb = zhemm3m_ilcopybTS,
-  .zhemm3m_iucopyr = zhemm3m_iucopyrTS,
-  .zhemm3m_ilcopyr = zhemm3m_ilcopyrTS,
-  .zhemm3m_iucopyi = zhemm3m_iucopyiTS,
-  .zhemm3m_ilcopyi = zhemm3m_ilcopyiTS,
-
-  .zhemm3m_oucopyb = zhemm3m_oucopybTS,
-  .zhemm3m_olcopyb = zhemm3m_olcopybTS,
-  .zhemm3m_oucopyr = zhemm3m_oucopyrTS,
-  .zhemm3m_olcopyr = zhemm3m_olcopyrTS,
-  .zhemm3m_oucopyi = zhemm3m_oucopyiTS,
-  .zhemm3m_olcopyi = zhemm3m_olcopyiTS,
 #else
-  .zgemm3m_unroll_m = 0,
-  .zgemm3m_unroll_n = 0,
-  .zgemm3m_unroll_mn = 0,
-
   .zgemm3m_kernel = NULL,
-
   .zgemm3m_incopyb = NULL,
   .zgemm3m_incopyr = NULL,
   .zgemm3m_incopyi = NULL,
@@ -1406,7 +2212,26 @@ gotoblas_t TABLE_NAME = {
   .zgemm3m_otcopyb = NULL,
   .zgemm3m_otcopyr = NULL,
   .zgemm3m_otcopyi = NULL,
+#endif
+};
+#endif
 
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zsymm3m_dispatch_t openblas_zsymm3m_dispatchTS = {
+#if (USE_GEMM3M)
+  .zsymm3m_iucopyb = zsymm3m_iucopybTS,
+  .zsymm3m_ilcopyb = zsymm3m_ilcopybTS,
+  .zsymm3m_iucopyr = zsymm3m_iucopyrTS,
+  .zsymm3m_ilcopyr = zsymm3m_ilcopyrTS,
+  .zsymm3m_iucopyi = zsymm3m_iucopyiTS,
+  .zsymm3m_ilcopyi = zsymm3m_ilcopyiTS,
+  .zsymm3m_oucopyb = zsymm3m_oucopybTS,
+  .zsymm3m_olcopyb = zsymm3m_olcopybTS,
+  .zsymm3m_oucopyr = zsymm3m_oucopyrTS,
+  .zsymm3m_olcopyr = zsymm3m_olcopyrTS,
+  .zsymm3m_oucopyi = zsymm3m_oucopyiTS,
+  .zsymm3m_olcopyi = zsymm3m_olcopyiTS,
+#else
   .zsymm3m_iucopyb = NULL,
   .zsymm3m_ilcopyb = NULL,
   .zsymm3m_iucopyr = NULL,
@@ -1419,14 +2244,32 @@ gotoblas_t TABLE_NAME = {
   .zsymm3m_olcopyr = NULL,
   .zsymm3m_oucopyi = NULL,
   .zsymm3m_olcopyi = NULL,
+#endif
+};
+#endif
 
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zhemm3m_dispatch_t openblas_zhemm3m_dispatchTS = {
+#if (USE_GEMM3M)
+  .zhemm3m_iucopyb = zhemm3m_iucopybTS,
+  .zhemm3m_ilcopyb = zhemm3m_ilcopybTS,
+  .zhemm3m_iucopyr = zhemm3m_iucopyrTS,
+  .zhemm3m_ilcopyr = zhemm3m_ilcopyrTS,
+  .zhemm3m_iucopyi = zhemm3m_iucopyiTS,
+  .zhemm3m_ilcopyi = zhemm3m_ilcopyiTS,
+  .zhemm3m_oucopyb = zhemm3m_oucopybTS,
+  .zhemm3m_olcopyb = zhemm3m_olcopybTS,
+  .zhemm3m_oucopyr = zhemm3m_oucopyrTS,
+  .zhemm3m_olcopyr = zhemm3m_olcopyrTS,
+  .zhemm3m_oucopyi = zhemm3m_oucopyiTS,
+  .zhemm3m_olcopyi = zhemm3m_olcopyiTS,
+#else
   .zhemm3m_iucopyb = NULL,
   .zhemm3m_ilcopyb = NULL,
   .zhemm3m_iucopyr = NULL,
   .zhemm3m_ilcopyr = NULL,
   .zhemm3m_iucopyi = NULL,
   .zhemm3m_ilcopyi = NULL,
-
   .zhemm3m_oucopyb = NULL,
   .zhemm3m_olcopyb = NULL,
   .zhemm3m_oucopyr = NULL,
@@ -1434,42 +2277,121 @@ gotoblas_t TABLE_NAME = {
   .zhemm3m_oucopyi = NULL,
   .zhemm3m_olcopyi = NULL,
 #endif
-
-#ifndef NO_LAPACK
-  .zneg_tcopy = zneg_tcopyTS,
-  .zlaswp_ncopy = zlaswp_ncopyTS,
-#else
-  .zneg_tcopy = NULL,
-  .zlaswp_ncopy = NULL,
+};
 #endif
 
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zneg_dispatch_t openblas_zneg_dispatchTS = {
+#ifndef NO_LAPACK
+  .zneg_tcopy = zneg_tcopyTS,
+#else
+  .zneg_tcopy = NULL,
+#endif
+};
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+const openblas_zlaswp_dispatch_t openblas_zlaswp_dispatchTS = {
+#ifndef NO_LAPACK
+  .zlaswp_ncopy = zlaswp_ncopyTS,
+#else
+  .zlaswp_ncopy = NULL,
+#endif
+};
 #endif
 
 #ifdef EXPRECISION
-
-  .xgemm_p = 0,
-  .xgemm_q = 0,
-  .xgemm_r = 0,
-  .xgemm_unroll_m = XGEMM_DEFAULT_UNROLL_M,
-  .xgemm_unroll_n = XGEMM_DEFAULT_UNROLL_N,
-  .xgemm_unroll_mn = MAX(XGEMM_DEFAULT_UNROLL_M, XGEMM_DEFAULT_UNROLL_N),
-
+const openblas_xamax_dispatch_t openblas_xamax_dispatchTS = {
   .xamax_k = xamax_kTS,
-  .xamin_k = xamin_kTS,
-  .ixamax_k = ixamax_kTS,
-  .ixamin_k = ixamin_kTS,
-  .xnrm2_k = xnrm2_kTS,
-  .xasum_k = xasum_kTS,
-  .xsum_k = xsum_kTS,
-  .xcopy_k = xcopy_kTS,
-  .xdotu_k = xdotu_kTS,
-  .xdotc_k = xdotc_kTS,
-  .xqrot_k = xqrot_kTS,
-  .xaxpy_k = xaxpy_kTS,
-  .xaxpyc_k = xaxpyc_kTS,
-  .xscal_k = xscal_kTS,
-  .xswap_k = xswap_kTS,
+};
+#endif
 
+#ifdef EXPRECISION
+const openblas_xamin_dispatch_t openblas_xamin_dispatchTS = {
+  .xamin_k = xamin_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_ixamax_dispatch_t openblas_ixamax_dispatchTS = {
+  .ixamax_k = ixamax_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_ixamin_dispatch_t openblas_ixamin_dispatchTS = {
+  .ixamin_k = ixamin_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xnrm2_dispatch_t openblas_xnrm2_dispatchTS = {
+  .xnrm2_k = xnrm2_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xasum_dispatch_t openblas_xasum_dispatchTS = {
+  .xasum_k = xasum_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xsum_dispatch_t openblas_xsum_dispatchTS = {
+  .xsum_k = xsum_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xcopy_dispatch_t openblas_xcopy_dispatchTS = {
+  .xcopy_k = xcopy_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xdotu_dispatch_t openblas_xdotu_dispatchTS = {
+  .xdotu_k = xdotu_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xdotc_dispatch_t openblas_xdotc_dispatchTS = {
+  .xdotc_k = xdotc_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xqrot_dispatch_t openblas_xqrot_dispatchTS = {
+  .xqrot_k = xqrot_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xaxpy_dispatch_t openblas_xaxpy_dispatchTS = {
+  .xaxpy_k = xaxpy_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xaxpyc_dispatch_t openblas_xaxpyc_dispatchTS = {
+  .xaxpyc_k = xaxpyc_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xscal_dispatch_t openblas_xscal_dispatchTS = {
+  .xscal_k = xscal_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xswap_dispatch_t openblas_xswap_dispatchTS = {
+  .xswap_k = xswap_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xgemv_dispatch_t openblas_xgemv_dispatchTS = {
   .xgemv_n = xgemv_nTS,
   .xgemv_t = xgemv_tTS,
   .xgemv_r = xgemv_rTS,
@@ -1478,23 +2400,56 @@ gotoblas_t TABLE_NAME = {
   .xgemv_u = xgemv_uTS,
   .xgemv_s = xgemv_sTS,
   .xgemv_d = xgemv_dTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xgeru_dispatch_t openblas_xgeru_dispatchTS = {
   .xgeru_k = xgeru_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xgerc_dispatch_t openblas_xgerc_dispatchTS = {
   .xgerc_k = xgerc_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xgerv_dispatch_t openblas_xgerv_dispatchTS = {
   .xgerv_k = xgerv_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xgerd_dispatch_t openblas_xgerd_dispatchTS = {
   .xgerd_k = xgerd_kTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xsymv_dispatch_t openblas_xsymv_dispatchTS = {
   .xsymv_L = xsymv_LTS,
   .xsymv_U = xsymv_UTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xhemv_dispatch_t openblas_xhemv_dispatchTS = {
   .xhemv_L = xhemv_LTS,
   .xhemv_U = xhemv_UTS,
   .xhemv_M = xhemv_MTS,
   .xhemv_V = xhemv_VTS,
+};
+#endif
 
+#ifdef EXPRECISION
+const openblas_xgemm_dispatch_t openblas_xgemm_dispatchTS = {
   .xgemm_kernel_n = xgemm_kernel_nTS,
   .xgemm_kernel_l = xgemm_kernel_lTS,
   .xgemm_kernel_r = xgemm_kernel_rTS,
   .xgemm_kernel_b = xgemm_kernel_bTS,
   .xgemm_beta = xgemm_betaTS,
-
 #if XGEMM_DEFAULT_UNROLL_M != XGEMM_DEFAULT_UNROLL_N
   .xgemm_incopy = xgemm_incopyTS,
   .xgemm_itcopy = xgemm_itcopyTS,
@@ -1504,7 +2459,11 @@ gotoblas_t TABLE_NAME = {
 #endif
   .xgemm_oncopy = xgemm_oncopyTS,
   .xgemm_otcopy = xgemm_otcopyTS,
+};
+#endif
 
+#ifdef EXPRECISION
+const openblas_xtrsm_dispatch_t openblas_xtrsm_dispatchTS = {
   .xtrsm_kernel_LN = xtrsm_kernel_LNTS,
   .xtrsm_kernel_LT = xtrsm_kernel_LTTS,
   .xtrsm_kernel_LR = xtrsm_kernel_LRTS,
@@ -1513,7 +2472,6 @@ gotoblas_t TABLE_NAME = {
   .xtrsm_kernel_RT = xtrsm_kernel_RTTS,
   .xtrsm_kernel_RR = xtrsm_kernel_RRTS,
   .xtrsm_kernel_RC = xtrsm_kernel_RCTS,
-
 #if XGEMM_DEFAULT_UNROLL_M != XGEMM_DEFAULT_UNROLL_N
   .xtrsm_iunucopy = xtrsm_iunucopyTS,
   .xtrsm_iunncopy = xtrsm_iunncopyTS,
@@ -1541,7 +2499,11 @@ gotoblas_t TABLE_NAME = {
   .xtrsm_olnncopy = xtrsm_olnncopyTS,
   .xtrsm_oltucopy = xtrsm_oltucopyTS,
   .xtrsm_oltncopy = xtrsm_oltncopyTS,
+};
+#endif
 
+#ifdef EXPRECISION
+const openblas_xtrmm_dispatch_t openblas_xtrmm_dispatchTS = {
   .xtrmm_kernel_RN = xtrmm_kernel_RNTS,
   .xtrmm_kernel_RT = xtrmm_kernel_RTTS,
   .xtrmm_kernel_RR = xtrmm_kernel_RRTS,
@@ -1550,7 +2512,6 @@ gotoblas_t TABLE_NAME = {
   .xtrmm_kernel_LT = xtrmm_kernel_LTTS,
   .xtrmm_kernel_LR = xtrmm_kernel_LRTS,
   .xtrmm_kernel_LC = xtrmm_kernel_LCTS,
-
 #if XGEMM_DEFAULT_UNROLL_M != XGEMM_DEFAULT_UNROLL_N
   .xtrmm_iunucopy = xtrmm_iunucopyTS,
   .xtrmm_iunncopy = xtrmm_iunncopyTS,
@@ -1578,7 +2539,11 @@ gotoblas_t TABLE_NAME = {
   .xtrmm_olnncopy = xtrmm_olnncopyTS,
   .xtrmm_oltucopy = xtrmm_oltucopyTS,
   .xtrmm_oltncopy = xtrmm_oltncopyTS,
+};
+#endif
 
+#ifdef EXPRECISION
+const openblas_xsymm_dispatch_t openblas_xsymm_dispatchTS = {
 #if XGEMM_DEFAULT_UNROLL_M != XGEMM_DEFAULT_UNROLL_N
   .xsymm_iutcopy = xsymm_iutcopyTS,
   .xsymm_iltcopy = xsymm_iltcopyTS,
@@ -1588,6 +2553,11 @@ gotoblas_t TABLE_NAME = {
 #endif
   .xsymm_outcopy = xsymm_outcopyTS,
   .xsymm_oltcopy = xsymm_oltcopyTS,
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xhemm_dispatch_t openblas_xhemm_dispatchTS = {
 #if XGEMM_DEFAULT_UNROLL_M != XGEMM_DEFAULT_UNROLL_N
   .xhemm_iutcopy = xhemm_iutcopyTS,
   .xhemm_iltcopy = xhemm_iltcopyTS,
@@ -1597,17 +2567,13 @@ gotoblas_t TABLE_NAME = {
 #endif
   .xhemm_outcopy = xhemm_outcopyTS,
   .xhemm_oltcopy = xhemm_oltcopyTS,
+};
+#endif
 
-  .xgemm3m_p = 0,
-  .xgemm3m_q = 0,
-  .xgemm3m_r = 0,
+#ifdef EXPRECISION
+const openblas_xgemm3m_dispatch_t openblas_xgemm3m_dispatchTS = {
 #if (USE_GEMM3M)
-  .xgemm3m_unroll_m = QGEMM_DEFAULT_UNROLL_M,
-  .xgemm3m_unroll_n = QGEMM_DEFAULT_UNROLL_N,
-  .xgemm3m_unroll_mn = MAX(QGEMM_DEFAULT_UNROLL_M, QGEMM_DEFAULT_UNROLL_N),
-
   .xgemm3m_kernel = xgemm3m_kernelTS,
-
   .xgemm3m_incopyb = xgemm3m_incopybTS,
   .xgemm3m_incopyr = xgemm3m_incopyrTS,
   .xgemm3m_incopyi = xgemm3m_incopyiTS,
@@ -1620,40 +2586,8 @@ gotoblas_t TABLE_NAME = {
   .xgemm3m_otcopyb = xgemm3m_otcopybTS,
   .xgemm3m_otcopyr = xgemm3m_otcopyrTS,
   .xgemm3m_otcopyi = xgemm3m_otcopyiTS,
-
-  .xsymm3m_iucopyb = xsymm3m_iucopybTS,
-  .xsymm3m_ilcopyb = xsymm3m_ilcopybTS,
-  .xsymm3m_iucopyr = xsymm3m_iucopyrTS,
-  .xsymm3m_ilcopyr = xsymm3m_ilcopyrTS,
-  .xsymm3m_iucopyi = xsymm3m_iucopyiTS,
-  .xsymm3m_ilcopyi = xsymm3m_ilcopyiTS,
-  .xsymm3m_oucopyb = xsymm3m_oucopybTS,
-  .xsymm3m_olcopyb = xsymm3m_olcopybTS,
-  .xsymm3m_oucopyr = xsymm3m_oucopyrTS,
-  .xsymm3m_olcopyr = xsymm3m_olcopyrTS,
-  .xsymm3m_oucopyi = xsymm3m_oucopyiTS,
-  .xsymm3m_olcopyi = xsymm3m_olcopyiTS,
-
-  .xhemm3m_iucopyb = xhemm3m_iucopybTS,
-  .xhemm3m_ilcopyb = xhemm3m_ilcopybTS,
-  .xhemm3m_iucopyr = xhemm3m_iucopyrTS,
-  .xhemm3m_ilcopyr = xhemm3m_ilcopyrTS,
-  .xhemm3m_iucopyi = xhemm3m_iucopyiTS,
-  .xhemm3m_ilcopyi = xhemm3m_ilcopyiTS,
-
-  .xhemm3m_oucopyb = xhemm3m_oucopybTS,
-  .xhemm3m_olcopyb = xhemm3m_olcopybTS,
-  .xhemm3m_oucopyr = xhemm3m_oucopyrTS,
-  .xhemm3m_olcopyr = xhemm3m_olcopyrTS,
-  .xhemm3m_oucopyi = xhemm3m_oucopyiTS,
-  .xhemm3m_olcopyi = xhemm3m_olcopyiTS,
 #else
-  .xgemm3m_unroll_m = 0,
-  .xgemm3m_unroll_n = 0,
-  .xgemm3m_unroll_mn = 0,
-
   .xgemm3m_kernel = NULL,
-
   .xgemm3m_incopyb = NULL,
   .xgemm3m_incopyr = NULL,
   .xgemm3m_incopyi = NULL,
@@ -1666,7 +2600,26 @@ gotoblas_t TABLE_NAME = {
   .xgemm3m_otcopyb = NULL,
   .xgemm3m_otcopyr = NULL,
   .xgemm3m_otcopyi = NULL,
+#endif
+};
+#endif
 
+#ifdef EXPRECISION
+const openblas_xsymm3m_dispatch_t openblas_xsymm3m_dispatchTS = {
+#if (USE_GEMM3M)
+  .xsymm3m_iucopyb = xsymm3m_iucopybTS,
+  .xsymm3m_ilcopyb = xsymm3m_ilcopybTS,
+  .xsymm3m_iucopyr = xsymm3m_iucopyrTS,
+  .xsymm3m_ilcopyr = xsymm3m_ilcopyrTS,
+  .xsymm3m_iucopyi = xsymm3m_iucopyiTS,
+  .xsymm3m_ilcopyi = xsymm3m_ilcopyiTS,
+  .xsymm3m_oucopyb = xsymm3m_oucopybTS,
+  .xsymm3m_olcopyb = xsymm3m_olcopybTS,
+  .xsymm3m_oucopyr = xsymm3m_oucopyrTS,
+  .xsymm3m_olcopyr = xsymm3m_olcopyrTS,
+  .xsymm3m_oucopyi = xsymm3m_oucopyiTS,
+  .xsymm3m_olcopyi = xsymm3m_olcopyiTS,
+#else
   .xsymm3m_iucopyb = NULL,
   .xsymm3m_ilcopyb = NULL,
   .xsymm3m_iucopyr = NULL,
@@ -1679,14 +2632,32 @@ gotoblas_t TABLE_NAME = {
   .xsymm3m_olcopyr = NULL,
   .xsymm3m_oucopyi = NULL,
   .xsymm3m_olcopyi = NULL,
+#endif
+};
+#endif
 
+#ifdef EXPRECISION
+const openblas_xhemm3m_dispatch_t openblas_xhemm3m_dispatchTS = {
+#if (USE_GEMM3M)
+  .xhemm3m_iucopyb = xhemm3m_iucopybTS,
+  .xhemm3m_ilcopyb = xhemm3m_ilcopybTS,
+  .xhemm3m_iucopyr = xhemm3m_iucopyrTS,
+  .xhemm3m_ilcopyr = xhemm3m_ilcopyrTS,
+  .xhemm3m_iucopyi = xhemm3m_iucopyiTS,
+  .xhemm3m_ilcopyi = xhemm3m_ilcopyiTS,
+  .xhemm3m_oucopyb = xhemm3m_oucopybTS,
+  .xhemm3m_olcopyb = xhemm3m_olcopybTS,
+  .xhemm3m_oucopyr = xhemm3m_oucopyrTS,
+  .xhemm3m_olcopyr = xhemm3m_olcopyrTS,
+  .xhemm3m_oucopyi = xhemm3m_oucopyiTS,
+  .xhemm3m_olcopyi = xhemm3m_olcopyiTS,
+#else
   .xhemm3m_iucopyb = NULL,
   .xhemm3m_ilcopyb = NULL,
   .xhemm3m_iucopyr = NULL,
   .xhemm3m_ilcopyr = NULL,
   .xhemm3m_iucopyi = NULL,
   .xhemm3m_ilcopyi = NULL,
-
   .xhemm3m_oucopyb = NULL,
   .xhemm3m_olcopyb = NULL,
   .xhemm3m_oucopyr = NULL,
@@ -1694,48 +2665,73 @@ gotoblas_t TABLE_NAME = {
   .xhemm3m_oucopyi = NULL,
   .xhemm3m_olcopyi = NULL,
 #endif
+};
+#endif
 
+#ifdef EXPRECISION
+const openblas_xneg_dispatch_t openblas_xneg_dispatchTS = {
 #ifndef NO_LAPACK
   .xneg_tcopy = xneg_tcopyTS,
-  .xlaswp_ncopy = xlaswp_ncopyTS,
 #else
   .xneg_tcopy = NULL,
+#endif
+};
+#endif
+
+#ifdef EXPRECISION
+const openblas_xlaswp_dispatch_t openblas_xlaswp_dispatchTS = {
+#ifndef NO_LAPACK
+  .xlaswp_ncopy = xlaswp_ncopyTS,
+#else
   .xlaswp_ncopy = NULL,
 #endif
-
+};
 #endif
 
-  .init = init_parameter,
-
-  .snum_opt = SNUMOPT,
-  .dnum_opt = DNUMOPT,
-  .qnum_opt = QNUMOPT,
-#if BUILD_SINGLE == 1
+#if (BUILD_SINGLE==1)
+const openblas_saxpby_dispatch_t openblas_saxpby_dispatchTS = {
   .saxpby_k = saxpby_kTS,
-#endif
-#if BUILD_DOUBLE  == 1
-  .daxpby_k = daxpby_kTS,
-#endif
-#if BUILD_COMPLEX == 1
-  .caxpby_k = caxpby_kTS,
-#endif
-#if BUILD_COMPLEX16== 1
-  .zaxpby_k = zaxpby_kTS,
+};
 #endif
 
-#if BUILD_SINGLE == 1
+#if (BUILD_DOUBLE==1)
+const openblas_daxpby_dispatch_t openblas_daxpby_dispatchTS = {
+  .daxpby_k = daxpby_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_caxpby_dispatch_t openblas_caxpby_dispatchTS = {
+  .caxpby_k = caxpby_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16==1)
+const openblas_zaxpby_dispatch_t openblas_zaxpby_dispatchTS = {
+  .zaxpby_k = zaxpby_kTS,
+};
+#endif
+
+#if (BUILD_SINGLE==1)
+const openblas_somatcopy_dispatch_t openblas_somatcopy_dispatchTS = {
   .somatcopy_k_cn = somatcopy_k_cnTS,
   .somatcopy_k_ct = somatcopy_k_ctTS,
   .somatcopy_k_rn = somatcopy_k_rnTS,
   .somatcopy_k_rt = somatcopy_k_rtTS,
+};
 #endif
-#if BUILD_DOUBLE== 1
+
+#if (BUILD_DOUBLE==1)
+const openblas_domatcopy_dispatch_t openblas_domatcopy_dispatchTS = {
   .domatcopy_k_cn = domatcopy_k_cnTS,
   .domatcopy_k_ct = domatcopy_k_ctTS,
   .domatcopy_k_rn = domatcopy_k_rnTS,
   .domatcopy_k_rt = domatcopy_k_rtTS,
+};
 #endif
-#if BUILD_COMPLEX == 1
+
+#if (BUILD_COMPLEX==1)
+const openblas_comatcopy_dispatch_t openblas_comatcopy_dispatchTS = {
   .comatcopy_k_cn = comatcopy_k_cnTS,
   .comatcopy_k_ct = comatcopy_k_ctTS,
   .comatcopy_k_rn = comatcopy_k_rnTS,
@@ -1744,8 +2740,11 @@ gotoblas_t TABLE_NAME = {
   .comatcopy_k_ctc = comatcopy_k_ctcTS,
   .comatcopy_k_rnc = comatcopy_k_rncTS,
   .comatcopy_k_rtc = comatcopy_k_rtcTS,
+};
 #endif
-#if BUILD_COMPLEX16 == 1
+
+#if (BUILD_COMPLEX16==1)
+const openblas_zomatcopy_dispatch_t openblas_zomatcopy_dispatchTS = {
   .zomatcopy_k_cn = zomatcopy_k_cnTS,
   .zomatcopy_k_ct = zomatcopy_k_ctTS,
   .zomatcopy_k_rn = zomatcopy_k_rnTS,
@@ -1754,21 +2753,29 @@ gotoblas_t TABLE_NAME = {
   .zomatcopy_k_ctc = zomatcopy_k_ctcTS,
   .zomatcopy_k_rnc = zomatcopy_k_rncTS,
   .zomatcopy_k_rtc = zomatcopy_k_rtcTS,
+};
 #endif
 
-#if BUILD_SINGLE == 1
+#if (BUILD_SINGLE==1)
+const openblas_simatcopy_dispatch_t openblas_simatcopy_dispatchTS = {
   .simatcopy_k_cn = simatcopy_k_cnTS,
   .simatcopy_k_ct = simatcopy_k_ctTS,
   .simatcopy_k_rn = simatcopy_k_rnTS,
   .simatcopy_k_rt = simatcopy_k_rtTS,
+};
 #endif
-#if BUILD_DOUBLE== 1
+
+#if (BUILD_DOUBLE==1)
+const openblas_dimatcopy_dispatch_t openblas_dimatcopy_dispatchTS = {
   .dimatcopy_k_cn = dimatcopy_k_cnTS,
   .dimatcopy_k_ct = dimatcopy_k_ctTS,
   .dimatcopy_k_rn = dimatcopy_k_rnTS,
   .dimatcopy_k_rt = dimatcopy_k_rtTS,
+};
 #endif
-#if BUILD_COMPLEX== 1
+
+#if (BUILD_COMPLEX==1)
+const openblas_cimatcopy_dispatch_t openblas_cimatcopy_dispatchTS = {
   .cimatcopy_k_cn = cimatcopy_k_cnTS,
   .cimatcopy_k_ct = cimatcopy_k_ctTS,
   .cimatcopy_k_rn = cimatcopy_k_rnTS,
@@ -1777,8 +2784,11 @@ gotoblas_t TABLE_NAME = {
   .cimatcopy_k_ctc = cimatcopy_k_ctcTS,
   .cimatcopy_k_rnc = cimatcopy_k_rncTS,
   .cimatcopy_k_rtc = cimatcopy_k_rtcTS,
+};
 #endif
-#if BUILD_COMPLEX16==1
+
+#if (BUILD_COMPLEX16==1)
+const openblas_zimatcopy_dispatch_t openblas_zimatcopy_dispatchTS = {
   .zimatcopy_k_cn = zimatcopy_k_cnTS,
   .zimatcopy_k_ct = zimatcopy_k_ctTS,
   .zimatcopy_k_rn = zimatcopy_k_rnTS,
@@ -1787,21 +2797,32 @@ gotoblas_t TABLE_NAME = {
   .zimatcopy_k_ctc = zimatcopy_k_ctcTS,
   .zimatcopy_k_rnc = zimatcopy_k_rncTS,
   .zimatcopy_k_rtc = zimatcopy_k_rtcTS,
+};
 #endif
 
-#if BUILD_SINGLE == 1
+#if (BUILD_SINGLE==1)
+const openblas_sgeadd_dispatch_t openblas_sgeadd_dispatchTS = {
   .sgeadd_k = sgeadd_kTS,
-#endif
-#if BUILD_DOUBLE==1
-  .dgeadd_k = dgeadd_kTS,
-#endif
-#if BUILD_COMPLEX==1
-  .cgeadd_k = cgeadd_kTS,
-#endif
-#if BUILD_COMPLEX16==1
-  .zgeadd_k = zgeadd_kTS,
-#endif
 };
+#endif
+
+#if (BUILD_DOUBLE==1)
+const openblas_dgeadd_dispatch_t openblas_dgeadd_dispatchTS = {
+  .dgeadd_k = dgeadd_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX==1)
+const openblas_cgeadd_dispatch_t openblas_cgeadd_dispatchTS = {
+  .cgeadd_k = cgeadd_kTS,
+};
+#endif
+
+#if (BUILD_COMPLEX16==1)
+const openblas_zgeadd_dispatch_t openblas_zgeadd_dispatchTS = {
+  .zgeadd_k = zgeadd_kTS,
+};
+#endif
 
 #if (ARCH_ARM64)
 static void init_parameter(void) {
