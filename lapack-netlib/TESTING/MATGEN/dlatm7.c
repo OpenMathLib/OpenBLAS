@@ -365,7 +365,7 @@ static double dpow_ui(double x, integer n) {
     integer i__;
     doublereal alpha;
     extern doublereal dlaran_(integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern void dlarnv_(
 	    integer *, integer *, integer *, doublereal *);
 

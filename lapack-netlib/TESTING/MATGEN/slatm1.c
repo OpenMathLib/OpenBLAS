@@ -377,7 +377,7 @@ static float spow_ui(float x, integer n) {
     real temp;
     integer i__;
     real alpha;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern real slaran_(integer *);
     extern /* Subroutine */ void slarnv_(integer *, integer *, integer *, real 
 	    *);

@@ -432,7 +432,7 @@ t by U and the right by UC>       SIDE = 'T'   Multiply A on the left by U and t
     integer itype, nxfrm;
     doublereal xnorm;
     extern doublereal dznrm2_(integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     doublereal factor;
     extern /* Subroutine */ void zlacgv_(integer *, doublecomplex *, integer *)
 	    ;

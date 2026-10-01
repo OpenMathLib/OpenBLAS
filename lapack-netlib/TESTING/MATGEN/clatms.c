@@ -628,7 +628,7 @@ static logical c_false = FALSE_;
     extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *), clartg_(complex *, 
 	    complex *, real *, complex *, complex *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     extern void clagsy_(integer *, integer *, real *, complex *, 
 	    integer *, integer *, complex *, integer *);
     extern real slarnd_(integer *, integer *);

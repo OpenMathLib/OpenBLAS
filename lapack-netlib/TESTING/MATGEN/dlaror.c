@@ -401,7 +401,7 @@ static integer c__1 = 1;
     extern doublereal dlarnd_(integer *, integer *);
     extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *); 
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     doublereal factor, xnorms;
 
 
