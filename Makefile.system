@@ -867,6 +867,15 @@ override DYNAMIC_ARCH=
 endif
 endif
 
+# dyn_cores.h tells common_param.h which cores this DYNAMIC_ARCH build has.
+ifeq ($(DYNAMIC_ARCH), 1)
+ifndef OPENBLAS_DYN_CORES
+export OPENBLAS_DYN_CORES := $(sort $(DYNAMIC_CORE))
+HASH := \#
+DUMMY := $(shell echo '$(HASH)define OPENBLAS_CORE_LIST(X, arg) $(foreach c,$(OPENBLAS_DYN_CORES),X($(c), arg))' > $(TOPDIR)/dyn_cores.h)
+endif
+endif
+
 ifeq ($(ARCH), ia64)
 NO_BINARY_MODE	= 1
 BINARY_DEFINED	= 1
