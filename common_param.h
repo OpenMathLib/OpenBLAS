@@ -2489,10 +2489,6 @@ typedef struct {
 extern const openblas_zgeadd_dispatch_t *const openblas_zgeadd_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
-#define FUNC_OFFSET(func)	(size_t)(&((gotoblas_t *)NULL)->func)
-/* The address that FUNC_OFFSET(func) is an offset from. */
-#define FUNC_BASE(func)	((char *)gotoblas)
-
 #define DTB_ENTRIES  gotoblas -> dtb_entries
 #define GEMM_OFFSET_A	gotoblas -> offsetA
 #define GEMM_OFFSET_B	gotoblas -> offsetB
@@ -2630,7 +2626,6 @@ extern const openblas_zgeadd_dispatch_t *const openblas_zgeadd_dispatch[OPENBLAS
 
 #else
 
-#define FUNC_OFFSET(func)	(size_t)(func)
 #define OPENBLAS_DISPATCH_OFFSET(group, func)	(size_t)(func)
 
 #define DTB_ENTRIES  DTB_DEFAULT_ENTRIES
