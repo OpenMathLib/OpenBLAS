@@ -178,7 +178,7 @@ typedef struct Namelist Namelist;
 #define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
 #ifdef _MSC_VER
 #define c_div(c, a, b) {Cf(c)._Val[0] = (Cf(a)._Val[0]/Cf(b)._Val[0]); Cf(c)._Val[1]=(Cf(a)._Val[1]/Cf(b)._Val[1]);}
-#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/df(b)._Val[1]);}
+#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/Cd(b)._Val[1]);}
 #else
 #define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
 #define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
@@ -235,38 +235,18 @@ typedef struct Namelist Namelist;
 #define sig_die(s, kill) { exit(1); }
 #define s_stop(s, n) {exit(0);}
 #define myexit_() break;
-#define mycycle() continue;
-#define myceiling(w) {ceil(w)}
-#define myhuge(w) {HUGE_VAL}
-//#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
-#define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
+#define mycycle_() continue;
+#define myceiling_(w) {ceil(w)}
+#define myhuge_(w) {HUGE_VAL}
 
 
-/*      LOGICAL FUNCTION LSAME( CA, CB ) */
+/* > \brief \b SLAMCHTST */
 
-/*      CHARACTER          CA, CB */
+/*  =========== DOCUMENTATION =========== */
 
+/* Online html documentation available at */
+/*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \par Purpose: */
-/*  ============= */
-/* > */
-/* > \verbatim */
-/* > */
-/* > LSAME returns .TRUE. if CA is the same letter as CB regardless of */
-/* > case. */
-/* > \endverbatim */
-
-/*  Arguments: */
-/*  ========== */
-
-/* > \param[in] CA */
-/* > \verbatim */
-/* > \endverbatim */
-/* > */
-/* > \param[in] CB */
-/* > \verbatim */
-/* >          CA and CB specify the single characters to be compared. */
-/* > \endverbatim */
 
 /*  Authors: */
 /*  ======== */
@@ -278,90 +258,50 @@ typedef struct Namelist Namelist;
 
 /* > \date December 2016 */
 
-/* > \ingroup auxOTHERauxiliary */
+/* > \ingroup auxOTHERcomputational */
 
-/*  ===================================================================== */
-logical lsame_(char *ca, char *cb)
-{
-    /* System generated locals */
-    logical ret_val;
+/*  =====================================================================      PROGRAM SLAMCHTST */
 
-    /* Local variables */
-    integer inta, intb, zcode;
-
-
-/*  -- LAPACK auxiliary routine (version 3.7.0) -- */
+/*  -- LAPACK test routine (version 3.7.0) -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
 /*     December 2016 */
 
-
 /* ===================================================================== */
 
+/* Main program */ int main()
+{
+    /* System generated locals */
+    real r__1;
 
-/*     Test if the characters are equal */
+    /* Local variables */
+    real t, rnd, eps, base, emin, prec, emax, rmin, rmax, sfmin;
+    extern real slamch_(char *);
 
-    ret_val = *(unsigned char *)ca == *(unsigned char *)cb;
-    if (ret_val) {
-	return ret_val;
-    }
+    eps = slamch_("Epsilon");
+    sfmin = slamch_("Safe minimum");
+    base = slamch_("Base");
+    prec = slamch_("Precision");
+    t = slamch_("Number of digits in mantissa");
+    rnd = slamch_("Rounding mode");
+    emin = slamch_("Minimum exponent");
+    rmin = slamch_("Underflow threshold");
+    emax = slamch_("Largest exponent");
+    rmax = slamch_("Overflow threshold");
+    r__1 = 1/sfmin;
 
-/*     Now test for equivalence if both characters are alphabetic. */
+    fprintf(stdout, " Epsilon                      = %g\n", eps);
+    fprintf(stdout, " Safe minimum                 = %g\n", sfmin);
+    fprintf(stdout, " Base                         = %g\n", base);
+    fprintf(stdout, " Precision                    = %g\n", prec);
+    fprintf(stdout, " Number of digits in mantissa = %g\n", t);
+    fprintf(stdout, " Rounding mode                = %g\n", rnd);
+    fprintf(stdout, " Minimum exponent             = %g\n", emin);
+    fprintf(stdout, " Underflow threshold          = %g\n", rmin);
+    fprintf(stdout, " Largest exponent             = %g\n", emax);
+    fprintf(stdout, " Overflow threshold           = %g\n", rmax);
+    fprintf(stdout, " Reciprocal of safe minimum   = %g\n", r__1);
 
-    zcode = 'Z';
-
-/*     Use 'Z' rather than 'A' so that ASCII can be detected on Prime */
-/*     machines, on which ICHAR returns a value with bit 8 set. */
-/*     ICHAR('A') on Prime machines returns 193 which is the same as */
-/*     ICHAR('A') on an EBCDIC machine. */
-
-    inta = *(unsigned char *)ca;
-    intb = *(unsigned char *)cb;
-
-    if (zcode == 90 || zcode == 122) {
-
-/*        ASCII is assumed - ZCODE is the ASCII code of either lower or */
-/*        upper case 'Z'. */
-
-	if (inta >= 97 && inta <= 122) {
-	    inta += -32;
-	}
-	if (intb >= 97 && intb <= 122) {
-	    intb += -32;
-	}
-
-    } else if (zcode == 233 || zcode == 169) {
-
-/*        EBCDIC is assumed - ZCODE is the EBCDIC code of either lower or */
-/*        upper case 'Z'. */
-
-	if ((inta >= 129 && inta <= 137) || (inta >= 145 && inta <= 153) || (inta 
-		>= 162 && inta <= 169)) {
-	    inta += 64;
-	}
-	if ((intb >= 129 && intb <= 137) || (intb >= 145 && intb <= 153) || (intb 
-		>= 162 && intb <= 169)) {
-	    intb += 64;
-	}
-
-    } else if (zcode == 218 || zcode == 250) {
-
-/*        ASCII is assumed, on Prime machines - ZCODE is the ASCII code */
-/*        plus 128 of either lower or upper case 'Z'. */
-
-	if (inta >= 225 && inta <= 250) {
-	    inta += -32;
-	}
-	if (intb >= 225 && intb <= 250) {
-	    intb += -32;
-	}
-    }
-    ret_val = inta == intb;
-
-/*     RETURN */
-
-/*     End of LSAME */
-
-    return ret_val;
-} /* lsame_ */
+    return 0;
+} /* MAIN__ */
 

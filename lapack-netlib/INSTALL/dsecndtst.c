@@ -178,7 +178,7 @@ typedef struct Namelist Namelist;
 #define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
 #ifdef _MSC_VER
 #define c_div(c, a, b) {Cf(c)._Val[0] = (Cf(a)._Val[0]/Cf(b)._Val[0]); Cf(c)._Val[1]=(Cf(a)._Val[1]/Cf(b)._Val[1]);}
-#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/df(b)._Val[1]);}
+#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/Cd(b)._Val[1]);}
 #else
 #define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
 #define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
@@ -235,38 +235,26 @@ typedef struct Namelist Namelist;
 #define sig_die(s, kill) { exit(1); }
 #define s_stop(s, n) {exit(0);}
 #define myexit_() break;
-#define mycycle() continue;
-#define myceiling(w) {ceil(w)}
-#define myhuge(w) {HUGE_VAL}
-//#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
-#define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
+#define mycycle_() continue;
+#define myceiling_(w) {ceil(w)}
+#define myhuge_(w) {HUGE_VAL}
 
+/* Table of constant values */
 
-/*      LOGICAL FUNCTION LSAME( CA, CB ) */
+//static integer c__1 = 1;
+static integer c__1000 = 1000;
 
-/*      CHARACTER          CA, CB */
+/* > \brief \b DSECNDTST */
 
+/*  =========== DOCUMENTATION =========== */
 
-/* > \par Purpose: */
-/*  ============= */
-/* > */
-/* > \verbatim */
-/* > */
-/* > LSAME returns .TRUE. if CA is the same letter as CB regardless of */
-/* > case. */
-/* > \endverbatim */
+/* Online html documentation available at */
+/*            http://www.netlib.org/lapack/explore-html/ */
 
-/*  Arguments: */
-/*  ========== */
+/*  Definition: */
+/*  =========== */
 
-/* > \param[in] CA */
-/* > \verbatim */
-/* > \endverbatim */
-/* > */
-/* > \param[in] CB */
-/* > \verbatim */
-/* >          CA and CB specify the single characters to be compared. */
-/* > \endverbatim */
+/*      PROGRAM DSECNDTST */
 
 /*  Authors: */
 /*  ======== */
@@ -276,92 +264,108 @@ typedef struct Namelist Namelist;
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
+/* > \date November 2017 */
 
 /* > \ingroup auxOTHERauxiliary */
 
-/*  ===================================================================== */
-logical lsame_(char *ca, char *cb)
-{
-    /* System generated locals */
-    logical ret_val;
+/*  =====================================================================      PROGRAM DSECNDTST */
 
-    /* Local variables */
-    integer inta, intb, zcode;
+/*  -- LAPACK test routine (version 3.8.0) -- */
 
-
-/*  -- LAPACK auxiliary routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine (version 3.8.0) -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
-
+/*     November 2017 */
 
 /* ===================================================================== */
 
+/* Main program */ int main()
+{
 
-/*     Test if the characters are equal */
+    /* System generated locals */
+    doublereal d__1;
 
-    ret_val = *(unsigned char *)ca == *(unsigned char *)cb;
-    if (ret_val) {
-	return ret_val;
+    /* Local variables */
+    integer i__, j;
+    doublereal x[1000], y[1000], t1, t2, avg, alpha, total;
+    extern /* Subroutine */ int mysub_(integer *, doublereal *, doublereal *);
+    extern doublereal dsecnd_(void);
+    doublereal tnosec;
+
+    total = 1e8;
+
+/*     Initialize X and Y */
+
+    for (i__ = 1; i__ <= 1000; ++i__) {
+	x[i__ - 1] = 1. / (doublereal) i__;
+	y[i__ - 1] = (doublereal) (1000 - i__) / 1e3;
+/* L10: */
+    }
+    alpha = .315;
+
+/*     Time TOTAL SAXPY operations */
+
+    t1 = dsecnd_();
+    for (j = 1; j <= 50000; ++j) {
+	for (i__ = 1; i__ <= 1000; ++i__) {
+	    y[i__ - 1] += alpha * x[i__ - 1];
+/* L20: */
+	}
+	alpha = -alpha;
+/* L30: */
+    }
+    t2 = dsecnd_();
+    tnosec = t2 - t1;
+    fprintf(stdout," Time for %g10.3 DAXPY ops = %g10.3 seconds\n",total,tnosec);
+    if (tnosec > 0.f) {
+	d__1 = total / 1e6 / tnosec;
+        fprintf(stdout,"  DAXPY performance rate        = %g10.3 mflops\n",d__1);
+    } else {
+        fprintf(stdout, " *** Warning:  Time for operations was less or equal than zero => timing in TESTING might be dubious\n");
     }
 
-/*     Now test for equivalence if both characters are alphabetic. */
+/*     Time TOTAL DAXPY operations with DSECND in the outer loop */
 
-    zcode = 'Z';
-
-/*     Use 'Z' rather than 'A' so that ASCII can be detected on Prime */
-/*     machines, on which ICHAR returns a value with bit 8 set. */
-/*     ICHAR('A') on Prime machines returns 193 which is the same as */
-/*     ICHAR('A') on an EBCDIC machine. */
-
-    inta = *(unsigned char *)ca;
-    intb = *(unsigned char *)cb;
-
-    if (zcode == 90 || zcode == 122) {
-
-/*        ASCII is assumed - ZCODE is the ASCII code of either lower or */
-/*        upper case 'Z'. */
-
-	if (inta >= 97 && inta <= 122) {
-	    inta += -32;
+    t1 = dsecnd_();
+    for (j = 1; j <= 50000; ++j) {
+	for (i__ = 1; i__ <= 1000; ++i__) {
+	    y[i__ - 1] += alpha * x[i__ - 1];
+/* L40: */
 	}
-	if (intb >= 97 && intb <= 122) {
-	    intb += -32;
-	}
-
-    } else if (zcode == 233 || zcode == 169) {
-
-/*        EBCDIC is assumed - ZCODE is the EBCDIC code of either lower or */
-/*        upper case 'Z'. */
-
-	if ((inta >= 129 && inta <= 137) || (inta >= 145 && inta <= 153) || (inta 
-		>= 162 && inta <= 169)) {
-	    inta += 64;
-	}
-	if ((intb >= 129 && intb <= 137) || (intb >= 145 && intb <= 153) || (intb 
-		>= 162 && intb <= 169)) {
-	    intb += 64;
-	}
-
-    } else if (zcode == 218 || zcode == 250) {
-
-/*        ASCII is assumed, on Prime machines - ZCODE is the ASCII code */
-/*        plus 128 of either lower or upper case 'Z'. */
-
-	if (inta >= 225 && inta <= 250) {
-	    inta += -32;
-	}
-	if (intb >= 225 && intb <= 250) {
-	    intb += -32;
-	}
+	alpha = -alpha;
+	t2 = dsecnd_();
+/* L50: */
     }
-    ret_val = inta == intb;
 
-/*     RETURN */
+/*     Compute the time used in milliseconds used by an average call */
+/*     to DSECND. */
 
-/*     End of LSAME */
+    d__1 = t2 - t1;
+    fprintf(stdout, " Including DSECND, time        = %g10.3 seconds\n",d__1);
+    avg = (t2 - t1 - tnosec) * 1e3 / 5e4;
+    if (avg > 0.f) {
+        fprintf(stdout, " Average time for DSECND       = %g10,3 milliseconds\n",avg);
+    }
 
-    return ret_val;
-} /* lsame_ */
+/*     Compute the equivalent number of floating point operations used */
+/*     by an average call to DSECND. */
+
+    if (avg > 0.f && tnosec > 0.f) {
+	d__1 = avg / 1000 * total / tnosec;
+        fprintf(stdout, " Equivalent floating point ops = %g10.3 ops\n",d__1);
+    }
+
+    mysub_(&c__1000, x, y);
+    return 0;
+} /* MAIN__ */
+
+/* Subroutine */ int mysub_(integer *n, doublereal *x, doublereal *y)
+{
+    /* Parameter adjustments */
+    --y;
+    --x;
+
+    /* Function Body */
+    return 0;
+} /* mysub_ */
 
