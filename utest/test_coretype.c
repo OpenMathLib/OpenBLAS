@@ -45,20 +45,63 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CHECK_SELECTED_NAME
 #endif
 
+static void host_cpuid(int leaf, int sub, int *eax, int *ebx, int *ecx, int *edx)
+{
+    __asm__ __volatile__("cpuid"
+                         : "=a"(*eax), "=b"(*ebx), "=c"(*ecx), "=d"(*edx)
+                         : "a"(leaf), "c"(sub));
+}
+
+/* The OS has enabled the register state bits in XCR0 selected by mask. */
+static int host_os_saves(int mask)
+{
+    int eax, ecx, edx, ebx;
+
+    host_cpuid(1, 0, &eax, &ebx, &ecx, &edx);
+    if ((ecx & (1 << 27)) == 0)
+        return 0;
+    __asm__ __volatile__(".byte 0x0f, 0x01, 0xd0"
+                         : "=a"(eax), "=d"(edx) : "c"(0));
+    return (eax & mask) == mask;
+}
+
+/* EBX of CPUID leaf 7, or 0 where the cpu has no such leaf. */
+static int host_leaf7_ebx(void)
+{
+    int eax, ebx, ecx, edx;
+
+    host_cpuid(0, 0, &eax, &ebx, &ecx, &edx);
+    if (eax < 7)
+        return 0;
+    host_cpuid(7, 0, &eax, &ebx, &ecx, &edx);
+    return ebx;
+}
+
 /* Forcing a core runs its initialisation, which is compiled for that
    core and can use instructions the host lacks, so names the host
-   cannot run are skipped. */
+   cannot run are skipped. The setparam objects of the three AVX512
+   cores contain BMI1 instructions (andn), the AVX2 and AVX ones none,
+   so the BMI1 flag is only needed for the first group. The feature
+   bits are read with cpuid here rather than with
+   __builtin_cpu_supports, which older compilers reject for these
+   names. */
 static int host_can_run(const char *name)
 {
+    int ebx7 = host_leaf7_ebx();
+    int avx, avx2;
+
+    avx = host_os_saves(0x6);
+    avx2 = avx && (ebx7 & (1 << 5)) != 0;
     if (!strcmp(name, "SkylakeX") || !strcmp(name, "Cooperlake") ||
         !strcmp(name, "SapphireRapids"))
-        return __builtin_cpu_supports("avx512f") && __builtin_cpu_supports("bmi");
+        return avx2 && host_os_saves(0xe6) && (ebx7 & (1 << 16)) != 0 &&
+               (ebx7 & (1U << 31)) != 0 && (ebx7 & (1 << 3)) != 0;
     if (!strcmp(name, "Haswell") || !strcmp(name, "Zen"))
-        return __builtin_cpu_supports("avx2") && __builtin_cpu_supports("bmi");
+        return avx2;
     if (!strcmp(name, "Sandybridge") || !strcmp(name, "Bulldozer") ||
         !strcmp(name, "Piledriver") || !strcmp(name, "Steamroller") ||
         !strcmp(name, "Excavator"))
-        return __builtin_cpu_supports("avx");
+        return avx;
     return 1;
 }
 
@@ -84,7 +127,6 @@ CTEST(coretype, force_by_name)
         return;
     }
     self[len] = '\0';
-    __builtin_cpu_init();
 
     for (i = 0; i < sizeof(names) / sizeof(names[0]); i++) {
         if (!host_can_run(names[i])) {
