@@ -1493,6 +1493,9 @@ endif
 
 ifeq ($(DYNAMIC_ARCH), 1)
 CCOMMON_OPT	+= -DDYNAMIC_ARCH
+ifeq ($(C_COMPILER), $(filter $(C_COMPILER),GCC LSB CLANG INTEL))
+CCOMMON_OPT	+= -ffunction-sections -fdata-sections
+endif
 endif
 
 ifeq ($(DYNAMIC_OLDER), 1)
