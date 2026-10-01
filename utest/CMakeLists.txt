@@ -20,6 +20,7 @@ else ()
     test_axpby.c
     test_gemv.c
     test_trmv.c
+    test_gemm.c
   )
 endif ()
 
