@@ -354,7 +354,7 @@ static doublereal c_b26 = 1.;
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     doublereal wa, wb, wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern void dlarnv_(
 	    integer *, integer *, integer *, doublereal *);
     doublereal tau;

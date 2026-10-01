@@ -357,7 +357,7 @@ static real c_b4 = 0.f;
 
     /* Local variables */
     integer i__, j, m, r__, ti, tm;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern void slaset_(
 	    char *, integer *, integer *, real *, real *, real *, integer *);
 

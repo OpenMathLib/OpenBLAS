@@ -395,7 +395,7 @@ static integer c__3 = 3;
     real alpha;
     complex ctemp;
     extern complex clarnd_(integer *, integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern real slaran_(integer *);
     extern /* Subroutine */ void clarnv_(integer *, integer *, integer *, 
 	    complex *);

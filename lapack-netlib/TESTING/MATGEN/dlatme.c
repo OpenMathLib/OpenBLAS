@@ -603,7 +603,7 @@ static doublereal c_b39 = 1.;
     extern doublereal dlaran_(integer *);
     extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *); 
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     extern void dlarnv_(integer *, integer *, 
 	    integer *, doublereal *);
     integer irsign, iupper;

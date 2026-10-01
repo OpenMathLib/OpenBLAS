@@ -404,7 +404,7 @@ static integer c__3 = 3;
     doublereal alpha;
     doublecomplex ctemp;
     extern doublereal dlaran_(integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     //extern /* Double Complex */ VOID zlarnd_(doublecomplex *, integer *, 
     extern doublecomplex zlarnd_(integer *, 
 	    integer *);
