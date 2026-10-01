@@ -1322,6 +1322,8 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
 extern gotoblas_t *gotoblas;
 
 #define FUNC_OFFSET(func)	(size_t)(&((gotoblas_t *)NULL)->func)
+/* The address that FUNC_OFFSET(func) is an offset from. */
+#define FUNC_BASE(func)	((char *)gotoblas)
 
 #define DTB_ENTRIES  gotoblas -> dtb_entries
 #define GEMM_OFFSET_A	gotoblas -> offsetA
