@@ -289,3 +289,6 @@ hheei <hheei@users.noreply.github.com>
 
 * Hugo Meiland <hugo@meiland.nl>
   * [2026-08-09] Add Cortex-A72 DGEMM 6x8 microkernel and blocking
+
+* Arthur031221 <levi74108520963@gmail.com>
+  * [2026-10-02] Fix complex scaling in strided batched GEMM.

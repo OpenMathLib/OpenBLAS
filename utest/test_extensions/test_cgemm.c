@@ -271,4 +271,22 @@ CTEST(cgemm, transa_conjnotransb)
 
 	ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
+
+#ifndef NO_CBLAS
+CTEST(cgemm, strided_batch_complex_scalars)
+{
+    float a[] = {1.0f, 2.0f};
+    float b[] = {3.0f, 4.0f};
+    float c[] = {5.0f, 6.0f};
+    float alpha[] = {2.0f, 3.0f};
+    float beta[] = {4.0f, -1.0f};
+
+    cblas_cgemm_batch_strided(CblasColMajor, CblasNoTrans, CblasNoTrans,
+                              1, 1, 1, alpha, a, 1, 2, b, 1, 2,
+                              beta, c, 1, 2, 1);
+
+    ASSERT_DBL_NEAR_TOL(-14.0, c[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(24.0, c[1], SINGLE_EPS);
+}
+#endif
 #endif
