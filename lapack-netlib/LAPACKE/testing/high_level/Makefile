@@ -2,10 +2,8 @@
 # The Makefile compiles c wrappers and testers for CBLAS.
 #
 
-TOPDIR = ../../../..
-include $(TOPDIR)/Makefile.system
-
-LIB = $(TOPDIR)/$(LIBNAME)
+TOPSRCDIR = ../../..
+include $(TOPSRCDIR)/make.inc
 
 ifeq ($(BUILD_SINGLE),1)
 SOURCESS = sgels.c  sgeqrf.c  sgetrf.c  sgetri.c  sgetrs.c  slange.c  smatgen.c  spotrf.c  spotrs.c
@@ -35,18 +33,17 @@ TESTSRCZ = lapacke_test.c lapacke_test_alloc.c lapacke_test_nan_sweep.c lapacke_
 all :: $(STARGET) $(DTARGET) $(CTARGET) $(ZTARGET)
 
 slapacke_high_level$(EXE):
-	$(CC) -I../../include $(SOURCESS) $(TESTSRCS) -o $@ $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -I../../include $(SOURCESS) $(TESTSRCS) -o $@ ../$(BLASLIB) $(EXTRALIB) $(CEXTRALIB)
 
 dlapacke_high_level$(EXE):
-	$(CC) -I../../include $(SOURCESD) $(TESTSRCD) -o $@ $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -I../../include $(SOURCESD) $(TESTSRCD) -o $@ ../$(BLASLIB) $(EXTRALIB) $(CEXTRALIB)
 
 clapacke_high_level$(EXE):
-	$(CC) -I../../include $(SOURCESC) $(TESTSRCC) -o $@ $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -I../../include $(SOURCESC) $(TESTSRCC) -o $@ ../$(BLASLIB) $(EXTRALIB) $(CEXTRALIB)
 
 zlapacke_high_level$(EXE):
-	$(CC) -I../../include $(SOURCESZ) $(TESTSRCZ) -o $@ $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -I../../include $(SOURCESZ) $(TESTSRCZ) -o $@ ../$(BLASLIB) $(EXTRALIB) $(CEXTRALIB)
 
 clean ::
 	rm -f *.o $(STARGET) $(DTARGET) $(CTARGET) $(ZTARGET)
 
-include $(TOPDIR)/Makefile.tail
