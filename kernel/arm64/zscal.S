@@ -188,22 +188,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	PROLOGUE
 	
-	b	zscal_begin
-data_ar:
+	b	L(zscal_begin)
+L(data_ar):
 	.word	0x3e44fae6
-data_ai:
+L(data_ai):
 	.word	0x3d320fa2
-data_xr:
+L(data_xr):
 	.word	0x3f4baff1
-data_xi:
+L(data_xi):
 	.word	0xbe8ef0bd
 
-zscal_begin:
+L(zscal_begin):
 
-	ldr	s20, data_ar
-	ldr	s21, data_ai
-	ldr	s22, data_xr
-	ldr	s23, data_xi
+	ldr	s20, L(data_ar)
+	ldr	s21, L(data_ai)
+	ldr	s22, L(data_xr)
+	ldr	s23, L(data_xi)
 	
 	fmul	s24, s22, s21
 	fmla	s24, s23, v20.s[0]

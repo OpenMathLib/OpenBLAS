@@ -79,20 +79,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ldr	d4, [X]
 #endif
 	fcmp	d4, REGZERO
-	beq	KERNEL_S1_NEXT
+	beq	L(KERNEL_S1_NEXT)
 	fabs	d4, d4
 	fcmp	SCALE, d4
-	bge	KERNEL_S1_SCALE_GE_X
+	bge	L(KERNEL_S1_SCALE_GE_X)
 	fdiv	d2, SCALE, d4
 	fmul	d2, d2, d2
 	fmul	d3, SSQ, d2
 	fadd	SSQ, REGONE, d3
 	fmov	SCALE, d4
-	b	KERNEL_S1_NEXT
-KERNEL_S1_SCALE_GE_X:
+	b	L(KERNEL_S1_NEXT)
+L(KERNEL_S1_SCALE_GE_X):
 	fdiv	d2, d4, SCALE
 	fmla	SSQ, d2, v2.d[0]
-KERNEL_S1_NEXT:
+L(KERNEL_S1_NEXT):
 	add	X, X, INC_X
 .endm
 
