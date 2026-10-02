@@ -44,7 +44,19 @@
 
 #ifdef DYNAMIC_ARCH
 
+/* OPENBLAS_CORE_LIST(X, arg) expands to X(CORE, arg) for each core in this
+   build.  dyn_cores.h is generated from DYNAMIC_CORE by the build system. */
+#include "dyn_cores.h"
+
+#define OPENBLAS_CORE_ENUM(core, unused) OPENBLAS_CORE_##core,
+enum { OPENBLAS_CORE_LIST(OPENBLAS_CORE_ENUM, ~) OPENBLAS_NUM_CORES };
+
+#define OPENBLAS_DISPATCH(group)		(openblas_##group##_dispatch[gotoblas->core])
+#define OPENBLAS_DISPATCH_OFFSET(group, func)	(size_t)(&((openblas_##group##_dispatch_t *)NULL)->func)
+#define OPENBLAS_DISPATCH_BASE(group)		((char *)OPENBLAS_DISPATCH(group))
+
 typedef struct {
+  int core;
   int dtb_entries;
   int switch_ratio;
   int divide_rate;
@@ -54,90 +66,313 @@ typedef struct {
 #if BUILD_HFLOAT16 == 1
 int shgemm_p, shgemm_q, shgemm_r;
 int shgemm_unroll_m, shgemm_unroll_n, shgemm_unroll_mn;
-
-int (*shgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, hfloat16 *, hfloat16 *, float *, BLASLONG);
-int (*shgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BLASLONG, float *, BLASLONG);
-
-int (*shgemm_incopy   )(BLASLONG, BLASLONG, hfloat16 *, BLASLONG, hfloat16 *);
-int (*shgemm_itcopy   )(BLASLONG, BLASLONG, hfloat16 *, BLASLONG, hfloat16 *);
-int (*shgemm_oncopy   )(BLASLONG, BLASLONG, hfloat16 *, BLASLONG, hfloat16 *);
-int (*shgemm_otcopy   )(BLASLONG, BLASLONG, hfloat16 *, BLASLONG, hfloat16 *);
-
-int (*shgemv_n) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BLASLONG, float, float *, BLASLONG);
-int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BLASLONG, float, float *, BLASLONG);
 #endif
-
-
 #if BUILD_BFLOAT16 == 1
   int bgemm_p, bgemm_q, bgemm_r;
   int bgemm_unroll_m, bgemm_unroll_n, bgemm_unroll_mn;
   int bgemm_align_k;
-
   int sbgemm_p, sbgemm_q, sbgemm_r;
   int sbgemm_unroll_m, sbgemm_unroll_n, sbgemm_unroll_mn;
   int sbgemm_align_k;
   int need_amxtile_permission;  // 0 default, 1 for device support amx.
+#endif
+#if (BUILD_SINGLE == 1) || (BUILD_DOUBLE == 1) || (BUILD_COMPLEX == 1) || (BUILD_COMPLEX16 == 1)
+  int sgemm_p, sgemm_q, sgemm_r;
+  int sgemm_unroll_m, sgemm_unroll_n, sgemm_unroll_mn;
+#endif
+  int exclusive_cache;
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+  int dgemm_p, dgemm_q, dgemm_r;
+  int dgemm_unroll_m, dgemm_unroll_n, dgemm_unroll_mn;
+#endif
+#ifdef EXPRECISION
+  int qgemm_p, qgemm_q, qgemm_r;
+  int qgemm_unroll_m, qgemm_unroll_n, qgemm_unroll_mn;
+#endif
+#if (BUILD_COMPLEX==1) 
+  int cgemm_p, cgemm_q, cgemm_r;
+  int cgemm_unroll_m, cgemm_unroll_n, cgemm_unroll_mn;
+  int cgemm3m_p, cgemm3m_q, cgemm3m_r;
+  int cgemm3m_unroll_m, cgemm3m_unroll_n, cgemm3m_unroll_mn;
+#endif
+#if (BUILD_COMPLEX16 == 1)
+  int zgemm_p, zgemm_q, zgemm_r;
+  int zgemm_unroll_m, zgemm_unroll_n, zgemm_unroll_mn;
+  int zgemm3m_p, zgemm3m_q, zgemm3m_r;
+  int zgemm3m_unroll_m, zgemm3m_unroll_n, zgemm3m_unroll_mn;
+#endif
+#ifdef EXPRECISION
+  int xgemm_p, xgemm_q, xgemm_r;
+  int xgemm_unroll_m, xgemm_unroll_n, xgemm_unroll_mn;
+  int xgemm3m_p, xgemm3m_q, xgemm3m_r;
+  int xgemm3m_unroll_m, xgemm3m_unroll_n, xgemm3m_unroll_mn;
+#endif
+  void (*init)(void);
+  int snum_opt, dnum_opt, qnum_opt;
+} gotoblas_t;
 
+extern gotoblas_t *gotoblas;
+
+#if BUILD_HFLOAT16 == 1
+typedef struct {
+int (*shgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, hfloat16 *, hfloat16 *, float *, BLASLONG);
+int (*shgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BLASLONG, float *, BLASLONG);
+int (*shgemm_incopy   )(BLASLONG, BLASLONG, hfloat16 *, BLASLONG, hfloat16 *);
+int (*shgemm_itcopy   )(BLASLONG, BLASLONG, hfloat16 *, BLASLONG, hfloat16 *);
+int (*shgemm_oncopy   )(BLASLONG, BLASLONG, hfloat16 *, BLASLONG, hfloat16 *);
+int (*shgemm_otcopy   )(BLASLONG, BLASLONG, hfloat16 *, BLASLONG, hfloat16 *);
+} openblas_shgemm_dispatch_t;
+extern const openblas_shgemm_dispatch_t *const openblas_shgemm_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_HFLOAT16 == 1
+typedef struct {
+int (*shgemv_n) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BLASLONG, float, float *, BLASLONG);
+int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BLASLONG, float, float *, BLASLONG);
+} openblas_shgemv_dispatch_t;
+extern const openblas_shgemv_dispatch_t *const openblas_shgemv_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   void   (*sbstobf16_k) (BLASLONG, float    *, BLASLONG, bfloat16 *, BLASLONG);
+} openblas_sbstobf16_dispatch_t;
+extern const openblas_sbstobf16_dispatch_t *const openblas_sbstobf16_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   void   (*sbdtobf16_k) (BLASLONG, double   *, BLASLONG, bfloat16 *, BLASLONG);
+} openblas_sbdtobf16_dispatch_t;
+extern const openblas_sbdtobf16_dispatch_t *const openblas_sbdtobf16_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   void   (*sbf16tos_k)  (BLASLONG, bfloat16 *, BLASLONG, float    *, BLASLONG);
+} openblas_sbf16tos_dispatch_t;
+extern const openblas_sbf16tos_dispatch_t *const openblas_sbf16tos_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   void   (*dbf16tod_k)  (BLASLONG, bfloat16 *, BLASLONG, double   *, BLASLONG);
+} openblas_dbf16tod_dispatch_t;
+extern const openblas_dbf16tod_dispatch_t *const openblas_dbf16tod_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   float  (*sbamax_k) (BLASLONG, float *, BLASLONG);
+} openblas_sbamax_dispatch_t;
+extern const openblas_sbamax_dispatch_t *const openblas_sbamax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   float  (*sbamin_k) (BLASLONG, float *, BLASLONG);
+} openblas_sbamin_dispatch_t;
+extern const openblas_sbamin_dispatch_t *const openblas_sbamin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   float  (*sbmax_k)  (BLASLONG, float *, BLASLONG);
+} openblas_sbmax_dispatch_t;
+extern const openblas_sbmax_dispatch_t *const openblas_sbmax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   float  (*sbmin_k)  (BLASLONG, float *, BLASLONG);
+} openblas_sbmin_dispatch_t;
+extern const openblas_sbmin_dispatch_t *const openblas_sbmin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   BLASLONG (*isbamax_k)(BLASLONG, float *, BLASLONG);
+} openblas_isbamax_dispatch_t;
+extern const openblas_isbamax_dispatch_t *const openblas_isbamax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   BLASLONG (*isbamin_k)(BLASLONG, float *, BLASLONG);
+} openblas_isbamin_dispatch_t;
+extern const openblas_isbamin_dispatch_t *const openblas_isbamin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   BLASLONG (*isbmax_k) (BLASLONG, float *, BLASLONG);
+} openblas_isbmax_dispatch_t;
+extern const openblas_isbmax_dispatch_t *const openblas_isbmax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   BLASLONG (*isbmin_k) (BLASLONG, float *, BLASLONG);
+} openblas_isbmin_dispatch_t;
+extern const openblas_isbmin_dispatch_t *const openblas_isbmin_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   float  (*sbnrm2_k) (BLASLONG, float *, BLASLONG);
+} openblas_sbnrm2_dispatch_t;
+extern const openblas_sbnrm2_dispatch_t *const openblas_sbnrm2_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   float  (*sbasum_k) (BLASLONG, float *, BLASLONG);
+} openblas_sbasum_dispatch_t;
+extern const openblas_sbasum_dispatch_t *const openblas_sbasum_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   float  (*sbsum_k)  (BLASLONG, float *, BLASLONG);
+} openblas_sbsum_dispatch_t;
+extern const openblas_sbsum_dispatch_t *const openblas_sbsum_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   int    (*sbcopy_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_sbcopy_dispatch_t;
+extern const openblas_sbcopy_dispatch_t *const openblas_sbcopy_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   float  (*sbdot_k)  (BLASLONG, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG);
+} openblas_sbdot_dispatch_t;
+extern const openblas_sbdot_dispatch_t *const openblas_sbdot_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   double (*dsbdot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_dsbdot_dispatch_t;
+extern const openblas_dsbdot_dispatch_t *const openblas_dsbdot_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   int    (*sbrot_k)  (BLASLONG, float *, BLASLONG, float *, BLASLONG, float, float);
+} openblas_sbrot_dispatch_t;
+extern const openblas_sbrot_dispatch_t *const openblas_sbrot_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   int    (*sbrotm_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+} openblas_sbrotm_dispatch_t;
+extern const openblas_sbrotm_dispatch_t *const openblas_sbrotm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   int    (*bscal_k) (BLASLONG, BLASLONG, BLASLONG, bfloat16, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG);
-  int    (*sbaxpy_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
-  int    (*sbscal_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
-  int    (*sbswap_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_bscal_dispatch_t;
+extern const openblas_bscal_dispatch_t *const openblas_bscal_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if BUILD_BFLOAT16 == 1
+typedef struct {
+  int    (*sbaxpy_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_sbaxpy_dispatch_t;
+extern const openblas_sbaxpy_dispatch_t *const openblas_sbaxpy_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
+  int    (*sbscal_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_sbscal_dispatch_t;
+extern const openblas_sbscal_dispatch_t *const openblas_sbscal_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
+  int    (*sbswap_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_sbswap_dispatch_t;
+extern const openblas_sbswap_dispatch_t *const openblas_sbswap_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   int    (*bgemv_n) (BLASLONG, BLASLONG, bfloat16, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, bfloat16, bfloat16 *, BLASLONG);
   int    (*bgemv_t) (BLASLONG, BLASLONG, bfloat16, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, bfloat16, bfloat16 *, BLASLONG);
+} openblas_bgemv_dispatch_t;
+extern const openblas_bgemv_dispatch_t *const openblas_bgemv_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   int    (*sbgemv_n) (BLASLONG, BLASLONG, float, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, float, float *, BLASLONG);
   int    (*sbgemv_t) (BLASLONG, BLASLONG, float, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, float, float *, BLASLONG);
-  int    (*sbger_k)  (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+} openblas_sbgemv_dispatch_t;
+extern const openblas_sbgemv_dispatch_t *const openblas_sbgemv_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if BUILD_BFLOAT16 == 1
+typedef struct {
+  int    (*sbger_k)  (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+} openblas_sbger_dispatch_t;
+extern const openblas_sbger_dispatch_t *const openblas_sbger_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   int    (*sbsymv_L) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
   int    (*sbsymv_U) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
+} openblas_sbsymv_dispatch_t;
+extern const openblas_sbsymv_dispatch_t *const openblas_sbsymv_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   int    (*bgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, bfloat16, bfloat16 *, bfloat16 *, bfloat16 *, BLASLONG);
   int    (*bgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, bfloat16, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG);
-
   int    (*bgemm_incopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
   int    (*bgemm_itcopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
   int    (*bgemm_oncopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
   int    (*bgemm_otcopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+} openblas_bgemm_dispatch_t;
+extern const openblas_bgemm_dispatch_t *const openblas_bgemm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   int    (*sbgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, bfloat16 *, bfloat16 *, float *, BLASLONG);
   int    (*sbgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, float, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, float *, BLASLONG);
-
   int    (*sbgemm_incopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
   int    (*sbgemm_itcopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
   int    (*sbgemm_oncopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
   int    (*sbgemm_otcopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+#ifdef SMALL_MATRIX_OPT
+  int    (*sbgemm_small_matrix_permit)(int transa, int transb, BLASLONG m, BLASLONG n, BLASLONG k, float alpha, float beta);
+  int    (*sbgemm_small_kernel_nn    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_nt    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_tn    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_tt    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_b0_nn )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_b0_nt )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_b0_tn )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_b0_tt )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
+#endif
+} openblas_sbgemm_dispatch_t;
+extern const openblas_sbgemm_dispatch_t *const openblas_sbgemm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   int    (*sbtrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*sbtrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*sbtrsm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*sbtrsm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
-
   int    (*sbtrsm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*sbtrsm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*sbtrsm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
@@ -154,12 +389,16 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*sbtrsm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*sbtrsm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*sbtrsm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+} openblas_sbtrsm_dispatch_t;
+extern const openblas_sbtrsm_dispatch_t *const openblas_sbtrsm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   int    (*sbtrmm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*sbtrmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*sbtrmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*sbtrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
-
   int    (*sbtrmm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*sbtrmm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*sbtrmm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
@@ -176,84 +415,185 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*sbtrmm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*sbtrmm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*sbtrmm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+} openblas_sbtrmm_dispatch_t;
+extern const openblas_sbtrmm_dispatch_t *const openblas_sbtrmm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   int    (*sbsymm_iutcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*sbsymm_iltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*sbsymm_outcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*sbsymm_oltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+} openblas_sbsymm_dispatch_t;
+extern const openblas_sbsymm_dispatch_t *const openblas_sbsymm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   int	 (*sbneg_tcopy)   (BLASLONG, BLASLONG, float *, BLASLONG, float *);
+} openblas_sbneg_dispatch_t;
+extern const openblas_sbneg_dispatch_t *const openblas_sbneg_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if BUILD_BFLOAT16 == 1
+typedef struct {
   int    (*sblaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG, blasint *, float *);
-
-#ifdef SMALL_MATRIX_OPT
-  int    (*sbgemm_small_matrix_permit)(int transa, int transb, BLASLONG m, BLASLONG n, BLASLONG k, float alpha, float beta);
-
-  int    (*sbgemm_small_kernel_nn    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
-  int    (*sbgemm_small_kernel_nt    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
-  int    (*sbgemm_small_kernel_tn    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
-  int    (*sbgemm_small_kernel_tt    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
-
-  int    (*sbgemm_small_kernel_b0_nn )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
-  int    (*sbgemm_small_kernel_b0_nt )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
-  int    (*sbgemm_small_kernel_b0_tn )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
-  int    (*sbgemm_small_kernel_b0_tt )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
+} openblas_sblaswp_dispatch_t;
+extern const openblas_sblaswp_dispatch_t *const openblas_sblaswp_dispatch[OPENBLAS_NUM_CORES];
 #endif
-#endif
-
-#if (BUILD_SINGLE == 1) || (BUILD_DOUBLE == 1) || (BUILD_COMPLEX == 1) || (BUILD_COMPLEX16 == 1)
-  int sgemm_p, sgemm_q, sgemm_r;
-  int sgemm_unroll_m, sgemm_unroll_n, sgemm_unroll_mn;
-#endif
-
-  int exclusive_cache;
 
 #if (BUILD_SINGLE == 1) || (BUILD_COMPLEX == 1)
+typedef struct {
   float  (*samax_k) (BLASLONG, float *, BLASLONG);
+} openblas_samax_dispatch_t;
+extern const openblas_samax_dispatch_t *const openblas_samax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE == 1) || (BUILD_COMPLEX == 1)
+typedef struct {
   float  (*samin_k) (BLASLONG, float *, BLASLONG);
+} openblas_samin_dispatch_t;
+extern const openblas_samin_dispatch_t *const openblas_samin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE == 1) || (BUILD_COMPLEX == 1)
+typedef struct {
   float  (*smax_k)  (BLASLONG, float *, BLASLONG);
+} openblas_smax_dispatch_t;
+extern const openblas_smax_dispatch_t *const openblas_smax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE == 1) || (BUILD_COMPLEX == 1)
+typedef struct {
   float  (*smin_k)  (BLASLONG, float *, BLASLONG);
+} openblas_smin_dispatch_t;
+extern const openblas_smin_dispatch_t *const openblas_smin_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
 #if (BUILD_SINGLE==1) || (BUILD_DOUBLE ==1) || (BUILD_COMPLEX==1)
+typedef struct {
   BLASLONG (*isamax_k)(BLASLONG, float *, BLASLONG);
+} openblas_isamax_dispatch_t;
+extern const openblas_isamax_dispatch_t *const openblas_isamax_dispatch[OPENBLAS_NUM_CORES];
 #endif
+
 #if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
   BLASLONG (*isamin_k)(BLASLONG, float *, BLASLONG);
+} openblas_isamin_dispatch_t;
+extern const openblas_isamin_dispatch_t *const openblas_isamin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
   BLASLONG (*ismax_k) (BLASLONG, float *, BLASLONG);
+} openblas_ismax_dispatch_t;
+extern const openblas_ismax_dispatch_t *const openblas_ismax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
   BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
+} openblas_ismin_dispatch_t;
+extern const openblas_ismin_dispatch_t *const openblas_ismin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
   float  (*snrm2_k) (BLASLONG, float *, BLASLONG);
+} openblas_snrm2_dispatch_t;
+extern const openblas_snrm2_dispatch_t *const openblas_snrm2_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
   float  (*sasum_k) (BLASLONG, float *, BLASLONG);
+} openblas_sasum_dispatch_t;
+extern const openblas_sasum_dispatch_t *const openblas_sasum_dispatch[OPENBLAS_NUM_CORES];
 #endif
+
 #if (BUILD_SINGLE==1)
+typedef struct {
   float  (*ssum_k)  (BLASLONG, float *, BLASLONG);
-#endif  
+} openblas_ssum_dispatch_t;
+extern const openblas_ssum_dispatch_t *const openblas_ssum_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
 #if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
   int    (*scopy_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_scopy_dispatch_t;
+extern const openblas_scopy_dispatch_t *const openblas_scopy_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
   float  (*sdot_k)  (BLASLONG, float *, BLASLONG, float *, BLASLONG);
-  //double (*dsdot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_sdot_dispatch_t;
+extern const openblas_sdot_dispatch_t *const openblas_sdot_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
   int    (*srot_k)  (BLASLONG, float *, BLASLONG, float *, BLASLONG, float, float);
-  int    (*srotm_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+} openblas_srot_dispatch_t;
+extern const openblas_srot_dispatch_t *const openblas_srot_dispatch[OPENBLAS_NUM_CORES];
 #endif
-#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
-  int    (*saxpy_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
-#endif
-#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1) || (BUILD_COMPLEX16==1)
-  int    (*sscal_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
-#endif
-#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
-  int    (*sswap_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
 
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
+  int    (*srotm_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+} openblas_srotm_dispatch_t;
+extern const openblas_srotm_dispatch_t *const openblas_srotm_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
+  int    (*saxpy_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_saxpy_dispatch_t;
+extern const openblas_saxpy_dispatch_t *const openblas_saxpy_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1) || (BUILD_COMPLEX16==1)
+typedef struct {
+  int    (*sscal_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_sscal_dispatch_t;
+extern const openblas_sscal_dispatch_t *const openblas_sscal_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
+  int    (*sswap_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_sswap_dispatch_t;
+extern const openblas_sswap_dispatch_t *const openblas_sswap_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
   int    (*sgemv_n) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemv_t) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+} openblas_sgemv_dispatch_t;
+extern const openblas_sgemv_dispatch_t *const openblas_sgemv_dispatch[OPENBLAS_NUM_CORES];
 #endif
+
 #if (BUILD_SINGLE==1)
+typedef struct {
   int    (*sger_k)  (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+} openblas_sger_dispatch_t;
+extern const openblas_sger_dispatch_t *const openblas_sger_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE==1)
+typedef struct {
   int    (*ssymv_L) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
   int    (*ssymv_U) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
+} openblas_ssymv_dispatch_t;
+extern const openblas_ssymv_dispatch_t *const openblas_ssymv_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
 #if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
 #ifdef ARCH_X86_64
   void (*sgemm_direct) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG , float *, BLASLONG , float * , BLASLONG);
   int  (*sgemm_direct_performant) (BLASLONG M, BLASLONG N, BLASLONG K);
@@ -262,54 +602,115 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   void (*sgemm_direct) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG , float *, BLASLONG , float * , BLASLONG);
   int  (*sgemm_direct_performant) (BLASLONG M, BLASLONG N, BLASLONG K);
   void (*sgemm_direct_alpha_beta) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float * , BLASLONG);
-  void (*ssymm_direct_alpha_betaLU) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float * , BLASLONG);
-  void (*ssymm_direct_alpha_betaLL) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float * , BLASLONG);
-  void (*strmm_direct_LNUN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG);
-  void (*strmm_direct_LNLN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG);
-  void (*strmm_direct_LTUN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG);
-  void (*strmm_direct_LTLN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG);
-  void (*ssyrk_direct_alpha_betaUN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG);
-  void (*ssyrk_direct_alpha_betaUT) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG);
-  void (*ssyrk_direct_alpha_betaLN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG);
-  void (*ssyrk_direct_alpha_betaLT) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG);
-  void (*ssyr2k_direct_alpha_betaUN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float *, BLASLONG);
-  void (*ssyr2k_direct_alpha_betaUT) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float *, BLASLONG);
-  void (*ssyr2k_direct_alpha_betaLN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float *, BLASLONG);
-  void (*ssyr2k_direct_alpha_betaLT) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float *, BLASLONG);
   void (*sme_sgemm_kernel) (char*, char*, BLASLONG, BLASLONG, BLASLONG, float*, float *, BLASLONG , float *, BLASLONG ,float*, float *, BLASLONG);
 #endif
-
-  
   int    (*sgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG);
   int    (*sgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float  *, BLASLONG);
-  int    (*ssymm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG);
-  int    (*strmm_gemm_kernel)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG);
-
   int    (*sgemm_incopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemm_itcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemm_oncopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemm_otcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-#endif
-#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
 #ifdef SMALL_MATRIX_OPT
   int    (*sgemm_small_matrix_permit)(int transa, int transb, BLASLONG m, BLASLONG n, BLASLONG k, float alpha, float beta);
-
   int    (*sgemm_small_kernel_nn    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
   int    (*sgemm_small_kernel_nt    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
   int    (*sgemm_small_kernel_tn    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
   int    (*sgemm_small_kernel_tt    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
-
   int    (*sgemm_small_kernel_b0_nn )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float * C, BLASLONG ldc);
   int    (*sgemm_small_kernel_b0_nt )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float * C, BLASLONG ldc);
   int    (*sgemm_small_kernel_b0_tn )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float * C, BLASLONG ldc);
   int    (*sgemm_small_kernel_b0_tt )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float * C, BLASLONG ldc);
 #endif
+} openblas_sgemm_dispatch_t;
+extern const openblas_sgemm_dispatch_t *const openblas_sgemm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
+#ifdef ARCH_ARM64
+  void (*ssymm_direct_alpha_betaLU) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float * , BLASLONG);
+  void (*ssymm_direct_alpha_betaLL) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float * , BLASLONG);
+#endif
+  int    (*ssymm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG);
+#if (BUILD_SINGLE==1)
+  int    (*ssymm_incopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*ssymm_itcopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*ssymm_iutcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ssymm_iltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ssymm_outcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ssymm_oltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+#endif
+} openblas_ssymm_dispatch_t;
+extern const openblas_ssymm_dispatch_t *const openblas_ssymm_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
+#ifdef ARCH_ARM64
+  void (*strmm_direct_LNUN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG);
+  void (*strmm_direct_LNLN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG);
+  void (*strmm_direct_LTUN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG);
+  void (*strmm_direct_LTLN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG);
+#endif
+  int    (*strmm_gemm_kernel)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG);
+#if (BUILD_SINGLE==1)
+  int    (*strmm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*strmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*strmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*strmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*strmm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*strmm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*strmm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*strmm_iutncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*strmm_ilnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*strmm_ilnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*strmm_iltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*strmm_iltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*strmm_incopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*strmm_itcopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*strmm_ounucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*strmm_ounncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*strmm_outucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*strmm_outncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*strmm_olnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*strmm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*strmm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*strmm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+#endif
+} openblas_strmm_dispatch_t;
+extern const openblas_strmm_dispatch_t *const openblas_strmm_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+#ifdef ARCH_ARM64
+typedef struct {
+  void (*ssyrk_direct_alpha_betaUN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG);
+  void (*ssyrk_direct_alpha_betaUT) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG);
+  void (*ssyrk_direct_alpha_betaLN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG);
+  void (*ssyrk_direct_alpha_betaLT) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG);
+} openblas_ssyrk_dispatch_t;
+extern const openblas_ssyrk_dispatch_t *const openblas_ssyrk_dispatch[OPENBLAS_NUM_CORES];
+#endif
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+#ifdef ARCH_ARM64
+typedef struct {
+  void (*ssyr2k_direct_alpha_betaUN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float *, BLASLONG);
+  void (*ssyr2k_direct_alpha_betaUT) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float *, BLASLONG);
+  void (*ssyr2k_direct_alpha_betaLN) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float *, BLASLONG);
+  void (*ssyr2k_direct_alpha_betaLT) (BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float, float *, BLASLONG);
+} openblas_ssyr2k_dispatch_t;
+extern const openblas_ssyr2k_dispatch_t *const openblas_ssyr2k_dispatch[OPENBLAS_NUM_CORES];
+#endif
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+typedef struct {
   int    (*strsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*strsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*strsm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*strsm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
-
   int    (*strsm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*strsm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*strsm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
@@ -326,121 +727,258 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*strsm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*strsm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*strsm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+} openblas_strsm_dispatch_t;
+extern const openblas_strsm_dispatch_t *const openblas_strsm_dispatch[OPENBLAS_NUM_CORES];
 #endif
+
 #if (BUILD_SINGLE==1)
-  int    (*strmm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
-  int    (*strmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
-  int    (*strmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
-  int    (*strmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
-
-  int    (*strmm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*strmm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*strmm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*strmm_iutncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*strmm_ilnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*strmm_ilnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*strmm_iltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*strmm_iltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ssymm_incopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-  int    (*ssymm_itcopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-  int    (*strmm_incopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-  int    (*strmm_itcopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-  int    (*strmm_ounucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*strmm_ounncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*strmm_outucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*strmm_outncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*strmm_olnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*strmm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*strmm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*strmm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-
-  int    (*ssymm_iutcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ssymm_iltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ssymm_outcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ssymm_oltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-
+typedef struct {
   int	 (*sneg_tcopy)   (BLASLONG, BLASLONG, float *, BLASLONG, float *);
+} openblas_sneg_dispatch_t;
+extern const openblas_sneg_dispatch_t *const openblas_sneg_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE==1)
+typedef struct {
   int    (*slaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG, blasint *, float *);
+} openblas_slaswp_dispatch_t;
+extern const openblas_slaswp_dispatch_t *const openblas_slaswp_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
 #if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
-  int dgemm_p, dgemm_q, dgemm_r;
-  int dgemm_unroll_m, dgemm_unroll_n, dgemm_unroll_mn;
-#endif
-
-#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
   double (*damax_k) (BLASLONG, double *, BLASLONG);
-  double (*damin_k) (BLASLONG, double *, BLASLONG);
-  double (*dmax_k)  (BLASLONG, double *, BLASLONG);
-  double (*dmin_k)  (BLASLONG, double *, BLASLONG);
-  BLASLONG (*idamax_k)(BLASLONG, double *, BLASLONG);
-  BLASLONG (*idamin_k)(BLASLONG, double *, BLASLONG);
-  BLASLONG (*idmax_k) (BLASLONG, double *, BLASLONG);
-  BLASLONG (*idmin_k) (BLASLONG, double *, BLASLONG);
+} openblas_damax_dispatch_t;
+extern const openblas_damax_dispatch_t *const openblas_damax_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
+  double (*damin_k) (BLASLONG, double *, BLASLONG);
+} openblas_damin_dispatch_t;
+extern const openblas_damin_dispatch_t *const openblas_damin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
+  double (*dmax_k)  (BLASLONG, double *, BLASLONG);
+} openblas_dmax_dispatch_t;
+extern const openblas_dmax_dispatch_t *const openblas_dmax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
+  double (*dmin_k)  (BLASLONG, double *, BLASLONG);
+} openblas_dmin_dispatch_t;
+extern const openblas_dmin_dispatch_t *const openblas_dmin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
+  BLASLONG (*idamax_k)(BLASLONG, double *, BLASLONG);
+} openblas_idamax_dispatch_t;
+extern const openblas_idamax_dispatch_t *const openblas_idamax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
+  BLASLONG (*idamin_k)(BLASLONG, double *, BLASLONG);
+} openblas_idamin_dispatch_t;
+extern const openblas_idamin_dispatch_t *const openblas_idamin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
+  BLASLONG (*idmax_k) (BLASLONG, double *, BLASLONG);
+} openblas_idmax_dispatch_t;
+extern const openblas_idmax_dispatch_t *const openblas_idmax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
+  BLASLONG (*idmin_k) (BLASLONG, double *, BLASLONG);
+} openblas_idmin_dispatch_t;
+extern const openblas_idmin_dispatch_t *const openblas_idmin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
   double (*dnrm2_k) (BLASLONG, double *, BLASLONG);
+} openblas_dnrm2_dispatch_t;
+extern const openblas_dnrm2_dispatch_t *const openblas_dnrm2_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
   double (*dasum_k) (BLASLONG, double *, BLASLONG);
+} openblas_dasum_dispatch_t;
+extern const openblas_dasum_dispatch_t *const openblas_dasum_dispatch[OPENBLAS_NUM_CORES];
 #endif
+
 #if (BUILD_DOUBLE==1)
+typedef struct {
   double (*dsum_k)  (BLASLONG, double *, BLASLONG);
+} openblas_dsum_dispatch_t;
+extern const openblas_dsum_dispatch_t *const openblas_dsum_dispatch[OPENBLAS_NUM_CORES];
 #endif
+
 #if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
   int    (*dcopy_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG);
-  double (*ddot_k)  (BLASLONG, double *, BLASLONG, double *, BLASLONG);
+} openblas_dcopy_dispatch_t;
+extern const openblas_dcopy_dispatch_t *const openblas_dcopy_dispatch[OPENBLAS_NUM_CORES];
 #endif
-#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1)
-  double (*dsdot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
-#endif
+
 #if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
+  double (*ddot_k)  (BLASLONG, double *, BLASLONG, double *, BLASLONG);
+} openblas_ddot_dispatch_t;
+extern const openblas_ddot_dispatch_t *const openblas_ddot_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1)
+typedef struct {
+  double (*dsdot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_dsdot_dispatch_t;
+extern const openblas_dsdot_dispatch_t *const openblas_dsdot_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
   int    (*drot_k)  (BLASLONG, double *, BLASLONG, double *, BLASLONG, double, double);
+} openblas_drot_dispatch_t;
+extern const openblas_drot_dispatch_t *const openblas_drot_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
   int    (*drotm_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
+} openblas_drotm_dispatch_t;
+extern const openblas_drotm_dispatch_t *const openblas_drotm_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
   int    (*daxpy_k) (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
+} openblas_daxpy_dispatch_t;
+extern const openblas_daxpy_dispatch_t *const openblas_daxpy_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
   int    (*dscal_k) (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
+} openblas_dscal_dispatch_t;
+extern const openblas_dscal_dispatch_t *const openblas_dscal_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
   int    (*dswap_k) (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
+} openblas_dswap_dispatch_t;
+extern const openblas_dswap_dispatch_t *const openblas_dswap_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
   int    (*dgemv_n) (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
   int    (*dgemv_t) (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
+} openblas_dgemv_dispatch_t;
+extern const openblas_dgemv_dispatch_t *const openblas_dgemv_dispatch[OPENBLAS_NUM_CORES];
 #endif
-#if (BUILD_DOUBLE==1)
-  int    (*dger_k)  (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
 
+#if (BUILD_DOUBLE==1)
+typedef struct {
+  int    (*dger_k)  (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
+} openblas_dger_dispatch_t;
+extern const openblas_dger_dispatch_t *const openblas_dger_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1)
+typedef struct {
   int    (*dsymv_L) (BLASLONG, BLASLONG, double,  double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
   int    (*dsymv_U) (BLASLONG, BLASLONG, double,  double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
+} openblas_dsymv_dispatch_t;
+extern const openblas_dsymv_dispatch_t *const openblas_dsymv_dispatch[OPENBLAS_NUM_CORES];
 #endif
+
 #if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
 #ifdef ARCH_ARM64
   void (*sme_dgemm_kernel) (const char*, const char*, const BLASLONG, const BLASLONG, const BLASLONG, const double*, const double *, const BLASLONG , const double *, const BLASLONG ,const double*, double *, const BLASLONG);
 #endif
   int    (*dgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG);
   int    (*dgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double  *, BLASLONG);
-  int    (*dsymm_kernel   )(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG);
-  int    (*dtrmm_gemm_kernel)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG);
-
   int    (*dgemm_incopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*dgemm_itcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*dgemm_oncopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*dgemm_otcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-#endif
-#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
 #ifdef SMALL_MATRIX_OPT
   int    (*dgemm_small_matrix_permit)(int transa, int transb, BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double beta);
-
   int    (*dgemm_small_kernel_nn    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double beta, double * C, BLASLONG ldc);
   int    (*dgemm_small_kernel_nt    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double beta, double * C, BLASLONG ldc);
   int    (*dgemm_small_kernel_tn    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double beta, double * C, BLASLONG ldc);
   int    (*dgemm_small_kernel_tt    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double beta, double * C, BLASLONG ldc);
-
   int    (*dgemm_small_kernel_b0_nn )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double * C, BLASLONG ldc);
   int    (*dgemm_small_kernel_b0_nt )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double * C, BLASLONG ldc);
   int    (*dgemm_small_kernel_b0_tn )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double * C, BLASLONG ldc);
   int    (*dgemm_small_kernel_b0_tt )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double * C, BLASLONG ldc);
 #endif
+} openblas_dgemm_dispatch_t;
+extern const openblas_dgemm_dispatch_t *const openblas_dgemm_dispatch[OPENBLAS_NUM_CORES];
 #endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
+  int    (*dsymm_kernel   )(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG);
 #if (BUILD_DOUBLE==1)
+  int    (*dsymm_incopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*dsymm_itcopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*dsymm_iutcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dsymm_iltcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dsymm_outcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dsymm_oltcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+#endif
+} openblas_dsymm_dispatch_t;
+extern const openblas_dsymm_dispatch_t *const openblas_dsymm_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+typedef struct {
+  int    (*dtrmm_gemm_kernel)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG);
+#if (BUILD_DOUBLE==1)
+  int    (*dtrmm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
+  int    (*dtrmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
+  int    (*dtrmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
+  int    (*dtrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
+  int    (*dtrmm_iunucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dtrmm_iunncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dtrmm_iutucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dtrmm_iutncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dtrmm_ilnucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dtrmm_ilnncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dtrmm_iltucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dtrmm_iltncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dtrmm_incopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*dtrmm_itcopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*dtrmm_ounucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dtrmm_ounncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dtrmm_outucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dtrmm_outncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dtrmm_olnucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dtrmm_olnncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dtrmm_oltucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*dtrmm_oltncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+#endif
+} openblas_dtrmm_dispatch_t;
+extern const openblas_dtrmm_dispatch_t *const openblas_dtrmm_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1)
+typedef struct {
   int    (*dtrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*dtrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*dtrsm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*dtrsm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
-
   int    (*dtrsm_iunucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
   int    (*dtrsm_iunncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
   int    (*dtrsm_iutucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
@@ -457,87 +995,191 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*dtrsm_olnncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
   int    (*dtrsm_oltucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
   int    (*dtrsm_oltncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
-
-  int    (*dtrmm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
-  int    (*dtrmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
-  int    (*dtrmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
-  int    (*dtrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
-
-  int    (*dtrmm_iunucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dtrmm_iunncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dtrmm_iutucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dtrmm_iutncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dtrmm_ilnucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dtrmm_ilnncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dtrmm_iltucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dtrmm_iltncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dsymm_incopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-  int    (*dsymm_itcopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-  int    (*dtrmm_incopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-  int    (*dtrmm_itcopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-  int    (*dtrmm_ounucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dtrmm_ounncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dtrmm_outucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dtrmm_outncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dtrmm_olnucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dtrmm_olnncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dtrmm_oltucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dtrmm_oltncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-
-  int    (*dsymm_iutcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dsymm_iltcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dsymm_outcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*dsymm_oltcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-
-  int	 (*dneg_tcopy)   (BLASLONG, BLASLONG, double *, BLASLONG, double *);
-  int    (*dlaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, double *, BLASLONG, blasint *, double *);
+} openblas_dtrsm_dispatch_t;
+extern const openblas_dtrsm_dispatch_t *const openblas_dtrsm_dispatch[OPENBLAS_NUM_CORES];
 #endif
+
+#if (BUILD_DOUBLE==1)
+typedef struct {
+  int	 (*dneg_tcopy)   (BLASLONG, BLASLONG, double *, BLASLONG, double *);
+} openblas_dneg_dispatch_t;
+extern const openblas_dneg_dispatch_t *const openblas_dneg_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_DOUBLE==1)
+typedef struct {
+  int    (*dlaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, double *, BLASLONG, blasint *, double *);
+} openblas_dlaswp_dispatch_t;
+extern const openblas_dlaswp_dispatch_t *const openblas_dlaswp_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
 #ifdef EXPRECISION
-
-  int qgemm_p, qgemm_q, qgemm_r;
-  int qgemm_unroll_m, qgemm_unroll_n, qgemm_unroll_mn;
-
+typedef struct {
  xdouble (*qamax_k) (BLASLONG, xdouble *, BLASLONG);
+} openblas_qamax_dispatch_t;
+extern const openblas_qamax_dispatch_t *const openblas_qamax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
  xdouble (*qamin_k) (BLASLONG, xdouble *, BLASLONG);
+} openblas_qamin_dispatch_t;
+extern const openblas_qamin_dispatch_t *const openblas_qamin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
  xdouble (*qmax_k)  (BLASLONG, xdouble *, BLASLONG);
+} openblas_qmax_dispatch_t;
+extern const openblas_qmax_dispatch_t *const openblas_qmax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
  xdouble (*qmin_k)  (BLASLONG, xdouble *, BLASLONG);
+} openblas_qmin_dispatch_t;
+extern const openblas_qmin_dispatch_t *const openblas_qmin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   BLASLONG (*iqamax_k)(BLASLONG, xdouble *, BLASLONG);
+} openblas_iqamax_dispatch_t;
+extern const openblas_iqamax_dispatch_t *const openblas_iqamax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   BLASLONG (*iqamin_k)(BLASLONG, xdouble *, BLASLONG);
+} openblas_iqamin_dispatch_t;
+extern const openblas_iqamin_dispatch_t *const openblas_iqamin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   BLASLONG (*iqmax_k) (BLASLONG, xdouble *, BLASLONG);
+} openblas_iqmax_dispatch_t;
+extern const openblas_iqmax_dispatch_t *const openblas_iqmax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   BLASLONG (*iqmin_k) (BLASLONG, xdouble *, BLASLONG);
+} openblas_iqmin_dispatch_t;
+extern const openblas_iqmin_dispatch_t *const openblas_iqmin_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
  xdouble (*qnrm2_k) (BLASLONG, xdouble *, BLASLONG);
+} openblas_qnrm2_dispatch_t;
+extern const openblas_qnrm2_dispatch_t *const openblas_qnrm2_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
  xdouble (*qasum_k) (BLASLONG, xdouble *, BLASLONG);
+} openblas_qasum_dispatch_t;
+extern const openblas_qasum_dispatch_t *const openblas_qasum_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
  xdouble (*qsum_k)  (BLASLONG, xdouble *, BLASLONG);
+} openblas_qsum_dispatch_t;
+extern const openblas_qsum_dispatch_t *const openblas_qsum_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   int    (*qcopy_k) (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+} openblas_qcopy_dispatch_t;
+extern const openblas_qcopy_dispatch_t *const openblas_qcopy_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
  xdouble (*qdot_k)  (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+} openblas_qdot_dispatch_t;
+extern const openblas_qdot_dispatch_t *const openblas_qdot_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   int    (*qrot_k)  (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble, xdouble);
+} openblas_qrot_dispatch_t;
+extern const openblas_qrot_dispatch_t *const openblas_qrot_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   int    (*qrotm_k)  (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
+} openblas_qrotm_dispatch_t;
+extern const openblas_qrotm_dispatch_t *const openblas_qrotm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
   int    (*qaxpy_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
-  int    (*qscal_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
-  int    (*qswap_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+} openblas_qaxpy_dispatch_t;
+extern const openblas_qaxpy_dispatch_t *const openblas_qaxpy_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
+  int    (*qscal_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+} openblas_qscal_dispatch_t;
+extern const openblas_qscal_dispatch_t *const openblas_qscal_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
+  int    (*qswap_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+} openblas_qswap_dispatch_t;
+extern const openblas_qswap_dispatch_t *const openblas_qswap_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   int    (*qgemv_n) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*qgemv_t) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
-  int    (*qger_k)  (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
+} openblas_qgemv_dispatch_t;
+extern const openblas_qgemv_dispatch_t *const openblas_qgemv_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
+  int    (*qger_k)  (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
+} openblas_qger_dispatch_t;
+extern const openblas_qger_dispatch_t *const openblas_qger_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   int    (*qsymv_L) (BLASLONG, BLASLONG, xdouble,  xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble *);
   int    (*qsymv_U) (BLASLONG, BLASLONG, xdouble,  xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble *);
+} openblas_qsymv_dispatch_t;
+extern const openblas_qsymv_dispatch_t *const openblas_qsymv_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
   int    (*qgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG);
   int    (*qgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble  *, BLASLONG);
-
   int    (*qgemm_incopy   )(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*qgemm_itcopy   )(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*qgemm_oncopy   )(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*qgemm_otcopy   )(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
+} openblas_qgemm_dispatch_t;
+extern const openblas_qgemm_dispatch_t *const openblas_qgemm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
   int    (*qtrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*qtrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*qtrsm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*qtrsm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
-
   int    (*qtrsm_iunucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
   int    (*qtrsm_iunncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
   int    (*qtrsm_iutucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
@@ -554,12 +1196,16 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*qtrsm_olnncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
   int    (*qtrsm_oltucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
   int    (*qtrsm_oltncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
+} openblas_qtrsm_dispatch_t;
+extern const openblas_qtrsm_dispatch_t *const openblas_qtrsm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
   int    (*qtrmm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*qtrmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*qtrmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*qtrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
-
   int    (*qtrmm_iunucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*qtrmm_iunncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*qtrmm_iutucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
@@ -576,41 +1222,141 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*qtrmm_olnncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*qtrmm_oltucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*qtrmm_oltncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
+} openblas_qtrmm_dispatch_t;
+extern const openblas_qtrmm_dispatch_t *const openblas_qtrmm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
   int    (*qsymm_iutcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*qsymm_iltcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*qsymm_outcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*qsymm_oltcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
-
-  int	 (*qneg_tcopy)   (BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
-  int    (*qlaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, xdouble *, BLASLONG, blasint *, xdouble *);
-
+} openblas_qsymm_dispatch_t;
+extern const openblas_qsymm_dispatch_t *const openblas_qsymm_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
-#if (BUILD_COMPLEX==1) 
-  int cgemm_p, cgemm_q, cgemm_r;
-  int cgemm_unroll_m, cgemm_unroll_n, cgemm_unroll_mn;
-	
+#ifdef EXPRECISION
+typedef struct {
+  int	 (*qneg_tcopy)   (BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
+} openblas_qneg_dispatch_t;
+extern const openblas_qneg_dispatch_t *const openblas_qneg_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
+  int    (*qlaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, xdouble *, BLASLONG, blasint *, xdouble *);
+} openblas_qlaswp_dispatch_t;
+extern const openblas_qlaswp_dispatch_t *const openblas_qlaswp_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
   float (*camax_k) (BLASLONG, float *, BLASLONG);
+} openblas_camax_dispatch_t;
+extern const openblas_camax_dispatch_t *const openblas_camax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
   float (*camin_k) (BLASLONG, float *, BLASLONG);
- 
+} openblas_camin_dispatch_t;
+extern const openblas_camin_dispatch_t *const openblas_camin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
   BLASLONG (*icamax_k)(BLASLONG, float *, BLASLONG);	
+} openblas_icamax_dispatch_t;
+extern const openblas_icamax_dispatch_t *const openblas_icamax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
   BLASLONG (*icamin_k)(BLASLONG, float *, BLASLONG);
+} openblas_icamin_dispatch_t;
+extern const openblas_icamin_dispatch_t *const openblas_icamin_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX==1)
+typedef struct {
   float (*cnrm2_k) (BLASLONG, float *, BLASLONG);
+} openblas_cnrm2_dispatch_t;
+extern const openblas_cnrm2_dispatch_t *const openblas_cnrm2_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
   float (*casum_k) (BLASLONG, float *, BLASLONG);
+} openblas_casum_dispatch_t;
+extern const openblas_casum_dispatch_t *const openblas_casum_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
   float (*csum_k)  (BLASLONG, float *, BLASLONG);
+} openblas_csum_dispatch_t;
+extern const openblas_csum_dispatch_t *const openblas_csum_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX==1)
+typedef struct {
   int    (*ccopy_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_ccopy_dispatch_t;
+extern const openblas_ccopy_dispatch_t *const openblas_ccopy_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
   openblas_complex_float (*cdotu_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_cdotu_dispatch_t;
+extern const openblas_cdotu_dispatch_t *const openblas_cdotu_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
   openblas_complex_float (*cdotc_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_cdotc_dispatch_t;
+extern const openblas_cdotc_dispatch_t *const openblas_cdotc_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX==1)
+typedef struct {
   int    (*csrot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG, float, float);
-  int    (*caxpy_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
-  int    (*caxpyc_k)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
-  int    (*cscal_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
-  int    (*cswap_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_csrot_dispatch_t;
+extern const openblas_csrot_dispatch_t *const openblas_csrot_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX==1)
+typedef struct {
+  int    (*caxpy_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_caxpy_dispatch_t;
+extern const openblas_caxpy_dispatch_t *const openblas_caxpy_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
+  int    (*caxpyc_k)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_caxpyc_dispatch_t;
+extern const openblas_caxpyc_dispatch_t *const openblas_caxpyc_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
+  int    (*cscal_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_cscal_dispatch_t;
+extern const openblas_cscal_dispatch_t *const openblas_cscal_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
+  int    (*cswap_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+} openblas_cswap_dispatch_t;
+extern const openblas_cswap_dispatch_t *const openblas_cswap_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
   int    (*cgemv_n) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemv_t) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemv_r) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
@@ -619,18 +1365,58 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*cgemv_u) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemv_s) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemv_d) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
-  int    (*cgeru_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
-  int    (*cgerc_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
-  int    (*cgerv_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
-  int    (*cgerd_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+} openblas_cgemv_dispatch_t;
+extern const openblas_cgemv_dispatch_t *const openblas_cgemv_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX==1)
+typedef struct {
+  int    (*cgeru_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+} openblas_cgeru_dispatch_t;
+extern const openblas_cgeru_dispatch_t *const openblas_cgeru_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
+  int    (*cgerc_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+} openblas_cgerc_dispatch_t;
+extern const openblas_cgerc_dispatch_t *const openblas_cgerc_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
+  int    (*cgerv_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+} openblas_cgerv_dispatch_t;
+extern const openblas_cgerv_dispatch_t *const openblas_cgerv_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
+  int    (*cgerd_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+} openblas_cgerd_dispatch_t;
+extern const openblas_cgerd_dispatch_t *const openblas_cgerd_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
   int    (*csymv_L) (BLASLONG, BLASLONG, float,  float, float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
   int    (*csymv_U) (BLASLONG, BLASLONG, float,  float, float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
+} openblas_csymv_dispatch_t;
+extern const openblas_csymv_dispatch_t *const openblas_csymv_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
   int    (*chemv_L) (BLASLONG, BLASLONG, float,  float, float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
   int    (*chemv_U) (BLASLONG, BLASLONG, float,  float, float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
   int    (*chemv_M) (BLASLONG, BLASLONG, float,  float, float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
   int    (*chemv_V) (BLASLONG, BLASLONG, float,  float, float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
+} openblas_chemv_dispatch_t;
+extern const openblas_chemv_dispatch_t *const openblas_chemv_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX==1)
+typedef struct {
 #ifdef ARCH_ARM64
   void (*sme_cgemm_kernel) (const char*, const char*, const BLASLONG, const BLASLONG, const BLASLONG, const float, const float, const float *, const BLASLONG , const float *, const BLASLONG, const float, const float, float *, const BLASLONG);
 #endif
@@ -639,66 +1425,103 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*cgemm_kernel_r )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
   int    (*cgemm_kernel_b )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
   int    (*cgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float  *, BLASLONG);
-
-  int    (*csymm_kernel_n )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
-  int    (*csymm_kernel_l )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
-  int    (*csymm_kernel_r )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
-  int    (*csymm_kernel_b )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
-
-  int    (*ctrmm_gemm_kernel_n)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
-  int    (*ctrmm_gemm_kernel_l)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
-  int    (*ctrmm_gemm_kernel_r)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
-  int    (*ctrmm_gemm_kernel_b)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
-
   int    (*cgemm_incopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemm_itcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemm_oncopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemm_otcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-
 #ifdef SMALL_MATRIX_OPT
   int    (*cgemm_small_matrix_permit)(int transa, int transb, BLASLONG m, BLASLONG n, BLASLONG k, float alpha0, float alpha1, float beta0, float beta1);
-
   int    (*cgemm_small_kernel_nn    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_nt    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_nr    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_nc    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
-
   int    (*cgemm_small_kernel_tn    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_tt    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_tr    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_tc    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
-
   int    (*cgemm_small_kernel_rn    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_rt    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_rr    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_rc    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
-
   int    (*cgemm_small_kernel_cn    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_ct    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_cr    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_cc    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
-
   int    (*cgemm_small_kernel_b0_nn )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_b0_nt )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_b0_nr )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_b0_nc )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
-
   int    (*cgemm_small_kernel_b0_tn )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_b0_tt )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_b0_tr )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_b0_tc )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
-
   int    (*cgemm_small_kernel_b0_rn )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_b0_rt )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_b0_rr )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_b0_rc )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
-
   int    (*cgemm_small_kernel_b0_cn )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_b0_ct )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_b0_cr )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
   int    (*cgemm_small_kernel_b0_cc )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
 #endif
+} openblas_cgemm_dispatch_t;
+extern const openblas_cgemm_dispatch_t *const openblas_cgemm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX==1)
+typedef struct {
+  int    (*csymm_kernel_n )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+  int    (*csymm_kernel_l )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+  int    (*csymm_kernel_r )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+  int    (*csymm_kernel_b )(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+  int    (*csymm_incopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*csymm_itcopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*csymm_iutcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*csymm_iltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*csymm_outcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*csymm_oltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+} openblas_csymm_dispatch_t;
+extern const openblas_csymm_dispatch_t *const openblas_csymm_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
+  int    (*ctrmm_gemm_kernel_n)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+  int    (*ctrmm_gemm_kernel_l)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+  int    (*ctrmm_gemm_kernel_r)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+  int    (*ctrmm_gemm_kernel_b)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
+  int    (*ctrmm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*ctrmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*ctrmm_kernel_RR)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*ctrmm_kernel_RC)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*ctrmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*ctrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*ctrmm_kernel_LR)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*ctrmm_kernel_LC)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*ctrmm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ctrmm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ctrmm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ctrmm_iutncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ctrmm_ilnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ctrmm_ilnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ctrmm_iltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ctrmm_iltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ctrmm_incopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*ctrmm_itcopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*ctrmm_ounucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ctrmm_ounncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ctrmm_outucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ctrmm_outncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ctrmm_olnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ctrmm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ctrmm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*ctrmm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+} openblas_ctrmm_dispatch_t;
+extern const openblas_ctrmm_dispatch_t *const openblas_ctrmm_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
   int    (*ctrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*ctrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*ctrsm_kernel_LR)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
@@ -707,7 +1530,6 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*ctrsm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*ctrsm_kernel_RR)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*ctrsm_kernel_RC)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
-
   int    (*ctrsm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*ctrsm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*ctrsm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
@@ -724,120 +1546,196 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*ctrsm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*ctrsm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*ctrsm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+} openblas_ctrsm_dispatch_t;
+extern const openblas_ctrsm_dispatch_t *const openblas_ctrsm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
-  int    (*ctrmm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
-  int    (*ctrmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
-  int    (*ctrmm_kernel_RR)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
-  int    (*ctrmm_kernel_RC)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
-  int    (*ctrmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
-  int    (*ctrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
-  int    (*ctrmm_kernel_LR)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
-  int    (*ctrmm_kernel_LC)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
-
-  int    (*ctrmm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ctrmm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ctrmm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ctrmm_iutncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ctrmm_ilnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ctrmm_ilnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ctrmm_iltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ctrmm_iltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*csymm_incopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-  int    (*csymm_itcopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-  int    (*ctrmm_incopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-  int    (*ctrmm_itcopy)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-  int    (*ctrmm_ounucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ctrmm_ounncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ctrmm_outucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ctrmm_outncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ctrmm_olnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ctrmm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ctrmm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*ctrmm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-
-  int    (*csymm_iutcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*csymm_iltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*csymm_outcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-  int    (*csymm_oltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-
+#if (BUILD_COMPLEX==1)
+typedef struct {
   int    (*chemm_iutcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*chemm_iltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*chemm_outcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*chemm_oltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+} openblas_chemm_dispatch_t;
+extern const openblas_chemm_dispatch_t *const openblas_chemm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
-  int cgemm3m_p, cgemm3m_q, cgemm3m_r;
-  int cgemm3m_unroll_m, cgemm3m_unroll_n, cgemm3m_unroll_mn;
-
+#if (BUILD_COMPLEX==1)
+typedef struct {
   int    (*cgemm3m_kernel)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG);
-
   int    (*cgemm3m_incopyb)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemm3m_incopyr)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemm3m_incopyi)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemm3m_itcopyb)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemm3m_itcopyr)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemm3m_itcopyi)(BLASLONG, BLASLONG, float *, BLASLONG, float *);
-
   int    (*cgemm3m_oncopyb)(BLASLONG, BLASLONG, float *, BLASLONG, float, float, float *);
   int    (*cgemm3m_oncopyr)(BLASLONG, BLASLONG, float *, BLASLONG, float, float, float *);
   int    (*cgemm3m_oncopyi)(BLASLONG, BLASLONG, float *, BLASLONG, float, float, float *);
   int    (*cgemm3m_otcopyb)(BLASLONG, BLASLONG, float *, BLASLONG, float, float, float *);
   int    (*cgemm3m_otcopyr)(BLASLONG, BLASLONG, float *, BLASLONG, float, float, float *);
   int    (*cgemm3m_otcopyi)(BLASLONG, BLASLONG, float *, BLASLONG, float, float, float *);
+} openblas_cgemm3m_dispatch_t;
+extern const openblas_cgemm3m_dispatch_t *const openblas_cgemm3m_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX==1)
+typedef struct {
   int    (*csymm3m_iucopyb)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*csymm3m_ilcopyb)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*csymm3m_iucopyr)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*csymm3m_ilcopyr)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*csymm3m_iucopyi)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*csymm3m_ilcopyi)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-
   int    (*csymm3m_oucopyb)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*csymm3m_olcopyb)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*csymm3m_oucopyr)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*csymm3m_olcopyr)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*csymm3m_oucopyi)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*csymm3m_olcopyi)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
+} openblas_csymm3m_dispatch_t;
+extern const openblas_csymm3m_dispatch_t *const openblas_csymm3m_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX==1)
+typedef struct {
   int    (*chemm3m_iucopyb)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*chemm3m_ilcopyb)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*chemm3m_iucopyr)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*chemm3m_ilcopyr)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*chemm3m_iucopyi)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
   int    (*chemm3m_ilcopyi)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
-
   int    (*chemm3m_oucopyb)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*chemm3m_olcopyb)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*chemm3m_oucopyr)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*chemm3m_olcopyr)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*chemm3m_oucopyi)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
   int    (*chemm3m_olcopyi)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float, float, float *);
+} openblas_chemm3m_dispatch_t;
+extern const openblas_chemm3m_dispatch_t *const openblas_chemm3m_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX==1)
+typedef struct {
   int	 (*cneg_tcopy)   (BLASLONG, BLASLONG, float *, BLASLONG, float *);
+} openblas_cneg_dispatch_t;
+extern const openblas_cneg_dispatch_t *const openblas_cneg_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX==1)
+typedef struct {
   int    (*claswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG, blasint *, float *);
+} openblas_claswp_dispatch_t;
+extern const openblas_claswp_dispatch_t *const openblas_claswp_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
 #if (BUILD_COMPLEX16 == 1)
-  int zgemm_p, zgemm_q, zgemm_r;
-  int zgemm_unroll_m, zgemm_unroll_n, zgemm_unroll_mn;
-
+typedef struct {
   double (*zamax_k) (BLASLONG, double *, BLASLONG);
+} openblas_zamax_dispatch_t;
+extern const openblas_zamax_dispatch_t *const openblas_zamax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   double (*zamin_k) (BLASLONG, double *, BLASLONG);
+} openblas_zamin_dispatch_t;
+extern const openblas_zamin_dispatch_t *const openblas_zamin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   BLASLONG (*izamax_k)(BLASLONG, double *, BLASLONG);
+} openblas_izamax_dispatch_t;
+extern const openblas_izamax_dispatch_t *const openblas_izamax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   BLASLONG (*izamin_k)(BLASLONG, double *, BLASLONG);
+} openblas_izamin_dispatch_t;
+extern const openblas_izamin_dispatch_t *const openblas_izamin_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   double (*znrm2_k) (BLASLONG, double *, BLASLONG);
+} openblas_znrm2_dispatch_t;
+extern const openblas_znrm2_dispatch_t *const openblas_znrm2_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   double (*zasum_k) (BLASLONG, double *, BLASLONG);
+} openblas_zasum_dispatch_t;
+extern const openblas_zasum_dispatch_t *const openblas_zasum_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   double (*zsum_k)  (BLASLONG, double *, BLASLONG);
+} openblas_zsum_dispatch_t;
+extern const openblas_zsum_dispatch_t *const openblas_zsum_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   int    (*zcopy_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG);
+} openblas_zcopy_dispatch_t;
+extern const openblas_zcopy_dispatch_t *const openblas_zcopy_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   openblas_complex_double (*zdotu_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG);
+} openblas_zdotu_dispatch_t;
+extern const openblas_zdotu_dispatch_t *const openblas_zdotu_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   openblas_complex_double (*zdotc_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG);
+} openblas_zdotc_dispatch_t;
+extern const openblas_zdotc_dispatch_t *const openblas_zdotc_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   int    (*zdrot_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG, double, double);
+} openblas_zdrot_dispatch_t;
+extern const openblas_zdrot_dispatch_t *const openblas_zdrot_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   int    (*zaxpy_k) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
-  int    (*zaxpyc_k)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
-  int    (*zscal_k) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
-  int    (*zswap_k) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
+} openblas_zaxpy_dispatch_t;
+extern const openblas_zaxpy_dispatch_t *const openblas_zaxpy_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
+  int    (*zaxpyc_k)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
+} openblas_zaxpyc_dispatch_t;
+extern const openblas_zaxpyc_dispatch_t *const openblas_zaxpyc_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
+  int    (*zscal_k) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
+} openblas_zscal_dispatch_t;
+extern const openblas_zscal_dispatch_t *const openblas_zscal_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
+  int    (*zswap_k) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
+} openblas_zswap_dispatch_t;
+extern const openblas_zswap_dispatch_t *const openblas_zswap_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   int    (*zgemv_n) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemv_t) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemv_r) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
@@ -846,87 +1744,163 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*zgemv_u) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemv_s) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemv_d) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
-  int    (*zgeru_k) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
-  int    (*zgerc_k) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
-  int    (*zgerv_k) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
-  int    (*zgerd_k) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
+} openblas_zgemv_dispatch_t;
+extern const openblas_zgemv_dispatch_t *const openblas_zgemv_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
+  int    (*zgeru_k) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
+} openblas_zgeru_dispatch_t;
+extern const openblas_zgeru_dispatch_t *const openblas_zgeru_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
+  int    (*zgerc_k) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
+} openblas_zgerc_dispatch_t;
+extern const openblas_zgerc_dispatch_t *const openblas_zgerc_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
+  int    (*zgerv_k) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
+} openblas_zgerv_dispatch_t;
+extern const openblas_zgerv_dispatch_t *const openblas_zgerv_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
+  int    (*zgerd_k) (BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
+} openblas_zgerd_dispatch_t;
+extern const openblas_zgerd_dispatch_t *const openblas_zgerd_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   int    (*zsymv_L) (BLASLONG, BLASLONG, double,  double, double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
   int    (*zsymv_U) (BLASLONG, BLASLONG, double,  double, double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
+} openblas_zsymv_dispatch_t;
+extern const openblas_zsymv_dispatch_t *const openblas_zsymv_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   int    (*zhemv_L) (BLASLONG, BLASLONG, double,  double, double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
   int    (*zhemv_U) (BLASLONG, BLASLONG, double,  double, double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
   int    (*zhemv_M) (BLASLONG, BLASLONG, double,  double, double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
   int    (*zhemv_V) (BLASLONG, BLASLONG, double,  double, double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
+} openblas_zhemv_dispatch_t;
+extern const openblas_zhemv_dispatch_t *const openblas_zhemv_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
 #ifdef ARCH_ARM64
   void (*sme_zgemm_kernel) (const char*, const char*, const BLASLONG, const BLASLONG, const BLASLONG, const double, const double, const double *, const BLASLONG , const double *, const BLASLONG, const double, const double, double *, const BLASLONG);
 #endif
-
   int    (*zgemm_kernel_n )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
   int    (*zgemm_kernel_l )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
   int    (*zgemm_kernel_r )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
   int    (*zgemm_kernel_b )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
   int    (*zgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, BLASLONG, double *, BLASLONG, double  *, BLASLONG);
-
-  int    (*zsymm_kernel_n )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
-  int    (*zsymm_kernel_l )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
-  int    (*zsymm_kernel_r )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
-  int    (*zsymm_kernel_b )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
-
-  int    (*ztrmm_gemm_kernel_n)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
-  int    (*ztrmm_gemm_kernel_l)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
-  int    (*ztrmm_gemm_kernel_r)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
-  int    (*ztrmm_gemm_kernel_b)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
-
   int    (*zgemm_incopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemm_itcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemm_oncopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemm_otcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-
 #ifdef SMALL_MATRIX_OPT
   int    (*zgemm_small_matrix_permit)(int transa, int transb, BLASLONG m, BLASLONG n, BLASLONG k, double alpha0, double alpha1, double beta0, double beta1);
-
   int    (*zgemm_small_kernel_nn    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_nt    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_nr    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_nc    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
-
   int    (*zgemm_small_kernel_tn    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_tt    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_tr    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_tc    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
-
   int    (*zgemm_small_kernel_rn    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_rt    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_rr    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_rc    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
-
   int    (*zgemm_small_kernel_cn    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_ct    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_cr    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_cc    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
-
   int    (*zgemm_small_kernel_b0_nn )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_b0_nt )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_b0_nr )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_b0_nc )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
-
   int    (*zgemm_small_kernel_b0_tn )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_b0_tt )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_b0_tr )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_b0_tc )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
-
   int    (*zgemm_small_kernel_b0_rn )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_b0_rt )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_b0_rr )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_b0_rc )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
-
   int    (*zgemm_small_kernel_b0_cn )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_b0_ct )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_b0_cr )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
   int    (*zgemm_small_kernel_b0_cc )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
 #endif
+} openblas_zgemm_dispatch_t;
+extern const openblas_zgemm_dispatch_t *const openblas_zgemm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
+  int    (*zsymm_kernel_n )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+  int    (*zsymm_kernel_l )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+  int    (*zsymm_kernel_r )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+  int    (*zsymm_kernel_b )(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+  int    (*zsymm_incopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*zsymm_itcopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*zsymm_iutcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*zsymm_iltcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*zsymm_outcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*zsymm_oltcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+} openblas_zsymm_dispatch_t;
+extern const openblas_zsymm_dispatch_t *const openblas_zsymm_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
+  int    (*ztrmm_gemm_kernel_n)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+  int    (*ztrmm_gemm_kernel_l)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+  int    (*ztrmm_gemm_kernel_r)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+  int    (*ztrmm_gemm_kernel_b)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
+  int    (*ztrmm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
+  int    (*ztrmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
+  int    (*ztrmm_kernel_RR)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
+  int    (*ztrmm_kernel_RC)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
+  int    (*ztrmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
+  int    (*ztrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
+  int    (*ztrmm_kernel_LR)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
+  int    (*ztrmm_kernel_LC)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
+  int    (*ztrmm_iunucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*ztrmm_iunncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*ztrmm_iutucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*ztrmm_iutncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*ztrmm_ilnucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*ztrmm_ilnncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*ztrmm_iltucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*ztrmm_iltncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*ztrmm_incopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*ztrmm_itcopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+  int    (*ztrmm_ounucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*ztrmm_ounncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*ztrmm_outucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*ztrmm_outncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*ztrmm_olnucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*ztrmm_olnncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*ztrmm_oltucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+  int    (*ztrmm_oltncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+} openblas_ztrmm_dispatch_t;
+extern const openblas_ztrmm_dispatch_t *const openblas_ztrmm_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   int    (*ztrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*ztrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*ztrsm_kernel_LR)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
@@ -935,7 +1909,6 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*ztrsm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*ztrsm_kernel_RR)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*ztrsm_kernel_RC)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
-
   int    (*ztrsm_iunucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
   int    (*ztrsm_iunncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
   int    (*ztrsm_iutucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
@@ -952,121 +1925,196 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*ztrsm_olnncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
   int    (*ztrsm_oltucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
   int    (*ztrsm_oltncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, double *);
+} openblas_ztrsm_dispatch_t;
+extern const openblas_ztrsm_dispatch_t *const openblas_ztrsm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
-  int    (*ztrmm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
-  int    (*ztrmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
-  int    (*ztrmm_kernel_RR)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
-  int    (*ztrmm_kernel_RC)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
-  int    (*ztrmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
-  int    (*ztrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
-  int    (*ztrmm_kernel_LR)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
-  int    (*ztrmm_kernel_LC)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
-
-  int    (*ztrmm_iunucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*ztrmm_iunncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*ztrmm_iutucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*ztrmm_iutncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*ztrmm_ilnucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*ztrmm_ilnncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*ztrmm_iltucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*ztrmm_iltncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*zsymm_incopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-  int    (*zsymm_itcopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-  int    (*ztrmm_incopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-  int    (*ztrmm_itcopy)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-  int    (*ztrmm_ounucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*ztrmm_ounncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*ztrmm_outucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*ztrmm_outncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*ztrmm_olnucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*ztrmm_olnncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*ztrmm_oltucopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*ztrmm_oltncopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-
-  int    (*zsymm_iutcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*zsymm_iltcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*zsymm_outcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-  int    (*zsymm_oltcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   int    (*zhemm_iutcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zhemm_iltcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zhemm_outcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zhemm_oltcopy)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
+} openblas_zhemm_dispatch_t;
+extern const openblas_zhemm_dispatch_t *const openblas_zhemm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
-  int zgemm3m_p, zgemm3m_q, zgemm3m_r;
-  int zgemm3m_unroll_m, zgemm3m_unroll_n, zgemm3m_unroll_mn;
-
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   int    (*zgemm3m_kernel)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG);
-
   int    (*zgemm3m_incopyb)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemm3m_incopyr)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemm3m_incopyi)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemm3m_itcopyb)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemm3m_itcopyr)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemm3m_itcopyi)(BLASLONG, BLASLONG, double *, BLASLONG, double *);
-
   int    (*zgemm3m_oncopyb)(BLASLONG, BLASLONG, double *, BLASLONG, double, double, double *);
   int    (*zgemm3m_oncopyr)(BLASLONG, BLASLONG, double *, BLASLONG, double, double, double *);
   int    (*zgemm3m_oncopyi)(BLASLONG, BLASLONG, double *, BLASLONG, double, double, double *);
   int    (*zgemm3m_otcopyb)(BLASLONG, BLASLONG, double *, BLASLONG, double, double, double *);
   int    (*zgemm3m_otcopyr)(BLASLONG, BLASLONG, double *, BLASLONG, double, double, double *);
   int    (*zgemm3m_otcopyi)(BLASLONG, BLASLONG, double *, BLASLONG, double, double, double *);
+} openblas_zgemm3m_dispatch_t;
+extern const openblas_zgemm3m_dispatch_t *const openblas_zgemm3m_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   int    (*zsymm3m_iucopyb)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zsymm3m_ilcopyb)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zsymm3m_iucopyr)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zsymm3m_ilcopyr)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zsymm3m_iucopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zsymm3m_ilcopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-
   int    (*zsymm3m_oucopyb)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zsymm3m_olcopyb)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zsymm3m_oucopyr)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zsymm3m_olcopyr)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zsymm3m_oucopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zsymm3m_olcopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
+} openblas_zsymm3m_dispatch_t;
+extern const openblas_zsymm3m_dispatch_t *const openblas_zsymm3m_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   int    (*zhemm3m_iucopyb)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zhemm3m_ilcopyb)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zhemm3m_iucopyr)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zhemm3m_ilcopyr)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zhemm3m_iucopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
   int    (*zhemm3m_ilcopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double *);
-
   int    (*zhemm3m_oucopyb)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zhemm3m_olcopyb)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zhemm3m_oucopyr)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zhemm3m_olcopyr)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zhemm3m_oucopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
   int    (*zhemm3m_olcopyi)(BLASLONG, BLASLONG, double *, BLASLONG, BLASLONG, BLASLONG, double, double, double *);
+} openblas_zhemm3m_dispatch_t;
+extern const openblas_zhemm3m_dispatch_t *const openblas_zhemm3m_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   int	 (*zneg_tcopy)   (BLASLONG, BLASLONG, double *, BLASLONG, double *);
+} openblas_zneg_dispatch_t;
+extern const openblas_zneg_dispatch_t *const openblas_zneg_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+typedef struct {
   int    (*zlaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, double *, BLASLONG, blasint *, double *);
+} openblas_zlaswp_dispatch_t;
+extern const openblas_zlaswp_dispatch_t *const openblas_zlaswp_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
 #ifdef EXPRECISION
-
-  int xgemm_p, xgemm_q, xgemm_r;
-  int xgemm_unroll_m, xgemm_unroll_n, xgemm_unroll_mn;
-
+typedef struct {
   xdouble (*xamax_k) (BLASLONG, xdouble *, BLASLONG);
+} openblas_xamax_dispatch_t;
+extern const openblas_xamax_dispatch_t *const openblas_xamax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   xdouble (*xamin_k) (BLASLONG, xdouble *, BLASLONG);
+} openblas_xamin_dispatch_t;
+extern const openblas_xamin_dispatch_t *const openblas_xamin_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   BLASLONG (*ixamax_k)(BLASLONG, xdouble *, BLASLONG);
+} openblas_ixamax_dispatch_t;
+extern const openblas_ixamax_dispatch_t *const openblas_ixamax_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
+} openblas_ixamin_dispatch_t;
+extern const openblas_ixamin_dispatch_t *const openblas_ixamin_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
   xdouble (*xnrm2_k) (BLASLONG, xdouble *, BLASLONG);
+} openblas_xnrm2_dispatch_t;
+extern const openblas_xnrm2_dispatch_t *const openblas_xnrm2_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   xdouble (*xasum_k) (BLASLONG, xdouble *, BLASLONG);
+} openblas_xasum_dispatch_t;
+extern const openblas_xasum_dispatch_t *const openblas_xasum_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   xdouble (*xsum_k) (BLASLONG, xdouble *, BLASLONG);
+} openblas_xsum_dispatch_t;
+extern const openblas_xsum_dispatch_t *const openblas_xsum_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   int    (*xcopy_k) (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+} openblas_xcopy_dispatch_t;
+extern const openblas_xcopy_dispatch_t *const openblas_xcopy_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   openblas_complex_xdouble (*xdotu_k) (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+} openblas_xdotu_dispatch_t;
+extern const openblas_xdotu_dispatch_t *const openblas_xdotu_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   openblas_complex_xdouble (*xdotc_k) (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+} openblas_xdotc_dispatch_t;
+extern const openblas_xdotc_dispatch_t *const openblas_xdotc_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   int    (*xqrot_k) (BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble, xdouble);
+} openblas_xqrot_dispatch_t;
+extern const openblas_xqrot_dispatch_t *const openblas_xqrot_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
   int    (*xaxpy_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
-  int    (*xaxpyc_k)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
-  int    (*xscal_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
-  int    (*xswap_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+} openblas_xaxpy_dispatch_t;
+extern const openblas_xaxpy_dispatch_t *const openblas_xaxpy_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
+  int    (*xaxpyc_k)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+} openblas_xaxpyc_dispatch_t;
+extern const openblas_xaxpyc_dispatch_t *const openblas_xaxpyc_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
+  int    (*xscal_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+} openblas_xscal_dispatch_t;
+extern const openblas_xscal_dispatch_t *const openblas_xscal_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
+  int    (*xswap_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
+} openblas_xswap_dispatch_t;
+extern const openblas_xswap_dispatch_t *const openblas_xswap_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   int    (*xgemv_n) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemv_t) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemv_r) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
@@ -1075,29 +2123,73 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*xgemv_u) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemv_s) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemv_d) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
-  int    (*xgeru_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
-  int    (*xgerc_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
-  int    (*xgerv_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
-  int    (*xgerd_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
+} openblas_xgemv_dispatch_t;
+extern const openblas_xgemv_dispatch_t *const openblas_xgemv_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
+  int    (*xgeru_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
+} openblas_xgeru_dispatch_t;
+extern const openblas_xgeru_dispatch_t *const openblas_xgeru_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
+  int    (*xgerc_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
+} openblas_xgerc_dispatch_t;
+extern const openblas_xgerc_dispatch_t *const openblas_xgerc_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
+  int    (*xgerv_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
+} openblas_xgerv_dispatch_t;
+extern const openblas_xgerv_dispatch_t *const openblas_xgerv_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
+  int    (*xgerd_k) (BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble *);
+} openblas_xgerd_dispatch_t;
+extern const openblas_xgerd_dispatch_t *const openblas_xgerd_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   int    (*xsymv_L) (BLASLONG, BLASLONG, xdouble,  xdouble, xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble *);
   int    (*xsymv_U) (BLASLONG, BLASLONG, xdouble,  xdouble, xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble *);
+} openblas_xsymv_dispatch_t;
+extern const openblas_xsymv_dispatch_t *const openblas_xsymv_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   int    (*xhemv_L) (BLASLONG, BLASLONG, xdouble,  xdouble, xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble *);
   int    (*xhemv_U) (BLASLONG, BLASLONG, xdouble,  xdouble, xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble *);
   int    (*xhemv_M) (BLASLONG, BLASLONG, xdouble,  xdouble, xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble *);
   int    (*xhemv_V) (BLASLONG, BLASLONG, xdouble,  xdouble, xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble  *, BLASLONG, xdouble *);
+} openblas_xhemv_dispatch_t;
+extern const openblas_xhemv_dispatch_t *const openblas_xhemv_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
   int    (*xgemm_kernel_n )(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG);
   int    (*xgemm_kernel_l )(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG);
   int    (*xgemm_kernel_r )(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG);
   int    (*xgemm_kernel_b )(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG);
   int    (*xgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, BLASLONG, xdouble *, BLASLONG, xdouble  *, BLASLONG);
-
   int    (*xgemm_incopy   )(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemm_itcopy   )(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemm_oncopy   )(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemm_otcopy   )(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
+} openblas_xgemm_dispatch_t;
+extern const openblas_xgemm_dispatch_t *const openblas_xgemm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
   int    (*xtrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*xtrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*xtrsm_kernel_LR)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
@@ -1106,7 +2198,6 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*xtrsm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*xtrsm_kernel_RR)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*xtrsm_kernel_RC)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
-
   int    (*xtrsm_iunucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
   int    (*xtrsm_iunncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
   int    (*xtrsm_iutucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
@@ -1123,7 +2214,12 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*xtrsm_olnncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
   int    (*xtrsm_oltucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
   int    (*xtrsm_oltncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, xdouble *);
+} openblas_xtrsm_dispatch_t;
+extern const openblas_xtrsm_dispatch_t *const openblas_xtrsm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
   int    (*xtrmm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*xtrmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*xtrmm_kernel_RR)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
@@ -1132,7 +2228,6 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*xtrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*xtrmm_kernel_LR)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
   int    (*xtrmm_kernel_LC)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG, BLASLONG);
-
   int    (*xtrmm_iunucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xtrmm_iunncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xtrmm_iutucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
@@ -1149,179 +2244,250 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
   int    (*xtrmm_olnncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xtrmm_oltucopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xtrmm_oltncopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
+} openblas_xtrmm_dispatch_t;
+extern const openblas_xtrmm_dispatch_t *const openblas_xtrmm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
   int    (*xsymm_iutcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xsymm_iltcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xsymm_outcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xsymm_oltcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
+} openblas_xsymm_dispatch_t;
+extern const openblas_xsymm_dispatch_t *const openblas_xsymm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
   int    (*xhemm_iutcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xhemm_iltcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xhemm_outcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xhemm_oltcopy)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
+} openblas_xhemm_dispatch_t;
+extern const openblas_xhemm_dispatch_t *const openblas_xhemm_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
-  int xgemm3m_p, xgemm3m_q, xgemm3m_r;
-  int xgemm3m_unroll_m, xgemm3m_unroll_n, xgemm3m_unroll_mn;
-
+#ifdef EXPRECISION
+typedef struct {
   int    (*xgemm3m_kernel)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *, xdouble *, xdouble *, BLASLONG);
-
   int    (*xgemm3m_incopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemm3m_incopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemm3m_incopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemm3m_itcopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemm3m_itcopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
   int    (*xgemm3m_itcopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
-
   int    (*xgemm3m_oncopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xgemm3m_oncopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xgemm3m_oncopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xgemm3m_otcopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xgemm3m_otcopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xgemm3m_otcopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble, xdouble, xdouble *);
+} openblas_xgemm3m_dispatch_t;
+extern const openblas_xgemm3m_dispatch_t *const openblas_xgemm3m_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
   int    (*xsymm3m_iucopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xsymm3m_ilcopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xsymm3m_iucopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xsymm3m_ilcopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xsymm3m_iucopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xsymm3m_ilcopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
-
   int    (*xsymm3m_oucopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xsymm3m_olcopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xsymm3m_oucopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xsymm3m_olcopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xsymm3m_oucopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xsymm3m_olcopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
+} openblas_xsymm3m_dispatch_t;
+extern const openblas_xsymm3m_dispatch_t *const openblas_xsymm3m_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
   int    (*xhemm3m_iucopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xhemm3m_ilcopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xhemm3m_iucopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xhemm3m_ilcopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xhemm3m_iucopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
   int    (*xhemm3m_ilcopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble *);
-
   int    (*xhemm3m_oucopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xhemm3m_olcopyb)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xhemm3m_oucopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xhemm3m_olcopyr)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xhemm3m_oucopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
   int    (*xhemm3m_olcopyi)(BLASLONG, BLASLONG, xdouble *, BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble, xdouble *);
+} openblas_xhemm3m_dispatch_t;
+extern const openblas_xhemm3m_dispatch_t *const openblas_xhemm3m_dispatch[OPENBLAS_NUM_CORES];
+#endif
 
+#ifdef EXPRECISION
+typedef struct {
   int	 (*xneg_tcopy)   (BLASLONG, BLASLONG, xdouble *, BLASLONG, xdouble *);
+} openblas_xneg_dispatch_t;
+extern const openblas_xneg_dispatch_t *const openblas_xneg_dispatch[OPENBLAS_NUM_CORES];
+#endif
+
+#ifdef EXPRECISION
+typedef struct {
   int    (*xlaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, xdouble *, BLASLONG, blasint *, xdouble *);
-
+} openblas_xlaswp_dispatch_t;
+extern const openblas_xlaswp_dispatch_t *const openblas_xlaswp_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
-
-  void (*init)(void);
-
-  int snum_opt, dnum_opt, qnum_opt;
 #if (BUILD_SINGLE==1)
+typedef struct {
   int    (*saxpby_k)     (BLASLONG, float, float*, BLASLONG,float, float*, BLASLONG);
+} openblas_saxpby_dispatch_t;
+extern const openblas_saxpby_dispatch_t *const openblas_saxpby_dispatch[OPENBLAS_NUM_CORES];
 #endif
+
 #if (BUILD_DOUBLE==1)
+typedef struct {
   int    (*daxpby_k)     (BLASLONG, double, double*, BLASLONG,double, double*, BLASLONG);
+} openblas_daxpby_dispatch_t;
+extern const openblas_daxpby_dispatch_t *const openblas_daxpby_dispatch[OPENBLAS_NUM_CORES];
 #endif
+
 #if (BUILD_COMPLEX==1)
+typedef struct {
   int    (*caxpby_k)     (BLASLONG, float, float,  float*, BLASLONG,float,float, float*, BLASLONG);
+} openblas_caxpby_dispatch_t;
+extern const openblas_caxpby_dispatch_t *const openblas_caxpby_dispatch[OPENBLAS_NUM_CORES];
 #endif
+
 #if (BUILD_COMPLEX16==1)
+typedef struct {
   int    (*zaxpby_k)     (BLASLONG, double, double,  double*, BLASLONG,double,double, double*, BLASLONG);
+} openblas_zaxpby_dispatch_t;
+extern const openblas_zaxpby_dispatch_t *const openblas_zaxpby_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
 #if (BUILD_SINGLE==1)
+typedef struct {
   int    (*somatcopy_k_cn)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
   int    (*somatcopy_k_ct)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
   int    (*somatcopy_k_rn)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
   int    (*somatcopy_k_rt)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
+} openblas_somatcopy_dispatch_t;
+extern const openblas_somatcopy_dispatch_t *const openblas_somatcopy_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
-#if (BUILD_DOUBLE==1) 
+#if (BUILD_DOUBLE==1)
+typedef struct {
   int    (*domatcopy_k_cn)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
   int    (*domatcopy_k_ct)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
   int    (*domatcopy_k_rn)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
   int    (*domatcopy_k_rt)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
+} openblas_domatcopy_dispatch_t;
+extern const openblas_domatcopy_dispatch_t *const openblas_domatcopy_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
 #if (BUILD_COMPLEX==1)
+typedef struct {
   int    (*comatcopy_k_cn)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
   int    (*comatcopy_k_ct)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
   int    (*comatcopy_k_rn)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
   int    (*comatcopy_k_rt)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
-
   int    (*comatcopy_k_cnc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
   int    (*comatcopy_k_ctc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
   int    (*comatcopy_k_rnc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
   int    (*comatcopy_k_rtc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
+} openblas_comatcopy_dispatch_t;
+extern const openblas_comatcopy_dispatch_t *const openblas_comatcopy_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
 #if (BUILD_COMPLEX16==1)
+typedef struct {
   int    (*zomatcopy_k_cn)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
   int    (*zomatcopy_k_ct)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
   int    (*zomatcopy_k_rn)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
   int    (*zomatcopy_k_rt)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
-
   int    (*zomatcopy_k_cnc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
   int    (*zomatcopy_k_ctc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
   int    (*zomatcopy_k_rnc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
   int    (*zomatcopy_k_rtc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
+} openblas_zomatcopy_dispatch_t;
+extern const openblas_zomatcopy_dispatch_t *const openblas_zomatcopy_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
 #if (BUILD_SINGLE==1)
+typedef struct {
   int    (*simatcopy_k_cn)	(BLASLONG, BLASLONG, float, float*, BLASLONG);
   int    (*simatcopy_k_ct)	(BLASLONG, BLASLONG, float, float*, BLASLONG);
   int    (*simatcopy_k_rn)	(BLASLONG, BLASLONG, float, float*, BLASLONG);
   int    (*simatcopy_k_rt)	(BLASLONG, BLASLONG, float, float*, BLASLONG);
+} openblas_simatcopy_dispatch_t;
+extern const openblas_simatcopy_dispatch_t *const openblas_simatcopy_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
 #if (BUILD_DOUBLE==1)
+typedef struct {
   int    (*dimatcopy_k_cn)	(BLASLONG, BLASLONG, double, double*, BLASLONG);
   int    (*dimatcopy_k_ct)	(BLASLONG, BLASLONG, double, double*, BLASLONG);
   int    (*dimatcopy_k_rn)	(BLASLONG, BLASLONG, double, double*, BLASLONG);
   int    (*dimatcopy_k_rt)	(BLASLONG, BLASLONG, double, double*, BLASLONG);
+} openblas_dimatcopy_dispatch_t;
+extern const openblas_dimatcopy_dispatch_t *const openblas_dimatcopy_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
 #if (BUILD_COMPLEX==1)
+typedef struct {
   int    (*cimatcopy_k_cn)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
   int    (*cimatcopy_k_ct)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
   int    (*cimatcopy_k_rn)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
   int    (*cimatcopy_k_rt)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
-
   int    (*cimatcopy_k_cnc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
   int    (*cimatcopy_k_ctc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
   int    (*cimatcopy_k_rnc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
   int    (*cimatcopy_k_rtc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
+} openblas_cimatcopy_dispatch_t;
+extern const openblas_cimatcopy_dispatch_t *const openblas_cimatcopy_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
 #if (BUILD_COMPLEX16==1)
+typedef struct {
   int    (*zimatcopy_k_cn)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
   int    (*zimatcopy_k_ct)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
   int    (*zimatcopy_k_rn)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
   int    (*zimatcopy_k_rt)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
-
   int    (*zimatcopy_k_cnc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
   int    (*zimatcopy_k_ctc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
   int    (*zimatcopy_k_rnc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
   int    (*zimatcopy_k_rtc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
+} openblas_zimatcopy_dispatch_t;
+extern const openblas_zimatcopy_dispatch_t *const openblas_zimatcopy_dispatch[OPENBLAS_NUM_CORES];
 #endif
 
 #if (BUILD_SINGLE==1)
+typedef struct {
   int    (*sgeadd_k) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG, BLASLONG, BLASLONG); 
+} openblas_sgeadd_dispatch_t;
+extern const openblas_sgeadd_dispatch_t *const openblas_sgeadd_dispatch[OPENBLAS_NUM_CORES];
 #endif
+
 #if (BUILD_DOUBLE==1)
+typedef struct {
   int    (*dgeadd_k) (BLASLONG, BLASLONG, double, double *, BLASLONG, double, double *, BLASLONG, BLASLONG, BLASLONG); 
+} openblas_dgeadd_dispatch_t;
+extern const openblas_dgeadd_dispatch_t *const openblas_dgeadd_dispatch[OPENBLAS_NUM_CORES];
 #endif
+
 #if (BUILD_COMPLEX==1)
+typedef struct {
   int    (*cgeadd_k) (BLASLONG, BLASLONG, float, float,  float *,  BLASLONG, float, float, float *, BLASLONG, BLASLONG, BLASLONG); 
+} openblas_cgeadd_dispatch_t;
+extern const openblas_cgeadd_dispatch_t *const openblas_cgeadd_dispatch[OPENBLAS_NUM_CORES];
 #endif
+
 #if (BUILD_COMPLEX16==1)
+typedef struct {
   int    (*zgeadd_k) (BLASLONG, BLASLONG, double, double, double *, BLASLONG, double, double, double *, BLASLONG, BLASLONG, BLASLONG); 
+} openblas_zgeadd_dispatch_t;
+extern const openblas_zgeadd_dispatch_t *const openblas_zgeadd_dispatch[OPENBLAS_NUM_CORES];
 #endif
-} gotoblas_t;
-
-extern gotoblas_t *gotoblas;
-
-#define FUNC_OFFSET(func)	(size_t)(&((gotoblas_t *)NULL)->func)
 
 #define DTB_ENTRIES  gotoblas -> dtb_entries
 #define GEMM_OFFSET_A	gotoblas -> offsetA
@@ -1460,7 +2626,7 @@ extern gotoblas_t *gotoblas;
 
 #else
 
-#define FUNC_OFFSET(func)	(size_t)(func)
+#define OPENBLAS_DISPATCH_OFFSET(group, func)	(size_t)(func)
 
 #define DTB_ENTRIES  DTB_DEFAULT_ENTRIES
 

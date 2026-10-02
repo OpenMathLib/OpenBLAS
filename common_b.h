@@ -50,17 +50,17 @@
 #define BGEMM_KERNEL bgemm_kernel
 
 #else
-#define BGEMV_N_K          gotoblas->bgemv_n
-#define BGEMV_T_K          gotoblas->bgemv_t
+#define BGEMV_N_K          OPENBLAS_DISPATCH(bgemv)->bgemv_n
+#define BGEMV_T_K          OPENBLAS_DISPATCH(bgemv)->bgemv_t
 
-#define	BSCAL_K            gotoblas->bscal_k
+#define	BSCAL_K            OPENBLAS_DISPATCH(bscal)->bscal_k
 
-#define BGEMM_ONCOPY gotoblas->bgemm_oncopy
-#define BGEMM_OTCOPY gotoblas->bgemm_otcopy
-#define BGEMM_INCOPY gotoblas->bgemm_incopy
-#define BGEMM_ITCOPY gotoblas->bgemm_itcopy
-#define BGEMM_BETA gotoblas->bgemm_beta
-#define BGEMM_KERNEL gotoblas->bgemm_kernel
+#define BGEMM_ONCOPY OPENBLAS_DISPATCH(bgemm)->bgemm_oncopy
+#define BGEMM_OTCOPY OPENBLAS_DISPATCH(bgemm)->bgemm_otcopy
+#define BGEMM_INCOPY OPENBLAS_DISPATCH(bgemm)->bgemm_incopy
+#define BGEMM_ITCOPY OPENBLAS_DISPATCH(bgemm)->bgemm_itcopy
+#define BGEMM_BETA OPENBLAS_DISPATCH(bgemm)->bgemm_beta
+#define BGEMM_KERNEL OPENBLAS_DISPATCH(bgemm)->bgemm_kernel
 
 #endif
 

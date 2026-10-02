@@ -209,150 +209,151 @@
 
 #else
 
-#define	DAMAX_K			gotoblas -> damax_k
-#define	DAMIN_K			gotoblas -> damin_k
-#define	DMAX_K			gotoblas -> dmax_k
-#define	DMIN_K			gotoblas -> dmin_k
-#define	IDAMAX_K		gotoblas -> idamax_k
-#define	IDAMIN_K		gotoblas -> idamin_k
-#define	IDMAX_K			gotoblas -> idmax_k
-#define	IDMIN_K			gotoblas -> idmin_k
-#define	DASUM_K			gotoblas -> dasum_k
-#define	DAXPYU_K		gotoblas -> daxpy_k
-#define	DAXPYC_K		gotoblas -> daxpy_k
-#define	DCOPY_K			gotoblas -> dcopy_k
-#define	DDOTU_K			gotoblas -> ddot_k
-#define	DDOTC_K			gotoblas -> ddot_k
-#define	DNRM2_K			gotoblas -> dnrm2_k
-#define	DSCAL_K			gotoblas -> dscal_k
-#define	DSUM_K			gotoblas -> dsum_k
-#define	DSWAP_K			gotoblas -> dswap_k
-#define	DROT_K			gotoblas -> drot_k
-#define	DROTM_K			gotoblas -> drotm_k
+#define	DAMAX_K			OPENBLAS_DISPATCH(damax) -> damax_k
+#define	DAMIN_K			OPENBLAS_DISPATCH(damin) -> damin_k
+#define	DMAX_K			OPENBLAS_DISPATCH(dmax) -> dmax_k
+#define	DMIN_K			OPENBLAS_DISPATCH(dmin) -> dmin_k
+#define	IDAMAX_K		OPENBLAS_DISPATCH(idamax) -> idamax_k
+#define	IDAMIN_K		OPENBLAS_DISPATCH(idamin) -> idamin_k
+#define	IDMAX_K			OPENBLAS_DISPATCH(idmax) -> idmax_k
+#define	IDMIN_K			OPENBLAS_DISPATCH(idmin) -> idmin_k
+#define	DASUM_K			OPENBLAS_DISPATCH(dasum) -> dasum_k
+#define	DAXPYU_K		OPENBLAS_DISPATCH(daxpy) -> daxpy_k
+#define	DAXPYC_K		OPENBLAS_DISPATCH(daxpy) -> daxpy_k
+#define	DCOPY_K			OPENBLAS_DISPATCH(dcopy) -> dcopy_k
+#define	DDOTU_K			OPENBLAS_DISPATCH(ddot) -> ddot_k
+#define	DDOTC_K			OPENBLAS_DISPATCH(ddot) -> ddot_k
+#define	DNRM2_K			OPENBLAS_DISPATCH(dnrm2) -> dnrm2_k
+#define	DSCAL_K			OPENBLAS_DISPATCH(dscal) -> dscal_k
+#define	DSUM_K			OPENBLAS_DISPATCH(dsum) -> dsum_k
+#define	DSWAP_K			OPENBLAS_DISPATCH(dswap) -> dswap_k
+#define	DROT_K			OPENBLAS_DISPATCH(drot) -> drot_k
+#define	DROTM_K			OPENBLAS_DISPATCH(drotm) -> drotm_k
 
-#define	DGEMV_N			gotoblas -> dgemv_n
-#define	DGEMV_T			gotoblas -> dgemv_t
-#define	DGEMV_R			gotoblas -> dgemv_n
-#define	DGEMV_C			gotoblas -> dgemv_t
-#define	DGEMV_O			gotoblas -> dgemv_n
-#define	DGEMV_U			gotoblas -> dgemv_t
-#define	DGEMV_S			gotoblas -> dgemv_n
-#define	DGEMV_D			gotoblas -> dgemv_t
+#define	DGEMV_N			OPENBLAS_DISPATCH(dgemv) -> dgemv_n
+#define	DGEMV_T			OPENBLAS_DISPATCH(dgemv) -> dgemv_t
+#define	DGEMV_R			OPENBLAS_DISPATCH(dgemv) -> dgemv_n
+#define	DGEMV_C			OPENBLAS_DISPATCH(dgemv) -> dgemv_t
+#define	DGEMV_O			OPENBLAS_DISPATCH(dgemv) -> dgemv_n
+#define	DGEMV_U			OPENBLAS_DISPATCH(dgemv) -> dgemv_t
+#define	DGEMV_S			OPENBLAS_DISPATCH(dgemv) -> dgemv_n
+#define	DGEMV_D			OPENBLAS_DISPATCH(dgemv) -> dgemv_t
 
-#define	DGERU_K			gotoblas -> dger_k
-#define	DGERC_K			gotoblas -> dger_k
-#define	DGERV_K			gotoblas -> dger_k
-#define	DGERD_K			gotoblas -> dger_k
+#define	DGERU_K			OPENBLAS_DISPATCH(dger) -> dger_k
+#define	DGERC_K			OPENBLAS_DISPATCH(dger) -> dger_k
+#define	DGERV_K			OPENBLAS_DISPATCH(dger) -> dger_k
+#define	DGERD_K			OPENBLAS_DISPATCH(dger) -> dger_k
 
-#define DSYMV_U			gotoblas -> dsymv_U
-#define DSYMV_L			gotoblas -> dsymv_L
+#define DSYMV_U			OPENBLAS_DISPATCH(dsymv) -> dsymv_U
+#define DSYMV_L			OPENBLAS_DISPATCH(dsymv) -> dsymv_L
 
 #define DSYMV_THREAD_U		dsymv_thread_U
 #define DSYMV_THREAD_L		dsymv_thread_L
 
-#define	DGEMM_ONCOPY		gotoblas -> dgemm_oncopy
-#define	DGEMM_OTCOPY		gotoblas -> dgemm_otcopy
-#define	DGEMM_INCOPY		gotoblas -> dgemm_incopy
-#define	DGEMM_ITCOPY		gotoblas -> dgemm_itcopy
+#define	DGEMM_ONCOPY		OPENBLAS_DISPATCH(dgemm) -> dgemm_oncopy
+#define	DGEMM_OTCOPY		OPENBLAS_DISPATCH(dgemm) -> dgemm_otcopy
+#define	DGEMM_INCOPY		OPENBLAS_DISPATCH(dgemm) -> dgemm_incopy
+#define	DGEMM_ITCOPY		OPENBLAS_DISPATCH(dgemm) -> dgemm_itcopy
 
-#define	DTRMM_OUNUCOPY		gotoblas -> dtrmm_ounucopy
-#define	DTRMM_OUTUCOPY		gotoblas -> dtrmm_outucopy
-#define	DTRMM_OLNUCOPY		gotoblas -> dtrmm_olnucopy
-#define	DTRMM_OLTUCOPY		gotoblas -> dtrmm_oltucopy
-#define	DTRSM_OUNUCOPY		gotoblas -> dtrsm_ounucopy
-#define	DTRSM_OUTUCOPY		gotoblas -> dtrsm_outucopy
-#define	DTRSM_OLNUCOPY		gotoblas -> dtrsm_olnucopy
-#define	DTRSM_OLTUCOPY		gotoblas -> dtrsm_oltucopy
+#define	DTRMM_OUNUCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_ounucopy
+#define	DTRMM_OUTUCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_outucopy
+#define	DTRMM_OLNUCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_olnucopy
+#define	DTRMM_OLTUCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_oltucopy
+#define	DTRSM_OUNUCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_ounucopy
+#define	DTRSM_OUTUCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_outucopy
+#define	DTRSM_OLNUCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_olnucopy
+#define	DTRSM_OLTUCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_oltucopy
 
-#define	DTRMM_IUNUCOPY		gotoblas -> dtrmm_iunucopy
-#define	DTRMM_IUTUCOPY		gotoblas -> dtrmm_iutucopy
-#define	DTRMM_ILNUCOPY		gotoblas -> dtrmm_ilnucopy
-#define	DTRMM_ILTUCOPY		gotoblas -> dtrmm_iltucopy
-#define	DTRSM_IUNUCOPY		gotoblas -> dtrsm_iunucopy
-#define	DTRSM_IUTUCOPY		gotoblas -> dtrsm_iutucopy
-#define	DTRSM_ILNUCOPY		gotoblas -> dtrsm_ilnucopy
-#define	DTRSM_ILTUCOPY		gotoblas -> dtrsm_iltucopy
+#define	DTRMM_IUNUCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_iunucopy
+#define	DTRMM_IUTUCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_iutucopy
+#define	DTRMM_ILNUCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_ilnucopy
+#define	DTRMM_ILTUCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_iltucopy
+#define	DTRSM_IUNUCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_iunucopy
+#define	DTRSM_IUTUCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_iutucopy
+#define	DTRSM_ILNUCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_ilnucopy
+#define	DTRSM_ILTUCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_iltucopy
 
-#define	DTRMM_OUNNCOPY		gotoblas -> dtrmm_ounncopy
-#define	DTRMM_OUTNCOPY		gotoblas -> dtrmm_outncopy
-#define	DTRMM_OLNNCOPY		gotoblas -> dtrmm_olnncopy
-#define	DTRMM_OLTNCOPY		gotoblas -> dtrmm_oltncopy
-#define	DTRSM_OUNNCOPY		gotoblas -> dtrsm_ounncopy
-#define	DTRSM_OUTNCOPY		gotoblas -> dtrsm_outncopy
-#define	DTRSM_OLNNCOPY		gotoblas -> dtrsm_olnncopy
-#define	DTRSM_OLTNCOPY		gotoblas -> dtrsm_oltncopy
+#define	DTRMM_OUNNCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_ounncopy
+#define	DTRMM_OUTNCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_outncopy
+#define	DTRMM_OLNNCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_olnncopy
+#define	DTRMM_OLTNCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_oltncopy
+#define	DTRSM_OUNNCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_ounncopy
+#define	DTRSM_OUTNCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_outncopy
+#define	DTRSM_OLNNCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_olnncopy
+#define	DTRSM_OLTNCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_oltncopy
 
-#define	DTRMM_IUNNCOPY		gotoblas -> dtrmm_iunncopy
-#define	DTRMM_IUTNCOPY		gotoblas -> dtrmm_iutncopy
-#define	DTRMM_ILNNCOPY		gotoblas -> dtrmm_ilnncopy
-#define	DTRMM_ILTNCOPY		gotoblas -> dtrmm_iltncopy
-#define	DSYMM_INCOPY		    gotoblas -> dsymm_incopy
-#define	DSYMM_ITCOPY		    gotoblas -> dsymm_itcopy
-#define	DTRMM_INCOPY		gotoblas -> dtrmm_incopy
-#define	DTRMM_ITCOPY		gotoblas -> dtrmm_itcopy
+#define	DTRMM_IUNNCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_iunncopy
+#define	DTRMM_IUTNCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_iutncopy
+#define	DTRMM_ILNNCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_ilnncopy
+#define	DTRMM_ILTNCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_iltncopy
+#define	DSYMM_INCOPY		    OPENBLAS_DISPATCH(dsymm) -> dsymm_incopy
+#define	DSYMM_ITCOPY		    OPENBLAS_DISPATCH(dsymm) -> dsymm_itcopy
+#define	DTRMM_INCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_incopy
+#define	DTRMM_ITCOPY		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_itcopy
 
-#define	DTRSM_IUNNCOPY		gotoblas -> dtrsm_iunncopy
-#define	DTRSM_IUTNCOPY		gotoblas -> dtrsm_iutncopy
-#define	DTRSM_ILNNCOPY		gotoblas -> dtrsm_ilnncopy
-#define	DTRSM_ILTNCOPY		gotoblas -> dtrsm_iltncopy
+#define	DTRSM_IUNNCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_iunncopy
+#define	DTRSM_IUTNCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_iutncopy
+#define	DTRSM_ILNNCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_ilnncopy
+#define	DTRSM_ILTNCOPY		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_iltncopy
 
-#define	DGEMM_BETA	    	gotoblas -> dgemm_beta
-#define	DGEMM_KERNEL		gotoblas -> dgemm_kernel
-#define	SME_DGEMM_KERNEL	gotoblas -> sme_dgemm_kernel
-#define	DSYMM_KERNEL		gotoblas -> dsymm_kernel
-#define	DTRMM_GEMM_KERNEL	gotoblas -> dtrmm_gemm_kernel
+#define	DGEMM_BETA	    	OPENBLAS_DISPATCH(dgemm) -> dgemm_beta
+#define	DGEMM_KERNEL		OPENBLAS_DISPATCH(dgemm) -> dgemm_kernel
+#define	SME_DGEMM_KERNEL	OPENBLAS_DISPATCH(dgemm) -> sme_dgemm_kernel
+#define	DSYMM_KERNEL		OPENBLAS_DISPATCH(dsymm) -> dsymm_kernel
+#define	DTRMM_GEMM_KERNEL	OPENBLAS_DISPATCH(dtrmm) -> dtrmm_gemm_kernel
 
-#define	DTRMM_KERNEL_LN		gotoblas -> dtrmm_kernel_LN
-#define	DTRMM_KERNEL_LT		gotoblas -> dtrmm_kernel_LT
-#define	DTRMM_KERNEL_LR		gotoblas -> dtrmm_kernel_LN
-#define	DTRMM_KERNEL_LC		gotoblas -> dtrmm_kernel_LT
-#define	DTRMM_KERNEL_RN		gotoblas -> dtrmm_kernel_RN
-#define	DTRMM_KERNEL_RT		gotoblas -> dtrmm_kernel_RT
-#define	DTRMM_KERNEL_RR		gotoblas -> dtrmm_kernel_RN
-#define	DTRMM_KERNEL_RC		gotoblas -> dtrmm_kernel_RT
+#define	DTRMM_KERNEL_LN		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_kernel_LN
+#define	DTRMM_KERNEL_LT		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_kernel_LT
+#define	DTRMM_KERNEL_LR		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_kernel_LN
+#define	DTRMM_KERNEL_LC		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_kernel_LT
+#define	DTRMM_KERNEL_RN		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_kernel_RN
+#define	DTRMM_KERNEL_RT		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_kernel_RT
+#define	DTRMM_KERNEL_RR		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_kernel_RN
+#define	DTRMM_KERNEL_RC		OPENBLAS_DISPATCH(dtrmm) -> dtrmm_kernel_RT
 
-#define	DTRSM_KERNEL_LN		gotoblas -> dtrsm_kernel_LN
-#define	DTRSM_KERNEL_LT		gotoblas -> dtrsm_kernel_LT
-#define	DTRSM_KERNEL_LR		gotoblas -> dtrsm_kernel_LN
-#define	DTRSM_KERNEL_LC		gotoblas -> dtrsm_kernel_LT
-#define	DTRSM_KERNEL_RN		gotoblas -> dtrsm_kernel_RN
-#define	DTRSM_KERNEL_RT		gotoblas -> dtrsm_kernel_RT
-#define	DTRSM_KERNEL_RR		gotoblas -> dtrsm_kernel_RN
-#define	DTRSM_KERNEL_RC		gotoblas -> dtrsm_kernel_RT
+#define	DTRSM_KERNEL_LN		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_kernel_LN
+#define	DTRSM_KERNEL_LT		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_kernel_LT
+#define	DTRSM_KERNEL_LR		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_kernel_LN
+#define	DTRSM_KERNEL_LC		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_kernel_LT
+#define	DTRSM_KERNEL_RN		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_kernel_RN
+#define	DTRSM_KERNEL_RT		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_kernel_RT
+#define	DTRSM_KERNEL_RR		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_kernel_RN
+#define	DTRSM_KERNEL_RC		OPENBLAS_DISPATCH(dtrsm) -> dtrsm_kernel_RT
 
-#define	DSYMM_IUTCOPY		gotoblas -> dsymm_iutcopy
-#define	DSYMM_ILTCOPY		gotoblas -> dsymm_iltcopy
-#define	DSYMM_OUTCOPY		gotoblas -> dsymm_outcopy
-#define	DSYMM_OLTCOPY		gotoblas -> dsymm_oltcopy
+#define	DSYMM_IUTCOPY		OPENBLAS_DISPATCH(dsymm) -> dsymm_iutcopy
+#define	DSYMM_ILTCOPY		OPENBLAS_DISPATCH(dsymm) -> dsymm_iltcopy
+#define	DSYMM_OUTCOPY		OPENBLAS_DISPATCH(dsymm) -> dsymm_outcopy
+#define	DSYMM_OLTCOPY		OPENBLAS_DISPATCH(dsymm) -> dsymm_oltcopy
 
-#define DNEG_TCOPY		gotoblas -> dneg_tcopy
-#define DLASWP_NCOPY		gotoblas -> dlaswp_ncopy
+#define DNEG_TCOPY		OPENBLAS_DISPATCH(dneg) -> dneg_tcopy
+#define DLASWP_NCOPY		OPENBLAS_DISPATCH(dlaswp) -> dlaswp_ncopy
 
-#define	DAXPBY_K		gotoblas -> daxpby_k
-#define DOMATCOPY_K_CN		gotoblas -> domatcopy_k_cn
-#define DOMATCOPY_K_RN		gotoblas -> domatcopy_k_rn
-#define DOMATCOPY_K_CT		gotoblas -> domatcopy_k_ct
-#define DOMATCOPY_K_RT		gotoblas -> domatcopy_k_rt
-#define DIMATCOPY_K_CN		gotoblas -> dimatcopy_k_cn
-#define DIMATCOPY_K_RN		gotoblas -> dimatcopy_k_rn
-#define DIMATCOPY_K_CT		gotoblas -> dimatcopy_k_ct
-#define DIMATCOPY_K_RT		gotoblas -> dimatcopy_k_rt
+#define	DAXPBY_K		OPENBLAS_DISPATCH(daxpby) -> daxpby_k
+#define DOMATCOPY_K_CN		OPENBLAS_DISPATCH(domatcopy) -> domatcopy_k_cn
+#define DOMATCOPY_K_RN		OPENBLAS_DISPATCH(domatcopy) -> domatcopy_k_rn
+#define DOMATCOPY_K_CT		OPENBLAS_DISPATCH(domatcopy) -> domatcopy_k_ct
+#define DOMATCOPY_K_RT		OPENBLAS_DISPATCH(domatcopy) -> domatcopy_k_rt
+#define DIMATCOPY_K_CN		OPENBLAS_DISPATCH(dimatcopy) -> dimatcopy_k_cn
+#define DIMATCOPY_K_RN		OPENBLAS_DISPATCH(dimatcopy) -> dimatcopy_k_rn
+#define DIMATCOPY_K_CT		OPENBLAS_DISPATCH(dimatcopy) -> dimatcopy_k_ct
+#define DIMATCOPY_K_RT		OPENBLAS_DISPATCH(dimatcopy) -> dimatcopy_k_rt
 
-#define DGEADD_K                gotoblas -> dgeadd_k 
+#define DGEADD_K                OPENBLAS_DISPATCH(dgeadd) -> dgeadd_k 
 
-#define DGEMM_SMALL_MATRIX_PERMIT	gotoblas -> dgemm_small_matrix_permit
+#define DGEMM_SMALL_MATRIX_PERMIT	OPENBLAS_DISPATCH(dgemm) -> dgemm_small_matrix_permit
 
 #endif
 
-#define DGEMM_SMALL_KERNEL_NN		FUNC_OFFSET(dgemm_small_kernel_nn)
-#define DGEMM_SMALL_KERNEL_NT		FUNC_OFFSET(dgemm_small_kernel_nt)
-#define DGEMM_SMALL_KERNEL_TN		FUNC_OFFSET(dgemm_small_kernel_tn)
-#define DGEMM_SMALL_KERNEL_TT		FUNC_OFFSET(dgemm_small_kernel_tt)
+#define DGEMM_SMALL_KERNEL_BASE		OPENBLAS_DISPATCH_BASE(dgemm)
+#define DGEMM_SMALL_KERNEL_NN		OPENBLAS_DISPATCH_OFFSET(dgemm, dgemm_small_kernel_nn)
+#define DGEMM_SMALL_KERNEL_NT		OPENBLAS_DISPATCH_OFFSET(dgemm, dgemm_small_kernel_nt)
+#define DGEMM_SMALL_KERNEL_TN		OPENBLAS_DISPATCH_OFFSET(dgemm, dgemm_small_kernel_tn)
+#define DGEMM_SMALL_KERNEL_TT		OPENBLAS_DISPATCH_OFFSET(dgemm, dgemm_small_kernel_tt)
 
-#define DGEMM_SMALL_KERNEL_B0_NN	FUNC_OFFSET(dgemm_small_kernel_b0_nn)
-#define DGEMM_SMALL_KERNEL_B0_NT	FUNC_OFFSET(dgemm_small_kernel_b0_nt)
-#define DGEMM_SMALL_KERNEL_B0_TN	FUNC_OFFSET(dgemm_small_kernel_b0_tn)
-#define DGEMM_SMALL_KERNEL_B0_TT	FUNC_OFFSET(dgemm_small_kernel_b0_tt)
+#define DGEMM_SMALL_KERNEL_B0_NN	OPENBLAS_DISPATCH_OFFSET(dgemm, dgemm_small_kernel_b0_nn)
+#define DGEMM_SMALL_KERNEL_B0_NT	OPENBLAS_DISPATCH_OFFSET(dgemm, dgemm_small_kernel_b0_nt)
+#define DGEMM_SMALL_KERNEL_B0_TN	OPENBLAS_DISPATCH_OFFSET(dgemm, dgemm_small_kernel_b0_tn)
+#define DGEMM_SMALL_KERNEL_B0_TT	OPENBLAS_DISPATCH_OFFSET(dgemm, dgemm_small_kernel_b0_tt)
 
 
 #define	DGEMM_NN		dgemm_nn
