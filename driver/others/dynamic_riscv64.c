@@ -113,6 +113,9 @@ unsigned detect_riscv64_get_vlenb(void);
 uint64_t detect_riscv64_rvv100(void);
 
 extern gotoblas_t gotoblas_RISCV64_GENERIC;
+#if !defined(DYNAMIC_LIST) || defined(DYN_RISCV64_ZVL1024B)
+extern gotoblas_t gotoblas_RISCV64_ZVL1024B;
+#endif
 #if !defined(DYNAMIC_LIST) || defined(DYN_RISCV64_ZVL256B)
 extern gotoblas_t gotoblas_RISCV64_ZVL256B;
 #endif
@@ -120,12 +123,14 @@ extern gotoblas_t gotoblas_RISCV64_ZVL256B;
 extern gotoblas_t gotoblas_RISCV64_ZVL128B;
 #endif
 
-#define CPU_GENERIC         0
-#define CPU_RISCV64_ZVL256B 1
-#define CPU_RISCV64_ZVL128B 2
+#define CPU_GENERIC          0
+#define CPU_RISCV64_ZVL1024B 1
+#define CPU_RISCV64_ZVL256B  2
+#define CPU_RISCV64_ZVL128B  3
 
 static char *cpuname[] = {
 	"riscv64_generic",
+	"riscv64_zvl1024b",
 	"riscv64_zvl256b",
 	"riscv64_zvl128b"
 };
@@ -135,6 +140,10 @@ extern int openblas_verbose(void);
 extern void openblas_warning(int verbose, const char* msg);
 
 char* gotoblas_corename(void) {
+#if !defined(DYNAMIC_LIST) || defined(DYN_RISCV64_ZVL1024B)
+	if (gotoblas == &gotoblas_RISCV64_ZVL1024B)
+		return cpuname[CPU_RISCV64_ZVL1024B];
+#endif
 #if !defined(DYNAMIC_LIST) || defined(DYN_RISCV64_ZVL256B)
 	if (gotoblas == &gotoblas_RISCV64_ZVL256B)
 		return cpuname[CPU_RISCV64_ZVL256B];
@@ -206,6 +215,10 @@ static gotoblas_t* get_coretype(void) {
 
 	if (vlenb < 16)
 		return NULL;
+#if !defined(DYNAMIC_LIST) || defined(DYN_RISCV64_ZVL1024B)
+	if (vlenb >= 128)
+		return &gotoblas_RISCV64_ZVL1024B;
+#endif
 #if !defined(DYNAMIC_LIST) || defined(DYN_RISCV64_ZVL256B)
 	if (vlenb >= 32)
 		return &gotoblas_RISCV64_ZVL256B;
@@ -228,6 +241,16 @@ static gotoblas_t* force_coretype(char* coretype) {
 
 	if (i == CPU_GENERIC)
 		return &gotoblas_RISCV64_GENERIC;
+
+	if (i == CPU_RISCV64_ZVL1024B) {
+#if !defined(DYNAMIC_LIST) || defined(DYN_RISCV64_ZVL1024B)
+		return &gotoblas_RISCV64_ZVL1024B;
+#else
+		openblas_warning(1,
+				 "riscv64_zvl1024b support not compiled in\n");
+		return NULL;
+#endif
+	}
 
 	if (i == CPU_RISCV64_ZVL256B) {
 #if !defined(DYNAMIC_LIST) || defined(DYN_RISCV64_ZVL256B)

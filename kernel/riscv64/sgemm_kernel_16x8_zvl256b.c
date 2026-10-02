@@ -69,15 +69,15 @@ static FORCEINLINE FLOAT* M_TAIL_ONE(BLASLONG K, const BLASLONG M, const BLASLON
 
         if (M <= 2) {
             if (K >= 8) {
-                vfloat32m8_t B00 = __riscv_vle32_v_f32m8(B, N * 8);
-                B0 = __riscv_vget_v_f32m8_f32m1(B00, 0);
-                B1 = __riscv_vget_v_f32m8_f32m1(B00, 1);
-                B2 = __riscv_vget_v_f32m8_f32m1(B00, 2);
-                B3 = __riscv_vget_v_f32m8_f32m1(B00, 3);
-                B4 = __riscv_vget_v_f32m8_f32m1(B00, 4);
-                B5 = __riscv_vget_v_f32m8_f32m1(B00, 5);
-                B6 = __riscv_vget_v_f32m8_f32m1(B00, 6);
-                B7 = __riscv_vget_v_f32m8_f32m1(B00, 7);
+                /* VLEN-portable: split load (avoid m8+vget) */
+                B0 = __riscv_vle32_v_f32m1((B) + (N) * 0, N);
+                B1 = __riscv_vle32_v_f32m1((B) + (N) * 1, N);
+                B2 = __riscv_vle32_v_f32m1((B) + (N) * 2, N);
+                B3 = __riscv_vle32_v_f32m1((B) + (N) * 3, N);
+                B4 = __riscv_vle32_v_f32m1((B) + (N) * 4, N);
+                B5 = __riscv_vle32_v_f32m1((B) + (N) * 5, N);
+                B6 = __riscv_vle32_v_f32m1((B) + (N) * 6, N);
+                B7 = __riscv_vle32_v_f32m1((B) + (N) * 7, N);
                 B += (N * 8);
 
 #ifdef GEMM_NEW_PACKING
@@ -144,15 +144,15 @@ static FORCEINLINE FLOAT* M_TAIL_ONE(BLASLONG K, const BLASLONG M, const BLASLON
                 BLASLONG k = (K / 8);
                 K &= 7;
                 while (--k) {
-                    B00 = __riscv_vle32_v_f32m8(B, N * 8);
-                    B0 = __riscv_vget_v_f32m8_f32m1(B00, 0);
-                    B1 = __riscv_vget_v_f32m8_f32m1(B00, 1);
-                    B2 = __riscv_vget_v_f32m8_f32m1(B00, 2);
-                    B3 = __riscv_vget_v_f32m8_f32m1(B00, 3);
-                    B4 = __riscv_vget_v_f32m8_f32m1(B00, 4);
-                    B5 = __riscv_vget_v_f32m8_f32m1(B00, 5);
-                    B6 = __riscv_vget_v_f32m8_f32m1(B00, 6);
-                    B7 = __riscv_vget_v_f32m8_f32m1(B00, 7);
+                    /* VLEN-portable: split load (avoid m8+vget) */
+                    B0 = __riscv_vle32_v_f32m1((B) + (N) * 0, N);
+                    B1 = __riscv_vle32_v_f32m1((B) + (N) * 1, N);
+                    B2 = __riscv_vle32_v_f32m1((B) + (N) * 2, N);
+                    B3 = __riscv_vle32_v_f32m1((B) + (N) * 3, N);
+                    B4 = __riscv_vle32_v_f32m1((B) + (N) * 4, N);
+                    B5 = __riscv_vle32_v_f32m1((B) + (N) * 5, N);
+                    B6 = __riscv_vle32_v_f32m1((B) + (N) * 6, N);
+                    B7 = __riscv_vle32_v_f32m1((B) + (N) * 7, N);
                     B += (N * 8);
 
 #ifdef GEMM_NEW_PACKING
@@ -251,11 +251,11 @@ static FORCEINLINE FLOAT* M_TAIL_ONE(BLASLONG K, const BLASLONG M, const BLASLON
             }
         } else if (M == 3) {
             if (K >= 4) {
-                vfloat32m4_t B00 = __riscv_vle32_v_f32m4(B, N * 4);
-                B0 = __riscv_vget_v_f32m4_f32m1(B00, 0);
-                B1 = __riscv_vget_v_f32m4_f32m1(B00, 1);
-                B2 = __riscv_vget_v_f32m4_f32m1(B00, 2);
-                B3 = __riscv_vget_v_f32m4_f32m1(B00, 3);
+                /* VLEN-portable: split load (avoid m4+vget) */
+                B0 = __riscv_vle32_v_f32m1((B) + (N) * 0, N);
+                B1 = __riscv_vle32_v_f32m1((B) + (N) * 1, N);
+                B2 = __riscv_vle32_v_f32m1((B) + (N) * 2, N);
+                B3 = __riscv_vle32_v_f32m1((B) + (N) * 3, N);
                 B += (N * 4);
 
 #ifdef GEMM_NEW_PACKING
@@ -294,11 +294,11 @@ static FORCEINLINE FLOAT* M_TAIL_ONE(BLASLONG K, const BLASLONG M, const BLASLON
                 BLASLONG k = (K / 4);
                 K &= 3;
                 while (--k) {
-                    B00 = __riscv_vle32_v_f32m4(B, N * 4);
-                    B0 = __riscv_vget_v_f32m4_f32m1(B00, 0);
-                    B1 = __riscv_vget_v_f32m4_f32m1(B00, 1);
-                    B2 = __riscv_vget_v_f32m4_f32m1(B00, 2);
-                    B3 = __riscv_vget_v_f32m4_f32m1(B00, 3);
+                    /* VLEN-portable: split load (avoid m4+vget) */
+                    B0 = __riscv_vle32_v_f32m1((B) + (N) * 0, N);
+                    B1 = __riscv_vle32_v_f32m1((B) + (N) * 1, N);
+                    B2 = __riscv_vle32_v_f32m1((B) + (N) * 2, N);
+                    B3 = __riscv_vle32_v_f32m1((B) + (N) * 3, N);
                     B += (N * 4);
 
 #ifdef GEMM_NEW_PACKING
@@ -357,16 +357,16 @@ static FORCEINLINE FLOAT* M_TAIL_ONE(BLASLONG K, const BLASLONG M, const BLASLON
                 vfloat32m1_t A5;
 
                 if (!S2) {
-                    B00 = __riscv_vle32_v_f32m2(B, N * 2);
-                    B0 = __riscv_vget_v_f32m2_f32m1(B00, 0);
-                    B1 = __riscv_vget_v_f32m2_f32m1(B00, 1);
+                    /* VLEN-portable: split load (avoid m2+vget) */
+                    B0 = __riscv_vle32_v_f32m1((B) + (N) * 0, N);
+                    B1 = __riscv_vle32_v_f32m1((B) + (N) * 1, N);
                 }
 
                 if (M == 8) {
                     if (S2) {
-                        A00 = __riscv_vle32_v_f32m2(A0, N * 2);
-                        A4 = __riscv_vget_v_f32m2_f32m1(A00, 0);
-                        A5 = __riscv_vget_v_f32m2_f32m1(A00, 1);
+                        /* VLEN-portable: split load (avoid m2+vget) */
+                        A4 = __riscv_vle32_v_f32m1((A0) + (N) * 0, N);
+                        A5 = __riscv_vle32_v_f32m1((A0) + (N) * 1, N);
 
                         result0 = __riscv_vfmul_vf_f32m1(A4, B[0], N);
                         result1 = __riscv_vfmul_vf_f32m1(A4, B[1], N);
@@ -459,16 +459,16 @@ static FORCEINLINE FLOAT* M_TAIL_ONE(BLASLONG K, const BLASLONG M, const BLASLON
                 K &= 1;
                 while (--k) {
                     if (!S2) {
-                        B00 = __riscv_vle32_v_f32m2(B, N * 2);
-                        B0 = __riscv_vget_v_f32m2_f32m1(B00, 0);
-                        B1 = __riscv_vget_v_f32m2_f32m1(B00, 1);
+                        /* VLEN-portable: split load (avoid m2+vget) */
+                        B0 = __riscv_vle32_v_f32m1((B) + (N) * 0, N);
+                        B1 = __riscv_vle32_v_f32m1((B) + (N) * 1, N);
                     }
 
                     if (M == 8) {
                         if (S2) {
-                            A00 = __riscv_vle32_v_f32m2(A0, N * 2);
-                            A4 = __riscv_vget_v_f32m2_f32m1(A00, 0);
-                            A5 = __riscv_vget_v_f32m2_f32m1(A00, 1);
+                            /* VLEN-portable: split load (avoid m2+vget) */
+                            A4 = __riscv_vle32_v_f32m1((A0) + (N) * 0, N);
+                            A5 = __riscv_vle32_v_f32m1((A0) + (N) * 1, N);
 
                             result0 = __riscv_vfmacc_vf_f32m1(result0, B[0], A4, N);
                             result1 = __riscv_vfmacc_vf_f32m1(result1, B[1], A4, N);

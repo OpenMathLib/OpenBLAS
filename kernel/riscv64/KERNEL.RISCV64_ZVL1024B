@@ -1,0 +1,317 @@
+SAMAXKERNEL  = amax_vector.c
+DAMAXKERNEL  = amax_vector.c
+CAMAXKERNEL  = zamax_vector.c
+ZAMAXKERNEL  = zamax_vector.c
+
+SAMINKERNEL  = amin_vector.c
+DAMINKERNEL  = amin_vector.c
+CAMINKERNEL  = zamin_vector.c
+ZAMINKERNEL  = zamin_vector.c
+
+SMAXKERNEL   = max_vector.c
+DMAXKERNEL   = max_vector.c
+
+SMINKERNEL   = min_vector.c
+DMINKERNEL   = min_vector.c
+
+ISAMAXKERNEL = iamax_vector.c
+IDAMAXKERNEL = iamax_vector.c
+ICAMAXKERNEL = izamax_vector.c
+IZAMAXKERNEL = izamax_vector.c
+
+ISAMINKERNEL = iamin_vector.c
+IDAMINKERNEL = iamin_vector.c
+ICAMINKERNEL = izamin_vector.c
+IZAMINKERNEL = izamin_vector.c
+
+ISMAXKERNEL  = imax_vector.c
+IDMAXKERNEL  = imax_vector.c
+
+ISMINKERNEL  = imin_vector.c
+IDMINKERNEL  = imin_vector.c
+
+SASUMKERNEL  = asum_vector.c
+DASUMKERNEL  = asum_vector.c
+CASUMKERNEL  = zasum_vector.c
+ZASUMKERNEL  = zasum_vector.c
+
+SSUMKERNEL  = sum_vector.c
+DSUMKERNEL  = sum_vector.c
+CSUMKERNEL  = zsum_vector.c
+ZSUMKERNEL  = zsum_vector.c
+
+SAXPYKERNEL  = axpy_vector.c
+DAXPYKERNEL  = axpy_vector.c
+CAXPYKERNEL  = zaxpy_vector.c
+ZAXPYKERNEL  = zaxpy_vector.c
+
+SCOPYKERNEL  = copy_vector.c
+DCOPYKERNEL  = copy_vector.c
+CCOPYKERNEL  = zcopy_vector.c
+ZCOPYKERNEL  = zcopy_vector.c
+
+SDOTKERNEL   = dot_vector.c
+DDOTKERNEL   = dot_vector.c
+CDOTKERNEL   = zdot_vector.c
+ZDOTKERNEL   = zdot_vector.c
+DSDOTKERNEL  = ../generic/dot.c
+
+SNRM2KERNEL  = nrm2_vector.c
+DNRM2KERNEL  = nrm2_vector.c
+CNRM2KERNEL  = znrm2_vector.c
+ZNRM2KERNEL  = znrm2_vector.c
+
+SROTKERNEL   = rot_vector.c
+DROTKERNEL   = rot_vector.c
+CROTKERNEL   = zrot_vector.c
+ZROTKERNEL   = zrot_vector.c
+
+SROTMKERNEL  = rotm_rvv.c
+DROTMKERNEL  = rotm_rvv.c
+QROTMKERNEL = ../generic/rotm.c
+
+SSCALKERNEL  = scal_vector.c
+DSCALKERNEL  = scal_vector.c
+CSCALKERNEL  = zscal_vector.c
+ZSCALKERNEL  = zscal_vector.c
+
+SSWAPKERNEL  = swap_vector.c
+DSWAPKERNEL  = swap_vector.c
+CSWAPKERNEL  = zswap_vector.c
+ZSWAPKERNEL  = zswap_vector.c
+
+SGEMVNKERNEL = gemv_n_vector.c
+DGEMVNKERNEL = gemv_n_vector.c
+CGEMVNKERNEL = zgemv_n_vector.c
+ZGEMVNKERNEL = zgemv_n_vector.c
+
+SGEMVTKERNEL = gemv_t_vector.c
+DGEMVTKERNEL = gemv_t_vector.c
+CGEMVTKERNEL = zgemv_t_vector.c
+ZGEMVTKERNEL = zgemv_t_vector.c
+
+STRMMKERNEL	= strmm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N)_zvl1024b.c
+DTRMMKERNEL	= dtrmm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N)_zvl1024b.c
+CTRMMKERNEL = ctrmm_kernel_$(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N)_zvl1024b.c
+ZTRMMKERNEL = ztrmm_kernel_$(ZGEMM_UNROLL_M)x$(ZGEMM_UNROLL_N)_zvl1024b.c
+
+SGEMMKERNEL    =  sgemm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N)_zvl1024b.c
+ifneq ($(filter $(SGEMM_UNROLL_N),4 8 16),)
+SGEMMONCOPY    =  gemm_ncopy_$(SGEMM_UNROLL_N)_rvv.c
+SGEMMOTCOPY    =  gemm_tcopy_$(SGEMM_UNROLL_N)_rvv.c
+else
+SGEMMONCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_N).c
+SGEMMOTCOPY    =  ../generic/gemm_tcopy_$(SGEMM_UNROLL_N).c
+endif
+SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
+ifneq ($(SGEMM_UNROLL_M), $(SGEMM_UNROLL_N))
+ifneq ($(filter $(SGEMM_UNROLL_M),4 8 16 32 64),)
+SGEMMINCOPY    =  gemm_ncopy_$(SGEMM_UNROLL_M)_rvv.c
+SGEMMITCOPY    =  gemm_tcopy_$(SGEMM_UNROLL_M)_rvv.c
+else
+SGEMMINCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_M).c
+SGEMMITCOPY    =  ../generic/gemm_tcopy_$(SGEMM_UNROLL_M).c
+endif
+SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
+SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
+endif
+
+DGEMMKERNEL    =  dgemm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N)_zvl1024b.c
+DGEMMONCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_N).c
+ifneq ($(filter $(DGEMM_UNROLL_N),4 8 16),)
+DGEMMOTCOPY    =  gemm_tcopy_$(DGEMM_UNROLL_N)_rvv.c
+else
+DGEMMOTCOPY    =  ../generic/gemm_tcopy_$(DGEMM_UNROLL_N).c
+endif
+DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
+DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
+ifneq ($(DGEMM_UNROLL_M), $(DGEMM_UNROLL_N))
+ifneq ($(filter $(DGEMM_UNROLL_M),4 8 16),)
+DGEMMINCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_M).c
+DGEMMITCOPY    =  gemm_tcopy_$(DGEMM_UNROLL_M)_rvv.c
+else
+ifneq ($(filter $(DGEMM_UNROLL_M),32 64),)
+# Fixed-MR bitsliced packers (not VLMAX/contig) for 32x8 / 64x8 tiles
+DGEMMINCOPY    =  gemm_ncopy_$(DGEMM_UNROLL_M)_rvv.c
+DGEMMITCOPY    =  gemm_tcopy_$(DGEMM_UNROLL_M)_rvv.c
+else
+DGEMMINCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_M).c
+DGEMMITCOPY    =  ../generic/gemm_tcopy_$(DGEMM_UNROLL_M).c
+endif
+endif
+DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
+DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
+endif
+
+CGEMMKERNEL    =  cgemm_kernel_$(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N)_zvl1024b.c
+CGEMMONCOPY    =  ../generic/zgemm_ncopy_$(CGEMM_UNROLL_N).c
+CGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(CGEMM_UNROLL_N).c
+CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
+CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+ifneq ($(CGEMM_UNROLL_M), $(CGEMM_UNROLL_N))
+CGEMMINCOPY    =  ../generic/zgemm_ncopy_$(CGEMM_UNROLL_M).c
+CGEMMITCOPY    =  ../generic/zgemm_tcopy_$(CGEMM_UNROLL_M).c
+CGEMMINCOPYOBJ =  cgemm_incopy$(TSUFFIX).$(SUFFIX)
+CGEMMITCOPYOBJ =  cgemm_itcopy$(TSUFFIX).$(SUFFIX)
+endif
+
+ZGEMMKERNEL    =  zgemm_kernel_$(ZGEMM_UNROLL_M)x$(ZGEMM_UNROLL_N)_zvl1024b.c
+ZGEMMONCOPY    =  ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_N).c
+ZGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_N).c
+ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
+ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+ifneq ($(ZGEMM_UNROLL_M), $(ZGEMM_UNROLL_N))
+ZGEMMINCOPY    =  ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_M).c
+ZGEMMITCOPY    =  ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_M).c
+ZGEMMINCOPYOBJ =  zgemm_incopy$(TSUFFIX).$(SUFFIX)
+ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
+endif
+
+STRSMKERNEL_LN	=  trsm_kernel_LN_rvv.c
+STRSMKERNEL_LT	=  trsm_kernel_LT_rvv.c
+STRSMKERNEL_RN	=  trsm_kernel_RN_rvv.c
+STRSMKERNEL_RT	=  trsm_kernel_RT_rvv.c
+
+DTRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
+DTRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
+DTRSMKERNEL_RN	=  trsm_kernel_RN_rvv.c
+DTRSMKERNEL_RT	=  trsm_kernel_RT_rvv.c
+
+CTRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
+CTRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
+CTRSMKERNEL_RN	=  trsm_kernel_RN_rvv.c
+CTRSMKERNEL_RT	=  trsm_kernel_RT_rvv.c
+
+ZTRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
+ZTRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
+ZTRSMKERNEL_RN	=  ../generic/trsm_kernel_RN.c
+ZTRSMKERNEL_RT	=  trsm_kernel_RT_rvv.c
+
+SSYMV_U_KERNEL =  symv_U_vector.c
+SSYMV_L_KERNEL =  symv_L_vector.c
+DSYMV_U_KERNEL =  symv_U_vector.c
+DSYMV_L_KERNEL =  symv_L_vector.c
+
+CSYMV_U_KERNEL =  ../generic/zsymv_k.c
+CSYMV_L_KERNEL =  ../generic/zsymv_k.c
+ZSYMV_U_KERNEL =  ../generic/zsymv_k.c
+ZSYMV_L_KERNEL =  ../generic/zsymv_k.c
+
+CHEMV_L_KERNEL =  zhemv_LM_vector.c
+CHEMV_M_KERNEL =  zhemv_LM_vector.c
+CHEMV_U_KERNEL =  zhemv_UV_vector.c
+CHEMV_V_KERNEL =  zhemv_UV_vector.c
+ZHEMV_L_KERNEL =  zhemv_LM_vector.c
+ZHEMV_M_KERNEL =  zhemv_LM_vector.c
+ZHEMV_U_KERNEL =  zhemv_UV_vector.c
+ZHEMV_V_KERNEL =  zhemv_UV_vector.c
+
+LSAME_KERNEL = ../generic/lsame.c
+
+SCABS_KERNEL	= ../generic/cabs.c
+DCABS_KERNEL	= ../generic/cabs.c
+QCABS_KERNEL	= ../generic/cabs.c
+
+ifndef SGEMM_BETA
+SGEMM_BETA = ../generic/gemm_beta.c
+endif
+ifndef DGEMM_BETA
+DGEMM_BETA = ../generic/gemm_beta.c
+endif
+ifndef CGEMM_BETA
+CGEMM_BETA = ../generic/zgemm_beta.c
+endif
+ifndef ZGEMM_BETA
+ZGEMM_BETA = ../generic/zgemm_beta.c
+endif
+
+ZOMATCOPY_CN = zomatcopy_cn_vector.c
+COMATCOPY_CN = zomatcopy_cn_vector.c
+
+DOMATCOPY_CN = omatcopy_cn_vector.c
+SOMATCOPY_CN = omatcopy_cn_vector.c
+
+DOMATCOPY_CT = omatcopy_ct_rvv.c
+SOMATCOPY_CT = omatcopy_ct_rvv.c
+
+
+ifeq ($(BUILD_HFLOAT16), 1)
+SHGEMMKERNEL    =  shgemm_kernel_$(SHGEMM_UNROLL_M)x$(SHGEMM_UNROLL_N)_zvl256b.c
+ifneq ($(SHGEMM_UNROLL_M), $(SHGEMM_UNROLL_N))
+ifneq ($(filter $(SHGEMM_UNROLL_M),8 16),)
+SHGEMMINCOPY    =  gemm_ncopy_$(SHGEMM_UNROLL_M)fp_rvv.c
+SHGEMMITCOPY    =  gemm_tcopy_$(SHGEMM_UNROLL_M)fp_rvv.c
+else
+SHGEMMINCOPY    =  ../generic/gemm_ncopy_$(SHGEMM_UNROLL_M).c
+SHGEMMITCOPY    =  ../generic/gemm_tcopy_$(SHGEMM_UNROLL_M).c
+endif
+SHGEMMINCOPYOBJ =  shgemm_incopy$(TSUFFIX).$(SUFFIX)
+SHGEMMITCOPYOBJ =  shgemm_itcopy$(TSUFFIX).$(SUFFIX)
+endif
+ifneq ($(filter $(SHGEMM_UNROLL_N),8 16),)
+SHGEMMONCOPY    =  gemm_ncopy_$(SHGEMM_UNROLL_N)fp_rvv.c
+SHGEMMOTCOPY    =  gemm_tcopy_$(SHGEMM_UNROLL_N)fp_rvv.c
+else
+SHGEMMONCOPY    =  ../generic/gemm_ncopy_$(SHGEMM_UNROLL_N).c
+SHGEMMOTCOPY    =  ../generic/gemm_tcopy_$(SHGEMM_UNROLL_N).c
+endif
+SHGEMMONCOPYOBJ =  shgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SHGEMMOTCOPYOBJ =  shgemm_otcopy$(TSUFFIX).$(SUFFIX)
+ifndef SHGEMM_BETA
+SHGEMM_BETA =  gemm_beta_rvv.c
+endif
+SHGEMVNKERNEL = sbgemv_n_vector.c
+SHGEMVTKERNEL = sbgemv_t_vector.c
+endif
+
+ifeq ($(BUILD_BFLOAT16), 1)
+SBGEMMKERNEL    =  sbgemm_kernel_$(SBGEMM_UNROLL_M)x$(SBGEMM_UNROLL_N)_zvl256b.c
+ifneq ($(SBGEMM_UNROLL_M), $(SBGEMM_UNROLL_N))
+ifneq ($(filter $(SBGEMM_UNROLL_M),8 16),)
+SBGEMMINCOPY    =  gemm_ncopy_$(SBGEMM_UNROLL_M)fp_rvv.c
+SBGEMMITCOPY    =  gemm_tcopy_$(SBGEMM_UNROLL_M)fp_rvv.c
+else
+SBGEMMINCOPY    =  ../generic/gemm_ncopy_$(SBGEMM_UNROLL_M).c
+SBGEMMITCOPY    =  ../generic/gemm_tcopy_$(SBGEMM_UNROLL_M).c
+endif
+SBGEMMINCOPYOBJ =  sbgemm_incopy$(TSUFFIX).$(SUFFIX)
+SBGEMMITCOPYOBJ =  sbgemm_itcopy$(TSUFFIX).$(SUFFIX)
+endif
+ifneq ($(filter $(SBGEMM_UNROLL_N),8 16),)
+SBGEMMONCOPY    =  gemm_ncopy_$(SBGEMM_UNROLL_N)fp_rvv.c
+SBGEMMOTCOPY    =  gemm_tcopy_$(SBGEMM_UNROLL_N)fp_rvv.c
+else
+SBGEMMONCOPY    =  ../generic/gemm_ncopy_$(SBGEMM_UNROLL_N).c
+SBGEMMOTCOPY    =  ../generic/gemm_tcopy_$(SBGEMM_UNROLL_N).c
+endif
+SBGEMMONCOPYOBJ =  sbgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SBGEMMOTCOPYOBJ =  sbgemm_otcopy$(TSUFFIX).$(SUFFIX)
+ifndef SBGEMM_BETA
+SBGEMM_BETA =  gemm_beta_rvv.c
+endif
+SBGEMVNKERNEL = sbgemv_n_vector.c
+SBGEMVTKERNEL = sbgemv_t_vector.c
+endif
+
+SAXPBYKERNEL  = axpby_vector_v2.c
+DAXPBYKERNEL  = axpby_vector_v2.c
+
+# MR=32/64 bitsliced packers: power-of-two panels (…,16,8,4,2,1) matching
+# generate_kernel a_pack=bitsliced tails (not VLMAX-chunked rvv_v1).
+STRMMUNCOPY_M  =  trmm_uncopy_64_rvv.c
+STRMMLNCOPY_M  =  trmm_lncopy_64_rvv.c
+STRMMUTCOPY_M  =  trmm_utcopy_64_rvv.c
+STRMMLTCOPY_M  =  trmm_ltcopy_64_rvv.c
+SSYMMUCOPY_M   =  symm_ucopy_64_rvv.c
+SSYMMLCOPY_M   =  symm_lcopy_64_rvv.c
+
+DTRMMUNCOPY_M  =  trmm_uncopy_32_rvv.c
+DTRMMLNCOPY_M  =  trmm_lncopy_32_rvv.c
+DTRMMUTCOPY_M  =  trmm_utcopy_32_rvv.c
+DTRMMLTCOPY_M  =  trmm_ltcopy_32_rvv.c
+DSYMMUCOPY_M   =  symm_ucopy_32_rvv.c
+DSYMMLCOPY_M   =  symm_lcopy_32_rvv.c
+
