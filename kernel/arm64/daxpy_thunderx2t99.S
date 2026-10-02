@@ -169,65 +169,65 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 
 	cmp	N, xzr
-	ble	.Ldaxpy_kernel_L999
+	ble	L(daxpy_kernel_L999)
 
 	fcmp	DA, #0.0
-	beq	.Ldaxpy_kernel_L999
+	beq	L(daxpy_kernel_L999)
 
 	cmp	INC_X, #1
-	bne	.Ldaxpy_kernel_S_BEGIN
+	bne	L(daxpy_kernel_S_BEGIN)
 	cmp	INC_Y, #1
-	bne	.Ldaxpy_kernel_S_BEGIN
+	bne	L(daxpy_kernel_S_BEGIN)
 
-.Ldaxpy_kernel_F_BEGIN:
+L(daxpy_kernel_F_BEGIN):
 
 	asr	I, N, #5
 	cmp	I, xzr
-	beq	.Ldaxpy_kernel_F1
+	beq	L(daxpy_kernel_F1)
 
 	cmp	N, #2048
-	ble	.Ldaxpy_kernel_F32_L1CACHE
+	ble	L(daxpy_kernel_F32_L1CACHE)
 
 	.align 5
-.Ldaxpy_kernel_F32:
+L(daxpy_kernel_F32):
 
 	KERNEL_F32
 
 	subs	I, I, #1
-	bne	.Ldaxpy_kernel_F32
-	b	.Ldaxpy_kernel_F1
+	bne	L(daxpy_kernel_F32)
+	b	L(daxpy_kernel_F1)
 
 	.align 5
-.Ldaxpy_kernel_F32_L1CACHE:
+L(daxpy_kernel_F32_L1CACHE):
 
 	KERNEL_F32_L1CACHE
 
 	subs	I, I, #1
-	bne	.Ldaxpy_kernel_F32_L1CACHE
+	bne	L(daxpy_kernel_F32_L1CACHE)
 
-.Ldaxpy_kernel_F1:
+L(daxpy_kernel_F1):
 
 	ands	I, N, #31
-	ble	.Ldaxpy_kernel_L999
+	ble	L(daxpy_kernel_L999)
 
-.Ldaxpy_kernel_F10:
+L(daxpy_kernel_F10):
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     .Ldaxpy_kernel_F10
+        bne     L(daxpy_kernel_F10)
 
-	b	.Ldaxpy_kernel_L999
+	b	L(daxpy_kernel_L999)
 
-.Ldaxpy_kernel_S_BEGIN:
+L(daxpy_kernel_S_BEGIN):
 
 	INIT_S
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	.Ldaxpy_kernel_S1
+	ble	L(daxpy_kernel_S1)
 
-.Ldaxpy_kernel_S4:
+L(daxpy_kernel_S4):
 
 	KERNEL_S1
 	KERNEL_S1
@@ -235,21 +235,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Ldaxpy_kernel_S4
+	bne	L(daxpy_kernel_S4)
 
-.Ldaxpy_kernel_S1:
+L(daxpy_kernel_S1):
 
 	ands	I, N, #3
-	ble	.Ldaxpy_kernel_L999
+	ble	L(daxpy_kernel_L999)
 
-.Ldaxpy_kernel_S10:
+L(daxpy_kernel_S10):
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     .Ldaxpy_kernel_S10
+        bne     L(daxpy_kernel_S10)
 
-.Ldaxpy_kernel_L999:
+L(daxpy_kernel_L999):
 
 	mov	w0, wzr
 	ret

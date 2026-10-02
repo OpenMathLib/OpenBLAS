@@ -226,43 +226,43 @@ KERNEL_S1_END:
 	INIT
 
 	cmp	N, #0
-	ble	.Lznrm2_kernel_L999
+	ble	L(znrm2_kernel_L999)
 
 	cmp	INC_X, #0
-	beq	.Lznrm2_kernel_L999
+	beq	L(znrm2_kernel_L999)
 
 	cmp	INC_X, #1
-	bne	.Lznrm2_kernel_S_BEGIN
+	bne	L(znrm2_kernel_S_BEGIN)
 
-.Lznrm2_kernel_F_BEGIN:
+L(znrm2_kernel_F_BEGIN):
 
 	asr	I, N, #3				// I = N / 8
 	cmp	I, xzr
-	ble	.Lznrm2_kernel_F1
+	ble	L(znrm2_kernel_F1)
 
-.Lznrm2_kernel_F8:
+L(znrm2_kernel_F8):
 
 	KERNEL_F8
 
 	subs    I, I, #1
-        bne     .Lznrm2_kernel_F8
+        bne     L(znrm2_kernel_F8)
 
-.Lznrm2_kernel_F1:
+L(znrm2_kernel_F1):
 
 	ands	I, N, #7
-	ble	.Lznrm2_kernel_L999
+	ble	L(znrm2_kernel_L999)
 
 
-.Lznrm2_kernel_F10:
+L(znrm2_kernel_F10):
 
 	KERNEL_F1
 
 	subs	I, I, #1
-	bne	.Lznrm2_kernel_F10
+	bne	L(znrm2_kernel_F10)
 
-	b	.Lznrm2_kernel_L999
+	b	L(znrm2_kernel_L999)
 
-.Lznrm2_kernel_S_BEGIN:
+L(znrm2_kernel_S_BEGIN):
 
 	INIT_S
 
@@ -270,15 +270,15 @@ KERNEL_S1_END:
 
 	.align 5
 
-.Lznrm2_kernel_S10:
+L(znrm2_kernel_S10):
 
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Lznrm2_kernel_S10
+	bne	L(znrm2_kernel_S10)
 
 
-.Lznrm2_kernel_L999:
+L(znrm2_kernel_L999):
 	fsqrt	SSQ, SSQ
 	fmul	SSQ, SCALE, SSQ
 

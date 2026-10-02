@@ -241,62 +241,62 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 
 	cmp	N, xzr
-	ble	.Lzaxpy_kernel_L999
+	ble	L(zaxpy_kernel_L999)
 
 	mov	Y_COPY, Y
 
 	fcmp	DA_R, #0.0
-	bne	.L1
+	bne	L(1)
 	fcmp	DA_I, #0.0
-	beq	.Lzaxpy_kernel_L999
+	beq	L(zaxpy_kernel_L999)
 
-.L1:
+L(1):
 	INIT
 
 	cmp	INC_X, #1
-	bne	.Lzaxpy_kernel_S_BEGIN
+	bne	L(zaxpy_kernel_S_BEGIN)
 	cmp	INC_Y, #1
-	bne	.Lzaxpy_kernel_S_BEGIN
+	bne	L(zaxpy_kernel_S_BEGIN)
 
-.Lzaxpy_kernel_F_BEGIN:
+L(zaxpy_kernel_F_BEGIN):
 
 	asr	I, N, #2
 	cmp	I, xzr
-	beq	.Lzaxpy_kernel_F1
+	beq	L(zaxpy_kernel_F1)
 
 	KERNEL_INIT_F4
 
-.Lzaxpy_kernel_F4:
+L(zaxpy_kernel_F4):
 
 	KERNEL_F4
 
 	subs	I, I, #1
-	bne	.Lzaxpy_kernel_F4
+	bne	L(zaxpy_kernel_F4)
 
-.Lzaxpy_kernel_F1:
+L(zaxpy_kernel_F1):
 
 	ands	I, N, #3
-	ble	.Lzaxpy_kernel_L999
+	ble	L(zaxpy_kernel_L999)
 
-.Lzaxpy_kernel_F10:
+L(zaxpy_kernel_F10):
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     .Lzaxpy_kernel_F10
+        bne     L(zaxpy_kernel_F10)
 
 	mov	w0, wzr
 	ret
 
-.Lzaxpy_kernel_S_BEGIN:
+L(zaxpy_kernel_S_BEGIN):
 
 	INIT_S
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	.Lzaxpy_kernel_S1
+	ble	L(zaxpy_kernel_S1)
 
-.Lzaxpy_kernel_S4:
+L(zaxpy_kernel_S4):
 
 	KERNEL_S1
 	KERNEL_S1
@@ -304,21 +304,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Lzaxpy_kernel_S4
+	bne	L(zaxpy_kernel_S4)
 
-.Lzaxpy_kernel_S1:
+L(zaxpy_kernel_S1):
 
 	ands	I, N, #3
-	ble	.Lzaxpy_kernel_L999
+	ble	L(zaxpy_kernel_L999)
 
-.Lzaxpy_kernel_S10:
+L(zaxpy_kernel_S10):
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     .Lzaxpy_kernel_S10
+        bne     L(zaxpy_kernel_S10)
 
-.Lzaxpy_kernel_L999:
+L(zaxpy_kernel_L999):
 
 	mov	w0, wzr
 	ret

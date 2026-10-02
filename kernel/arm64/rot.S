@@ -165,48 +165,48 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 
 	cmp	N, xzr
-	ble	.Lrot_kernel_L999
+	ble	L(rot_kernel_L999)
 
 	INIT
 
 	cmp	INC_X, #1
-	bne	.Lrot_kernel_S_BEGIN
+	bne	L(rot_kernel_S_BEGIN)
 	cmp	INC_Y, #1
-	bne	.Lrot_kernel_S_BEGIN
+	bne	L(rot_kernel_S_BEGIN)
 
-.Lrot_kernel_F_BEGIN:
+L(rot_kernel_F_BEGIN):
 
 	asr	I, N, #2
 	cmp	I, xzr
-	beq	.Lrot_kernel_F1
+	beq	L(rot_kernel_F1)
 
 	KERNEL_INIT_F4
 
-.Lrot_kernel_F4:
+L(rot_kernel_F4):
 
 	KERNEL_F4
 
 	subs	I, I, #1
-	bne	.Lrot_kernel_F4
+	bne	L(rot_kernel_F4)
 
-.Lrot_kernel_F1:
+L(rot_kernel_F1):
 
 	ands	I, N, #3
-	ble	.Lrot_kernel_L999
+	ble	L(rot_kernel_L999)
 
 	INIT_F1
 
-.Lrot_kernel_F10:
+L(rot_kernel_F10):
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     .Lrot_kernel_F10
+        bne     L(rot_kernel_F10)
 
 	mov	w0, wzr
 	ret
 
-.Lrot_kernel_S_BEGIN:
+L(rot_kernel_S_BEGIN):
 
 	INIT_S
 	INIT_F1
@@ -214,9 +214,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	.Lrot_kernel_S1
+	ble	L(rot_kernel_S1)
 
-.Lrot_kernel_S4:
+L(rot_kernel_S4):
 
 	KERNEL_S1
 	KERNEL_S1
@@ -224,22 +224,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Lrot_kernel_S4
+	bne	L(rot_kernel_S4)
 
-.Lrot_kernel_S1:
+L(rot_kernel_S1):
 
 	ands	I, N, #3
-	ble	.Lrot_kernel_L999
+	ble	L(rot_kernel_L999)
 
 
-.Lrot_kernel_S10:
+L(rot_kernel_S10):
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     .Lrot_kernel_S10
+        bne     L(rot_kernel_S10)
 
-.Lrot_kernel_L999:
+L(rot_kernel_L999):
 
 	mov	w0, wzr
 	ret

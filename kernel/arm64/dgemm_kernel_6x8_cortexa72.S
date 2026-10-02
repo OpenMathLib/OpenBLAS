@@ -774,86 +774,86 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	counterJ, origN
 	asr	counterJ, counterJ, #3
-	cbz	counterJ, .L6x8_L4_BEGIN
+	cbz	counterJ, L(6x8_L4_BEGIN)
 
-.L6x8_L8_BEGIN:
+L(6x8_L8_BEGIN):
 	mov	pCRow0, pC
 	add	pC, pC, LDC, lsl #3
 	mov	pA, origPA
 
 	mov	temp, #6
 	udiv	counterI, origM, temp
-	cbz	counterI, .L6x8_L8_Mrem
+	cbz	counterI, L(6x8_L8_Mrem)
 
-.L6x8_L8_M6:
+L(6x8_L8_M6):
 	INIT6x8
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L8_M6s
-.L6x8_L8_M6l:
+	cbz	counterL, L(6x8_L8_M6s)
+L(6x8_L8_M6l):
 	KERNEL6x8_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L8_M6l
-.L6x8_L8_M6s:
+	bgt	L(6x8_L8_M6l)
+L(6x8_L8_M6s):
 	SAVE6x8
 	subs	counterI, counterI, #1
-	bgt	.L6x8_L8_M6
+	bgt	L(6x8_L8_M6)
 
-.L6x8_L8_Mrem:
+L(6x8_L8_Mrem):
 	mov	temp, #6
 	udiv	counterI, origM, temp
 	msub	counterI, counterI, temp, origM
 	cmp	counterI, #4
-	blt	.L6x8_L8_M2c
+	blt	L(6x8_L8_M2c)
 	INIT4x8
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L8_M4s
-.L6x8_L8_M4l:
+	cbz	counterL, L(6x8_L8_M4s)
+L(6x8_L8_M4l):
 	KERNEL4x8_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L8_M4l
-.L6x8_L8_M4s:
+	bgt	L(6x8_L8_M4l)
+L(6x8_L8_M4s):
 	SAVE4x8
 	sub	counterI, counterI, #4
-.L6x8_L8_M2c:
+L(6x8_L8_M2c):
 	cmp	counterI, #2
-	blt	.L6x8_L8_M1c
+	blt	L(6x8_L8_M1c)
 	INIT2x8
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L8_M2s
-.L6x8_L8_M2l:
+	cbz	counterL, L(6x8_L8_M2s)
+L(6x8_L8_M2l):
 	KERNEL2x8_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L8_M2l
-.L6x8_L8_M2s:
+	bgt	L(6x8_L8_M2l)
+L(6x8_L8_M2s):
 	SAVE2x8
 	sub	counterI, counterI, #2
-.L6x8_L8_M1c:
-	cbz	counterI, .L6x8_L8_END
+L(6x8_L8_M1c):
+	cbz	counterI, L(6x8_L8_END)
 	INIT1x8
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L8_M1s
-.L6x8_L8_M1l:
+	cbz	counterL, L(6x8_L8_M1s)
+L(6x8_L8_M1l):
 	KERNEL1x8_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L8_M1l
-.L6x8_L8_M1s:
+	bgt	L(6x8_L8_M1l)
+L(6x8_L8_M1s):
 	SAVE1x8
 
-.L6x8_L8_END:
+L(6x8_L8_END):
 	lsl	temp, origK, #6			/* + K*8*8 bytes */
 	add	origPB, origPB, temp
 	subs	counterJ, counterJ, #1
-	bgt	.L6x8_L8_BEGIN
+	bgt	L(6x8_L8_BEGIN)
 
-.L6x8_L4_BEGIN:
+L(6x8_L4_BEGIN):
 	tst	origN, #7
-	beq	.L6x8_L999
+	beq	L(6x8_L999)
 	tst	origN, #4
-	beq	.L6x8_L2_BEGIN
+	beq	L(6x8_L2_BEGIN)
 
 	mov	pCRow0, pC
 	add	pC, pC, LDC, lsl #2
@@ -861,200 +861,200 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	temp, #6
 	udiv	counterI, origM, temp
-	cbz	counterI, .L6x8_L4_Mrem
-.L6x8_L4_M6:
+	cbz	counterI, L(6x8_L4_Mrem)
+L(6x8_L4_M6):
 	INIT6x4
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L4_M6s
-.L6x8_L4_M6l:
+	cbz	counterL, L(6x8_L4_M6s)
+L(6x8_L4_M6l):
 	KERNEL6x4_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L4_M6l
-.L6x8_L4_M6s:
+	bgt	L(6x8_L4_M6l)
+L(6x8_L4_M6s):
 	SAVE6x4
 	subs	counterI, counterI, #1
-	bgt	.L6x8_L4_M6
-.L6x8_L4_Mrem:
+	bgt	L(6x8_L4_M6)
+L(6x8_L4_Mrem):
 	mov	temp, #6
 	udiv	counterI, origM, temp
 	msub	counterI, counterI, temp, origM
 	cmp	counterI, #4
-	blt	.L6x8_L4_M2c
+	blt	L(6x8_L4_M2c)
 	INIT4x4
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L4_M4s
-.L6x8_L4_M4l:
+	cbz	counterL, L(6x8_L4_M4s)
+L(6x8_L4_M4l):
 	KERNEL4x4_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L4_M4l
-.L6x8_L4_M4s:
+	bgt	L(6x8_L4_M4l)
+L(6x8_L4_M4s):
 	SAVE4x4
 	sub	counterI, counterI, #4
-.L6x8_L4_M2c:
+L(6x8_L4_M2c):
 	cmp	counterI, #2
-	blt	.L6x8_L4_M1c
+	blt	L(6x8_L4_M1c)
 	INIT2x4
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L4_M2s
-.L6x8_L4_M2l:
+	cbz	counterL, L(6x8_L4_M2s)
+L(6x8_L4_M2l):
 	KERNEL2x4_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L4_M2l
-.L6x8_L4_M2s:
+	bgt	L(6x8_L4_M2l)
+L(6x8_L4_M2s):
 	SAVE2x4
 	sub	counterI, counterI, #2
-.L6x8_L4_M1c:
-	cbz	counterI, .L6x8_L4_END
+L(6x8_L4_M1c):
+	cbz	counterI, L(6x8_L4_END)
 	INIT1x4
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L4_M1s
-.L6x8_L4_M1l:
+	cbz	counterL, L(6x8_L4_M1s)
+L(6x8_L4_M1l):
 	KERNEL1x4_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L4_M1l
-.L6x8_L4_M1s:
+	bgt	L(6x8_L4_M1l)
+L(6x8_L4_M1s):
 	SAVE1x4
-.L6x8_L4_END:
+L(6x8_L4_END):
 	add	origPB, origPB, origK, lsl #5	/* +K*4*8 */
 
-.L6x8_L2_BEGIN:
+L(6x8_L2_BEGIN):
 	tst	origN, #2
-	beq	.L6x8_L1_BEGIN
+	beq	L(6x8_L1_BEGIN)
 	mov	pCRow0, pC
 	add	pC, pC, LDC, lsl #1
 	mov	pA, origPA
 	mov	temp, #6
 	udiv	counterI, origM, temp
-	cbz	counterI, .L6x8_L2_Mrem
-.L6x8_L2_M6:
+	cbz	counterI, L(6x8_L2_Mrem)
+L(6x8_L2_M6):
 	INIT6x2
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L2_M6s
-.L6x8_L2_M6l:
+	cbz	counterL, L(6x8_L2_M6s)
+L(6x8_L2_M6l):
 	KERNEL6x2_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L2_M6l
-.L6x8_L2_M6s:
+	bgt	L(6x8_L2_M6l)
+L(6x8_L2_M6s):
 	SAVE6x2
 	subs	counterI, counterI, #1
-	bgt	.L6x8_L2_M6
-.L6x8_L2_Mrem:
+	bgt	L(6x8_L2_M6)
+L(6x8_L2_Mrem):
 	mov	temp, #6
 	udiv	counterI, origM, temp
 	msub	counterI, counterI, temp, origM
 	cmp	counterI, #4
-	blt	.L6x8_L2_M2c
+	blt	L(6x8_L2_M2c)
 	INIT4x2
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L2_M4s
-.L6x8_L2_M4l:
+	cbz	counterL, L(6x8_L2_M4s)
+L(6x8_L2_M4l):
 	KERNEL4x2_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L2_M4l
-.L6x8_L2_M4s:
+	bgt	L(6x8_L2_M4l)
+L(6x8_L2_M4s):
 	SAVE4x2
 	sub	counterI, counterI, #4
-.L6x8_L2_M2c:
+L(6x8_L2_M2c):
 	cmp	counterI, #2
-	blt	.L6x8_L2_M1c
+	blt	L(6x8_L2_M1c)
 	INIT2x2
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L2_M2s
-.L6x8_L2_M2l:
+	cbz	counterL, L(6x8_L2_M2s)
+L(6x8_L2_M2l):
 	KERNEL2x2_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L2_M2l
-.L6x8_L2_M2s:
+	bgt	L(6x8_L2_M2l)
+L(6x8_L2_M2s):
 	SAVE2x2
 	sub	counterI, counterI, #2
-.L6x8_L2_M1c:
-	cbz	counterI, .L6x8_L2_END
+L(6x8_L2_M1c):
+	cbz	counterI, L(6x8_L2_END)
 	INIT1x2
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L2_M1s
-.L6x8_L2_M1l:
+	cbz	counterL, L(6x8_L2_M1s)
+L(6x8_L2_M1l):
 	KERNEL1x2_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L2_M1l
-.L6x8_L2_M1s:
+	bgt	L(6x8_L2_M1l)
+L(6x8_L2_M1s):
 	SAVE1x2
-.L6x8_L2_END:
+L(6x8_L2_END):
 	add	origPB, origPB, origK, lsl #4
 
-.L6x8_L1_BEGIN:
+L(6x8_L1_BEGIN):
 	tst	origN, #1
-	beq	.L6x8_L999
+	beq	L(6x8_L999)
 	mov	pCRow0, pC
 	mov	pA, origPA
 	mov	temp, #6
 	udiv	counterI, origM, temp
-	cbz	counterI, .L6x8_L1_Mrem
-.L6x8_L1_M6:
+	cbz	counterI, L(6x8_L1_Mrem)
+L(6x8_L1_M6):
 	INIT6x1
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L1_M6s
-.L6x8_L1_M6l:
+	cbz	counterL, L(6x8_L1_M6s)
+L(6x8_L1_M6l):
 	KERNEL6x1_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L1_M6l
-.L6x8_L1_M6s:
+	bgt	L(6x8_L1_M6l)
+L(6x8_L1_M6s):
 	SAVE6x1
 	subs	counterI, counterI, #1
-	bgt	.L6x8_L1_M6
-.L6x8_L1_Mrem:
+	bgt	L(6x8_L1_M6)
+L(6x8_L1_Mrem):
 	mov	temp, #6
 	udiv	counterI, origM, temp
 	msub	counterI, counterI, temp, origM
 	cmp	counterI, #4
-	blt	.L6x8_L1_M2c
+	blt	L(6x8_L1_M2c)
 	INIT4x1
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L1_M4s
-.L6x8_L1_M4l:
+	cbz	counterL, L(6x8_L1_M4s)
+L(6x8_L1_M4l):
 	KERNEL4x1_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L1_M4l
-.L6x8_L1_M4s:
+	bgt	L(6x8_L1_M4l)
+L(6x8_L1_M4s):
 	SAVE4x1
 	sub	counterI, counterI, #4
-.L6x8_L1_M2c:
+L(6x8_L1_M2c):
 	cmp	counterI, #2
-	blt	.L6x8_L1_M1c
+	blt	L(6x8_L1_M1c)
 	INIT2x1
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L1_M2s
-.L6x8_L1_M2l:
+	cbz	counterL, L(6x8_L1_M2s)
+L(6x8_L1_M2l):
 	KERNEL2x1_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L1_M2l
-.L6x8_L1_M2s:
+	bgt	L(6x8_L1_M2l)
+L(6x8_L1_M2s):
 	SAVE2x1
 	sub	counterI, counterI, #2
-.L6x8_L1_M1c:
-	cbz	counterI, .L6x8_L999
+L(6x8_L1_M1c):
+	cbz	counterI, L(6x8_L999)
 	INIT1x1
 	mov	pB, origPB
 	mov	counterL, origK
-	cbz	counterL, .L6x8_L1_M1s
-.L6x8_L1_M1l:
+	cbz	counterL, L(6x8_L1_M1s)
+L(6x8_L1_M1l):
 	KERNEL1x1_SUB
 	subs	counterL, counterL, #1
-	bgt	.L6x8_L1_M1l
-.L6x8_L1_M1s:
+	bgt	L(6x8_L1_M1l)
+L(6x8_L1_M1s):
 	SAVE1x1
 
-.L6x8_L999:
+L(6x8_L999):
 	mov	x0, #0
 	ldp	d8, d9, [sp, #(0 * 16)]
 	ldp	d10, d11, [sp, #(1 * 16)]

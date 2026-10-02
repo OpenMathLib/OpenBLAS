@@ -158,51 +158,51 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	cmp	N, xzr
-	ble	.Ldot_kernel_L999
+	ble	L(dot_kernel_L999)
 
 	cmp	INC_X, #1
-	bne	.Ldot_kernel_S_BEGIN
+	bne	L(dot_kernel_S_BEGIN)
 	cmp	INC_Y, #1
-	bne	.Ldot_kernel_S_BEGIN
+	bne	L(dot_kernel_S_BEGIN)
 
-.Ldot_kernel_F_BEGIN:
+L(dot_kernel_F_BEGIN):
 
 	asr	I, N, #2
 	cmp	I, xzr
-	beq	.Ldot_kernel_F1
+	beq	L(dot_kernel_F1)
 
-.Ldot_kernel_F4:
+L(dot_kernel_F4):
 
 	KERNEL_F4
 
 	subs	I, I, #1
-	bne	.Ldot_kernel_F4
+	bne	L(dot_kernel_F4)
 
 	KERNEL_F4_FINALIZE
 
-.Ldot_kernel_F1:
+L(dot_kernel_F1):
 
 	ands	I, N, #3
-	ble	.Ldot_kernel_L999
+	ble	L(dot_kernel_L999)
 
-.Ldot_kernel_F10:
+L(dot_kernel_F10):
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     .Ldot_kernel_F10
+        bne     L(dot_kernel_F10)
 
 	ret
 
-.Ldot_kernel_S_BEGIN:
+L(dot_kernel_S_BEGIN):
 
 	INIT_S
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	.Ldot_kernel_S1
+	ble	L(dot_kernel_S1)
 
-.Ldot_kernel_S4:
+L(dot_kernel_S4):
 
 	KERNEL_S1
 	KERNEL_S1
@@ -210,21 +210,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Ldot_kernel_S4
+	bne	L(dot_kernel_S4)
 
-.Ldot_kernel_S1:
+L(dot_kernel_S1):
 
 	ands	I, N, #3
-	ble	.Ldot_kernel_L999
+	ble	L(dot_kernel_L999)
 
-.Ldot_kernel_S10:
+L(dot_kernel_S10):
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     .Ldot_kernel_S10
+        bne     L(dot_kernel_S10)
 
-.Ldot_kernel_L999:
+L(dot_kernel_L999):
 
 	ret
 
