@@ -168,7 +168,11 @@ REALNAME:
 .endm
 
 
+#if defined(__APPLE__)
+#define EPILOGUE .subsections_via_symbols
+#else
 #define EPILOGUE
+#endif
 
 #define PROFCODE
 

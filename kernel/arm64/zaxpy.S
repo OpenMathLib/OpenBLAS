@@ -322,3 +322,5 @@ L(zaxpy_kernel_L999):
 
 	mov	w0, wzr
 	ret
+
+	EPILOGUE
