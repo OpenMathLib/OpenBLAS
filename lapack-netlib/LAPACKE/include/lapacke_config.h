@@ -89,8 +89,8 @@ extern "C" {
     #define LAPACK_COMPLEX_CUSTOM
     #define lapack_complex_float _Fcomplex
     #define lapack_complex_double _Dcomplex
-    #define lapack_complex_float_real(z)       (creal(z))
-    #define lapack_complex_float_imag(z)       (cimag(z))
+    #define lapack_complex_float_real(z)       (crealf(z))
+    #define lapack_complex_float_imag(z)       (cimagf(z))
     #define lapack_complex_double_real(z)       (creal(z))
     #define lapack_complex_double_imag(z)       (cimag(z))
 #endif
@@ -112,8 +112,8 @@ typedef struct { double real, imag; } _lapack_complex_double;
 #include <complex.h>
 #define lapack_complex_float    float _Complex
 #define lapack_complex_double   double _Complex
-#define lapack_complex_float_real(z)       (creal(z))
-#define lapack_complex_float_imag(z)       (cimag(z))
+#define lapack_complex_float_real(z)       (crealf(z))
+#define lapack_complex_float_imag(z)       (cimagf(z))
 #define lapack_complex_double_real(z)       (creal(z))
 #define lapack_complex_double_imag(z)       (cimag(z))
 
@@ -131,8 +131,8 @@ typedef struct { double real, imag; } _lapack_complex_double;
 #include <complex.h>
 #define lapack_complex_float    float _Complex
 #define lapack_complex_double   double _Complex
-#define lapack_complex_float_real(z)       (creal(z))
-#define lapack_complex_float_imag(z)       (cimag(z))
+#define lapack_complex_float_real(z)       (crealf(z))
+#define lapack_complex_float_imag(z)       (cimagf(z))
 #define lapack_complex_double_real(z)       (creal(z))
 #define lapack_complex_double_imag(z)       (cimag(z))
 
