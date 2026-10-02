@@ -276,9 +276,9 @@ movq	%r11, kk;
 
 MOVQ bn,j;
 SARQ $2,j;						# Rn = 4
-JLE .L0_loopE;
+JLE L(0_loopE);
 ALIGN_5;
-.L0_bodyB:;
+L(0_bodyB):;
 #if defined(TRMMKERNEL) && defined(LEFT)
 MOVQ OFFSET, %rax;
 MOVQ %rax, kk;
@@ -291,9 +291,9 @@ LEAQ (bb, k, 1), prebb;			# Rn=4 SIZE=8 COMPLEX=2
 MOVQ ba,ptrba;
 MOVQ bm,i;
 SARQ $2,i;						# Rm = 4
-JLE .L1_loopE;
+JLE L(1_loopE);
 ALIGN_5;
-.L1_bodyB:;
+L(1_bodyB):;
 #if !defined(TRMMKERNEL)||(defined(TRMMKERNEL)&&defined(LEFT)&&defined(TRANSA))||(defined(TRMMKERNEL)&&!defined(LEFT)&&!defined(TRANSA))
 MOVQ bb,ptrbb;
 #else
@@ -340,9 +340,9 @@ ADDQ $4, %rax;
 MOVQ %rax, kkk;
 #endif
 SARQ $2,k;						# Unroll 4 times
-JLE .L2_loopE;
+JLE L(2_loopE);
 ALIGN_5;
-.L2_bodyB:;
+L(2_bodyB):;
 #### Computing kernel ####
 
 #### Unroll time 1 ####
@@ -563,17 +563,17 @@ MUL_DY	yvec1, yvec5, yvec7;
 ADD2_DY	yvec6, yvec12, yvec12;
 ADD2_DY	yvec7, yvec8, yvec8;
 DECQ k;
-JG .L2_bodyB;
+JG L(2_bodyB);
 ALIGN_5
-.L2_loopE:;
+L(2_loopE):;
 #ifndef	TRMMKERNEL
 TEST	$2, bk;
 #else
 TEST 	$2, kkk;
 #endif
-JLE		.L3_loopE;
+JLE		L(3_loopE);
 ALIGN_5
-.L3_bodyB:
+L(3_bodyB):
 #### Unroll time 1 ####
 LD_DY	4*SIZE(ptrba), yvec1;
 MUL_DY	yvec0, yvec2, yvec6;
@@ -683,15 +683,15 @@ MUL_DY	yvec1, yvec4, yvec6;
 MUL_DY	yvec1, yvec5, yvec7;
 ADD2_DY	yvec6, yvec12, yvec12;
 ADD2_DY	yvec7, yvec8, yvec8;
-.L3_loopE:;
+L(3_loopE):;
 #ifndef	TRMMKERNEL
 TEST	$1, bk;
 #else
 TEST 	$1, kkk;
 #endif
-JLE		.L4_loopE;
+JLE		L(4_loopE);
 ALIGN_5
-.L4_loopB:;
+L(4_loopB):;
 #### Unroll time 1 ####
 PREFETCH0	PRESIZE*SIZE(ptrba);
 LD_DY	4*SIZE(ptrba), yvec1;
@@ -744,7 +744,7 @@ MUL_DY	yvec1, yvec4, yvec6;
 MUL_DY	yvec1, yvec5, yvec7;
 ADD2_DY	yvec6, yvec12, yvec12;
 ADD2_DY	yvec7, yvec8, yvec8;
-.L4_loopE:;
+L(4_loopE):;
 #### Handle ####
 XOR_DY	yvec7, yvec7, yvec7;
 #if  defined(RN) || defined(RT) || defined(CN) || defined(CT)
@@ -831,7 +831,7 @@ ADDSUB_DY	yvec4, yvec8, yvec8;
 MOVQ	C0, %rax;
 OR		ldc, %rax;
 TEST 	$15, %rax;
-JNE		.L4_loopEx;
+JNE		L(4_loopEx);
 ALIGN_5
 #### Store Back ####
 EXTRA_DY $1,yvec15,xvec7;
@@ -888,12 +888,12 @@ ADDQ	$4, kk;
 #endif
 ADDQ $8*SIZE,C0;
 ADDQ $8*SIZE,C1;
-.L1_bodyE:;
+L(1_bodyE):;
 DECQ i;
-JG .L1_bodyB;
-JMP	.L1_loopE;
+JG L(1_bodyB);
+JMP	L(1_loopE);
 ALIGN_5
-.L4_loopEx:
+L(4_loopEx):
 EXTRA_DY $1, yvec15, xvec7;
 EXTRA_DY $1, yvec14, xvec6;
 #ifndef	TRMMKERNEL
@@ -1003,13 +1003,13 @@ ADDQ	$4, kk;
 ADDQ	$8*SIZE, C0;
 ADDQ	$8*SIZE, C1;
 DECQ	i;
-JG .L1_bodyB;
+JG L(1_bodyB);
 ALIGN_5;
-.L1_loopE:;
+L(1_loopE):;
 TEST $2, bm;
-JLE .L5_loopE;
+JLE L(5_loopE);
 ALIGN_5
-.L5_bodyB:
+L(5_bodyB):
 #if !defined(TRMMKERNEL)||(defined(TRMMKERNEL)&&defined(LEFT)&&defined(TRANSA))||(defined(TRMMKERNEL)&&!defined(LEFT)&&!defined(TRANSA))
 MOVQ bb,ptrbb;
 #else
@@ -1039,9 +1039,9 @@ ADDQ $4, %rax;
 MOVQ %rax, kkk;
 #endif
 SARQ $2, k;
-JLE .L7_loopE;
+JLE L(7_loopE);
 ALIGN_5
-.L7_bodyB:
+L(7_bodyB):
 #### Compute kernel ####
 #### Unroll times 1 ####
 LD_DY	0*SIZE(ptrba), yvec0;
@@ -1173,17 +1173,17 @@ MUL_DY	yvec0, yvec5, yvec7;
 ADD2_DY	yvec7, yvec12, yvec12;
 ADDQ	$32*SIZE, ptrbb;
 DECQ	k;
-JG .L7_bodyB;
+JG L(7_bodyB);
 ALIGN_5
-.L7_loopE:
+L(7_loopE):
 #ifndef	TRMMKERNEL
 TEST $2, bk;
 #else
 TEST $2, kkk;
 #endif
-JLE .L8_loopE;
+JLE L(8_loopE);
 ALIGN_5
-.L8_bodyB:
+L(8_bodyB):
 #### Unroll times 1 ####
 LD_DY	0*SIZE(ptrba), yvec0;
 EDUP_DY	0*SIZE(ptrbb), yvec2;
@@ -1249,15 +1249,15 @@ ADDQ	$8*SIZE, ptrba;
 MUL_DY	yvec0, yvec5, yvec7;
 ADD2_DY	yvec7, yvec12, yvec12;
 ADDQ	$16*SIZE, ptrbb;
-.L8_loopE:
+L(8_loopE):
 #ifndef	TRMMKERNEL
 TEST $1, bk;
 #else
 TEST $1, kkk;
 #endif
-JLE .L9_loopE;
+JLE L(9_loopE);
 ALIGN_5
-.L9_bodyB:
+L(9_bodyB):
 #### Unroll times 1 ####
 LD_DY	0*SIZE(ptrba), yvec0;
 EDUP_DY	0*SIZE(ptrbb), yvec2;
@@ -1292,7 +1292,7 @@ ADD2_DY	yvec7, yvec12, yvec12;
 ADDQ	$4*SIZE, ptrba;
 ADDQ	$8*SIZE, ptrbb;
 
-.L9_loopE:
+L(9_loopE):
 #### Handle ####
 XOR_DY	yvec7, yvec7, yvec7;
 #if  defined(RN) || defined(RT) || defined(CN) || defined(CT)
@@ -1343,7 +1343,7 @@ ADD2_DY 	yvec2, yvec12, yvec12;
 MOVQ	C0, %rax;
 OR		ldc, %rax;
 TEST	$15, %rax;
-JNE		.L9_loopEx;
+JNE		L(9_loopEx);
 ALIGN_5
 #### Writing back ####
 EXTRA_DY $1, yvec15, xvec7;
@@ -1380,9 +1380,9 @@ ADDQ	$2, kk;
 #endif
 ADDQ	$4*SIZE, C0;
 ADDQ	$4*SIZE, C1;
-JMP .L5_loopE;
+JMP L(5_loopE);
 ALIGN_5
-.L9_loopEx:
+L(9_loopEx):
 EXTRA_DY $1, yvec15, xvec7;
 EXTRA_DY $1, yvec14, xvec6;
 EXTRA_DY $1, yvec13, xvec5;
@@ -1443,11 +1443,11 @@ ADDQ	$2, kk;
 #endif
 ADDQ	$4*SIZE, C0;
 ADDQ	$4*SIZE, C1;
-.L5_loopE:
+L(5_loopE):
 TEST $1, bm;
-JLE .L6_loopE;
+JLE L(6_loopE);
 ALIGN_5
-.L6_bodyB:
+L(6_bodyB):
 #if !defined(TRMMKERNEL)||(defined(TRMMKERNEL)&&defined(LEFT)&&defined(TRANSA))||(defined(TRMMKERNEL)&&!defined(LEFT)&&!defined(TRANSA))
 MOVQ bb,ptrbb;
 #else
@@ -1475,9 +1475,9 @@ ADDQ $4, %rax;
 MOVQ %rax, kkk;
 #endif
 SARQ $2, k;
-JLE .L10_loopE;
+JLE L(10_loopE);
 ALIGN_5
-.L10_bodyB:
+L(10_bodyB):
 LD_DY	0*SIZE(ptrba), yvec0;	#### A1r A1i A2r A2i
 EDUP_DY	0*SIZE(ptrbb), yvec2;
 EDUP_DY	4*SIZE(ptrbb), yvec3;
@@ -1549,17 +1549,17 @@ ADD2_DY	yvec7, yvec14, yvec14
 ADDQ	$8*SIZE, ptrba;
 ADDQ	$32*SIZE, ptrbb;
 DECQ	k;
-JG .L10_bodyB;
+JG L(10_bodyB);
 ALIGN_5
-.L10_loopE:
+L(10_loopE):
 #ifndef	TRMMKERNEL
 TEST $2, bk;
 #else
 TEST $2, kkk;
 #endif
-JLE .L11_loopE;
+JLE L(11_loopE);
 ALIGN_5
-.L11_bodyB:
+L(11_bodyB):
 LD_DY	0*SIZE(ptrba), yvec0;	#### A1r A1i A2r A2i
 EDUP_DY	0*SIZE(ptrbb), yvec2;
 EDUP_DY	4*SIZE(ptrbb), yvec3;
@@ -1597,15 +1597,15 @@ ADD2_DY	yvec7, yvec14, yvec14;
 ADDQ	$4*SIZE, ptrba;
 ADDQ	$16*SIZE, ptrbb;
 
-.L11_loopE:
+L(11_loopE):
 #ifndef	TRMMKERNEL
 TEST $1, bk;
 #else
 TEST $1, kkk;
 #endif
-JLE .L12_loopE;
+JLE L(12_loopE);
 ALIGN_5
-.L12_bodyB:
+L(12_bodyB):
 LD_DY	0*SIZE(ptrba), yvec0;	#### A1r A1i A2r A2i
 EDUP_DY	0*SIZE(ptrbb), yvec2;
 EDUP_DY	4*SIZE(ptrbb), yvec3;
@@ -1626,7 +1626,7 @@ ADD2_DY	yvec7, yvec14, yvec14;
 ADDQ	$2*SIZE, ptrba;
 ADDQ	$8*SIZE, ptrbb;
 
-.L12_loopE:
+L(12_loopE):
 #### Handle ####
 XOR_DY	yvec7, yvec7, yvec7;
 #if  defined(RN) || defined(RT) || defined(CN) || defined(CT)
@@ -1691,7 +1691,7 @@ ADDQ	$1, kk;
 #endif
 ADDQ	$2*SIZE, C0;
 ADDQ	$2*SIZE, C1;
-.L6_loopE:
+L(6_loopE):
 #if defined(TRMMKERNEL) && !defined(LEFT)
 ADDQ	$4, kk;
 #endif
@@ -1699,15 +1699,15 @@ MOVQ bk,k;
 SALQ $6,k;
 ADDQ k,bb;
 LEAQ (C,ldc,4),C;
-.L0_bodyE:;
+L(0_bodyE):;
 DECQ j;
-JG .L0_bodyB;
+JG L(0_bodyB);
 ALIGN_5;
-.L0_loopE:;
+L(0_loopE):;
 TEST $2, bn;
-JLE	.L20_loopE;
+JLE	L(20_loopE);
 ALIGN_5
-.L20_bodyB:
+L(20_bodyB):
 #if defined(TRMMKERNEL) && defined(LEFT)
 MOVQ OFFSET, %rax;
 MOVQ %rax, kk;
@@ -1717,9 +1717,9 @@ LEAQ (C, ldc, 1), C1;
 MOVQ ba, ptrba;
 MOVQ bm, i;
 SARQ $2, i;
-JLE .L21_loopE;
+JLE L(21_loopE);
 ALIGN_5
-.L21_bodyB:
+L(21_bodyB):
 #if !defined(TRMMKERNEL)||(defined(TRMMKERNEL)&&defined(LEFT)&&defined(TRANSA))||(defined(TRMMKERNEL)&&!defined(LEFT)&&!defined(TRANSA))
 MOVQ bb,ptrbb;
 #else
@@ -1749,9 +1749,9 @@ ADDQ $2, %rax;
 MOVQ %rax, kkk;
 #endif
 SARQ $2, k;
-JLE .L211_loopE;
+JLE L(211_loopE);
 ALIGN_5
-.L211_bodyB:
+L(211_bodyB):
 #### Unroll time 1 ####
 EDUP_DY	0*SIZE(ptrbb), yvec2;
 LD_DY	0*SIZE(ptrba), yvec0;
@@ -1870,17 +1870,17 @@ MUL_DY	yvec1, yvec5, yvec7;
 ADD2_DY	yvec7, yvec12, yvec12;
 ADDQ	$32*SIZE, ptrba;
 DECQ	k;
-JG .L211_bodyB;
+JG L(211_bodyB);
 ALIGN_5
-.L211_loopE:
+L(211_loopE):
 #ifndef	TRMMKERNEL
 TEST $2, bk;
 #else
 TEST $2, kkk;
 #endif
-JLE .L212_loopE;
+JLE L(212_loopE);
 ALIGN_5
-.L212_bodyB:
+L(212_bodyB):
 #### Unroll time 1 ####
 EDUP_DY	0*SIZE(ptrbb), yvec2;
 LD_DY	0*SIZE(ptrba), yvec0;
@@ -1942,15 +1942,15 @@ ADD2_DY	yvec7, yvec12, yvec12;
 ADDQ	$8*SIZE, ptrbb;
 ADDQ	$16*SIZE, ptrba;
 
-.L212_loopE:
+L(212_loopE):
 #ifndef	TRMMKERNEL
 TEST $1, bk;
 #else
 TEST $1, kkk;
 #endif
-JLE .L213_loopE;
+JLE L(213_loopE);
 ALIGN_5
-.L213_bodyB:
+L(213_bodyB):
 #### Unroll time 1 ####
 EDUP_DY	0*SIZE(ptrbb), yvec2;
 LD_DY	0*SIZE(ptrba), yvec0;
@@ -1982,7 +1982,7 @@ ADD2_DY	yvec7, yvec12, yvec12;
 ADDQ	$4*SIZE, ptrbb;
 ADDQ	$8*SIZE, ptrba;
 
-.L213_loopE:
+L(213_loopE):
 #### Handle ####
 XOR_DY	yvec7, yvec7, yvec7;
 #if  defined(RN) || defined(RT) || defined(CN) || defined(CT)
@@ -2037,7 +2037,7 @@ EXTRA_DY $1, yvec12, xvec4;
 MOVQ	C0, %rax;
 OR		ldc, %rax;
 TEST 	$15, %rax;
-JNE		.L213_loopEx;
+JNE		L(213_loopEx);
 ALIGN_5
 #### Writing back ####
 #ifndef	TRMMKERNEL
@@ -2071,10 +2071,10 @@ ADDQ	$4, kk;
 ADDQ $8*SIZE, C0;
 ADDQ $8*SIZE, C1;
 DECQ	i;
-JG .L21_bodyB;
-JMP .L21_loopE;
+JG L(21_bodyB);
+JMP L(21_loopE);
 ALIGN_5
-.L213_loopEx:
+L(213_loopEx):
 #ifndef	TRMMKERNEL
 LDL_DX 0*SIZE(C0), xvec0, xvec0;
 LDH_DX 1*SIZE(C0), xvec0, xvec0;
@@ -2132,13 +2132,13 @@ ADDQ	$4, kk;
 ADDQ	$8*SIZE, C0;
 ADDQ	$8*SIZE, C1;
 DECQ	i;
-JG .L21_bodyB;
+JG L(21_bodyB);
 ALIGN_5
-.L21_loopE:
+L(21_loopE):
 TEST $2, bm;
-JLE .L22_loopE;
+JLE L(22_loopE);
 ALIGN_5
-.L22_bodyB:
+L(22_bodyB):
 #if !defined(TRMMKERNEL)||(defined(TRMMKERNEL)&&defined(LEFT)&&defined(TRANSA))||(defined(TRMMKERNEL)&&!defined(LEFT)&&!defined(TRANSA))
 MOVQ bb,ptrbb;
 #else
@@ -2166,9 +2166,9 @@ ADDQ $2, %rax;
 MOVQ %rax, kkk;
 #endif
 SARQ $2, k;
-JLE .L221_loopE;
+JLE L(221_loopE);
 ALIGN_5
-.L221_bodyB:
+L(221_bodyB):
 #### Unroll time 1 ####
 EDUP_DY	0*SIZE(ptrbb), yvec2;
 LD_DY	0*SIZE(ptrba), yvec0;
@@ -2247,17 +2247,17 @@ MUL_DY	yvec0, yvec5, yvec6;
 ADD2_DY	yvec6, yvec13, yvec13;
 ADDQ	$16*SIZE, ptrba;
 DECQ	k;
-JG .L221_bodyB;
+JG L(221_bodyB);
 ALIGN_5
-.L221_loopE:
+L(221_loopE):
 #ifndef	TRMMKERNEL
 TEST $2, bk;
 #else
 TEST $2, kkk;
 #endif
-JLE .L222_loopE;
+JLE L(222_loopE);
 ALIGN_5
-.L222_bodyB:
+L(222_bodyB):
 #### Unroll time 1 ####
 EDUP_DY	0*SIZE(ptrbb), yvec2;
 LD_DY	0*SIZE(ptrba), yvec0;
@@ -2298,15 +2298,15 @@ ADD2_DY	yvec6, yvec13, yvec13;
 ADDQ	$8*SIZE, ptrba;
 ADDQ	$8*SIZE, ptrbb;
 
-.L222_loopE:
+L(222_loopE):
 #ifndef	TRMMKERNEL
 TEST $1, bk;
 #else
 TEST $1, kkk;
 #endif
-JLE .L223_loopE;
+JLE L(223_loopE);
 ALIGN_5
-.L223_bodyB:
+L(223_bodyB):
 #### Unroll time 1 ####
 EDUP_DY	0*SIZE(ptrbb), yvec2;
 LD_DY	0*SIZE(ptrba), yvec0;
@@ -2328,7 +2328,7 @@ ADD2_DY	yvec6, yvec13, yvec13;
 ADDQ	$4*SIZE, ptrba;
 ADDQ	$4*SIZE, ptrbb;
 
-.L223_loopE:
+L(223_loopE):
 #### Handle ####
 XOR_DY	yvec7, yvec7, yvec7;
 #if  defined(RN) || defined(RT) || defined(CN) || defined(CT)
@@ -2396,11 +2396,11 @@ ADDQ	$2, kk;
 ADDQ	$4*SIZE, C0;
 ADDQ	$4*SIZE, C1;
 
-.L22_loopE:
+L(22_loopE):
 TEST $1, bm;
-JLE .L23_loopE;
+JLE L(23_loopE);
 ALIGN_5
-.L23_bodyB:
+L(23_bodyB):
 #if !defined(TRMMKERNEL)||(defined(TRMMKERNEL)&&defined(LEFT)&&defined(TRANSA))||(defined(TRMMKERNEL)&&!defined(LEFT)&&!defined(TRANSA))
 MOVQ bb,ptrbb;
 #else
@@ -2427,9 +2427,9 @@ ADDQ $2, %rax;
 MOVQ %rax, kkk;
 #endif
 SARQ $2, k;
-JLE .L231_loopE;
+JLE L(231_loopE);
 ALIGN_5
-.L231_bodyB:
+L(231_bodyB):
 LD_DY	0*SIZE(ptrba), yvec0;	#### A1r A1i A2r A2i
 EDUP_DY	0*SIZE(ptrbb), yvec2;
 
@@ -2477,17 +2477,17 @@ ADD2_DY	yvec6, yvec15, yvec15;
 ADDQ	$8*SIZE, ptrba;
 ADDQ	$16*SIZE, ptrbb;
 DECQ	k;
-JG .L231_bodyB;
+JG L(231_bodyB);
 ALIGN_5
-.L231_loopE:
+L(231_loopE):
 #ifndef	TRMMKERNEL
 TEST $2, bk;
 #else
 TEST $2, kkk;
 #endif
-JLE .L232_loopE;
+JLE L(232_loopE);
 ALIGN_5
-.L232_bodyB:
+L(232_bodyB):
 LD_DY	0*SIZE(ptrba), yvec0;	#### A1r A1i A2r A2i
 EDUP_DY	0*SIZE(ptrbb), yvec2;
 
@@ -2513,15 +2513,15 @@ ADD2_DY	yvec6, yvec15, yvec15;
 ADDQ	$4*SIZE, ptrba;
 ADDQ	$8*SIZE, ptrbb;
 
-.L232_loopE:
+L(232_loopE):
 #ifndef	TRMMKERNEL
 TEST $1, bk;
 #else
 TEST $1, kkk;
 #endif
-JLE .L233_loopE;
+JLE L(233_loopE);
 ALIGN_5
-.L233_bodyB:
+L(233_bodyB):
 LD_DY	0*SIZE(ptrba), yvec0;	#### A1r A1i A2r A2i
 EDUP_DY	0*SIZE(ptrbb), yvec2;
 
@@ -2536,7 +2536,7 @@ ADD2_DY	yvec6, yvec15, yvec15;
 ADDQ	$2*SIZE, ptrba;
 ADDQ	$4*SIZE, ptrbb;
 
-.L233_loopE:
+L(233_loopE):
 #### Handle ####
 XOR_DY	yvec7, yvec7, yvec7;
 #if  defined(RN) || defined(RT) || defined(CN) || defined(CT)
@@ -2583,7 +2583,7 @@ ADDQ	$1, kk;
 #endif
 ADDQ	$2*SIZE, C0;
 ADDQ	$2*SIZE, C0;
-.L23_loopE:
+L(23_loopE):
 #if defined(TRMMKERNEL) && !defined(LEFT)
 ADDQ	$2, kk;
 #endif
@@ -2591,11 +2591,11 @@ MOVQ bk, k;
 SALQ $5, k;
 ADDQ k, bb;
 LEAQ (C, ldc, 2), C;
-.L20_loopE:
+L(20_loopE):
 TEST $1, bn;
-JLE .L30_loopE;
+JLE L(30_loopE);
 ALIGN_5
-.L30_bodyB:
+L(30_bodyB):
 #if defined(TRMMKERNEL) && defined(LEFT)
 MOVQ OFFSET, %rax;
 MOVQ %rax, kk;
@@ -2604,9 +2604,9 @@ MOVQ ba, ptrba;
 MOVQ C, C0;
 MOVQ bm, i;
 SARQ $2, i;
-JLE .L31_loopE;
+JLE L(31_loopE);
 ALIGN_5
-.L31_bodyB:
+L(31_bodyB):
 #if !defined(TRMMKERNEL)||(defined(TRMMKERNEL)&&defined(LEFT)&&defined(TRANSA))||(defined(TRMMKERNEL)&&!defined(LEFT)&&!defined(TRANSA))
 MOVQ bb,ptrbb;
 #else
@@ -2634,9 +2634,9 @@ ADDQ $1, %rax;
 MOVQ %rax, kkk;
 #endif
 SARQ $2, k;
-JLE .L311_loopE;
+JLE L(311_loopE);
 ALIGN_5
-.L311_bodyB:
+L(311_bodyB):
 LD_DY	0*SIZE(ptrba), yvec0;
 BROAD_DY 0*SIZE(ptrbb), yvec2;
 MUL_DY	yvec0, yvec2, yvec6;
@@ -2711,17 +2711,17 @@ ADD2_DY	yvec7, yvec14, yvec14;
 ADDQ	$32*SIZE, ptrba;
 ADDQ	$8*SIZE, ptrbb;
 DECQ	k;
-JG .L311_bodyB;
+JG L(311_bodyB);
 ALIGN_5
-.L311_loopE:
+L(311_loopE):
 #ifndef	TRMMKERNEL
 TEST $2, bk;
 #else
 TEST $2, kkk;
 #endif
-JLE .L312_loopE;
+JLE L(312_loopE);
 ALIGN_5
-.L312_bodyB:
+L(312_bodyB):
 LD_DY	0*SIZE(ptrba), yvec0;
 BROAD_DY 0*SIZE(ptrbb), yvec2;
 MUL_DY	yvec0, yvec2, yvec6;
@@ -2760,15 +2760,15 @@ ADD2_DY	yvec7, yvec14, yvec14;
 ADDQ	$16*SIZE, ptrba;
 ADDQ	$4*SIZE, ptrbb;
 
-.L312_loopE:
+L(312_loopE):
 #ifndef	TRMMKERNEL
 TEST $1, bk;
 #else
 TEST $1, kkk;
 #endif
-JLE .L313_loopE;
+JLE L(313_loopE);
 ALIGN_5
-.L313_bodyB:
+L(313_bodyB):
 LD_DY	0*SIZE(ptrba), yvec0;
 BROAD_DY 0*SIZE(ptrbb), yvec2;
 MUL_DY	yvec0, yvec2, yvec6;
@@ -2789,7 +2789,7 @@ ADD2_DY	yvec7, yvec14, yvec14;
 ADDQ	$8*SIZE, ptrba;
 ADDQ	$2*SIZE, ptrbb;
 
-.L313_loopE:
+L(313_loopE):
 #### Handle ####
 XOR_DY	yvec7, yvec7, yvec7;
 #if  defined(RN) || defined(RT) || defined(CN) || defined(CT)
@@ -2856,13 +2856,13 @@ ADDQ	$4, kk;
 #endif
 ADDQ	$8*SIZE, C0;
 DECQ	i;
-JG .L31_bodyB;
+JG L(31_bodyB);
 ALIGN_5
-.L31_loopE:
+L(31_loopE):
 TEST $2, bm;
-JLE .L32_loopE;
+JLE L(32_loopE);
 ALIGN_5
-.L32_bodyB:
+L(32_bodyB):
 #if !defined(TRMMKERNEL)||(defined(TRMMKERNEL)&&defined(LEFT)&&defined(TRANSA))||(defined(TRMMKERNEL)&&!defined(LEFT)&&!defined(TRANSA))
 MOVQ bb,ptrbb;
 #else
@@ -2889,9 +2889,9 @@ ADDQ $1, %rax;
 MOVQ %rax, kkk;
 #endif
 SARQ $2, k;
-JLE .L321_loopE;
+JLE L(321_loopE);
 ALIGN_5
-.L321_bodyB:
+L(321_bodyB):
 LD_DY	0*SIZE(ptrba), yvec0;
 BROAD_DY 0*SIZE(ptrbb), yvec2;
 MUL_DY	yvec0, yvec2, yvec6;
@@ -2930,17 +2930,17 @@ ADD2_DY	yvec7, yvec15, yvec15;
 ADDQ	$16*SIZE, ptrba;
 ADDQ	$8*SIZE, ptrbb;
 DECQ	k;
-JG .L321_bodyB;
+JG L(321_bodyB);
 ALIGN_5
-.L321_loopE:
+L(321_loopE):
 #ifndef	TRMMKERNEL
 TEST $2, bk;
 #else
 TEST $2, kkk;
 #endif
-JLE .L322_loopE;
+JLE L(322_loopE);
 ALIGN_5
-.L322_bodyB:
+L(322_bodyB):
 LD_DY	0*SIZE(ptrba), yvec0;
 BROAD_DY 0*SIZE(ptrbb), yvec2;
 MUL_DY	yvec0, yvec2, yvec6;
@@ -2961,15 +2961,15 @@ ADD2_DY	yvec7, yvec15, yvec15;
 ADDQ	$8*SIZE, ptrba;
 ADDQ	$4*SIZE, ptrbb;
 
-.L322_loopE:
+L(322_loopE):
 #ifndef	TRMMKERNEL
 TEST $1, bk;
 #else
 TEST $1, kkk;
 #endif
-JLE .L323_loopE;
+JLE L(323_loopE);
 ALIGN_5
-.L323_bodyB:
+L(323_bodyB):
 LD_DY	0*SIZE(ptrba), yvec0;
 BROAD_DY 0*SIZE(ptrbb), yvec2;
 MUL_DY	yvec0, yvec2, yvec6;
@@ -2980,7 +2980,7 @@ MUL_DY	yvec1, yvec3, yvec7;
 ADD2_DY	yvec7, yvec15, yvec15;
 ADDQ	$4*SIZE, ptrba;
 ADDQ	$2*SIZE, ptrbb;
-.L323_loopE:
+L(323_loopE):
 #### Handle ####
 XOR_DY	yvec7, yvec7, yvec7;
 #if  defined(RN) || defined(RT) || defined(CN) || defined(CT)
@@ -3026,11 +3026,11 @@ ADDQ %rax, ptrbb;
 ADDQ	$2, kk;
 #endif
 ADDQ	$4*SIZE, C0;
-.L32_loopE:
+L(32_loopE):
 TEST $1, bm;
-JLE .L33_loopE;
+JLE L(33_loopE);
 ALIGN_5
-.L33_bodyB:
+L(33_bodyB):
 #if !defined(TRMMKERNEL)||(defined(TRMMKERNEL)&&defined(LEFT)&&defined(TRANSA))||(defined(TRMMKERNEL)&&!defined(LEFT)&&!defined(TRANSA))
 MOVQ bb,ptrbb;
 #else
@@ -3057,9 +3057,9 @@ ADDQ $1, %rax;
 MOVQ %rax, kkk;
 #endif
 SARQ $2, k;
-JLE .L331_loopE;
+JLE L(331_loopE);
 ALIGN_5
-.L331_bodyB:
+L(331_bodyB):
 LD_DX	0*SIZE(ptrba), xvec0;
 BROAD_DX 0*SIZE(ptrbb), xvec2;
 MUL_DX xvec0, xvec2, xvec2;
@@ -3102,17 +3102,17 @@ ADDSUB_DX xvec3, xvec15, xvec15;
 ADDQ	$8*SIZE, ptrba;
 ADDQ	$8*SIZE, ptrbb;
 DECQ	k;
-JG .L331_bodyB;
+JG L(331_bodyB);
 ALIGN_5
-.L331_loopE:
+L(331_loopE):
 #ifndef	TRMMKERNEL
 TEST $2, bk;
 #else
 TEST $2, kkk;
 #endif
-JLE .L332_loopE;
+JLE L(332_loopE);
 ALIGN_5
-.L332_bodyB:
+L(332_bodyB):
 LD_DX	0*SIZE(ptrba), xvec0;
 BROAD_DX 0*SIZE(ptrbb), xvec2;
 MUL_DX xvec0, xvec2, xvec2;
@@ -3135,15 +3135,15 @@ ADDSUB_DX xvec3, xvec15, xvec15;
 ADDQ	$4*SIZE, ptrba;
 ADDQ	$4*SIZE, ptrbb;
 
-.L332_loopE:
+L(332_loopE):
 #ifndef	TRMMKERNEL
 TEST $1, bk;
 #else
 TEST $1, kkk;
 #endif
-JLE .L333_loopE;
+JLE L(333_loopE);
 ALIGN_5
-.L333_bodyB:
+L(333_bodyB):
 LD_DX	0*SIZE(ptrba), xvec0;
 BROAD_DX 0*SIZE(ptrbb), xvec2;
 MUL_DX xvec0, xvec2, xvec2;
@@ -3156,7 +3156,7 @@ ADDSUB_DX xvec3, xvec15, xvec15;
 ADDQ	$2*SIZE, ptrba;
 ADDQ	$2*SIZE, ptrbb;
 
-.L333_loopE:
+L(333_loopE):
 #### Handle ####
 XOR_DY	yvec7, yvec7, yvec7;
 #if  defined(RN) || defined(RT) || defined(CN) || defined(CT)
@@ -3199,7 +3199,7 @@ ADDQ %rax, ptrbb;
 ADDQ	$1, kk;
 #endif
 ADDQ	$2*SIZE, C0;
-.L33_loopE:
+L(33_loopE):
 #if defined(TRMMKERNEL) && !defined(LEFT)
 ADDQ	$1, kk;
 #endif
@@ -3207,7 +3207,7 @@ MOVQ bk, k;
 SALQ $4*SIZE, k;
 ADDQ k, bb;
 LEAQ (C, ldc, 1), C;
-.L30_loopE:
+L(30_loopE):
 movq      0(%rsp), %rbx;
 movq      8(%rsp), %rbp;
 movq     16(%rsp), %r12;

@@ -154,20 +154,20 @@
 #endif
 
 
-.L0t:
+L(0t):
 	xorq	M,M
 	addq	$1,M
 	salq	$22,M
 	subq	M,MMM
-	jge		.L00t
+	jge		L(00t)
 	ALIGN_4
 
 	movq	MMM,%rax
 	addq	M,%rax
-	jle		.L999x
+	jle		L(999x)
 	movq	%rax,M
 
-.L00t:
+L(00t):
 	movq	LDAX,LDA
 	movq	NN,N
 	movq	AA,A
@@ -185,9 +185,9 @@
 #ifdef ALIGNED_ACCESS
 	movq	M, MM
 	testq	$4 * SIZE - 1, A
-	je	.L0X
+	je	L(0X)
 	cmpq	$3, M
-	jle	.L0X
+	jle	L(0X)
 
 	movq	A, MM
 	sarq	$BASE_SHIFT, MM
@@ -195,13 +195,13 @@
 	subq	$4, MM
 	addq	M,  MM
 
-.L0X:
+L(0X):
 #endif
 
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 	testq	N, N
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
 	subq	$-32 * SIZE, A
@@ -216,10 +216,10 @@
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L05
+	jle	L(05)
 	ALIGN_4
 
-.L02:
+L(02):
 	movss	(X), %xmm0
 	addq	INCX, X
 	movss	(X), %xmm1
@@ -251,39 +251,39 @@
 
 	addq	$8 * SIZE, X1
 	decq	I
-	jg	.L02
+	jg	L(02)
 	ALIGN_4
 
-.L05:
+L(05):
 	movq	M,  I
 	andq	$7, I
-	jle	.L10
+	jle	L(10)
 	ALIGN_2
 
-.L06:
+L(06):
 	movss	(X), %xmm0
 	addq	INCX, X
 	movss	%xmm0, 0 * SIZE(X1)
 	addq	$SIZE, X1
 	decq	I
-	jg	.L06
+	jg	L(06)
 	ALIGN_4
 
-.L10:
+L(10):
 	movq	Y, Y1
 
 #ifdef ALIGNED_ACCESS
 	testq	$4 * SIZE - 1, LDA
-	jne	.L100
+	jne	L(100)
 #endif
 
 #if GEMV_UNROLL >= 8
 
 	cmpq	$8, N
-	jl	.L20
+	jl	L(20)
 	ALIGN_3
 
-.L11:
+L(11):
 	subq	$8, N
 
 	leaq	32 * SIZE(BUFFER), X1
@@ -303,10 +303,10 @@
 
 #ifdef ALIGNED_ACCESS
 	cmpq	$3, M
-	jle	.L17
+	jle	L(17)
 
 	testq	$SIZE, A1
-	je	.L1X
+	je	L(1X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -339,9 +339,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L1X:
+L(1X):
 	testq	$2 * SIZE, A1
-	je	.L1XX
+	je	L(1XX)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -387,7 +387,7 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L1XX:
+L(1XX):
 #endif
 
 	MOVUPS_XL1 (-32 * SIZE, X1, %xmm4)
@@ -399,7 +399,7 @@
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L15
+	jle	L(15)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-32 * SIZE, A1, LDA, 1, %xmm1)
@@ -407,10 +407,10 @@
 	MOVUPS_A2 (-32 * SIZE, A1, LDA3, 1, %xmm3)
 
 	decq	I
-	jle	.L13
+	jle	L(13)
 	ALIGN_4
 
-.L12:
+L(12):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) - 128 + PREOFFSET(A1)
 #endif
@@ -561,10 +561,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L12
+	jg	L(12)
 	ALIGN_4
 
-.L13:
+L(13):
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 	MOVUPS_A1 (-32 * SIZE, A2, %xmm0)
@@ -670,9 +670,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L15:
+L(15):
 	testq	$8, MM
-	jle	.L16
+	jle	L(16)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-32 * SIZE, A1, LDA, 1, %xmm1)
@@ -731,9 +731,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L16:
+L(16):
 	testq	$4, MM
-	jle	.L17
+	jle	L(17)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-32 * SIZE, A1, LDA, 1, %xmm1)
@@ -766,9 +766,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L17:
+L(17):
 	testq	$2, MM
-	jle	.L18
+	jle	L(18)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -816,9 +816,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L18:
+L(18):
 	testq	$1, MM
-	jle	.L19
+	jle	L(19)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -847,7 +847,7 @@
 	addss	%xmm3, %xmm15
 	ALIGN_4
 
-.L19:
+L(19):
 #ifdef HAVE_SSE3
 	haddps	%xmm9, %xmm8
 	haddps	%xmm11, %xmm10
@@ -958,19 +958,19 @@
 	addq	INCY, Y1
 
 	cmpq	$8, N
-	jge	.L11
+	jge	L(11)
 	ALIGN_4
 
-.L20:
+L(20):
 #endif
 
 	cmpq	$4, N
-	jl	.L30
+	jl	L(30)
 
 #if GEMV_UNROLL == 4
 	ALIGN_3
 
-.L21:
+L(21):
 #endif
 	subq	$4, N
 
@@ -987,10 +987,10 @@
 
 #ifdef ALIGNED_ACCESS
 	cmpq	$3, M
-	jle	.L27
+	jle	L(27)
 
 	testq	$SIZE, A1
-	je	.L2X
+	je	L(2X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -1011,9 +1011,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L2X:
+L(2X):
 	testq	$2 * SIZE, A1
-	je	.L2XX
+	je	L(2XX)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -1047,7 +1047,7 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L2XX:
+L(2XX):
 #endif
 
 	MOVUPS_XL1 (-32 * SIZE, X1, %xmm4)
@@ -1059,7 +1059,7 @@
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L25
+	jle	L(25)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-32 * SIZE, A1, LDA, 1, %xmm1)
@@ -1072,10 +1072,10 @@
 	MOVUPS_A2 (-28 * SIZE, A2, LDA, 1, %xmm15)
 
 	decq	I
-	jle	.L23
+	jle	L(23)
 	ALIGN_4
 
-.L22:
+L(22):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 2 - 128 + PREOFFSET(A1)
 #endif
@@ -1158,10 +1158,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L22
+	jg	L(22)
 	ALIGN_4
 
-.L23:
+L(23):
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 	MOVUPS_A1 (-24 * SIZE, A1, %xmm0)
@@ -1215,9 +1215,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L25:
+L(25):
 	testq	$8, MM
-	jle	.L26
+	jle	L(26)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -1251,9 +1251,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L26:
+L(26):
 	testq	$4, MM
-	jle	.L27
+	jle	L(27)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -1273,9 +1273,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L27:
+L(27):
 	testq	$2, MM
-	jle	.L28
+	jle	L(28)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -1312,9 +1312,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L28:
+L(28):
 	testq	$1, MM
-	jle	.L29
+	jle	L(29)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -1331,7 +1331,7 @@
 	addss	%xmm3, %xmm11
 	ALIGN_4
 
-.L29:
+L(29):
 #ifdef HAVE_SSE3
 	haddps	%xmm9, %xmm8
 	haddps	%xmm11, %xmm10
@@ -1391,13 +1391,13 @@
 
 #if GEMV_UNROLL == 4
 	cmpq	$4, N
-	jge	.L21
+	jge	L(21)
 #endif
 	ALIGN_4
 
-.L30:
+L(30):
 	cmpq	$3, N
-	jne	.L40
+	jne	L(40)
 
 	leaq	32 * SIZE(BUFFER), X1
 
@@ -1411,10 +1411,10 @@
 
 #ifdef ALIGNED_ACCESS
 	cmpq	$3, M
-	jle	.L37
+	jle	L(37)
 
 	testq	$SIZE, A1
-	je	.L3X
+	je	L(3X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -1435,9 +1435,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L3X:
+L(3X):
 	testq	$2 * SIZE, A1
-	je	.L3XX
+	je	L(3XX)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -1471,7 +1471,7 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L3XX:
+L(3XX):
 #endif
 
 	MOVUPS_XL1 (-32 * SIZE, X1, %xmm4)
@@ -1483,7 +1483,7 @@
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L35
+	jle	L(35)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-32 * SIZE, A1, LDA, 1, %xmm1)
@@ -1494,10 +1494,10 @@
 	MOVUPS_A1 (-28 * SIZE, A2, %xmm14)
 
 	decq	I
-	jle	.L33
+	jle	L(33)
 	ALIGN_4
 
-.L32:
+L(32):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 3 - 128 + PREOFFSET(A1)
 #endif
@@ -1563,10 +1563,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L32
+	jg	L(32)
 	ALIGN_4
 
-.L33:
+L(33):
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 	MOVUPS_A1 (-24 * SIZE, A1, %xmm0)
@@ -1610,9 +1610,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L35:
+L(35):
 	testq	$8, MM
-	jle	.L36
+	jle	L(36)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -1640,9 +1640,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L36:
+L(36):
 	testq	$4, MM
-	jle	.L37
+	jle	L(37)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -1659,9 +1659,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L37:
+L(37):
 	testq	$2, MM
-	jle	.L38
+	jle	L(38)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -1694,9 +1694,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L38:
+L(38):
 	testq	$1, MM
-	jle	.L39
+	jle	L(39)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -1710,7 +1710,7 @@
 	addss	%xmm2, %xmm10
 	ALIGN_4
 
-.L39:
+L(39):
 #ifdef HAVE_SSE3
 	haddps	%xmm9, %xmm8
 	haddps	%xmm11, %xmm10
@@ -1760,12 +1760,12 @@
 	addq	INCY, Y1
 	movss	%xmm10, (Y1)
 	addq	INCY, Y1
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
-.L40:
+L(40):
 	cmpq	$2, N
-	jne	.L50
+	jne	L(50)
 
 	leaq	32 * SIZE(BUFFER), X1
 
@@ -1778,10 +1778,10 @@
 
 #ifdef ALIGNED_ACCESS
 	cmpq	$3, M
-	jle	.L47
+	jle	L(47)
 
 	testq	$SIZE, A1
-	je	.L4X
+	je	L(4X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -1796,9 +1796,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L4X:
+L(4X):
 	testq	$2 * SIZE, A1
-	je	.L4XX
+	je	L(4XX)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -1820,7 +1820,7 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L4XX:
+L(4XX):
 #endif
 
 	MOVUPS_XL1 (-32 * SIZE, X1, %xmm4)
@@ -1828,7 +1828,7 @@
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L45
+	jle	L(45)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A1 (-32 * SIZE, A2, %xmm1)
@@ -1836,10 +1836,10 @@
 	MOVUPS_A1 (-28 * SIZE, A2, %xmm13)
 
 	decq	I
-	jle	.L43
+	jle	L(43)
 	ALIGN_4
 
-.L42:
+L(42):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 4 - 128 + PREOFFSET(A1)
 #endif
@@ -1889,10 +1889,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L42
+	jg	L(42)
 	ALIGN_4
 
-.L43:
+L(43):
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 	MOVUPS_A1 (-24 * SIZE, A1, %xmm0)
@@ -1926,9 +1926,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L45:
+L(45):
 	testq	$8, MM
-	jle	.L46
+	jle	L(46)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -1950,9 +1950,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L46:
+L(46):
 	testq	$4, MM
-	jle	.L47
+	jle	L(47)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -1966,9 +1966,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L47:
+L(47):
 	testq	$2, MM
-	jle	.L48
+	jle	L(48)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -1993,9 +1993,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L48:
+L(48):
 	testq	$1, MM
-	jle	.L49
+	jle	L(49)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -2006,7 +2006,7 @@
 	addss	%xmm1, %xmm9
 	ALIGN_4
 
-.L49:
+L(49):
 #ifdef HAVE_SSE3
 	haddps	%xmm9, %xmm8
 	haddps	%xmm8, %xmm8
@@ -2034,12 +2034,12 @@
 	addq	INCY, Y1
 	movss	%xmm9, (Y1)
 	addq	INCY, Y1
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
-.L50:
+L(50):
 	cmpq	$1, N
-	jne	.L999
+	jne	L(999)
 
 	leaq	32 * SIZE(BUFFER), X1
 
@@ -2050,10 +2050,10 @@
 
 #ifdef ALIGNED_ACCESS
 	cmpq	$3, M
-	jle	.L57
+	jle	L(57)
 
 	testq	$SIZE, A1
-	je	.L5X
+	je	L(5X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -2064,9 +2064,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L5X:
+L(5X):
 	testq	$2 * SIZE, A1
-	je	.L5XX
+	je	L(5XX)
 
 
 #ifdef movsd
@@ -2083,7 +2083,7 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L5XX:
+L(5XX):
 #endif
 
 	MOVUPS_XL1 (-32 * SIZE, X1, %xmm4)
@@ -2091,16 +2091,16 @@
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L55
+	jle	L(55)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A1 (-28 * SIZE, A1, %xmm12)
 
 	decq	I
-	jle	.L53
+	jle	L(53)
 	ALIGN_4
 
-.L52:
+L(52):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 8 - 128 + PREOFFSET(A1)
 #endif
@@ -2133,10 +2133,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L52
+	jg	L(52)
 	ALIGN_4
 
-.L53:
+L(53):
 	mulps	%xmm4, %xmm0
 	MOVUPS_XL1 (-24 * SIZE, X1, %xmm4)
 	addps	%xmm0, %xmm8
@@ -2159,9 +2159,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L55:
+L(55):
 	testq	$8, MM
-	jle	.L56
+	jle	L(56)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -2176,9 +2176,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L56:
+L(56):
 	testq	$4, MM
-	jle	.L57
+	jle	L(57)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -2188,9 +2188,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L57:
+L(57):
 	testq	$2, MM
-	jle	.L58
+	jle	L(58)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -2208,9 +2208,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L58:
+L(58):
 	testq	$1, MM
-	jle	.L59
+	jle	L(59)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -2218,7 +2218,7 @@
 	addss	%xmm0, %xmm8
 	ALIGN_4
 
-.L59:
+L(59):
 	addps	%xmm9, %xmm8
 
 #ifdef HAVE_SSE3
@@ -2240,18 +2240,18 @@
 	movss	%xmm8, (Y1)
 
 #ifdef ALIGNED_ACCESS
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
-.L100:
+L(100):
 	testq	$2 * SIZE - 1, LDA
-	jne	.L200
+	jne	L(200)
 
 	cmpq	$4, N
-	jl	.L110
+	jl	L(110)
 	ALIGN_3
 
-.L101:
+L(101):
 	subq	$4, N
 
 	leaq	32 * SIZE(BUFFER), X1
@@ -2266,10 +2266,10 @@
 	xorps	%xmm11, %xmm11
 
 	cmpq	$3, M
-	jle	.L107
+	jle	L(107)
 
 	testq	$SIZE, A1
-	je	.L10X
+	je	L(10X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -2290,9 +2290,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L10X:
+L(10X):
 	testq	$2 * SIZE, A1
-	je	.L10XX
+	je	L(10XX)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -2326,7 +2326,7 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L10XX:
+L(10XX):
 	MOVUPS_A2  (-34 * SIZE, A1, LDA, 1, %xmm12)
 	MOVUPS_A2  (-34 * SIZE, A2, LDA, 1, %xmm13)
 
@@ -2339,7 +2339,7 @@
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L105
+	jle	L(105)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-30 * SIZE, A1, LDA, 1, %xmm1)
@@ -2347,10 +2347,10 @@
 	MOVUPS_A2 (-30 * SIZE, A2, LDA, 1, %xmm3)
 
 	decq	I
-	jle	.L103
+	jle	L(103)
 	ALIGN_4
 
-.L102:
+L(102):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 2 - 128 + PREOFFSET(A1)
 #endif
@@ -2441,10 +2441,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L102
+	jg	L(102)
 	ALIGN_4
 
-.L103:
+L(103):
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 	MOVUPS_A1 (-28 * SIZE, A1, %xmm0)
@@ -2510,9 +2510,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L105:
+L(105):
 	testq	$8, MM
-	jle	.L106
+	jle	L(106)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-30 * SIZE, A1, LDA, 1, %xmm1)
@@ -2551,9 +2551,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L106:
+L(106):
 	testq	$4, MM
-	jle	.L107
+	jle	L(107)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -2576,9 +2576,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L107:
+L(107):
 	testq	$2, MM
-	jle	.L108
+	jle	L(108)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -2615,9 +2615,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L108:
+L(108):
 	testq	$1, MM
-	jle	.L109
+	jle	L(109)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -2634,7 +2634,7 @@
 	addss	%xmm3, %xmm11
 	ALIGN_4
 
-.L109:
+L(109):
 #ifdef HAVE_SSE3
 	haddps	%xmm9, %xmm8
 	haddps	%xmm11, %xmm10
@@ -2693,12 +2693,12 @@
 	addq	INCY, Y1
 
 	cmpq	$4, N
-	jge	.L101
+	jge	L(101)
 	ALIGN_4
 
-.L110:
+L(110):
 	cmpq	$3, N
-	jne	.L120
+	jne	L(120)
 
 	leaq	32 * SIZE(BUFFER), X1
 
@@ -2711,10 +2711,10 @@
 	xorps	%xmm10, %xmm10
 
 	cmpq	$3, M
-	jle	.L117
+	jle	L(117)
 
 	testq	$SIZE, A1
-	je	.L11X
+	je	L(11X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -2732,9 +2732,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L11X:
+L(11X):
 	testq	$2 * SIZE, A1
-	je	.L11XX
+	je	L(11XX)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -2762,7 +2762,7 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L11XX:
+L(11XX):
 	MOVUPS_A2  (-34 * SIZE, A1, LDA, 1, %xmm12)
 
 	MOVUPS_XL1 (-32 * SIZE, X1, %xmm4)
@@ -2770,17 +2770,17 @@
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L115
+	jle	L(115)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-30 * SIZE, A1, LDA, 1, %xmm1)
 	MOVUPS_A1 (-32 * SIZE, A2, %xmm2)
 
 	decq	I
-	jle	.L113
+	jle	L(113)
 	ALIGN_4
 
-.L112:
+L(112):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 3 - 128 + PREOFFSET(A1)
 #endif
@@ -2850,10 +2850,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L112
+	jg	L(112)
 	ALIGN_4
 
-.L113:
+L(113):
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 	MOVUPS_A1 (-28 * SIZE, A1, %xmm0)
@@ -2904,9 +2904,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L115:
+L(115):
 	testq	$8, MM
-	jle	.L116
+	jle	L(116)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-30 * SIZE, A1, LDA, 1, %xmm1)
@@ -2937,9 +2937,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L116:
+L(116):
 	testq	$4, MM
-	jle	.L117
+	jle	L(117)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -2958,9 +2958,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L117:
+L(117):
 	testq	$2, MM
-	jle	.L118
+	jle	L(118)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -2990,9 +2990,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L118:
+L(118):
 	testq	$1, MM
-	jle	.L119
+	jle	L(119)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -3006,7 +3006,7 @@
 	addss	%xmm2, %xmm10
 	ALIGN_4
 
-.L119:
+L(119):
 #ifdef HAVE_SSE3
 	haddps	%xmm9, %xmm8
 	haddps	%xmm11, %xmm10
@@ -3054,12 +3054,12 @@
 	movss	%xmm9, (Y1)
 	addq	INCY, Y1
 	movss	%xmm10, (Y1)
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
-.L120:
+L(120):
 	cmpq	$2, N
-	jne	.L130
+	jne	L(130)
 
 	leaq	32 * SIZE(BUFFER), X1
 
@@ -3071,10 +3071,10 @@
 	xorps	%xmm9, %xmm9
 
 	cmpq	$3, M
-	jle	.L127
+	jle	L(127)
 
 	testq	$SIZE, A1
-	je	.L12X
+	je	L(12X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -3089,9 +3089,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L12X:
+L(12X):
 	testq	$2 * SIZE, A1
-	je	.L12XX
+	je	L(12XX)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -3113,7 +3113,7 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L12XX:
+L(12XX):
 	MOVUPS_A1  (-34 * SIZE, A2, %xmm12)
 
 	MOVUPS_XL1 (-32 * SIZE, X1, %xmm4)
@@ -3121,16 +3121,16 @@
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L125
+	jle	L(125)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A1 (-30 * SIZE, A2, %xmm1)
 
 	decq	I
-	jle	.L123
+	jle	L(123)
 	ALIGN_4
 
-.L122:
+L(122):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 4 - 128 + PREOFFSET(A1)
 #endif
@@ -3184,10 +3184,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L122
+	jg	L(122)
 	ALIGN_4
 
-.L123:
+L(123):
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 	MOVUPS_A1 (-28 * SIZE, A1, %xmm0)
@@ -3227,9 +3227,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L125:
+L(125):
 	testq	$8, MM
-	jle	.L126
+	jle	L(126)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A1 (-30 * SIZE, A2, %xmm1)
@@ -3254,9 +3254,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L126:
+L(126):
 	testq	$4, MM
-	jle	.L127
+	jle	L(127)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -3271,9 +3271,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L127:
+L(127):
 	testq	$2, MM
-	jle	.L128
+	jle	L(128)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -3298,9 +3298,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L128:
+L(128):
 	testq	$1, MM
-	jle	.L129
+	jle	L(129)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -3311,7 +3311,7 @@
 	addss	%xmm1, %xmm9
 	ALIGN_4
 
-.L129:
+L(129):
 #ifdef HAVE_SSE3
 	haddps	%xmm9, %xmm8
 	haddps	%xmm8, %xmm8
@@ -3339,12 +3339,12 @@
 	addq	INCY, Y1
 	movss	%xmm9, (Y1)
 	addq	INCY, Y1
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
-.L130:
+L(130):
 	cmpq	$1, N
-	jne	.L999
+	jne	L(999)
 
 	leaq	32 * SIZE(BUFFER), X1
 
@@ -3354,10 +3354,10 @@
 	xorps	%xmm9, %xmm9
 
 	cmpq	$3, M
-	jle	.L137
+	jle	L(137)
 
 	testq	$SIZE, A1
-	je	.L13X
+	je	L(13X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -3368,9 +3368,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L13X:
+L(13X):
 	testq	$2 * SIZE, A1
-	je	.L13XX
+	je	L(13XX)
 
 
 #ifdef movsd
@@ -3387,23 +3387,23 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L13XX:
+L(13XX):
 
 	MOVUPS_XL1 (-32 * SIZE, X1, %xmm4)
 	MOVUPS_XL1 (-28 * SIZE, X1, %xmm5)
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L135
+	jle	L(135)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A1 (-28 * SIZE, A1, %xmm12)
 
 	decq	I
-	jle	.L133
+	jle	L(133)
 	ALIGN_4
 
-.L132:
+L(132):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 8 - 128 + PREOFFSET(A1)
 #endif
@@ -3436,10 +3436,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L132
+	jg	L(132)
 	ALIGN_4
 
-.L133:
+L(133):
 	mulps	%xmm4, %xmm0
 	MOVUPS_XL1 (-24 * SIZE, X1, %xmm4)
 	addps	%xmm0, %xmm8
@@ -3462,9 +3462,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L135:
+L(135):
 	testq	$8, MM
-	jle	.L136
+	jle	L(136)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -3479,9 +3479,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L136:
+L(136):
 	testq	$4, MM
-	jle	.L137
+	jle	L(137)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -3491,9 +3491,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L137:
+L(137):
 	testq	$2, MM
-	jle	.L138
+	jle	L(138)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -3511,9 +3511,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L138:
+L(138):
 	testq	$1, MM
-	jle	.L139
+	jle	L(139)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -3521,7 +3521,7 @@
 	addss	%xmm0, %xmm8
 	ALIGN_4
 
-.L139:
+L(139):
 	addps	%xmm9, %xmm8
 
 #ifdef HAVE_SSE3
@@ -3541,18 +3541,18 @@
 
 	addss	(Y), %xmm8
 	movss	%xmm8, (Y1)
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
-.L200:
+L(200):
 	testq	$2 * SIZE, LDA
-	jne	.L300
+	jne	L(300)
 
 	cmpq	$4, N
-	jl	.L210
+	jl	L(210)
 	ALIGN_3
 
-.L201:
+L(201):
 	subq	$4, N
 
 	leaq	32 * SIZE(BUFFER), X1
@@ -3567,10 +3567,10 @@
 	xorps	%xmm11, %xmm11
 
 	cmpq	$3, M
-	jle	.L207
+	jle	L(207)
 
 	testq	$SIZE, A1
-	je	.L20X
+	je	L(20X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -3591,9 +3591,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L20X:
+L(20X):
 	testq	$2 * SIZE, A1
-	je	.L20XX
+	je	L(20XX)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -3627,7 +3627,7 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L20XX:
+L(20XX):
 	movaps	-33 * SIZE(A1, LDA), %xmm12
 	movaps	-34 * SIZE(A2), %xmm13
 	movaps	-35 * SIZE(A2, LDA), %xmm14
@@ -3641,7 +3641,7 @@
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L205
+	jle	L(205)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-29 * SIZE, A1, LDA, 1, %xmm1)
@@ -3649,10 +3649,10 @@
 	MOVUPS_A2 (-31 * SIZE, A2, LDA, 1, %xmm3)
 
 	decq	I
-	jle	.L203
+	jle	L(203)
 	ALIGN_4
 
-.L202:
+L(202):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 2 - 128 + PREOFFSET(A1)
 #endif
@@ -3758,10 +3758,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L202
+	jg	L(202)
 	ALIGN_4
 
-.L203:
+L(203):
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 	MOVUPS_A1 (-28 * SIZE, A1, %xmm0)
@@ -3843,9 +3843,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L205:
+L(205):
 	testq	$8, MM
-	jle	.L206
+	jle	L(206)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-29 * SIZE, A1, LDA, 1, %xmm1)
@@ -3892,9 +3892,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L206:
+L(206):
 	testq	$4, MM
-	jle	.L207
+	jle	L(207)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-29 * SIZE, A1, LDA, 1, %xmm1)
@@ -3921,9 +3921,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L207:
+L(207):
 	testq	$2, MM
-	jle	.L208
+	jle	L(208)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -3960,9 +3960,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L208:
+L(208):
 	testq	$1, MM
-	jle	.L209
+	jle	L(209)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -3979,7 +3979,7 @@
 	addss	%xmm3, %xmm11
 	ALIGN_4
 
-.L209:
+L(209):
 #ifdef HAVE_SSE3
 	haddps	%xmm9, %xmm8
 	haddps	%xmm11, %xmm10
@@ -4038,12 +4038,12 @@
 	addq	INCY, Y1
 
 	cmpq	$4, N
-	jge	.L201
+	jge	L(201)
 	ALIGN_4
 
-.L210:
+L(210):
 	cmpq	$3, N
-	jne	.L220
+	jne	L(220)
 
 	leaq	32 * SIZE(BUFFER), X1
 
@@ -4056,10 +4056,10 @@
 	xorps	%xmm10, %xmm10
 
 	cmpq	$3, M
-	jle	.L217
+	jle	L(217)
 
 	testq	$SIZE, A1
-	je	.L21X
+	je	L(21X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -4077,9 +4077,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L21X:
+L(21X):
 	testq	$2 * SIZE, A1
-	je	.L21XX
+	je	L(21XX)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -4107,7 +4107,7 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L21XX:
+L(21XX):
 	movaps	-33 * SIZE(A1, LDA), %xmm12
 	movaps	-34 * SIZE(A2), %xmm13
 
@@ -4120,17 +4120,17 @@
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L215
+	jle	L(215)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-29 * SIZE, A1, LDA, 1, %xmm1)
 	MOVUPS_A1 (-30 * SIZE, A2, %xmm2)
 
 	decq	I
-	jle	.L213
+	jle	L(213)
 	ALIGN_4
 
-.L212:
+L(212):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 3 - 128 + PREOFFSET(A1)
 #endif
@@ -4210,10 +4210,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L212
+	jg	L(212)
 	ALIGN_4
 
-.L213:
+L(213):
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 	MOVUPS_A1 (-28 * SIZE, A1, %xmm0)
@@ -4295,9 +4295,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L215:
+L(215):
 	testq	$8, MM
-	jle	.L216
+	jle	L(216)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-29 * SIZE, A1, LDA, 1, %xmm1)
@@ -4334,9 +4334,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L216:
+L(216):
 	testq	$4, MM
-	jle	.L217
+	jle	L(217)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-29 * SIZE, A1, LDA, 1, %xmm1)
@@ -4358,9 +4358,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L217:
+L(217):
 	testq	$2, MM
-	jle	.L218
+	jle	L(218)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -4390,9 +4390,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L218:
+L(218):
 	testq	$1, MM
-	jle	.L219
+	jle	L(219)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -4406,7 +4406,7 @@
 	addss	%xmm2, %xmm10
 	ALIGN_4
 
-.L219:
+L(219):
 #ifdef HAVE_SSE3
 	haddps	%xmm9, %xmm8
 	haddps	%xmm11, %xmm10
@@ -4454,15 +4454,15 @@
 	movss	%xmm9, (Y1)
 	addq	INCY, Y1
 	movss	%xmm10, (Y1)
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
-.L220:
+L(220):
 	testq	N, N
-	jle	.L999
+	jle	L(999)
 
 	cmpq	$2, N
-	jne	.L230
+	jne	L(230)
 
 	leaq	32 * SIZE(BUFFER), X1
 
@@ -4474,10 +4474,10 @@
 	xorps	%xmm9, %xmm9
 
 	cmpq	$3, M
-	jle	.L227
+	jle	L(227)
 
 	testq	$SIZE, A1
-	je	.L22X
+	je	L(22X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -4492,9 +4492,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L22X:
+L(22X):
 	testq	$2 * SIZE, A1
-	je	.L22XX
+	je	L(22XX)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -4516,7 +4516,7 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L22XX:
+L(22XX):
 	movaps	-33 * SIZE(A2), %xmm12
 
 	MOVUPS_XL1 (-32 * SIZE, X1, %xmm4)
@@ -4524,16 +4524,16 @@
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L225
+	jle	L(225)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A1 (-29 * SIZE, A2, %xmm1)
 
 	decq	I
-	jle	.L223
+	jle	L(223)
 	ALIGN_4
 
-.L222:
+L(222):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 4 - 128 + PREOFFSET(A1)
 #endif
@@ -4591,10 +4591,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L222
+	jg	L(222)
 	ALIGN_4
 
-.L223:
+L(223):
 	mulps	%xmm4,  %xmm0
 	addps	%xmm0,  %xmm8
 	MOVUPS_A1 (-28 * SIZE, A1, %xmm2)
@@ -4638,9 +4638,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L225:
+L(225):
 	testq	$8, MM
-	jle	.L226
+	jle	L(226)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A1 (-29 * SIZE, A2, %xmm1)
@@ -4667,9 +4667,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L226:
+L(226):
 	testq	$4, MM
-	jle	.L227
+	jle	L(227)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A1 (-29 * SIZE, A2, %xmm1)
@@ -4687,9 +4687,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L227:
+L(227):
 	testq	$2, MM
-	jle	.L228
+	jle	L(228)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -4714,9 +4714,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L228:
+L(228):
 	testq	$1, MM
-	jle	.L229
+	jle	L(229)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -4727,7 +4727,7 @@
 	addss	%xmm1, %xmm9
 	ALIGN_4
 
-.L229:
+L(229):
 #ifdef HAVE_SSE3
 	haddps	%xmm9, %xmm8
 	haddps	%xmm8, %xmm8
@@ -4755,12 +4755,12 @@
 	addq	INCY, Y1
 	movss	%xmm9, (Y1)
 	addq	INCY, Y1
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
-.L230:
+L(230):
 	cmpq	$1, N
-	jne	.L999
+	jne	L(999)
 
 	leaq	32 * SIZE(BUFFER), X1
 
@@ -4770,10 +4770,10 @@
 	xorps	%xmm9, %xmm9
 
 	cmpq	$3, M
-	jle	.L237
+	jle	L(237)
 
 	testq	$SIZE, A1
-	je	.L23X
+	je	L(23X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -4784,9 +4784,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L23X:
+L(23X):
 	testq	$2 * SIZE, A1
-	je	.L23XX
+	je	L(23XX)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -4802,23 +4802,23 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L23XX:
+L(23XX):
 	MOVUPS_XL1 (-32 * SIZE, X1, %xmm4)
 	MOVUPS_XL1 (-28 * SIZE, X1, %xmm5)
 
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L235
+	jle	L(235)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A1 (-28 * SIZE, A1, %xmm12)
 
 	decq	I
-	jle	.L233
+	jle	L(233)
 	ALIGN_4
 
-.L232:
+L(232):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 8 - 128 + PREOFFSET(A1)
 #endif
@@ -4851,10 +4851,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L232
+	jg	L(232)
 	ALIGN_4
 
-.L233:
+L(233):
 	mulps	%xmm4, %xmm0
 	MOVUPS_XL1 (-24 * SIZE, X1, %xmm4)
 	addps	%xmm0, %xmm8
@@ -4877,9 +4877,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L235:
+L(235):
 	testq	$8, MM
-	jle	.L236
+	jle	L(236)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -4894,9 +4894,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L236:
+L(236):
 	testq	$4, MM
-	jle	.L237
+	jle	L(237)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -4906,9 +4906,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L237:
+L(237):
 	testq	$2, MM
-	jle	.L238
+	jle	L(238)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -4926,9 +4926,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L238:
+L(238):
 	testq	$1, MM
-	jle	.L239
+	jle	L(239)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -4936,7 +4936,7 @@
 	addss	%xmm0, %xmm8
 	ALIGN_4
 
-.L239:
+L(239):
 	addps	%xmm9, %xmm8
 
 #ifdef HAVE_SSE3
@@ -4956,15 +4956,15 @@
 
 	addss	(Y), %xmm8
 	movss	%xmm8, (Y1)
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
-.L300:
+L(300):
 	cmpq	$4, N
-	jl	.L310
+	jl	L(310)
 	ALIGN_3
 
-.L301:
+L(301):
 	subq	$4, N
 
 	leaq	32 * SIZE(BUFFER), X1
@@ -4979,10 +4979,10 @@
 	xorps	%xmm11, %xmm11
 
 	cmpq	$3, M
-	jle	.L307
+	jle	L(307)
 
 	testq	$SIZE, A1
-	je	.L30X
+	je	L(30X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -5003,9 +5003,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L30X:
+L(30X):
 	testq	$2 * SIZE, A1
-	je	.L30XX
+	je	L(30XX)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -5039,7 +5039,7 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L30XX:
+L(30XX):
 	movaps	-35 * SIZE(A1, LDA), %xmm12
 	movaps	-34 * SIZE(A2), %xmm13
 	movaps	-33 * SIZE(A2, LDA), %xmm14
@@ -5053,7 +5053,7 @@
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L305
+	jle	L(305)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-31 * SIZE, A1, LDA, 1, %xmm1)
@@ -5061,10 +5061,10 @@
 	MOVUPS_A2 (-29 * SIZE, A2, LDA, 1, %xmm3)
 
 	decq	I
-	jle	.L303
+	jle	L(303)
 	ALIGN_4
 
-.L302:
+L(302):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 2 - 128 + PREOFFSET(A1)
 #endif
@@ -5170,10 +5170,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L302
+	jg	L(302)
 	ALIGN_4
 
-.L303:
+L(303):
 	mulps	 %xmm4, %xmm0
 	addps	 %xmm0, %xmm8
 	MOVUPS_A1 (-28 * SIZE, A1, %xmm0)
@@ -5255,9 +5255,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L305:
+L(305):
 	testq	$8, MM
-	jle	.L306
+	jle	L(306)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-31 * SIZE, A1, LDA, 1, %xmm1)
@@ -5304,9 +5304,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L306:
+L(306):
 	testq	$4, MM
-	jle	.L307
+	jle	L(307)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-31 * SIZE, A1, LDA, 1, %xmm1)
@@ -5333,9 +5333,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L307:
+L(307):
 	testq	$2, MM
-	jle	.L308
+	jle	L(308)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -5372,9 +5372,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L308:
+L(308):
 	testq	$1, MM
-	jle	.L309
+	jle	L(309)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -5391,7 +5391,7 @@
 	addss	%xmm3, %xmm11
 	ALIGN_4
 
-.L309:
+L(309):
 #ifdef HAVE_SSE3
 	haddps	%xmm9, %xmm8
 	haddps	%xmm11, %xmm10
@@ -5450,15 +5450,15 @@
 	addq	INCY, Y1
 
 	cmpq	$4, N
-	jge	.L301
+	jge	L(301)
 	ALIGN_4
 
-.L310:
+L(310):
 	testq	N, N
-	jle	.L999
+	jle	L(999)
 
 	cmpq	$3, N
-	jne	.L320
+	jne	L(320)
 
 	leaq	32 * SIZE(BUFFER), X1
 
@@ -5471,10 +5471,10 @@
 	xorps	%xmm10, %xmm10
 
 	cmpq	$3, M
-	jle	.L317
+	jle	L(317)
 
 	testq	$SIZE, A1
-	je	.L31X
+	je	L(31X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -5492,9 +5492,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L31X:
+L(31X):
 	testq	$2 * SIZE, A1
-	je	.L31XX
+	je	L(31XX)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -5522,7 +5522,7 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L31XX:
+L(31XX):
 	movaps	-35 * SIZE(A1, LDA), %xmm12
 	movaps	-34 * SIZE(A2), %xmm13
 
@@ -5531,17 +5531,17 @@
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L315
+	jle	L(315)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-31 * SIZE, A1, LDA, 1, %xmm1)
 	MOVUPS_A1 (-30 * SIZE, A2, %xmm2)
 
 	decq	I
-	jle	.L313
+	jle	L(313)
 	ALIGN_4
 
-.L312:
+L(312):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 3 - 128 + PREOFFSET(A1)
 #endif
@@ -5620,10 +5620,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L312
+	jg	L(312)
 	ALIGN_4
 
-.L313:
+L(313):
 	mulps	 %xmm4, %xmm0
 	addps	 %xmm0, %xmm8
 	MOVUPS_A1 (-28 * SIZE, A1, %xmm0)
@@ -5705,9 +5705,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L315:
+L(315):
 	testq	$8, MM
-	jle	.L316
+	jle	L(316)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-31 * SIZE, A1, LDA, 1, %xmm1)
@@ -5744,9 +5744,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L316:
+L(316):
 	testq	$4, MM
-	jle	.L317
+	jle	L(317)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A2 (-31 * SIZE, A1, LDA, 1, %xmm1)
@@ -5768,9 +5768,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L317:
+L(317):
 	testq	$2, MM
-	jle	.L318
+	jle	L(318)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -5800,9 +5800,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L318:
+L(318):
 	testq	$1, MM
-	jle	.L319
+	jle	L(319)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -5816,7 +5816,7 @@
 	addss	%xmm2, %xmm10
 	ALIGN_4
 
-.L319:
+L(319):
 #ifdef HAVE_SSE3
 	haddps	%xmm9, %xmm8
 	haddps	%xmm11, %xmm10
@@ -5864,12 +5864,12 @@
 	movss	%xmm9, (Y1)
 	addq	INCY, Y1
 	movss	%xmm10, (Y1)
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_3
 
-.L320:
+L(320):
 	cmpq	$2, N
-	jne	.L330
+	jne	L(330)
 
 	leaq	32 * SIZE(BUFFER), X1
 
@@ -5880,10 +5880,10 @@
 	xorps	%xmm9, %xmm9
 
 	cmpq	$3, M
-	jle	.L327
+	jle	L(327)
 
 	testq	$SIZE, A1
-	je	.L32X
+	je	L(32X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -5898,9 +5898,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L32X:
+L(32X):
 	testq	$2 * SIZE, A1
-	je	.L32XX
+	je	L(32XX)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -5922,7 +5922,7 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L32XX:
+L(32XX):
 	movaps	-35 * SIZE(A2), %xmm12
 
 	MOVUPS_XL1 (-32 * SIZE, X1, %xmm4)
@@ -5930,16 +5930,16 @@
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L325
+	jle	L(325)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A1 (-31 * SIZE, A2, %xmm1)
 
 	decq	I
-	jle	.L323
+	jle	L(323)
 	ALIGN_4
 
-.L322:
+L(322):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 4 - 128 + PREOFFSET(A1)
 #endif
@@ -5997,10 +5997,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L322
+	jg	L(322)
 	ALIGN_4
 
-.L323:
+L(323):
 	mulps	%xmm4, %xmm0
 	addps	%xmm0, %xmm8
 	MOVUPS_A1 (-28 * SIZE, A1, %xmm0)
@@ -6044,9 +6044,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L325:
+L(325):
 	testq	$8, MM
-	jle	.L326
+	jle	L(326)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A1 (-31 * SIZE, A2, %xmm1)
@@ -6073,9 +6073,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L326:
+L(326):
 	testq	$4, MM
-	jle	.L327
+	jle	L(327)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A1 (-31 * SIZE, A2, %xmm1)
@@ -6092,9 +6092,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L327:
+L(327):
 	testq	$2, MM
-	jle	.L328
+	jle	L(328)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -6119,9 +6119,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L328:
+L(328):
 	testq	$1, MM
-	jle	.L329
+	jle	L(329)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -6132,7 +6132,7 @@
 	addss	%xmm1, %xmm9
 	ALIGN_4
 
-.L329:
+L(329):
 #ifdef HAVE_SSE3
 	haddps	%xmm9, %xmm8
 	haddps	%xmm8, %xmm8
@@ -6160,12 +6160,12 @@
 	addq	INCY, Y1
 	movss	%xmm9, (Y1)
 	addq	INCY, Y1
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
-.L330:
+L(330):
 	cmpq	$1, N
-	jne	.L999
+	jne	L(999)
 
 	leaq	32 * SIZE(BUFFER), X1
 
@@ -6175,10 +6175,10 @@
 	xorps	%xmm9, %xmm9
 
 	cmpq	$3, M
-	jle	.L337
+	jle	L(337)
 
 	testq	$SIZE, A1
-	je	.L33X
+	je	L(33X)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -6189,9 +6189,9 @@
 	addq	 $1 * SIZE, X1
 	ALIGN_3
 
-.L33X:
+L(33X):
 	testq	$2 * SIZE, A1
-	je	.L33XX
+	je	L(33XX)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -6207,23 +6207,23 @@
 	addq	 $2 * SIZE, X1
 	ALIGN_3
 
-.L33XX:
+L(33XX):
 
 	MOVUPS_XL1 (-32 * SIZE, X1, %xmm4)
 	MOVUPS_XL1 (-28 * SIZE, X1, %xmm5)
 
 	movq	MM,  I
 	sarq	$4,  I
-	jle	.L335
+	jle	L(335)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	MOVUPS_A1 (-28 * SIZE, A1, %xmm12)
 
 	decq	I
-	jle	.L333
+	jle	L(333)
 	ALIGN_4
 
-.L332:
+L(332):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 8 - 128 + PREOFFSET(A1)
 #endif
@@ -6256,10 +6256,10 @@
 	addq	$16 * SIZE, X1
 
 	decq	I
-	jg	.L332
+	jg	L(332)
 	ALIGN_4
 
-.L333:
+L(333):
 	mulps	%xmm4, %xmm0
 	MOVUPS_XL1 (-24 * SIZE, X1, %xmm4)
 	addps	%xmm0, %xmm8
@@ -6282,9 +6282,9 @@
 	addq	$16 * SIZE, X1
 	ALIGN_4
 
-.L335:
+L(335):
 	testq	$8, MM
-	jle	.L336
+	jle	L(336)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -6299,9 +6299,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L336:
+L(336):
 	testq	$4, MM
-	jle	.L337
+	jle	L(337)
 
 	MOVUPS_A1 (-32 * SIZE, A1, %xmm0)
 	mulps	%xmm4, %xmm0
@@ -6311,9 +6311,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L337:
+L(337):
 	testq	$2, MM
-	jle	.L338
+	jle	L(338)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -6331,9 +6331,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L338:
+L(338):
 	testq	$1, MM
-	jle	.L339
+	jle	L(339)
 
 	movss	-32 * SIZE(A1), %xmm0
 	movss	-32 * SIZE(X1), %xmm4
@@ -6341,7 +6341,7 @@
 	addss	%xmm0, %xmm8
 	ALIGN_4
 
-.L339:
+L(339):
 	addps	%xmm9, %xmm8
 
 #ifdef HAVE_SSE3
@@ -6362,17 +6362,17 @@
 	addss	(Y), %xmm8
 	movss	%xmm8, (Y1)
 
-	jmp	.L999
+	jmp	L(999)
 #endif
 	ALIGN_4
 
-.L999:
+L(999):
 	leaq	(,M,SIZE),%rax
 	addq	%rax,AA
-	jmp		.L0t
+	jmp		L(0t)
 	ALIGN_4
 
-.L999x:
+L(999x):
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12

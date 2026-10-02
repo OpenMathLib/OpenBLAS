@@ -61,7 +61,7 @@
 #endif
 
 	testq	N, N
-	jle	.L88
+	jle	L(88)
 
 	salq	$ZBASE_SHIFT, INCX
 	salq	$ZBASE_SHIFT, INCY
@@ -72,16 +72,16 @@
 	fldz
 
 	cmpq	$2 * SIZE, INCX
-	jne	.L14
+	jne	L(14)
 	cmpq	$2 * SIZE, INCY
-	jne	.L14
+	jne	L(14)
 
 	movq	N,  %rax
 	sarq	$1, %rax
-	jle	.L15
+	jle	L(15)
 	ALIGN_3
 
-.L16:
+L(16):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -130,16 +130,16 @@
 	addq	$4 * SIZE, X
 	addq	$4 * SIZE, Y
 	decq	%rax
-	jg	.L16
+	jg	L(16)
 	ALIGN_3
 
-.L15:
+L(15):
 	movq	N, %rax
 	andq	$1,   %rax
-	jle	.L27
+	jle	L(27)
 	ALIGN_3
 
-.L22:
+L(22):
 	FLD	 0 * SIZE(X)
 
 	FLD	 0 * SIZE(Y)
@@ -158,17 +158,17 @@
 	FLD	 1 * SIZE(Y)
 	fmulp	 %st, %st(1)
 	faddp	%st, %st(4)
-	jmp	.L27
+	jmp	L(27)
 	ALIGN_3
 
-.L14:
+L(14):
 	movq	N, %rax
 	sarq	$1,   %rax
-	jle	.L30
+	jle	L(30)
 	ALIGN_3
 
 
-.L31:
+L(31):
 	FLD	 0 * SIZE(X)
 
 	FLD	 0 * SIZE(Y)
@@ -212,16 +212,16 @@
 	addq	INCY, Y
 
 	decq	%rax
-	jg	.L31
+	jg	L(31)
 	ALIGN_3
 
-.L30:
+L(30):
 	movq	N,  %rax
 	andq	$1, %rax
-	jle	.L27
+	jle	L(27)
 	ALIGN_3
 
-.L37:
+L(37):
 	FLD	 0 * SIZE(X)
 
 	FLD	 0 * SIZE(Y)
@@ -242,7 +242,7 @@
 	faddp	%st, %st(4)
 	ALIGN_3
 
-.L27:
+L(27):
 #ifndef CONJ
 	fsubp	%st, %st(3)
 	faddp	%st, %st(1)
@@ -255,7 +255,7 @@
 	ret
 	ALIGN_3
 
-.L88:
+L(88):
 	fldz
 	fldz
 

@@ -102,19 +102,19 @@
 
 	testq	N, N
 	movq	N, J
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L12:
+L(12):
 	movq	A, AO1
 	addq	$2 * SIZE, A
 
 	movq	M,  I
 	sarq	$1, I
-	jle	.L14
+	jle	L(14)
 	ALIGN_4
 
-.L13:
+L(13):
 #ifndef DOUBLE
 	movsd	0 * SIZE(AO1), %xmm0
 	movhps	0 * SIZE(AO1, LDA, 1), %xmm0
@@ -140,12 +140,12 @@
 	leaq	(AO1, LDA, 2), AO1
 	addq	$4 * SIZE, B
 	decq	I
-	jg	.L13
+	jg	L(13)
 	ALIGN_4
 
-.L14:
+L(14):
 	testq	$1, M
-	jle	.L16
+	jle	L(16)
 
 #ifndef DOUBLE
 	movsd	0 * SIZE(AO1), %xmm0
@@ -159,12 +159,12 @@
 	addq	$2 * SIZE, B
 	ALIGN_4
 
-.L16:
+L(16):
 	decq	J
-	jg	.L12
+	jg	L(12)
 	ALIGN_4
 
-.L999:
+L(999):
 #ifdef WINDOWS_ABI
 	movups	  0(%rsp), %xmm6
 	movups	 16(%rsp), %xmm7
