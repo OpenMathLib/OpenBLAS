@@ -1230,7 +1230,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	PROLOGUE
 
-.Lsgemm_kernel_begin:
+L(sgemm_kernel_begin):
 
 	.align 5
 	add	sp, sp, #-(11 * 16)
@@ -1258,12 +1258,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mov	counterJ, origN
 	asr	counterJ, counterJ, #3		// J = J / 8
 	cmp	counterJ, #0
-	ble	.Lsgemm_kernel_L4_BEGIN
+	ble	L(sgemm_kernel_L4_BEGIN)
 
 /******************************************************************************/
 /******************************************************************************/
 
-.Lsgemm_kernel_L8_BEGIN:
+L(sgemm_kernel_L8_BEGIN):
 	mov	pCRow0, pC			// pCRow0 = C
 	add	pC, pC, LDC, lsl #3
 
@@ -1271,20 +1271,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L8_M8_BEGIN:
+L(sgemm_kernel_L8_M8_BEGIN):
 
 	mov	counterI, origM
 	asr	counterI, counterI, #3		// counterI = counterI / 8
 	cmp	counterI, #0
-	ble	.Lsgemm_kernel_L8_M4_BEGIN
+	ble	L(sgemm_kernel_L8_M4_BEGIN)
 
-.Lsgemm_kernel_L8_M8_20:
+L(sgemm_kernel_L8_M8_20):
 
 	mov	pB, origPB
 
 	asr	counterL , origK, #3		// L = K / 8
 	cmp	counterL , #2			// is there at least 16 to do?
-	blt	.Lsgemm_kernel_L8_M8_32
+	blt	L(sgemm_kernel_L8_M8_32)
 
 	KERNEL8x8_I				// do one in the K
 	KERNEL8x8_M2				// do another in the K
@@ -1296,10 +1296,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x8_M2
 
 	subs	counterL, counterL, #2
-	ble	.Lsgemm_kernel_L8_M8_22a
+	ble	L(sgemm_kernel_L8_M8_22a)
 	.align 5
 
-.Lsgemm_kernel_L8_M8_22:
+L(sgemm_kernel_L8_M8_22):
 
 	KERNEL8x8_M1
 	KERNEL8x8_M2
@@ -1311,9 +1311,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x8_M2
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L8_M8_22
+	bgt	L(sgemm_kernel_L8_M8_22)
 
-.Lsgemm_kernel_L8_M8_22a:
+L(sgemm_kernel_L8_M8_22a):
 
 	KERNEL8x8_M1
 	KERNEL8x8_M2
@@ -1324,12 +1324,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x8_M1
 	KERNEL8x8_E
 
-	b	 .Lsgemm_kernel_L8_M8_44
+	b	 L(sgemm_kernel_L8_M8_44)
 
-.Lsgemm_kernel_L8_M8_32:
+L(sgemm_kernel_L8_M8_32):
 
 	tst	counterL, #1
-	ble	.Lsgemm_kernel_L8_M8_40
+	ble	L(sgemm_kernel_L8_M8_40)
 
 	KERNEL8x8_I
 	KERNEL8x8_M2
@@ -1340,114 +1340,114 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x8_M1
 	KERNEL8x8_E
 
-	b	.Lsgemm_kernel_L8_M8_44
+	b	L(sgemm_kernel_L8_M8_44)
 
-.Lsgemm_kernel_L8_M8_40:
+L(sgemm_kernel_L8_M8_40):
 
 	INIT8x8
 
-.Lsgemm_kernel_L8_M8_44:
+L(sgemm_kernel_L8_M8_44):
 
 	ands	counterL , origK, #7
-	ble	.Lsgemm_kernel_L8_M8_100
+	ble	L(sgemm_kernel_L8_M8_100)
 
-.Lsgemm_kernel_L8_M8_46:
+L(sgemm_kernel_L8_M8_46):
 
 	KERNEL8x8_SUB
 
 	subs	counterL, counterL, 1
-	bgt	.Lsgemm_kernel_L8_M8_46
+	bgt	L(sgemm_kernel_L8_M8_46)
 
-.Lsgemm_kernel_L8_M8_100:
+L(sgemm_kernel_L8_M8_100):
 
 	SAVE8x8
 
-.Lsgemm_kernel_L8_M8_END:
+L(sgemm_kernel_L8_M8_END):
 	subs	counterI, counterI, #1
-	bne	.Lsgemm_kernel_L8_M8_20
+	bne	L(sgemm_kernel_L8_M8_20)
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L8_M4_BEGIN:
+L(sgemm_kernel_L8_M4_BEGIN):
 
 	mov	counterI, origM
 	tst	counterI , #7
-	ble	.Lsgemm_kernel_L8_END
+	ble	L(sgemm_kernel_L8_END)
 
 	tst	counterI, #4
-	ble	.Lsgemm_kernel_L8_M2_BEGIN
+	ble	L(sgemm_kernel_L8_M2_BEGIN)
 
-.Lsgemm_kernel_L8_M4_20:
+L(sgemm_kernel_L8_M4_20):
 
 	mov	pB, origPB
 
 	asr	counterL , origK, #1		// L = K / 2
 	cmp	counterL , #2			// is there at least 4 to do?
-	blt	.Lsgemm_kernel_L8_M4_32
+	blt	L(sgemm_kernel_L8_M4_32)
 
 	KERNEL4x8_I				// do one in the K
 	KERNEL4x8_M2				// do another in the K
 
 	subs	counterL, counterL, #2
-	ble	.Lsgemm_kernel_L8_M4_22a
+	ble	L(sgemm_kernel_L8_M4_22a)
 	.align 5
 
-.Lsgemm_kernel_L8_M4_22:
+L(sgemm_kernel_L8_M4_22):
 
 	KERNEL4x8_M1
 	KERNEL4x8_M2
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L8_M4_22
+	bgt	L(sgemm_kernel_L8_M4_22)
 
-.Lsgemm_kernel_L8_M4_22a:
+L(sgemm_kernel_L8_M4_22a):
 
 	KERNEL4x8_M1
 	KERNEL4x8_E
 
-	b	 .Lsgemm_kernel_L8_M4_44
+	b	 L(sgemm_kernel_L8_M4_44)
 
-.Lsgemm_kernel_L8_M4_32:
+L(sgemm_kernel_L8_M4_32):
 
 	tst	counterL, #1
-	ble	.Lsgemm_kernel_L8_M4_40
+	ble	L(sgemm_kernel_L8_M4_40)
 
 	KERNEL4x8_I
 	KERNEL4x8_E
 
-	b	.Lsgemm_kernel_L8_M4_44
+	b	L(sgemm_kernel_L8_M4_44)
 
-.Lsgemm_kernel_L8_M4_40:
+L(sgemm_kernel_L8_M4_40):
 
 	INIT4x8
 
-.Lsgemm_kernel_L8_M4_44:
+L(sgemm_kernel_L8_M4_44):
 
 	ands	counterL , origK, #1
-	ble	.Lsgemm_kernel_L8_M4_100
+	ble	L(sgemm_kernel_L8_M4_100)
 
-.Lsgemm_kernel_L8_M4_46:
+L(sgemm_kernel_L8_M4_46):
 
 	KERNEL4x8_SUB
 
-.Lsgemm_kernel_L8_M4_100:
+L(sgemm_kernel_L8_M4_100):
 
 	SAVE4x8
 
-.Lsgemm_kernel_L8_M4_END:
+L(sgemm_kernel_L8_M4_END):
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L8_M2_BEGIN:
+L(sgemm_kernel_L8_M2_BEGIN):
 
 	mov	counterI, origM
 	tst	counterI , #3
-	ble	.Lsgemm_kernel_L8_END
+	ble	L(sgemm_kernel_L8_END)
 
 	tst	counterI, #2			// counterI = counterI / 2
-	ble	.Lsgemm_kernel_L8_M1_BEGIN
+	ble	L(sgemm_kernel_L8_M1_BEGIN)
 
-.Lsgemm_kernel_L8_M2_20:
+L(sgemm_kernel_L8_M2_20):
 
 	INIT2x8
 
@@ -1455,9 +1455,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Lsgemm_kernel_L8_M2_40
+	ble	L(sgemm_kernel_L8_M2_40)
 
-.Lsgemm_kernel_L8_M2_22:
+L(sgemm_kernel_L8_M2_22):
 
 	KERNEL2x8_SUB
 	KERNEL2x8_SUB
@@ -1470,35 +1470,35 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x8_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L8_M2_22
+	bgt	L(sgemm_kernel_L8_M2_22)
 
 
-.Lsgemm_kernel_L8_M2_40:
+L(sgemm_kernel_L8_M2_40):
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	.Lsgemm_kernel_L8_M2_100
+	ble	L(sgemm_kernel_L8_M2_100)
 
-.Lsgemm_kernel_L8_M2_42:
+L(sgemm_kernel_L8_M2_42):
 
 	KERNEL2x8_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L8_M2_42
+	bgt	L(sgemm_kernel_L8_M2_42)
 
-.Lsgemm_kernel_L8_M2_100:
+L(sgemm_kernel_L8_M2_100):
 
 	SAVE2x8
 
-.Lsgemm_kernel_L8_M2_END:
+L(sgemm_kernel_L8_M2_END):
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L8_M1_BEGIN:
+L(sgemm_kernel_L8_M1_BEGIN):
 
 	tst	counterI, #1			// counterI = counterI % 2
-	ble	.Lsgemm_kernel_L8_END
+	ble	L(sgemm_kernel_L8_END)
 
-.Lsgemm_kernel_L8_M1_20:
+L(sgemm_kernel_L8_M1_20):
 
 	INIT1x8
 
@@ -1506,9 +1506,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Lsgemm_kernel_L8_M1_40
+	ble	L(sgemm_kernel_L8_M1_40)
 
-.Lsgemm_kernel_L8_M1_22:
+L(sgemm_kernel_L8_M1_22):
 	KERNEL1x8_SUB
 	KERNEL1x8_SUB
 	KERNEL1x8_SUB
@@ -1520,43 +1520,43 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x8_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L8_M1_22
+	bgt	L(sgemm_kernel_L8_M1_22)
 
 
-.Lsgemm_kernel_L8_M1_40:
+L(sgemm_kernel_L8_M1_40):
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	.Lsgemm_kernel_L8_M1_100
+	ble	L(sgemm_kernel_L8_M1_100)
 
-.Lsgemm_kernel_L8_M1_42:
+L(sgemm_kernel_L8_M1_42):
 
 	KERNEL1x8_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L8_M1_42
+	bgt	L(sgemm_kernel_L8_M1_42)
 
-.Lsgemm_kernel_L8_M1_100:
+L(sgemm_kernel_L8_M1_100):
 
 	SAVE1x8
 
-.Lsgemm_kernel_L8_END:
+L(sgemm_kernel_L8_END):
 	lsl	temp, origK, #5			// B = B + K * 4 * 8
 	add	origPB, origPB, temp
 
 	subs	counterJ, counterJ , #1		// j--
-	bgt	.Lsgemm_kernel_L8_BEGIN
+	bgt	L(sgemm_kernel_L8_BEGIN)
 
 /******************************************************************************/
 /******************************************************************************/
 
-.Lsgemm_kernel_L4_BEGIN:
+L(sgemm_kernel_L4_BEGIN):
 
 	mov	counterJ , origN
 	tst	counterJ , #7
-	ble	.Lsgemm_kernel_L999
+	ble	L(sgemm_kernel_L999)
 
 	tst	counterJ , #4
-	ble	.Lsgemm_kernel_L2_BEGIN
+	ble	L(sgemm_kernel_L2_BEGIN)
 
 	mov	pCRow0, pC			// pCRow0 = pC
 
@@ -1566,156 +1566,156 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L4_M8_BEGIN:
+L(sgemm_kernel_L4_M8_BEGIN):
 
 	mov	counterI, origM
 	asr	counterI, counterI, #3		// counterI = counterI / 8
 	cmp	counterI, #0
-	ble	.Lsgemm_kernel_L4_M4_BEGIN
+	ble	L(sgemm_kernel_L4_M4_BEGIN)
 
-.Lsgemm_kernel_L4_M8_20:
+L(sgemm_kernel_L4_M8_20):
 
 	mov	pB, origPB
 
 	asr	counterL , origK, #1		// L = K / 2
 	cmp	counterL , #2			// is there at least 4 to do?
-	blt	.Lsgemm_kernel_L4_M8_32
+	blt	L(sgemm_kernel_L4_M8_32)
 
 	KERNEL8x4_I				// do one in the K
 	KERNEL8x4_M2				// do another in the K
 
 	subs	counterL, counterL, #2
-	ble	.Lsgemm_kernel_L4_M8_22a
+	ble	L(sgemm_kernel_L4_M8_22a)
 	.align 5
 
-.Lsgemm_kernel_L4_M8_22:
+L(sgemm_kernel_L4_M8_22):
 
 	KERNEL8x4_M1
 	KERNEL8x4_M2
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L4_M8_22
+	bgt	L(sgemm_kernel_L4_M8_22)
 
-.Lsgemm_kernel_L4_M8_22a:
+L(sgemm_kernel_L4_M8_22a):
 
 	KERNEL8x4_M1
 	KERNEL8x4_E
 
-	b	 .Lsgemm_kernel_L4_M8_44
+	b	 L(sgemm_kernel_L4_M8_44)
 
-.Lsgemm_kernel_L4_M8_32:
+L(sgemm_kernel_L4_M8_32):
 
 	tst	counterL, #1
-	ble	.Lsgemm_kernel_L4_M8_40
+	ble	L(sgemm_kernel_L4_M8_40)
 
 	KERNEL8x4_I
 	KERNEL8x4_E
 
-	b	.Lsgemm_kernel_L4_M8_44
+	b	L(sgemm_kernel_L4_M8_44)
 
-.Lsgemm_kernel_L4_M8_40:
+L(sgemm_kernel_L4_M8_40):
 
 	INIT8x4
 
-.Lsgemm_kernel_L4_M8_44:
+L(sgemm_kernel_L4_M8_44):
 
 	ands	counterL , origK, #1
-	ble	.Lsgemm_kernel_L4_M8_100
+	ble	L(sgemm_kernel_L4_M8_100)
 
-.Lsgemm_kernel_L4_M8_46:
+L(sgemm_kernel_L4_M8_46):
 
 	KERNEL8x4_SUB
 
-.Lsgemm_kernel_L4_M8_100:
+L(sgemm_kernel_L4_M8_100):
 
 	SAVE8x4
 
-.Lsgemm_kernel_L4_M8_END:
+L(sgemm_kernel_L4_M8_END):
 	subs	counterI, counterI, #1
-	bne	.Lsgemm_kernel_L4_M8_20
+	bne	L(sgemm_kernel_L4_M8_20)
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L4_M4_BEGIN:
+L(sgemm_kernel_L4_M4_BEGIN):
 
 	mov	counterI, origM
 	tst	counterI , #7
-	ble	.Lsgemm_kernel_L4_END
+	ble	L(sgemm_kernel_L4_END)
 
 	tst	counterI, #4
-	ble	.Lsgemm_kernel_L4_M2_BEGIN
+	ble	L(sgemm_kernel_L4_M2_BEGIN)
 
-.Lsgemm_kernel_L4_M4_20:
+L(sgemm_kernel_L4_M4_20):
 
 	mov	pB, origPB
 
 	asr	counterL , origK, #1		// L = K / 2
 	cmp	counterL , #2			// is there at least 4 to do?
-	blt	.Lsgemm_kernel_L4_M4_32
+	blt	L(sgemm_kernel_L4_M4_32)
 
 	KERNEL4x4_I				// do one in the K
 	KERNEL4x4_M2				// do another in the K
 
 	subs	counterL, counterL, #2
-	ble	.Lsgemm_kernel_L4_M4_22a
+	ble	L(sgemm_kernel_L4_M4_22a)
 	.align 5
 
-.Lsgemm_kernel_L4_M4_22:
+L(sgemm_kernel_L4_M4_22):
 
 	KERNEL4x4_M1
 	KERNEL4x4_M2
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L4_M4_22
+	bgt	L(sgemm_kernel_L4_M4_22)
 
-.Lsgemm_kernel_L4_M4_22a:
+L(sgemm_kernel_L4_M4_22a):
 
 	KERNEL4x4_M1
 	KERNEL4x4_E
 
-	b	 .Lsgemm_kernel_L4_M4_44
+	b	 L(sgemm_kernel_L4_M4_44)
 
-.Lsgemm_kernel_L4_M4_32:
+L(sgemm_kernel_L4_M4_32):
 
 	tst	counterL, #1
-	ble	.Lsgemm_kernel_L4_M4_40
+	ble	L(sgemm_kernel_L4_M4_40)
 
 	KERNEL4x4_I
 	KERNEL4x4_E
 
-	b	.Lsgemm_kernel_L4_M4_44
+	b	L(sgemm_kernel_L4_M4_44)
 
-.Lsgemm_kernel_L4_M4_40:
+L(sgemm_kernel_L4_M4_40):
 
 	INIT4x4
 
-.Lsgemm_kernel_L4_M4_44:
+L(sgemm_kernel_L4_M4_44):
 
 	ands	counterL , origK, #1
-	ble	.Lsgemm_kernel_L4_M4_100
+	ble	L(sgemm_kernel_L4_M4_100)
 
-.Lsgemm_kernel_L4_M4_46:
+L(sgemm_kernel_L4_M4_46):
 
 	KERNEL4x4_SUB
 
-.Lsgemm_kernel_L4_M4_100:
+L(sgemm_kernel_L4_M4_100):
 
 	SAVE4x4
 
-.Lsgemm_kernel_L4_M4_END:
+L(sgemm_kernel_L4_M4_END):
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L4_M2_BEGIN:
+L(sgemm_kernel_L4_M2_BEGIN):
 
 	mov	counterI, origM
 	tst	counterI , #3
-	ble	.Lsgemm_kernel_L4_END
+	ble	L(sgemm_kernel_L4_END)
 
 	tst	counterI, #2			// counterI = counterI / 2
-	ble	.Lsgemm_kernel_L4_M1_BEGIN
+	ble	L(sgemm_kernel_L4_M1_BEGIN)
 
-.Lsgemm_kernel_L4_M2_20:
+L(sgemm_kernel_L4_M2_20):
 
 	INIT2x4
 
@@ -1723,9 +1723,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Lsgemm_kernel_L4_M2_40
+	ble	L(sgemm_kernel_L4_M2_40)
 
-.Lsgemm_kernel_L4_M2_22:
+L(sgemm_kernel_L4_M2_22):
 
 	KERNEL2x4_SUB
 	KERNEL2x4_SUB
@@ -1738,35 +1738,35 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L4_M2_22
+	bgt	L(sgemm_kernel_L4_M2_22)
 
 
-.Lsgemm_kernel_L4_M2_40:
+L(sgemm_kernel_L4_M2_40):
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	.Lsgemm_kernel_L4_M2_100
+	ble	L(sgemm_kernel_L4_M2_100)
 
-.Lsgemm_kernel_L4_M2_42:
+L(sgemm_kernel_L4_M2_42):
 
 	KERNEL2x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L4_M2_42
+	bgt	L(sgemm_kernel_L4_M2_42)
 
-.Lsgemm_kernel_L4_M2_100:
+L(sgemm_kernel_L4_M2_100):
 
 	SAVE2x4
 
-.Lsgemm_kernel_L4_M2_END:
+L(sgemm_kernel_L4_M2_END):
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L4_M1_BEGIN:
+L(sgemm_kernel_L4_M1_BEGIN):
 
 	tst	counterI, #1			// counterI = counterI % 2
-	ble	.Lsgemm_kernel_L4_END
+	ble	L(sgemm_kernel_L4_END)
 
-.Lsgemm_kernel_L4_M1_20:
+L(sgemm_kernel_L4_M1_20):
 
 	INIT1x4
 
@@ -1774,9 +1774,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Lsgemm_kernel_L4_M1_40
+	ble	L(sgemm_kernel_L4_M1_40)
 
-.Lsgemm_kernel_L4_M1_22:
+L(sgemm_kernel_L4_M1_22):
 	KERNEL1x4_SUB
 	KERNEL1x4_SUB
 	KERNEL1x4_SUB
@@ -1788,39 +1788,39 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L4_M1_22
+	bgt	L(sgemm_kernel_L4_M1_22)
 
 
-.Lsgemm_kernel_L4_M1_40:
+L(sgemm_kernel_L4_M1_40):
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	.Lsgemm_kernel_L4_M1_100
+	ble	L(sgemm_kernel_L4_M1_100)
 
-.Lsgemm_kernel_L4_M1_42:
+L(sgemm_kernel_L4_M1_42):
 
 	KERNEL1x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L4_M1_42
+	bgt	L(sgemm_kernel_L4_M1_42)
 
-.Lsgemm_kernel_L4_M1_100:
+L(sgemm_kernel_L4_M1_100):
 
 	SAVE1x4
 
-.Lsgemm_kernel_L4_END:
+L(sgemm_kernel_L4_END):
 	add	origPB, origPB, origK, lsl #4	// B = B + K * 4 * 4
 
 /******************************************************************************/
 /******************************************************************************/
 
-.Lsgemm_kernel_L2_BEGIN:   // less than 2 left in N direction
+L(sgemm_kernel_L2_BEGIN):   // less than 2 left in N direction
 
 	mov	counterJ , origN
 	tst	counterJ , #3
-	ble	.Lsgemm_kernel_L999
+	ble	L(sgemm_kernel_L999)
 
 	tst	counterJ , #2
-	ble	.Lsgemm_kernel_L1_BEGIN
+	ble	L(sgemm_kernel_L1_BEGIN)
 
 	mov	pCRow0, pC			// pCRow0 = pC
 
@@ -1830,14 +1830,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L2_M8_BEGIN:
+L(sgemm_kernel_L2_M8_BEGIN):
 
 	mov	counterI, origM
 	asr	counterI, counterI, #3		// counterI = counterI / 8
 	cmp	counterI,#0
-	ble	.Lsgemm_kernel_L2_M4_BEGIN
+	ble	L(sgemm_kernel_L2_M4_BEGIN)
 
-.Lsgemm_kernel_L2_M8_20:
+L(sgemm_kernel_L2_M8_20):
 
 	INIT8x2
 
@@ -1845,10 +1845,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL,#0
-	ble	.Lsgemm_kernel_L2_M8_40
+	ble	L(sgemm_kernel_L2_M8_40)
 	.align 5
 
-.Lsgemm_kernel_L2_M8_22:
+L(sgemm_kernel_L2_M8_22):
 	KERNEL8x2_SUB
 	KERNEL8x2_SUB
 	KERNEL8x2_SUB
@@ -1860,42 +1860,42 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L2_M8_22
+	bgt	L(sgemm_kernel_L2_M8_22)
 
 
-.Lsgemm_kernel_L2_M8_40:
+L(sgemm_kernel_L2_M8_40):
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	.Lsgemm_kernel_L2_M8_100
+	ble	L(sgemm_kernel_L2_M8_100)
 
-.Lsgemm_kernel_L2_M8_42:
+L(sgemm_kernel_L2_M8_42):
 
 	KERNEL8x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L2_M8_42
+	bgt	L(sgemm_kernel_L2_M8_42)
 
-.Lsgemm_kernel_L2_M8_100:
+L(sgemm_kernel_L2_M8_100):
 
 	SAVE8x2
 
-.Lsgemm_kernel_L2_M8_END:
+L(sgemm_kernel_L2_M8_END):
 
 	subs	counterI, counterI, #1
-	bgt	.Lsgemm_kernel_L2_M8_20
+	bgt	L(sgemm_kernel_L2_M8_20)
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L2_M4_BEGIN:
+L(sgemm_kernel_L2_M4_BEGIN):
 
 	mov	counterI, origM
 	tst	counterI , #7
-	ble	.Lsgemm_kernel_L2_END
+	ble	L(sgemm_kernel_L2_END)
 
 	tst	counterI, #4
-	ble	.Lsgemm_kernel_L2_M2_BEGIN
+	ble	L(sgemm_kernel_L2_M2_BEGIN)
 
-.Lsgemm_kernel_L2_M4_20:
+L(sgemm_kernel_L2_M4_20):
 
 	INIT4x2
 
@@ -1903,10 +1903,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL,#0
-	ble	.Lsgemm_kernel_L2_M4_40
+	ble	L(sgemm_kernel_L2_M4_40)
 	.align 5
 
-.Lsgemm_kernel_L2_M4_22:
+L(sgemm_kernel_L2_M4_22):
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
@@ -1918,39 +1918,39 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L2_M4_22
+	bgt	L(sgemm_kernel_L2_M4_22)
 
 
-.Lsgemm_kernel_L2_M4_40:
+L(sgemm_kernel_L2_M4_40):
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	.Lsgemm_kernel_L2_M4_100
+	ble	L(sgemm_kernel_L2_M4_100)
 
-.Lsgemm_kernel_L2_M4_42:
+L(sgemm_kernel_L2_M4_42):
 
 	KERNEL4x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L2_M4_42
+	bgt	L(sgemm_kernel_L2_M4_42)
 
-.Lsgemm_kernel_L2_M4_100:
+L(sgemm_kernel_L2_M4_100):
 
 	SAVE4x2
 
-.Lsgemm_kernel_L2_M4_END:
+L(sgemm_kernel_L2_M4_END):
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L2_M2_BEGIN:
+L(sgemm_kernel_L2_M2_BEGIN):
 
 	mov	counterI, origM
 	tst	counterI , #3
-	ble	.Lsgemm_kernel_L2_END
+	ble	L(sgemm_kernel_L2_END)
 
 	tst	counterI, #2			// counterI = counterI / 2
-	ble	.Lsgemm_kernel_L2_M1_BEGIN
+	ble	L(sgemm_kernel_L2_M1_BEGIN)
 
-.Lsgemm_kernel_L2_M2_20:
+L(sgemm_kernel_L2_M2_20):
 
 	INIT2x2
 
@@ -1958,9 +1958,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , origK, #3		// counterL = counterL / 8
         cmp	counterL,#0
-	ble	.Lsgemm_kernel_L2_M2_40
+	ble	L(sgemm_kernel_L2_M2_40)
 
-.Lsgemm_kernel_L2_M2_22:
+L(sgemm_kernel_L2_M2_22):
 
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
@@ -1973,35 +1973,35 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L2_M2_22
+	bgt	L(sgemm_kernel_L2_M2_22)
 
 
-.Lsgemm_kernel_L2_M2_40:
+L(sgemm_kernel_L2_M2_40):
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	.Lsgemm_kernel_L2_M2_100
+	ble	L(sgemm_kernel_L2_M2_100)
 
-.Lsgemm_kernel_L2_M2_42:
+L(sgemm_kernel_L2_M2_42):
 
 	KERNEL2x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L2_M2_42
+	bgt	L(sgemm_kernel_L2_M2_42)
 
-.Lsgemm_kernel_L2_M2_100:
+L(sgemm_kernel_L2_M2_100):
 
 	SAVE2x2
 
-.Lsgemm_kernel_L2_M2_END:
+L(sgemm_kernel_L2_M2_END):
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L2_M1_BEGIN:
+L(sgemm_kernel_L2_M1_BEGIN):
 
 	tst	counterI, #1			// counterI = counterI % 2
-	ble	.Lsgemm_kernel_L2_END
+	ble	L(sgemm_kernel_L2_END)
 
-.Lsgemm_kernel_L2_M1_20:
+L(sgemm_kernel_L2_M1_20):
 
 	INIT1x2
 
@@ -2009,9 +2009,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , origK, #3		// counterL = counterL / 8
         cmp     counterL, #0
-	ble	.Lsgemm_kernel_L2_M1_40
+	ble	L(sgemm_kernel_L2_M1_40)
 
-.Lsgemm_kernel_L2_M1_22:
+L(sgemm_kernel_L2_M1_22):
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
@@ -2023,37 +2023,37 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L2_M1_22
+	bgt	L(sgemm_kernel_L2_M1_22)
 
 
-.Lsgemm_kernel_L2_M1_40:
+L(sgemm_kernel_L2_M1_40):
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	.Lsgemm_kernel_L2_M1_100
+	ble	L(sgemm_kernel_L2_M1_100)
 
-.Lsgemm_kernel_L2_M1_42:
+L(sgemm_kernel_L2_M1_42):
 
 	KERNEL1x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L2_M1_42
+	bgt	L(sgemm_kernel_L2_M1_42)
 
-.Lsgemm_kernel_L2_M1_100:
+L(sgemm_kernel_L2_M1_100):
 
 	SAVE1x2
 
-.Lsgemm_kernel_L2_END:
+L(sgemm_kernel_L2_END):
 
 	add	origPB, origPB, origK, lsl #3	// B = B + K * 2 * 4
 
 /******************************************************************************/
 /******************************************************************************/
 
-.Lsgemm_kernel_L1_BEGIN:
+L(sgemm_kernel_L1_BEGIN):
 
 	mov	counterJ , origN
 	tst	counterJ , #1
-	ble	.Lsgemm_kernel_L999 // done
+	ble	L(sgemm_kernel_L999) // done
 
 
 	mov	pCRow0, pC			// pCRow0 = C
@@ -2063,14 +2063,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L1_M8_BEGIN:
+L(sgemm_kernel_L1_M8_BEGIN):
 
 	mov	counterI, origM
 	asr	counterI, counterI, #3
 	cmp	counterI, #0
-	ble	.Lsgemm_kernel_L1_M4_BEGIN
+	ble	L(sgemm_kernel_L1_M4_BEGIN)
 
-.Lsgemm_kernel_L1_M8_20:
+L(sgemm_kernel_L1_M8_20):
 
 	INIT8x1
 
@@ -2078,10 +2078,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Lsgemm_kernel_L1_M8_40
+	ble	L(sgemm_kernel_L1_M8_40)
 	.align 5
 
-.Lsgemm_kernel_L1_M8_22:
+L(sgemm_kernel_L1_M8_22):
 	KERNEL8x1_SUB
 	KERNEL8x1_SUB
 	KERNEL8x1_SUB
@@ -2093,42 +2093,42 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L1_M8_22
+	bgt	L(sgemm_kernel_L1_M8_22)
 
 
-.Lsgemm_kernel_L1_M8_40:
+L(sgemm_kernel_L1_M8_40):
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	.Lsgemm_kernel_L1_M8_100
+	ble	L(sgemm_kernel_L1_M8_100)
 
-.Lsgemm_kernel_L1_M8_42:
+L(sgemm_kernel_L1_M8_42):
 
 	KERNEL8x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L1_M8_42
+	bgt	L(sgemm_kernel_L1_M8_42)
 
-.Lsgemm_kernel_L1_M8_100:
+L(sgemm_kernel_L1_M8_100):
 
 	SAVE8x1
 
-.Lsgemm_kernel_L1_M8_END:
+L(sgemm_kernel_L1_M8_END):
 
 	subs	counterI, counterI, #1
-	bgt	.Lsgemm_kernel_L1_M8_20
+	bgt	L(sgemm_kernel_L1_M8_20)
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L1_M4_BEGIN:
+L(sgemm_kernel_L1_M4_BEGIN):
 
 	mov	counterI, origM
 	tst	counterI , #7
-	ble	.Lsgemm_kernel_L1_END
+	ble	L(sgemm_kernel_L1_END)
 
 	tst	counterI, #4
-	ble	.Lsgemm_kernel_L1_M2_BEGIN
+	ble	L(sgemm_kernel_L1_M2_BEGIN)
 
-.Lsgemm_kernel_L1_M4_20:
+L(sgemm_kernel_L1_M4_20):
 
 	INIT4x1
 
@@ -2136,10 +2136,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Lsgemm_kernel_L1_M4_40
+	ble	L(sgemm_kernel_L1_M4_40)
 	.align 5
 
-.Lsgemm_kernel_L1_M4_22:
+L(sgemm_kernel_L1_M4_22):
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
@@ -2151,39 +2151,39 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L1_M4_22
+	bgt	L(sgemm_kernel_L1_M4_22)
 
 
-.Lsgemm_kernel_L1_M4_40:
+L(sgemm_kernel_L1_M4_40):
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	.Lsgemm_kernel_L1_M4_100
+	ble	L(sgemm_kernel_L1_M4_100)
 
-.Lsgemm_kernel_L1_M4_42:
+L(sgemm_kernel_L1_M4_42):
 
 	KERNEL4x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L1_M4_42
+	bgt	L(sgemm_kernel_L1_M4_42)
 
-.Lsgemm_kernel_L1_M4_100:
+L(sgemm_kernel_L1_M4_100):
 
 	SAVE4x1
 
-.Lsgemm_kernel_L1_M4_END:
+L(sgemm_kernel_L1_M4_END):
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L1_M2_BEGIN:
+L(sgemm_kernel_L1_M2_BEGIN):
 
 	mov	counterI, origM
 	tst	counterI , #3
-	ble	.Lsgemm_kernel_L1_END
+	ble	L(sgemm_kernel_L1_END)
 
 	tst	counterI, #2			// counterI = counterI / 2
-	ble	.Lsgemm_kernel_L1_M1_BEGIN
+	ble	L(sgemm_kernel_L1_M1_BEGIN)
 
-.Lsgemm_kernel_L1_M2_20:
+L(sgemm_kernel_L1_M2_20):
 
 	INIT2x1
 
@@ -2191,9 +2191,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Lsgemm_kernel_L1_M2_40
+	ble	L(sgemm_kernel_L1_M2_40)
 
-.Lsgemm_kernel_L1_M2_22:
+L(sgemm_kernel_L1_M2_22):
 
 	KERNEL2x1_SUB
 	KERNEL2x1_SUB
@@ -2206,35 +2206,35 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L1_M2_22
+	bgt	L(sgemm_kernel_L1_M2_22)
 
 
-.Lsgemm_kernel_L1_M2_40:
+L(sgemm_kernel_L1_M2_40):
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	.Lsgemm_kernel_L1_M2_100
+	ble	L(sgemm_kernel_L1_M2_100)
 
-.Lsgemm_kernel_L1_M2_42:
+L(sgemm_kernel_L1_M2_42):
 
 	KERNEL2x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L1_M2_42
+	bgt	L(sgemm_kernel_L1_M2_42)
 
-.Lsgemm_kernel_L1_M2_100:
+L(sgemm_kernel_L1_M2_100):
 
 	SAVE2x1
 
-.Lsgemm_kernel_L1_M2_END:
+L(sgemm_kernel_L1_M2_END):
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L1_M1_BEGIN:
+L(sgemm_kernel_L1_M1_BEGIN):
 
 	tst	counterI, #1			// counterI = counterI % 2
-	ble	.Lsgemm_kernel_L1_END
+	ble	L(sgemm_kernel_L1_END)
 
-.Lsgemm_kernel_L1_M1_20:
+L(sgemm_kernel_L1_M1_20):
 
 	INIT1x1
 
@@ -2242,9 +2242,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Lsgemm_kernel_L1_M1_40
+	ble	L(sgemm_kernel_L1_M1_40)
 
-.Lsgemm_kernel_L1_M1_22:
+L(sgemm_kernel_L1_M1_22):
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
@@ -2256,30 +2256,30 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L1_M1_22
+	bgt	L(sgemm_kernel_L1_M1_22)
 
 
-.Lsgemm_kernel_L1_M1_40:
+L(sgemm_kernel_L1_M1_40):
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	.Lsgemm_kernel_L1_M1_100
+	ble	L(sgemm_kernel_L1_M1_100)
 
-.Lsgemm_kernel_L1_M1_42:
+L(sgemm_kernel_L1_M1_42):
 
 	KERNEL1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L1_M1_42
+	bgt	L(sgemm_kernel_L1_M1_42)
 
-.Lsgemm_kernel_L1_M1_100:
+L(sgemm_kernel_L1_M1_100):
 
 	SAVE1x1
 
-.Lsgemm_kernel_L1_END:
+L(sgemm_kernel_L1_END):
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L999:
+L(sgemm_kernel_L999):
 	mov	x0, #0				// set return value
 	ldp	d8, d9, [sp, #(0 * 16)]
 	ldp	d10, d11, [sp, #(1 * 16)]

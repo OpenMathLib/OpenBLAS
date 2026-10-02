@@ -35,6 +35,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #include <immintrin.h>
 
+#if defined(__APPLE__)
+#define L(x) "L" #x
+#else
+#define L(x) ".L" #x
+#endif
+
 
 /*******************************************************************************************
 * Macro definitions
@@ -868,10 +874,10 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"vmovapd %%zmm1, %%zmm26\n"
 			"vmovapd %%zmm1, %%zmm27\n"
 			"vmovapd %%zmm1, %%zmm28\n"
-			"jmp .label24\n"
+			"jmp "L(label24)"\n"
 			".p2align 5\n"
 			/* Inner math loop */
-			".label24:\n"
+			L(label24)":\n"
 			"vmovupd     -128(%[AO]),%%zmm0\n"
 			"vmovupd     -128(%[A1]),%%zmm10\n"
 			"vmovupd     -128(%[A2]),%%zmm20\n"
@@ -924,7 +930,7 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"prefetch 512(%[A2])\n"
 			"prefetch 512(%[BO])\n"
 			"subl $1, %[kloop]\n"
-			"jg .label24\n"
+			"jg "L(label24)"\n"
 			/* multiply the result by alpha */
 			"vbroadcastsd (%[alpha]), %%zmm9\n"
 			/* And store additively in C */
@@ -1036,10 +1042,10 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"vmovapd %%zmm1, %%zmm16\n"
 			"vmovapd %%zmm1, %%zmm17\n"
 			"vmovapd %%zmm1, %%zmm18\n"
-			"jmp .label16\n"
+			"jmp "L(label16)"\n"
 			".p2align 5\n"
 			/* Inner math loop */
-			".label16:\n"
+			L(label16)":\n"
 			"vmovupd     -128(%[AO]),%%zmm0\n"
 			"vmovupd     -128(%[A1]),%%zmm10\n"
 
@@ -1081,7 +1087,7 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"prefetch 512(%[A1])\n"
 			"prefetch 512(%[BO])\n"
 			"subl $1, %[kloop]\n"
-			"jg .label16\n"
+			"jg "L(label16)"\n"
 			/* multiply the result by alpha */
 			"vbroadcastsd (%[alpha]), %%zmm9\n"
 			/* And store additively in C */
@@ -1164,10 +1170,10 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"vmovapd %%zmm1, %%zmm7\n"
 			"vmovapd %%zmm1, %%zmm8\n"
 			"vbroadcastsd (%[alpha]), %%zmm9\n"
-			"jmp .label1\n"
+			"jmp "L(label1)"\n"
 			".p2align 5\n"
 			/* Inner math loop */
-			".label1:\n"
+			L(label1)":\n"
 			"vmovupd     -128(%[AO]),%%zmm0\n"
 			"vfmadd231pd  -96(%[BO])%{1to8%}, %%zmm0, %%zmm1\n"
 			"vfmadd231pd  -88(%[BO])%{1to8%}, %%zmm0, %%zmm2\n"
@@ -1180,7 +1186,7 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
 			"add $64, %[AO]\n"
 			"add $64, %[BO]\n"
 			"subl $1, %[kloop]\n"
-			"jg .label1\n"
+			"jg "L(label1)"\n"
 			/* multiply the result by alpha and add to the memory */
 			"vfmadd213pd (%[C0]), %%zmm9, %%zmm1\n"
 			"vfmadd213pd (%[C1]), %%zmm9, %%zmm2\n"

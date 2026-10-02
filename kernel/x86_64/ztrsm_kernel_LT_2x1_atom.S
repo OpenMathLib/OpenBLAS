@@ -177,10 +177,10 @@
 
 	movq	N,  J
 	testq	N, N
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L01:
+L(01):
 #if defined(LT) || defined(RN)
 	movq	A, AO
 #else
@@ -214,10 +214,10 @@
 
 	movq	M,  I
 	sarq	$1, I
-	jle	.L20
+	jle	L(20)
 	ALIGN_4
 
-.L10:
+L(10):
 #ifdef LN
        movq	K, %rax
        salq	$1 + ZBASE_SHIFT, %rax
@@ -265,10 +265,10 @@
 	subq	KK, %rax
 #endif
 	sarq	$2, %rax
-	je	.L15
+	je	L(15)
 	ALIGN_4
 
-.L12:
+L(12):
 	ADDSD2	 %xmm2, %xmm13
 	PREFETCH (PREFETCHSIZE + 0) * SIZE(AO)
 	movaps	 %xmm0, %xmm2
@@ -411,10 +411,10 @@
 	mulsd	 %xmm3, %xmm6
 	movsd	 1 * SIZE(BO), %xmm3
 
-	jne    .L12
+	jne    L(12)
 	ALIGN_4
 
-.L15:
+L(15):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -424,10 +424,10 @@
 	andq	$3, %rax
 	BRANCH
 	BRANCH
-	je	.L18
+	je	L(18)
 	ALIGN_4
 
-.L16:
+L(16):
 	ADDSD2	 %xmm2, %xmm13
 	movaps	 %xmm0, %xmm2
 	mulsd	 %xmm1, %xmm0
@@ -466,10 +466,10 @@
 	addq	$2 * SIZE, BO
 	decq	%rax
 	BRANCH
-	jg	.L16
+	jg	L(16)
 	ALIGN_4
 
-.L18:
+L(18):
 	ADDSD2	 %xmm2, %xmm13
 	ADDSD3	 %xmm7, %xmm14
 	ADDSD4	 %xmm6, %xmm15
@@ -672,12 +672,12 @@
        addq	%rax, AORIG
 #endif
 	decq	I			# i --
-	jg	.L10
+	jg	L(10)
 	ALIGN_4
 
-.L20:
+L(20):
 	testq	$1, M
-	jle	.L99
+	jle	L(99)
 
 #ifdef LN
        movq	K, %rax
@@ -717,10 +717,10 @@
 	subq	KK, %rax
 #endif
 	sarq	$2, %rax
-	je	.L25
+	je	L(25)
 	ALIGN_4
 
-.L22:
+L(22):
 	PREFETCH (PREFETCHSIZE + 0) * SIZE(AO)
 	ADDSD2	 %xmm2, %xmm9
 	movaps	 %xmm0, %xmm2
@@ -798,10 +798,10 @@
 	addq	$8 * SIZE, BO
 
 	decq	%rax
-	jne    .L22
+	jne    L(22)
 	ALIGN_4
 
-.L25:
+L(25):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -811,10 +811,10 @@
 	andq	$3, %rax
 	BRANCH
 	BRANCH
-	je	.L29
+	je	L(29)
 	ALIGN_4
 
-.L26:
+L(26):
 	ADDSD2	 %xmm2, %xmm9
 	movaps	 %xmm0, %xmm2
 	mulsd	 %xmm1, %xmm0
@@ -837,10 +837,10 @@
 	addq	$2 * SIZE, BO
 	decq	%rax
 	BRANCH
-	jg	.L26
+	jg	L(26)
 	ALIGN_4
 
-.L29:
+L(29):
 	ADDSD2	 %xmm2, %xmm9
 	ADDSD4	 %xmm6, %xmm11
 
@@ -945,7 +945,7 @@
 #endif
 	ALIGN_4
 
-.L99:
+L(99):
 #ifdef LN
        leaq	(, K, SIZE), %rax
        leaq	(B, %rax, 2), B
@@ -963,10 +963,10 @@
 	subq	$1, KK
 #endif
 	decq	J			# j --
-	jg	.L01
+	jg	L(01)
 	ALIGN_4
 
-.L999:
+L(999):
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12

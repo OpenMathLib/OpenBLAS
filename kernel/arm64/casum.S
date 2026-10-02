@@ -98,52 +98,52 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmov	s1, SUMF
 
 	cmp	N, xzr
-	ble	.Lcasum_kernel_L999
+	ble	L(casum_kernel_L999)
 	cmp	INC_X, xzr
-	ble	.Lcasum_kernel_L999
+	ble	L(casum_kernel_L999)
 
 	cmp	INC_X, #1
-	bne	.Lcasum_kernel_S_BEGIN
+	bne	L(casum_kernel_S_BEGIN)
 
-.Lcasum_kernel_F_BEGIN:
+L(casum_kernel_F_BEGIN):
 
 	asr	I, N, #3
 	cmp	I, xzr
-	beq	.Lcasum_kernel_F1
+	beq	L(casum_kernel_F1)
 
-.Lcasum_kernel_F8:
+L(casum_kernel_F8):
 
 	KERNEL_F8
 
 	subs	I, I, #1
-	bne	.Lcasum_kernel_F8
+	bne	L(casum_kernel_F8)
 
 	KERNEL_F8_FINALIZE
 
-.Lcasum_kernel_F1:
+L(casum_kernel_F1):
 
 	ands	I, N, #7
-	ble	.Lcasum_kernel_L999
+	ble	L(casum_kernel_L999)
 
-.Lcasum_kernel_F10:
+L(casum_kernel_F10):
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     .Lcasum_kernel_F10
+        bne     L(casum_kernel_F10)
 
-.Lcasum_kernel_L999:
+L(casum_kernel_L999):
 	ret
 
-.Lcasum_kernel_S_BEGIN:
+L(casum_kernel_S_BEGIN):
 
 	INIT_S
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	.Lcasum_kernel_S1
+	ble	L(casum_kernel_S1)
 
-.Lcasum_kernel_S4:
+L(casum_kernel_S4):
 
 	KERNEL_S1
 	KERNEL_S1
@@ -151,19 +151,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Lcasum_kernel_S4
+	bne	L(casum_kernel_S4)
 
-.Lcasum_kernel_S1:
+L(casum_kernel_S1):
 
 	ands	I, N, #3
-	ble	.Lcasum_kernel_L999
+	ble	L(casum_kernel_L999)
 
-.Lcasum_kernel_S10:
+L(casum_kernel_S10):
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     .Lcasum_kernel_S10
+        bne     L(casum_kernel_S10)
 
 	ret
 

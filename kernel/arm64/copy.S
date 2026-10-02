@@ -159,50 +159,50 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 
 	cmp	N, xzr
-	ble	.Lcopy_kernel_L999
+	ble	L(copy_kernel_L999)
 
 	cmp	INC_X, #1
-	bne	.Lcopy_kernel_S_BEGIN
+	bne	L(copy_kernel_S_BEGIN)
 	cmp	INC_Y, #1
-	bne	.Lcopy_kernel_S_BEGIN
+	bne	L(copy_kernel_S_BEGIN)
 
-.Lcopy_kernel_F_BEGIN:
+L(copy_kernel_F_BEGIN):
 
 	asr	I, N, #2
 	cmp	I, xzr
-	beq	.Lcopy_kernel_F1
+	beq	L(copy_kernel_F1)
 
-.Lcopy_kernel_F4:
+L(copy_kernel_F4):
 
 	KERNEL_F4
 
 	subs	I, I, #1
-	bne	.Lcopy_kernel_F4
+	bne	L(copy_kernel_F4)
 
-.Lcopy_kernel_F1:
+L(copy_kernel_F1):
 
 	ands	I, N, #3
-	ble	.Lcopy_kernel_L999
+	ble	L(copy_kernel_L999)
 
-.Lcopy_kernel_F10:
+L(copy_kernel_F10):
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     .Lcopy_kernel_F10
+        bne     L(copy_kernel_F10)
 
 	mov	w0, wzr
 	ret
 
-.Lcopy_kernel_S_BEGIN:
+L(copy_kernel_S_BEGIN):
 
 	INIT_S
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	.Lcopy_kernel_S1
+	ble	L(copy_kernel_S1)
 
-.Lcopy_kernel_S4:
+L(copy_kernel_S4):
 
 	KERNEL_S1
 	KERNEL_S1
@@ -210,21 +210,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Lcopy_kernel_S4
+	bne	L(copy_kernel_S4)
 
-.Lcopy_kernel_S1:
+L(copy_kernel_S1):
 
 	ands	I, N, #3
-	ble	.Lcopy_kernel_L999
+	ble	L(copy_kernel_L999)
 
-.Lcopy_kernel_S10:
+L(copy_kernel_S10):
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     .Lcopy_kernel_S10
+        bne     L(copy_kernel_S10)
 
-.Lcopy_kernel_L999:
+L(copy_kernel_L999):
 
 	mov	w0, wzr
 	ret

@@ -472,13 +472,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mov	counterJ, origN
 	asr 	counterJ, counterJ, #3		// J = J / 8
 	cmp 	counterJ, #0
-	ble	.Lstrmm_kernel_L4_BEGIN
+	ble	L(strmm_kernel_L4_BEGIN)
 
 /******************************************************************************/
 /* Repeat this as long as there are 8 left in N */
 
 	.align 5
-.Lstrmm_kernel_L8_BEGIN:
+L(strmm_kernel_L8_BEGIN):
 	mov	pCRow0, pC
 
     add pC, pC, LDC, lsl #3 // add 8 x LDC
@@ -489,7 +489,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pA, origPA			// pA = start of A array
 
-.Lstrmm_kernel_L8_Mv1_BEGIN:
+L(strmm_kernel_L8_Mv1_BEGIN):
 
 /* Loop over M is done in an SVE fashion. This has the benefit of the last M%SVE_LEN iterations being done in a single sweep */
     mov counterI, #0
@@ -497,7 +497,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     cntp lanes, p0, p1.s                        // lanes contain number of active SVE lanes in M dimension
 
 	.align 5
-.Lstrmm_kernel_L8_Mv1_20:
+L(strmm_kernel_L8_Mv1_20):
 
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
@@ -521,7 +521,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr 	counterL , tempK, #3		// L = K / 8
 	cmp	counterL , #2			// is there at least 4 to do?
-	blt	.Lstrmm_kernel_L8_Mv1_32
+	blt	L(strmm_kernel_L8_Mv1_32)
 
 	KERNELv1x8_I
 	KERNELv1x8_M2
@@ -533,10 +533,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x8_M2
 
 	subs	counterL, counterL, #2		// subtract 2
-	ble	.Lstrmm_kernel_L8_Mv1_22a
+	ble	L(strmm_kernel_L8_Mv1_22a)
 
 	.align 5
-.Lstrmm_kernel_L8_Mv1_22:
+L(strmm_kernel_L8_Mv1_22):
 
 	KERNELv1x8_M1
 	KERNELv1x8_M2
@@ -548,10 +548,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x8_M2
 
 	subs	counterL, counterL, #1
-	bgt	.Lstrmm_kernel_L8_Mv1_22
+	bgt	L(strmm_kernel_L8_Mv1_22)
 
 	.align 5
-.Lstrmm_kernel_L8_Mv1_22a:
+L(strmm_kernel_L8_Mv1_22a):
 
 	KERNELv1x8_M1
 	KERNELv1x8_M2
@@ -562,13 +562,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x8_M1
 	KERNELv1x8_E
 
-	b	 .Lstrmm_kernel_L8_Mv1_44
+	b	 L(strmm_kernel_L8_Mv1_44)
 
 	.align 5
-.Lstrmm_kernel_L8_Mv1_32:
+L(strmm_kernel_L8_Mv1_32):
 
 	tst	counterL, #1
-	ble	.Lstrmm_kernel_L8_Mv1_40
+	ble	L(strmm_kernel_L8_Mv1_40)
 
 	KERNELv1x8_I
 	KERNELv1x8_M2
@@ -580,26 +580,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x8_E
 
 
-	b	.Lstrmm_kernel_L8_Mv1_44
+	b	L(strmm_kernel_L8_Mv1_44)
 
-.Lstrmm_kernel_L8_Mv1_40:
+L(strmm_kernel_L8_Mv1_40):
 
 	INITv1x8
 
-.Lstrmm_kernel_L8_Mv1_44:
+L(strmm_kernel_L8_Mv1_44):
 
 	ands	counterL , tempK, #7
-	ble	.Lstrmm_kernel_L8_Mv1_100
+	ble	L(strmm_kernel_L8_Mv1_100)
 
 	.align 5
-.Lstrmm_kernel_L8_Mv1_46:
+L(strmm_kernel_L8_Mv1_46):
 
 	KERNELv1x8_SUB
 
 	subs	counterL, counterL, #1
-	bne	.Lstrmm_kernel_L8_Mv1_46
+	bne	L(strmm_kernel_L8_Mv1_46)
 
-.Lstrmm_kernel_L8_Mv1_100:
+L(strmm_kernel_L8_Mv1_100):
 	prfm	PLDL1KEEP, [pA]
 	prfm	PLDL1KEEP, [pA, #64]
 	prfm	PLDL1KEEP, [origPB]
@@ -622,14 +622,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, lanes
 #endif
 
-.Lstrmm_kernel_L8_Mv1_END:
+L(strmm_kernel_L8_Mv1_END):
 
     incw    counterI
     whilelt p1.s, counterI, origM             //SVE instruction
     cntp lanes, p0, p1.s
-    b.any   .Lstrmm_kernel_L8_Mv1_20   
+    b.any   L(strmm_kernel_L8_Mv1_20)   
 
-.Lstrmm_kernel_L8_END:
+L(strmm_kernel_L8_END):
 
 	lsl	temp, origK, #5 
 	add	origPB, origPB, temp		// B = B + K * 8 * 4
@@ -639,17 +639,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	subs	counterJ, counterJ , #1		// j--
-	bgt	.Lstrmm_kernel_L8_BEGIN
+	bgt	L(strmm_kernel_L8_BEGIN)
 
 /******************************************************************************/
 /* Repeat the same thing if 4 left in N */
 
 	.align 5
-.Lstrmm_kernel_L4_BEGIN:
+L(strmm_kernel_L4_BEGIN):
 
 	mov	counterJ , origN
 	tst	counterJ , #4
-	ble	.Lstrmm_kernel_L2_BEGIN
+	ble	L(strmm_kernel_L2_BEGIN)
 
 #if defined(LEFT)
 	mov	tempOffset, offset
@@ -661,14 +661,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pA, origPA			// pA = start of A array
 
-.Lstrmm_kernel_L4_Mv1_BEGIN:
+L(strmm_kernel_L4_Mv1_BEGIN):
 
     mov counterI, #0
     whilelt p1.s, counterI, origM               //SVE instruction
     cntp lanes, p0, p1.s
 
 	.align 5
-.Lstrmm_kernel_L4_Mv1_20:
+L(strmm_kernel_L4_Mv1_20):
 
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
@@ -692,10 +692,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr 	counterL , tempK, #3		// L = K / 8
 	cmp	counterL , #0			// is there at least 4 to do?
-	ble	.Lstrmm_kernel_L4_Mv1_44
+	ble	L(strmm_kernel_L4_Mv1_44)
 
 	.align 5
-.Lstrmm_kernel_L4_Mv1_22:
+L(strmm_kernel_L4_Mv1_22):
 
 	KERNELv1x4_SUB
 	KERNELv1x4_SUB
@@ -707,22 +707,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lstrmm_kernel_L4_Mv1_22
+	bgt	L(strmm_kernel_L4_Mv1_22)
 
-.Lstrmm_kernel_L4_Mv1_44:
+L(strmm_kernel_L4_Mv1_44):
 
 	ands	counterL , tempK, #7
-	ble	.Lstrmm_kernel_L4_Mv1_100
+	ble	L(strmm_kernel_L4_Mv1_100)
 
 	.align 5
-.Lstrmm_kernel_L4_Mv1_46:
+L(strmm_kernel_L4_Mv1_46):
 
 	KERNELv1x4_SUB
 
 	subs	counterL, counterL, #1
-	bne	.Lstrmm_kernel_L4_Mv1_46
+	bne	L(strmm_kernel_L4_Mv1_46)
 
-.Lstrmm_kernel_L4_Mv1_100:
+L(strmm_kernel_L4_Mv1_100):
 
 	SAVEv1x4
 
@@ -742,15 +742,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, lanes
 #endif
 
-.Lstrmm_kernel_L4_Mv1_END:
+L(strmm_kernel_L4_Mv1_END):
 
     incw    counterI
     whilelt p1.s, counterI, origM             //SVE instruction
     cntp lanes, p0, p1.s
-    b.any   .Lstrmm_kernel_L4_Mv1_20   
+    b.any   L(strmm_kernel_L4_Mv1_20)   
 
 
-.Lstrmm_kernel_L4_END:
+L(strmm_kernel_L4_END):
 	lsl	temp, origK, #4 
 	add	origPB, origPB, temp	// B = B + K * 4 * 4
 #if !defined(LEFT)
@@ -761,11 +761,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Repeat the same thing if 2 left in N */
 
 	.align 5
-.Lstrmm_kernel_L2_BEGIN:
+L(strmm_kernel_L2_BEGIN):
 
 	mov	counterJ , origN
 	tst	counterJ , #2
-	ble	.Lstrmm_kernel_L1_BEGIN
+	ble	L(strmm_kernel_L1_BEGIN)
 
 	mov	pCRow0, pC
 
@@ -777,14 +777,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pA, origPA			// pA = start of A array
 
-.Lstrmm_kernel_L2_Mv1_BEGIN:
+L(strmm_kernel_L2_Mv1_BEGIN):
 
     mov counterI, #0
     whilelt p1.s, counterI, origM               //SVE instruction
     cntp lanes, p0, p1.s
 
 	.align 5
-.Lstrmm_kernel_L2_Mv1_20:
+L(strmm_kernel_L2_Mv1_20):
 
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
@@ -808,10 +808,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr 	counterL , tempK, #3		// L = K / 8
 	cmp	counterL , #0			// is there at least 4 to do?
-	ble	.Lstrmm_kernel_L2_Mv1_44
+	ble	L(strmm_kernel_L2_Mv1_44)
 
 	.align 5
-.Lstrmm_kernel_L2_Mv1_22:
+L(strmm_kernel_L2_Mv1_22):
 
 	KERNELv1x2_SUB
 	KERNELv1x2_SUB
@@ -823,22 +823,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lstrmm_kernel_L2_Mv1_22
+	bgt	L(strmm_kernel_L2_Mv1_22)
 
-.Lstrmm_kernel_L2_Mv1_44:
+L(strmm_kernel_L2_Mv1_44):
 
 	ands	counterL , tempK, #7
-	ble	.Lstrmm_kernel_L2_Mv1_100
+	ble	L(strmm_kernel_L2_Mv1_100)
 
 	.align 5
-.Lstrmm_kernel_L2_Mv1_46:
+L(strmm_kernel_L2_Mv1_46):
 
 	KERNELv1x2_SUB
 
 	subs	counterL, counterL, #1
-	bne	.Lstrmm_kernel_L2_Mv1_46
+	bne	L(strmm_kernel_L2_Mv1_46)
 
-.Lstrmm_kernel_L2_Mv1_100:
+L(strmm_kernel_L2_Mv1_100):
 
 	SAVEv1x2
 
@@ -859,15 +859,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
-.Lstrmm_kernel_L2_Mv1_END:
+L(strmm_kernel_L2_Mv1_END):
 
     incw    counterI
     whilelt p1.s, counterI, origM             //SVE instruction
     cntp lanes, p0, p1.s
-    b.any   .Lstrmm_kernel_L2_Mv1_20   
+    b.any   L(strmm_kernel_L2_Mv1_20)   
 
 
-.Lstrmm_kernel_L2_END:
+L(strmm_kernel_L2_END):
 	add	origPB, origPB, origK, lsl #3	// B = B + K * 2 * 4
 #if !defined(LEFT)
 	add	tempOffset, tempOffset, #2
@@ -877,11 +877,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Repeat the same thing if 1 left in N */
 
 	.align 5
-.Lstrmm_kernel_L1_BEGIN:
+L(strmm_kernel_L1_BEGIN):
 
 	mov	counterJ , origN
 	tst	counterJ , #1
-	ble	.Lstrmm_kernel_L999 // done
+	ble	L(strmm_kernel_L999) // done
 
 	mov	pCRow0, pC
 
@@ -893,14 +893,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pA, origPA			// pA = start of A array
 
-.Lstrmm_kernel_L1_Mv1_BEGIN:
+L(strmm_kernel_L1_Mv1_BEGIN):
 
     mov counterI, #0
     whilelt p1.s, counterI, origM               //SVE instruction
     cntp lanes, p0, p1.s
 
 	.align 5
-.Lstrmm_kernel_L1_Mv1_20:
+L(strmm_kernel_L1_Mv1_20):
 
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
@@ -924,10 +924,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr 	counterL , tempK, #3		// L = K / 8
 	cmp	counterL , #0			// is there at least 8 to do?
-	ble	.Lstrmm_kernel_L1_Mv1_44
+	ble	L(strmm_kernel_L1_Mv1_44)
 
 	.align 5
-.Lstrmm_kernel_L1_Mv1_22:
+L(strmm_kernel_L1_Mv1_22):
 
 	KERNELv1x1_SUB
 	KERNELv1x1_SUB
@@ -939,22 +939,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lstrmm_kernel_L1_Mv1_22
+	bgt	L(strmm_kernel_L1_Mv1_22)
 
-.Lstrmm_kernel_L1_Mv1_44:
+L(strmm_kernel_L1_Mv1_44):
 
 	ands	counterL , tempK, #7
-	ble	.Lstrmm_kernel_L1_Mv1_100
+	ble	L(strmm_kernel_L1_Mv1_100)
 
 	.align 5
-.Lstrmm_kernel_L1_Mv1_46:
+L(strmm_kernel_L1_Mv1_46):
 
 	KERNELv1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lstrmm_kernel_L1_Mv1_46
+	bgt	L(strmm_kernel_L1_Mv1_46)
 
-.Lstrmm_kernel_L1_Mv1_100:
+L(strmm_kernel_L1_Mv1_100):
 
 	SAVEv1x1
 
@@ -976,19 +976,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-.Lstrmm_kernel_L1_Mv1_END:
+L(strmm_kernel_L1_Mv1_END):
 
     incw    counterI
     whilelt p1.s, counterI, origM             //SVE instruction
     cntp lanes, p0, p1.s
-    b.any   .Lstrmm_kernel_L1_Mv1_20   
+    b.any   L(strmm_kernel_L1_Mv1_20)   
 
 
-.Lstrmm_kernel_L1_END:
+L(strmm_kernel_L1_END):
 
 /******************************************************************************/
 
-.Lstrmm_kernel_L999:
+L(strmm_kernel_L999):
 	mov	x0, #0				// set return value
 	ldp	d8, d9, [sp, #(0 * 16)]
 	ldp	d10, d11, [sp, #(1 * 16)]
