@@ -366,18 +366,18 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE transa, enum CBLAS_TRANS
 #if !defined(COMPLEX)
       if(beta == 0.0){
 	group_mode=mode | BLAS_SMALL_B0_OPT;
-	group_small_matrix_opt_routine=(void *)(gemm_small_kernel_b0[(group_transb<<2)|group_transa]);
+	group_small_matrix_opt_routine=SMALL_KERNEL_ADDR(gemm_small_kernel_b0, ((group_transb<<2)|group_transa));
       }else{
 	group_mode=mode | BLAS_SMALL_OPT;
-	group_small_matrix_opt_routine=(void *)(gemm_small_kernel[(group_transb<<2)|group_transa]);
+	group_small_matrix_opt_routine=SMALL_KERNEL_ADDR(gemm_small_kernel, ((group_transb<<2)|group_transa));
       }
 #else
       if(beta[0] == 0.0 && beta[1] == 0.0){
 	group_mode=mode | BLAS_SMALL_B0_OPT;
-	group_small_matrix_opt_routine=(void *)(zgemm_small_kernel_b0[(group_transb<<2)|group_transa]);
+	group_small_matrix_opt_routine=SMALL_KERNEL_ADDR(zgemm_small_kernel_b0, ((group_transb<<2)|group_transa));
       }else{
 	group_mode=mode | BLAS_SMALL_OPT;
-	group_small_matrix_opt_routine=(void *)(zgemm_small_kernel[(group_transb<<2)|group_transa]);
+	group_small_matrix_opt_routine=SMALL_KERNEL_ADDR(zgemm_small_kernel, ((group_transb<<2)|group_transa));
       }
 
 #endif
@@ -396,8 +396,13 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE transa, enum CBLAS_TRANS
       args_array[i].lda=group_lda;
       args_array[i].ldb=group_ldb;
       args_array[i].ldc=group_ldc;
+#ifdef COMPLEX
+      args_array[i].alpha=alpha;
+      args_array[i].beta=beta;
+#else
       args_array[i].alpha=&alpha;
       args_array[i].beta=&beta;
+#endif
 
 #if defined(CBLAS)
       if (order == CblasColMajor) {      
