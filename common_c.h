@@ -501,6 +501,7 @@
 
 #endif
 
+#define CGEMM_SMALL_KERNEL_BASE		FUNC_BASE(cgemm_small_kernel_nn)
 #define CGEMM_SMALL_KERNEL_NN		FUNC_OFFSET(cgemm_small_kernel_nn)
 #define CGEMM_SMALL_KERNEL_NT		FUNC_OFFSET(cgemm_small_kernel_nt)
 #define CGEMM_SMALL_KERNEL_NR		FUNC_OFFSET(cgemm_small_kernel_nr)
