@@ -67,34 +67,7 @@ extern "C" {
 #define lapack_logical    lapack_int
 #endif
 
-#if defined(_MSC_VER) && defined(__INTEL_CLANG_COMPILER)
-#define LAPACK_COMPLEX_STRUCTURE
-#define LAPACK_GLOBAL(lcname,UCNAME)  lcname
-#define NOCHANGE
-#endif
-
 #ifndef LAPACK_COMPLEX_CUSTOM
-#if defined(_MSC_VER) && !defined(__INTEL_CLANG_COMPILER)
-#if defined(LAPACK_COMPLEX_CPP)
-    #include <complex>
-    #define lapack_complex_float std::complex<float>
-    #define lapack_complex_double std::complex<double>
-    #define lapack_complex_float_real(z)       ((z).real())
-    #define lapack_complex_float_imag(z)       ((z).imag())
-    #define lapack_complex_double_real(z)       ((z).real())
-    #define lapack_complex_double_imag(z)       ((z).imag())
-    #define _CRT_USE_C_COMPLEX_H
-#else
-    #include <complex.h>
-    #define LAPACK_COMPLEX_CUSTOM
-    #define lapack_complex_float _Fcomplex
-    #define lapack_complex_double _Dcomplex
-    #define lapack_complex_float_real(z)       (crealf(z))
-    #define lapack_complex_float_imag(z)       (cimagf(z))
-    #define lapack_complex_double_real(z)       (creal(z))
-    #define lapack_complex_double_imag(z)       (cimag(z))
-#endif
-#else
 
 #if defined(LAPACK_COMPLEX_STRUCTURE)
 
@@ -126,6 +99,16 @@ typedef struct { double real, imag; } _lapack_complex_double;
 #define lapack_complex_double_real(z)       ((z).real())
 #define lapack_complex_double_imag(z)       ((z).imag())
 
+#elif defined(_MSC_VER) && !defined(__INTEL_COMPILER) && !defined(__INTEL_LLVM_COMPILER)
+
+#include <complex.h>
+#define lapack_complex_float    _Fcomplex
+#define lapack_complex_double   _Dcomplex
+#define lapack_complex_float_real(z)       (crealf(z))
+#define lapack_complex_float_imag(z)       (cimagf(z))
+#define lapack_complex_double_real(z)       (creal(z))
+#define lapack_complex_double_imag(z)       (cimag(z))
+
 #else
 
 #include <complex.h>
@@ -136,7 +119,6 @@ typedef struct { double real, imag; } _lapack_complex_double;
 #define lapack_complex_double_real(z)       (creal(z))
 #define lapack_complex_double_imag(z)       (cimag(z))
 
-#endif
 #endif
 
 lapack_complex_float lapack_make_complex_float( float re, float im );
