@@ -287,6 +287,16 @@ CTEST(cgemm, strided_batch_complex_scalars)
 
     ASSERT_DBL_NEAR_TOL(-14.0, c[0], SINGLE_EPS);
     ASSERT_DBL_NEAR_TOL(24.0, c[1], SINGLE_EPS);
+
+    beta[0] = beta[1] = 0.0;
+    c[0] = 5.0;
+    c[1] = 6.0;
+    cblas_cgemm_batch_strided(CblasColMajor, CblasNoTrans, CblasNoTrans,
+                              1, 1, 1, alpha, a, 1, 2, b, 1, 2,
+                              beta, c, 1, 2, 1);
+
+    ASSERT_DBL_NEAR_TOL(-40.0, c[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(5.0, c[1], SINGLE_EPS);
 }
 #endif
 #endif
