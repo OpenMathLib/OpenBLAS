@@ -43,6 +43,7 @@ include $(TOPSRCDIR)/make.inc
 
 OBJ = \
 lapacke_ilaver.o \
+lapacke_alloc.o \
 lapacke_nancheck.o
 
 ifeq ($(BUILD_COMPLEX),1)

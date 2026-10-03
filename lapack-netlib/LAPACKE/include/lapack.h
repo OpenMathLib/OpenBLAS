@@ -49,15 +49,19 @@
 #else
 #include <complex>
 #endif
+#if _MSC_VER
+#define lapack_complex_float    _Fcomplex
+#else
 #define lapack_complex_float    float _Complex
+#endif
 #endif
 
 #ifndef lapack_complex_float_real
-#define lapack_complex_float_real(z)       (creal(z))
+#define lapack_complex_float_real(z)       (crealf(z))
 #endif
 
 #ifndef lapack_complex_float_imag
-#define lapack_complex_float_imag(z)       (cimag(z))
+#define lapack_complex_float_imag(z)       (cimagf(z))
 #endif
 
 /* Complex type (double precision) */
@@ -67,7 +71,11 @@
 #else
 #include <complex>
 #endif
+#if _MSC_VER
+#define lapack_complex_double   _Dcomplex
+#else
 #define lapack_complex_double   double _Complex
+#endif
 #endif
 
 #ifndef lapack_complex_double_real

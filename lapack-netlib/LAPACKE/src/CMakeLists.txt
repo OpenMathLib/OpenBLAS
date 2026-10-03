@@ -1187,6 +1187,7 @@ lapacke_dtzrzf_work.c
 
 set(SOURCES
 lapacke_nancheck.c
+lapacke_alloc.c
 lapacke_ilaver.c
 )
 set(SOURCES_SINGLE
