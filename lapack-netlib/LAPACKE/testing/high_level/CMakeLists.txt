@@ -34,6 +34,10 @@ foreach(_prec IN LISTS LAPACKE_TEST_PRECISIONS)
       ${CMAKE_CURRENT_BINARY_DIR}/${_runner}_main.c @ONLY)
 
     add_executable(${_runner} ${CMAKE_CURRENT_BINARY_DIR}/${_runner}_main.c ${_sources})
+    if (INTERFACE64)
+    target_compile_definitions(${_runner} PRIVATE
+		LAPACK_ILP64 )
+    endif()
     target_include_directories(${_runner} PRIVATE
       ${LAPACK_BINARY_DIR}/include ${LAPACK_SOURCE_DIR}/LAPACKE/include)
     target_link_libraries(${_runner}
@@ -50,7 +54,7 @@ foreach(_prec IN LISTS LAPACKE_TEST_PRECISIONS)
 
     add_executable(${_runner} ${CMAKE_CURRENT_BINARY_DIR}/${_runner}_main.c ${_sources})
     target_compile_definitions(${_runner} PRIVATE
-      LAPACK_ILP64 LAPACKE_API64 WeirdNEC CBLAS_API64)
+	   LAPACK_ILP64 LAPACKE_API64 WeirdNEC CBLAS_API64)
     target_include_directories(${_runner} PRIVATE
       ${LAPACK_BINARY_DIR}/include ${LAPACK_SOURCE_DIR}/LAPACKE/include)
     target_link_libraries(${_runner}
