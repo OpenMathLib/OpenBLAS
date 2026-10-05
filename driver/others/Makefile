@@ -5,10 +5,6 @@ COMMONOBJS	 = memory.$(SUFFIX) xerbla.$(SUFFIX) c_abs.$(SUFFIX) z_abs.$(SUFFIX) 
 
 #COMMONOBJS	+= slamch.$(SUFFIX) slamc3.$(SUFFIX) dlamch.$(SUFFIX)  dlamc3.$(SUFFIX)
 
-ifeq ($(ARCH),arm64)
-COMMONOBJS += nrm2_range.$(SUFFIX)
-endif
-
 ifdef SMP
 COMMONOBJS	+= blas_server.$(SUFFIX) divtable.$(SUFFIX) blasL1thread.$(SUFFIX)
 ifneq ($(NO_AFFINITY), 1)

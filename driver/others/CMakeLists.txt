@@ -46,10 +46,6 @@ set(COMMON_SOURCES
 )
 
 # these need to have NAME/CNAME set, so use GenerateNamedObjects, but don't use standard name mangling
-if (ARM64)
-  list(APPEND COMMON_SOURCES nrm2_range.c)
-endif ()
-
 GenerateNamedObjects("abs.c" "" "c_abs" 0 "" "" 1 )
 GenerateNamedObjects("abs.c" "DOUBLE" "z_abs" 0 "" "" 1)
 GenerateNamedObjects("openblas_get_config.c;openblas_get_parallel.c" "" "" 0 "" "" 1)
