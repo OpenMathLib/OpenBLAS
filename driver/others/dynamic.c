@@ -1082,7 +1082,7 @@ static gotoblas_t *force_coretype(char *coretype){
 	char message[128];
 	//char mname[20];
 
-	for ( i=1 ; i <= 25; i++)
+	for ( i=1 ; i < (int)(sizeof(corename) / sizeof(corename[0])); i++)
 	{
 		if (!strncasecmp(coretype,corename[i],20))
 		{
@@ -1100,6 +1100,7 @@ static gotoblas_t *force_coretype(char *coretype){
 
 	switch (found)
 	{
+		case 26: return (&gotoblas_SAPPHIRERAPIDS);
 		case 25: return (&gotoblas_COOPERLAKE);
 		case 24: return (&gotoblas_SKYLAKEX);	
 		case 23: return (&gotoblas_ZEN);
