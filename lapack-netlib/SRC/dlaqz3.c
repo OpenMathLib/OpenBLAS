@@ -297,7 +297,7 @@ static doublereal c_b17 = 1.;
     extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
     doublereal safmin;
-    extern /* Subroutine */ void xerbla_(char *, integer *);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     doublereal safmax;
     extern /* Subroutine */ void dtgexc_(logical *, logical *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
@@ -381,7 +381,7 @@ static doublereal c_b17 = 1.;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DLAQZ3", &i__1);
+	xerbla_("DLAQZ3", &i__1, (ftnlen)6);
 	return;
     }
 /*     Get machine constants */

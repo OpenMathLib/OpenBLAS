@@ -87,7 +87,7 @@ openblas_set_xerbla(openblas_xerbla_handler handler) {
   return previous;
 }
 
-static int openblas_xerbla_dispatch(char *message, blasint *info,
+static void openblas_xerbla_dispatch(char *message, blasint *info,
                                     blasint length) {
   openblas_xerbla_handler handler;
   size_t name_length = openblas_xerbla_name_length(message, length);
@@ -97,18 +97,17 @@ static int openblas_xerbla_dispatch(char *message, blasint *info,
   blas_unlock(&openblas_xerbla_lock);
 
   handler(message, info, name_length);
-  return 0;
 }
 
 #ifdef __ELF__
-int __xerbla(char *message, blasint *info, blasint length) {
+void __xerbla(char *message, blasint *info, blasint length) {
   return openblas_xerbla_dispatch(message, info, length);
 }
 
-int BLASFUNC(xerbla)(char *, blasint *, blasint)
+void BLASFUNC(xerbla)(char *, blasint *, blasint)
   __attribute__ ((weak, alias ("__xerbla")));
 #else
-int BLASFUNC(xerbla)(char *message, blasint *info, blasint length) {
+void BLASFUNC(xerbla)(char *message, blasint *info, blasint length) {
   return openblas_xerbla_dispatch(message, info, length);
 }
 #endif

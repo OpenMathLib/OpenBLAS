@@ -21,7 +21,7 @@ resources:
       - container: oneapi-basekit
         image: intel/oneapi-basekit:latest
         options: '-v /usr/bin/sudo:/usr/bin/sudo -v /usr/lib/sudo/libsudo_util.so.0:/usr/lib/sudo/libsudo_util.so.0 -v /usr/lib/sudo/sudoers.so:/usr/lib/sudo/sudoers.so'
- 
+
 jobs:
 # manylinux1 is useful to test because the
 # standard Docker container uses an old version
@@ -84,7 +84,7 @@ jobs:
 - job: Windows_cl
   pool:
      vmImage: 'windows-latest'
-  steps:   
+  steps:
   - task: CMake@1
     inputs:
       workingDirectory: 'build' # Optional
@@ -103,7 +103,7 @@ jobs:
   timeoutInMinutes: 100
   pool:
      vmImage: 'windows-latest'
-  steps:   
+  steps:
   - script: |
       mingw32-make CC=gcc NOLAPACK=1 DYNAMIC_ARCH=1 DYNAMIC_LIST="SANDYBRIDGE"
 
@@ -111,80 +111,91 @@ jobs:
   pool:
      vmImage: 'windows-latest'
   steps:
-  - script: |
-      set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
-      set "LIB=C:\Miniconda\Library\lib;%LIB%"
-      set "CPATH=C:\Miniconda\Library\include;%CPATH%
+  - pwsh: |
+      #Requires -Version 7.4
+      $ErrorActionPreference = 'Stop'
+      $PSNativeCommandUseErrorActionPreference = $true
+      $env:PATH = "C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;$env:PATH"
+      $env:LIB = "C:\Miniconda\Library\lib;$env:LIB"
+      $env:CPATH = "C:\Miniconda\Library\include;$env:CPATH"
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
       conda install --yes ninja
-      call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      mkdir build 
+      $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+      & "$vs\Common7\Tools\Launch-VsDevShell.ps1" -Arch amd64 -HostArch amd64 -SkipAutomaticLocation
+      mkdir build
       cd build
       cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DNOFORTRAN=1 -DMSVC_STATIC_CRT=ON ..
       cmake --build . --config Release
-      ctest
+      ctest --no-tests=error --output-on-failure
 
 - job: Windows_flang_clang
   pool:
      vmImage: 'windows-2022'
   steps:
-  - script: |
-      set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
-      set "LIB=C:\Miniconda\Library\lib;%LIB%"
-      set "CPATH=C:\Miniconda\Library\include;%CPATH%"
+  - pwsh: |
+      #Requires -Version 7.4
+      $ErrorActionPreference = 'Stop'
+      $PSNativeCommandUseErrorActionPreference = $true
+      $env:PATH = "C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;$env:PATH"
+      $env:LIB = "C:\Miniconda\Library\lib;$env:LIB"
+      $env:CPATH = "C:\Miniconda\Library\include;$env:CPATH"
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
-      conda install --yes --quiet ninja flang
-      mkdir build 
+      conda install --yes --quiet ninja flang flang-rt_win-64
+      $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+      & "$vs\Common7\Tools\Launch-VsDevShell.ps1" -Arch amd64 -HostArch amd64 -SkipAutomaticLocation
+      mkdir build
       cd build
-      call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER="flang -I C:\Miniconda\Library\include\flang" -DBUILD_TESTING=OFF -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON ..
+      cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DBUILD_TESTING=OFF -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON ..
       cmake --build . --config Release
-      ctest
+      ctest --no-tests=error --output-on-failure
 
 - job: Windows_cl_flang
   pool:
      vmImage: 'windows-2022'
   steps:
-  - script: |
-      set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
-      set "LIB=C:\Miniconda\Library\lib;%LIB%"
-      set "CPATH=C:\Miniconda\Library\include;%CPATH%"
+  - pwsh: |
+      #Requires -Version 7.4
+      $ErrorActionPreference = 'Stop'
+      $PSNativeCommandUseErrorActionPreference = $true
+      $env:PATH = "C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;$env:PATH"
+      $env:LIB = "C:\Miniconda\Library\lib;$env:LIB"
+      $env:CPATH = "C:\Miniconda\Library\include;$env:CPATH"
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
-      conda install --yes --quiet ninja flang
-      mkdir build 
+      conda install --yes --quiet ninja flang flang-rt_win-64
+      $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+      & "$vs\Common7\Tools\Launch-VsDevShell.ps1" -Arch amd64 -HostArch amd64 -SkipAutomaticLocation
+      mkdir build
       cd build
-      call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       cmake -G "Ninja" -DCMAKE_C_COMPILER=cl -DCMAKE_Fortran_COMPILER=flang-new -DC_LAPACK=1 -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON ..
       cmake --build . --config Release
-      ctest
-      ctest --rerun-failed --output-on-failure
+      ctest --no-tests=error --output-on-failure
 
 
 - job: OSX_OpenMP
   pool:
      vmImage: 'macOS-15'
-  steps:   
+  steps:
   - script: |
       brew update
       make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 INTERFACE64=1 CC=gcc-13 FC=gfortran-13
       make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 INTERFACE64=1 CC=gcc-13 FC=gfortran-13 PREFIX=../blasinst install
       ls -lR ../blasinst
-     
+
 - job: OSX_GCC_Nothreads
   pool:
      vmImage: 'macOS-15'
-  steps:   
+  steps:
   - script: |
       brew update
       make USE_THREADS=0 CC=gcc-13 FC=gfortran-13
-     
+
 - job: OSX_GCC15
   pool:
      vmImage: 'macOS-latest'
-  steps:   
+  steps:
   - script: |
       brew update
       make CC=gcc-15 FC=gfortran-15
@@ -195,7 +206,7 @@ jobs:
      vmImage: 'macOS-latest'
   variables:
      RANLIB: touch
-  steps:   
+  steps:
   - script: |
       wget https://github.com/macports/macports-base/releases/download/v2.12.6/MacPorts-2.12.6-15-Sequoia.pkg
       sudo installer -pkg MacPorts-2.12.6-15-Sequoia.pkg -target /
@@ -211,7 +222,7 @@ jobs:
      vmImage: 'macOS-latest'
   variables:
      RANLIB: touch
-  steps:   
+  steps:
   - script: |
       wget https://github.com/macports/macports-base/releases/download/v2.12.6/MacPorts-2.12.6-15-Sequoia.pkg
       sudo installer -pkg MacPorts-2.12.6-15-Sequoia.pkg -target /
@@ -224,7 +235,7 @@ jobs:
   timeoutInMinutes: 100
   pool:
      vmImage: 'macOS-latest'
-  steps:   
+  steps:
   - script: |
       set -euo pipefail
       wget https://github.com/macports/macports-base/releases/download/v2.12.6/MacPorts-2.12.6-15-Sequoia.pkg
@@ -237,7 +248,7 @@ jobs:
       cmake -DTARGET=CORE2 -DUSE_OPENMP=1 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DDYNAMIC_LIST='NEHALEM;HASWELL;SKYLAKEX' -DCMAKE_C_COMPILER=clang-mp-23 -DNOFORTRAN=1 -DNO_AVX512=1 ..
       cmake --build . --parallel "$(sysctl -n hw.logicalcpu)"
       ctest
-      
+
 - job: OSX_dynarch_cmake
   timeoutInMinutes: 100
   pool:
@@ -245,7 +256,7 @@ jobs:
   variables:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
      LIBRARY_PATH: /usr/local/opt/llvm/lib
-  steps:   
+  steps:
   - script: |
       set -euo pipefail
       mkdir build
@@ -263,7 +274,7 @@ jobs:
      LIBRARY_PATH: /usr/local/opt/llvm/lib
      RANLIB: touch
      MACOS_FORTRAN_COMPONENTS: intel.oneapi.mac.ifort-compiler
-  steps:   
+  steps:
   - script: |
       wget https://github.com/macports/macports-base/releases/download/v2.12.6/MacPorts-2.12.6-15-Sequoia.pkg
       sudo installer -pkg MacPorts-2.12.6-15-Sequoia.pkg -target /
@@ -278,7 +289,7 @@ jobs:
       path: /opt/intel/oneapi
       key: '"install" | "$(MACOS_HPCKIT_URL)" | "$(MACOS_FORTRAN_COMPONENTS)"'
       cacheHitVar: CACHE_RESTORED
-  - script: | 
+  - script: |
       curl --output webimage.dmg --url $(MACOS_HPCKIT_URL) --retry 5 --retry-delay 5
       hdiutil attach webimage.dmg
       sudo /Volumes/"$(basename "$(MACOS_HPCKIT_URL)" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --components="$(MACOS_FORTRAN_COMPONENTS)" --eula=accept --continue-with-optional-error=yes --log-dir=.
@@ -287,15 +298,15 @@ jobs:
       exit $installer_exit_code
     displayName: install
     condition: ne(variables.CACHE_RESTORED, 'true')
-  - script: | 
+  - script: |
       source /opt/intel/oneapi/setvars.sh
       make CC=/opt/local/bin/clang-mp-23 FC=ifort
- 
+
 - job: OSX_NDK_ARMV7
   pool:
      vmImage: 'macOS-15'
-  steps:   
-  - script: | 
+  steps:
+  - script: |
       brew update
       brew install --cask android-ndk
       export ANDROID_NDK_HOME=/usr/local/share/android-ndk
@@ -354,4 +365,4 @@ jobs:
         alpine echo "int main(){" >> test_install.c
         alpine echo "cpu_set_t* cpu_set = NULL;}" >>test_install.c
         alpine gcc -Imytestdir/include test_install.c -Lmytestdir/lib -lopenblas -lpthread -lgfortran -o test_install
-        
+

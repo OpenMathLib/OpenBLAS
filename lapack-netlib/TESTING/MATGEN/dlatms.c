@@ -587,7 +587,7 @@ static logical c_false = FALSE_;
 	    doublereal *, doublereal *, doublereal *, integer *), 
 	    dlartg_(doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     extern void dlagsy_(
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *, doublereal *, integer *), dlarot_(logical *, logical *,

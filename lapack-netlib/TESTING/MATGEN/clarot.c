@@ -489,7 +489,7 @@ static integer c__8 = 8;
     complex tempx;
     integer ix, iy, nt;
     complex xt[2], yt[2];
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     integer iyt;
 
 

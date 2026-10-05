@@ -20,6 +20,7 @@ else ()
     test_axpby.c
     test_gemv.c
     test_trmv.c
+    test_gemm.c
   )
 endif ()
 
@@ -113,6 +114,13 @@ endif()
 set(OpenBLAS_utest_src
   ${OpenBLAS_utest_src}
   test_post_fork.c
+  )
+endif()
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+set(OpenBLAS_utest_src
+  ${OpenBLAS_utest_src}
+  test_coretype.c
   )
 endif()
 

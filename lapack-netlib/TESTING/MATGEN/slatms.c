@@ -579,7 +579,7 @@ static logical c_false = FALSE_;
 	    integer *, real *, real *, integer *, integer *, real *, integer *
 	    );
     integer minlda;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern real slarnd_(integer *, integer *);
     logical iltemp, givens;
     integer ioffst, irsign;

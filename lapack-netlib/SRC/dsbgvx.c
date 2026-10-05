@@ -557,7 +557,7 @@ f"> */
     logical valeig;
     extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *); 
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     extern void dpbstf_(char *, integer *, 
 	    integer *, doublereal *, integer *, integer *), dsbtrd_(
 	    char *, char *, integer *, integer *, doublereal *, integer *, 

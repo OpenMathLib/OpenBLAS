@@ -733,6 +733,7 @@ double _Complex c_be={be[0],be[1]};
   FUNCTION_PROFILE_START();
 
 #if USE_SMALL_MATRIX_OPT
+if (*(FLOAT*)args.alpha != 0.0) {
 #if !defined(COMPLEX)
   if(GEMM_SMALL_MATRIX_PERMIT(transa, transb, args.m, args.n, args.k, *(FLOAT *)(args.alpha), *(FLOAT *)(args.beta))){
 
@@ -753,6 +754,7 @@ double _Complex c_be={be[0],be[1]};
 	  return;
   }
 #endif
+}
 #endif
 
   buffer = (XFLOAT *)blas_memory_alloc(0);
