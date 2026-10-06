@@ -87,7 +87,7 @@ ALLAUX_O = ilaenv.o ilaenv2stage.o lsamen.o xerbla.o xerbla_array.o \
 ifneq ($(C_LAPACK), 1)
  ifeq ($(F_COMPILER), GFORTRAN)
   FCVERSIONGT4 := $(shell expr `$(FC) -dumpversion | cut -f1 -d.` \> 4)
-  ifeq ($(FCVERSIONGT4), 1)
+  ifneq ($(FCVERSIONGT4), 1)
     ALLAUX_O += DEPRECATED/ieeeck.o
   else
     OLDBSD=0
