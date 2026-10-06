@@ -2706,6 +2706,26 @@ static volatile struct newmemstruct *newmemory;
 
 static volatile int memory_initialized = 0;
 static int memory_overflowed = 0;
+
+/* The slot of memory[] this thread used last. Trying it first lets each
+   thread keep to its own slot and cache line, instead of every thread
+   scanning, and locking, the same slots from position 0. Where the compiler
+   has no thread-local storage, every search starts at position 0. */
+#if defined(_MSC_VER) && !defined(__clang__)
+#define MEMORY_TLS __declspec(thread)
+#elif defined(__clang__)
+#if __has_feature(tls)
+#define MEMORY_TLS __thread
+#endif
+#elif defined(__GNUC__) || defined(__SUNPRO_C) || defined(__xlC__)
+#define MEMORY_TLS __thread
+#endif
+#ifdef MEMORY_TLS
+static MEMORY_TLS int memory_last_position = 0;
+#define MEMORY_LAST_POSITION memory_last_position
+#else
+#define MEMORY_LAST_POSITION 0
+#endif
 /*       Memory allocation routine           */
 /* procpos ... indicates where it comes from */
 /*                0 : Level 3 functions      */
@@ -2823,6 +2843,28 @@ void *blas_memory_alloc(int procpos){
 
 #endif */
 
+  /* The thread pool's buffers (procpos 2) are held for as long as the pool
+     exists; take them from the top so that the search for a free slot, which
+     starts at the bottom, does not have to step over them. */
+  if (procpos == 2) {
+    for (position = NUM_BUFFERS - 1; position >= 0; position--) {
+      RMB;
+      if (!memory[position].used) {
+        blas_lock((BLASULONG *)&memory[position].lock);
+        if (!memory[position].used) goto allocation;
+        blas_unlock((BLASULONG *)&memory[position].lock);
+      }
+    }
+  } else {
+    position = MEMORY_LAST_POSITION;
+    RMB;
+    if (!memory[position].used) {
+      blas_lock((BLASULONG *)&memory[position].lock);
+      if (!memory[position].used) goto allocation;
+      blas_unlock((BLASULONG *)&memory[position].lock);
+    }
+  }
+
   position = 0;
 
   do {
@@ -2846,6 +2888,9 @@ void *blas_memory_alloc(int procpos){
 
   memory[position].used = 1;
   blas_unlock((BLASULONG *)&memory[position].lock);
+#ifdef MEMORY_TLS
+  if (procpos != 2) memory_last_position = position;
+#endif
   if (!memory[position].addr) {
     int failcount = 0;
     do {
@@ -3105,9 +3150,12 @@ void blas_memory_free(void *free_area){
   printf("Unmapped Start : %p ...\n", free_area);
 #endif
 
-  position = 0;
-  while ((position < NUM_BUFFERS) && (memory[position].addr != free_area))
-    position++;
+  position = MEMORY_LAST_POSITION;
+  if (memory[position].addr != free_area) {
+    position = 0;
+    while ((position < NUM_BUFFERS) && (memory[position].addr != free_area))
+      position++;
+  }
 
   /* A buffer is only freed by its owner, so the main area needs no lock. */
   if (position < NUM_BUFFERS) {
