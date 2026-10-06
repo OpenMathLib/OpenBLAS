@@ -79,10 +79,36 @@ else
 	$(CC) $(filter-out -fvisibility=hidden, $(CFLAGS)) -c -o $@ $<
 endif
 
-ALLAUX_O = ilaenv.o ilaenv2stage.o ieeeck.o lsamen.o xerbla.o xerbla_array.o \
+ALLAUX_O = ilaenv.o ilaenv2stage.o lsamen.o xerbla.o xerbla_array.o \
    iparmq.o iparam2stage.o \
    ilaprec.o ilatrans.o ilauplo.o iladiag.o chla_transtype.o la_xisnan.o \
    ../INSTALL/ilaver.o ../INSTALL/lsame.o ../INSTALL/slamch.o
+
+ifneq ($(C_LAPACK), 1)
+ ifeq($(F_COMPILER), GFORTRAN)
+  FCVERSIONGT4 := $(shell expr `$(FC) -dumpversion | cut -f1 -d.` \> 4)
+  ifeq ($(FCVERSIONGT4), 1)
+    ALLAUX_O += DEPRECATED/ieeeck.o
+  else
+    OLDBSD=0
+    ifeq($(OSNAME), FreeBSD)
+      OLDBSD=$(shell expr `uname -r | cut -f1 -d.` \>= 16)
+      ifneq ($(ARCH), $(filter $(ARCH),arm arm64 power))
+        OLDBSD=0
+      endif
+    endif
+    ifeq ($(OLDBSD), 1)
+      ALLAUX_O += DEPRECATED/ieeeck.o
+    else
+      ALLAUX_O += ieeeck.o
+    endif
+  endif
+else
+ALLAUX_O += ieeeck.o
+endif
+else
+ALLAUX_O += ieeeck.o
+endif
 
 ifneq "$(or $(BUILD_SINGLE),$(BUILD_COMPLEX))" ""
 SCLAUX_O = la_constants.o \
