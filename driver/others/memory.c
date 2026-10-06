@@ -2844,28 +2844,10 @@ void *blas_memory_alloc(int procpos){
 
   } while (position < NUM_BUFFERS);
 
-  if (memory_overflowed) {
-
-    do {
-      RMB;
-#if defined(USE_OPENMP)
-      if (!newmemory[position-NUM_BUFFERS].used) {
-        blas_lock((BLASULONG *)&newmemory[position-NUM_BUFFERS].lock);
-#endif
-        if (!newmemory[position-NUM_BUFFERS].used) goto allocation2;
-
-#if defined(USE_OPENMP)
-        blas_unlock((BLASULONG *)&newmemory[position-NUM_BUFFERS].lock);
-      }
-#endif
-      position ++;
-
-    } while (position < NEW_BUFFERS + NUM_BUFFERS);
-  }
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
 #endif
-  goto error;
+  goto overflow;
 
   allocation :
 
@@ -2991,11 +2973,21 @@ void *blas_memory_alloc(int procpos){
 
   return (void *)memory[position].addr;
 
- error:
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+ overflow:
+  /* The overflow area is only entered here, so alloc_lock, taken in every
+     build, covers both creating it and claiming its slots. */
+#if defined(SMP) || defined(USE_LOCKING)
   LOCK_COMMAND(&alloc_lock);
 #endif
- if (memory_overflowed) goto terminate;
+  if (memory_overflowed) {
+    /* Another thread may have created the overflow area since this one
+       found the main area full: look there before giving up. */
+    for (position = NUM_BUFFERS; position < NUM_BUFFERS + NEW_BUFFERS; position++) {
+      RMB;
+      if (!newmemory[position-NUM_BUFFERS].used) goto allocation2;
+    }
+    goto terminate;
+  }
   fprintf(stderr,"OpenBLAS warning: precompiled NUM_THREADS exceeded, adding auxiliary array for thread metadata.\n");
   fprintf(stderr,"Note that your application may still crash, if it is calling OpenBLAS from multiple threads in parallel\n");
   fprintf(stderr,"To avoid this warning, please rebuild your copy of OpenBLAS with a larger NUM_THREADS setting\n");
@@ -3004,8 +2996,6 @@ void *blas_memory_alloc(int procpos){
 #else
   fprintf(stderr,"or set the environment variable OPENBLAS_NUM_THREADS to %d or lower\n", MAX_CPU_NUMBER);
 #endif
-  memory_overflowed=1;
-  MB;
   /* zeroed so blas_shutdown sees NULL func in slots that were reserved but
      never published */
   new_release_info = (struct release_t*) calloc(NEW_BUFFERS, sizeof(struct release_t));
@@ -3018,14 +3008,17 @@ void *blas_memory_alloc(int procpos){
   newmemory[i].used   = 0;
   newmemory[i].lock   = 0;
 }
+  position = NUM_BUFFERS;
+  /* only now that the overflow area exists */
+  MB;
+  memory_overflowed=1;
 
 allocation2:
   newmemory[position-NUM_BUFFERS].used = 1;
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+#if defined(SMP) || defined(USE_LOCKING)
   UNLOCK_COMMAND(&alloc_lock);
-#else
-  blas_unlock((BLASULONG *)&newmemory[position-NUM_BUFFERS].lock);
 #endif
+  if (!newmemory[position-NUM_BUFFERS].addr) {
     do {
 #ifdef DEBUG
       printf("Allocation Start : %lx\n", base_address);
@@ -3093,6 +3086,7 @@ allocation2:
 #ifdef DEBUG
     printf("  Mapping Succeeded. %p(%d)\n", (void *)newmemory[position-NUM_BUFFERS].addr, position);
 #endif
+  }
 
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
 
@@ -3102,7 +3096,7 @@ allocation2:
   return (void *)newmemory[position-NUM_BUFFERS].addr;
 
 terminate:
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+#if defined(SMP) || defined(USE_LOCKING)
     UNLOCK_COMMAND(&alloc_lock);
 #endif
   printf("OpenBLAS : Program is Terminated. Because you tried to allocate too many memory regions.\n");
