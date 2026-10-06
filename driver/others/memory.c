@@ -2825,28 +2825,17 @@ void *blas_memory_alloc(int procpos){
 
   position = 0;
 
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
-  LOCK_COMMAND(&alloc_lock);
-#endif
   do {
     RMB;
-#if defined(USE_OPENMP)
     if (!memory[position].used) {
       blas_lock((BLASULONG *)&memory[position].lock);
-#endif
       if (!memory[position].used) goto allocation;
-
-#if defined(USE_OPENMP)
       blas_unlock((BLASULONG *)&memory[position].lock);
     }
-#endif
     position ++;
 
   } while (position < NUM_BUFFERS);
 
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
-  UNLOCK_COMMAND(&alloc_lock);
-#endif
   goto overflow;
 
   allocation :
@@ -2856,11 +2845,7 @@ void *blas_memory_alloc(int procpos){
 #endif
 
   memory[position].used = 1;
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
-  UNLOCK_COMMAND(&alloc_lock);
-#else
   blas_unlock((BLASULONG *)&memory[position].lock);
-#endif
   if (!memory[position].addr) {
     int failcount = 0;
     do {
@@ -3121,21 +3106,28 @@ void blas_memory_free(void *free_area){
 #endif
 
   position = 0;
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
-  LOCK_COMMAND(&alloc_lock);
-#endif
   while ((position < NUM_BUFFERS) && (memory[position].addr != free_area))
     position++;
 
-  if (position >= NUM_BUFFERS && !memory_overflowed) goto error;
+  /* A buffer is only freed by its owner, so the main area needs no lock. */
+  if (position < NUM_BUFFERS) {
+    // arm: ensure all writes are finished before other thread takes this memory
+    WMB;
+    memory[position].used = 0;
+    return;
+  }
 
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+  LOCK_COMMAND(&alloc_lock);
+#endif
+
+  if (!memory_overflowed) goto error;
+
+  while ((position < NUM_BUFFERS+NEW_BUFFERS) && (newmemory[position-NUM_BUFFERS].addr != free_area))
+    position++;
 #ifdef DEBUG
-  if (memory[position].addr != free_area) goto error;
   printf("  Position : %d\n", position);
 #endif
-  if (unlikely(memory_overflowed && position >= NUM_BUFFERS)) {
-    while ((position < NUM_BUFFERS+NEW_BUFFERS) && (newmemory[position-NUM_BUFFERS].addr != free_area))
-      position++;
   // arm: ensure all writes are finished before other thread takes this memory
   WMB;
 if (position - NUM_BUFFERS >= NEW_BUFFERS) goto error;
@@ -3148,21 +3140,7 @@ if (position - NUM_BUFFERS >= NEW_BUFFERS) goto error;
   printf("Unmap from overflow area succeeded.\n\n");
 #endif
   return;
-} else {
-  // arm: ensure all writes are finished before other thread takes this memory
-  WMB;
 
-  memory[position].used = 0;
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
-  UNLOCK_COMMAND(&alloc_lock);
-#endif
-
-#ifdef DEBUG
-  printf("Unmap Succeeded.\n\n");
-#endif
-
-  return;
-}
  error:
   printf("BLAS : Bad memory unallocation! : %4d  %p\n", position,  free_area);
 
