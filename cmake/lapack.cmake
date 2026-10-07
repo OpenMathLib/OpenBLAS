@@ -9,12 +9,12 @@ set(ALLAUX ilaenv.f ilaenv2stage.f lsamen.f iparmq.f iparam2stage.F
 if (${CMAKE_Fortran_COMPILER} MATCHES GFORTRAN)
 if ((${CMAKE_Fortran_COMPILER_VERSION} VERSION_LESS 5.0) OR (${CMAKE_SYSTEM_NAME} MATCHES FreeBSD AND ${CMAKE_SYSTEM_VERSION} VERSION_LESS 16.0 AND ${CMAKE_SYSTEM_PROCESSOR} MATCHES "^(x86|x86_64)"))
   set (ALLAUX "${ALLAUX} DEPRECATED/ieeeck.f")
-else
+else()
   set (ALLAUX "${ALLAUX} ieeeck.f")
-endif
-else
+endif()
+else()
   set (ALLAUX "${ALLAUX} ieeeck.f")
-endif
+endif()
 
 set(SCLAUX
 	scombssq.f sbdsvdx.f sstevx.f sstein.f
