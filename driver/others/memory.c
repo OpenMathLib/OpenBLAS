@@ -2672,7 +2672,17 @@ static BLASULONG base_address      = 0UL;
 static BLASULONG base_address      = BASE_ADDRESS;
 #endif
 
-static volatile struct {
+/* Each slot gets its own 128 bytes (the cache line, plus the one Intel's
+   adjacent-line prefetcher pairs with it): threads keep to their own slot
+   and write its used flag on every call, so neighbouring slots must not
+   share a line. */
+#if defined(_MSC_VER) && !defined(__clang__)
+#define MEMORY_SLOT_ALIGN __declspec(align(128))
+#else
+#define MEMORY_SLOT_ALIGN __attribute__((aligned(128)))
+#endif
+
+typedef struct MEMORY_SLOT_ALIGN {
   _Atomic BLASULONG lock;
   void * _Atomic addr;
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
@@ -2685,7 +2695,25 @@ static volatile struct {
   char dummy[40];
 #endif
 
-} memory[NUM_BUFFERS];
+} memory_slot_t;
+
+/* The table also gets whole 4 KB pages to itself, because of Intel's L2
+   streamer: it watches the lines a core misses within each 4 KB page and
+   then fetches more lines of that page (never across a page boundary).
+   When the table shared a page with the GOT and memory_initialized, every
+   call touched several lines of that page, and the streamer kept pulling
+   in lines that other cores were writing. Small dsymv calls from every
+   hyperthread ran 2-3 times slower on a Skylake-X and on a two-socket Ivy
+   Bridge-EP, and turning the streamer off alone (MSR 0x1A4 bit 0) brought
+   them back. So nothing else a call touches may live on these pages: each
+   call should touch only its own slot here. Slots past NUM_BUFFERS only
+   fill up the last page and are never used. */
+#define MEMORY_TABLE_SLOTS ((NUM_BUFFERS + 31) / 32 * 32)
+#if defined(_MSC_VER) && !defined(__clang__)
+static __declspec(align(4096)) volatile memory_slot_t memory[MEMORY_TABLE_SLOTS];
+#else
+static volatile memory_slot_t memory[MEMORY_TABLE_SLOTS] __attribute__((aligned(4096)));
+#endif
 
 struct newmemstruct
 {
