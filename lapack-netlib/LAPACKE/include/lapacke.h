@@ -39,11 +39,24 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* All LAPACKE-internal allocations (workspaces, row-major transposition
+ * buffers) go through a replaceable allocator. Defining the LAPACKE_malloc /
+ * LAPACKE_free macros at compile time replaces the allocator entirely. */
+
+/** Allocate through the installed allocator (malloc by default). */
+void *LAPACKE_malloc_proxy(size_t size);
+
+/** Release through the installed deallocator (free by default). */
+void LAPACKE_free_proxy(void *ptr);
+
+/** Install a custom allocator for LAPACKE-internal allocations. */
+void LAPACKE_set_alloc(void *(*malloc_fn)(size_t), void (*free_fn)(void *));
+
 #ifndef LAPACKE_malloc
-#define LAPACKE_malloc( size ) malloc( size )
+#define LAPACKE_malloc(size) LAPACKE_malloc_proxy(size)
 #endif
 #ifndef LAPACKE_free
-#define LAPACKE_free( p )      free( p )
+#define LAPACKE_free(p) LAPACKE_free_proxy(p)
 #endif
 
 #define LAPACK_C2INT( x ) (lapack_int)(*((float*)&x ))
