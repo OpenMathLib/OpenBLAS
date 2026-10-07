@@ -2726,6 +2726,18 @@ static MEMORY_TLS int memory_last_position = 0;
 #else
 #define MEMORY_LAST_POSITION 0
 #endif
+
+/* A slot of memory[] is claimed by switching its used flag from 0 to 1 with
+   one compare-and-swap, and released by its owner with a release store:
+   one locked instruction per allocation and none per free, instead of
+   taking and dropping the slot's lock around plain atomic stores. */
+#if defined(_MSC_VER) && !defined(__clang__)
+#define MEMORY_CLAIM(p) (InterlockedCompareExchange((volatile LONG *)(p), 1, 0) == 0)
+#define MEMORY_RELEASE(p) do { MB; *(volatile int *)(p) = 0; } while (0)
+#else
+#define MEMORY_CLAIM(p) __sync_bool_compare_and_swap((volatile int *)(p), 0, 1)
+#define MEMORY_RELEASE(p) __atomic_store_n((int *)(p), 0, __ATOMIC_RELEASE)
+#endif
 /*       Memory allocation routine           */
 /* procpos ... indicates where it comes from */
 /*                0 : Level 3 functions      */
@@ -2849,31 +2861,19 @@ void *blas_memory_alloc(int procpos){
   if (procpos == 2) {
     for (position = NUM_BUFFERS - 1; position >= 0; position--) {
       RMB;
-      if (!memory[position].used) {
-        blas_lock((BLASULONG *)&memory[position].lock);
-        if (!memory[position].used) goto allocation;
-        blas_unlock((BLASULONG *)&memory[position].lock);
-      }
+      if (!memory[position].used && MEMORY_CLAIM(&memory[position].used)) goto allocation;
     }
   } else {
     position = MEMORY_LAST_POSITION;
     RMB;
-    if (!memory[position].used) {
-      blas_lock((BLASULONG *)&memory[position].lock);
-      if (!memory[position].used) goto allocation;
-      blas_unlock((BLASULONG *)&memory[position].lock);
-    }
+    if (!memory[position].used && MEMORY_CLAIM(&memory[position].used)) goto allocation;
   }
 
   position = 0;
 
   do {
     RMB;
-    if (!memory[position].used) {
-      blas_lock((BLASULONG *)&memory[position].lock);
-      if (!memory[position].used) goto allocation;
-      blas_unlock((BLASULONG *)&memory[position].lock);
-    }
+    if (!memory[position].used && MEMORY_CLAIM(&memory[position].used)) goto allocation;
     position ++;
 
   } while (position < NUM_BUFFERS);
@@ -2886,8 +2886,6 @@ void *blas_memory_alloc(int procpos){
   printf("  Position -> %d\n", position);
 #endif
 
-  memory[position].used = 1;
-  blas_unlock((BLASULONG *)&memory[position].lock);
 #ifdef MEMORY_TLS
   if (procpos != 2) memory_last_position = position;
 #endif
@@ -3159,9 +3157,7 @@ void blas_memory_free(void *free_area){
 
   /* A buffer is only freed by its owner, so the main area needs no lock. */
   if (position < NUM_BUFFERS) {
-    // arm: ensure all writes are finished before other thread takes this memory
-    WMB;
-    memory[position].used = 0;
+    MEMORY_RELEASE(&memory[position].used);
     return;
   }
 
