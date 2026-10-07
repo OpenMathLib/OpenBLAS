@@ -92,7 +92,7 @@ ifneq ($(C_LAPACK), 1)
   else
     OLDBSD=0
     ifeq ($(OSNAME), FreeBSD)
-      OLDBSD=$(shell expr `uname -r | cut -f1 -d.` \>= 16)
+      OLDBSD=$(shell expr `uname -r | cut -f1 -d.` \<= 15)
       ifneq ($(ARCH), $(filter $(ARCH),arm arm64 power))
         OLDBSD=0
       endif
