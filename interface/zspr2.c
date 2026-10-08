@@ -119,8 +119,8 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 
   FUNCTION_PROFILE_START();
 
-  if (incx < 0 ) x -= (n - 1) * incx;
-  if (incy < 0 ) y -= (n - 1) * incy;
+  if (incx < 0 ) x -= (n - 1) * incx * COMPSIZE;
+  if (incy < 0 ) y -= (n - 1) * incy * COMPSIZE;
 
   buffer = (FLOAT *)blas_memory_alloc(1);
   if (!buffer) {
