@@ -60,6 +60,9 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
           GenerateNamedObjects("${KERNELDIR}/cpuid_win.c" "" "" false "" "" true)
         endif()
         endif ()
+        if (ARM64)
+          GenerateNamedObjects("${KERNELDIR}/nrm2_range.c" "" "" false "" "" true)
+        endif ()
 
         # don't use float type name mangling here
         GenerateNamedObjects("${KERNELDIR}/${LSAME_KERNEL}" "F_INTERFACE" "lsame" false "" "" true "")
