@@ -464,7 +464,7 @@ int blas_get_cpu_number(void){
 #endif
 
   // blas_goto_num = 0;
-#ifndef USE_OPENMP_UNUSED
+#ifndef USE_OPENMP
   blas_goto_num=openblas_num_threads_env();
   if (blas_goto_num < 0) blas_goto_num = 0;
 
