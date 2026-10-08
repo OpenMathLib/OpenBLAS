@@ -449,7 +449,7 @@ clean ::
 ifeq ($(OSNAME), Darwin)
 	@rm -rf getarch.dSYM getarch_2nd.dSYM
 endif
-	@rm -f Makefile.conf config.h Makefile_kernel.conf config_kernel.h st* *.dylib
+	@rm -f Makefile.conf config.h Makefile_kernel.conf config_kernel.h dyn_cores.h st* *.dylib
 	@rm -f cblas.tmp cblas.tmp2
 	@touch $(NETLIB_LAPACK_DIR)/make.inc
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) clean
