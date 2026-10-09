@@ -37,10 +37,10 @@ PKGFILE := $(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/$(LIBSONAMEBASE)$(SUFFIX64).pc
 ifeq ($(USE_OPENMP), 1)
   ifeq ($(C_COMPILER), PGI)
           PKG_EXTRALIB += -lomp
-  else
+  else	  
           PKG_EXTRALIB += -lgomp
   endif
-endif
+endif	  
 
 .PHONY : install
 .NOTPARALLEL : install
@@ -68,7 +68,8 @@ install : 	lib.grd
 	@echo \#ifndef OPENBLAS_F77BLAS_H > "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
 	@echo \#define OPENBLAS_F77BLAS_H >> "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
 	@echo \#include \"openblas_config.h\" >> "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
-	@cat common_interface.h >> "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
+	@sed -e 's/OPENBLAS_API/BLASFUNC/g' common_interface.h >> "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
+	@echo \#define OPENBLAS_API BLASFUNC >> "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
 	@echo \#endif >> "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
 
 ifneq ($(NO_CBLAS),1)
@@ -235,19 +236,12 @@ endif
 ifeq ($(OSNAME), Darwin)
 	@echo "SET(OpenBLAS_LIBRARIES \$${_OpenBLAS_ROOT_DIR}/lib/$(LIBPREFIX).dylib)" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
 endif
-	@echo "if (NOT TARGET OpenBLAS::OpenBLAS)" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
-	@echo "  add_library(OpenBLAS::OpenBLAS SHARED IMPORTED)" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
-	@echo "  target_include_directories(OpenBLAS::OpenBLAS INTERFACE \$${OpenBLAS_INCLUDE_DIRS})" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
-	@echo "  set_property(TARGET OpenBLAS::OpenBLAS PROPERTY IMPORTED_LOCATION \$${OpenBLAS_LIBRARIES})" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
+	@echo "add_library(OpenBLAS::OpenBLAS SHARED IMPORTED)"
+	@echo "target_include_directories(OpenBLAS::OpenBLAS INTERFACE \$${OpenBLAS_INCLUDE_DIRS})"
 ifeq ($(OSNAME), $(filter $(OSNAME),WINNT CYGWIN_NT))
-# prefer an MSVC import library if one was added to the install tree, else use the MinGW one
-	@echo "  if (EXISTS \"\$${_OpenBLAS_ROOT_DIR}/lib/lib$(LIBNAMEBASE).lib\")" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
-	@echo "    set_property(TARGET OpenBLAS::OpenBLAS PROPERTY IMPORTED_IMPLIB \$${_OpenBLAS_ROOT_DIR}/lib/lib$(LIBNAMEBASE).lib)" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
-	@echo "  else ()" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
-	@echo "    set_property(TARGET OpenBLAS::OpenBLAS PROPERTY IMPORTED_IMPLIB \$${_OpenBLAS_ROOT_DIR}/lib/$(IMPLIBNAME))" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
-	@echo "  endif ()" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
+	@echo "set_property(TARGET OpenBLAS::OpenBLAS PROPERTY IMPORTED_LOCATION \$${OpenBLAS_LIBRARIES})"
+	@echo "set_property(TARGET OpenBLAS::OpenBLAS PROPERTY IMPORTED_IMPLIB \$${_OpenBLAS_ROOT_DIR}/lib/libopenblas.lib)"
 endif
-	@echo "endif ()" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
 else
 #only static
 	@echo "SET(OpenBLAS_LIBRARIES \$${_OpenBLAS_ROOT_DIR}/lib/$(LIBPREFIX).$(LIBSUFFIX))" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
