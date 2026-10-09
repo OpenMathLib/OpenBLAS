@@ -206,9 +206,9 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 static DWORD WINAPI blas_thread_server(void *arg){
 
   /* Thread identifier */
-#ifdef SMP_DEBUG
+
   BLASLONG  cpu = (BLASLONG)arg;
-#endif
+
 
   blas_queue_t	*queue;
   DWORD action;
@@ -566,8 +566,10 @@ static void exec_threads(int cpu, blas_queue_t *queue, int buf_index) {
     __asm__ __volatile__ ("fldcw %0"   : : "m" (queue -> x87_mode));
   #endif
 
-  MT_TRACE("Server[%2ld] Started.  Mode = 0x%03x M = %3ld N=%3ld K=%3ld\n",
+#ifdef DEBUG
+  fprintf(STDERR,"Server[%2ld] Started.  Mode = 0x%03x M = %3ld N=%3ld K=%3ld\n",
     cpu, queue->mode, queue-> args ->m, queue->args->n, queue->args->k);
+#endif
 
   // fprintf(stderr, "queue start[%ld]!!!\n", cpu);
 
