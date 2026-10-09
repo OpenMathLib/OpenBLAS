@@ -51,6 +51,8 @@ extern char* gotoblas_corename(void);
 static void init_parameter(void);
 
 gotoblas_t TABLE_NAME = {
+  OPENBLAS_CORETS,
+
   DTB_DEFAULT_ENTRIES,
 
   SWITCH_RATIO,

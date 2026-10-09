@@ -501,6 +501,7 @@
 
 #endif
 
+#define ZGEMM_SMALL_KERNEL_BASE		FUNC_BASE(zgemm_small_kernel_nn)
 #define ZGEMM_SMALL_KERNEL_NN		FUNC_OFFSET(zgemm_small_kernel_nn)
 #define ZGEMM_SMALL_KERNEL_NT		FUNC_OFFSET(zgemm_small_kernel_nt)
 #define ZGEMM_SMALL_KERNEL_NR		FUNC_OFFSET(zgemm_small_kernel_nr)
