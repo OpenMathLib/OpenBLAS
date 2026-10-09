@@ -506,19 +506,19 @@ void OPENBLAS_API(zgemm)(char *, char *, blasint *, blasint *, blasint *, double
 void OPENBLAS_API(xgemm)(char *, char *, blasint *, blasint *, blasint *, xdouble *,
 	   xdouble *, blasint *, xdouble *, blasint *, xdouble *, xdouble *, blasint *);
 
-void OPENBLAS_API(sbgemm_batch)(char *, char *, blasint *, blasint *, blasint *, float *,
+void OPENBLAS_API(sbgemm_batch)(char *, char *, blasint *, blasint *, blasint *,
 	   float *, bfloat16 **, blasint *, bfloat16 **, blasint *, float *, float **,
 	   blasint *, blasint *, blasint *);
-void OPENBLAS_API(sgemm_batch)(char *, char *, blasint *, blasint *, blasint *, float *,
+void OPENBLAS_API(sgemm_batch)(char *, char *, blasint *, blasint *, blasint *,
 	   float *, float **, blasint *, float **, blasint *, float *, float **,
 	   blasint *, blasint *, blasint *);
-void OPENBLAS_API(dgemm_batch)(char *, char *, blasint *, blasint *, blasint *, double *,
+void OPENBLAS_API(dgemm_batch)(char *, char *, blasint *, blasint *, blasint *,
 	   double *, double **, blasint *, double **, blasint *, double *, double **,
 	   blasint *, blasint *, blasint *);
-void OPENBLAS_API(cgemm_batch)(char *, char *, blasint *, blasint *, blasint *, float *,
+void OPENBLAS_API(cgemm_batch)(char *, char *, blasint *, blasint *, blasint *,
 	   float *, float **, blasint *, float **, blasint *, float *, float **,
 	   blasint *, blasint *, blasint *);
-void OPENBLAS_API(zgemm_batch)(char *, char *, blasint *, blasint *, blasint *, double *,
+void OPENBLAS_API(zgemm_batch)(char *, char *, blasint *, blasint *, blasint *,
 	   double *, double **, blasint *, double **, blasint *, double *, double **,
 	   blasint *, blasint *, blasint *);
 
