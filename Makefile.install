@@ -68,7 +68,7 @@ install : 	lib.grd
 	@echo \#ifndef OPENBLAS_F77BLAS_H > "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
 	@echo \#define OPENBLAS_F77BLAS_H >> "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
 	@echo \#include \"openblas_config.h\" >> "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
-        @sed -e 's/OPENBLAS_API/BLASFUNC/g' common_interface.h >> "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
+	@sed -e 's/OPENBLAS_API/BLASFUNC/g' common_interface.h >> "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
 	@echo \#endif >> "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/f77blas.h"
 
 ifneq ($(NO_CBLAS),1)
