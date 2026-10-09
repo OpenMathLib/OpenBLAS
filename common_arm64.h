@@ -151,6 +151,12 @@ static inline int blas_quickdivide(blasint x, blasint y){
 
 #if defined(ASSEMBLER) && !defined(NEEDPARAM)
 
+#if defined(__APPLE__)
+#define L(x) L##x
+#else
+#define L(x) .L##x
+#endif
+
 .macro PROLOGUE 
 	.text ;
 	.p2align 2 ;
@@ -162,7 +168,11 @@ REALNAME:
 .endm
 
 
+#if defined(__APPLE__)
+#define EPILOGUE .subsections_via_symbols
+#else
 #define EPILOGUE
+#endif
 
 #define PROFCODE
 

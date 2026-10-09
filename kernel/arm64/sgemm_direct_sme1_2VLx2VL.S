@@ -3,6 +3,9 @@
  SPDX-License-Identifier: BSD-3-Clause-Clear
 */
 
+#define ASSEMBLER
+#include "common.h"
+
 /*--------------------------------------------------------------------------
  * SME1 based Matrix multiplication code for FP32 input matrices to FP32
  * output matrix
@@ -64,14 +67,14 @@
     whilelt p2.s, M_cntr, M            //Tile 0,1 predicate (M dimension)
     sub     w21, w21, #2               //SVLs-2
 
-.M_Loop:
+L(M_Loop):
     incw    M_cntr
     whilelt p3.s, M_cntr, M            //Tile 2,3 predicate (M dimension)
     mov     Bptr, B_base               //B_base
     mov     Cptr, C_base               //C_base
     whilelt p0.b, Bptr, N_exit         //Tile 0/2 predicate (N dimension)
 
-.N_Loop:
+L(N_Loop):
     mov     Aptr, A_base               //Aptr = A_base
     mov     Bptr0, Bptr                //Bptr = B_base
     mov     Cptr0, Cptr                //Cptr0 = C_base
@@ -92,7 +95,7 @@
     // Aptr += SVLb
     addvl   Aptr, Aptr, #1
 
-.K_Loop:
+L(K_Loop):
     // ZA2 += 2nd Aptr vector OP 1st Bptr vector
     fmopa   za2.s,  p3/m,   p0/m,   z5.s,   z2.s
     // Load 2nd vector from Bptr
@@ -104,7 +107,7 @@
     // ZA3 += 2nd Aptr vector OP 2nd Bptr vector
     fmopa   za3.s,  p3/m,   p1/m,   z5.s,   z3.s
     cmp K, #2
-    b.le process_K_less_than_equal_2
+    b.le L(process_K_less_than_equal_2)
     // Load next 1st vector from Bptr
     ld1w    {z6.s},  p0/z,   [Bptr0, N, lsl #2]
     // ZA0 += 1st Aptr vector OP 1st Bptr vector
@@ -132,7 +135,7 @@
     // Aptr += 2*SVLb [Bytes]
     addvl   Aptr, Aptr, #2
     cmp     Aptr, K_exit
-    b.mi    .K_Loop
+    b.mi    L(K_Loop)
     // ZA2 += 2nd Aptr vector OP 1st Bptr vector
     fmopa   za2.s,  p3/m,   p0/m,   z5.s,   z2.s
     // Load next 2nd vector from Bptr
@@ -142,13 +145,13 @@
     // ZA3 += 2nd Aptr vector OP 2nd Bptr vector
     fmopa   za3.s,  p3/m,   p1/m,   z5.s,   z3.s
 
-process_K_less_than_equal_2:
+L(process_K_less_than_equal_2):
     // Bptr += 2*ldb FP32 elements
     add     Bptr0, Bptr0, N, lsl #2
     cmp     Aptr, Aptr_end
-    b.pl    .Ktail_end
+    b.pl    L(Ktail_end)
 
-.Ktail_start:
+L(Ktail_start):
     ld1w    {z1.s},  p2/z,   [Aptr]
     ld1w    {z2.s},  p0/z,   [Bptr0]
     ld1w    {z3.s},  p1/z,   [Bptr0, #1, MUL VL]
@@ -158,7 +161,7 @@ process_K_less_than_equal_2:
     fmopa   za1.s,  p2/m,   p1/m,   z1.s,   z3.s
     fmopa   za3.s,  p3/m,   p1/m,   z5.s,   z3.s
 
-.Ktail_end:
+L(Ktail_end):
     mov     w13, #0
     psel    p4, p0, p2.s[w13, 0]
     psel    p5, p1, p2.s[w13, 0]
@@ -173,7 +176,7 @@ process_K_less_than_equal_2:
     // Store to Cptr1 + N*SVLs
     st1w    {za3h.s[w13, #0]},  p7, [Cptr1, C6, lsl #2]
 
-.Loop_store_ZA:
+L(Loop_store_ZA):
     psel    p4, p0, p2.s[w13, 1]
     psel    p5, p1, p2.s[w13, 1]
     psel    p6, p0, p3.s[w13, 1]
@@ -200,7 +203,7 @@ process_K_less_than_equal_2:
     st1w    {za2h.s[w13, #0]},  p6, [Cptr0, C6, lsl #2]
     st1w    {za3h.s[w13, #0]},  p7, [Cptr1, C6, lsl #2]
     cmp     w13, w21
-    b.mi    .Loop_store_ZA
+    b.mi    L(Loop_store_ZA)
     psel    p4, p0, p2.s[w13, 1]
     psel    p5, p1, p2.s[w13, 1]
     psel    p6, p0, p3.s[w13, 1]
@@ -212,12 +215,12 @@ process_K_less_than_equal_2:
     addvl   Cptr, Cptr, #2
     addvl   Bptr, Bptr, #1
     whilelt p0.b, Bptr, N_exit           //1st Tile predicate (N dimension)
-    b.mi .N_Loop
+    b.mi L(N_Loop)
     add     A_base, A_base, C5, lsl #3   //A_base += 2*K*SVLs FP32 elements
     add     C_base, C_base, C6, lsl #3   //C_base += 2*N*SVLs FP32 elements
     incw    M_cntr
     whilelt p2.s, M_cntr, M              //1st Tile predicate (M dimension)
-    b.mi    .M_Loop
+    b.mi    L(M_Loop)
 
     smstop
 
@@ -227,3 +230,4 @@ process_K_less_than_equal_2:
 
     ret
 
+    EPILOGUE

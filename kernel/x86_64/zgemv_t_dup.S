@@ -158,9 +158,9 @@
 	subq	$-16 * SIZE, A
 
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 	testq	N, N
-	jle	.L999
+	jle	L(999)
 	ALIGN_3
 
 	movq	BUFFER, X1
@@ -169,10 +169,10 @@
 
 	movq	M,  I
 	sarq	$2, I
-	jle	.L05
+	jle	L(05)
 	ALIGN_4
 
-.L02:
+L(02):
 	movsd	 0 * SIZE(X), %xmm0
 	movhpd	 1 * SIZE(X), %xmm0
 	addq	INCX, X
@@ -196,33 +196,33 @@
 
 	addq	$8 * SIZE, X1
 	decq	I
-	jg	.L02
+	jg	L(02)
 	ALIGN_4
 
-.L05:
+L(05):
 	movq	M,  I
 	andq	$3, I
-	jle	.L10
+	jle	L(10)
 	ALIGN_2
 
-.L06:
+L(06):
 	movsd	 0 * SIZE(X), %xmm0
 	movhpd	 1 * SIZE(X), %xmm0
 	addq	INCX, X
 	movapd	%xmm0, 0 * SIZE(X1)
 	addq	$2 * SIZE, X1
 	decq	I
-	jg	.L06
+	jg	L(06)
 	ALIGN_4
 
-.L10:
+L(10):
 #if GEMV_UNROLL >= 4
 
 	cmpq	$4, N
-	jl	.L20
+	jl	L(20)
 	ALIGN_3
 
-.L11:
+L(11):
 	subq	$4, N
 
 	leaq	16 * SIZE(BUFFER), X1
@@ -248,7 +248,7 @@
 
 	movq	M,   I
 	sarq	$2,  I
-	jle	.L15
+	jle	L(15)
 
 	movddup	-16 * SIZE(A1), %xmm8
 	movddup	-15 * SIZE(A1), %xmm9
@@ -256,10 +256,10 @@
 	movddup	-15 * SIZE(A1, LDA), %xmm11
 
 	decq	 I
-	jle	 .L14
+	jle	 L(14)
 	ALIGN_3
 
-.L13:
+L(13):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) - 128 + PREOFFSET(A1)
 #endif
@@ -394,10 +394,10 @@
 
 	subq	 $1, I
 	BRANCH
-	jg	.L13
+	jg	L(13)
 	ALIGN_3
 
-.L14:
+L(14):
 	mulpd	%xmm12, %xmm8
 	addpd	%xmm8,  %xmm0
 	movddup	-16 * SIZE(A2), %xmm8
@@ -507,9 +507,9 @@
 	subq	 $-8 * SIZE, X1
 	ALIGN_3
 
-.L15:
+L(15):
 	testq	$2, M
-	je	.L17
+	je	L(17)
 
 	movddup	-16 * SIZE(A1), %xmm8
 	movddup	-15 * SIZE(A1), %xmm9
@@ -570,9 +570,9 @@
 	addq	 $4 * SIZE, A2
 	ALIGN_3
 
-.L17:
+L(17):
 	testq	$1, M
-	je	.L19
+	je	L(19)
 
 	movddup	-16 * SIZE(A1), %xmm8
 	movddup	-15 * SIZE(A1), %xmm9
@@ -602,7 +602,7 @@
 	addpd	%xmm11, %xmm7
 	ALIGN_3
 
-.L19:
+L(19):
 	pcmpeqb	%xmm13, %xmm13
 	psllq	$63,    %xmm13
 	shufps	$0x40, %xmm13, %xmm13
@@ -691,21 +691,21 @@
 	addq	INCY, Y1
 
 	cmpq	$4, N
-	jge	.L11
+	jge	L(11)
 	ALIGN_3
 
-.L20:
+L(20):
 #endif
 
 #if GEMV_UNROLL >= 2
 
 	cmpq	$2, N
-	jl	.L30
+	jl	L(30)
 
 #if GEMV_UNROLL == 2
 	ALIGN_3
 
-.L21:
+L(21):
 #endif
 
 	subq	$2, N
@@ -729,7 +729,7 @@
 
 	movq	M,   I
 	sarq	$2,  I
-	jle	.L25
+	jle	L(25)
 
 	movddup	-16 * SIZE(A1), %xmm8
 	movddup	-15 * SIZE(A1), %xmm9
@@ -737,10 +737,10 @@
 	movddup	-15 * SIZE(A1, LDA), %xmm11
 
 	decq	 I
-	jle	 .L24
+	jle	 L(24)
 	ALIGN_3
 
-.L23:
+L(23):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 2 - 128 + PREOFFSET(A1)
 #endif
@@ -815,10 +815,10 @@
 
 	subq	 $1, I
 	BRANCH
-	jg	.L23
+	jg	L(23)
 	ALIGN_3
 
-.L24:
+L(24):
 	mulpd	%xmm12, %xmm8
 	addpd	%xmm8,  %xmm0
 	movddup	-14 * SIZE(A1), %xmm8
@@ -876,9 +876,9 @@
 	subq	 $-8 * SIZE, X1
 	ALIGN_3
 
-.L25:
+L(25):
 	testq	$2, M
-	je	.L27
+	je	L(27)
 
 	movddup	-16 * SIZE(A1), %xmm8
 	movddup	-15 * SIZE(A1), %xmm9
@@ -912,9 +912,9 @@
 	addq	 $4 * SIZE, A2
 	ALIGN_3
 
-.L27:
+L(27):
 	testq	$1, M
-	je	.L29
+	je	L(29)
 
 	movddup	-16 * SIZE(A1), %xmm8
 	movddup	-15 * SIZE(A1), %xmm9
@@ -931,7 +931,7 @@
 	addpd	%xmm11, %xmm3
 	ALIGN_3
 
-.L29:
+L(29):
 	pcmpeqb	%xmm13, %xmm13
 	psllq	$63,    %xmm13
 	shufps	$0x40, %xmm13, %xmm13
@@ -987,18 +987,18 @@
 
 #if GEMV_UNROLL == 2
 	cmpq	$2, N
-	jge	.L21
+	jge	L(21)
 #endif
 	ALIGN_3
 
-.L30:
+L(30):
 #endif
 
 	cmpq	$1, N
-	jl	.L999
+	jl	L(999)
 
 #if GEMV_UNROLL == 1
-.L31:
+L(31):
 	decq	N
 #endif
 
@@ -1018,7 +1018,7 @@
 
 	movq	M,   I
 	sarq	$2,  I
-	jle	.L35
+	jle	L(35)
 
 	movddup	-16 * SIZE(A1), %xmm8
 	movddup	-15 * SIZE(A1), %xmm9
@@ -1026,10 +1026,10 @@
  	movddup	-13 * SIZE(A1), %xmm11
 
 	decq	 I
-	jle	 .L34
+	jle	 L(34)
 	ALIGN_3
 
-.L33:
+L(33):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE) * 4 - 128 + PREOFFSET(A1)
 #endif
@@ -1075,10 +1075,10 @@
 
 	subq	 $1, I
 	BRANCH
-	jg	.L33
+	jg	L(33)
 	ALIGN_3
 
-.L34:
+L(34):
 	mulpd	%xmm12, %xmm8
 	addpd	%xmm8,  %xmm0
 	movddup	-12 * SIZE(A1), %xmm8
@@ -1111,9 +1111,9 @@
 	subq	 $-8 * SIZE, X1
 	ALIGN_3
 
-.L35:
+L(35):
 	testq	$2, M
-	je	.L37
+	je	L(37)
 
 	movddup	-16 * SIZE(A1), %xmm8
 	movddup	-15 * SIZE(A1), %xmm9
@@ -1134,9 +1134,9 @@
 	addq	 $4 * SIZE, A1
 	ALIGN_3
 
-.L37:
+L(37):
 	testq	$1, M
-	je	.L39
+	je	L(39)
 
 	movddup	-16 * SIZE(A1), %xmm8
 	movddup	-15 * SIZE(A1), %xmm9
@@ -1147,7 +1147,7 @@
 	addpd	%xmm9,  %xmm1
 	ALIGN_3
 
-.L39:
+L(39):
 	addpd	%xmm2, %xmm0
 	addpd	%xmm3, %xmm1
 
@@ -1190,11 +1190,11 @@
 	addq	INCY, Y1
 
 	cmpq	$1, N
-	jge	.L31
+	jge	L(31)
 #endif
 	ALIGN_4
 
-.L999:
+L(999):
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12

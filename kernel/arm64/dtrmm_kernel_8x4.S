@@ -830,11 +830,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mov	counterJ, origN
 	asr 	counterJ, counterJ, #2		// J = J / 4
 	cmp 	counterJ, #0
-	ble	.Ldtrmm_kernel_L2_BEGIN
+	ble	L(dtrmm_kernel_L2_BEGIN)
 
 /******************************************************************************/
 
-.Ldtrmm_kernel_L4_BEGIN:
+L(dtrmm_kernel_L4_BEGIN):
 	mov	pCRow0, pC
 	add	pCRow1, pCRow0, LDC
 	add	pCRow2, pCRow1, LDC
@@ -848,15 +848,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 	mov	pA, origPA			// pA = start of A array
 
-.Ldtrmm_kernel_L4_M8_BEGIN:
+L(dtrmm_kernel_L4_M8_BEGIN):
 
 	mov	counterI, origM
 	asr 	counterI, counterI, #3		// counterI = counterI / 8
 	cmp 	counterI, #0
-	ble	.Ldtrmm_kernel_L4_M4_BEGIN
+	ble	L(dtrmm_kernel_L4_M4_BEGIN)
 
 	.align 5
-.Ldtrmm_kernel_L4_M8_20:
+L(dtrmm_kernel_L4_M8_20):
 
 #if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
@@ -878,7 +878,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr 	counterL , tempK, #3		// L = K / 8
 	cmp	counterL , #2			// is there at least 4 to do?
-	blt	.Ldtrmm_kernel_L4_M8_32
+	blt	L(dtrmm_kernel_L4_M8_32)
 
 	KERNEL8x4_I				// do one in the K
 	KERNEL8x4_M2				// do another in the K
@@ -890,10 +890,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x4_M2
 
 	subs	counterL, counterL, #2		// subtract 2
-	ble	.Ldtrmm_kernel_L4_M8_22a
+	ble	L(dtrmm_kernel_L4_M8_22a)
 
 	.align 5
-.Ldtrmm_kernel_L4_M8_22:
+L(dtrmm_kernel_L4_M8_22):
 
 	KERNEL8x4_M1
 	KERNEL8x4_M2
@@ -905,10 +905,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x4_M2
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L4_M8_22
+	bgt	L(dtrmm_kernel_L4_M8_22)
 
 	.align 5
-.Ldtrmm_kernel_L4_M8_22a:
+L(dtrmm_kernel_L4_M8_22a):
 
 	KERNEL8x4_M1
 	KERNEL8x4_M2
@@ -919,13 +919,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x4_M1
 	KERNEL8x4_E
 
-	b	 .Ldtrmm_kernel_L4_M8_44
+	b	 L(dtrmm_kernel_L4_M8_44)
 
 	.align 5
-.Ldtrmm_kernel_L4_M8_32:
+L(dtrmm_kernel_L4_M8_32):
 
 	tst	counterL, #1
-	ble	.Ldtrmm_kernel_L4_M8_40
+	ble	L(dtrmm_kernel_L4_M8_40)
 
 	KERNEL8x4_I
 	KERNEL8x4_M2
@@ -936,26 +936,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x4_M1
 	KERNEL8x4_E
 
-	b	.Ldtrmm_kernel_L4_M8_44
+	b	L(dtrmm_kernel_L4_M8_44)
 
-.Ldtrmm_kernel_L4_M8_40:
+L(dtrmm_kernel_L4_M8_40):
 
 	INIT8x4
 
-.Ldtrmm_kernel_L4_M8_44:
+L(dtrmm_kernel_L4_M8_44):
 
 	ands	counterL , tempK, #7
-	ble	.Ldtrmm_kernel_L4_M8_100
+	ble	L(dtrmm_kernel_L4_M8_100)
 
 	.align 5
-.Ldtrmm_kernel_L4_M8_46:
+L(dtrmm_kernel_L4_M8_46):
 
 	KERNEL8x4_SUB
 
 	subs	counterL, counterL, #1
-	bne	.Ldtrmm_kernel_L4_M8_46
+	bne	L(dtrmm_kernel_L4_M8_46)
 
-.Ldtrmm_kernel_L4_M8_100:
+L(dtrmm_kernel_L4_M8_100):
 
 	SAVE8x4
 
@@ -978,20 +978,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prfm	PLDL1KEEP, [pA, #64]
 	prfm	PLDL1KEEP, [origPB]
 
-.Ldtrmm_kernel_L4_M8_END:
+L(dtrmm_kernel_L4_M8_END):
 	subs	counterI, counterI, #1
-	bne	.Ldtrmm_kernel_L4_M8_20
+	bne	L(dtrmm_kernel_L4_M8_20)
 
-.Ldtrmm_kernel_L4_M4_BEGIN:
+L(dtrmm_kernel_L4_M4_BEGIN):
 
 	mov	counterI, origM
 	tst	counterI , #7
-	ble	.Ldtrmm_kernel_L4_END
+	ble	L(dtrmm_kernel_L4_END)
 
 	tst	counterI, #4
-	ble	.Ldtrmm_kernel_L4_M2_BEGIN
+	ble	L(dtrmm_kernel_L4_M2_BEGIN)
 
-.Ldtrmm_kernel_L4_M4_20:
+L(dtrmm_kernel_L4_M4_20):
 
 	INIT4x4
 
@@ -1014,9 +1014,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr 	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Ldtrmm_kernel_L4_M4_40
+	ble	L(dtrmm_kernel_L4_M4_40)
 
-.Ldtrmm_kernel_L4_M4_22:
+L(dtrmm_kernel_L4_M4_22):
 
 	KERNEL4x4_SUB
 	KERNEL4x4_SUB
@@ -1029,22 +1029,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L4_M4_22
+	bgt	L(dtrmm_kernel_L4_M4_22)
 
 
-.Ldtrmm_kernel_L4_M4_40:
+L(dtrmm_kernel_L4_M4_40):
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	.Ldtrmm_kernel_L4_M4_100
+	ble	L(dtrmm_kernel_L4_M4_100)
 
-.Ldtrmm_kernel_L4_M4_42:
+L(dtrmm_kernel_L4_M4_42):
 
 	KERNEL4x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L4_M4_42
+	bgt	L(dtrmm_kernel_L4_M4_42)
 
-.Ldtrmm_kernel_L4_M4_100:
+L(dtrmm_kernel_L4_M4_100):
 
 	SAVE4x4
 
@@ -1063,19 +1063,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, #4
 #endif
 
-.Ldtrmm_kernel_L4_M4_END:
+L(dtrmm_kernel_L4_M4_END):
 
 
-.Ldtrmm_kernel_L4_M2_BEGIN:
+L(dtrmm_kernel_L4_M2_BEGIN):
 
 	mov	counterI, origM
 	tst	counterI , #3
-	ble	.Ldtrmm_kernel_L4_END
+	ble	L(dtrmm_kernel_L4_END)
 
 	tst	counterI, #2			// counterI = counterI / 2
-	ble	.Ldtrmm_kernel_L4_M1_BEGIN
+	ble	L(dtrmm_kernel_L4_M1_BEGIN)
 
-.Ldtrmm_kernel_L4_M2_20:
+L(dtrmm_kernel_L4_M2_20):
 
 	INIT2x4
 
@@ -1098,9 +1098,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 	asr 	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Ldtrmm_kernel_L4_M2_40
+	ble	L(dtrmm_kernel_L4_M2_40)
 
-.Ldtrmm_kernel_L4_M2_22:
+L(dtrmm_kernel_L4_M2_22):
 
 	KERNEL2x4_SUB
 	KERNEL2x4_SUB
@@ -1113,22 +1113,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L4_M2_22
+	bgt	L(dtrmm_kernel_L4_M2_22)
 
 
-.Ldtrmm_kernel_L4_M2_40:
+L(dtrmm_kernel_L4_M2_40):
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	.Ldtrmm_kernel_L4_M2_100
+	ble	L(dtrmm_kernel_L4_M2_100)
 
-.Ldtrmm_kernel_L4_M2_42:
+L(dtrmm_kernel_L4_M2_42):
 
 	KERNEL2x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L4_M2_42
+	bgt	L(dtrmm_kernel_L4_M2_42)
 
-.Ldtrmm_kernel_L4_M2_100:
+L(dtrmm_kernel_L4_M2_100):
 
 	SAVE2x4
 
@@ -1148,15 +1148,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, #2
 #endif
 
-.Ldtrmm_kernel_L4_M2_END:
+L(dtrmm_kernel_L4_M2_END):
 
 
-.Ldtrmm_kernel_L4_M1_BEGIN:
+L(dtrmm_kernel_L4_M1_BEGIN):
 
 	tst	counterI, #1			// counterI = counterI % 2
-	ble	.Ldtrmm_kernel_L4_END
+	ble	L(dtrmm_kernel_L4_END)
 
-.Ldtrmm_kernel_L4_M1_20:
+L(dtrmm_kernel_L4_M1_20):
 
 	INIT1x4
 
@@ -1180,9 +1180,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr 	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Ldtrmm_kernel_L4_M1_40
+	ble	L(dtrmm_kernel_L4_M1_40)
 
-.Ldtrmm_kernel_L4_M1_22:
+L(dtrmm_kernel_L4_M1_22):
 	KERNEL1x4_SUB
 	KERNEL1x4_SUB
 	KERNEL1x4_SUB
@@ -1194,22 +1194,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L4_M1_22
+	bgt	L(dtrmm_kernel_L4_M1_22)
 
 
-.Ldtrmm_kernel_L4_M1_40:
+L(dtrmm_kernel_L4_M1_40):
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	.Ldtrmm_kernel_L4_M1_100
+	ble	L(dtrmm_kernel_L4_M1_100)
 
-.Ldtrmm_kernel_L4_M1_42:
+L(dtrmm_kernel_L4_M1_42):
 
 	KERNEL1x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L4_M1_42
+	bgt	L(dtrmm_kernel_L4_M1_42)
 
-.Ldtrmm_kernel_L4_M1_100:
+L(dtrmm_kernel_L4_M1_100):
 
 	SAVE1x4
 
@@ -1229,7 +1229,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, #1
 #endif
 
-.Ldtrmm_kernel_L4_END:
+L(dtrmm_kernel_L4_END):
 
 	lsl	temp, origK, #5 
 	add	origPB, origPB, temp		// B = B + K * 4 * 8
@@ -1239,19 +1239,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	subs	counterJ, counterJ , #1		// j--
-	bgt	.Ldtrmm_kernel_L4_BEGIN
+	bgt	L(dtrmm_kernel_L4_BEGIN)
 
 
 /******************************************************************************/
 
-.Ldtrmm_kernel_L2_BEGIN:   // less than 2 left in N direction
+L(dtrmm_kernel_L2_BEGIN):   // less than 2 left in N direction
 
 	mov	counterJ , origN
 	tst	counterJ , #3
-	ble	.Ldtrmm_kernel_L999   // error, N was less than 4?
+	ble	L(dtrmm_kernel_L999)   // error, N was less than 4?
 
 	tst	counterJ , #2
-	ble	.Ldtrmm_kernel_L1_BEGIN
+	ble	L(dtrmm_kernel_L1_BEGIN)
 
 	mov	pCRow0, pC			// pCRow0 = pC
 
@@ -1262,14 +1262,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 	mov	pA, origPA			// pA = A
 
-.Ldtrmm_kernel_L2_M8_BEGIN:
+L(dtrmm_kernel_L2_M8_BEGIN):
 
 	mov	counterI, origM
 	asr 	counterI, counterI, #3		// counterI = counterI / 8
 	cmp	counterI, #0
-	ble	.Ldtrmm_kernel_L2_M4_BEGIN
+	ble	L(dtrmm_kernel_L2_M4_BEGIN)
 
-.Ldtrmm_kernel_L2_M8_20:
+L(dtrmm_kernel_L2_M8_20):
 
 	INIT8x2
 
@@ -1293,10 +1293,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL,#0
-	ble	.Ldtrmm_kernel_L2_M8_40
+	ble	L(dtrmm_kernel_L2_M8_40)
 	.align 5
 
-.Ldtrmm_kernel_L2_M8_22:
+L(dtrmm_kernel_L2_M8_22):
 	KERNEL8x2_SUB
 	KERNEL8x2_SUB
 	KERNEL8x2_SUB
@@ -1308,22 +1308,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L2_M8_22
+	bgt	L(dtrmm_kernel_L2_M8_22)
 
 
-.Ldtrmm_kernel_L2_M8_40:
+L(dtrmm_kernel_L2_M8_40):
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	.Ldtrmm_kernel_L2_M8_100
+	ble	L(dtrmm_kernel_L2_M8_100)
 
-.Ldtrmm_kernel_L2_M8_42:
+L(dtrmm_kernel_L2_M8_42):
 
 	KERNEL8x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L2_M8_42
+	bgt	L(dtrmm_kernel_L2_M8_42)
 
-.Ldtrmm_kernel_L2_M8_100:
+L(dtrmm_kernel_L2_M8_100):
 
 	SAVE8x2
 
@@ -1343,21 +1343,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, #8
 #endif
 
-.Ldtrmm_kernel_L2_M8_END:
+L(dtrmm_kernel_L2_M8_END):
 
 	subs	counterI, counterI, #1
-	bgt	.Ldtrmm_kernel_L2_M8_20
+	bgt	L(dtrmm_kernel_L2_M8_20)
 
-.Ldtrmm_kernel_L2_M4_BEGIN:
+L(dtrmm_kernel_L2_M4_BEGIN):
 
 	mov	counterI, origM
 	tst	counterI , #7
-	ble	.Ldtrmm_kernel_L2_END
+	ble	L(dtrmm_kernel_L2_END)
 
 	tst	counterI, #4			// counterI = counterI / 2
-	ble	.Ldtrmm_kernel_L2_M2_BEGIN
+	ble	L(dtrmm_kernel_L2_M2_BEGIN)
 
-.Ldtrmm_kernel_L2_M4_20:
+L(dtrmm_kernel_L2_M4_20):
 
 	INIT4x2
 
@@ -1381,10 +1381,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL,#0
-	ble	.Ldtrmm_kernel_L2_M4_40
+	ble	L(dtrmm_kernel_L2_M4_40)
 	.align 5
 
-.Ldtrmm_kernel_L2_M4_22:
+L(dtrmm_kernel_L2_M4_22):
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
@@ -1396,22 +1396,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L2_M4_22
+	bgt	L(dtrmm_kernel_L2_M4_22)
 
 
-.Ldtrmm_kernel_L2_M4_40:
+L(dtrmm_kernel_L2_M4_40):
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	.Ldtrmm_kernel_L2_M4_100
+	ble	L(dtrmm_kernel_L2_M4_100)
 
-.Ldtrmm_kernel_L2_M4_42:
+L(dtrmm_kernel_L2_M4_42):
 
 	KERNEL4x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L2_M4_42
+	bgt	L(dtrmm_kernel_L2_M4_42)
 
-.Ldtrmm_kernel_L2_M4_100:
+L(dtrmm_kernel_L2_M4_100):
 
 	SAVE4x2
 
@@ -1431,19 +1431,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, #4
 #endif
 
-.Ldtrmm_kernel_L2_M4_END:
+L(dtrmm_kernel_L2_M4_END):
 
 
-.Ldtrmm_kernel_L2_M2_BEGIN:
+L(dtrmm_kernel_L2_M2_BEGIN):
 
 	mov	counterI, origM
 	tst	counterI , #3
-	ble	.Ldtrmm_kernel_L2_END
+	ble	L(dtrmm_kernel_L2_END)
 
 	tst	counterI, #2			// counterI = counterI / 2
-	ble	.Ldtrmm_kernel_L2_M1_BEGIN
+	ble	L(dtrmm_kernel_L2_M1_BEGIN)
 
-.Ldtrmm_kernel_L2_M2_20:
+L(dtrmm_kernel_L2_M2_20):
 
 	INIT2x2
 
@@ -1467,9 +1467,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , tempK, #3		// counterL = counterL / 8
         cmp	counterL,#0
-	ble	.Ldtrmm_kernel_L2_M2_40
+	ble	L(dtrmm_kernel_L2_M2_40)
 
-.Ldtrmm_kernel_L2_M2_22:
+L(dtrmm_kernel_L2_M2_22):
 
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
@@ -1482,22 +1482,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L2_M2_22
+	bgt	L(dtrmm_kernel_L2_M2_22)
 
 
-.Ldtrmm_kernel_L2_M2_40:
+L(dtrmm_kernel_L2_M2_40):
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	.Ldtrmm_kernel_L2_M2_100
+	ble	L(dtrmm_kernel_L2_M2_100)
 
-.Ldtrmm_kernel_L2_M2_42:
+L(dtrmm_kernel_L2_M2_42):
 
 	KERNEL2x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L2_M2_42
+	bgt	L(dtrmm_kernel_L2_M2_42)
 
-.Ldtrmm_kernel_L2_M2_100:
+L(dtrmm_kernel_L2_M2_100):
 
 	SAVE2x2
 
@@ -1517,15 +1517,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, #2
 #endif
 
-.Ldtrmm_kernel_L2_M2_END:
+L(dtrmm_kernel_L2_M2_END):
 
 
-.Ldtrmm_kernel_L2_M1_BEGIN:
+L(dtrmm_kernel_L2_M1_BEGIN):
 
 	tst	counterI, #1			// counterI = counterI % 2
-	ble	.Ldtrmm_kernel_L2_END
+	ble	L(dtrmm_kernel_L2_END)
 
-.Ldtrmm_kernel_L2_M1_20:
+L(dtrmm_kernel_L2_M1_20):
 
 	INIT1x2
 
@@ -1549,9 +1549,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr 	counterL , tempK, #3		// counterL = counterL / 8
         cmp     counterL, #0
-	ble	.Ldtrmm_kernel_L2_M1_40
+	ble	L(dtrmm_kernel_L2_M1_40)
 
-.Ldtrmm_kernel_L2_M1_22:
+L(dtrmm_kernel_L2_M1_22):
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
@@ -1563,22 +1563,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L2_M1_22
+	bgt	L(dtrmm_kernel_L2_M1_22)
 
 
-.Ldtrmm_kernel_L2_M1_40:
+L(dtrmm_kernel_L2_M1_40):
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	.Ldtrmm_kernel_L2_M1_100
+	ble	L(dtrmm_kernel_L2_M1_100)
 
-.Ldtrmm_kernel_L2_M1_42:
+L(dtrmm_kernel_L2_M1_42):
 
 	KERNEL1x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L2_M1_42
+	bgt	L(dtrmm_kernel_L2_M1_42)
 
-.Ldtrmm_kernel_L2_M1_100:
+L(dtrmm_kernel_L2_M1_100):
 
 	SAVE1x2
 
@@ -1598,7 +1598,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, #1
 #endif
 
-.Ldtrmm_kernel_L2_END:
+L(dtrmm_kernel_L2_END):
 #if !defined(LEFT)
 	add	tempOffset, tempOffset, #2
 #endif
@@ -1606,11 +1606,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /******************************************************************************/
 
-.Ldtrmm_kernel_L1_BEGIN:
+L(dtrmm_kernel_L1_BEGIN):
 
 	mov	counterJ , origN
 	tst	counterJ , #1
-	ble	.Ldtrmm_kernel_L999 // done
+	ble	L(dtrmm_kernel_L999) // done
 
 	mov	pCRow0, pC			// pCRow0 = C
 	add	pC , pC , LDC			// Update pC to point to next
@@ -1620,14 +1620,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 	mov	pA, origPA			// pA = A
 
-.Ldtrmm_kernel_L1_M8_BEGIN:
+L(dtrmm_kernel_L1_M8_BEGIN):
 
 	mov	counterI, origM
 	asr 	counterI, counterI, #3		// counterI = counterI / 8
 	cmp	counterI, #0
-	ble	.Ldtrmm_kernel_L1_M4_BEGIN
+	ble	L(dtrmm_kernel_L1_M4_BEGIN)
 
-.Ldtrmm_kernel_L1_M8_20:
+L(dtrmm_kernel_L1_M8_20):
 
 	INIT8x1
 
@@ -1651,10 +1651,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Ldtrmm_kernel_L1_M8_40
+	ble	L(dtrmm_kernel_L1_M8_40)
 	.align 5
 
-.Ldtrmm_kernel_L1_M8_22:
+L(dtrmm_kernel_L1_M8_22):
 	KERNEL8x1_SUB
 	KERNEL8x1_SUB
 	KERNEL8x1_SUB
@@ -1666,22 +1666,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L1_M8_22
+	bgt	L(dtrmm_kernel_L1_M8_22)
 
 
-.Ldtrmm_kernel_L1_M8_40:
+L(dtrmm_kernel_L1_M8_40):
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	.Ldtrmm_kernel_L1_M8_100
+	ble	L(dtrmm_kernel_L1_M8_100)
 
-.Ldtrmm_kernel_L1_M8_42:
+L(dtrmm_kernel_L1_M8_42):
 
 	KERNEL8x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L1_M8_42
+	bgt	L(dtrmm_kernel_L1_M8_42)
 
-.Ldtrmm_kernel_L1_M8_100:
+L(dtrmm_kernel_L1_M8_100):
 
 	SAVE8x1
 
@@ -1701,21 +1701,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, #8
 #endif
 
-.Ldtrmm_kernel_L1_M8_END:
+L(dtrmm_kernel_L1_M8_END):
 
 	subs	counterI, counterI, #1
-	bgt	.Ldtrmm_kernel_L1_M8_20
+	bgt	L(dtrmm_kernel_L1_M8_20)
 
-.Ldtrmm_kernel_L1_M4_BEGIN:
+L(dtrmm_kernel_L1_M4_BEGIN):
 
 	mov	counterI, origM
 	tst	counterI , #7
-	ble	.Ldtrmm_kernel_L1_END
+	ble	L(dtrmm_kernel_L1_END)
 
 	tst	counterI, #4			// counterI = counterI / 2
-	ble	.Ldtrmm_kernel_L1_M2_BEGIN
+	ble	L(dtrmm_kernel_L1_M2_BEGIN)
 
-.Ldtrmm_kernel_L1_M4_20:
+L(dtrmm_kernel_L1_M4_20):
 
 	INIT4x1
 
@@ -1738,10 +1738,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Ldtrmm_kernel_L1_M4_40
+	ble	L(dtrmm_kernel_L1_M4_40)
 	.align 5
 
-.Ldtrmm_kernel_L1_M4_22:
+L(dtrmm_kernel_L1_M4_22):
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
@@ -1753,22 +1753,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L1_M4_22
+	bgt	L(dtrmm_kernel_L1_M4_22)
 
 
-.Ldtrmm_kernel_L1_M4_40:
+L(dtrmm_kernel_L1_M4_40):
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	.Ldtrmm_kernel_L1_M4_100
+	ble	L(dtrmm_kernel_L1_M4_100)
 
-.Ldtrmm_kernel_L1_M4_42:
+L(dtrmm_kernel_L1_M4_42):
 
 	KERNEL4x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L1_M4_42
+	bgt	L(dtrmm_kernel_L1_M4_42)
 
-.Ldtrmm_kernel_L1_M4_100:
+L(dtrmm_kernel_L1_M4_100):
 
 	SAVE4x1
 
@@ -1788,18 +1788,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, #4
 #endif
 
-.Ldtrmm_kernel_L1_M4_END:
+L(dtrmm_kernel_L1_M4_END):
 
-.Ldtrmm_kernel_L1_M2_BEGIN:
+L(dtrmm_kernel_L1_M2_BEGIN):
 
 	mov	counterI, origM
 	tst	counterI , #3
-	ble	.Ldtrmm_kernel_L1_END
+	ble	L(dtrmm_kernel_L1_END)
 
 	tst	counterI, #2			// counterI = counterI / 2
-	ble	.Ldtrmm_kernel_L1_M1_BEGIN
+	ble	L(dtrmm_kernel_L1_M1_BEGIN)
 
-.Ldtrmm_kernel_L1_M2_20:
+L(dtrmm_kernel_L1_M2_20):
 
 	INIT2x1
 
@@ -1823,9 +1823,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr 	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Ldtrmm_kernel_L1_M2_40
+	ble	L(dtrmm_kernel_L1_M2_40)
 
-.Ldtrmm_kernel_L1_M2_22:
+L(dtrmm_kernel_L1_M2_22):
 
 	KERNEL2x1_SUB
 	KERNEL2x1_SUB
@@ -1838,22 +1838,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L1_M2_22
+	bgt	L(dtrmm_kernel_L1_M2_22)
 
 
-.Ldtrmm_kernel_L1_M2_40:
+L(dtrmm_kernel_L1_M2_40):
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	.Ldtrmm_kernel_L1_M2_100
+	ble	L(dtrmm_kernel_L1_M2_100)
 
-.Ldtrmm_kernel_L1_M2_42:
+L(dtrmm_kernel_L1_M2_42):
 
 	KERNEL2x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L1_M2_42
+	bgt	L(dtrmm_kernel_L1_M2_42)
 
-.Ldtrmm_kernel_L1_M2_100:
+L(dtrmm_kernel_L1_M2_100):
 
 	SAVE2x1
 
@@ -1873,15 +1873,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, #2
 #endif
 
-.Ldtrmm_kernel_L1_M2_END:
+L(dtrmm_kernel_L1_M2_END):
 
 
-.Ldtrmm_kernel_L1_M1_BEGIN:
+L(dtrmm_kernel_L1_M1_BEGIN):
 
 	tst	counterI, #1			// counterI = counterI % 2
-	ble	.Ldtrmm_kernel_L1_END
+	ble	L(dtrmm_kernel_L1_END)
 
-.Ldtrmm_kernel_L1_M1_20:
+L(dtrmm_kernel_L1_M1_20):
 
 	INIT1x1
 
@@ -1905,9 +1905,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr 	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Ldtrmm_kernel_L1_M1_40
+	ble	L(dtrmm_kernel_L1_M1_40)
 
-.Ldtrmm_kernel_L1_M1_22:
+L(dtrmm_kernel_L1_M1_22):
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
@@ -1919,30 +1919,30 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L1_M1_22
+	bgt	L(dtrmm_kernel_L1_M1_22)
 
 
-.Ldtrmm_kernel_L1_M1_40:
+L(dtrmm_kernel_L1_M1_40):
 
 	ands	counterL , tempK, #7		// counterL = counterL % 8
-	ble	.Ldtrmm_kernel_L1_M1_100
+	ble	L(dtrmm_kernel_L1_M1_100)
 
-.Ldtrmm_kernel_L1_M1_42:
+L(dtrmm_kernel_L1_M1_42):
 
 	KERNEL1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm_kernel_L1_M1_42
+	bgt	L(dtrmm_kernel_L1_M1_42)
 
-.Ldtrmm_kernel_L1_M1_100:
+L(dtrmm_kernel_L1_M1_100):
 
 	SAVE1x1
 
 
-.Ldtrmm_kernel_L1_END:
+L(dtrmm_kernel_L1_END):
 
 
-.Ldtrmm_kernel_L999:
+L(dtrmm_kernel_L999):
 	mov	x0, #0				// set return value
 	ldp	d8, d9, [sp, #(0 * 16)]
 	ldp	d10, d11, [sp, #(1 * 16)]

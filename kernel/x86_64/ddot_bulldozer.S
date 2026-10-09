@@ -71,18 +71,18 @@
 	vxorps	%xmm3, %xmm3 , %xmm3
 
 	cmpq	$0, N
-	jle	.L999
+	jle	L(999)
 
 	cmpq	$SIZE, INCX
-	jne	.L50
+	jne	L(50)
 	cmpq	$SIZE, INCY
-	jne	.L50
+	jne	L(50)
 
 	subq	$-16 * SIZE, X
 	subq	$-16 * SIZE, Y
 
 	testq	$SIZE, Y
-	je	.L10
+	je	L(10)
 
 	vmovsd	-16 * SIZE(X), %xmm0
 	vmulsd	-16 * SIZE(Y), %xmm0 , %xmm0
@@ -91,11 +91,11 @@
 	decq	N
 	ALIGN_2
 
-.L10:
+L(10):
 
 	movq	N,  %rax
 	sarq	$4, %rax
-	jle	.L14
+	jle	L(14)
 
 	vmovups	-16 * SIZE(X), %xmm4
 	vmovups	-14 * SIZE(X), %xmm5
@@ -108,11 +108,11 @@
 	vmovups	 -2 * SIZE(X), %xmm11
 
 	decq	%rax
-	jle	.L12
+	jle	L(12)
 
 	ALIGN_3
 
-.L11:
+L(11):
 	prefetchnta     A_PRE(Y)
 
 	vfmaddpd %xmm0 , -16 * SIZE(Y), %xmm4 , %xmm0
@@ -142,10 +142,10 @@
 	subq	$-16 * SIZE, Y
 
 	decq	%rax
-	jg	.L11
+	jg	L(11)
 	ALIGN_3
 
-.L12:
+L(12):
 
 	vfmaddpd %xmm0 , -16 * SIZE(Y), %xmm4 , %xmm0
 	vfmaddpd %xmm1 , -14 * SIZE(Y), %xmm5 , %xmm1
@@ -161,12 +161,12 @@
 	subq	$-16 * SIZE, Y
 	ALIGN_3
 
-.L14:
+L(14):
 	testq	$15, N
-	jle	.L999
+	jle	L(999)
 
 	testq	$8, N
-	jle	.L15
+	jle	L(15)
 
 	vmovups	-16 * SIZE(X), %xmm4
 	vmovups	-14 * SIZE(X), %xmm5
@@ -182,9 +182,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L15:
+L(15):
 	testq	$4, N
-	jle	.L16
+	jle	L(16)
 
 	vmovups	-16 * SIZE(X), %xmm4
 	vmovups	-14 * SIZE(X), %xmm5
@@ -196,9 +196,9 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L16:
+L(16):
 	testq	$2, N
-	jle	.L17
+	jle	L(17)
 
 	vmovups	-16 * SIZE(X), %xmm4
 	vfmaddpd %xmm0 , -16 * SIZE(Y), %xmm4 , %xmm0
@@ -208,24 +208,24 @@
 	addq	$2 * SIZE, Y
 	ALIGN_3
 
-.L17:
+L(17):
 	testq	$1, N
-	jle	.L999
+	jle	L(999)
 
 	vmovsd	-16 * SIZE(X), %xmm4
 	vmovsd	-16 * SIZE(Y), %xmm5
 	vfmaddpd %xmm0, %xmm4 , %xmm5 , %xmm0
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_3
 
 
-.L50:
+L(50):
 	movq	N,  %rax
 	sarq	$3, %rax
-	jle	.L55
+	jle	L(55)
 	ALIGN_3
 
-.L53:
+L(53):
 
 
 	vmovsd	0 * SIZE(X), %xmm4
@@ -276,16 +276,16 @@
 	vfmaddpd %xmm3 , %xmm7 , %xmm11, %xmm3
 
 	decq	%rax
-	jg	.L53
+	jg	L(53)
 	ALIGN_3
 
-.L55:
+L(55):
 	movq	N, %rax
 	andq	$7,   %rax
-	jle	.L999
+	jle	L(999)
 	ALIGN_3
 
-.L56:
+L(56):
 	vmovsd	0 * SIZE(X), %xmm4
 	addq	INCX, X
 	vmovsd	0 * SIZE(Y), %xmm8
@@ -294,10 +294,10 @@
 	vfmaddpd %xmm0 , %xmm4 , %xmm8 , %xmm0
 
 	decq	%rax
-	jg	.L56
+	jg	L(56)
 	ALIGN_3
 
-.L999:
+L(999):
 	vaddpd	%xmm1, %xmm0 , %xmm0
 	vaddpd	%xmm3, %xmm2 , %xmm2
 	vaddpd	%xmm2, %xmm0 , %xmm0
