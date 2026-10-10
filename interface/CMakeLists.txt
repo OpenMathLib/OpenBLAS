@@ -135,7 +135,7 @@ endif ()
   GenerateNamedObjects("trsm.c" "TRMM" "trmm" ${CBLAS_FLAG})
   
   # gemmtr is gemmt under the name adopted by the Reference BLAS
-  GenerateNamedObjects("gemm.c" "RNAME" "gemmtr" ${CBLAS_FLAG})
+  GenerateNamedObjects("gemmt.c" "RNAME" "gemmtr" ${CBLAS_FLAG})
 
   # max and imax are compiled 4 times
   GenerateNamedObjects("max.c" "" "" ${CBLAS_FLAG})
