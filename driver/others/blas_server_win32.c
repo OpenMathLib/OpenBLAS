@@ -244,7 +244,8 @@ static DWORD WINAPI blas_thread_server(void *arg){
     LeaveCriticalSection(&pool.lock);
 
     if (queue) {
-	exec_threads(cpu, queue, 0);
+		if (pool.queue) SetEvent(pool.filled);
+		exec_threads(cpu, queue, 0);
     } else {
 	continue; //if queue == NULL
     }
