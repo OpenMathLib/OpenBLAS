@@ -113,7 +113,7 @@
     cblas_stbmv, cblas_stbsv, cblas_stpmv, cblas_stpsv, cblas_strmm, cblas_strmv, cblas_strsm,
     cblas_strsv, cblas_sgeadd, cblas_sgemmt, cblas_sgemmtr,
     cblas_isamax, cblas_isamin, cblas_ismin, cblas_ismax, cblas_ssum,cblas_simatcopy,cblas_somatcopy,
-    cblas_samax, cblas_samin, cblas_sgemm_batchm cblas_sgemm_batch_strided);
+    cblas_samax, cblas_samin, cblas_sgemm_batch, cblas_sgemm_batch_strided);
 
 @cblasobjsz = (
     cblas_dzasum, cblas_dznrm2, cblas_zaxpy, cblas_zcopy, cblas_zdotc, cblas_zdotu, cblas_zdscal,
