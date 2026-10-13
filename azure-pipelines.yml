@@ -212,9 +212,9 @@ jobs:
       sudo installer -pkg MacPorts-2.12.6-15-Sequoia.pkg -target /
       export PATH=/opt/local/bin:$PATH
       hash -r
-      sudo port install llvm-23 clang-23 flang-23
-      #port contents flang-23
-      make TARGET=NEHALEM CC=clang-mp-23 FC=flang-mp-23 NO_SHARED=1
+      sudo port install llvm-22 clang-22 flang-22
+      #port contents flang-22
+      make TARGET=NEHALEM CC=clang-mp-22 FC=flang-mp-22 NO_SHARED=1
 
 - job: OSX_OpenMP_Clang
   timeoutInMinutes: 100
@@ -228,8 +228,8 @@ jobs:
       sudo installer -pkg MacPorts-2.12.6-15-Sequoia.pkg -target /
       export PATH=/opt/local/bin:$PATH
       hash -r
-      sudo port install llvm-23 clang-23 flang-23
-      make TARGET=CORE2 USE_OPENMP=1 DYNAMIC_ARCH=1 DYNAMIC_LIST='NEHALEM HASWELL SKYLAKEX' CC=clang-mp-23 NOFORTRAN=1
+      sudo port install llvm-22 clang-22 flang-22
+      make TARGET=CORE2 USE_OPENMP=1 DYNAMIC_ARCH=1 DYNAMIC_LIST='NEHALEM HASWELL SKYLAKEX' CC=clang-mp-22 NOFORTRAN=1
 
 - job: OSX_OpenMP_Clang_cmake
   timeoutInMinutes: 100
@@ -242,10 +242,10 @@ jobs:
       sudo installer -pkg MacPorts-2.12.6-15-Sequoia.pkg -target /
       export PATH=/opt/local/bin:$PATH
       hash -r
-      sudo port install llvm-23 clang-23 flang-23
+      sudo port install llvm-22 clang-22 flang-22
       mkdir build
       cd build
-      cmake -DTARGET=CORE2 -DUSE_OPENMP=1 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DDYNAMIC_LIST='NEHALEM;HASWELL;SKYLAKEX' -DCMAKE_C_COMPILER=clang-mp-23 -DNOFORTRAN=1 -DNO_AVX512=1 ..
+      cmake -DTARGET=CORE2 -DUSE_OPENMP=1 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DDYNAMIC_LIST='NEHALEM;HASWELL;SKYLAKEX' -DCMAKE_C_COMPILER=clang-mp-22 -DNOFORTRAN=1 -DNO_AVX512=1 ..
       cmake --build . --parallel "$(sysctl -n hw.logicalcpu)"
       ctest
 
@@ -280,7 +280,7 @@ jobs:
       sudo installer -pkg MacPorts-2.12.6-15-Sequoia.pkg -target /
       export PATH=/opt/local/bin:$PATH
       hash -r
-      sudo port install llvm-23 clang-23 flang-23
+      sudo port install llvm-22 clang-22 flang-22
       sudo mkdir -p /opt/intel
       sudo chown $USER /opt/intel
     displayName: prepare for cache restore
@@ -300,7 +300,7 @@ jobs:
     condition: ne(variables.CACHE_RESTORED, 'true')
   - script: |
       source /opt/intel/oneapi/setvars.sh
-      make CC=/opt/local/bin/clang-mp-23 FC=ifort
+      make CC=/opt/local/bin/clang-mp-22 FC=ifort
 
 - job: OSX_NDK_ARMV7
   pool:
