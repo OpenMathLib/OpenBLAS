@@ -137,16 +137,20 @@ endif ()
   # gemmtr is gemmt under the name adopted by the Reference BLAS
   GenerateNamedObjects("gemmt.c" "RNAME" "gemmtr" ${CBLAS_FLAG})
 
-  # max and imax are compiled 4 times
-  GenerateNamedObjects("max.c" "" "" ${CBLAS_FLAG})
+  # absolute max and imax are compiled 4 times but non-absolute does not exist for complex
+  GenerateNamedObjects("max.c" "" "smax" ${CBLAS_FLAG} "" "" true "SINGLE")
+  GenerateNamedObjects("max.c" "" "dmax" ${CBLAS_FLAG} "" "" true "DOUBLE")
   GenerateNamedObjects("max.c" "USE_ABS" "amax" ${CBLAS_FLAG})
   GenerateNamedObjects("max.c" "USE_ABS;USE_MIN" "amin" ${CBLAS_FLAG})
-  GenerateNamedObjects("max.c" "USE_MIN" "min" ${CBLAS_FLAG})
+  GenerateNamedObjects("max.c" "USE_MIN" "smin" ${CBLAS_FLAG} "" "" true "SINGLE")
+  GenerateNamedObjects("max.c" "USE_MIN" "dmin" ${CBLAS_FLAG} "" "" true "DOUBLE")
 
-  GenerateNamedObjects("imax.c" "" "i*max" ${CBLAS_FLAG})
+  GenerateNamedObjects("imax.c" "" "ismax" ${CBLAS_FLAG} "" "" true "SINGLE")
+  GenerateNamedObjects("imax.c" "" "idmax" ${CBLAS_FLAG} "" "" true "DOUBLE")
   GenerateNamedObjects("imax.c" "USE_ABS" "i*amax" ${CBLAS_FLAG})
   GenerateNamedObjects("imax.c" "USE_ABS;USE_MIN" "i*amin" ${CBLAS_FLAG})
-  GenerateNamedObjects("imax.c" "USE_MIN" "i*min" ${CBLAS_FLAG})
+  GenerateNamedObjects("imax.c" "USE_MIN" "ismin" ${CBLAS_FLAG} "" "" true "SINGLE")
+  GenerateNamedObjects("imax.c" "USE_MIN" "idmin" ${CBLAS_FLAG} "" "" true "DOUBLE")
 
 if (BUILD_BFLOAT16)
   GenerateNamedObjects("scal.c" "BGEMM" "bscal" ${CBLAS_FLAG} "" "" true "BFLOAT16")
