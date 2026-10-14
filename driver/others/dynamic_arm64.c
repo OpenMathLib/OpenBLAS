@@ -550,7 +550,18 @@ static gotoblas_t *get_coretype(void) {
 
 #ifndef NO_SVE
   if ((getauxval(AT_HWCAP) & HWCAP_SVE)) {
-    return &gotoblas_ARMV8SVE;
+    int veclen = svcntw();
+    switch(veclen) {
+	case 4:
+	    return &gotoblas_ARMV8SVE;
+	    break;
+	case 8:
+	    return &gotoblas_NEOVERSEV1;
+	    break;
+	case 16:
+	default:
+	    return &gotoblas_A64FX;
+    }
   }
 #endif
 
