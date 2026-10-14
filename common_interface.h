@@ -151,8 +151,6 @@ blasint    OPENBLAS_API(ixamax)(blasint *, xdouble *, blasint *);
 blasint    OPENBLAS_API(ismax) (blasint *, float  *, blasint *);
 blasint    OPENBLAS_API(idmax) (blasint *, double *, blasint *);
 blasint    OPENBLAS_API(iqmax) (blasint *, xdouble *, blasint *);
-blasint    OPENBLAS_API(icmax) (blasint *, float  *, blasint *);
-blasint    OPENBLAS_API(izmax) (blasint *, double *, blasint *);
 blasint    OPENBLAS_API(ixmax) (blasint *, xdouble *, blasint *);
 
 blasint    OPENBLAS_API(isamin)(blasint *, float  *, blasint *);
@@ -165,8 +163,6 @@ blasint    OPENBLAS_API(ixamin)(blasint *, xdouble *, blasint *);
 blasint    OPENBLAS_API(ismin)(blasint *, float  *, blasint *);
 blasint    OPENBLAS_API(idmin)(blasint *, double *, blasint *);
 blasint    OPENBLAS_API(iqmin)(blasint *, xdouble *, blasint *);
-blasint    OPENBLAS_API(icmin)(blasint *, float  *, blasint *);
-blasint    OPENBLAS_API(izmin)(blasint *, double *, blasint *);
 blasint    OPENBLAS_API(ixmin)(blasint *, xdouble *, blasint *);
 
 FLOATRET  OPENBLAS_API(samax) (blasint *, float  *, blasint *);
