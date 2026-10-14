@@ -298,19 +298,19 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
       group_ldb = ldb_array[i];
       group_ldc = ldc_array[i];
       
-      if (transb_array[i] == 'N')   group_transa = 0;
-      if (transb_array[i] == 'T')   group_transa = 1;
+      if (transa_array[i] == 'N')   group_transa = 0;
+      if (transa_array[i] == 'T')   group_transa = 1;
 #ifndef COMPLEX
-      if (transb_array[i] == 'C')   group_transa = 1;
+      if (transa_array[i] == 'C')   group_transa = 1;
 #else
-      if (transb_array[i] == 'C')   group_transa = 3;
+      if (transa_array[i] == 'C')   group_transa = 3;
 #endif
-      if (transa_array[i] == 'N')   group_transb = 0;
-      if (transa_array[i] == 'T')   group_transb = 1;
+      if (transb_array[i] == 'N')   group_transb = 0;
+      if (transb_array[i] == 'T')   group_transb = 1;
 #ifndef COMPLEX
-      if (transa_array[i] == 'C')   group_transb = 1;
+      if (transb_array[i] == 'C')   group_transb = 1;
 #else
-      if (transa_array[i] == 'C')   group_transb = 3;
+      if (transb_array[i] == 'C')   group_transb = 3;
 #endif
 #endif
 
@@ -348,7 +348,16 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
 #endif
 
 #ifdef SMALL_MATRIX_OPT
-    if (MNK <= 100.0*100.0*100.0){
+#if !defined(COMPLEX)
+    if (*(FLOAT *)(group_alpha) != ZERO &&
+        GEMM_SMALL_MATRIX_PERMIT(group_transa, group_transb, group_m, group_n, group_k,
+                                 *(FLOAT *)(group_alpha), *(FLOAT *)(group_beta))){
+#else
+    if (((FLOAT *)(group_alpha))[0] != ZERO &&
+        GEMM_SMALL_MATRIX_PERMIT(group_transa, group_transb, group_m, group_n, group_k,
+                                 ((FLOAT *)(group_alpha))[0], ((FLOAT *)(group_alpha))[1],
+                                 ((FLOAT *)(group_beta))[0], ((FLOAT *)(group_beta))[1])){
+#endif
       group_routine=NULL;
 #if !defined(COMPLEX)
       if(*(FLOAT *)(group_beta) == 0.0){
@@ -388,16 +397,15 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
       args_array[count].beta=group_beta;
 
 #if defined(CBLAS)
-      if (order == CblasColMajor) {      
-	args_array[count].a=(a_array[matrix_idx+j]);
-	args_array[count].b=(b_array[matrix_idx+j]);
-      }else if(order == CblasRowMajor){
-#endif
+      if (order == CblasRowMajor) {
 	args_array[count].a=(b_array[matrix_idx+j]);
 	args_array[count].b=(a_array[matrix_idx+j]);
-#if defined(CBLAS)
-      }
+      } else
 #endif
+      {
+	args_array[count].a=(a_array[matrix_idx+j]);
+	args_array[count].b=(b_array[matrix_idx+j]);
+      }
       
       args_array[count].c=(c_array[matrix_idx+j]);
       
