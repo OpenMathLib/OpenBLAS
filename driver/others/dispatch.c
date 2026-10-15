@@ -1,0 +1,985 @@
+/*****************************************************************************
+Copyright (c) 2026, The OpenBLAS Project
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+   1. Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+
+   2. Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in
+      the documentation and/or other materials provided with the
+      distribution.
+   3. Neither the name of the OpenBLAS project nor the names of its contributors may
+      be used to endorse or promote products derived from this software
+      without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*****************************************************************************/
+
+/* The arrays of per-core kernel tables that OPENBLAS_DISPATCH(group)
+   indexes (see common_param.h), one per kernel group. */
+
+#include "common.h"
+
+#define DISPATCH_EXTERN(core, group) \
+  extern const openblas_##group##_dispatch_t openblas_##group##_dispatch_##core;
+#define DISPATCH_ENTRY(core, group) \
+  [OPENBLAS_CORE_##core] = &openblas_##group##_dispatch_##core,
+
+/* openblas_<group>_dispatch[OPENBLAS_CORE_<CORE>] points to
+   openblas_<group>_dispatch_<CORE>, which kernel/setparam-ref.c defines for
+   that core. */
+#define DEFINE_DISPATCH_TABLE(group) \
+  OPENBLAS_CORE_LIST(DISPATCH_EXTERN, group) \
+  const openblas_##group##_dispatch_t *const openblas_##group##_dispatch[OPENBLAS_NUM_CORES] = { \
+    OPENBLAS_CORE_LIST(DISPATCH_ENTRY, group) \
+  };
+
+#if BUILD_HFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(shgemm)
+#endif
+
+#if BUILD_HFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(shgemv)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbstobf16)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbdtobf16)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbf16tos)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(dbf16tod)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbamax)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbamin)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbmax)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbmin)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(isbamax)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(isbamin)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(isbmax)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(isbmin)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbnrm2)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbasum)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbsum)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbcopy)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbdot)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(dsbdot)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbrot)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbrotm)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(bscal)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbaxpy)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbscal)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbswap)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(bgemv)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbgemv)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbger)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbsymv)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(bgemm)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbgemm)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbtrsm)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbtrmm)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbsymm)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sbneg)
+#endif
+
+#if BUILD_BFLOAT16 == 1
+DEFINE_DISPATCH_TABLE(sblaswp)
+#endif
+
+#if (BUILD_SINGLE == 1) || (BUILD_COMPLEX == 1)
+DEFINE_DISPATCH_TABLE(samax)
+#endif
+
+#if (BUILD_SINGLE == 1) || (BUILD_COMPLEX == 1)
+DEFINE_DISPATCH_TABLE(samin)
+#endif
+
+#if (BUILD_SINGLE == 1) || (BUILD_COMPLEX == 1)
+DEFINE_DISPATCH_TABLE(smax)
+#endif
+
+#if (BUILD_SINGLE == 1) || (BUILD_COMPLEX == 1)
+DEFINE_DISPATCH_TABLE(smin)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE ==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(isamax)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(isamin)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(ismax)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(ismin)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(snrm2)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(sasum)
+#endif
+
+#if (BUILD_SINGLE==1)
+DEFINE_DISPATCH_TABLE(ssum)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(scopy)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(sdot)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(srot)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(srotm)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(saxpy)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(sscal)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(sswap)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(sgemv)
+#endif
+
+#if (BUILD_SINGLE==1)
+DEFINE_DISPATCH_TABLE(sger)
+#endif
+
+#if (BUILD_SINGLE==1)
+DEFINE_DISPATCH_TABLE(ssymv)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(sgemm)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(ssymm)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(strmm)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+#ifdef ARCH_ARM64
+DEFINE_DISPATCH_TABLE(ssyrk)
+#endif
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+#ifdef ARCH_ARM64
+DEFINE_DISPATCH_TABLE(ssyr2k)
+#endif
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(strsm)
+#endif
+
+#if (BUILD_SINGLE==1)
+DEFINE_DISPATCH_TABLE(sneg)
+#endif
+
+#if (BUILD_SINGLE==1)
+DEFINE_DISPATCH_TABLE(slaswp)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(damax)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(damin)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(dmax)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(dmin)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(idamax)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(idamin)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(idmax)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(idmin)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(dnrm2)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(dasum)
+#endif
+
+#if (BUILD_DOUBLE==1)
+DEFINE_DISPATCH_TABLE(dsum)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(dcopy)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(ddot)
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1)
+DEFINE_DISPATCH_TABLE(dsdot)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(drot)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(drotm)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(daxpy)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(dscal)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(dswap)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(dgemv)
+#endif
+
+#if (BUILD_DOUBLE==1)
+DEFINE_DISPATCH_TABLE(dger)
+#endif
+
+#if (BUILD_DOUBLE==1)
+DEFINE_DISPATCH_TABLE(dsymv)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(dgemm)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(dsymm)
+#endif
+
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(dtrmm)
+#endif
+
+#if (BUILD_DOUBLE==1)
+DEFINE_DISPATCH_TABLE(dtrsm)
+#endif
+
+#if (BUILD_DOUBLE==1)
+DEFINE_DISPATCH_TABLE(dneg)
+#endif
+
+#if (BUILD_DOUBLE==1)
+DEFINE_DISPATCH_TABLE(dlaswp)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qamax)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qamin)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qmax)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qmin)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(iqamax)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(iqamin)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(iqmax)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(iqmin)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qnrm2)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qasum)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qsum)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qcopy)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qdot)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qrot)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qrotm)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qaxpy)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qscal)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qswap)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qgemv)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qger)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qsymv)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qgemm)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qtrsm)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qtrmm)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qsymm)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qneg)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(qlaswp)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(camax)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(camin)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(icamax)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(icamin)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(cnrm2)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(casum)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(csum)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(ccopy)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(cdotu)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(cdotc)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(csrot)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(caxpy)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(caxpyc)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(cscal)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(cswap)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(cgemv)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(cgeru)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(cgerc)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(cgerv)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(cgerd)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(csymv)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(chemv)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(cgemm)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(csymm)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(ctrmm)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(ctrsm)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(chemm)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(cgemm3m)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(csymm3m)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(chemm3m)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(cneg)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(claswp)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zamax)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zamin)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(izamax)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(izamin)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(znrm2)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zasum)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zsum)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zcopy)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zdotu)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zdotc)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zdrot)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zaxpy)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zaxpyc)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zscal)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zswap)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zgemv)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zgeru)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zgerc)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zgerv)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zgerd)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zsymv)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zhemv)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zgemm)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zsymm)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(ztrmm)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(ztrsm)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zhemm)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zgemm3m)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zsymm3m)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zhemm3m)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zneg)
+#endif
+
+#if (BUILD_COMPLEX16 == 1)
+DEFINE_DISPATCH_TABLE(zlaswp)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xamax)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xamin)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(ixamax)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(ixamin)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xnrm2)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xasum)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xsum)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xcopy)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xdotu)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xdotc)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xqrot)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xaxpy)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xaxpyc)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xscal)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xswap)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xgemv)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xgeru)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xgerc)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xgerv)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xgerd)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xsymv)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xhemv)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xgemm)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xtrsm)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xtrmm)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xsymm)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xhemm)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xgemm3m)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xsymm3m)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xhemm3m)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xneg)
+#endif
+
+#ifdef EXPRECISION
+DEFINE_DISPATCH_TABLE(xlaswp)
+#endif
+
+#if (BUILD_SINGLE==1)
+DEFINE_DISPATCH_TABLE(saxpby)
+#endif
+
+#if (BUILD_DOUBLE==1)
+DEFINE_DISPATCH_TABLE(daxpby)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(caxpby)
+#endif
+
+#if (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(zaxpby)
+#endif
+
+#if (BUILD_SINGLE==1)
+DEFINE_DISPATCH_TABLE(somatcopy)
+#endif
+
+#if (BUILD_DOUBLE==1)
+DEFINE_DISPATCH_TABLE(domatcopy)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(comatcopy)
+#endif
+
+#if (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(zomatcopy)
+#endif
+
+#if (BUILD_SINGLE==1)
+DEFINE_DISPATCH_TABLE(simatcopy)
+#endif
+
+#if (BUILD_DOUBLE==1)
+DEFINE_DISPATCH_TABLE(dimatcopy)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(cimatcopy)
+#endif
+
+#if (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(zimatcopy)
+#endif
+
+#if (BUILD_SINGLE==1)
+DEFINE_DISPATCH_TABLE(sgeadd)
+#endif
+
+#if (BUILD_DOUBLE==1)
+DEFINE_DISPATCH_TABLE(dgeadd)
+#endif
+
+#if (BUILD_COMPLEX==1)
+DEFINE_DISPATCH_TABLE(cgeadd)
+#endif
+
+#if (BUILD_COMPLEX16==1)
+DEFINE_DISPATCH_TABLE(zgeadd)
+#endif

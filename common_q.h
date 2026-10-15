@@ -147,116 +147,116 @@
 
 #else
 
-#define	QAMAX_K			gotoblas -> qamax_k
-#define	QAMIN_K			gotoblas -> qamin_k
-#define	QMAX_K			gotoblas -> qmax_k
-#define	QMIN_K			gotoblas -> qmin_k
-#define	IQAMAX_K		gotoblas -> iqamax_k
-#define	IQAMIN_K		gotoblas -> iqamin_k
-#define	IQMAX_K			gotoblas -> iqmax_k
-#define	IQMIN_K			gotoblas -> iqmin_k
-#define	QASUM_K			gotoblas -> qasum_k
-#define	QAXPYU_K		gotoblas -> qaxpy_k
-#define	QAXPYC_K		gotoblas -> qaxpy_k
-#define	QCOPY_K			gotoblas -> qcopy_k
-#define	QDOTU_K			gotoblas -> qdot_k
-#define	QDOTC_K			gotoblas -> qdot_k
-#define	QNRM2_K			gotoblas -> qnrm2_k
-#define	QSCAL_K			gotoblas -> qscal_k
-#define	QSUM_K			gotoblas -> qsum_k
-#define	QSWAP_K			gotoblas -> qswap_k
-#define	QROT_K			gotoblas -> qrot_k
-#define	QROTM_K			gotoblas -> qrotm_k
+#define	QAMAX_K			OPENBLAS_DISPATCH(qamax) -> qamax_k
+#define	QAMIN_K			OPENBLAS_DISPATCH(qamin) -> qamin_k
+#define	QMAX_K			OPENBLAS_DISPATCH(qmax) -> qmax_k
+#define	QMIN_K			OPENBLAS_DISPATCH(qmin) -> qmin_k
+#define	IQAMAX_K		OPENBLAS_DISPATCH(iqamax) -> iqamax_k
+#define	IQAMIN_K		OPENBLAS_DISPATCH(iqamin) -> iqamin_k
+#define	IQMAX_K			OPENBLAS_DISPATCH(iqmax) -> iqmax_k
+#define	IQMIN_K			OPENBLAS_DISPATCH(iqmin) -> iqmin_k
+#define	QASUM_K			OPENBLAS_DISPATCH(qasum) -> qasum_k
+#define	QAXPYU_K		OPENBLAS_DISPATCH(qaxpy) -> qaxpy_k
+#define	QAXPYC_K		OPENBLAS_DISPATCH(qaxpy) -> qaxpy_k
+#define	QCOPY_K			OPENBLAS_DISPATCH(qcopy) -> qcopy_k
+#define	QDOTU_K			OPENBLAS_DISPATCH(qdot) -> qdot_k
+#define	QDOTC_K			OPENBLAS_DISPATCH(qdot) -> qdot_k
+#define	QNRM2_K			OPENBLAS_DISPATCH(qnrm2) -> qnrm2_k
+#define	QSCAL_K			OPENBLAS_DISPATCH(qscal) -> qscal_k
+#define	QSUM_K			OPENBLAS_DISPATCH(qsum) -> qsum_k
+#define	QSWAP_K			OPENBLAS_DISPATCH(qswap) -> qswap_k
+#define	QROT_K			OPENBLAS_DISPATCH(qrot) -> qrot_k
+#define	QROTM_K			OPENBLAS_DISPATCH(qrotm) -> qrotm_k
 
-#define	QGEMV_N			gotoblas -> qgemv_n
-#define	QGEMV_T			gotoblas -> qgemv_t
-#define	QGEMV_R			gotoblas -> qgemv_n
-#define	QGEMV_C			gotoblas -> qgemv_t
-#define	QGEMV_O			gotoblas -> qgemv_n
-#define	QGEMV_U			gotoblas -> qgemv_t
-#define	QGEMV_S			gotoblas -> qgemv_n
-#define	QGEMV_D			gotoblas -> qgemv_t
+#define	QGEMV_N			OPENBLAS_DISPATCH(qgemv) -> qgemv_n
+#define	QGEMV_T			OPENBLAS_DISPATCH(qgemv) -> qgemv_t
+#define	QGEMV_R			OPENBLAS_DISPATCH(qgemv) -> qgemv_n
+#define	QGEMV_C			OPENBLAS_DISPATCH(qgemv) -> qgemv_t
+#define	QGEMV_O			OPENBLAS_DISPATCH(qgemv) -> qgemv_n
+#define	QGEMV_U			OPENBLAS_DISPATCH(qgemv) -> qgemv_t
+#define	QGEMV_S			OPENBLAS_DISPATCH(qgemv) -> qgemv_n
+#define	QGEMV_D			OPENBLAS_DISPATCH(qgemv) -> qgemv_t
 
-#define	QGERU_K			gotoblas -> qger_k
-#define	QGERC_K			gotoblas -> qger_k
-#define	QGERV_K			gotoblas -> qger_k
-#define	QGERD_K			gotoblas -> qger_k
+#define	QGERU_K			OPENBLAS_DISPATCH(qger) -> qger_k
+#define	QGERC_K			OPENBLAS_DISPATCH(qger) -> qger_k
+#define	QGERV_K			OPENBLAS_DISPATCH(qger) -> qger_k
+#define	QGERD_K			OPENBLAS_DISPATCH(qger) -> qger_k
 
-#define QSYMV_U			gotoblas -> qsymv_U
-#define QSYMV_L			gotoblas -> qsymv_L
+#define QSYMV_U			OPENBLAS_DISPATCH(qsymv) -> qsymv_U
+#define QSYMV_L			OPENBLAS_DISPATCH(qsymv) -> qsymv_L
 
 #define QSYMV_THREAD_U		qsymv_thread_U
 #define QSYMV_THREAD_L		qsymv_thread_L
 
-#define	QGEMM_ONCOPY		gotoblas -> qgemm_oncopy
-#define	QGEMM_OTCOPY		gotoblas -> qgemm_otcopy
-#define	QGEMM_INCOPY		gotoblas -> qgemm_incopy
-#define	QGEMM_ITCOPY		gotoblas -> qgemm_itcopy
+#define	QGEMM_ONCOPY		OPENBLAS_DISPATCH(qgemm) -> qgemm_oncopy
+#define	QGEMM_OTCOPY		OPENBLAS_DISPATCH(qgemm) -> qgemm_otcopy
+#define	QGEMM_INCOPY		OPENBLAS_DISPATCH(qgemm) -> qgemm_incopy
+#define	QGEMM_ITCOPY		OPENBLAS_DISPATCH(qgemm) -> qgemm_itcopy
 
-#define	QTRMM_OUNUCOPY		gotoblas -> qtrmm_ounucopy
-#define	QTRMM_OUTUCOPY		gotoblas -> qtrmm_outucopy
-#define	QTRMM_OLNUCOPY		gotoblas -> qtrmm_olnucopy
-#define	QTRMM_OLTUCOPY		gotoblas -> qtrmm_oltucopy
-#define	QTRSM_OUNUCOPY		gotoblas -> qtrsm_ounucopy
-#define	QTRSM_OUTUCOPY		gotoblas -> qtrsm_outucopy
-#define	QTRSM_OLNUCOPY		gotoblas -> qtrsm_olnucopy
-#define	QTRSM_OLTUCOPY		gotoblas -> qtrsm_oltucopy
+#define	QTRMM_OUNUCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_ounucopy
+#define	QTRMM_OUTUCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_outucopy
+#define	QTRMM_OLNUCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_olnucopy
+#define	QTRMM_OLTUCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_oltucopy
+#define	QTRSM_OUNUCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_ounucopy
+#define	QTRSM_OUTUCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_outucopy
+#define	QTRSM_OLNUCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_olnucopy
+#define	QTRSM_OLTUCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_oltucopy
 
-#define	QTRMM_IUNUCOPY		gotoblas -> qtrmm_iunucopy
-#define	QTRMM_IUTUCOPY		gotoblas -> qtrmm_iutucopy
-#define	QTRMM_ILNUCOPY		gotoblas -> qtrmm_ilnucopy
-#define	QTRMM_ILTUCOPY		gotoblas -> qtrmm_iltucopy
-#define	QTRSM_IUNUCOPY		gotoblas -> qtrsm_iunucopy
-#define	QTRSM_IUTUCOPY		gotoblas -> qtrsm_iutucopy
-#define	QTRSM_ILNUCOPY		gotoblas -> qtrsm_ilnucopy
-#define	QTRSM_ILTUCOPY		gotoblas -> qtrsm_iltucopy
+#define	QTRMM_IUNUCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_iunucopy
+#define	QTRMM_IUTUCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_iutucopy
+#define	QTRMM_ILNUCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_ilnucopy
+#define	QTRMM_ILTUCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_iltucopy
+#define	QTRSM_IUNUCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_iunucopy
+#define	QTRSM_IUTUCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_iutucopy
+#define	QTRSM_ILNUCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_ilnucopy
+#define	QTRSM_ILTUCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_iltucopy
 
-#define	QTRMM_OUNNCOPY		gotoblas -> qtrmm_ounncopy
-#define	QTRMM_OUTNCOPY		gotoblas -> qtrmm_outncopy
-#define	QTRMM_OLNNCOPY		gotoblas -> qtrmm_olnncopy
-#define	QTRMM_OLTNCOPY		gotoblas -> qtrmm_oltncopy
-#define	QTRSM_OUNNCOPY		gotoblas -> qtrsm_ounncopy
-#define	QTRSM_OUTNCOPY		gotoblas -> qtrsm_outncopy
-#define	QTRSM_OLNNCOPY		gotoblas -> qtrsm_olnncopy
-#define	QTRSM_OLTNCOPY		gotoblas -> qtrsm_oltncopy
+#define	QTRMM_OUNNCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_ounncopy
+#define	QTRMM_OUTNCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_outncopy
+#define	QTRMM_OLNNCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_olnncopy
+#define	QTRMM_OLTNCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_oltncopy
+#define	QTRSM_OUNNCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_ounncopy
+#define	QTRSM_OUTNCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_outncopy
+#define	QTRSM_OLNNCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_olnncopy
+#define	QTRSM_OLTNCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_oltncopy
 
-#define	QTRMM_IUNNCOPY		gotoblas -> qtrmm_iunncopy
-#define	QTRMM_IUTNCOPY		gotoblas -> qtrmm_iutncopy
-#define	QTRMM_ILNNCOPY		gotoblas -> qtrmm_ilnncopy
-#define	QTRMM_ILTNCOPY		gotoblas -> qtrmm_iltncopy
-#define	QTRSM_IUNNCOPY		gotoblas -> qtrsm_iunncopy
-#define	QTRSM_IUTNCOPY		gotoblas -> qtrsm_iutncopy
-#define	QTRSM_ILNNCOPY		gotoblas -> qtrsm_ilnncopy
-#define	QTRSM_ILTNCOPY		gotoblas -> qtrsm_iltncopy
+#define	QTRMM_IUNNCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_iunncopy
+#define	QTRMM_IUTNCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_iutncopy
+#define	QTRMM_ILNNCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_ilnncopy
+#define	QTRMM_ILTNCOPY		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_iltncopy
+#define	QTRSM_IUNNCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_iunncopy
+#define	QTRSM_IUTNCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_iutncopy
+#define	QTRSM_ILNNCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_ilnncopy
+#define	QTRSM_ILTNCOPY		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_iltncopy
 
-#define	QGEMM_BETA		gotoblas -> qgemm_beta
-#define	QGEMM_KERNEL		gotoblas -> qgemm_kernel
+#define	QGEMM_BETA		OPENBLAS_DISPATCH(qgemm) -> qgemm_beta
+#define	QGEMM_KERNEL		OPENBLAS_DISPATCH(qgemm) -> qgemm_kernel
 
-#define	QTRMM_KERNEL_LN		gotoblas -> qtrmm_kernel_LN
-#define	QTRMM_KERNEL_LT		gotoblas -> qtrmm_kernel_LT
-#define	QTRMM_KERNEL_LR		gotoblas -> qtrmm_kernel_LN
-#define	QTRMM_KERNEL_LC		gotoblas -> qtrmm_kernel_LT
-#define	QTRMM_KERNEL_RN		gotoblas -> qtrmm_kernel_RN
-#define	QTRMM_KERNEL_RT		gotoblas -> qtrmm_kernel_RT
-#define	QTRMM_KERNEL_RR		gotoblas -> qtrmm_kernel_RN
-#define	QTRMM_KERNEL_RC		gotoblas -> qtrmm_kernel_RT
+#define	QTRMM_KERNEL_LN		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_kernel_LN
+#define	QTRMM_KERNEL_LT		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_kernel_LT
+#define	QTRMM_KERNEL_LR		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_kernel_LN
+#define	QTRMM_KERNEL_LC		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_kernel_LT
+#define	QTRMM_KERNEL_RN		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_kernel_RN
+#define	QTRMM_KERNEL_RT		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_kernel_RT
+#define	QTRMM_KERNEL_RR		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_kernel_RN
+#define	QTRMM_KERNEL_RC		OPENBLAS_DISPATCH(qtrmm) -> qtrmm_kernel_RT
 
-#define	QTRSM_KERNEL_LN		gotoblas -> qtrsm_kernel_LN
-#define	QTRSM_KERNEL_LT		gotoblas -> qtrsm_kernel_LT
-#define	QTRSM_KERNEL_LR		gotoblas -> qtrsm_kernel_LN
-#define	QTRSM_KERNEL_LC		gotoblas -> qtrsm_kernel_LT
-#define	QTRSM_KERNEL_RN		gotoblas -> qtrsm_kernel_RN
-#define	QTRSM_KERNEL_RT		gotoblas -> qtrsm_kernel_RT
-#define	QTRSM_KERNEL_RR		gotoblas -> qtrsm_kernel_RN
-#define	QTRSM_KERNEL_RC		gotoblas -> qtrsm_kernel_RT
+#define	QTRSM_KERNEL_LN		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_kernel_LN
+#define	QTRSM_KERNEL_LT		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_kernel_LT
+#define	QTRSM_KERNEL_LR		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_kernel_LN
+#define	QTRSM_KERNEL_LC		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_kernel_LT
+#define	QTRSM_KERNEL_RN		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_kernel_RN
+#define	QTRSM_KERNEL_RT		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_kernel_RT
+#define	QTRSM_KERNEL_RR		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_kernel_RN
+#define	QTRSM_KERNEL_RC		OPENBLAS_DISPATCH(qtrsm) -> qtrsm_kernel_RT
 
-#define	QSYMM_IUTCOPY		gotoblas -> qsymm_iutcopy
-#define	QSYMM_ILTCOPY		gotoblas -> qsymm_iltcopy
-#define	QSYMM_OUTCOPY		gotoblas -> qsymm_outcopy
-#define	QSYMM_OLTCOPY		gotoblas -> qsymm_oltcopy
+#define	QSYMM_IUTCOPY		OPENBLAS_DISPATCH(qsymm) -> qsymm_iutcopy
+#define	QSYMM_ILTCOPY		OPENBLAS_DISPATCH(qsymm) -> qsymm_iltcopy
+#define	QSYMM_OUTCOPY		OPENBLAS_DISPATCH(qsymm) -> qsymm_outcopy
+#define	QSYMM_OLTCOPY		OPENBLAS_DISPATCH(qsymm) -> qsymm_oltcopy
 
-#define QNEG_TCOPY		gotoblas -> qneg_tcopy
-#define QLASWP_NCOPY		gotoblas -> qlaswp_ncopy
+#define QNEG_TCOPY		OPENBLAS_DISPATCH(qneg) -> qneg_tcopy
+#define QLASWP_NCOPY		OPENBLAS_DISPATCH(qlaswp) -> qlaswp_ncopy
 
 #endif
 
