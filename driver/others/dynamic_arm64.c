@@ -556,7 +556,7 @@ static gotoblas_t *get_coretype(void) {
 	asm("cntw %[SIZE_]" : [SIZE_] "=r" (veclen) : : );
 #elif defined(OS_LINUX)
 	veclen = prctl(PR_SVE_GET_VL);
-    if (veclen > -1 ) veclen &= PR_SVE_VL_MASK;
+    if (veclen > -1 ) veclen &= PR_SVE_VL_LEN_MASK;
     else veclen = 4;
 #else
     veclen = 4;
