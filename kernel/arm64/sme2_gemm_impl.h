@@ -527,6 +527,7 @@ static size_t s2_work_bytes(s2_blocking b, size_t *a_bytes) {
  * exits: the per-call cost of blas_memory_alloc, and of packing on the stack next to the core's own data, is
  * significant against a small GEMM (fp32 20^3 column-major: 568 ns on the stack, 336 ns here).
  */
+#if !defined(_WIN32)
 static pthread_key_t s2_work_key;
 static pthread_once_t s2_work_once = PTHREAD_ONCE_INIT;
 static void s2_work_free(void *p) { free(p); }
@@ -547,6 +548,10 @@ static void *s2_thread_work(size_t bytes) {
   }
   return (char *)p + 128;
 }
+#else
+/* No pthreads on Windows: small problems also use blas_memory_alloc. */
+static void *s2_thread_work(size_t bytes) { (void)bytes; return NULL; }
+#endif
 
 /* Runs one job on a workspace of at least s2_work_bytes() bytes (NULL: a per-thread or blas_memory_alloc buffer). */
 static void s2_run(const s2_job *jb, void *work) {
@@ -653,13 +658,13 @@ static void s2_small(int trans_a, int trans_b, BLASLONG m, BLASLONG n, BLASLONG 
 static void s2_gemm(int trans_a, int trans_b, BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, const FLOAT *a,
                     BLASLONG lda, const FLOAT *b, BLASLONG ldb, FLOAT beta, FLOAT *c, BLASLONG ldc) {
   if (m <= 0 || n <= 0) return;
-  if ((double)m * n * k < S2_SMALL_WORK) {
-    s2_small(trans_a, trans_b, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
-    return;
-  }
   if (k <= 0 || alpha == (FLOAT)0) {
     for (BLASLONG j = 0; j < n; ++j)
       for (BLASLONG i = 0; i < m; ++i) c[i + j * ldc] = beta == (FLOAT)0 ? (FLOAT)0 : beta * c[i + j * ldc];
+    return;
+  }
+  if ((double)m * n * k < S2_SMALL_WORK) {
+    s2_small(trans_a, trans_b, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
     return;
   }
   s2_job jb;
