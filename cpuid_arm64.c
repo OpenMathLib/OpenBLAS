@@ -154,6 +154,8 @@ static int cpuhiperf=0;
 
 int aliased = 0;
 
+int support_sme1(void);
+
 int get_feature(char *search)
 {
 
@@ -406,15 +408,15 @@ int detect(void)
 	sysctlbyname("hw.cpufamily",&value64,&length64,NULL,0);
 	if (value64 ==131287967|| value64 == 458787763 ) return CPU_VORTEX; //A12/M1
 	if (value64 == 3660830781) return CPU_VORTEX; //A15/M2
-        if (value64 == 2271604202) return CPU_VORTEX; //A16/M3
-        if (value64 == 1867590060) return CPU_VORTEXM4; //M4
-        if (value64 == 399882554) return CPU_VORTEXM4; //M4 Pro/Max
-	    if (value64 == 492472296) return CPU_VORTEXM4; //M5
+  if (value64 == 2271604202) return CPU_VORTEX; //A16/M3
+  if (value64 == 1867590060) return CPU_VORTEXM4; //M4
+  if (value64 == 399882554) return CPU_VORTEXM4; //M4 Pro/Max
+  if (value64 == 492472296) return CPU_VORTEXM4; //M5
 	{ /* later Apple cores with SME: same kernels until they get their own entry */
 	int sme = 0;
 	size_t len = sizeof(sme);
 	if (sysctlbyname("hw.optional.arm.FEAT_SME", &sme, &len, NULL, 0) == 0 && sme) return CPU_VORTEXM4;
-	}
+  }
 #else
 #ifdef OS_WINDOWS
 	HKEY reghandle;
@@ -867,3 +869,20 @@ void get_features(void)
 #endif
 	return;
 }
+
+int support_sme1(void) {
+        int ret = 0;
+
+#if (defined OS_LINUX || defined OS_ANDROID)
+        ret = getauxval(AT_HWCAP2) & HWCAP2_SME;
+        if(getauxval(AT_HWCAP2) & HWCAP2_SME){
+                ret = 1;
+        }
+#endif
+#if defined(__APPLE__)
+        sysctlbyname("hw.optional.arm.FEAT_SME",&value64,&length64,NULL,0);
+        ret = value64;
+#endif
+       return ret;
+}
+

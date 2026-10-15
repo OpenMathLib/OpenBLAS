@@ -597,7 +597,7 @@ static integer c__5 = 5;
     extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *), claset_(char *, integer *, integer *, complex *, complex *, 
 	    complex *, integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     extern void clarnv_(integer *, integer *, integer *, complex *);
     integer irsign, iupper;
     complex xnorms;

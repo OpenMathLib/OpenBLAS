@@ -583,7 +583,7 @@ static integer c__5 = 5;
 	    integer *, doublecomplex *, integer *, integer *);
     integer ic, jc, ir;
     doublereal ralpha;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     extern /* Subroutine */ void zdscal_(integer *, doublereal *, 

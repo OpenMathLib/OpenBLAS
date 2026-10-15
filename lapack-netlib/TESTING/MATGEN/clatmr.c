@@ -778,7 +778,7 @@ static integer c__1 = 1;
     extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *);
     logical fulbnd;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     logical badpvt;
     extern real clansp_(char *, char *, integer *, complex *, real *), clansy_(char *, char *, integer *, complex *, integer *, 
 	    real *);

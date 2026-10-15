@@ -32,6 +32,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FLOAT_V_T               vfloat32m8_t
 #define VLSEV_FLOAT             __riscv_vlse32_v_f32m8
 #define VSSEV_FLOAT             __riscv_vsse32_v_f32m8
+#define VLEV_FLOAT              __riscv_vle32_v_f32m8
+#define VSEV_FLOAT              __riscv_vse32_v_f32m8
 #define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f32m8
 #define VFMULVF_FLOAT           __riscv_vfmul_vf_f32m8
 #define VFMSACVF_FLOAT          __riscv_vfmsac_vf_f32m8
@@ -40,6 +42,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FLOAT_V_T               vfloat64m8_t
 #define VLSEV_FLOAT             __riscv_vlse64_v_f64m8
 #define VSSEV_FLOAT             __riscv_vsse64_v_f64m8
+#define VLEV_FLOAT              __riscv_vle64_v_f64m8
+#define VSEV_FLOAT              __riscv_vse64_v_f64m8
 #define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f64m8
 #define VFMULVF_FLOAT           __riscv_vfmul_vf_f64m8
 #define VFMSACVF_FLOAT          __riscv_vfmsac_vf_f64m8
@@ -138,6 +142,21 @@ L10:
     }
     stride = i__2 * sizeof(FLOAT);
     n = i__1 / i__2;
+    if (i__2 == 1) {
+        for (size_t vl; n > 0; n -= vl, dx += vl, dy += vl) {
+            vl = VSETVL(n);
+
+            v_w = VLEV_FLOAT(&dx[1], vl);
+            v_z__ = VLEV_FLOAT(&dy[1], vl);
+
+            v_dx = VFMACCVF_FLOAT(v_w, dh12, v_z__, vl);
+            v_dy = VFMACCVF_FLOAT(v_z__, dh21, v_w, vl);
+
+            VSEV_FLOAT(&dx[1], v_dx, vl);
+            VSEV_FLOAT(&dy[1], v_dy, vl);
+        }
+        goto L140;
+    }
     for (size_t vl; n > 0; n -= vl, dx += vl*i__2, dy += vl*i__2) {
         vl = VSETVL(n);
 
@@ -165,6 +184,21 @@ L30:
     }
     stride = i__1 * sizeof(FLOAT);
     n = i__2  / i__1;
+    if (i__1 == 1) {
+        for (size_t vl; n > 0; n -= vl, dx += vl, dy += vl) {
+            vl = VSETVL(n);
+
+            v_w = VLEV_FLOAT(&dx[1], vl);
+            v_z__ = VLEV_FLOAT(&dy[1], vl);
+
+            v_dx = VFMACCVF_FLOAT(v_z__, dh11, v_w, vl);
+            v_dy = VFMSACVF_FLOAT(v_w, dh22, v_z__, vl);
+
+            VSEV_FLOAT(&dx[1], v_dx, vl);
+            VSEV_FLOAT(&dy[1], v_dy, vl);
+        }
+        goto L140;
+    }
     for (size_t vl; n > 0; n -= vl, dx += vl*i__1, dy += vl*i__1) {
         vl = VSETVL(n);
 
@@ -194,6 +228,23 @@ L50:
     }
     stride = i__2 * sizeof(FLOAT);
     n = i__1 / i__2;
+    if (i__2 == 1) {
+        for (size_t vl; n > 0; n -= vl, dx += vl, dy += vl) {
+            vl = VSETVL(n);
+
+            v_w = VLEV_FLOAT(&dx[1], vl);
+            v_z__ = VLEV_FLOAT(&dy[1], vl);
+
+            v_dx = VFMULVF_FLOAT(v_w, dh11, vl);
+            v_dx = VFMACCVF_FLOAT(v_dx, dh12, v_z__, vl);
+            VSEV_FLOAT(&dx[1], v_dx, vl);
+
+            v_dy = VFMULVF_FLOAT(v_w, dh21, vl);
+            v_dy = VFMACCVF_FLOAT(v_dy, dh22, v_z__, vl);
+            VSEV_FLOAT(&dy[1], v_dy, vl);
+        }
+        goto L140;
+    }
     for (size_t vl; n > 0; n -= vl, dx += vl*i__2, dy += vl*i__2) {
         vl = VSETVL(n);
 

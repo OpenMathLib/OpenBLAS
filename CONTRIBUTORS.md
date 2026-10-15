@@ -272,6 +272,7 @@ In chronological order:
 
 * Anna Mayne <anna.mayne@arm.com>
   * [2025-11-19] Update thread throttling profile for SGEMV on NEOVERSEV1 and NEOVERSEV2
+  * [2026-09-24] Add interleaving to sgemm and dgemm. Disentangle trmm/symm from gemm.
 
 * Fadi Arafeh <fadi.arafeh@arm.com>
   * [2026-03-05] Accelerate SVE128 SBGEMM/BGEMM
@@ -292,3 +293,6 @@ hheei <hheei@users.noreply.github.com>
 * Michael Tesch <https://github.com/tesch1>
   * [2026-09-29] SME2 SGEMM/DGEMM kernel for Apple M4
   * [2026-09-29] SME2 level-3 kernels (GEMM, TRMM and TRSM kernels and panel copies) for Apple M4
+
+* Arthur031221 <levi74108520963@gmail.com>
+  * [2026-10-02] Fix complex scaling in strided batched GEMM.

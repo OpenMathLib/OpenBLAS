@@ -291,7 +291,7 @@ static integer c__2 = 2;
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *), dlacpy_(char *, integer *, integer *, doublereal 
 	    *, integer *, doublereal *, integer *), xerbla_(char *, 
-	    integer *);
+	    integer *, ftnlen);
     char t_or_n__[1];
     extern /* Subroutine */ void dgejsv_(char *, char *, char *, char *, char *
 	    , char *, integer *, integer *, doublereal *, integer *, 
@@ -955,7 +955,7 @@ static integer c__2 = 2;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DGEDMD", &i__1);
+	xerbla_("DGEDMD", &i__1, (ftnlen)6);
 	return;
     } else if (lquery) {
 /*     Return minimal and optimal workspace sizes */
@@ -986,7 +986,7 @@ static integer c__2 = 2;
 		*k = 0;
 		*info = -8;
 		i__2 = -(*info);
-		xerbla_("DGEDMD", &i__2);
+		xerbla_("DGEDMD", &i__2, (ftnlen)6);
 	    }
 	    if (scale != zero && ssum != zero) {
 		rootsc = sqrt(ssum);
@@ -1024,7 +1024,7 @@ static integer c__2 = 2;
 	    *k = 0;
 	    *info = -8;
 	    i__1 = -(*info);
-	    xerbla_("DGEDMD", &i__1);
+	    xerbla_("DGEDMD", &i__1, (ftnlen)6);
 	    return;
 	}
 	i__1 = *n;
@@ -1072,7 +1072,7 @@ static integer c__2 = 2;
 		*k = 0;
 		*info = -10;
 		i__2 = -(*info);
-		xerbla_("DGEDMD", &i__2);
+		xerbla_("DGEDMD", &i__2, (ftnlen)6);
 	    }
 	    if (scale != zero && ssum != zero) {
 		rootsc = sqrt(ssum);
@@ -1197,7 +1197,7 @@ static integer c__2 = 2;
 	*k = 0;
 	*info = -8;
 	i__1 = -(*info);
-	xerbla_("DGEDMD", &i__1);
+	xerbla_("DGEDMD", &i__1, (ftnlen)6);
 	return;
     }
 

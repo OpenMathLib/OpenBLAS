@@ -465,7 +465,7 @@ static integer c__1 = 1;
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer inext, ix, iy, nt;
     doublereal xt[2], yt[2];
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     integer iyt;
 
 

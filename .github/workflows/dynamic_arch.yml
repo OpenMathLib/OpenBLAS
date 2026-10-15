@@ -193,41 +193,46 @@ jobs:
 
   msys2:
     if: "github.repository == 'OpenMathLib/OpenBLAS'"
-    runs-on: windows-latest
+    runs-on: ${{ matrix.runner || 'windows-latest' }}
 
     strategy:
       fail-fast: false
       matrix:
-        msystem: [UCRT64, MINGW32, CLANG64]
+        msystem: [UCRT64, MINGW32, CLANG64, CLANGARM64]
         idx: [int32, int64]
         build-type: [Release]
         include:
           - msystem: UCRT64
             idx: int32
-            target-prefix: mingw-w64-ucrt-x86_64
-            fc-pkg: mingw-w64-ucrt-x86_64-fc
+            fc-pkg: fc:p
           - msystem: MINGW32
             idx: int32
-            target-prefix: mingw-w64-i686
             fc-pkg:
           - msystem: CLANG64
             idx: int32
-            target-prefix: mingw-w64-clang-x86_64
-            fc-pkg: mingw-w64-clang-x86_64-fc
+            fc-pkg: fc:p
+          - msystem: CLANGARM64
+            idx: int32
+            runner: windows-11-arm
+            target: ARMV8
+            fc-pkg: fc:p
           - msystem: UCRT64
             idx: int64
             idx64-flags: -DBINARY=64 -DINTERFACE64=1
-            target-prefix: mingw-w64-ucrt-x86_64
-            fc-pkg: mingw-w64-ucrt-x86_64-fc
+            fc-pkg: fc:p
           - msystem: CLANG64
             idx: int64
             idx64-flags: -DBINARY=64 -DINTERFACE64=1
-            target-prefix: mingw-w64-clang-x86_64
-            fc-pkg: mingw-w64-clang-x86_64-fc
+            fc-pkg: fc:p
+          - msystem: CLANGARM64
+            idx: int64
+            idx64-flags: -DBINARY=64 -DINTERFACE64=1
+            runner: windows-11-arm
+            target: ARMV8
+            fc-pkg: fc:p
           - msystem: UCRT64
             idx: int32
-            target-prefix: mingw-w64-ucrt-x86_64
-            fc-pkg: mingw-w64-ucrt-x86_64-fc
+            fc-pkg: fc:p
             build-type: None
         exclude:
           - msystem: MINGW32
@@ -253,13 +258,13 @@ jobs:
           msystem: ${{ matrix.msystem }}
           update: true
           release: false  # Use pre-installed version
-          install: >-
-            base-devel
-            ${{ matrix.target-prefix }}-cc
+          install: base-devel
+          pacboy: >-
+            cc:p
             ${{ matrix.fc-pkg }}
-            ${{ matrix.target-prefix }}-cmake
-            ${{ matrix.target-prefix }}-ninja
-            ${{ matrix.target-prefix }}-ccache
+            cmake:p
+            ninja:p
+            ccache:p
 
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -305,7 +310,7 @@ jobs:
                 -DDYNAMIC_ARCH=ON \
                 -DUSE_THREAD=ON \
                 -DNUM_THREADS=64 \
-                -DTARGET=CORE2 \
+                -DTARGET=${{ matrix.target || 'CORE2' }} \
                 ${{ matrix.idx64-flags }} \
                 -DCMAKE_C_COMPILER_LAUNCHER=ccache \
                 -DCMAKE_Fortran_COMPILER_LAUNCHER=ccache \

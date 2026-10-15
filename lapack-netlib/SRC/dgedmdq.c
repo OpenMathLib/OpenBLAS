@@ -272,7 +272,7 @@ static integer c_n1 = -1;
 	    integer *), dlacpy_(char *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *), dlaset_(char *, 
 	    integer *, integer *, doublereal *, doublereal *, doublereal *, 
-	    integer *), xerbla_(char *, integer *);
+	    integer *), xerbla_(char *, integer *, ftnlen);
     integer mlwdmd, olwdmd;
     logical sccolx, sccoly;
     extern /* Subroutine */ void dorgqr_(integer *, integer *, integer *, 
@@ -908,7 +908,7 @@ static integer c_n1 = -1;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DGEDMDQ", &i__1);
+	xerbla_("DGEDMDQ", &i__1, (ftnlen)7);
 	return;
     } else if (lquery) {
 /*     Return minimal and optimal workspace sizes */

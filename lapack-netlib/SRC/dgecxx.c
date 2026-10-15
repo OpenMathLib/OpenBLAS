@@ -292,7 +292,7 @@ static integer c__1 = 1;
     extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
     doublereal safmin;
-    extern /* Subroutine */ void xerbla_(char *, integer *);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern logical disnan_(doublereal *);
     integer mresid, nresid, kmaxls, lwkmin;
     extern /* Subroutine */ void dormqr_(char *, char *, integer *, integer *, 
@@ -608,7 +608,7 @@ static integer c__1 = 1;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DGECXX", &i__1);
+	xerbla_("DGECXX", &i__1, (ftnlen)6);
 	return;
     } else if (lquery) {
 	return;

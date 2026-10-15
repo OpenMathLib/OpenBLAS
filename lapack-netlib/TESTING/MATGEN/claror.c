@@ -436,7 +436,7 @@ t by U and the right by UC>       SIDE = 'T'   Multiply A on the left by U and t
     extern complex clarnd_(integer *, integer *);
     extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     real factor;
     complex xnorms;
 

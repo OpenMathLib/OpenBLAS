@@ -385,7 +385,7 @@ static doublecomplex c_b6 = {0.,0.};
     integer i__, j, m, r__;
     char c2[2];
     integer ti, tm;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern logical lsamen_(integer *, char *, char *);
     extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *);

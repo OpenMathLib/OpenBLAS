@@ -206,13 +206,16 @@ static DWORD WINAPI blas_thread_server(void *arg){
   BLASLONG  cpu = (BLASLONG)arg;
 #endif
 
-  void *buffer, *sa, *sb;
+  void *buffer = NULL, *sa, *sb;
   blas_queue_t	*queue;
   DWORD action;
   HANDLE handles[] = {pool.filled, pool.killed};
 
-  /* Each server needs each buffer */
-  buffer   = blas_memory_alloc(2);
+  /* Each server needs its own buffer, but allocate it on first use rather
+     than at thread start: on Windows the allocation is committed up front
+     (VirtualAlloc with MEM_COMMIT), so an eager buffer per idle thread adds
+     BUFFER_SIZE * (threads - 1) to the commit charge of every process that
+     merely loads the library. The pthreads server allocates lazily too. */
 
 #ifdef SMP_DEBUG
   fprintf(STDERR, "Server[%2ld] Thread is started!\n", cpu);
@@ -267,7 +270,10 @@ static DWORD WINAPI blas_thread_server(void *arg){
       main_status[cpu] = MAIN_RUNNING1;
 #endif
 
-      if (sa == NULL) sa = (void *)((BLASLONG)buffer + GEMM_OFFSET_A);
+      if (sa == NULL) {
+	if (buffer == NULL) buffer = blas_memory_alloc(2);
+	sa = (void *)((BLASLONG)buffer + GEMM_OFFSET_A);
+      }
 
       if (sb == NULL) {
 	if (!(queue -> mode & BLAS_COMPLEX)){
@@ -348,7 +354,7 @@ static DWORD WINAPI blas_thread_server(void *arg){
   fprintf(STDERR, "Server[%2ld] Shutdown!\n",  cpu);
 #endif
 
-  blas_memory_free(buffer);
+  if (buffer != NULL) blas_memory_free(buffer);
 
   return 0;
   }

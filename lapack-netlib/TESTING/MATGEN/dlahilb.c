@@ -359,7 +359,7 @@ static doublereal c_b4 = 0.;
     integer i__, j, m, r__, ti, tm;
     extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *); 
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK test routine (version 3.8.0) -- */

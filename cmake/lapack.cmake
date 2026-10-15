@@ -1,10 +1,20 @@
 # Sources for compiling lapack-netlib. Can't use CMakeLists.txt because lapack-netlib already has its own cmake files.
 if (NOT C_LAPACK)
 	message (STATUS "fortran lapack")
-set(ALLAUX ilaenv.f ilaenv2stage.f ieeeck.f lsamen.f iparmq.f iparam2stage.F
+set(ALLAUX ilaenv.f ilaenv2stage.f lsamen.f iparmq.f iparam2stage.F
    ilaprec.f ilatrans.f ilauplo.f iladiag.f chla_transtype.f dlaset.f la_xisnan.F90
    ../INSTALL/ilaver.f xerbla_array.f
    ../INSTALL/slamch.f)
+
+if (${CMAKE_Fortran_COMPILER} MATCHES GFORTRAN)
+if ((${CMAKE_Fortran_COMPILER_VERSION} VERSION_LESS 5.0) OR (${CMAKE_SYSTEM_NAME} MATCHES FreeBSD AND ${CMAKE_SYSTEM_VERSION} VERSION_LESS 16.0 AND ${CMAKE_SYSTEM_PROCESSOR} MATCHES "^(x86|x86_64)"))
+  list (APPEND ALLAUX DEPRECATED/ieeeck.f)
+else()
+  list (APPEND ALLAUX ieeeck.f)
+endif()
+else()
+  list (APPEND ALLAUX ieeeck.f)
+endif()
 
 set(SCLAUX
 	scombssq.f sbdsvdx.f sstevx.f sstein.f

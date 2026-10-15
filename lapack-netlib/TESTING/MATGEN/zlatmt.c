@@ -630,7 +630,7 @@ static logical c_false = FALSE_;
 	    doublecomplex *, integer *), zlaghe_(integer *, integer *, 
 	    doublereal *, doublecomplex *, integer *, integer *, 
 	    doublecomplex *, integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     integer ioffst, irsign;
     logical givens, iltemp;
     //extern /* Double Complex */ VOID zlarnd_(doublecomplex *, integer *, 

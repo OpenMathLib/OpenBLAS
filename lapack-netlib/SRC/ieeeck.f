@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download IEEECK + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ieeeck.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ieeeck.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -75,10 +73,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup OTHERauxiliary
+*> \ingroup ieeeck
 *
 *  =====================================================================
       INTEGER          FUNCTION IEEECK( ISPEC, ZERO, ONE )
+      USE, INTRINSIC :: IEEE_ARITHMETIC, ONLY:
+     &                                     IEEE_SUPPORT_INF,
+     &                                     IEEE_SUPPORT_NAN
+      IMPLICIT NONE
 *
 *  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -91,57 +93,11 @@
 *
 *  =====================================================================
 *
-*     .. Local Scalars ..
-      REAL               NAN1, NAN2, NAN3, NAN4, NAN5, NAN6, NEGINF,
-     $                   NEGZRO, NEWZRO, POSINF
 *     ..
 *     .. Executable Statements ..
       IEEECK = 1
 *
-      POSINF = ONE / ZERO
-      IF( POSINF.LE.ONE ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      NEGINF = -ONE / ZERO
-      IF( NEGINF.GE.ZERO ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      NEGZRO = ONE / ( NEGINF+ONE )
-      IF( NEGZRO.NE.ZERO ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      NEGINF = ONE / NEGZRO
-      IF( NEGINF.GE.ZERO ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      NEWZRO = NEGZRO + ZERO
-      IF( NEWZRO.NE.ZERO ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      POSINF = ONE / NEWZRO
-      IF( POSINF.LE.ONE ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      NEGINF = NEGINF*POSINF
-      IF( NEGINF.GE.ZERO ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      POSINF = POSINF*POSINF
-      IF( POSINF.LE.ONE ) THEN
+      IF ( .NOT.IEEE_SUPPORT_INF(ONE) ) THEN
          IEEECK = 0
          RETURN
       END IF
@@ -154,44 +110,7 @@
       IF( ISPEC.EQ.0 )
      $   RETURN
 *
-      NAN1 = POSINF + NEGINF
-*
-      NAN2 = POSINF / NEGINF
-*
-      NAN3 = POSINF / POSINF
-*
-      NAN4 = POSINF*ZERO
-*
-      NAN5 = NEGINF*NEGZRO
-*
-      NAN6 = NAN5*ZERO
-*
-      IF( NAN1.EQ.NAN1 ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      IF( NAN2.EQ.NAN2 ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      IF( NAN3.EQ.NAN3 ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      IF( NAN4.EQ.NAN4 ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      IF( NAN5.EQ.NAN5 ) THEN
-         IEEECK = 0
-         RETURN
-      END IF
-*
-      IF( NAN6.EQ.NAN6 ) THEN
+      IF( .NOT.IEEE_SUPPORT_NAN(ONE) ) THEN
          IEEECK = 0
          RETURN
       END IF

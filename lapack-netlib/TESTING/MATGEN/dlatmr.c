@@ -736,7 +736,7 @@ static integer c__1 = 1;
     extern doublereal dlansb_(char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *);
     logical fulbnd;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     logical badpvt;
     extern doublereal dlansp_(char *, char *, integer *, doublereal *, 
 	    doublereal *), dlansy_(char *, char *, integer *, 

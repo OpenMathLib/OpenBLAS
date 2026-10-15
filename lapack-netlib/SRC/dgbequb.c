@@ -421,7 +421,7 @@ static double dpow_ui(double x, integer n) {
     doublereal radix, rcmin, rcmax;
     integer kd;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     doublereal bignum, logrdx, smlnum;
 
 

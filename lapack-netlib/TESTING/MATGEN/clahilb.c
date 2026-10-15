@@ -387,7 +387,7 @@ static complex c_b6 = {0.f,0.f};
     integer ti, tm;
     extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *);
-    extern int xerbla_(char *, integer *, ftnlen);
+    extern void xerbla_(char *, integer *, ftnlen);
     extern logical lsamen_(integer *, char *, char *);
     complex tmp;
 

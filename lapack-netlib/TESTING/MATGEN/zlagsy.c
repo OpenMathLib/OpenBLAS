@@ -377,7 +377,7 @@ static integer c__1 = 1;
     integer ii, jj;
     doublecomplex wa, wb;
     doublereal wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern void zlacgv_(
 	    integer *, doublecomplex *, integer *), zlarnv_(integer *, 
 	    integer *, integer *, doublecomplex *);

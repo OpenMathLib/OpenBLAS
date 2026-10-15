@@ -377,7 +377,7 @@ static integer c__1 = 1;
     extern real scnrm2_(integer *, complex *, integer *);
     complex wa, wb;
     real wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern void clarnv_(
 	    integer *, integer *, integer *, complex *);
     complex tau;

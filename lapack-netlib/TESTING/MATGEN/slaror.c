@@ -394,7 +394,7 @@ static integer c__1 = 1;
 	    real *, integer *, real *, real *, integer *);
     integer ixfrm, itype, nxfrm;
     real xnorm;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     real factor;
     extern real slarnd_(integer *, integer *);
     extern /* Subroutine */ void slaset_(char *, integer *, integer *, real *, 

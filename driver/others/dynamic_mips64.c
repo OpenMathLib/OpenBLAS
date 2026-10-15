@@ -70,7 +70,7 @@ extern void openblas_warning(int verbose, const char * msg);
 #define NUM_CORETYPES    3
 
 static char *corename[] = {
-  "MIPS64_GENERIC"
+  "MIPS64_GENERIC",
   "loongson3r3",
   "loongson3r4",
   "UNKNOWN"

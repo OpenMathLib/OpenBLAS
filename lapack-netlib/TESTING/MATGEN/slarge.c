@@ -330,7 +330,7 @@ static real c_b10 = 0.f;
 	    sgemv_(char *, integer *, integer *, real *, real *, integer *, 
 	    real *, integer *, real *, real *, integer *);
     real wa, wb, wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern void slarnv_(
 	    integer *, integer *, integer *, real *);
     real tau;

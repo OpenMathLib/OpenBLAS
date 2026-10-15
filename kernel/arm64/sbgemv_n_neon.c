@@ -494,10 +494,17 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, bfloat16 *a, BLASLONG lda,
   }
 
   BLASLONG iy = 0;
-  for (i = 0; i < m; i++) {
+  if (beta == 0) {
+    for (i = 0; i < m; i++) {
+      y[iy] = 0.;
+      iy += incy;
+    }
+  } else {
+    for (i = 0; i < m; i++) {
       y[iy] *= beta;
       iy += incy;
    }
+  }
 
   for (j = 0; j < n; j++) {
     x0 = alpha * vcvtah_f32_bf16(*x_ptr);

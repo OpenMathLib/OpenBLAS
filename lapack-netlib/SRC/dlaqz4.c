@@ -282,7 +282,7 @@ static logical c_true = TRUE_;
     integer nblock;
     extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *), dlartg_(doublereal *, 
+	    xerbla_(char *, integer *, ftnlen), dlartg_(doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *), dlacpy_(
 	    char *, integer *, integer *, doublereal *, integer *, doublereal 
 	    *, integer *);
@@ -331,7 +331,7 @@ static logical c_true = TRUE_;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DLAQZ4", &i__1);
+	xerbla_("DLAQZ4", &i__1, (ftnlen)6);
 	return;
     }
 /*     Executable statements */

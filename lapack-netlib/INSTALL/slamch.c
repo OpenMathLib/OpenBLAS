@@ -284,7 +284,7 @@ static float spow_ui(float x, integer n) {
 
 /* Table of constant values */
 
-static integer c__1 = 1;
+//static integer c__1 = 1;
 static real c_b32 = 0.f;
 
 /* > \brief \b SLAMCHF77 deprecated */
@@ -708,12 +708,13 @@ of Colorado Denver and NAG Ltd.. */
     static logical iwarn = FALSE_;
 
     /* Format strings */
+    /*
     static char fmt_9999[] = "(//\002 WARNING. The value EMIN may be incorre"
 	    "ct:-\002,\002  EMIN = \002,i8,/\002 If, after inspection, the va"
 	    "lue EMIN looks\002,\002 acceptable please comment out \002,/\002"
 	    " the IF block as marked within the code of routine\002,\002 SLAM"
 	    "C2,\002,/\002 otherwise supply EMIN explicitly.\002,/)";
-
+    */
     /* System generated locals */
     integer i__1;
     real r__1, r__2, r__3, r__4, r__5;
@@ -744,11 +745,6 @@ of Colorado Denver and NAG Ltd.. */
     static integer lt;
     integer ngnmin, ngpmin;
     real one, two;
-
-    /* Fortran I/O blocks */
-    static cilist io___58 = { 0, 6, 0, fmt_9999, 0 };
-
-
 
 /*  -- LAPACK auxiliary routine (version 3.7.0) -- */
 /*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd.. */

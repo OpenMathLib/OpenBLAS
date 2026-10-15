@@ -72,10 +72,13 @@
 #ifndef GEMM3M
 #ifdef XDOUBLE
 #define ERROR_NAME "XGEMM "
+#define GEMV BLASFUNC(xgemv)
 #elif defined(DOUBLE)
 #define ERROR_NAME "ZGEMM "
+#define GEMV BLASFUNC(zgemv)
 #else
 #define ERROR_NAME "CGEMM "
+#define GEMV BLASFUNC(cgemv)
 #endif
 #else
 #ifdef XDOUBLE
@@ -667,7 +670,7 @@ double _Complex c_be={be[0],be[1]};
 #define HFLOAT16_GEMM_GEMV_FORWARD 0
 #endif
 
-#if defined(GEMM_GEMV_FORWARD) && !defined(GEMM3M) && !defined(COMPLEX) && HFLOAT16_GEMM_GEMV_FORWARD && BFLOAT16_GEMM_GEMV_FORWARD
+#if defined(GEMM_GEMV_FORWARD) && !defined(GEMM3M) && HFLOAT16_GEMM_GEMV_FORWARD && BFLOAT16_GEMM_GEMV_FORWARD
 #if defined(ARCH_ARM64)
   // The gemv kernels in arm64/{gemv_n.S,gemv_n_sve.c,gemv_t.S,gemv_t_sve.c}
   // perform poorly in certain circumstances. We use the following boolean
@@ -677,6 +680,13 @@ double _Complex c_be={be[0],be[1]};
 #else
   bool have_tuned_gemv = true;
 #endif
+  // GEMV transpose modes indexed by the GEMM transpose codes (N=0, T=1, R=2, C=3).
+  // For real types only N and T occur. For complex types the OpenBLAS GEMV
+  // extensions O, U, S and D (index 4..7) behave like N, T, R and C but
+  // additionally conjugate the vector x, which lets a conjugated vector-shaped
+  // operand of GEMM be handled without an explicit conjugation pass.
+  // Even indices run on the GEMV_N kernels, odd indices on the GEMV_T kernels.
+  static const char gemv_trans[] = "NTRCOUSD";
   // Check if we can convert GEMM -> GEMV
   if (args.k != 0) {
     if (args.n == 1) {
@@ -686,17 +696,18 @@ double _Complex c_be={be[0],be[1]};
       blasint m = args.m;
       blasint n = args.k;
       blasint lda = args.lda;
-      // Create new transpose parameters
-      char NT = 'N';
+      // C = alpha * op(A) * op(B) + beta * C with op(B) a k x 1 vector: GEMV on A,
+      // where a conjugated op(B) selects the x-conjugating modes.
+      int trans_idx = transa | ((transb & 2) << 1);
+      char NT = gemv_trans[trans_idx];
       if (transa & 1) {
-        NT = 'T';
         m = args.k;
         n = args.m;
       }
       if (transb & 1) {
         inc_x = args.ldb;
       }
-      bool is_efficient_gemv = have_tuned_gemv || ((NT == 'N') || (NT == 'T' && inc_x == 1));
+      bool is_efficient_gemv = have_tuned_gemv || (!(trans_idx & 1) || inc_x == 1);
       if (is_efficient_gemv) {
         GEMV(&NT, &m, &n, args.alpha, args.a, &lda, args.b, &inc_x, args.beta, args.c, &inc_y);
         return;
@@ -709,17 +720,19 @@ double _Complex c_be={be[0],be[1]};
       blasint m = args.k;
       blasint n = args.n;
       blasint ldb = args.ldb;
-      // Create new transpose parameters
-      char NT = 'T';
+      // C^T = op(B)^T * op(A)^T with op(A) a 1 x k vector: GEMV on B, where the
+      // transposition swaps N<->T and R<->C, and a conjugated op(A) selects the
+      // x-conjugating modes.
+      int trans_idx = (transb ^ 1) | ((transa & 2) << 1);
+      char NT = gemv_trans[trans_idx];
       if (transa & 1) {
         inc_x = 1;
       }
       if (transb & 1) {
-        NT = 'N';
         m = args.n;
         n = args.k;
       }
-      bool is_efficient_gemv = have_tuned_gemv || ((NT == 'N' && inc_y == 1) || (NT == 'T' && inc_x == 1));
+      bool is_efficient_gemv = have_tuned_gemv || ((!(trans_idx & 1) && inc_y == 1) || ((trans_idx & 1) && inc_x == 1));
       if (is_efficient_gemv) {
         GEMV(&NT, &m, &n, args.alpha, args.b, &ldb, args.a, &inc_x, args.beta, args.c, &inc_y);
         return;
@@ -733,6 +746,7 @@ double _Complex c_be={be[0],be[1]};
   FUNCTION_PROFILE_START();
 
 #if USE_SMALL_MATRIX_OPT
+if (*(FLOAT*)args.alpha != 0.0) {
 #if !defined(COMPLEX)
   if(GEMM_SMALL_MATRIX_PERMIT(transa, transb, args.m, args.n, args.k, *(FLOAT *)(args.alpha), *(FLOAT *)(args.beta))){
 
@@ -753,6 +767,7 @@ double _Complex c_be={be[0],be[1]};
 	  return;
   }
 #endif
+}
 #endif
 
   buffer = (XFLOAT *)blas_memory_alloc(0);

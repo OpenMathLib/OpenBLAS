@@ -1,0 +1,82 @@
+name: Windows make install
+
+on:
+  push:
+    branches:
+      - develop
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+  pull_request:
+    branches:
+      - develop
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+jobs:
+  build:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
+    name: ${{ matrix.msystem }}
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            runner: windows-latest
+            msystem: UCRT64
+            cc: gcc
+            target: HASWELL
+          - arch: arm64
+            runner: windows-11-arm
+            msystem: CLANGARM64
+            cc: clang
+            target: ARMV8
+
+    env:
+      OPENBLAS_MAKE_ARGS: CC=${{ matrix.cc }} TARGET=${{ matrix.target }} NOFORTRAN=1 NO_LAPACK=1 NO_LAPACKE=1
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install build dependencies
+        id: msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.msystem }}
+          update: true
+          install: make
+          pacboy: >-
+            cc:p
+            cmake:p
+            make:p
+
+      - name: Build OpenBLAS
+        run: make -j$(nproc) $OPENBLAS_MAKE_ARGS
+
+      - name: Install OpenBLAS
+        run: |
+          prefix="$(cygpath -m "$RUNNER_TEMP")/openblas"
+          make install PREFIX="$prefix" $OPENBLAS_MAKE_ARGS
+          cat "$prefix/lib/cmake/openblas/OpenBLASConfig.cmake"
+
+      - name: Test OpenBLASConfig.cmake with MinGW and MSVC consumers
+        shell: pwsh
+        run: |
+          $env:PATH = "${{ steps.msys2.outputs.msys2-location }}\$('${{ matrix.msystem }}'.ToLower())\bin;$env:PATH"
+          ./.github/scripts/cmake-consumer/test-consumer.ps1 -Arch ${{ matrix.arch }} -MinGWCompiler ${{ matrix.cc }} `
+            -Prefix "$env:RUNNER_TEMP/openblas" -DefFile exports/libopenblas.def -BuildDir "$env:RUNNER_TEMP/consumer"

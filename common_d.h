@@ -1,3 +1,42 @@
+/*********************************************************************/
+/* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2025-2026 The OpenBLAS Project.                         */
+/* All rights reserved.                                              */
+/*                                                                   */
+/* Redistribution and use in source and binary forms, with or        */
+/* without modification, are permitted provided that the following   */
+/* conditions are met:                                               */
+/*                                                                   */
+/*   1. Redistributions of source code must retain the above         */
+/*      copyright notice, this list of conditions and the following  */
+/*      disclaimer.                                                  */
+/*                                                                   */
+/*   2. Redistributions in binary form must reproduce the above      */
+/*      copyright notice, this list of conditions and the following  */
+/*      disclaimer in the documentation and/or other materials       */
+/*      provided with the distribution.                              */
+/*                                                                   */
+/*    THIS  SOFTWARE IS PROVIDED  BY THE  UNIVERSITY OF  TEXAS AT    */
+/*    AUSTIN  ``AS IS''  AND ANY  EXPRESS OR  IMPLIED WARRANTIES,    */
+/*    INCLUDING, BUT  NOT LIMITED  TO, THE IMPLIED  WARRANTIES OF    */
+/*    MERCHANTABILITY  AND FITNESS FOR  A PARTICULAR  PURPOSE ARE    */
+/*    DISCLAIMED.  IN  NO EVENT SHALL THE UNIVERSITY  OF TEXAS AT    */
+/*    AUSTIN OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,    */
+/*    INCIDENTAL,  SPECIAL, EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES    */
+/*    (INCLUDING, BUT  NOT LIMITED TO,  PROCUREMENT OF SUBSTITUTE    */
+/*    GOODS  OR  SERVICES; LOSS  OF  USE,  DATA,  OR PROFITS;  OR    */
+/*    BUSINESS INTERRUPTION) HOWEVER CAUSED  AND ON ANY THEORY OF    */
+/*    LIABILITY, WHETHER  IN CONTRACT, STRICT  LIABILITY, OR TORT    */
+/*    (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING IN ANY WAY OUT    */
+/*    OF  THE  USE OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE    */
+/*    POSSIBILITY OF SUCH DAMAGE.                                    */
+/*                                                                   */
+/* The views and conclusions contained in the software and           */
+/* documentation are those of the authors and should not be          */
+/* interpreted as representing official policies, either expressed   */
+/* or implied, of The University of Texas at Austin.                 */
+/*********************************************************************/
+
 #ifndef COMMON_D_H
 #define COMMON_D_H
 
@@ -54,6 +93,11 @@
 #define	DGEMM_INCOPY		dgemm_incopy
 #define	DGEMM_ITCOPY		dgemm_itcopy
 #endif
+
+#define	DSYMM_INCOPY	    	dsymm_incopy
+#define	DSYMM_ITCOPY	    	dsymm_itcopy
+#define	DTRMM_INCOPY		dtrmm_incopy
+#define	DTRMM_ITCOPY		dtrmm_itcopy
 
 #define	DTRMM_OUNUCOPY		dtrmm_ounucopy
 #define	DTRMM_OUNNCOPY		dtrmm_ounncopy
@@ -115,6 +159,8 @@
 
 #define	DGEMM_KERNEL		dgemm_kernel
 #define SME_DGEMM_KERNEL	sme_dgemm_kernel
+#define	DSYMM_KERNEL		dsymm_kernel
+#define	DTRMM_GEMM_KERNEL	dtrmm_gemm_kernel
 
 #define	DTRMM_KERNEL_LN		dtrmm_kernel_LN
 #define	DTRMM_KERNEL_LT		dtrmm_kernel_LT
@@ -240,14 +286,21 @@
 #define	DTRMM_IUTNCOPY		gotoblas -> dtrmm_iutncopy
 #define	DTRMM_ILNNCOPY		gotoblas -> dtrmm_ilnncopy
 #define	DTRMM_ILTNCOPY		gotoblas -> dtrmm_iltncopy
+#define	DSYMM_INCOPY		    gotoblas -> dsymm_incopy
+#define	DSYMM_ITCOPY		    gotoblas -> dsymm_itcopy
+#define	DTRMM_INCOPY		gotoblas -> dtrmm_incopy
+#define	DTRMM_ITCOPY		gotoblas -> dtrmm_itcopy
+
 #define	DTRSM_IUNNCOPY		gotoblas -> dtrsm_iunncopy
 #define	DTRSM_IUTNCOPY		gotoblas -> dtrsm_iutncopy
 #define	DTRSM_ILNNCOPY		gotoblas -> dtrsm_ilnncopy
 #define	DTRSM_ILTNCOPY		gotoblas -> dtrsm_iltncopy
 
-#define	DGEMM_BETA		gotoblas -> dgemm_beta
+#define	DGEMM_BETA	    	gotoblas -> dgemm_beta
 #define	DGEMM_KERNEL		gotoblas -> dgemm_kernel
 #define	SME_DGEMM_KERNEL	gotoblas -> sme_dgemm_kernel
+#define	DSYMM_KERNEL		gotoblas -> dsymm_kernel
+#define	DTRMM_GEMM_KERNEL	gotoblas -> dtrmm_gemm_kernel
 
 #define	DTRMM_KERNEL_LN		gotoblas -> dtrmm_kernel_LN
 #define	DTRMM_KERNEL_LT		gotoblas -> dtrmm_kernel_LT
