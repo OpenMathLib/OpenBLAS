@@ -48,6 +48,7 @@
 #if (defined OS_LINUX || defined OS_ANDROID)
 #include <asm/hwcap.h>
 #include <sys/auxv.h>
+#include <sys/prctl.h>
 #endif
 
 #ifdef __APPLE__
@@ -550,9 +551,16 @@ static gotoblas_t *get_coretype(void) {
 
 #ifndef NO_SVE
   if ((getauxval(AT_HWCAP) & HWCAP_SVE)) {
-	uint64_t veclen;
+	int veclen;
+#ifdef __ARM_FEATURE_SVE
 	asm("cntw %[SIZE_]" : [SIZE_] "=r" (veclen) : : );
-
+#elif defined(OS_LINUX)
+	veclen = prctl(PR_SVE_GET_VL);
+    if (veclen > -1 ) veclen &= PR_SVE_VL_MASK;
+    else veclen = 4;
+#else
+    veclen = 4;
+#endif
     switch(veclen) {
 	case 4:
 	    return &gotoblas_ARMV8SVE;
