@@ -551,7 +551,7 @@ static gotoblas_t *get_coretype(void) {
 #ifndef NO_SVE
   if ((getauxval(AT_HWCAP) & HWCAP_SVE)) {
 	uint64_t veclen;
-	asm("svcntw %[SIZE_]" : [SIZE_] "=r" (veclen) : : );
+	asm("cntw %[SIZE_]" : [SIZE_] "=r" (veclen) : : );
 
     switch(veclen) {
 	case 4:
