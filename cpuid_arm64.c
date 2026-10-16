@@ -408,13 +408,15 @@ int detect(void)
 	sysctlbyname("hw.cpufamily",&value64,&length64,NULL,0);
 	if (value64 ==131287967|| value64 == 458787763 ) return CPU_VORTEX; //A12/M1
 	if (value64 == 3660830781) return CPU_VORTEX; //A15/M2
-        if (value64 == 2271604202) return CPU_VORTEX; //A16/M3
-        if (value64 == 1867590060) return CPU_VORTEXM4; //M4
-	if (value64 == 492472296) return CPU_VORTEXM4; //M5
-	if (support_sme1())
-	    return CPU_VORTEXM4;
-	else
-	    return CPU_VORTEX;	
+  if (value64 == 2271604202) return CPU_VORTEX; //A16/M3
+  if (value64 == 1867590060) return CPU_VORTEXM4; //M4
+  if (value64 == 399882554) return CPU_VORTEXM4; //M4 Pro/Max
+  if (value64 == 492472296) return CPU_VORTEXM4; //M5
+	{ /* later Apple cores with SME: same kernels until they get their own entry */
+	int sme = 0;
+	size_t len = sizeof(sme);
+	if (sysctlbyname("hw.optional.arm.FEAT_SME", &sme, &len, NULL, 0) == 0 && sme) return CPU_VORTEXM4;
+  }
 #else
 #ifdef OS_WINDOWS
 	HKEY reghandle;

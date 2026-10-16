@@ -21,6 +21,7 @@ else ()
     test_gemv.c
     test_trmv.c
     test_gemm.c
+    test_matrix_packing.c
   )
 endif ()
 

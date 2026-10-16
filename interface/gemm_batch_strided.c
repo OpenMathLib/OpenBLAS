@@ -311,19 +311,19 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE transa, enum CBLAS_TRANS
       group_ldb = ldb;
       group_ldc = ldc;
       
-      if (tb == 'N')   group_transa = 0;
-      if (tb == 'T')   group_transa = 1;
+      if (ta == 'N')   group_transa = 0;
+      if (ta == 'T')   group_transa = 1;
 #ifndef COMPLEX
-      if (tb == 'C')   group_transa = 1;
+      if (ta == 'C')   group_transa = 1;
 #else
-      if (tb == 'C')   group_transa = 3;
+      if (ta == 'C')   group_transa = 3;
 #endif
-      if (ta == 'N')   group_transb = 0;
-      if (ta == 'T')   group_transb = 1;
+      if (tb == 'N')   group_transb = 0;
+      if (tb == 'T')   group_transb = 1;
 #ifndef COMPLEX
-      if (ta == 'C')   group_transb = 1;
+      if (tb == 'C')   group_transb = 1;
 #else
-      if (ta == 'C')   group_transb = 3;
+      if (tb == 'C')   group_transb = 3;
 #endif
 #endif
 
@@ -352,7 +352,8 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE transa, enum CBLAS_TRANS
       return;
     }
 
-    if (group_m == 0 || group_n == 0) continue;
+    /* Every member shares M and N: an empty member means an empty batch. */
+    if (group_m == 0 || group_n == 0) { free(args_array); return; }
 
     group_mode=mode;
 
@@ -361,23 +362,32 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE transa, enum CBLAS_TRANS
 #endif
 
 #ifdef SMALL_MATRIX_OPT
-    if (MNK <= 100.0*100.0*100.0){
+#if !defined(COMPLEX)
+    if (*(FLOAT *)(&alpha) != ZERO &&
+        GEMM_SMALL_MATRIX_PERMIT(group_transa, group_transb, group_m, group_n, group_k,
+                                 *(FLOAT *)(&alpha), *(FLOAT *)(&beta))){
+#else
+    if (((FLOAT *)(alpha))[0] != ZERO &&
+        GEMM_SMALL_MATRIX_PERMIT(group_transa, group_transb, group_m, group_n, group_k,
+                                 ((FLOAT *)(alpha))[0], ((FLOAT *)(alpha))[1],
+                                 ((FLOAT *)(beta))[0], ((FLOAT *)(beta))[1])){
+#endif
       group_routine=NULL;
 #if !defined(COMPLEX)
       if(beta == 0.0){
 	group_mode=mode | BLAS_SMALL_B0_OPT;
-	group_small_matrix_opt_routine=(void *)(gemm_small_kernel_b0[(group_transb<<2)|group_transa]);
+	group_small_matrix_opt_routine=SMALL_KERNEL_ADDR(gemm_small_kernel_b0, ((group_transb<<2)|group_transa));
       }else{
 	group_mode=mode | BLAS_SMALL_OPT;
-	group_small_matrix_opt_routine=(void *)(gemm_small_kernel[(group_transb<<2)|group_transa]);
+	group_small_matrix_opt_routine=SMALL_KERNEL_ADDR(gemm_small_kernel, ((group_transb<<2)|group_transa));
       }
 #else
       if(beta[0] == 0.0 && beta[1] == 0.0){
 	group_mode=mode | BLAS_SMALL_B0_OPT;
-	group_small_matrix_opt_routine=(void *)(zgemm_small_kernel_b0[(group_transb<<2)|group_transa]);
+	group_small_matrix_opt_routine=SMALL_KERNEL_ADDR(zgemm_small_kernel_b0, ((group_transb<<2)|group_transa));
       }else{
 	group_mode=mode | BLAS_SMALL_OPT;
-	group_small_matrix_opt_routine=(void *)(zgemm_small_kernel[(group_transb<<2)|group_transa]);
+	group_small_matrix_opt_routine=SMALL_KERNEL_ADDR(zgemm_small_kernel, ((group_transb<<2)|group_transa));
       }
 
 #endif
@@ -396,8 +406,13 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE transa, enum CBLAS_TRANS
       args_array[i].lda=group_lda;
       args_array[i].ldb=group_ldb;
       args_array[i].ldc=group_ldc;
+#ifdef COMPLEX
+      args_array[i].alpha=alpha;
+      args_array[i].beta=beta;
+#else
       args_array[i].alpha=&alpha;
       args_array[i].beta=&beta;
+#endif
 
 #if defined(CBLAS)
       if (order == CblasColMajor) {      
