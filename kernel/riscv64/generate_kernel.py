@@ -46,7 +46,7 @@ class Target(object):
         return ' ' * (self._level * self._tab_width)
 
 #-----------------------------------------------------------------------
-def generate_trmm_block( dest ):
+def generate_trmm_block( dest, contiguous=False ):
     dest.write("{index_type} pass_K = K;")
     dest.write("#ifdef LEFT")
     with dest.block():
@@ -58,7 +58,11 @@ def generate_trmm_block( dest ):
 
     dest.write("#ifdef BACKWARDS")
     with dest.block():
-        dest.write("ai += off*{M}{elt_size};")
+        # A stride: tile width (bitsliced) or runtime panel M (contiguous / rvv_v1 pack)
+        if contiguous:
+            dest.write("ai += off*M{elt_size};")
+        else:
+            dest.write("ai += off*{M}{elt_size};")
         dest.write("bi += off*{N}{elt_size};")
         dest.write("pass_K -= off;")
     dest.write("#else")
@@ -76,15 +80,19 @@ def generate_trmm_block( dest ):
 def generate_gemm_kernel_inner_real( settings, dest, M, N, vlen, a_regs ):
     TRMM           = (settings['op'].value == 'trmm')
     narrow_result  = (settings['param_precision'].value != 'double') and settings['force_acc_double'].value
+    contiguous     = (settings['a_pack'].value == 'contiguous')
 
     with dest.map( 
         M=M, 
         N=N, 
     ):
-        dest.write("{index_type} ai=m_top*K{elt_size};")
+        if contiguous:
+            dest.write("{index_type} ai=m_top{elt_size};")
+        else:
+            dest.write("{index_type} ai=m_top*K{elt_size};")
         dest.write("{index_type} bi=n_top*K{elt_size};")
         if TRMM:
-            generate_trmm_block( dest )
+            generate_trmm_block( dest, contiguous=contiguous )
 
         for i in range(N):
             dest.write("{param_scalar_t} B{i} = B[bi+{i}];", i=i)
@@ -93,7 +101,10 @@ def generate_gemm_kernel_inner_real( settings, dest, M, N, vlen, a_regs ):
 
         for i in range(a_regs):
             dest.write("{param_vector_t} A{i} = {VLEV}( &A[ai+{i}*gvl], gvl );", i=i)
-        dest.write("ai += {M};")
+        if contiguous:
+            dest.write("ai += M;")
+        else:
+            dest.write("ai += {M};")
         dest.write()
 
         for j in range(N):
@@ -109,7 +120,10 @@ def generate_gemm_kernel_inner_real( settings, dest, M, N, vlen, a_regs ):
             for i in range(a_regs):
                 dest.write("A{i} = {VLEV}( &A[ai+{i}*gvl], gvl );", i=i)
 
-            dest.write("ai += {M};")
+            if contiguous:
+                dest.write("ai += M;")
+            else:
+                dest.write("ai += {M};")
             dest.write()
 
 
@@ -171,6 +185,7 @@ def generate_gemm_kernel_inner_real( settings, dest, M, N, vlen, a_regs ):
 def generate_gemm_kernel_inner_complex( settings, dest, M, N, vlen, a_regs ):
     TRMM           = (settings['op'].value == 'trmm')
     narrow_result  = (settings['param_precision'].value != 'double') and settings['force_acc_double'].value
+    contiguous     = (settings['a_pack'].value == 'contiguous')
 
     if narrow_result:
         raise RuntimeError("wide accumulator not supported for generated complex kernels")
@@ -180,10 +195,13 @@ def generate_gemm_kernel_inner_complex( settings, dest, M, N, vlen, a_regs ):
         M=M, 
         N=N, 
     ):
-        dest.write("{index_type} ai=m_top*K*2;")
+        if contiguous:
+            dest.write("{index_type} ai=m_top*2;")
+        else:
+            dest.write("{index_type} ai=m_top*K*2;")
         dest.write("{index_type} bi=n_top*K*2;")
         if TRMM:
-            generate_trmm_block( dest )
+            generate_trmm_block( dest, contiguous=contiguous )
 
         for i in range(N):
             dest.write("{param_scalar_t} B{i}r = B[bi+{i}*2+0];", i=i)
@@ -194,7 +212,10 @@ def generate_gemm_kernel_inner_complex( settings, dest, M, N, vlen, a_regs ):
         for i in range(a_regs):
             dest.write("{param_vector_t} A{i}r = {VLSEV}( &A[ai+{i}*gvl*2], sizeof(FLOAT)*2, gvl );", i=i)
             dest.write("{param_vector_t} A{i}i = {VLSEV}( &A[ai+{i}*gvl*2+1], sizeof(FLOAT)*2, gvl );", i=i)
-        dest.write("ai += {M}*2;")
+        if contiguous:
+            dest.write("ai += M*2;")
+        else:
+            dest.write("ai += {M}*2;")
         dest.write()
 
         # for each vector register loaded from matrix A, we require N registers to hold vector-scalar multiply-accumulate results
@@ -251,7 +272,10 @@ def generate_gemm_kernel_inner_complex( settings, dest, M, N, vlen, a_regs ):
                 dest.write("A{i}r = {VLSEV}( &A[ai+{i}*gvl*2], sizeof(FLOAT)*2, gvl );", i=i)
                 dest.write("A{i}i = {VLSEV}( &A[ai+{i}*gvl*2+1], sizeof(FLOAT)*2, gvl );", i=i)
 
-            dest.write("ai += {M}*2;")
+            if contiguous:
+                dest.write("ai += M*2;")
+            else:
+                dest.write("ai += {M}*2;")
             dest.write()
 
 
@@ -482,12 +506,16 @@ def generate_M_tails( dest, settings, M, N ):
                     r=r
                 )
 
-            dest.write("{index_type} ai=m_top*K{elt_size};")
+            contiguous = (settings['a_pack'].value == 'contiguous')
+            if contiguous:
+                dest.write("{index_type} ai=m_top{elt_size};")
+            else:
+                dest.write("{index_type} ai=m_top*K{elt_size};")
             dest.write("{index_type} bi=n_top*K{elt_size};")
 
             if TRMM:
                 with dest.map(M=M_tail, N=N):
-                    generate_trmm_block( dest )
+                    generate_trmm_block( dest, contiguous=contiguous )
 
             with dest.block("for({index_type} k=0; k<{Kend}; k++) {{", "}}", Kend = ('pass_K' if TRMM else 'K') ):
                 for ki in range( N ):
@@ -503,7 +531,10 @@ def generate_M_tails( dest, settings, M, N ):
                             dest.write("result{dest}+=A[ai+{kj}]*B[bi+{ki}];".format(
                                     dest=ki*M_tail+kj, kj=kj, ki=ki
                                 ))
-                dest.write("ai+={M_tail}{elt_size};")
+                if contiguous:
+                    dest.write("ai+=M{elt_size};")
+                else:
+                    dest.write("ai+={M_tail}{elt_size};")
                 dest.write("bi+={N}{elt_size};")
 
             dest.write("{index_type} ci=n_top*ldc+m_top;")
@@ -574,6 +605,10 @@ def main():
         'reg_width_bits':   Setting( 256, int ),
         'LMUL':             Setting( 1, int ),
         'M_tail_scalar_from':Setting( 2, int ),
+        # bitsliced: ai+=tile; pair with gemm_*copy_{MR}_rvv / gemm_tcopy_16 (panel-major).
+        # contiguous: ai+=M (full panel); pair with gemm_*copy_contig_rvv (column-major panel).
+        # Note: gemm_*copy_rvv_v1 is VLMAX-bitsliced, NOT contiguous — use it only when MR==VLMAX.
+        'a_pack':           Setting( 'bitsliced', Setting.ENUM( 'bitsliced', 'contiguous' ) ),
         'cpu':              Setting( 'zvl256b', str ),
         'param_precision':  Setting( 'float', Setting.ENUM( 'float', 'double' ) ),
         'force_acc_double': Setting( False, Setting.BOOL ),

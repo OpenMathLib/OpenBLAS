@@ -3334,6 +3334,84 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+#ifdef RISCV64_ZVL1024B
+#define GEMM_DEFAULT_OFFSET_A 0
+#define GEMM_DEFAULT_OFFSET_B 0
+#define GEMM_DEFAULT_ALIGN 0x03fffUL
+
+#undef SHGEMM_DEFAULT_UNROLL_M
+#undef SHGEMM_DEFAULT_UNROLL_N
+#define SHGEMM_DEFAULT_UNROLL_M  16
+#define SHGEMM_DEFAULT_UNROLL_N  8
+
+#undef SBGEMM_DEFAULT_UNROLL_M
+#undef SBGEMM_DEFAULT_UNROLL_N
+#define SBGEMM_DEFAULT_UNROLL_M  16
+#define SBGEMM_DEFAULT_UNROLL_N  8
+
+#define SGEMM_DEFAULT_UNROLL_M  64
+#define SGEMM_DEFAULT_UNROLL_N  8
+
+#define DGEMM_DEFAULT_UNROLL_M  32
+#define DGEMM_DEFAULT_UNROLL_N  8
+
+#define CGEMM_DEFAULT_UNROLL_M  8
+#define CGEMM_DEFAULT_UNROLL_N  8
+
+#define ZGEMM_DEFAULT_UNROLL_M  8
+#define ZGEMM_DEFAULT_UNROLL_N  4
+
+#undef SHGEMM_DEFAULT_P
+#define SHGEMM_DEFAULT_P 128
+#undef SBGEMM_DEFAULT_P
+#define SBGEMM_DEFAULT_P 128
+/* Base packed-A (P) blocking for this core. On static builds blas_set_parameter()
+   scales P from the L2 cache detected at runtime, relative to RISCV_L2_REFERENCE_KB
+   (the L2 size these bases target); Q and R keep their param.h defaults. A cache
+   equal to the reference reproduces the stock blocking. DYNAMIC_ARCH uses the
+   literals directly (kernel/setparam-ref.c fills the gotoblas table from them). */
+#define RISCV_L2_REFERENCE_KB 512
+#define SGEMM_DEFAULT_P_BASE 128
+#define DGEMM_DEFAULT_P_BASE 64
+#define CGEMM_DEFAULT_P_BASE 64
+#define ZGEMM_DEFAULT_P_BASE 64
+#if defined(DYNAMIC_ARCH)
+#define SGEMM_DEFAULT_P SGEMM_DEFAULT_P_BASE
+#define DGEMM_DEFAULT_P DGEMM_DEFAULT_P_BASE
+#define CGEMM_DEFAULT_P CGEMM_DEFAULT_P_BASE
+#define ZGEMM_DEFAULT_P ZGEMM_DEFAULT_P_BASE
+#else
+#define SGEMM_DEFAULT_P sgemm_p
+#define DGEMM_DEFAULT_P dgemm_p
+#define CGEMM_DEFAULT_P cgemm_p
+#define ZGEMM_DEFAULT_P zgemm_p
+#endif
+
+#undef SHGEMM_DEFAULT_Q
+#define SHGEMM_DEFAULT_Q 128
+#undef SBGEMM_DEFAULT_Q
+#define SBGEMM_DEFAULT_Q 128
+#define SGEMM_DEFAULT_Q 128
+#define DGEMM_DEFAULT_Q 128
+#define CGEMM_DEFAULT_Q 128
+#define ZGEMM_DEFAULT_Q 64
+
+#undef SHGEMM_DEFAULT_R
+#define SHGEMM_DEFAULT_R 16384
+#undef SBGEMM_DEFAULT_R
+#define SBGEMM_DEFAULT_R 16384
+#define SGEMM_DEFAULT_R 16384
+#define DGEMM_DEFAULT_R 8192
+#define CGEMM_DEFAULT_R 8192
+#define ZGEMM_DEFAULT_R 4096
+
+#define SYMV_P 16
+
+#define GEMM_DEFAULT_OFFSET_A 0
+#define GEMM_DEFAULT_OFFSET_B 0
+
+#endif
+
 #ifdef RISCV64_ZVL256B
 #define GEMM_DEFAULT_OFFSET_A 0
 #define GEMM_DEFAULT_OFFSET_B 0

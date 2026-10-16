@@ -1468,6 +1468,24 @@ endif ()
     set(ZGEMM_UNROLL_M 4)
     set(ZGEMM_UNROLL_N 4)
     set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "RISCV64_ZVL1024B")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_DATA_SIZE 65536\n"
+      "#define L1_DATA_LINESIZE 32\n"
+      "#define L2_SIZE 2097152\n"
+      "#define L2_LINESIZE 32 \n"
+      "#define DTB_DEFAULT_ENTRIES 128\n"
+      "#define DTB_SIZE 4096\n"
+      "#define L2_ASSOCIATIVE 4\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 8)
+    set(DGEMM_UNROLL_M 16)
+    set(DGEMM_UNROLL_N 8)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 8)
+    set(ZGEMM_UNROLL_M 8)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
   elseif ("${TCORE}" STREQUAL "RISCV64_ZVL256B")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE 65536\n"

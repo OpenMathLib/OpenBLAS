@@ -69,12 +69,12 @@ static FORCEINLINE FLOAT* M_TAIL_ONE(BLASLONG K, const BLASLONG M, const BLASLON
 
         if (M == 1) {
             if (K >= 8) {
-                vfloat64m8_t B00 = __riscv_vle64_v_f64m8(B, N * 4);
+                /* VLEN-portable: split load (avoid m8+vget) */
+                B0 = __riscv_vle64_v_f64m2((B) + (N) * 0, N);
+                B2 = __riscv_vle64_v_f64m2((B) + (N) * 1, N);
+                B4 = __riscv_vle64_v_f64m2((B) + (N) * 2, N);
+                B6 = __riscv_vle64_v_f64m2((B) + (N) * 3, N);
                 B += (N * 4);
-                B0 = __riscv_vget_v_f64m8_f64m2(B00, 0);
-                B2 = __riscv_vget_v_f64m8_f64m2(B00, 1);
-                B4 = __riscv_vget_v_f64m8_f64m2(B00, 2);
-                B6 = __riscv_vget_v_f64m8_f64m2(B00, 3);
 
 #ifdef GEMM_NEW_PACKING
                 A00 = A0[0 + (1 * 0)];
@@ -103,12 +103,12 @@ static FORCEINLINE FLOAT* M_TAIL_ONE(BLASLONG K, const BLASLONG M, const BLASLON
                 result2 = __riscv_vfmul_vf_f64m2(B4, A02, 8);
                 result4 = __riscv_vfmul_vf_f64m2(B6, A03, 8);
 
-                B00 = __riscv_vle64_v_f64m8(B, N * 4);
+                /* VLEN-portable: split load (avoid m8+vget) */
+                B0 = __riscv_vle64_v_f64m2((B) + (N) * 0, N);
+                B2 = __riscv_vle64_v_f64m2((B) + (N) * 1, N);
+                B4 = __riscv_vle64_v_f64m2((B) + (N) * 2, N);
+                B6 = __riscv_vle64_v_f64m2((B) + (N) * 3, N);
                 B += (N * 4);
-                B0 = __riscv_vget_v_f64m8_f64m2(B00, 0);
-                B2 = __riscv_vget_v_f64m8_f64m2(B00, 1);
-                B4 = __riscv_vget_v_f64m8_f64m2(B00, 2);
-                B6 = __riscv_vget_v_f64m8_f64m2(B00, 3);
 
                 result6 = __riscv_vfmul_vf_f64m2(B0, A04, 8);
                 result8 = __riscv_vfmul_vf_f64m2(B2, A05, 8);
@@ -118,12 +118,12 @@ static FORCEINLINE FLOAT* M_TAIL_ONE(BLASLONG K, const BLASLONG M, const BLASLON
                 BLASLONG k = (K / 8);
                 K &= 7;
                 while (--k) {
-                    B00 = __riscv_vle64_v_f64m8(B, N * 4);
+                    /* VLEN-portable: split load (avoid m8+vget) */
+                    B0 = __riscv_vle64_v_f64m2((B) + (N) * 0, N);
+                    B2 = __riscv_vle64_v_f64m2((B) + (N) * 1, N);
+                    B4 = __riscv_vle64_v_f64m2((B) + (N) * 2, N);
+                    B6 = __riscv_vle64_v_f64m2((B) + (N) * 3, N);
                     B += (N * 4);
-                    B0 = __riscv_vget_v_f64m8_f64m2(B00, 0);
-                    B2 = __riscv_vget_v_f64m8_f64m2(B00, 1);
-                    B4 = __riscv_vget_v_f64m8_f64m2(B00, 2);
-                    B6 = __riscv_vget_v_f64m8_f64m2(B00, 3);
 
 #ifdef GEMM_NEW_PACKING
                     A00 = A0[0 + (1 * 0)];
@@ -152,12 +152,12 @@ static FORCEINLINE FLOAT* M_TAIL_ONE(BLASLONG K, const BLASLONG M, const BLASLON
                     result2 = __riscv_vfmacc_vf_f64m2(result2, A02, B4, 8);
                     result4 = __riscv_vfmacc_vf_f64m2(result4, A03, B6, 8);
 
-                    B00 = __riscv_vle64_v_f64m8(B, N * 4);
+                    /* VLEN-portable: split load (avoid m8+vget) */
+                    B0 = __riscv_vle64_v_f64m2((B) + (N) * 0, N);
+                    B2 = __riscv_vle64_v_f64m2((B) + (N) * 1, N);
+                    B4 = __riscv_vle64_v_f64m2((B) + (N) * 2, N);
+                    B6 = __riscv_vle64_v_f64m2((B) + (N) * 3, N);
                     B += (N * 4);
-                    B0 = __riscv_vget_v_f64m8_f64m2(B00, 0);
-                    B2 = __riscv_vget_v_f64m8_f64m2(B00, 1);
-                    B4 = __riscv_vget_v_f64m8_f64m2(B00, 2);
-                    B6 = __riscv_vget_v_f64m8_f64m2(B00, 3);
 
                     result6 = __riscv_vfmacc_vf_f64m2(result6, A04, B0, 8);
                     result8 = __riscv_vfmacc_vf_f64m2(result8, A05, B2, 8);
@@ -177,12 +177,12 @@ static FORCEINLINE FLOAT* M_TAIL_ONE(BLASLONG K, const BLASLONG M, const BLASLON
             }
         } else if (M == 2) {
             if (K >= 4) {
-                vfloat64m8_t B00 = __riscv_vle64_v_f64m8(B, N * 4);
+                /* VLEN-portable: split load (avoid m8+vget) */
+                B0 = __riscv_vle64_v_f64m2((B) + (N) * 0, N);
+                B2 = __riscv_vle64_v_f64m2((B) + (N) * 1, N);
+                B4 = __riscv_vle64_v_f64m2((B) + (N) * 2, N);
+                B6 = __riscv_vle64_v_f64m2((B) + (N) * 3, N);
                 B += (N * 4);
-                B0 = __riscv_vget_v_f64m8_f64m2(B00, 0);
-                B2 = __riscv_vget_v_f64m8_f64m2(B00, 1);
-                B4 = __riscv_vget_v_f64m8_f64m2(B00, 2);
-                B6 = __riscv_vget_v_f64m8_f64m2(B00, 3);
 
 #ifdef GEMM_NEW_PACKING
                 A00 = A0[0 + (2 * 0)];
@@ -218,12 +218,12 @@ static FORCEINLINE FLOAT* M_TAIL_ONE(BLASLONG K, const BLASLONG M, const BLASLON
                 BLASLONG k = (K / 4);
                 K &= 3;
                 while (--k) {
-                    B00 = __riscv_vle64_v_f64m8(B, N * 4);
+                    /* VLEN-portable: split load (avoid m8+vget) */
+                    B0 = __riscv_vle64_v_f64m2((B) + (N) * 0, N);
+                    B2 = __riscv_vle64_v_f64m2((B) + (N) * 1, N);
+                    B4 = __riscv_vle64_v_f64m2((B) + (N) * 2, N);
+                    B6 = __riscv_vle64_v_f64m2((B) + (N) * 3, N);
                     B += (N * 4);
-                    B0 = __riscv_vget_v_f64m8_f64m2(B00, 0);
-                    B2 = __riscv_vget_v_f64m8_f64m2(B00, 1);
-                    B4 = __riscv_vget_v_f64m8_f64m2(B00, 2);
-                    B6 = __riscv_vget_v_f64m8_f64m2(B00, 3);
 
 #ifdef GEMM_NEW_PACKING
                     A00 = A0[0 + (2 * 0)];
@@ -269,10 +269,10 @@ static FORCEINLINE FLOAT* M_TAIL_ONE(BLASLONG K, const BLASLONG M, const BLASLON
             }
         } else if (M <= 4) {
             if (K >= 2) {
-                vfloat64m4_t B00 = __riscv_vle64_v_f64m4(B, N * 2);
+                /* VLEN-portable: split load (avoid m4+vget) */
+                B0 = __riscv_vle64_v_f64m2((B) + (N) * 0, N);
+                B2 = __riscv_vle64_v_f64m2((B) + (N) * 1, N);
                 B += (N * 2);
-                B0 = __riscv_vget_v_f64m4_f64m2(B00, 0);
-                B2 = __riscv_vget_v_f64m4_f64m2(B00, 1);
 
                 if (M & 4) {
                     A00 = A0[0];
@@ -336,10 +336,10 @@ static FORCEINLINE FLOAT* M_TAIL_ONE(BLASLONG K, const BLASLONG M, const BLASLON
                 BLASLONG k = (K / 2);
                 K &= 1;
                 while (--k) {
-                    B00 = __riscv_vle64_v_f64m4(B, N * 2);
+                    /* VLEN-portable: split load (avoid m4+vget) */
+                    B0 = __riscv_vle64_v_f64m2((B) + (N) * 0, N);
+                    B2 = __riscv_vle64_v_f64m2((B) + (N) * 1, N);
                     B += (N * 2);
-                    B0 = __riscv_vget_v_f64m4_f64m2(B00, 0);
-                    B2 = __riscv_vget_v_f64m4_f64m2(B00, 1);
 
                     if (M & 4) {
                         A00 = A0[0];
@@ -1051,12 +1051,12 @@ static void FORCEINLINE N_TAIL_ONE(BLASLONG K, BLASLONG M, const BLASLONG N, FLO
 
         if (N == 1) {
             if (K3) {
-                vfloat64m8_t A01 = __riscv_vle64_v_f64m8(*A, 8 * 4);
+                /* VLEN-portable: split load (avoid m8+vget) */
+                A0 = __riscv_vle64_v_f64m2((*A) + (8) * 0, 8);
+                A2 = __riscv_vle64_v_f64m2((*A) + (8) * 1, 8);
+                A4 = __riscv_vle64_v_f64m2((*A) + (8) * 2, 8);
+                A6 = __riscv_vle64_v_f64m2((*A) + (8) * 3, 8);
                 *A += (8 * 4);
-                A0 = __riscv_vget_v_f64m8_f64m2(A01, 0);
-                A2 = __riscv_vget_v_f64m8_f64m2(A01, 1);
-                A4 = __riscv_vget_v_f64m8_f64m2(A01, 2);
-                A6 = __riscv_vget_v_f64m8_f64m2(A01, 3);
 
 #ifdef GEMM_NEW_PACKING
                 B0 = B00[0];
@@ -1085,11 +1085,11 @@ static void FORCEINLINE N_TAIL_ONE(BLASLONG K, BLASLONG M, const BLASLONG N, FLO
                 result2 = __riscv_vfmul_vf_f64m2(A4, B2, 8);
                 result4 = __riscv_vfmul_vf_f64m2(A6, B3, 8);
 
-                A01 = __riscv_vle64_v_f64m8(*A, 8 * 4);
-                A0 = __riscv_vget_v_f64m8_f64m2(A01, 0);
-                A2 = __riscv_vget_v_f64m8_f64m2(A01, 1);
-                A4 = __riscv_vget_v_f64m8_f64m2(A01, 2);
-                A6 = __riscv_vget_v_f64m8_f64m2(A01, 3);
+                /* VLEN-portable: split load (avoid m8+vget) */
+                A0 = __riscv_vle64_v_f64m2((*A) + (8) * 0, 8);
+                A2 = __riscv_vle64_v_f64m2((*A) + (8) * 1, 8);
+                A4 = __riscv_vle64_v_f64m2((*A) + (8) * 2, 8);
+                A6 = __riscv_vle64_v_f64m2((*A) + (8) * 3, 8);
                 *A += (8 * 4);
 
                 result6 = __riscv_vfmul_vf_f64m2(A0, B4, 8);
@@ -1098,12 +1098,12 @@ static void FORCEINLINE N_TAIL_ONE(BLASLONG K, BLASLONG M, const BLASLONG N, FLO
                 resultE = __riscv_vfmul_vf_f64m2(A6, B7, 8);
 
                 for (BLASLONG k = K3; --k; ) {
-                    A01 = __riscv_vle64_v_f64m8(*A, 8 * 4);
+                    /* VLEN-portable: split load (avoid m8+vget) */
+                    A0 = __riscv_vle64_v_f64m2((*A) + (8) * 0, 8);
+                    A2 = __riscv_vle64_v_f64m2((*A) + (8) * 1, 8);
+                    A4 = __riscv_vle64_v_f64m2((*A) + (8) * 2, 8);
+                    A6 = __riscv_vle64_v_f64m2((*A) + (8) * 3, 8);
                     *A += (8 * 4);
-                    A0 = __riscv_vget_v_f64m8_f64m2(A01, 0);
-                    A2 = __riscv_vget_v_f64m8_f64m2(A01, 1);
-                    A4 = __riscv_vget_v_f64m8_f64m2(A01, 2);
-                    A6 = __riscv_vget_v_f64m8_f64m2(A01, 3);
 
 #ifdef GEMM_NEW_PACKING
                     B0 = B00[0];
@@ -1132,11 +1132,11 @@ static void FORCEINLINE N_TAIL_ONE(BLASLONG K, BLASLONG M, const BLASLONG N, FLO
                     result2 = __riscv_vfmacc_vf_f64m2(result2, B2, A4, 8);
                     result4 = __riscv_vfmacc_vf_f64m2(result4, B3, A6, 8);
 
-                    A01 = __riscv_vle64_v_f64m8(*A, 8 * 4);
-                    A0 = __riscv_vget_v_f64m8_f64m2(A01, 0);
-                    A2 = __riscv_vget_v_f64m8_f64m2(A01, 1);
-                    A4 = __riscv_vget_v_f64m8_f64m2(A01, 2);
-                    A6 = __riscv_vget_v_f64m8_f64m2(A01, 3);
+                    /* VLEN-portable: split load (avoid m8+vget) */
+                    A0 = __riscv_vle64_v_f64m2((*A) + (8) * 0, 8);
+                    A2 = __riscv_vle64_v_f64m2((*A) + (8) * 1, 8);
+                    A4 = __riscv_vle64_v_f64m2((*A) + (8) * 2, 8);
+                    A6 = __riscv_vle64_v_f64m2((*A) + (8) * 3, 8);
                     *A += (8 * 4);
 
                     result6 = __riscv_vfmacc_vf_f64m2(result6, B4, A0, 8);
@@ -1157,11 +1157,11 @@ static void FORCEINLINE N_TAIL_ONE(BLASLONG K, BLASLONG M, const BLASLONG N, FLO
             }
         } else if (N == 2) {
             if (K3) {
-                vfloat64m8_t A01 = __riscv_vle64_v_f64m8(*A, 8 * 4);
-                A0 = __riscv_vget_v_f64m8_f64m2(A01, 0);
-                A2 = __riscv_vget_v_f64m8_f64m2(A01, 1);
-                A4 = __riscv_vget_v_f64m8_f64m2(A01, 2);
-                A6 = __riscv_vget_v_f64m8_f64m2(A01, 3);
+                /* VLEN-portable: split load (avoid m8+vget) */
+                A0 = __riscv_vle64_v_f64m2((*A) + (8) * 0, 8);
+                A2 = __riscv_vle64_v_f64m2((*A) + (8) * 1, 8);
+                A4 = __riscv_vle64_v_f64m2((*A) + (8) * 2, 8);
+                A6 = __riscv_vle64_v_f64m2((*A) + (8) * 3, 8);
                 *A += (8 * 4);
 
 #ifdef GEMM_NEW_PACKING
@@ -1196,11 +1196,11 @@ static void FORCEINLINE N_TAIL_ONE(BLASLONG K, BLASLONG M, const BLASLONG N, FLO
                 resultE = __riscv_vfmul_vf_f64m2(A6, B7, 8);
 
                 for (BLASLONG k = K3; --k; ) {
-                    A01 = __riscv_vle64_v_f64m8(*A, 8 * 4);
-                    A0 = __riscv_vget_v_f64m8_f64m2(A01, 0);
-                    A2 = __riscv_vget_v_f64m8_f64m2(A01, 1);
-                    A4 = __riscv_vget_v_f64m8_f64m2(A01, 2);
-                    A6 = __riscv_vget_v_f64m8_f64m2(A01, 3);
+                    /* VLEN-portable: split load (avoid m8+vget) */
+                    A0 = __riscv_vle64_v_f64m2((*A) + (8) * 0, 8);
+                    A2 = __riscv_vle64_v_f64m2((*A) + (8) * 1, 8);
+                    A4 = __riscv_vle64_v_f64m2((*A) + (8) * 2, 8);
+                    A6 = __riscv_vle64_v_f64m2((*A) + (8) * 3, 8);
                     *A += (8 * 4);
 
 #ifdef GEMM_NEW_PACKING
@@ -1247,9 +1247,9 @@ static void FORCEINLINE N_TAIL_ONE(BLASLONG K, BLASLONG M, const BLASLONG N, FLO
             }
         } else if (N <= 4) {
             if (K3) {
-                vfloat64m4_t A01 = __riscv_vle64_v_f64m4(*A, 4 * 4);
-                A0 = __riscv_vget_v_f64m4_f64m2(A01, 0);
-                A2 = __riscv_vget_v_f64m4_f64m2(A01, 1);
+                /* VLEN-portable: split load (avoid m4+vget) */
+                A0 = __riscv_vle64_v_f64m2((*A) + (((4 * 4)/2)) * 0, ((4 * 4)/2));
+                A2 = __riscv_vle64_v_f64m2((*A) + (((4 * 4)/2)) * 1, ((4 * 4)/2));
                 *A += (4 * 4);
 
                 if (N == 4) {
@@ -1312,9 +1312,9 @@ static void FORCEINLINE N_TAIL_ONE(BLASLONG K, BLASLONG M, const BLASLONG N, FLO
                 }
 
                 for (BLASLONG k = K3; --k; ) {
-                    A01 = __riscv_vle64_v_f64m4(*A, 4 * 4);
-                    A0 = __riscv_vget_v_f64m4_f64m2(A01, 0);
-                    A2 = __riscv_vget_v_f64m4_f64m2(A01, 1);
+                    /* VLEN-portable: split load (avoid m4+vget) */
+                    A0 = __riscv_vle64_v_f64m2((*A) + (((4 * 4)/2)) * 0, ((4 * 4)/2));
+                    A2 = __riscv_vle64_v_f64m2((*A) + (((4 * 4)/2)) * 1, ((4 * 4)/2));
                     *A += (4 * 4);
 
                     if (N == 4) {
