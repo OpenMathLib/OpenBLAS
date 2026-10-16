@@ -148,6 +148,33 @@ extern int blas_omp_number_max;
 extern int blas_omp_threads_local;
 extern int blas_is_num_threads_set_explicitly;
 
+#if defined(ARCH_ARM64) && defined(OS_DARWIN) && defined(__clang__) && (defined(VORTEXM4) || defined(DYNAMIC_ARCH)) && \
+    !defined(COMPLEX) && !defined(BFLOAT16) && !defined(HFLOAT16)
+#include <sys/sysctl.h>
+#ifdef DYNAMIC_ARCH
+extern char *gotoblas_corename(void);
+#endif
+/* Apple M4: real level-3 BLAS and LAPACK run on one SME unit per P-cluster; measured on M4 Pro only, not on M5+. */
+static __inline int sme_level3_threads(int nthreads) {
+  static int units = 0;
+#ifdef DYNAMIC_ARCH
+  if (strcmp(gotoblas_corename(), "vortexm4") != 0) return nthreads;
+#endif
+  if (units == 0) {
+    int cpus = 0, per = 0, u = 1;
+    size_t len = sizeof(int);
+    if (sysctlbyname("hw.perflevel0.physicalcpu", &cpus, &len, NULL, 0) == 0 &&
+        (len = sizeof(int), sysctlbyname("hw.perflevel0.cpusperl2", &per, &len, NULL, 0) == 0) && per > 0 &&
+        cpus / per > 1)
+      u = cpus / per;
+    units = u;
+  }
+  return nthreads < units ? nthreads : units;
+}
+#else
+#define sme_level3_threads(nthreads) (nthreads)
+#endif
+
 static __inline int num_cpu_avail(int level) {
 
 #ifdef USE_OPENMP
@@ -157,7 +184,7 @@ static __inline int num_cpu_avail(int level) {
      in case the user hasn't made an explicit choice). */
   if (blas_is_num_threads_set_explicitly) {
 	  if (omp_in_parallel()) return 1;
-    return blas_cpu_number;
+    return level >= 3 ? sme_level3_threads(blas_cpu_number) : blas_cpu_number;
   }
 
 int openmp_nthreads;
@@ -184,7 +211,7 @@ int openmp_nthreads;
   }
 #endif
 
-  return blas_cpu_number;
+  return level >= 3 ? sme_level3_threads(blas_cpu_number) : blas_cpu_number;
 
 }
 
