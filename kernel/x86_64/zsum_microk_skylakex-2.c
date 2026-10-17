@@ -27,14 +27,14 @@ static FLOAT zsum_kernel(BLASLONG n, FLOAT *x)
         accum_12 = _mm_setzero_pd();
         accum_13 = _mm_setzero_pd();
         
-        _mm_prefetch(&x1[0], _MM_HINT_T0);
+        _mm_prefetch((const char*)&x1[0], _MM_HINT_T0);
         if (n2 >= 16){
             __m128d x00 = _mm_loadu_pd(&x1[ 0]);
             __m128d x01 = _mm_loadu_pd(&x1[ 2]);
             __m128d x02 = _mm_loadu_pd(&x1[ 4]);
             __m128d x03 = _mm_loadu_pd(&x1[ 6]);
             
-            _mm_prefetch(&x1[8], _MM_HINT_T0);
+            _mm_prefetch((const char*)&x1[8], _MM_HINT_T0);
             __m128d x04 = _mm_loadu_pd(&x1[ 8]);
             __m128d x05 = _mm_loadu_pd(&x1[10]);
             __m128d x06 = _mm_loadu_pd(&x1[12]);
