@@ -26,7 +26,7 @@ static FLOAT casum_kernel(BLASLONG n, FLOAT *x)
         accum_12 = _mm_setzero_ps();
         accum_13 = _mm_setzero_ps();
         
-        _mm_prefetch(&x1[0], _MM_HINT_T0);
+        _mm_prefetch((const char*)&x1[0], _MM_HINT_T0);
         
         if (n2 >= 32){
             __m128 x00 = _mm_loadu_ps(&x1[ 0]);
@@ -34,7 +34,7 @@ static FLOAT casum_kernel(BLASLONG n, FLOAT *x)
             __m128 x02 = _mm_loadu_ps(&x1[ 8]);
             __m128 x03 = _mm_loadu_ps(&x1[12]);
             
-            _mm_prefetch(&x1[16], _MM_HINT_T0);
+            _mm_prefetch((const char*)&x1[16], _MM_HINT_T0);
             __m128 x04 = _mm_loadu_ps(&x1[16]);
             __m128 x05 = _mm_loadu_ps(&x1[20]);
             __m128 x06 = _mm_loadu_ps(&x1[24]);
