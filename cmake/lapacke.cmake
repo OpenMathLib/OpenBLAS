@@ -2473,6 +2473,7 @@ set(MATGEN
   lapacke_zlagsy.c
   lapacke_zlagsy_work.c
   lapacke_nancheck.c
+  lapacke_alloc.c
 )
 
 set(Utils_SRC

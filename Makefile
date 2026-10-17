@@ -405,13 +405,21 @@ endif
 
 
 lapack-test :
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out)
 	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING/EIG xeigtstc  xeigtstd  xeigtsts  xeigtstz 
 	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING/LIN xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
+endif
+ifneq ($(NO_LAPACKE), 1)
+	(cd $(NETLIB_LAPACK_DIR)/LAPACKE/testing/high_level; $(MAKE) all;)
+endif
 ifneq ($(CROSS), 1)
 	( cd $(NETLIB_LAPACK_DIR)/INSTALL; $(MAKE) all; ./testlsame; ./testslamch; ./testdlamch; \
         ./testsecond; ./testdsecnd; ./testieee; ./testversion )
 	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r -b TESTING)
+ifneq ($(NO_LAPACKE), 1)
+	(cd $(NETLIB_LAPACK_DIR)/LAPACKE/testing/high_level; ./slapacke_high_level; ./dlapacke_high_level; ./clapacke_high_level; ./zlapacke_high_level)
+endif
 endif
 
 lapack-runtest: lapack-test
