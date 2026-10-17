@@ -103,6 +103,9 @@ SCLAUX_O = la_constants.o \
    ssteqr.o ssterf.o slaisnan.o sisnan.o \
    slartgp.o slartgs.o scombssq.o ../INSTALL/sroundup_lwork.o \
    ../INSTALL/second_$(TIMER).o
+ifneq ($(C_LAPACK), 1)
+SCLAUX_O += slaed0_br.o slaed4_br.o slaed7_br.o slaed9_br.o sstebr.o
+endif
 endif
 
 ifneq "$(or $(BUILD_DOUBLE),$(BUILD_COMPLEX16))" ""
@@ -125,6 +128,9 @@ DZLAUX_O = la_constants.o\
    dsteqr.o dsterf.o dlaisnan.o disnan.o \
    dlartgp.o dlartgs.o ../INSTALL/droundup_lwork.o \
    ../INSTALL/dlamch.o ../INSTALL/dsecnd_$(TIMER).o
+ifneq ($(C_LAPACK), 1)
+DZLAUX_O += dlaed0_br.o dlaed4_br.o dlaed7_br.o dlaed9_br.o dstebr.o
+endif
 endif
 
 #ifeq ($(BUILD_SINGLE),1)

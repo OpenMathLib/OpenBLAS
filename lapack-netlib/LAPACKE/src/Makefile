@@ -1075,6 +1075,8 @@ lapacke_dsptrs.o \
 lapacke_dsptrs_work.o \
 lapacke_dstebz.o \
 lapacke_dstebz_work.o \
+lapacke_dstebr.o \
+lapacke_dstebr_work.o \
 lapacke_dstedc.o \
 lapacke_dstedc_work.o \
 lapacke_dstegr.o \
@@ -1653,6 +1655,8 @@ lapacke_ssptrs.o \
 lapacke_ssptrs_work.o \
 lapacke_sstebz.o \
 lapacke_sstebz_work.o \
+lapacke_sstebr.o \
+lapacke_sstebr_work.o \
 lapacke_sstedc.o \
 lapacke_sstedc_work.o \
 lapacke_sstegr.o \

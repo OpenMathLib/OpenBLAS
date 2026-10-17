@@ -44,8 +44,10 @@ set(SCLAUX
    la_constants.f90
    sbdsvdx.f sbdsdc.f
    sbdsqr.f sdisna.f slabad.f slacpy.f sladiv.f slae2.f  slaebz.f
-   slaed0.f slaed1.f slaed2.f slaed3.f slaed4.f slaed5.f slaed6.f
-   slaed7.f slaed8.f slaed9.f slaeda.f slaev2.f slagtf.f
+   slaed0.f slaed0_br.f slaed1.f slaed2.f slaed3.f slaed4.f
+   slaed4_br.f slaed5.f slaed6.f
+   slaed7.f slaed7_br.f slaed8.f slaed9.f slaed9_br.f slaeda.f
+   slaev2.f slagtf.f
    slagts.f slamrg.f slanst.f
    slapy2.f slapy3.f slarnv.f
    slarra.f slarrb.f slarrc.f slarrd.f slarre.f slarrf.f slarrj.f
@@ -55,7 +57,7 @@ set(SCLAUX
    slasd7.f slasd8.f slasda.f slasdq.f slasdt.f
    slaset.f slasq1.f slasq2.f slasq3.f slasq4.f slasq5.f slasq6.f
    slasr.f  slasrt.f slassq.f90 slasv2.f spttrf.f sstebz.f sstedc.f
-   sstein.f ssteqr.f ssterf.f sstevx.f
+   sstein.f sstebr.f ssteqr.f ssterf.f sstevx.f
    slartgp.f slartgs.f ../INSTALL/sroundup_lwork.f
    ${SECOND_SRC})
 
@@ -65,8 +67,10 @@ set(DZLAUX
    dbdsqr.f ddisna.f
    disnan.f
    dlabad.f dlacpy.f dladiv.f dlae2.f  dlaebz.f
-   dlaed0.f dlaed1.f dlaed2.f dlaed3.f dlaed4.f dlaed5.f dlaed6.f
-   dlaed7.f dlaed8.f dlaed9.f dlaeda.f dlaev2.f dlagtf.f
+   dlaed0.f dlaed0_br.f dlaed1.f dlaed2.f dlaed3.f dlaed4.f
+   dlaed4_br.f dlaed5.f dlaed6.f
+   dlaed7.f dlaed7_br.f dlaed8.f dlaed9.f dlaed9_br.f dlaeda.f
+   dlaev2.f dlagtf.f
    dlagts.f dlamrg.f dlanst.f
    dlapy2.f dlapy3.f dlarnv.f
    dlarra.f dlarrb.f dlarrc.f dlarrd.f dlarre.f dlarrf.f dlarrj.f
@@ -77,7 +81,7 @@ set(DZLAUX
    dlaset.f dlasq1.f dlasq2.f dlasq3.f dlasq4.f dlasq5.f dlasq6.f
    dlasr.f  dlasrt.f dlassq.f90 dlasv2.f dlaisnan.f
    dpttrf.f
-   dstebz.f dstedc.f dstein.f dsteqr.f dsterf.f dstevx.f
+   dstebz.f dstedc.f dstebr.f dstein.f dsteqr.f dsterf.f dstevx.f
    dlartgp.f dlartgs.f ../INSTALL/droundup_lwork.f
    ../INSTALL/dlamch.f ${DSECOND_SRC})
 

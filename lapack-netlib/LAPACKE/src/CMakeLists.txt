@@ -1011,6 +1011,8 @@ lapacke_dsptrs.c
 lapacke_dsptrs_work.c
 lapacke_dstebz.c
 lapacke_dstebz_work.c
+lapacke_dstebr.c
+lapacke_dstebr_work.c
 lapacke_dstedc.c
 lapacke_dstedc_work.c
 lapacke_dstegr.c
@@ -1584,6 +1586,8 @@ lapacke_ssptrs.c
 lapacke_ssptrs_work.c
 lapacke_sstebz.c
 lapacke_sstebz_work.c
+lapacke_sstebr.c
+lapacke_sstebr_work.c
 lapacke_sstedc.c
 lapacke_sstedc_work.c
 lapacke_sstegr.c

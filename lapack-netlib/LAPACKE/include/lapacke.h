@@ -3574,6 +3574,9 @@ lapack_int LAPACKE_dstebz( char range, char order, lapack_int n, double vl,
                            lapack_int* m, lapack_int* nsplit, double* w,
                            lapack_int* iblock, lapack_int* isplit );
 
+lapack_int LAPACKE_sstebr( lapack_int n, float* d, float* e );
+lapack_int LAPACKE_dstebr( lapack_int n, double* d, double* e );
+
 lapack_int LAPACKE_sstedc( int matrix_layout, char compz, lapack_int n, float* d,
                            float* e, float* z, lapack_int ldz );
 lapack_int LAPACKE_dstedc( int matrix_layout, char compz, lapack_int n,
@@ -9196,6 +9199,13 @@ lapack_int LAPACKE_dstebz_work( char range, char order, lapack_int n, double vl,
                                 lapack_int* m, lapack_int* nsplit, double* w,
                                 lapack_int* iblock, lapack_int* isplit,
                                 double* work, lapack_int* iwork );
+
+lapack_int LAPACKE_sstebr_work( lapack_int n, float* d, float* e, float* work,
+                                lapack_int lwork, lapack_int* iwork,
+                                lapack_int liwork );
+lapack_int LAPACKE_dstebr_work( lapack_int n, double* d, double* e,
+                                double* work, lapack_int lwork,
+                                lapack_int* iwork, lapack_int liwork );
 
 lapack_int LAPACKE_sstedc_work( int matrix_layout, char compz, lapack_int n,
                                 float* d, float* e, float* z, lapack_int ldz,

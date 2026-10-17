@@ -280,8 +280,8 @@ lapackobjs2sc="
     slasd0 slasd1 slasd2 slasd3 slasd4 slasd5 slasd6
     slasd7 slasd8 slasda slasdq slasdt
     slaset slasq1 slasq2 slasq3 slasq4 slasq5 slasq6
-    slasr  slasrt slassq slasv2 spttrf sstebz sstedc
-    ssteqr ssterf slaisnan sisnan
+    slasr  slasrt slassq slasv2 spttrf sstebz sstebr
+    sstedc ssteqr ssterf slaisnan sisnan
     slartgp slartgs
 "
 
@@ -300,8 +300,8 @@ lapackobjs2dz="
     dlasd0 dlasd1 dlasd2 dlasd3 dlasd4 dlasd5 dlasd6
     dlasd7 dlasd8 dlasda dlasdq dlasdt
     dlaset dlasq1 dlasq2 dlasq3 dlasq4 dlasq5 dlasq6
-    dlasr  dlasrt dlassq dlasv2 dpttrf dstebz dstedc
-    dsteqr dsterf dlaisnan disnan
+    dlasr  dlasrt dlassq dlasv2 dpttrf dstebz dstebr
+    dstedc dsteqr dsterf dlaisnan disnan
     dlartgp dlartgs
     dlamch dlamc3
 "
@@ -2117,6 +2117,8 @@ lapackeobjsd="
     LAPACKE_dsptrs_work
     LAPACKE_dstebz
     LAPACKE_dstebz_work
+    LAPACKE_dstebr
+    LAPACKE_dstebr_work
     LAPACKE_dstedc
     LAPACKE_dstedc_work
     LAPACKE_dstegr
@@ -2736,6 +2738,8 @@ lapackeobjss="
     LAPACKE_ssptrs_work
     LAPACKE_sstebz
     LAPACKE_sstebz_work
+    LAPACKE_sstebr
+    LAPACKE_sstebr_work
     LAPACKE_sstedc
     LAPACKE_sstedc_work
     LAPACKE_sstegr
