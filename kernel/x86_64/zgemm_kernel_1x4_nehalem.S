@@ -178,15 +178,15 @@
 	movq	%r11, KK
 #endif
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 
 	movq	N,  J
 	sarq	$2, J
 	NOBRANCH
-	jle	.L20
+	jle	L(20)
 	ALIGN_4
 
-.L01:
+L(01):
 #if defined(TRMMKERNEL) && defined(LEFT)
         movq    OFFSET, %rax
 	movq    %rax, KK
@@ -203,7 +203,7 @@
 	movq	M,  I
 	ALIGN_4
 
-.L11:
+L(11):
 	prefetcht2	 -16 * SIZE(BB)
 	subq		 $-8 * SIZE, BB
 
@@ -260,10 +260,10 @@
 #endif
 	sarq	$2, %rax
 	NOBRANCH
-	jle	.L15
+	jle	L(15)
 	ALIGN_3
 
-.L12:
+L(12):
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	ADD1	%xmm1, %xmm12
@@ -389,10 +389,10 @@
 
 	subq	$1, %rax
 	BRANCH
-	jg	.L12
+	jg	L(12)
 	ALIGN_3
 
-.L15:
+L(15):
 	movddup	ALPHA_R, %xmm6
 	movddup	ALPHA_I, %xmm7
 
@@ -403,10 +403,10 @@
 #endif
 	andq	$3, %rax		# if (k & 1)
 	BRANCH
-	je	.L18
+	je	L(18)
 	ALIGN_3
 
-.L16:
+L(16):
 	ADD1	%xmm1, %xmm12
 	movaps	-16 * SIZE(BO), %xmm1
 	ADD2	%xmm2, %xmm13
@@ -442,10 +442,10 @@
 
 	subq	$1, %rax
 	BRANCH
-	jg	.L16
+	jg	L(16)
 	ALIGN_3
 
-.L18:
+L(18):
 	ADD1	%xmm1, %xmm12
 	ADD2	%xmm2, %xmm13
 	ADD1	%xmm3, %xmm14
@@ -505,7 +505,7 @@
 
 	testq	$15, CO1
 	NOBRANCH
-	jne	.L18x
+	jne	L(18x)
 
 #ifndef TRMMKERNEL
 	movaps	(CO1), %xmm0
@@ -541,7 +541,7 @@
 	addq	$2 * SIZE, CO2
 	decq	I
 	BRANCH
-	jg	.L11
+	jg	L(11)
 
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	addq	$4, KK
@@ -552,11 +552,11 @@
 
 	subq	$1, J
 	BRANCH
-	jg	.L01
-	jmp	.L20
+	jg	L(01)
+	jmp	L(20)
 	ALIGN_4
 
-.L18x:
+L(18x):
 #ifndef TRMMKERNEL
 	movups	(CO1), %xmm0
 	movups	(CO1, LDC), %xmm1
@@ -591,7 +591,7 @@
 	addq	$2 * SIZE, CO2
 	decq	I
 	BRANCH
-	jg	.L11
+	jg	L(11)
 
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	addq	$4, KK
@@ -602,13 +602,13 @@
 
 	subq	$1, J
 	BRANCH
-	jg	.L01
+	jg	L(01)
 	ALIGN_4
 
-.L20:
+L(20):
 	testq	$2, N
 	BRANCH
-	jle	.L30
+	jle	L(30)
 
 #if defined(TRMMKERNEL) && defined(LEFT)
         movq    OFFSET, %rax
@@ -622,7 +622,7 @@
 	movq	M,  I
 	ALIGN_4
 
-.L21:
+L(21):
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
 	(defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -667,10 +667,10 @@
 #endif
 	sarq	$2, %rax
 	NOBRANCH
-	jle	.L25
+	jle	L(25)
 	ALIGN_3
 
-.L22:
+L(22):
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	ADD1	%xmm1, %xmm8
@@ -742,10 +742,10 @@
 
 	subq	$1, %rax
 	BRANCH
-	jg	.L22
+	jg	L(22)
 	ALIGN_3
 
-.L25:
+L(25):
 #ifndef TRMMKERNEL
 	movq	K, %rax
 #else
@@ -753,10 +753,10 @@
 #endif
 	andq	$3, %rax		# if (k & 1)
 	BRANCH
-	je	.L28
+	je	L(28)
 	ALIGN_3
 
-.L26:
+L(26):
 	ADD1	%xmm1, %xmm8
 	movaps	-16 * SIZE(BO), %xmm1
 	ADD2	%xmm2, %xmm9
@@ -778,10 +778,10 @@
 
 	subq	$1, %rax
 	BRANCH
-	jg	.L26
+	jg	L(26)
 	ALIGN_3
 
-.L28:
+L(28):
 	ADD1	%xmm1, %xmm8
 	ADD2	%xmm2, %xmm9
 	ADD1	%xmm3, %xmm10
@@ -857,7 +857,7 @@
 	addq	$2 * SIZE, CO2
 	decq	I
 	BRANCH
-	jg	.L21
+	jg	L(21)
 
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	addq	$2, KK
@@ -867,10 +867,10 @@
 	movq	BO, B
 	ALIGN_4
 
-.L30:
+L(30):
 	testq	$1, N
 	BRANCH
-	jle	.L999
+	jle	L(999)
 
 #if defined(TRMMKERNEL) && defined(LEFT)
         movq    OFFSET, %rax
@@ -883,7 +883,7 @@
 	movq	M,  I
 	ALIGN_4
 
-.L31:
+L(31):
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
 	(defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -925,10 +925,10 @@
 #endif
 	sarq	$2, %rax
 	NOBRANCH
-	jle	.L35
+	jle	L(35)
 	ALIGN_3
 
-.L32:
+L(32):
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	ADD1	%xmm1, %xmm8
@@ -968,13 +968,13 @@
 
 	subq	$1, %rax
 	BRANCH
-	jg	.L32
+	jg	L(32)
 
 	addpd	%xmm10, %xmm8
 	addpd	%xmm11, %xmm9
 	ALIGN_3
 
-.L35:
+L(35):
 #ifndef TRMMKERNEL
 	movq	K, %rax
 #else
@@ -982,10 +982,10 @@
 #endif
 	andq	$3, %rax
 	BRANCH
-	je	.L38
+	je	L(38)
 	ALIGN_3
 
-.L36:
+L(36):
 	ADD1	%xmm1, %xmm8
 	movaps	-16 * SIZE(BO), %xmm1
 	ADD2	%xmm2, %xmm9
@@ -999,10 +999,10 @@
 
 	subq	$1, %rax
 	BRANCH
-	jg	.L36
+	jg	L(36)
 	ALIGN_3
 
-.L38:
+L(38):
 	ADD1	%xmm1, %xmm8
 	ADD2	%xmm2, %xmm9
 
@@ -1061,10 +1061,10 @@
 	addq	$2 * SIZE, CO1
 	decq	I
 	BRANCH
-	jg	.L31
+	jg	L(31)
 	ALIGN_4
 
-.L999:
+L(999):
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12

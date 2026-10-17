@@ -247,13 +247,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lsl	M4, M, #5					// M4 = M * 4 * SIZE
 
-.Ldgemm_tcopy_L4_BEGIN:
+L(dgemm_tcopy_L4_BEGIN):
 	asr 	J, M, #2					// J = M / 4
 	cmp 	J, #0
-	ble	.Ldgemm_tcopy_L2_BEGIN
+	ble	L(dgemm_tcopy_L2_BEGIN)
 
 	.align	5
-.Ldgemm_tcopy_L4_M4_BEGIN:
+L(dgemm_tcopy_L4_M4_BEGIN):
 
 	mov	A01, A
 	add	A02, A01, LDA
@@ -266,51 +266,51 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	I, N, #2					// I = N / 4
 	cmp 	I, #0
-	ble	.Ldgemm_tcopy_L4_M4_40
+	ble	L(dgemm_tcopy_L4_M4_40)
 
 	.align	5
-.Ldgemm_tcopy_L4_M4_20:
+L(dgemm_tcopy_L4_M4_20):
 
 	COPY4x4
 
 	subs	I , I , #1
-	bne	.Ldgemm_tcopy_L4_M4_20
+	bne	L(dgemm_tcopy_L4_M4_20)
 
 
-.Ldgemm_tcopy_L4_M4_40:
+L(dgemm_tcopy_L4_M4_40):
 
 	tst	N , #2
-	ble	.Ldgemm_tcopy_L4_M4_60
+	ble	L(dgemm_tcopy_L4_M4_60)
 
 	COPY2x4
 
 
-.Ldgemm_tcopy_L4_M4_60:
+L(dgemm_tcopy_L4_M4_60):
 
 	tst	N, #1
-	ble	.Ldgemm_tcopy_L4_M4_END
+	ble	L(dgemm_tcopy_L4_M4_END)
 
 	COPY1x4
 
 
-.Ldgemm_tcopy_L4_M4_END:
+L(dgemm_tcopy_L4_M4_END):
 
 	subs	J , J, #1						// j--
-	bne	.Ldgemm_tcopy_L4_M4_BEGIN
+	bne	L(dgemm_tcopy_L4_M4_BEGIN)
 
 
 
 /*********************************************************************************************/
 
-.Ldgemm_tcopy_L2_BEGIN:
+L(dgemm_tcopy_L2_BEGIN):
 
 	tst	M, #3
-	ble	.Ldgemm_tcopy_L999
+	ble	L(dgemm_tcopy_L999)
 
 	tst	M, #2
-	ble	.Ldgemm_tcopy_L1_BEGIN
+	ble	L(dgemm_tcopy_L1_BEGIN)
 
-.Ldgemm_tcopy_L2_M4_BEGIN:
+L(dgemm_tcopy_L2_M4_BEGIN):
 	mov	A01, A
 	add	A02, A01, LDA
 	add	A, A02, LDA
@@ -320,80 +320,80 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	I, N, #2					// I = N / 4
 	cmp 	I, #0
-	ble	.Ldgemm_tcopy_L2_M4_40
+	ble	L(dgemm_tcopy_L2_M4_40)
 
 	.align	5
-.Ldgemm_tcopy_L2_M4_20:
+L(dgemm_tcopy_L2_M4_20):
 
 	COPY4x2
 
 	subs	I , I , #1
-	bne	.Ldgemm_tcopy_L2_M4_20
+	bne	L(dgemm_tcopy_L2_M4_20)
 
 
-.Ldgemm_tcopy_L2_M4_40:
+L(dgemm_tcopy_L2_M4_40):
 
 	tst	N , #2
-	ble	.Ldgemm_tcopy_L2_M4_60
+	ble	L(dgemm_tcopy_L2_M4_60)
 
 	COPY2x2
 
-.Ldgemm_tcopy_L2_M4_60:
+L(dgemm_tcopy_L2_M4_60):
 
 	tst	N , #1
-	ble	.Ldgemm_tcopy_L2_M4_END
+	ble	L(dgemm_tcopy_L2_M4_END)
 
 	COPY1x2
 
 
-.Ldgemm_tcopy_L2_M4_END:
+L(dgemm_tcopy_L2_M4_END):
 
 
 /*********************************************************************************************/
 
-.Ldgemm_tcopy_L1_BEGIN:
+L(dgemm_tcopy_L1_BEGIN):
 
 	tst	M, #1
-	ble	.Ldgemm_tcopy_L999
+	ble	L(dgemm_tcopy_L999)
 
 
-.Ldgemm_tcopy_L1_M4_BEGIN:
+L(dgemm_tcopy_L1_M4_BEGIN):
 
 	mov	A01, A						// A01 = A
 	mov	B01, B
 
 	asr	I, N, #2					// I = M / 4
 	cmp 	I, #0
-	ble	.Ldgemm_tcopy_L1_M4_40
+	ble	L(dgemm_tcopy_L1_M4_40)
 
 	.align	5
-.Ldgemm_tcopy_L1_M4_20:
+L(dgemm_tcopy_L1_M4_20):
 
 	COPY4x1
 
 	subs	I , I , #1
-	bne	.Ldgemm_tcopy_L1_M4_20
+	bne	L(dgemm_tcopy_L1_M4_20)
 
 
-.Ldgemm_tcopy_L1_M4_40:
+L(dgemm_tcopy_L1_M4_40):
 
 	tst	N , #2
-	ble	.Ldgemm_tcopy_L1_M4_60
+	ble	L(dgemm_tcopy_L1_M4_60)
 
 	COPY2x1
 
-.Ldgemm_tcopy_L1_M4_60:
+L(dgemm_tcopy_L1_M4_60):
 
 	tst	N , #1
-	ble	.Ldgemm_tcopy_L1_M4_END
+	ble	L(dgemm_tcopy_L1_M4_END)
 
 	COPY1x1
 
 
-.Ldgemm_tcopy_L1_M4_END:
+L(dgemm_tcopy_L1_M4_END):
 
 
-.Ldgemm_tcopy_L999:
+L(dgemm_tcopy_L999):
 	mov	x0, #0						// set return value
 	RESTORE_REGS
 	ret

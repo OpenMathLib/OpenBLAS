@@ -68,16 +68,16 @@
 	pxor	%xmm2, %xmm2
 	cmpq	$0, N
 	pxor	%xmm3, %xmm3
-	jle	.L999
+	jle	L(999)
 
 	cmpq	$2 * SIZE, INCX
-	jne	.L20
+	jne	L(20)
 	cmpq	$2 * SIZE, INCY
-	jne	.L20
+	jne	L(20)
 
 	movq	N,  %rax
 	sarq	$2, %rax
-	jle	.L15
+	jle	L(15)
 
 	movsd	 0 * SIZE(X), %xmm4
 	movsd	 0 * SIZE(Y), %xmm6
@@ -96,10 +96,10 @@
 	movsd	 3 * SIZE(Y), %xmm13
 
 	decq	%rax
-	jle	.L12
+	jle	L(12)
 	ALIGN_3
 
-.L11:
+L(11):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -172,10 +172,10 @@
 	addq	$8 * SIZE, Y
 
 	decq	%rax
-	jg	.L11
+	jg	L(11)
 	ALIGN_3
 
-.L12:
+L(12):
 	addsd	 %xmm4, %xmm0
 	movaps	 %xmm10, %xmm14
 	mulsd	 %xmm11, %xmm10
@@ -226,10 +226,10 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L15:
+L(15):
 	movq	N,  %rax
 	andq	$2, %rax
-	jle	.L17
+	jle	L(17)
 
 	movsd	 0 * SIZE(X), %xmm4
 	movsd	 0 * SIZE(Y), %xmm6
@@ -267,10 +267,10 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L17:
+L(17):
 	movq	N,  %rax
 	andq	$1, %rax
-	jle	.L999
+	jle	L(999)
 
 	movsd	 0 * SIZE(X), %xmm4
 	movsd	 0 * SIZE(Y), %xmm6
@@ -288,16 +288,16 @@
 	addsd	 %xmm8, %xmm1
 	addsd	 %xmm5, %xmm2
 	addsd	 %xmm9, %xmm3
-	jmp	 .L999
+	jmp	 L(999)
 	ALIGN_3
 
-.L20:
+L(20):
 	movq	N,  %rax
 	sarq	$2, %rax
-	jle	.L25
+	jle	L(25)
 	ALIGN_3
 
-.L23:
+L(23):
 	movsd	 0 * SIZE(X), %xmm4
 	movsd	 0 * SIZE(Y), %xmm6
 	movsd	 1 * SIZE(X), %xmm5
@@ -372,16 +372,16 @@
 	addsd	 %xmm9, %xmm3
 
 	decq	%rax
-	jg	.L23
+	jg	L(23)
 	ALIGN_3
 
-.L25:
+L(25):
 	testq	$3, N
-	je	.L999
+	je	L(999)
 
 	movq	N,  %rax
 	andq	$2, %rax
-	jle	.L27
+	jle	L(27)
 
 	movsd	 0 * SIZE(X), %xmm4
 	movsd	 0 * SIZE(Y), %xmm6
@@ -422,10 +422,10 @@
 
 	ALIGN_3
 
-.L27:
+L(27):
 	movq	N,  %rax
 	andq	$1, %rax
-	jle	.L999
+	jle	L(999)
 
 	movsd	 0 * SIZE(X), %xmm4
 	movsd	 0 * SIZE(Y), %xmm6
@@ -445,7 +445,7 @@
 	addsd	 %xmm9, %xmm3
 	ALIGN_3
 
-.L999:
+L(999):
 #ifndef CONJ
 	subsd	 %xmm2, %xmm0
 	addsd	 %xmm3, %xmm1

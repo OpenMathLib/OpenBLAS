@@ -63,9 +63,9 @@
 	pxor	%xmm0, %xmm0
 	xor	RET, RET
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 	testq	INCX, INCX
-	jle	.L999
+	jle	L(999)
 
 	salq	$ZBASE_SHIFT, INCX
 	movq	M, MM
@@ -86,14 +86,14 @@
 	movapd	 %xmm0, %xmm2
 	movapd	 %xmm0, %xmm3
 	cmpq	$2 * SIZE, INCX
-	jne	.L60
+	jne	L(60)
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L25
+	jle	L(25)
 	ALIGN_4
 
-.L21:
+L(21):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -142,15 +142,15 @@
 
 	addq	$16 * SIZE, X
 	decq	I
-	jg	.L21
+	jg	L(21)
 	ALIGN_4
 
-.L25:
+L(25):
 	andq	$7,  M
-	jle	.L30
+	jle	L(30)
 
 	testq	$4, M
-	je	.L26
+	je	L(26)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -174,9 +174,9 @@
 	addq	$8 * SIZE, X
 	ALIGN_3
 
-.L26:
+L(26):
 	testq	$2, M
-	je	.L27
+	je	L(27)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -190,9 +190,9 @@
 	maxpd	%xmm4, %xmm0
 	ALIGN_3
 
-.L27:
+L(27):
 	testq	$1, M
-	je	.L30
+	je	L(30)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -202,7 +202,7 @@
 	maxsd	%xmm4, %xmm2
 	ALIGN_4
 
-.L30:
+L(30):
 	movq	XX, X
 	movq	MM, M
 
@@ -216,10 +216,10 @@
 
 	movq	M,  I
 	sarq	$2, I
-	jle	.L35
+	jle	L(35)
 	ALIGN_4
 
-.L31:
+L(31):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -252,16 +252,16 @@
 	.long	0xd9500f4c
 #endif
 	testq	 $3, %r11
-	jne	 .L33
+	jne	 L(33)
 
 	addq	$8 * SIZE, X
 	addq	$4, RET
 	decq	I
-	jg	.L31
-	jmp	.L35
+	jg	L(31)
+	jmp	L(35)
 	ALIGN_4
 
-.L33:
+L(33):
 	movsd	0 * SIZE(X), %xmm1
 	movsd	1 * SIZE(X), %xmm2
 	movsd	2 * SIZE(X), %xmm3
@@ -288,21 +288,21 @@
 
 	incq	RET
 	comisd	%xmm0, %xmm1
-	je	.L999
+	je	L(999)
 	incq	RET
 	comisd	%xmm0, %xmm3
-	je	.L999
+	je	L(999)
 	incq	RET
 	comisd	%xmm0, %xmm5
-	je	.L999
+	je	L(999)
 	incq	RET
 	comisd	%xmm0, %xmm7
-	je	.L999
+	je	L(999)
 	ALIGN_3
 
-.L35:
+L(35):
 	testq	$2, M
-	je	.L36
+	je	L(36)
 
 	movsd	0 * SIZE(X), %xmm1
 	movsd	1 * SIZE(X), %xmm2
@@ -319,24 +319,24 @@
 	addpd	%xmm4,  %xmm3
 	incq	RET
 	comisd	%xmm0, %xmm1
-	je	.L999
+	je	L(999)
 	incq	RET
 	comisd	%xmm0, %xmm3
-	je	.L999
+	je	L(999)
 	ALIGN_3
 
-.L36:
+L(36):
 	incq	RET
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_3
 
-.L60:
+L(60):
 	movq	M,  I
 	sarq	$3, I
-	jle	.L65
+	jle	L(65)
 	ALIGN_4
 
-.L61:
+L(61):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -390,15 +390,15 @@
 	maxpd	%xmm6, %xmm3
 
 	decq	I
-	jg	.L61
+	jg	L(61)
 	ALIGN_4
 
-.L65:
+L(65):
 	andq	$7,  M
-	jle	.L70
+	jle	L(70)
 
 	testq	$4, M
-	je	.L66
+	je	L(66)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -423,9 +423,9 @@
 	maxpd	%xmm6, %xmm1
 	ALIGN_3
 
-.L66:
+L(66):
 	testq	$2, M
-	je	.L67
+	je	L(67)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -439,9 +439,9 @@
 	maxpd	%xmm4, %xmm2
 	ALIGN_3
 
-.L67:
+L(67):
 	testq	$1, M
-	je	.L70
+	je	L(70)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -451,7 +451,7 @@
 	maxsd	%xmm4, %xmm3
 	ALIGN_3
 
-.L70:
+L(70):
 	movq	XX, X
 	movq	MM, M
 
@@ -465,10 +465,10 @@
 
 	movq	M,  I
 	sarq	$2, I
-	jle	.L75
+	jle	L(75)
 	ALIGN_4
 
-.L71:
+L(71):
 #if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI) || defined(BULLDOZER)
 	prefetch	PREFETCHSIZE * SIZE(X)
 #endif
@@ -509,15 +509,15 @@
 	.long	0xd9500f4c
 #endif
 	testq	 $3, %r11
-	jne	 .L73
+	jne	 L(73)
 
 	addq	$4, RET
 	decq	I
-	jg	.L71
-	jmp	.L75
+	jg	L(71)
+	jmp	L(75)
 	ALIGN_4
 
-.L73:
+L(73):
 	subq	INCX, X
 	movsd	0 * SIZE(X), %xmm7
 	movsd	1 * SIZE(X), %xmm8
@@ -547,21 +547,21 @@
 
 	incq	RET
 	comisd	%xmm0, %xmm1
-	je	.L999
+	je	L(999)
 	incq	RET
 	comisd	%xmm0, %xmm3
-	je	.L999
+	je	L(999)
 	incq	RET
 	comisd	%xmm0, %xmm5
-	je	.L999
+	je	L(999)
 	incq	RET
 	comisd	%xmm0, %xmm7
-	je	.L999
+	je	L(999)
 	ALIGN_3
 
-.L75:
+L(75):
 	testq	$2, M
-	je	.L76
+	je	L(76)
 
 	movsd	0 * SIZE(X), %xmm1
 	movsd	1 * SIZE(X), %xmm2
@@ -579,17 +579,17 @@
 	addpd	%xmm4,  %xmm3
 	incq	RET
 	comisd	%xmm0, %xmm1
-	je	.L999
+	je	L(999)
 	incq	RET
 	comisd	%xmm0, %xmm3
-	je	.L999
+	je	L(999)
 	ALIGN_3
 
-.L76:
+L(76):
 	incq	RET
 	ALIGN_4
 
-.L999:
+L(999):
 	RESTOREREGISTERS
 
 	ret

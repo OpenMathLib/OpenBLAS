@@ -96,35 +96,35 @@
 	movq	STACK_LDC, LDC
 
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 	testq	N, N
-	jle	.L999
+	jle	L(999)
 
 	salq	$ZBASE_SHIFT, LDC
 
 #ifdef DOUBLE
 	ucomisd	%xmm15, %xmm0
-	jne	.L71
+	jne	L(71)
 	ucomisd	%xmm15, %xmm1
-	jne	.L71
+	jne	L(71)
 #else
 	ucomiss	%xmm15, %xmm0
-	jne	.L71
+	jne	L(71)
 	ucomiss	%xmm15, %xmm1
-	jne	.L71
+	jne	L(71)
 #endif
 	ALIGN_2
 
-.L53:
+L(53):
 	movq	C, C1		# c_offset1 = c_offset
 	addq	LDC, C		# c_offset += ldc
 
 	movq	M,  I
 	sarq	$2, I
-	jle	.L56
+	jle	L(56)
 	ALIGN_2
 
-.L57:
+L(57):
 #ifdef OPTERON
 	prefetchw	64 * SIZE(C1)
 #endif
@@ -139,39 +139,39 @@
 	MOVSD	%xmm0, 7 * SIZE(C1)
 	addq	$8 * SIZE, C1		# c_offset1 += 8
 	decq	I			# i--
-	jg	.L57
+	jg	L(57)
 	ALIGN_2
 
-.L56:
+L(56):
 	movq	M,  I
 	andq	$3, I
-	jle	.L62
+	jle	L(62)
 	ALIGN_2
 
-.L63:
+L(63):
 	MOVSD	%xmm0, 0 * SIZE(C1)
 	MOVSD	%xmm0, 1 * SIZE(C1)
 	addq	$2 * SIZE,C1
 	decq	I
-	jg	.L63
+	jg	L(63)
 	ALIGN_2
 
-.L62:
+L(62):
 	decq	N			# j --
-	jg	.L53
-	jmp	.L999
+	jg	L(53)
+	jmp	L(999)
 	ALIGN_3
 
-.L71:
+L(71):
 	movq	C, C1
 	addq	LDC, C		# c_offset += ldc
 
 	movq	M,  I
 	sarq	$1, I
-	jle	.L84
+	jle	L(84)
 	ALIGN_3
 
-.L85:
+L(85):
 #ifdef OPTERON
 	prefetchw	16 * SIZE(C1)
 #endif
@@ -207,15 +207,15 @@
 	MOVSD	%xmm8, 3 * SIZE(C1)
 	addq	$4 * SIZE, C1
 	decq	I
-	jg	.L85
+	jg	L(85)
 	ALIGN_3
 
-.L84:
+L(84):
 	testq	$1, M
-	jle	.L74
+	jle	L(74)
 	ALIGN_3
 
-.L75:
+L(75):
 	prefetchnta	80 * SIZE(C1)
 
 	MOVSD	0 * SIZE(C1), %xmm2
@@ -234,12 +234,12 @@
 	MOVSD	%xmm4, 1 * SIZE(C1)
 	ALIGN_2
 
-.L74:
+L(74):
 	decq	N
-	jg	.L71
+	jg	L(71)
 	ALIGN_2
 
-.L999:
+L(999):
 #ifdef WINDOWS_ABI
 	movups	  0(%rsp), %xmm6
 	movups	 16(%rsp), %xmm7

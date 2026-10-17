@@ -100,9 +100,9 @@
 	movq	$0, IS
 
 	test	M, M
-	jle	.L79			# goto END
+	jle	L(79)			# goto END
 	test	N, N
-	jle	.L79			# goto END
+	jle	L(79)			# goto END
 
 	movq	LDA, %rax
 	imulq	$P,  %rax		# P * lda
@@ -113,7 +113,7 @@
 	salq	$BASE_SHIFT, LDA
 	ALIGN_2
 
-.L32:
+L(32):
 	movq	$P,  %rax
 	movq	N,    MIN_N
 	subq	IS,   MIN_N
@@ -125,17 +125,17 @@
 	leaq	(X,XP, 1), XP
 
 	cmpq	$SIZE, INCX
-	je	.L34			# if incx == 1 goto L34
+	je	L(34)			# if incx == 1 goto L34
 
 	movq	BUFFER, XP
 	movq	XP,     X1
 
 	movq	MIN_N, I
 	sarq	$2,I
-	jle	.L35
+	jle	L(35)
 	ALIGN_2
 
-.L36:
+L(36):
 	FLD	(X)
 	addq	INCX,X
 	FLD	(X)
@@ -152,33 +152,33 @@
 
 	addq	$4 * SIZE, X1
 	decq	I
-	jg	.L36
+	jg	L(36)
 	ALIGN_3
 
-.L35:
+L(35):
 	movq	MIN_N, I
 	andq	$3,    I
-	jle	.L34
+	jle	L(34)
 	ALIGN_2
 
-.L42:
+L(42):
 	FLD	(X)
 	addq	INCX,  X
 	FST	(X1)
 	addq	$SIZE, X1
 	decq	I
-	jg	.L42
+	jg	L(42)
 	ALIGN_3
 
 /* Main Routine */
-.L34:
+L(34):
 	movq	 Y, Y1
 	movq	 M, J
 	sarq	$2, J
-	jle	.L47
+	jle	L(47)
 	ALIGN_2
 
-.L48:
+L(48):
 	movq	A, A1			# a_offset = a
 	fldz
 	addq	$4 * SIZE, A		# a += 4
@@ -189,10 +189,10 @@
 	fldz
 	FLD	(X1)			# bt1 = b_offset
 	sarq	$1,    I
-	jle	.L51
+	jle	L(51)
 	ALIGN_2
 
-.L80:
+L(80):
 	FLD	0 * SIZE(A1)		# at1  = *(a_offset + 0)
 	fmul	%st(1), %st		# at1 *= bt1
 	faddp	%st, %st(2)		# ct1 += at1
@@ -233,12 +233,12 @@
 	addq	$2 * SIZE, X1		# b_offset += 2
 
 	decq	I
-	jg	.L80
+	jg	L(80)
 
-.L51:
+L(51):
 	movq	MIN_N, I
 	andq	$1,  I
-	je	.L57
+	je	L(57)
 
 	FLD	0 * SIZE(A1)		# at1  = *(a_offset + 0)
 	fmul	%st(1), %st		# at1 *= bt1
@@ -258,7 +258,7 @@
 	fldz
 	ALIGN_2
 
-.L57:
+L(57):
 	ffreep	%st(0)
 
 	fxch	%st(4)
@@ -289,16 +289,16 @@
 	addq	INCY, Y1
 
 	decq	J		# j --
-	jg	.L48
+	jg	L(48)
 	ALIGN_3
 
-.L47:
+L(47):
 	movq	M,  J
 	andq	$3, J		# j = (m & 3)
-	jle	.L60
+	jle	L(60)
 	ALIGN_2
 
-.L61:
+L(61):
 	movq	A, A1			# a_offset = a
 	fldz
 	addq	$SIZE, A		# a++
@@ -308,10 +308,10 @@
 	fldz
 	movq	MIN_N, I
 	sarq	$3,  I
-	jle	.L64
+	jle	L(64)
 	ALIGN_2
 
-.L65:
+L(65):
 	FLD	0 * SIZE(X1)
 	FLD	(A1)
 	fmulp	%st, %st(1)
@@ -362,15 +362,15 @@
 
 	addq	$8 * SIZE, X1
 	decq	I
-	jg	.L65
+	jg	L(65)
 
-.L64:
+L(64):
 	movq	MIN_N,I
 	andq	$7, I
-	jle	.L70
+	jle	L(70)
 	ALIGN_2
 
-.L71:
+L(71):
 	FLD	(X1)
 	addq	$SIZE, X1
 	FLD	(A1)
@@ -378,10 +378,10 @@
 	addq	LDA,  A1	 # a_offset += lda
 	faddp	%st, %st(1)
 	decq	I
-	jg	.L71
+	jg	L(71)
 	ALIGN_2
 
-.L70:
+L(70):
 	faddp	%st, %st(1)
 	faddp	%st, %st(1)
 	faddp	%st, %st(1)
@@ -392,15 +392,15 @@
 	FST	(Y1)
 	addq	INCY, Y1
 	decq	J
-	jg	.L61
+	jg	L(61)
 
-.L60:
+L(60):
 	addq	PLDA_M, A
 	addq	$P, IS
 	cmpq	N,  IS
-	jl	.L32
+	jl	L(32)
 
-.L79:
+L(79):
 	EMMS
 
 	movq	  0(%rsp), %rbx

@@ -102,20 +102,20 @@
 
 	movq	N,  J
 	sarq	$1, J
-	jle	.L20
+	jle	L(20)
 	ALIGN_4
 
-.L01:
+L(01):
 	movq	A, AO1
 	leaq	(A,   LDA), AO2
 	leaq	(A, LDA, 2), A
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L08
+	jle	L(08)
 	ALIGN_4
 
-.L03:
+L(03):
 
 #ifndef DOUBLE
 	vmovss	0 * SIZE(AO1), %xmm0
@@ -194,18 +194,18 @@
 	addq	$8 * SIZE, AO2
 	subq	$-16 * SIZE, B
 	decq	I
-	jg	.L03
+	jg	L(03)
 	ALIGN_4
 
 
-.L08:
+L(08):
 	testq	$4 , M
-	je	.L14
+	je	L(14)
 
 	ALIGN_4
 
 
-.L13:
+L(13):
 #ifndef DOUBLE
 	vmovss	0 * SIZE(AO1), %xmm0
 	vmovss	0 * SIZE(AO2), %xmm1
@@ -248,13 +248,13 @@
 	subq	$-8 * SIZE, B
 	ALIGN_4
 
-.L14:
+L(14):
 	movq	M,  I
 	andq	$3, I
-	jle	.L16
+	jle	L(16)
 	ALIGN_4
 
-.L15:
+L(15):
 #ifndef DOUBLE
 	vmovss	0 * SIZE(AO1), %xmm0
 	vmovss	0 * SIZE(AO2), %xmm1
@@ -272,26 +272,26 @@
 	addq	$SIZE, AO2
 	addq	$2 * SIZE, B
 	decq	I
-	jg	.L15
+	jg	L(15)
 	ALIGN_4
 
-.L16:
+L(16):
 	decq	J
-	jg	.L01
+	jg	L(01)
 	ALIGN_4
 
-.L20:
+L(20):
 	testq	$1, N
-	jle	.L999
+	jle	L(999)
 
 	movq	A, AO1
 
 	movq	M,  I
 	sarq	$2, I
-	jle	.L34
+	jle	L(34)
 	ALIGN_4
 
-.L33:
+L(33):
 #ifndef DOUBLE
 	vmovups	0 * SIZE(AO1), %xmm0
 
@@ -307,16 +307,16 @@
 	addq	$4 * SIZE, AO1
 	subq	$-4 * SIZE, B
 	decq	I
-	jg	.L33
+	jg	L(33)
 	ALIGN_4
 
-.L34:
+L(34):
 	movq	M,  I
 	andq	$3, I
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L35:
+L(35):
 #ifndef DOUBLE
 	vmovss	0 * SIZE(AO1), %xmm0
 	vmovss	%xmm0,   0 * SIZE(B)
@@ -328,11 +328,11 @@
 	addq	$SIZE, AO1
 	addq	$1 * SIZE, B
 	decq	I
-	jg	.L35
+	jg	L(35)
 	ALIGN_4
 
 
-.L999:
+L(999):
 #ifdef WINDOWS_ABI
 	vmovups	  0(%rsp), %xmm6
 	vmovups	 16(%rsp), %xmm7
