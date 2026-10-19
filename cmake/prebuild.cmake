@@ -1605,7 +1605,8 @@ endif ()
     "#define GEMM_MULTITHREAD_THRESHOLD\t${GEMM_MULTITHREAD_THRESHOLD}\n")
   # Move to where gen_config_h would place it
   file(MAKE_DIRECTORY ${TARGET_CONF_DIR})
-  file(RENAME ${TARGET_CONF_TEMP} "${TARGET_CONF_DIR}/${TARGET_CONF}")
+  configure_file("${TARGET_CONF_TEMP}" "${TARGET_CONF_DIR}/${TARGET_CONF}" COPYONLY)
+  file(REMOVE "${TARGET_CONF_TEMP}")
 
 else(NOT CMAKE_CROSSCOMPILING)
   # compile getarch
