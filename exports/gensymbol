@@ -984,7 +984,7 @@ lapackobjs2z="$lapackobjs2z
     zrscl
     ztrsyl3
     zgecxx
-    ugesvdmr3
+    zgesvdmr3
     "
 #    zlaqz0
 #    zlaqz1
