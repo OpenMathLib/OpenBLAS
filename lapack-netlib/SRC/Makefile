@@ -233,8 +233,9 @@ SLASRC_O = \
    ssytrd_2stage.o ssytrd_sy2sb.o ssytrd_sb2st.o ssb2st_kernels.o \
    ssyevd_2stage.o ssyev_2stage.o ssyevx_2stage.o ssyevr_2stage.o \
    ssbev_2stage.o ssbevx_2stage.o ssbevd_2stage.o ssygv_2stage.o \
-   sgesvdq.o slatrs3.o strsyl3.o sgelst.o sgedmd.o sgedmdq.o sgecxx.o
-   
+   sgesvdq.o slatrs3.o strsyl3.o sgelst.o sgedmd.o sgedmdq.o sgecxx.o \
+   sbdsvdmr3.o sbdsvdmr3_work.o sbdtgk.o sgesvdmr3.o slar1v_tgk.o \
+   slarrb_tgk.o slarrf_tgk.o slarrv_tgk.o
 endif
 
 ifneq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE))" ""
@@ -343,7 +344,8 @@ CLASRC_O = \
    chetrd_2stage.o chetrd_he2hb.o chetrd_hb2st.o chb2st_kernels.o \
    cheevd_2stage.o cheev_2stage.o cheevx_2stage.o cheevr_2stage.o \
    chbev_2stage.o chbevx_2stage.o chbevd_2stage.o chegv_2stage.o \
-   cgesvdq.o clatrs3.o ctrsyl3.o cgelst.o cgedmd.o cgedmdq.o cgecxx.o
+   cgesvdq.o clatrs3.o ctrsyl3.o cgelst.o cgedmd.o cgedmdq.o cgecxx.o \
+   cgesvdmr3.o
 endif
 
 ifdef USEXBLAS
@@ -444,7 +446,9 @@ DLASRC_O = \
    dsytrd_2stage.o dsytrd_sy2sb.o dsytrd_sb2st.o dsb2st_kernels.o \
    dsyevd_2stage.o dsyev_2stage.o dsyevx_2stage.o dsyevr_2stage.o \
    dsbev_2stage.o dsbevx_2stage.o dsbevd_2stage.o dsygv_2stage.o \
-   dgesvdq.o dlatrs3.o dtrsyl3.o dgelst.o dgedmd.o dgedmdq.o dgecxx.o
+   dgesvdq.o dlatrs3.o dtrsyl3.o dgelst.o dgedmd.o dgedmdq.o dgecxx.o \
+   dbdsvdmr3.o dbdsvdmr3_work.o dbdtgk.o dgesvdmr3.o dlar1v_tgk.o \
+   dlarrb_tgk.o dlarrf_tgk.o dlarrv_tgk.o
 endif
 
 ifdef USEXBLAS
@@ -553,7 +557,8 @@ ZLASRC_O = \
    zhetrd_2stage.o zhetrd_he2hb.o zhetrd_hb2st.o zhb2st_kernels.o \
    zheevd_2stage.o zheev_2stage.o zheevx_2stage.o zheevr_2stage.o \
    zhbev_2stage.o zhbevx_2stage.o zhbevd_2stage.o zhegv_2stage.o \
-   zgesvdq.o zlatrs3.o ztrsyl3.o zgelst.o zgedmd.o zgedmdq.o zgecxx.o
+   zgesvdq.o zlatrs3.o ztrsyl3.o zgelst.o zgedmd.o zgedmdq.o zgecxx.o \
+   zgesvdmr3.o
 endif
 
 ifdef USEXBLAS
