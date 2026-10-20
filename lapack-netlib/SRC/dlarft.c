@@ -231,8 +231,8 @@ typedef struct Namelist Namelist;
 static integer c__3 = 3;
 static integer c_n1 = -1;
 static integer c__2 = 2;
-static doublereal c_b13 = 1.;
-static doublereal c_b22 = -1.;
+static doublereal c_b18 = 1.;
+static doublereal c_b27 = -1.;
 
 /* > \brief \b DLARFT forms the triangular factor T of a block reflector H = I - vtvH */
 
@@ -283,6 +283,9 @@ f"> */
 /* > H(i) is stored in the i-th row of the array V, and */
 /* > */
 /* >    H  =  I - V**T * T * V */
+/* > */
+/* > If DIRECT or STOREV = 'T', see Further Details for the shape of T */
+/* > */
 /* > \endverbatim */
 
 /*  Arguments: */
@@ -295,6 +298,8 @@ f"> */
 /* >          multiplied to form the block reflector: */
 /* >          = 'F': H = H(1) H(2) . . . H(k) (Forward) */
 /* >          = 'B': H = H(k) . . . H(2) H(1) (Backward) */
+/* >          = 'T' (with STOREV='R'): H = H(k) . . . H(2) H(1) (backward) */
+/* >                but we return the T matrix that is already (conjugate) transposed */
 /* > \endverbatim */
 /* > */
 /* > \param[in] STOREV */
@@ -302,8 +307,10 @@ f"> */
 /* >          STOREV is CHARACTER*1 */
 /* >          Specifies how the vectors which define the elementary */
 /* >          reflectors are stored (see also Further Details): */
-/* >          = 'C': columnwise */
-/* >          = 'R': rowwise */
+/* >          = 'C': column-wise */
+/* >          = 'R': row-wise */
+/* >          = 'T': (With DIRECT='F') Row-wise, but we return the T */
+/* >                matrix that is already (conjugate) transposed. */
 /* > \endverbatim */
 /* > */
 /* > \param[in] N */
@@ -374,7 +381,7 @@ f"> */
 /* >  the H(i) is best illustrated by the following example with n = 5 and */
 /* >  k = 3. The elements equal to 1 are not stored. */
 /* > */
-/* >  DIRECT = 'F' and STOREV = 'C':         DIRECT = 'F' and STOREV = 'R': */
+/* >  DIRECT = 'F' and STOREV = 'C':         DIRECT = 'F' and (STOREV = 'R' or STOREV = 'T'): */
 /* > */
 /* >               V = (  1       )                 V = (  1 v1 v1 v1 v1 ) */
 /* >                   ( v1  1    )                     (     1 v2 v2 v2 ) */
@@ -382,13 +389,36 @@ f"> */
 /* >                   ( v1 v2 v3 ) */
 /* >                   ( v1 v2 v3 ) */
 /* > */
-/* >  DIRECT = 'B' and STOREV = 'C':         DIRECT = 'B' and STOREV = 'R': */
+/* >  DIRECT = 'B' and STOREV = 'C':         (DIRECT = 'B' or DIRECT = 'T') and STOREV = 'R': */
 /* > */
 /* >               V = ( v1 v2 v3 )                 V = ( v1 v1  1       ) */
 /* >                   ( v1 v2 v3 )                     ( v2 v2 v2  1    ) */
 /* >                   (  1 v2 v3 )                     ( v3 v3 v3 v3  1 ) */
 /* >                   (     1 v3 ) */
 /* >                   (        1 ) */
+/* > */
+/* >  In addition, the shape of T is determined by these same flags as */
+/* >   in the below table. */
+/* >    'U' denotes upper triangular */
+/* >    'L' denotes lower triangular */
+/* >    'X' denotes no current implementation */
+/* >    We also provide the logical variable that represents the case */
+/* >    in the code if it is implemented */
+/* > */
+/* >    |-----------------------------------------------------------| */
+/* >    |              | DIRECT = 'F' | DIRECT = 'B' | DIRECT = 'T' | */
+/* >    |--------------+--------------+--------------+--------------| */
+/* >    | STOREV = 'C' | U (QR)       | L (QL)       | X            | */
+/* >    | STOREV = 'R' | U (LQ)       | L (RQ)       | U (RQT)      | */
+/* >    | STOREV = 'T' | L (LQT)      | X            | X            | */
+/* >    |-----------------------------------------------------------| */
+/* > */
+/* >    Finally, the relationship between the (conjugate) transposed T matrices */
+/* >    are as follows: (Note that T_{FC} denotes the T associated with calling */
+/* >    this routine with DIRECT = 'F' and STOREV = 'C') */
+/* > */
+/* >    T_{TR} = (T_{BR})**H */
+/* >    T_{FT} = (T_{FR})**H */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
@@ -403,12 +433,14 @@ f"> */
 
     /* Local variables */
     integer i__, j, l;
-    logical lq, ql, qr;
+    logical lq, ql, qr, rq;
     integer nx;
     extern /* Subroutine */ void dlarft_lvl2__(char *, char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *);
-    logical dirf, colv;
+    logical lqt, rqt, dirb, dirf;
+    integer info;
+    logical dirt;
     extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
@@ -417,9 +449,10 @@ f"> */
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *), dlacpy_(
 	    char *, integer *, integer *, doublereal *, integer *, doublereal 
-	    *, integer *);
+	    *, integer *), xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
+    logical storec, storer, storet;
 
 
 /*  -- LAPACK auxiliary routine -- */
@@ -442,7 +475,7 @@ f"> */
 /*     Based on the algorithm of Elmroth and Gustavson, */
 /*     IBM J. Res. Develop. Vol 44 No. 4 July 2000. */
 
-/*     Quick return if possible */
+/*     Convert our character flags to logical flags for later */
 
     /* Parameter adjustments */
     v_dim1 = *ldv;
@@ -454,18 +487,95 @@ f"> */
     t -= t_offset;
 
     /* Function Body */
-    if (*n == 0 || *k == 0) {
-	return;
+    dirf = lsame_(direct, "F");
+    dirb = lsame_(direct, "B");
+    dirt = lsame_(direct, "T");
+    storec = lsame_(storev, "C");
+    storer = lsame_(storev, "R");
+    storet = lsame_(storev, "T");
+
+/*     Error handling for our character flags */
+
+    info = 0;
+    if (! (dirf || dirb || dirt)) {
+
+/*        DIRECT holds an illegal value */
+
+	info = 1;
+    } else if (! (storec || storer || storet)) {
+
+/*        STOREV holds an illegal value */
+
+	info = 2;
+    } else if (dirb && storet) {
+
+/*        This case is purposefully not implemented, but any other value for */
+/*        STOREV is valid, so we report STOREV as the invalid input */
+
+	info = 2;
+    } else if (dirt && storec) {
+
+/*        This case is purposefully not implemented, but any other value for */
+/*        DIRECT is valid, so we report DIRECT as the invalid input */
+
+	info = 1;
+    } else if (dirt && storet) {
+
+/*        This case is purposefully not implemented, and is ambiguous what */
+/*        the user wants to do, so we arbitrarily say DIRECT is the incorrect */
+/*        character flag. */
+
+	info = 1;
     }
+    if (info != 0) {
+	xerbla_("DLARFT", &info, (ftnlen)6);
+	return 0;
+    }
+
+/*     Quick return if possible */
+
+    if (*n == 0 || *k == 0) {
+	return 0;
+    }
+
+/*     Now we determine what factorization our flags are associated with */
+
+/*     QR happens when we have forward direction in column storage */
+
+    qr = dirf && storec;
+
+/*     LQT happens when we have forward direction in row storage and want to compute the transpose of */
+/*     the T we would normally compute */
+
+    lqt = dirf && storet;
+
+/*     LQ happens when we have forward direction in row storage and want to compute the T we would */
+/*     normally compute */
+
+    lq = dirf && storer;
+
+/*     QL happens when we have backward direction in column storage */
+
+    ql = dirb && storec;
+
+/*     RQT happens when we have backward direction in row storage and want to compute the transpose */
+/*     of the T we would normally compute */
+
+    rqt = dirt && storer;
+
+/*     RQ happens when we have backward direction in row storage and want to compute the T that we */
+/*     would normally compute */
+
+    rq = dirb && storer;
 
 /*     Base case */
 
     if (*n == 1 || *k == 1) {
 	t[t_dim1 + 1] = tau[1];
-	return;
+	return 0;
     }
 
-/*     Determine when to cross over into the level 2 based implementation */
+/*     Determine crossover point from level 2 to level 3 BLAS implementation */
 
 /* Writing concatenation */
     i__1[0] = 1, a__1[0] = direct;
@@ -474,41 +584,17 @@ f"> */
     nx = ilaenv_(&c__3, "DLARFT", ch__1, n, k, &c_n1, &c_n1, (ftnlen)6, (
 	    ftnlen)2);
     if (*k < nx) {
+
+/*        Finish this component with a level 2 BLAS implementation */
+
 	dlarft_lvl2__(direct, storev, n, k, &v[v_offset], ldv, &tau[1], &t[
 		t_offset], ldt);
-	return;
+	return 0;
     }
 
-/*     Beginning of executable statements */
+/*     Beginning of executable statements for the recursive case */
 
     l = *k / 2;
-
-/*     Determine what kind of Q we need to compute */
-/*     We assume that if the user doesn't provide 'F' for DIRECT, */
-/*     then they meant to provide 'B' and if they don't provide */
-/*     'C' for STOREV, then they meant to provide 'R' */
-
-    dirf = lsame_(direct, "F");
-    colv = lsame_(storev, "C");
-
-/*     QR happens when we have forward direction in column storage */
-
-    qr = dirf && colv;
-
-/*     LQ happens when we have forward direction in row storage */
-
-    lq = dirf && ! colv;
-
-/*     QL happens when we have backward direction in column storage */
-
-    ql = ! dirf && colv;
-
-/*     The last case is RQ. Due to how we structured this, if the */
-/*     above 3 are false, then RQ must be true, so we never store */
-/*     this */
-/*     RQ happens when we have backward direction in row storage */
-/*     RQ = (.NOT.DIRF).AND.(.NOT.COLV) */
-
     if (qr) {
 
 /*        Break V apart into 6 components */
@@ -585,7 +671,7 @@ f"> */
 /*        T_{1,2} = T_{1,2}*V_{2,2} */
 
 	i__2 = *k - l;
-	dtrmm_("Right", "Lower", "No transpose", "Unit", &l, &i__2, &c_b13, &
+	dtrmm_("Right", "Lower", "No transpose", "Unit", &l, &i__2, &c_b18, &
 		v[l + 1 + (l + 1) * v_dim1], ldv, &t[(l + 1) * t_dim1 + 1], 
 		ldt);
 
@@ -594,8 +680,8 @@ f"> */
 
 	i__2 = *k - l;
 	i__3 = *n - *k;
-	dgemm_("Transpose", "No transpose", &l, &i__2, &i__3, &c_b13, &v[*k + 
-		1 + v_dim1], ldv, &v[*k + 1 + (l + 1) * v_dim1], ldv, &c_b13, 
+	dgemm_("Transpose", "No transpose", &l, &i__2, &i__3, &c_b18, &v[*k + 
+		1 + v_dim1], ldv, &v[*k + 1 + (l + 1) * v_dim1], ldv, &c_b18, 
 		&t[(l + 1) * t_dim1 + 1], ldt);
 
 /*        At this point, we have that T_{1,2} = V_1'*V_2 */
@@ -605,14 +691,14 @@ f"> */
 /*        T_{1,2} = -T_{1,1}*T_{1,2} */
 
 	i__2 = *k - l;
-	dtrmm_("Left", "Upper", "No transpose", "Non-unit", &l, &i__2, &c_b22,
+	dtrmm_("Left", "Upper", "No transpose", "Non-unit", &l, &i__2, &c_b27,
 		 &t[t_offset], ldt, &t[(l + 1) * t_dim1 + 1], ldt);
 
 /*        T_{1,2} = T_{1,2}*T_{2,2} */
 
 	i__2 = *k - l;
 	dtrmm_("Right", "Upper", "No transpose", "Non-unit", &l, &i__2, &
-		c_b13, &t[l + 1 + (l + 1) * t_dim1], ldt, &t[(l + 1) * t_dim1 
+		c_b18, &t[l + 1 + (l + 1) * t_dim1], ldt, &t[(l + 1) * t_dim1 
 		+ 1], ldt);
     } else if (lq) {
 
@@ -648,8 +734,8 @@ f"> */
 
 /*        Then, consider the product: */
 
-/*        (I - V_1'*T_{1,1}*V_1)*(I - V_2'*T_{2,2}*V_2) */
-/*        = I - V_1'*T_{1,1}*V_1 - V_2'*T_{2,2}*V_2 + V_1'*T_{1,1}*V_1*V_2'*T_{2,2}*V_2 */
+/*        (I - V_1'*T_{1,1}'*V_1)*(I - V_2'*T_{2,2}'*V_2) */
+/*        = I - V_1'*T_{1,1}'*V_1 - V_2'*T_{2,2}'*V_2 + V_1'*T_{1,1}'*V_1*V_2'*T_{2,2}'*V_2 */
 
 /*        Define T_{1,2} = -T_{1,1}*V_1*V_2'*T_{2,2} */
 
@@ -660,7 +746,7 @@ f"> */
 /*            |---| */
 
 /*        So, our product is equivalent to the matrix product */
-/*        I - V'*T*V */
+/*        I - V'*T'*V */
 /*        This means, we can compute T_{1,1} and T_{2,2}, then use this information */
 /*        to compute T_{1,2} */
 
@@ -686,7 +772,7 @@ f"> */
 /*        T_{1,2} = T_{1,2}*V_{2,2}' */
 
 	i__2 = *k - l;
-	dtrmm_("Right", "Upper", "Transpose", "Unit", &l, &i__2, &c_b13, &v[l 
+	dtrmm_("Right", "Upper", "Transpose", "Unit", &l, &i__2, &c_b18, &v[l 
 		+ 1 + (l + 1) * v_dim1], ldv, &t[(l + 1) * t_dim1 + 1], ldt);
 
 /*        T_{1,2} = V_{1,3}*V_{2,3}' + T_{1,2} */
@@ -694,9 +780,9 @@ f"> */
 
 	i__2 = *k - l;
 	i__3 = *n - *k;
-	dgemm_("No transpose", "Transpose", &l, &i__2, &i__3, &c_b13, &v[(*k 
+	dgemm_("No transpose", "Transpose", &l, &i__2, &i__3, &c_b18, &v[(*k 
 		+ 1) * v_dim1 + 1], ldv, &v[l + 1 + (*k + 1) * v_dim1], ldv, &
-		c_b13, &t[(l + 1) * t_dim1 + 1], ldt);
+		c_b18, &t[(l + 1) * t_dim1 + 1], ldt);
 
 /*        At this point, we have that T_{1,2} = V_1*V_2' */
 /*        All that is left is to pre and post multiply by -T_{1,1} and T_{2,2} */
@@ -705,15 +791,118 @@ f"> */
 /*        T_{1,2} = -T_{1,1}*T_{1,2} */
 
 	i__2 = *k - l;
-	dtrmm_("Left", "Upper", "No transpose", "Non-unit", &l, &i__2, &c_b22,
+	dtrmm_("Left", "Upper", "No transpose", "Non-unit", &l, &i__2, &c_b27,
 		 &t[t_offset], ldt, &t[(l + 1) * t_dim1 + 1], ldt);
 
 /*        T_{1,2} = T_{1,2}*T_{2,2} */
 
 	i__2 = *k - l;
 	dtrmm_("Right", "Upper", "No transpose", "Non-unit", &l, &i__2, &
-		c_b13, &t[l + 1 + (l + 1) * t_dim1], ldt, &t[(l + 1) * t_dim1 
+		c_b18, &t[l + 1 + (l + 1) * t_dim1], ldt, &t[(l + 1) * t_dim1 
 		+ 1], ldt);
+    } else if (lqt) {
+
+/*        Break V apart into 6 components */
+
+/*        V = |----------------------| */
+/*            |V_{1,1} V_{1,2} V{1,3}| */
+/*            |0       V_{2,2} V{2,3}| */
+/*            |----------------------| */
+
+/*        V_{1,1}\in\R^{l,l}      unit upper triangular */
+/*        V_{1,2}\in\R^{l,k-l}    rectangular */
+/*        V_{1,3}\in\R^{l,n-k}    rectangular */
+
+/*        V_{2,2}\in\R^{k-l,k-l}  unit upper triangular */
+/*        V_{2,3}\in\R^{k-l,n-k}  rectangular */
+
+/*        Where l = floor(k/2) */
+
+/*        We will construct the T matrix */
+/*        T = |---------------| */
+/*            |T_{1,1} 0      | */
+/*            |T_{2,1} T_{2,2}| */
+/*            |---------------| */
+
+/*        T is the triangular factor obtained from block reflectors. */
+/*        To motivate the structure, assume we have already computed T_{1,1} */
+/*        and T_{2,2}. Then collect the associated reflectors in V_1 and V_2 */
+
+/*        T_{1,1}\in\R^{l, l}     lower triangular */
+/*        T_{2,2}\in\R^{k-l, k-l} lower triangular */
+/*        T_{2,1}\in\R^{k-l, l}   rectangular */
+
+/*        Then, consider the product: */
+
+/*        (I - V_1'*T_{1,1}*V_1)*(I - V_2'*T_{2,2}*V_2) */
+/*        = I - V_1'*T_{1,1}*V_1 - V_2'*T_{2,2}*V_2 + V_1'*T_{1,1}*V_1*V_2'*T_{2,2}*V_2 */
+
+/*        Define T_{2,1} = -T_{2,2}*V_2*V_1'*T_{1,1} */
+
+/*        Then, we can define the matrix V as */
+/*        V = |---| */
+/*            |V_1| */
+/*            |V_2| */
+/*            |---| */
+
+/*        So, our product is equivalent to the matrix product */
+/*        I - V'*T*V */
+/*        This means, we can compute T_{1,1} and T_{2,2}, then use this information */
+/*        to compute T_{2,1} */
+
+/*        Compute T_{1,1} recursively */
+
+	dlarft_(direct, storev, n, &l, &v[v_offset], ldv, &tau[1], &t[
+		t_offset], ldt);
+
+/*        Compute T_{2,2} recursively */
+
+	i__2 = *n - l;
+	i__3 = *k - l;
+	dlarft_(direct, storev, &i__2, &i__3, &v[l + 1 + (l + 1) * v_dim1], 
+		ldv, &tau[l + 1], &t[l + 1 + (l + 1) * t_dim1], ldt);
+
+/*        Compute T_{2,1} */
+/*        T_{2,1} = V_{1,2}' */
+
+	i__2 = *k - l;
+	for (i__ = 1; i__ <= i__2; ++i__) {
+	    i__3 = l;
+	    for (j = 1; j <= i__3; ++j) {
+		t[l + i__ + j * t_dim1] = v[j + (l + i__) * v_dim1];
+	    }
+	}
+
+/*        T_{2,1} = V_{2,2}*T_{2,1} */
+
+	i__2 = *k - l;
+	dtrmm_("Left", "Upper", "No Transpose", "Unit", &i__2, &l, &c_b18, &v[
+		l + 1 + (l + 1) * v_dim1], ldv, &t[l + 1 + t_dim1], ldt);
+
+/*        T_{2,1} = V_{2,3}*V_{1,3}' + T_{2,1} */
+/*        Note: We assume K <= N, and GEMM will do nothing if N=K */
+
+	i__2 = *k - l;
+	i__3 = *n - *k;
+	dgemm_("No Transpose", "Transpose", &i__2, &l, &i__3, &c_b18, &v[l + 
+		1 + (*k + 1) * v_dim1], ldv, &v[(*k + 1) * v_dim1 + 1], ldv, &
+		c_b18, &t[l + 1 + t_dim1], ldt);
+
+/*        At this point, we have that T_{2,1} = V_2*V_1' */
+/*        All that is left is to pre and post multiply by -T_{2,2} and T_{1,1} */
+/*        respectively. */
+
+/*        T_{2,1} = -T_{2,2}*T_{2,1} */
+
+	i__2 = *k - l;
+	dtrmm_("Left", "Lower", "No Transpose", "Non-unit", &i__2, &l, &c_b27,
+		 &t[l + 1 + (l + 1) * t_dim1], ldt, &t[l + 1 + t_dim1], ldt);
+
+/*        T_{2,1} = T_{2,1}*T_{1,1} */
+
+	i__2 = *k - l;
+	dtrmm_("Right", "Lower", "No Transpose", "Non-unit", &i__2, &l, &
+		c_b18, &t[t_offset], ldt, &t[l + 1 + t_dim1], ldt);
     } else if (ql) {
 
 /*        Break V apart into 6 components */
@@ -791,7 +980,7 @@ f"> */
 /*        T_{2,1} = T_{2,1}*V_{2,1} */
 
 	i__2 = *k - l;
-	dtrmm_("Right", "Upper", "No transpose", "Unit", &l, &i__2, &c_b13, &
+	dtrmm_("Right", "Upper", "No transpose", "Unit", &l, &i__2, &c_b18, &
 		v[*n - *k + 1 + v_dim1], ldv, &t[*k - l + 1 + t_dim1], ldt);
 
 /*        T_{2,1} = V_{2,2}'*V_{2,1} + T_{2,1} */
@@ -799,8 +988,8 @@ f"> */
 
 	i__2 = *k - l;
 	i__3 = *n - *k;
-	dgemm_("Transpose", "No transpose", &l, &i__2, &i__3, &c_b13, &v[(*k 
-		- l + 1) * v_dim1 + 1], ldv, &v[v_offset], ldv, &c_b13, &t[*k 
+	dgemm_("Transpose", "No transpose", &l, &i__2, &i__3, &c_b18, &v[(*k 
+		- l + 1) * v_dim1 + 1], ldv, &v[v_offset], ldv, &c_b18, &t[*k 
 		- l + 1 + t_dim1], ldt);
 
 /*        At this point, we have that T_{2,1} = V_2'*V_1 */
@@ -810,7 +999,7 @@ f"> */
 /*        T_{2,1} = -T_{2,2}*T_{2,1} */
 
 	i__2 = *k - l;
-	dtrmm_("Left", "Lower", "No transpose", "Non-unit", &l, &i__2, &c_b22,
+	dtrmm_("Left", "Lower", "No transpose", "Non-unit", &l, &i__2, &c_b27,
 		 &t[*k - l + 1 + (*k - l + 1) * t_dim1], ldt, &t[*k - l + 1 + 
 		t_dim1], ldt);
 
@@ -818,11 +1007,8 @@ f"> */
 
 	i__2 = *k - l;
 	dtrmm_("Right", "Lower", "No transpose", "Non-unit", &l, &i__2, &
-		c_b13, &t[t_offset], ldt, &t[*k - l + 1 + t_dim1], ldt);
-    } else {
-
-/*        Else means RQ case */
-
+		c_b18, &t[t_offset], ldt, &t[*k - l + 1 + t_dim1], ldt);
+    } else if (rq) {
 /*        Break V apart into 6 components */
 
 /*        V = |-----------------------| */
@@ -855,8 +1041,8 @@ f"> */
 
 /*        Then, consider the product: */
 
-/*        (I - V_2'*T_{2,2}*V_2)*(I - V_1'*T_{1,1}*V_1) */
-/*        = I - V_2'*T_{2,2}*V_2 - V_1'*T_{1,1}*V_1 + V_2'*T_{2,2}*V_2*V_1'*T_{1,1}*V_1 */
+/*        (I - V_2'*T_{2,2}'*V_2)*(I - V_1'*T_{1,1}'*V_1) */
+/*        = I - V_2'*T_{2,2}'*V_2 - V_1'*T_{1,1}'*V_1 + V_2'*T_{2,2}'*V_2*V_1'*T_{1,1}'*V_1 */
 
 /*        Define T_{2,1} = -T_{2,2}*V_2*V_1'*T_{1,1} */
 
@@ -867,7 +1053,7 @@ f"> */
 /*            |---| */
 
 /*        So, our product is equivalent to the matrix product */
-/*        I - V'*T*V */
+/*        I - V'*T'*V */
 /*        This means, we can compute T_{1,1} and T_{2,2}, then use this information */
 /*        to compute T_{2,1} */
 
@@ -893,7 +1079,7 @@ f"> */
 /*        T_{2,1} = T_{2,1}*V_{1,2}' */
 
 	i__2 = *k - l;
-	dtrmm_("Right", "Lower", "Transpose", "Unit", &l, &i__2, &c_b13, &v[(*
+	dtrmm_("Right", "Lower", "Transpose", "Unit", &l, &i__2, &c_b18, &v[(*
 		n - *k + 1) * v_dim1 + 1], ldv, &t[*k - l + 1 + t_dim1], ldt);
 
 /*        T_{2,1} = V_{2,1}*V_{1,1}' + T_{2,1} */
@@ -901,8 +1087,8 @@ f"> */
 
 	i__2 = *k - l;
 	i__3 = *n - *k;
-	dgemm_("No transpose", "Transpose", &l, &i__2, &i__3, &c_b13, &v[*k - 
-		l + 1 + v_dim1], ldv, &v[v_offset], ldv, &c_b13, &t[*k - l + 
+	dgemm_("No transpose", "Transpose", &l, &i__2, &i__3, &c_b18, &v[*k - 
+		l + 1 + v_dim1], ldv, &v[v_offset], ldv, &c_b18, &t[*k - l + 
 		1 + t_dim1], ldt);
 
 /*        At this point, we have that T_{2,1} = V_2*V_1' */
@@ -912,16 +1098,120 @@ f"> */
 /*        T_{2,1} = -T_{2,2}*T_{2,1} */
 
 	i__2 = *k - l;
-	dtrmm_("Left", "Lower", "No tranpose", "Non-unit", &l, &i__2, &c_b22, 
-		&t[*k - l + 1 + (*k - l + 1) * t_dim1], ldt, &t[*k - l + 1 + 
+	dtrmm_("Left", "Lower", "No transpose", "Non-unit", &l, &i__2, &c_b27,
+		 &t[*k - l + 1 + (*k - l + 1) * t_dim1], ldt, &t[*k - l + 1 + 
 		t_dim1], ldt);
 
 /*        T_{2,1} = T_{2,1}*T_{1,1} */
 
 	i__2 = *k - l;
-	dtrmm_("Right", "Lower", "No tranpose", "Non-unit", &l, &i__2, &c_b13,
-		 &t[t_offset], ldt, &t[*k - l + 1 + t_dim1], ldt);
+	dtrmm_("Right", "Lower", "No transpose", "Non-unit", &l, &i__2, &
+		c_b18, &t[t_offset], ldt, &t[*k - l + 1 + t_dim1], ldt);
+    } else if (rqt) {
+/*        Break V apart into 6 components */
+
+/*        V = |-----------------------| */
+/*            |V_{1,1} V_{1,2} 0      | */
+/*            |V_{2,1} V_{2,2} V_{2,3}| */
+/*            |-----------------------| */
+
+/*        V_{1,1}\in\R^{k-l,n-k}  rectangular */
+/*        V_{1,2}\in\R^{k-l,k-l}  unit lower triangular */
+
+/*        V_{2,1}\in\R^{l,n-k}    rectangular */
+/*        V_{2,2}\in\R^{l,k-l}    rectangular */
+/*        V_{2,3}\in\R^{l,l}      unit lower triangular */
+
+/*        We will construct the T matrix */
+/*        T = |---------------| */
+/*            |T_{1,1} T_{1,2}| */
+/*            | 0      T_{2,2}| */
+/*            |---------------| */
+
+/*        T is the triangular factor obtained from block reflectors. */
+/*        To motivate the structure, assume we have already computed T_{1,1} */
+/*        and T_{2,2}. Then collect the associated reflectors in V_1 and V_2 */
+
+/*        T_{1,1}\in\R^{k-l, k-l} non-unit upper triangular */
+/*        T_{2,2}\in\R^{l, l}     non-unit upper triangular */
+/*        T_{1,2}\in\R^{k-l, l}   rectangular */
+
+/*        Where l = floor(k/2) */
+
+/*        Then, consider the product: */
+
+/*        (I - V_1'*T_{1,1}*V_1)*(I - V_2'*T_{2,2}*V_2) */
+/*        = I - V_1'*T_{1,1}*V_1 - V_2'*T_{2,2}*V_2 + V_1'*T_{1,1}*V_1*V_2'*T_{2,2}*V_2 */
+
+/*        Define T_{1,2} = -T_{1,1}*V_1*V_2'*T_{2,2} */
+
+/*        Then, we can define the matrix V as */
+/*        V = |---| */
+/*            |V_1| */
+/*            |V_2| */
+/*            |---| */
+
+/*        So, our product is equivalent to the matrix product */
+/*        I - V'*T*V */
+/*        This means, we can compute T_{1,1} and T_{2,2}, then use this information */
+/*        to compute T_{1,2} */
+
+/*        Compute T_{1,1} recursively */
+
+	i__2 = *n - l;
+	i__3 = *k - l;
+	dlarft_(direct, storev, &i__2, &i__3, &v[v_offset], ldv, &tau[1], &t[
+		t_offset], ldt);
+
+/*        Compute T_{2,2} recursively */
+
+	dlarft_(direct, storev, n, &l, &v[*k - l + 1 + v_dim1], ldv, &tau[*k 
+		- l + 1], &t[*k - l + 1 + (*k - l + 1) * t_dim1], ldt);
+
+/*        Compute T_{1,2} */
+/*        T_{1,2} = V_{2,2}' */
+
+	i__2 = *k - l;
+	for (i__ = 1; i__ <= i__2; ++i__) {
+	    i__3 = l;
+	    for (j = 1; j <= i__3; ++j) {
+		t[i__ + (*k - l + j) * t_dim1] = v[*k - l + j + (*n - *k + 
+			i__) * v_dim1];
+	    }
+	}
+
+/*        T_{1,2} = V_{1,2}T_{1,2} */
+
+	i__2 = *k - l;
+	dtrmm_("Left", "Lower", "No Transpose", "Unit", &i__2, &l, &c_b18, &v[
+		(*n - *k + 1) * v_dim1 + 1], ldv, &t[(*k - l + 1) * t_dim1 + 
+		1], ldt);
+
+/*        T_{1,2} = V_{1,1}V_{2,1}' + T_{1,2} */
+
+	i__2 = *k - l;
+	i__3 = *n - *k;
+	dgemm_("No Transpose", "Transpose", &i__2, &l, &i__3, &c_b18, &v[
+		v_offset], ldv, &v[*k - l + 1 + v_dim1], ldv, &c_b18, &t[(*k 
+		- l + 1) * t_dim1 + 1], ldt);
+
+/*        At this point, we have that T_{1,2} = V_1*V_2' */
+/*        All that is left is to pre and post multiply by -T_{1,1} and T_{2,2} */
+/*        respectively. */
+
+/*        T_{1,2} = -T_{1,1}*T_{1,2} */
+
+	i__2 = *k - l;
+	dtrmm_("Left", "Upper", "No Transpose", "Non-Unit", &i__2, &l, &c_b27,
+		 &t[t_offset], ldt, &t[(*k - l + 1) * t_dim1 + 1], ldt);
+
+/*        T_{1,2} = T_{1,2}*T_{2,2} */
+
+	i__2 = *k - l;
+	dtrmm_("Right", "Upper", "No Transpose", "Non-Unit", &i__2, &l, &
+		c_b18, &t[*k - l + 1 + (*k - l + 1) * t_dim1], ldt, &t[(*k - 
+		l + 1) * t_dim1 + 1], ldt);
     }
-    return;
+    return 0;
 } /* dlarft_ */
 
