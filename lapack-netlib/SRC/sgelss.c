@@ -221,17 +221,14 @@ typedef struct Namelist Namelist;
 	-lf2c -lm   (in that order)
 */
 
-
-
-
 /* Table of constant values */
 
 static integer c__6 = 6;
 static integer c_n1 = -1;
-static integer c__1 = 1;
 static integer c__0 = 0;
-static real c_b50 = 0.f;
-static real c_b83 = 1.f;
+static real c_b46 = 0.f;
+static integer c__1 = 1;
+static real c_b79 = 1.f;
 
 /* > \brief <b> SGELSS solves overdetermined or underdetermined systems for GE matrices</b> */
 
@@ -240,7 +237,6 @@ static real c_b83 = 1.f;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download SGELSS + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgelss.
 f"> */
@@ -251,7 +247,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgelss.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -398,9 +393,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup realGEsolve */
+/* > \ingroup gelss */
 
 /*  ===================================================================== */
 /* Subroutine */ void sgelss_(integer *m, integer *n, integer *nrhs, real *a, 
@@ -412,10 +405,11 @@ f"> */
     real r__1;
 
     /* Local variables */
-    real anrm, bnrm;
-    integer itau, lwork_sgebrd__, lwork_sgeqrf__, i__, lwork_sorgbr__, 
-	    lwork_sormbr__, lwork_sormlq__, iascl, ibscl, lwork_sormqr__, 
-	    chunk;
+    integer i__, bl, ie, il, mm;
+    real dum[1], eps, thr, anrm, bnrm;
+    integer itau, lwork_sgebrd__, lwork_sgelqf__, lwork_sgeqrf__, 
+	    lwork_sorgbr__, lwork_sormbr__, lwork_sormlq__, iascl, ibscl, 
+	    lwork_sormqr__, chunk;
     extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
@@ -428,9 +422,7 @@ f"> */
     integer mnthr, iwork;
     extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
-    integer bl, ie, il;
-    extern /* Subroutine */ void slabad_(real *, real *);
-    integer mm, bdspac;
+    integer bdspac;
     extern /* Subroutine */ void sgebrd_(integer *, integer *, real *, integer 
 	    *, real *, real *, real *, real *, real *, integer *, integer *);
     extern real slamch_(char *), slange_(char *, integer *, integer *,
@@ -463,13 +455,12 @@ f"> */
     extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
-    real dum[1], eps, thr;
+    extern real sroundup_lwork__(integer *);
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -479,10 +470,10 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --s;
     --work;
@@ -525,11 +516,11 @@ f"> */
 
 /*              Compute space needed for SGEQRF */
 		sgeqrf_(m, n, &a[a_offset], lda, dum, dum, &c_n1, info);
-		lwork_sgeqrf__ = dum[0];
+		lwork_sgeqrf__ = (integer) dum[0];
 /*              Compute space needed for SORMQR */
 		sormqr_("L", "T", m, nrhs, n, &a[a_offset], lda, dum, &b[
 			b_offset], ldb, dum, &c_n1, info);
-		lwork_sormqr__ = dum[0];
+		lwork_sormqr__ = (integer) dum[0];
 		mm = *n;
 /* Computing MAX */
 		i__1 = maxwrk, i__2 = *n + lwork_sgeqrf__;
@@ -550,15 +541,15 @@ f"> */
 /*              Compute space needed for SGEBRD */
 		sgebrd_(&mm, n, &a[a_offset], lda, &s[1], dum, dum, dum, dum, 
 			&c_n1, info);
-		lwork_sgebrd__ = dum[0];
+		lwork_sgebrd__ = (integer) dum[0];
 /*              Compute space needed for SORMBR */
 		sormbr_("Q", "L", "T", &mm, nrhs, n, &a[a_offset], lda, dum, &
 			b[b_offset], ldb, dum, &c_n1, info);
-		lwork_sormbr__ = dum[0];
+		lwork_sormbr__ = (integer) dum[0];
 /*              Compute space needed for SORGBR */
 		sorgbr_("P", n, n, n, &a[a_offset], lda, dum, dum, &c_n1, 
 			info);
-		lwork_sorgbr__ = dum[0];
+		lwork_sorgbr__ = (integer) dum[0];
 /*              Compute total workspace needed */
 /* Computing MAX */
 		i__1 = maxwrk, i__2 = *n * 3 + lwork_sgebrd__;
@@ -595,25 +586,27 @@ f"> */
 /*                 Path 2a - underdetermined, with many more columns */
 /*                 than rows */
 
+/*                 Compute space needed for SGELQF */
+		    sgelqf_(m, n, &a[a_offset], lda, dum, dum, &c_n1, info);
+		    lwork_sgelqf__ = (integer) dum[0];
 /*                 Compute space needed for SGEBRD */
 		    sgebrd_(m, m, &a[a_offset], lda, &s[1], dum, dum, dum, 
 			    dum, &c_n1, info);
-		    lwork_sgebrd__ = dum[0];
+		    lwork_sgebrd__ = (integer) dum[0];
 /*                 Compute space needed for SORMBR */
 		    sormbr_("Q", "L", "T", m, nrhs, n, &a[a_offset], lda, dum,
 			     &b[b_offset], ldb, dum, &c_n1, info);
-		    lwork_sormbr__ = dum[0];
+		    lwork_sormbr__ = (integer) dum[0];
 /*                 Compute space needed for SORGBR */
 		    sorgbr_("P", m, m, m, &a[a_offset], lda, dum, dum, &c_n1, 
 			    info);
-		    lwork_sorgbr__ = dum[0];
+		    lwork_sorgbr__ = (integer) dum[0];
 /*                 Compute space needed for SORMLQ */
 		    sormlq_("L", "T", n, nrhs, m, &a[a_offset], lda, dum, &b[
 			    b_offset], ldb, dum, &c_n1, info);
-		    lwork_sormlq__ = dum[0];
+		    lwork_sormlq__ = (integer) dum[0];
 /*                 Compute total workspace needed */
-		    maxwrk = *m + *m * ilaenv_(&c__1, "SGELQF", " ", m, n, &
-			    c_n1, &c_n1, (ftnlen)6, (ftnlen)1);
+		    maxwrk = *m + lwork_sgelqf__;
 /* Computing MAX */
 		    i__1 = maxwrk, i__2 = *m * *m + (*m << 2) + 
 			    lwork_sgebrd__;
@@ -648,15 +641,15 @@ f"> */
 /*                 Compute space needed for SGEBRD */
 		    sgebrd_(m, n, &a[a_offset], lda, &s[1], dum, dum, dum, 
 			    dum, &c_n1, info);
-		    lwork_sgebrd__ = dum[0];
+		    lwork_sgebrd__ = (integer) dum[0];
 /*                 Compute space needed for SORMBR */
 		    sormbr_("Q", "L", "T", m, nrhs, m, &a[a_offset], lda, dum,
 			     &b[b_offset], ldb, dum, &c_n1, info);
-		    lwork_sormbr__ = dum[0];
+		    lwork_sormbr__ = (integer) dum[0];
 /*                 Compute space needed for SORGBR */
 		    sorgbr_("P", m, n, m, &a[a_offset], lda, dum, dum, &c_n1, 
 			    info);
-		    lwork_sorgbr__ = dum[0];
+		    lwork_sorgbr__ = (integer) dum[0];
 		    maxwrk = *m * 3 + lwork_sgebrd__;
 /* Computing MAX */
 		    i__1 = maxwrk, i__2 = *m * 3 + lwork_sormbr__;
@@ -672,7 +665,7 @@ f"> */
 	    }
 	    maxwrk = f2cmax(minwrk,maxwrk);
 	}
-	work[1] = (real) maxwrk;
+	work[1] = sroundup_lwork__(&maxwrk);
 
 	if (*lwork < minwrk && ! lquery) {
 	    *info = -12;
@@ -700,7 +693,6 @@ f"> */
     sfmin = slamch_("S");
     smlnum = sfmin / eps;
     bignum = 1.f / smlnum;
-    slabad_(&smlnum, &bignum);
 
 /*     Scale A if f2cmax element outside range [SMLNUM,BIGNUM] */
 
@@ -725,8 +717,8 @@ f"> */
 /*        Matrix all zero. Return zero solution. */
 
 	i__1 = f2cmax(*m,*n);
-	slaset_("F", &i__1, nrhs, &c_b50, &c_b50, &b[b_offset], ldb);
-	slaset_("F", &minmn, &c__1, &c_b50, &c_b50, &s[1], &minmn);
+	slaset_("F", &i__1, nrhs, &c_b46, &c_b46, &b[b_offset], ldb);
+	slaset_("F", &minmn, &c__1, &c_b46, &c_b46, &s[1], &minmn);
 	*rank = 0;
 	goto L70;
     }
@@ -785,7 +777,7 @@ f"> */
 	    if (*n > 1) {
 		i__1 = *n - 1;
 		i__2 = *n - 1;
-		slaset_("L", &i__1, &i__2, &c_b50, &c_b50, &a[a_dim1 + 2], 
+		slaset_("L", &i__1, &i__2, &c_b46, &c_b46, &a[a_dim1 + 2], 
 			lda);
 	    }
 	}
@@ -845,7 +837,7 @@ f"> */
 		srscl_(nrhs, &s[i__], &b[i__ + b_dim1], ldb);
 		++(*rank);
 	    } else {
-		slaset_("F", &c__1, nrhs, &c_b50, &c_b50, &b[i__ + b_dim1], 
+		slaset_("F", &c__1, nrhs, &c_b46, &c_b46, &b[i__ + b_dim1], 
 			ldb);
 	    }
 /* L10: */
@@ -855,8 +847,8 @@ f"> */
 /*        (Workspace: need N, prefer N*NRHS) */
 
 	if (*lwork >= *ldb * *nrhs && *nrhs > 1) {
-	    sgemm_("T", "N", n, nrhs, n, &c_b83, &a[a_offset], lda, &b[
-		    b_offset], ldb, &c_b50, &work[1], ldb);
+	    sgemm_("T", "N", n, nrhs, n, &c_b79, &a[a_offset], lda, &b[
+		    b_offset], ldb, &c_b46, &work[1], ldb);
 	    slacpy_("G", n, nrhs, &work[1], ldb, &b[b_offset], ldb)
 		    ;
 	} else if (*nrhs > 1) {
@@ -867,14 +859,14 @@ f"> */
 /* Computing MIN */
 		i__3 = *nrhs - i__ + 1;
 		bl = f2cmin(i__3,chunk);
-		sgemm_("T", "N", n, &bl, n, &c_b83, &a[a_offset], lda, &b[i__ 
-			* b_dim1 + 1], ldb, &c_b50, &work[1], n);
+		sgemm_("T", "N", n, &bl, n, &c_b79, &a[a_offset], lda, &b[i__ 
+			* b_dim1 + 1], ldb, &c_b46, &work[1], n);
 		slacpy_("G", n, &bl, &work[1], n, &b[i__ * b_dim1 + 1], ldb);
 /* L20: */
 	    }
-	} else {
-	    sgemv_("T", n, n, &c_b83, &a[a_offset], lda, &b[b_offset], &c__1, 
-		    &c_b50, &work[1], &c__1);
+	} else if (*nrhs == 1) {
+	    sgemv_("T", n, n, &c_b79, &a[a_offset], lda, &b[b_offset], &c__1, 
+		    &c_b46, &work[1], &c__1);
 	    scopy_(n, &work[1], &c__1, &b[b_offset], &c__1);
 	}
 
@@ -913,7 +905,7 @@ f"> */
 	    slacpy_("L", m, m, &a[a_offset], lda, &work[il], &ldwork);
 	    i__2 = *m - 1;
 	    i__1 = *m - 1;
-	    slaset_("U", &i__2, &i__1, &c_b50, &c_b50, &work[il + ldwork], &
+	    slaset_("U", &i__2, &i__1, &c_b46, &c_b46, &work[il + ldwork], &
 		    ldwork);
 	    ie = il + ldwork * *m;
 	    itauq = ie + *m;
@@ -971,7 +963,7 @@ f"> */
 		    srscl_(nrhs, &s[i__], &b[i__ + b_dim1], ldb);
 		    ++(*rank);
 		} else {
-		    slaset_("F", &c__1, nrhs, &c_b50, &c_b50, &b[i__ + b_dim1]
+		    slaset_("F", &c__1, nrhs, &c_b46, &c_b46, &b[i__ + b_dim1]
 			    , ldb);
 		}
 /* L30: */
@@ -982,8 +974,8 @@ f"> */
 /*        (Workspace: need M*M+2*M, prefer M*M+M+M*NRHS) */
 
 	    if (*lwork >= *ldb * *nrhs + iwork - 1 && *nrhs > 1) {
-		sgemm_("T", "N", m, nrhs, m, &c_b83, &work[il], &ldwork, &b[
-			b_offset], ldb, &c_b50, &work[iwork], ldb);
+		sgemm_("T", "N", m, nrhs, m, &c_b79, &work[il], &ldwork, &b[
+			b_offset], ldb, &c_b46, &work[iwork], ldb);
 		slacpy_("G", m, nrhs, &work[iwork], ldb, &b[b_offset], ldb);
 	    } else if (*nrhs > 1) {
 		chunk = (*lwork - iwork + 1) / *m;
@@ -994,22 +986,22 @@ f"> */
 /* Computing MIN */
 		    i__3 = *nrhs - i__ + 1;
 		    bl = f2cmin(i__3,chunk);
-		    sgemm_("T", "N", m, &bl, m, &c_b83, &work[il], &ldwork, &
-			    b[i__ * b_dim1 + 1], ldb, &c_b50, &work[iwork], m);
+		    sgemm_("T", "N", m, &bl, m, &c_b79, &work[il], &ldwork, &
+			    b[i__ * b_dim1 + 1], ldb, &c_b46, &work[iwork], m);
 		    slacpy_("G", m, &bl, &work[iwork], m, &b[i__ * b_dim1 + 1]
 			    , ldb);
 /* L40: */
 		}
-	    } else {
-		sgemv_("T", m, m, &c_b83, &work[il], &ldwork, &b[b_dim1 + 1], 
-			&c__1, &c_b50, &work[iwork], &c__1);
+	    } else if (*nrhs == 1) {
+		sgemv_("T", m, m, &c_b79, &work[il], &ldwork, &b[b_dim1 + 1], 
+			&c__1, &c_b46, &work[iwork], &c__1);
 		scopy_(m, &work[iwork], &c__1, &b[b_dim1 + 1], &c__1);
 	    }
 
 /*        Zero out below first M rows of B */
 
 	    i__1 = *n - *m;
-	    slaset_("F", &i__1, nrhs, &c_b50, &c_b50, &b[*m + 1 + b_dim1], 
+	    slaset_("F", &i__1, nrhs, &c_b46, &c_b46, &b[*m + 1 + b_dim1], 
 		    ldb);
 	    iwork = itau + *m;
 
@@ -1079,7 +1071,7 @@ f"> */
 		    srscl_(nrhs, &s[i__], &b[i__ + b_dim1], ldb);
 		    ++(*rank);
 		} else {
-		    slaset_("F", &c__1, nrhs, &c_b50, &c_b50, &b[i__ + b_dim1]
+		    slaset_("F", &c__1, nrhs, &c_b46, &c_b46, &b[i__ + b_dim1]
 			    , ldb);
 		}
 /* L50: */
@@ -1089,8 +1081,8 @@ f"> */
 /*        (Workspace: need N, prefer N*NRHS) */
 
 	    if (*lwork >= *ldb * *nrhs && *nrhs > 1) {
-		sgemm_("T", "N", n, nrhs, m, &c_b83, &a[a_offset], lda, &b[
-			b_offset], ldb, &c_b50, &work[1], ldb);
+		sgemm_("T", "N", n, nrhs, m, &c_b79, &a[a_offset], lda, &b[
+			b_offset], ldb, &c_b46, &work[1], ldb);
 		slacpy_("F", n, nrhs, &work[1], ldb, &b[b_offset], ldb);
 	    } else if (*nrhs > 1) {
 		chunk = *lwork / *n;
@@ -1101,15 +1093,15 @@ f"> */
 /* Computing MIN */
 		    i__3 = *nrhs - i__ + 1;
 		    bl = f2cmin(i__3,chunk);
-		    sgemm_("T", "N", n, &bl, m, &c_b83, &a[a_offset], lda, &b[
-			    i__ * b_dim1 + 1], ldb, &c_b50, &work[1], n);
+		    sgemm_("T", "N", n, &bl, m, &c_b79, &a[a_offset], lda, &b[
+			    i__ * b_dim1 + 1], ldb, &c_b46, &work[1], n);
 		    slacpy_("F", n, &bl, &work[1], n, &b[i__ * b_dim1 + 1], 
 			    ldb);
 /* L60: */
 		}
-	    } else {
-		sgemv_("T", m, n, &c_b83, &a[a_offset], lda, &b[b_offset], &
-			c__1, &c_b50, &work[1], &c__1);
+	    } else if (*nrhs == 1) {
+		sgemv_("T", m, n, &c_b79, &a[a_offset], lda, &b[b_offset], &
+			c__1, &c_b46, &work[1], &c__1);
 		scopy_(n, &work[1], &c__1, &b[b_offset], &c__1);
 	    }
 	}
@@ -1137,7 +1129,7 @@ f"> */
     }
 
 L70:
-    work[1] = (real) maxwrk;
+    work[1] = sroundup_lwork__(&maxwrk);
     return;
 
 /*     End of SGELSS */
