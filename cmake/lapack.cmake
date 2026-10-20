@@ -540,7 +540,7 @@ set(SCLAUX
    slaset.c slasq1.c slasq2.c slasq3.c slasq4.c slasq5.c slasq6.c
    slasr.c  slasrt.c slassq.c slasv2.c spttrf.c sstebz.c sstedc.c
    ssteqr.c ssterf.c slaisnan.c sisnan.c
-   slartgp.c slartgs.c slarmm.c
+   slartgp.c slartgs.c slarmm.c ../INSTALL/sroundup_lwork.c
    ../INSTALL/second_${TIMER}.c)
 
 set(DZLAUX
@@ -559,7 +559,7 @@ set(DZLAUX
    dlasq1.c dlasq2.c dlasq3.c dlasq4.c dlasq5.c dlasq6.c
    dlasr.c  dlasrt.c dlassq.c dlasv2.c dpttrf.c dstebz.c dstedc.c
    dsteqr.c dsterf.c dlaisnan.c disnan.c
-   dlartgp.c dlartgs.c dlarmm.c
+   dlartgp.c dlartgs.c dlarmm.c ../INSTALL/droundup_lwork.c
    ../INSTALL/dlamch.c ../INSTALL/dsecnd_${TIMER}.c)
 
 set(SLASRC
