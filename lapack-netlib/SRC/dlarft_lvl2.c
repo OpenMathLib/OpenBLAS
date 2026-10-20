@@ -495,13 +495,13 @@ static doublereal c_b11 = 1.;
     }
     if (info != 0) {
 	xerbla_("DLARFT_LVL2", &info, (ftnlen)11);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *k == 0) {
-	return 0;
+	return;
     }
 
 /*     Now we determine what factorization our flags are associated with */
@@ -535,7 +535,7 @@ static doublereal c_b11 = 1.;
     rq = dirb && storer;
     if (*n == 1 || *k == 1) {
 	t[t_dim1 + 1] = tau[1];
-	return 0;
+	return;
     }
     if (qr) {
 
@@ -1012,6 +1012,6 @@ static doublereal c_b11 = 1.;
 		    + 1) * t_dim1], ldt, &t[kmi + (kmi + 1) * t_dim1], ldt);
 	}
     }
-    return 0;
+    return;
 } /* dlarft_lvl2__ */
 

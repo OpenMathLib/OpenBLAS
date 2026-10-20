@@ -529,13 +529,13 @@ f"> */
     }
     if (info != 0) {
 	xerbla_("DLARFT", &info, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *k == 0) {
-	return 0;
+	return;
     }
 
 /*     Now we determine what factorization our flags are associated with */
@@ -572,7 +572,7 @@ f"> */
 
     if (*n == 1 || *k == 1) {
 	t[t_dim1 + 1] = tau[1];
-	return 0;
+	return;
     }
 
 /*     Determine crossover point from level 2 to level 3 BLAS implementation */
@@ -589,7 +589,7 @@ f"> */
 
 	dlarft_lvl2__(direct, storev, n, k, &v[v_offset], ldv, &tau[1], &t[
 		t_offset], ldt);
-	return 0;
+	return;
     }
 
 /*     Beginning of executable statements for the recursive case */
@@ -1212,6 +1212,6 @@ f"> */
 		c_b18, &t[*k - l + 1 + (*k - l + 1) * t_dim1], ldt, &t[(*k - 
 		l + 1) * t_dim1 + 1], ldt);
     }
-    return 0;
+    return;
 } /* dlarft_ */
 

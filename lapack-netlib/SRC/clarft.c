@@ -558,13 +558,13 @@ f"> */
     }
     if (info != 0) {
 	xerbla_("CLARFT", &info,(ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *k == 0) {
-	return 0;
+	return;
     }
 
 /*     Now we determine what factorization our flags are associated with */
@@ -608,7 +608,7 @@ f"> */
 	    i__1 = t_dim1 + 1;
 	    t[i__1].r = tau[1].r, t[i__1].i = tau[1].i;
 	}
-	return 0;
+	return;
     }
 
 /*     Determine crossover point from level 2 to level 3 BLAS implementation */
@@ -625,7 +625,7 @@ f"> */
 
 	clarft_lvl2__(direct, storev, n, k, &v[v_offset], ldv, &tau[1], &t[
 		t_offset], ldt);
-	return 0;
+	return;
     }
 
 /*     Beginning of executable statements for the recursive case */
@@ -1253,6 +1253,6 @@ f"> */
 		 &t[*k - l + 1 + (*k - l + 1) * t_dim1], ldt, &t[(*k - l + 1) 
 		* t_dim1 + 1], ldt);
     }
-    return 0;
+    return;
 } /* clarft_ */
 

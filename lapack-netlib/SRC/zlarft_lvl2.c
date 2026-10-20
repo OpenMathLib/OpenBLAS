@@ -538,13 +538,13 @@ static integer c__1 = 1;
     }
     if (info != 0) {
 	xerbla_("ZLARFT_LVL2", &info, (ftnlen)11);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *k == 0) {
-	return 0;
+	return;
     }
 
 /*     Now we determine what factorization our flags are associated with */
@@ -585,7 +585,7 @@ static integer c__1 = 1;
 	    i__1 = t_dim1 + 1;
 	    t[i__1].r = tau[1].r, t[i__1].i = tau[1].i;
 	}
-	return 0;
+	return;
     }
     if (qr) {
 
@@ -1125,6 +1125,6 @@ static integer c__1 = 1;
 		    + 1) * t_dim1], ldt, &t[kmi + (kmi + 1) * t_dim1], ldt);
 	}
     }
-    return 0;
+    return;
 } /* zlarft_lvl2__ */
 

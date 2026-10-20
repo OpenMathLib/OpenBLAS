@@ -493,13 +493,13 @@ static real c_b11 = 1.f;
     }
     if (info != 0) {
 	xerbla_("SLARFT_LVL2", &info, (ftnlen)11);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *k == 0) {
-	return 0;
+	return;
     }
 
 /*     Now we determine what factorization our flags are associated with */
@@ -533,7 +533,7 @@ static real c_b11 = 1.f;
     rq = dirb && storer;
     if (*n == 1 || *k == 1) {
 	t[t_dim1 + 1] = tau[1];
-	return 0;
+	return;
     }
     if (qr) {
 
@@ -1010,6 +1010,6 @@ static real c_b11 = 1.f;
 		    + 1) * t_dim1], ldt, &t[kmi + (kmi + 1) * t_dim1], ldt);
 	}
     }
-    return 0;
+    return;
 } /* slarft_lvl2__ */
 
