@@ -689,7 +689,7 @@
 *        Shuffle shifts to put double shifts in front
 *        This ensures that we don't split up a double shift
 *
-         DO I = SHIFTPOS, SHIFTPOS+N_UNDEFLATED-1, 2
+         DO I = SHIFTPOS, SHIFTPOS+N_UNDEFLATED-3, 2
             IF( ALPHAI( I ).NE.-ALPHAI( I+1 ) ) THEN
 *
                SWAP = ALPHAR( I )

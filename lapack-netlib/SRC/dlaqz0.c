@@ -720,7 +720,7 @@ static integer c__1 = 1;
 /*        Shuffle shifts to put double shifts in front */
 /*        This ensures that we don't split up a double shift */
 
-	i__2 = shiftpos + n_undeflated__ - 1;
+	i__2 = shiftpos + n_undeflated__ - 3;
 	for (i__ = shiftpos; i__ <= i__2; i__ += 2) {
 	    if (alphai[i__] != -alphai[i__ + 1]) {
 
