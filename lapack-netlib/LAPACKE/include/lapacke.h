@@ -33,6 +33,8 @@
 #ifndef _LAPACKE_H_
 #define _LAPACKE_H_
 
+#define API_SUFFIX(x) x
+
 #include "lapack.h"
 
 #ifdef __cplusplus
