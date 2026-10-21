@@ -2672,7 +2672,17 @@ static BLASULONG base_address      = 0UL;
 static BLASULONG base_address      = BASE_ADDRESS;
 #endif
 
-static volatile struct {
+/* Each slot gets its own 128 bytes (the cache line, plus the one Intel's
+   adjacent-line prefetcher pairs with it): threads keep to their own slot
+   and write its used flag on every call, so neighbouring slots must not
+   share a line. */
+#if defined(_MSC_VER) && !defined(__clang__)
+#define MEMORY_SLOT_ALIGN __declspec(align(128))
+#else
+#define MEMORY_SLOT_ALIGN __attribute__((aligned(128)))
+#endif
+
+typedef struct MEMORY_SLOT_ALIGN {
   _Atomic BLASULONG lock;
   void * _Atomic addr;
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
@@ -2685,7 +2695,25 @@ static volatile struct {
   char dummy[40];
 #endif
 
-} memory[NUM_BUFFERS];
+} memory_slot_t;
+
+/* The table also gets whole 4 KB pages to itself, because of Intel's L2
+   streamer: it watches the lines a core misses within each 4 KB page and
+   then fetches more lines of that page (never across a page boundary).
+   When the table shared a page with the GOT and memory_initialized, every
+   call touched several lines of that page, and the streamer kept pulling
+   in lines that other cores were writing. Small dsymv calls from every
+   hyperthread ran 2-3 times slower on a Skylake-X and on a two-socket Ivy
+   Bridge-EP, and turning the streamer off alone (MSR 0x1A4 bit 0) brought
+   them back. So nothing else a call touches may live on these pages: each
+   call should touch only its own slot here. Slots past NUM_BUFFERS only
+   fill up the last page and are never used. */
+#define MEMORY_TABLE_SLOTS ((NUM_BUFFERS + 31) / 32 * 32)
+#if defined(_MSC_VER) && !defined(__clang__)
+static __declspec(align(4096)) volatile memory_slot_t memory[MEMORY_TABLE_SLOTS];
+#else
+static volatile memory_slot_t memory[MEMORY_TABLE_SLOTS] __attribute__((aligned(4096)));
+#endif
 
 struct newmemstruct
 {
@@ -2706,6 +2734,38 @@ static volatile struct newmemstruct *newmemory;
 
 static volatile int memory_initialized = 0;
 static int memory_overflowed = 0;
+
+/* The slot of memory[] this thread used last. Trying it first lets each
+   thread keep to its own slot and cache line, instead of every thread
+   scanning, and locking, the same slots from position 0. Where the compiler
+   has no thread-local storage, every search starts at position 0. */
+#if defined(_MSC_VER) && !defined(__clang__)
+#define MEMORY_TLS __declspec(thread)
+#elif defined(__clang__)
+#if __has_feature(tls)
+#define MEMORY_TLS __thread
+#endif
+#elif defined(__GNUC__) || defined(__SUNPRO_C) || defined(__xlC__)
+#define MEMORY_TLS __thread
+#endif
+#ifdef MEMORY_TLS
+static MEMORY_TLS int memory_last_position = 0;
+#define MEMORY_LAST_POSITION memory_last_position
+#else
+#define MEMORY_LAST_POSITION 0
+#endif
+
+/* A slot of memory[] is claimed by switching its used flag from 0 to 1 with
+   one compare-and-swap, and released by its owner with a release store:
+   one locked instruction per allocation and none per free, instead of
+   taking and dropping the slot's lock around plain atomic stores. */
+#if defined(_MSC_VER) && !defined(__clang__)
+#define MEMORY_CLAIM(p) (InterlockedCompareExchange((volatile LONG *)(p), 1, 0) == 0)
+#define MEMORY_RELEASE(p) do { MB; *(volatile int *)(p) = 0; } while (0)
+#else
+#define MEMORY_CLAIM(p) __sync_bool_compare_and_swap((volatile int *)(p), 0, 1)
+#define MEMORY_RELEASE(p) __atomic_store_n((int *)(p), 0, __ATOMIC_RELEASE)
+#endif
 /*       Memory allocation routine           */
 /* procpos ... indicates where it comes from */
 /*                0 : Level 3 functions      */
@@ -2823,49 +2883,30 @@ void *blas_memory_alloc(int procpos){
 
 #endif */
 
+  /* The thread pool's buffers (procpos 2) are held for as long as the pool
+     exists; take them from the top so that the search for a free slot, which
+     starts at the bottom, does not have to step over them. */
+  if (procpos == 2) {
+    for (position = NUM_BUFFERS - 1; position >= 0; position--) {
+      RMB;
+      if (!memory[position].used && MEMORY_CLAIM(&memory[position].used)) goto allocation;
+    }
+  } else {
+    position = MEMORY_LAST_POSITION;
+    RMB;
+    if (!memory[position].used && MEMORY_CLAIM(&memory[position].used)) goto allocation;
+  }
+
   position = 0;
 
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
-  LOCK_COMMAND(&alloc_lock);
-#endif
   do {
     RMB;
-#if defined(USE_OPENMP)
-    if (!memory[position].used) {
-      blas_lock((BLASULONG *)&memory[position].lock);
-#endif
-      if (!memory[position].used) goto allocation;
-
-#if defined(USE_OPENMP)
-      blas_unlock((BLASULONG *)&memory[position].lock);
-    }
-#endif
+    if (!memory[position].used && MEMORY_CLAIM(&memory[position].used)) goto allocation;
     position ++;
 
   } while (position < NUM_BUFFERS);
 
-  if (memory_overflowed) {
-
-    do {
-      RMB;
-#if defined(USE_OPENMP)
-      if (!newmemory[position-NUM_BUFFERS].used) {
-        blas_lock((BLASULONG *)&newmemory[position-NUM_BUFFERS].lock);
-#endif
-        if (!newmemory[position-NUM_BUFFERS].used) goto allocation2;
-
-#if defined(USE_OPENMP)
-        blas_unlock((BLASULONG *)&newmemory[position-NUM_BUFFERS].lock);
-      }
-#endif
-      position ++;
-
-    } while (position < NEW_BUFFERS + NUM_BUFFERS);
-  }
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
-  UNLOCK_COMMAND(&alloc_lock);
-#endif
-  goto error;
+  goto overflow;
 
   allocation :
 
@@ -2873,11 +2914,8 @@ void *blas_memory_alloc(int procpos){
   printf("  Position -> %d\n", position);
 #endif
 
-  memory[position].used = 1;
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
-  UNLOCK_COMMAND(&alloc_lock);
-#else
-  blas_unlock((BLASULONG *)&memory[position].lock);
+#ifdef MEMORY_TLS
+  if (procpos != 2) memory_last_position = position;
 #endif
   if (!memory[position].addr) {
     int failcount = 0;
@@ -2991,11 +3029,21 @@ void *blas_memory_alloc(int procpos){
 
   return (void *)memory[position].addr;
 
- error:
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+ overflow:
+  /* The overflow area is only entered here, so alloc_lock, taken in every
+     build, covers both creating it and claiming its slots. */
+#if defined(SMP) || defined(USE_LOCKING)
   LOCK_COMMAND(&alloc_lock);
 #endif
- if (memory_overflowed) goto terminate;
+  if (memory_overflowed) {
+    /* Another thread may have created the overflow area since this one
+       found the main area full: look there before giving up. */
+    for (position = NUM_BUFFERS; position < NUM_BUFFERS + NEW_BUFFERS; position++) {
+      RMB;
+      if (!newmemory[position-NUM_BUFFERS].used) goto allocation2;
+    }
+    goto terminate;
+  }
   fprintf(stderr,"OpenBLAS warning: precompiled NUM_THREADS exceeded, adding auxiliary array for thread metadata.\n");
   fprintf(stderr,"Note that your application may still crash, if it is calling OpenBLAS from multiple threads in parallel\n");
   fprintf(stderr,"To avoid this warning, please rebuild your copy of OpenBLAS with a larger NUM_THREADS setting\n");
@@ -3004,8 +3052,6 @@ void *blas_memory_alloc(int procpos){
 #else
   fprintf(stderr,"or set the environment variable OPENBLAS_NUM_THREADS to %d or lower\n", MAX_CPU_NUMBER);
 #endif
-  memory_overflowed=1;
-  MB;
   /* zeroed so blas_shutdown sees NULL func in slots that were reserved but
      never published */
   new_release_info = (struct release_t*) calloc(NEW_BUFFERS, sizeof(struct release_t));
@@ -3018,14 +3064,17 @@ void *blas_memory_alloc(int procpos){
   newmemory[i].used   = 0;
   newmemory[i].lock   = 0;
 }
+  position = NUM_BUFFERS;
+  /* only now that the overflow area exists */
+  MB;
+  memory_overflowed=1;
 
 allocation2:
   newmemory[position-NUM_BUFFERS].used = 1;
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+#if defined(SMP) || defined(USE_LOCKING)
   UNLOCK_COMMAND(&alloc_lock);
-#else
-  blas_unlock((BLASULONG *)&newmemory[position-NUM_BUFFERS].lock);
 #endif
+  if (!newmemory[position-NUM_BUFFERS].addr) {
     do {
 #ifdef DEBUG
       printf("Allocation Start : %lx\n", base_address);
@@ -3093,6 +3142,7 @@ allocation2:
 #ifdef DEBUG
     printf("  Mapping Succeeded. %p(%d)\n", (void *)newmemory[position-NUM_BUFFERS].addr, position);
 #endif
+  }
 
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
 
@@ -3102,7 +3152,7 @@ allocation2:
   return (void *)newmemory[position-NUM_BUFFERS].addr;
 
 terminate:
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+#if defined(SMP) || defined(USE_LOCKING)
     UNLOCK_COMMAND(&alloc_lock);
 #endif
   printf("OpenBLAS : Program is Terminated. Because you tried to allocate too many memory regions.\n");
@@ -3126,22 +3176,30 @@ void blas_memory_free(void *free_area){
   printf("Unmapped Start : %p ...\n", free_area);
 #endif
 
-  position = 0;
+  position = MEMORY_LAST_POSITION;
+  if (memory[position].addr != free_area) {
+    position = 0;
+    while ((position < NUM_BUFFERS) && (memory[position].addr != free_area))
+      position++;
+  }
+
+  /* A buffer is only freed by its owner, so the main area needs no lock. */
+  if (position < NUM_BUFFERS) {
+    MEMORY_RELEASE(&memory[position].used);
+    return;
+  }
+
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   LOCK_COMMAND(&alloc_lock);
 #endif
-  while ((position < NUM_BUFFERS) && (memory[position].addr != free_area))
+
+  if (!memory_overflowed) goto error;
+
+  while ((position < NUM_BUFFERS+NEW_BUFFERS) && (newmemory[position-NUM_BUFFERS].addr != free_area))
     position++;
-
-  if (position >= NUM_BUFFERS && !memory_overflowed) goto error;
-
 #ifdef DEBUG
-  if (memory[position].addr != free_area) goto error;
   printf("  Position : %d\n", position);
 #endif
-  if (unlikely(memory_overflowed && position >= NUM_BUFFERS)) {
-    while ((position < NUM_BUFFERS+NEW_BUFFERS) && (newmemory[position-NUM_BUFFERS].addr != free_area))
-      position++;
   // arm: ensure all writes are finished before other thread takes this memory
   WMB;
 if (position - NUM_BUFFERS >= NEW_BUFFERS) goto error;
@@ -3154,21 +3212,7 @@ if (position - NUM_BUFFERS >= NEW_BUFFERS) goto error;
   printf("Unmap from overflow area succeeded.\n\n");
 #endif
   return;
-} else {
-  // arm: ensure all writes are finished before other thread takes this memory
-  WMB;
 
-  memory[position].used = 0;
-#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
-  UNLOCK_COMMAND(&alloc_lock);
-#endif
-
-#ifdef DEBUG
-  printf("Unmap Succeeded.\n\n");
-#endif
-
-  return;
-}
  error:
   printf("BLAS : Bad memory unallocation! : %4d  %p\n", position,  free_area);
 
