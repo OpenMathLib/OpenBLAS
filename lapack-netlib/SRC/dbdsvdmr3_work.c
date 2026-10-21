@@ -782,7 +782,7 @@ n matrix, extraction of singular vectors. */
 
 /*     ================================================================= */
 
-/* Subroutine */ int dbsort_(integer *n, doublereal *s, doublereal *u, 
+/* Subroutine */ void dbsort_(integer *n, doublereal *s, doublereal *u, 
 	integer *ldu, doublereal *vt, integer *ldvt, logical *wantz)
 {
     /* System generated locals */
