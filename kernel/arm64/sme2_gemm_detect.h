@@ -41,6 +41,13 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/auxv.h>
 #endif
 
+/* Streaming vector length in fp32 lanes; volatile asm and noinline keep RDSVL behind the FEAT_SME2 test. */
+static __attribute__((noinline)) int s2_svl_lanes(void) {
+  unsigned long svl;
+  __asm__ volatile("rdsvl %0, #1" : "=r"(svl));
+  return (int)(svl / 4);
+}
+
 /* SME2 with a 512-bit streaming vector length (the kernels assume 16 fp32 lanes). */
 static inline int s2_usable(void) {
   static int ok = -1;
@@ -53,7 +60,7 @@ static inline int s2_usable(void) {
 #elif defined(__linux__)
     sme2 = (getauxval(AT_HWCAP2) & (1UL << 37)) != 0; /* HWCAP2_SME2 */
 #endif
-    ok = sme2 && svcntsw() == 16;
+    ok = sme2 ? s2_svl_lanes() == 16 : 0;
   }
   return ok;
 }
