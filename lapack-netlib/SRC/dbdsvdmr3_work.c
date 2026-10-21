@@ -791,7 +791,7 @@ n matrix, extraction of singular vectors. */
     /* Local variables */
     integer i__, j, k;
     doublereal p;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
 
 
