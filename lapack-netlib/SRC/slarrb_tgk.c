@@ -1017,7 +1017,7 @@ L100:
     return;
 } /* slarrbtgk_sturm4__ */
 
-/* Subroutine */ int slarrbtgk_sturm_slow__(integer *n, real *d__, real *lld, 
+/* Subroutine */ void slarrbtgk_sturm_slow__(integer *n, real *d__, real *lld, 
 	real *x, integer *cnt)
 {
     /* System generated locals */
