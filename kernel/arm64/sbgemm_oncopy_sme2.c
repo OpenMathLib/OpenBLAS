@@ -26,16 +26,17 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 /* A panels of the SME2 kernels (sme2_gemm_packed.h) from op(A) with contiguous columns. */
-/* bfloat16 A panels of the SME2 sbgemm kernel from op(A) with contiguous rows. */
+/* bfloat16 B panels of the SME2 sbgemm kernel from op(B) with contiguous columns. */
 
 #include "common.h"
 #include "sme2_sbgemm_copy.h"
 
 int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
-  for (BLASLONG j0 = 0; j0 < n; j0 += S2BC_W) {
-    const BLASLONG w = n - j0 < S2BC_W ? n - j0 : S2BC_W;
-    s2bc_rows(m, w, a + j0, lda, b);
-    b += m * w;
+  for (BLASLONG j0 = 0; j0 < n;) {
+    const BLASLONG w = s2bc_wn(n, j0);
+    s2bc_pairs_l(m, w, w, a + j0 * lda, lda, b);
+    b += 2 * ((m + 1) / 2) * w;
+    j0 += w;
   }
   return 0;
 }

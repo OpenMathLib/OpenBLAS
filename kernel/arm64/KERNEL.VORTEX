@@ -5,8 +5,8 @@ ifneq ($(C_COMPILER), GCC)
 SBGEMM_BETA     = ../generic/gemm_beta.c
 SBGEMMKERNEL    = sbgemm_kernel_bfdot.c
 # UNROLL_M = UNROLL_N: the driver reuses the O copies for the A side as well
-SBGEMMONCOPY    = sbgemm_ncopy_16_sme2.c
-SBGEMMOTCOPY    = sbgemm_tcopy_16_sme2.c
+SBGEMMONCOPY    = sbgemm_oncopy_sme2.c
+SBGEMMOTCOPY    = sbgemm_otcopy_sme2.c
 SBGEMMONCOPYOBJ = sbgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SBGEMMOTCOPYOBJ = sbgemm_otcopy$(TSUFFIX).$(SUFFIX)
 endif

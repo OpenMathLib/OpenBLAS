@@ -3584,6 +3584,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #undef SBGEMM_DEFAULT_UNROLL_N
 #define SBGEMM_DEFAULT_UNROLL_M 64
 #define SBGEMM_DEFAULT_UNROLL_N 16
+#undef SBGEMM_ALIGN_K
+#define SBGEMM_ALIGN_K 2 /* k-pair interleaved panels: the sbgemm copies pad k to even */
 
 #define SGEMM_DEFAULT_P 1024
 #define DGEMM_DEFAULT_P 512
@@ -4119,6 +4121,8 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #undef SBGEMM_DEFAULT_UNROLL_N
 #define SBGEMM_DEFAULT_UNROLL_M 8
 #define SBGEMM_DEFAULT_UNROLL_N 8
+#undef SBGEMM_ALIGN_K
+#define SBGEMM_ALIGN_K 2 /* k-pair interleaved panels: the sbgemm copies pad k to even */
 #endif
 
 #if defined(ARMV5)

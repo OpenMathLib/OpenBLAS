@@ -25,9 +25,15 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-/* A panels of the SME2 kernels (sme2_gemm_packed.h) from op(A) with contiguous columns. */
-/* bfloat16 A panels of the SME2 sbgemm kernel (sbgemm_kernel_sme2.c), the same
-   [k][m] layout in chunks of GEMM_UNROLL_M rows as gemm_ncopy_sme2.c. */
+/* bfloat16 packing of the SME2 and BFDOT sbgemm kernels: k-pair interleaved panels.
+   BFMOPA/BFDOT consume two k steps per instruction, so the panels hold element
+   (row r, k) of a block of w rows at [pp * 2w + 2r + (k & 1)], one k pair per
+   load. The odd k half of the last pair is zeroed by the copies; the A-side
+   copies additionally zero-pad the ragged chunk to the full chunk width. The
+   B-side copies pack their power-of-two groups at the actual width: consumers
+   must not read beyond 2*w lanes of a w-column group (the SME2 kernel
+   predicates its B load to them, the BFDOT kernel runs its vector path on full
+   groups only), and C stores are predicated to the valid rows and columns. */
 
 #ifndef SME2_SBGEMM_COPY_H
 #define SME2_SBGEMM_COPY_H
@@ -37,24 +43,44 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define S2BC_W GEMM_DEFAULT_UNROLL_M
 #define S2BC_WN GEMM_DEFAULT_UNROLL_N
 
-/* Element (i, c) at a[c + i * lda], bfloat16: a plain transpose for now. */
-static inline void s2bc_cols(BLASLONG m, BLASLONG w, const IFLOAT *a, BLASLONG lda, IFLOAT *b) {
-  for (BLASLONG i = 0; i < m; ++i)
-    for (BLASLONG c = 0; c < w; ++c) b[i * w + c] = a[i + c * lda];
-}
-
-/* Element (i, c) at a[i * lda + c], bfloat16: contiguous rows. */
-static inline void s2bc_rows(BLASLONG m, BLASLONG w, const IFLOAT *a, BLASLONG lda, IFLOAT *b) {
-  for (BLASLONG i = 0; i < m; ++i) memcpy(b + i * w, a + i * lda, (size_t)w * sizeof(IFLOAT));
-}
-
-/* Width of the group at column j0 of n for the B copies: full groups of S2BC_N, then powers of two. */
+/* Width of the group at offset j0 of a count of n: full groups, then the largest power of two left. */
 static inline BLASLONG s2bc_wn(BLASLONG n, BLASLONG j0) {
   BLASLONG r = n - j0;
   if (r >= S2BC_WN) return S2BC_WN;
   BLASLONG w = 1;
   while (2 * w <= r) w *= 2;
   return w;
+}
+
+/* Block of m k-steps by w rows into b (w u32 per k pair); element (k, r) at
+   a[k + r * lda], so pairs of k are contiguous in the source. Rows beyond rows are zero. */
+static inline void s2bc_pairs_l(BLASLONG m, BLASLONG w, BLASLONG rows, const IFLOAT *a, BLASLONG lda, IFLOAT *b) {
+  const unsigned pairs = (unsigned)((m + 1) >> 1);
+  unsigned *bo = (unsigned *)b;
+  for (unsigned p = 0; p < pairs; ++p)
+    for (BLASLONG r = 0; r < w; ++r) {
+      unsigned v = 0;
+      if (r < rows && 2 * p < m) {
+        const IFLOAT *s = a + r * lda + 2 * p;
+        v = (unsigned)s[0] | (2 * p + 1 < m ? (unsigned)s[1] << 16 : 0);
+      }
+      bo[(size_t)p * w + r] = v;
+    }
+}
+
+/* Same, but element (k, r) at a[r + k * lda]: pairs of k one lda apart in the source. */
+static inline void s2bc_pairs_c(BLASLONG m, BLASLONG w, BLASLONG rows, const IFLOAT *a, BLASLONG lda, IFLOAT *b) {
+  const unsigned pairs = (unsigned)((m + 1) >> 1);
+  unsigned *bo = (unsigned *)b;
+  for (unsigned p = 0; p < pairs; ++p)
+    for (BLASLONG r = 0; r < w; ++r) {
+      unsigned v = 0;
+      if (r < rows) {
+        if (2 * p < m) v = (unsigned)a[r + (BLASLONG)(2 * p) * lda];
+        if (2 * p + 1 < m) v |= (unsigned)a[r + (BLASLONG)(2 * p + 1) * lda] << 16;
+      }
+      bo[(size_t)p * w + r] = v;
+    }
 }
 
 #endif

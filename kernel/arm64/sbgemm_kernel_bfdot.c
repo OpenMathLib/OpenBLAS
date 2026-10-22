@@ -30,12 +30,12 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * NEON BFDOT sbgemm kernel for Apple cores (VORTEX): C += alpha * A * B on the packed panels
  * of the level-3 driver, the bfloat16 counterpart of the NEON sgemm kernels.
  *
- * One BFDOT does a two-wide dot product per lane, so the kernel zips rows l and l+1 of the
- * standard [k][m] and [k][n] panels into the lane layout (i, k & 1): the B pair of a column
- * is duplicated across the lanes, the A pairs cover four rows each, and acc[n][h] holds four
- * consecutive rows of C column n - one quad load/store per (column, row group). A missing
- * second row of an odd k is a zero vector, and blocks narrower than eight rows or columns run
- * in scalar code.
+ * One BFDOT does a two-wide dot product per lane, so the sbgemm copies pack the panels
+ * k-pair interleaved (element (row r, k) at [pp * 2w + 2r + (k & 1)]) with the padding
+ * zeroed. Two quad loads per operand and k pair (32 bytes = 8 rows or columns): the pairs of
+ * rows 0-3 | 4-7 and of columns 0-3 | 4-7. The B pair of a column is duplicated across the
+ * lanes per BFDOT, and acc[n][h] holds four consecutive rows of C column n - one quad
+ * load/store per (column, row group). Blocks narrower than the full eight run in scalar code.
  *
  * Without FEAT_BF16 at run time, or in the compiler, plain loops run on the same layout.
  */
@@ -90,10 +90,13 @@ static inline int s2bd_usable(void) {
 /* Scalar block of wm rows and wn columns, for tails and for the plain-loop fallback. */
 static void s2bd_block(BLASLONG k, const IFLOAT *a, BLASLONG wm, const IFLOAT *b, BLASLONG wn, FLOAT *C,
                        BLASLONG ldc, FLOAT alpha) {
+  const BLASLONG pairs = (k + 1) >> 1;
   for (BLASLONG j = 0; j < wn; ++j)
     for (BLASLONG i = 0; i < wm; ++i) {
       FLOAT s = 0;
-      for (BLASLONG l = 0; l < k; ++l) s += s2bd_cvt(a[l * wm + i]) * s2bd_cvt(b[l * wn + j]);
+      for (BLASLONG p = 0; p < pairs; ++p)
+        s += s2bd_cvt(a[p * 2 * wm + 2 * i]) * s2bd_cvt(b[p * 2 * wn + 2 * j]) +
+             s2bd_cvt(a[p * 2 * wm + 2 * i + 1]) * s2bd_cvt(b[p * 2 * wn + 2 * j + 1]);
       C[i + j * ldc] += alpha * s;
     }
 }
@@ -106,17 +109,13 @@ static void s2bd_block(BLASLONG k, const IFLOAT *a, BLASLONG wm, const IFLOAT *b
 static void s2bd_mac(BLASLONG k, const IFLOAT *a, const IFLOAT *b, FLOAT *C, BLASLONG ldc, FLOAT alpha) {
   float32x4_t acc[8][2];
   for (int n = 0; n < 8; ++n) acc[n][0] = acc[n][1] = vdupq_n_f32(0);
-  static const uint16_t zero[8]; /* the missing row of an odd k */
-  for (BLASLONG l = 0; l < k; l += 2) {
-    const uint16x8_t ak0 = vld1q_u16((const uint16_t *)a + l * 8);
-    const uint16x8_t ak1 = vld1q_u16(l + 1 < k ? (const uint16_t *)a + (l + 1) * 8 : zero);
-    const uint16x8_t bk0 = vld1q_u16((const uint16_t *)b + l * 8);
-    const uint16x8_t bk1 = vld1q_u16(l + 1 < k ? (const uint16_t *)b + (l + 1) * 8 : zero);
-    const uint16x8_t az0 = vzip1q_u16(ak0, ak1); /* (m0,k0),(m0,k1),...,(m3,k1) */
-    const uint16x8_t az1 = vzip2q_u16(ak0, ak1); /* (m4,k0),...,(m7,k1) */
-    const uint32x4_t bp0 = vreinterpretq_u32_u16(vzip1q_u16(bk0, bk1)); /* (n0,k0),(n0,k1),... */
-    const uint32x4_t bp1 = vreinterpretq_u32_u16(vzip2q_u16(bk0, bk1));
-/* vgetq_lane needs a literal lane, hence one macro expansion per column. */
+  const BLASLONG pairs = (k + 1) >> 1;
+  for (BLASLONG l = 0; l < pairs; ++l) {
+    const uint16_t *ap = (const uint16_t *)a + l * 2 * S2BD_UM, *bp = (const uint16_t *)b + l * 2 * S2BD_UN;
+    const uint16x8_t az0 = vld1q_u16(ap);      /* rows 0-3 pairs */
+    const uint16x8_t az1 = vld1q_u16(ap + 8);  /* rows 4-7 pairs */
+    const uint32x4_t bp0 = vreinterpretq_u32_u16(vld1q_u16(bp));      /* columns 0-3 pairs */
+    const uint32x4_t bp1 = vreinterpretq_u32_u16(vld1q_u16(bp + 8));  /* columns 4-7 pairs */
 #define S2BD_PAIR(N, BP, L)                                                                    \
   do {                                                                                         \
     const uint16x8_t bn = vreinterpretq_u16_u32(vdupq_n_u32(vgetq_lane_u32(BP, L)));          \
@@ -136,16 +135,17 @@ static void s2bd_mac(BLASLONG k, const IFLOAT *a, const IFLOAT *b, FLOAT *C, BLA
 
 static void s2bd_drive(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, const IFLOAT *sa, const IFLOAT *sb,
                        FLOAT *C, BLASLONG ldc) {
+  const BLASLONG pairs = (k + 1) >> 1;
   for (BLASLONG i0 = 0; i0 < m;) {
     const BLASLONG wm = s2bd_w(m, i0);
-    const IFLOAT *a = sa + i0 * k;
+    const IFLOAT *a = sa + i0 * pairs * 2;
     for (BLASLONG j0 = 0; j0 < n;) {
       const BLASLONG wn = s2bd_w(n, j0);
       FLOAT *cb = C + i0 + j0 * ldc;
       if (wm == S2BD_UM && wn == S2BD_UN)
-        s2bd_mac(k, a, sb + j0 * k, cb, ldc, alpha);
+        s2bd_mac(k, a, sb + j0 * pairs * 2, cb, ldc, alpha);
       else
-        s2bd_block(k, a, wm, sb + j0 * k, wn, cb, ldc, alpha);
+        s2bd_block(k, a, wm, sb + j0 * pairs * 2, wn, cb, ldc, alpha);
       j0 += wn;
     }
     i0 += wm;
@@ -163,11 +163,12 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *ba, IFLOAT *b
     return 0;
   }
 #endif
+  const BLASLONG pairs = (k + 1) >> 1;
   for (BLASLONG i0 = 0; i0 < m;) {
     const BLASLONG wm = s2bd_w(m, i0);
     for (BLASLONG j0 = 0; j0 < n;) {
       const BLASLONG wn = s2bd_w(n, j0);
-      s2bd_block(k, ba + i0 * k, wm, bb + j0 * k, wn, C + i0 + j0 * ldc, ldc, alpha);
+      s2bd_block(k, ba + i0 * pairs * 2, wm, bb + j0 * pairs * 2, wn, C + i0 + j0 * ldc, ldc, alpha);
       j0 += wn;
     }
     i0 += wm;
