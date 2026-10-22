@@ -9,8 +9,8 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K)
 
 	unsigned long long mnk = (unsigned long long)M * (unsigned long long)N * (unsigned long long)K;
 #ifdef HAVE_SME2_GEMM
-	/* the SME2 kernel behind SME_SGEMM_KERNEL is faster from about 64^3 (Apple M4) */
-	if (mnk >= 64ULL * 64ULL * 64ULL && s2_usable())
+	/* the SME2 kernel behind SME_SGEMM_KERNEL is faster from about 64^3, and its NEON loops below about 22^3 (Apple M4) */
+	if ((mnk >= 64ULL * 64ULL * 64ULL || mnk < 10000ULL) && s2_usable())
 		return 0;
 #endif
 	/* benchmark performance on M4 peaks around 512 and crosses the graph of the NEON SGEMM at about 3100  */
