@@ -4113,6 +4113,14 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define USE_SSYR2K_KERNEL_DIRECT 1
 #endif /* ARMv9 SME */
 
+/* NEON BFDOT sbgemm kernel (kernel/arm64/sbgemm_kernel_bfdot.c): 8x8 C blocks */
+#ifdef VORTEX
+#undef SBGEMM_DEFAULT_UNROLL_M
+#undef SBGEMM_DEFAULT_UNROLL_N
+#define SBGEMM_DEFAULT_UNROLL_M 8
+#define SBGEMM_DEFAULT_UNROLL_N 8
+#endif
+
 #if defined(ARMV5)
 #define SNUMOPT		2
 #define DNUMOPT		2
