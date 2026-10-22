@@ -92,7 +92,7 @@ S2_INL void s2b_op(const int SUB, int t, svbool_t p, svbfloat16_t b, svbfloat16_
 /* ZA += or -= the A panel (wm rows) times the B panel (wn columns) over k steps of the packed layout. */
 S2_NOINL void s2b_mac(const int SUB, BLASLONG k, const IFLOAT *a, BLASLONG wm, const IFLOAT *b, BLASLONG wn) S2_S
     S2_ZA {
-  const svbool_t pt = svptrue_b32();
+  const svbool_t pt = svptrue_b16(); /* BFMOPA governs per 16-bit element */
   const svbool_t pm0 = svwhilelt_b16_s32(0, (int32_t)wm);
   const svbool_t pm1 = svwhilelt_b16_s32(S2B_UN * 2, (int32_t)wm);
   const svbool_t pn = svwhilelt_b16_s32(0, (int32_t)wn);
@@ -116,9 +116,8 @@ S2_NOINL void s2b_mac(const int SUB, BLASLONG k, const IFLOAT *a, BLASLONG wm, c
 
 /* Block of wm rows and wn columns of C; sgn 1 for C += alpha AB with alpha = +-1 (the AB part
    added or subtracted in ZA), sgn 0 for a general alpha scaled on the way out of ZA. */
-__arm_new("za") __arm_locally_streaming static void s2b_blk(BLASLONG k, const IFLOAT *a, BLASLONG wm, const IFLOAT *b,
-                                                            BLASLONG wn, FLOAT *C, BLASLONG ldc, FLOAT alpha,
-                                                            int sgn) {
+S2_NOINL static void s2b_blk(BLASLONG k, const IFLOAT *a, BLASLONG wm, const IFLOAT *b, BLASLONG wn, FLOAT *C,
+                             BLASLONG ldc, FLOAT alpha, int sgn) S2_S S2_ZA {
   if (sgn) {
     s2_c_load(1, S2_NT, C, ldc, (int)wn, (int)wm, S2_LOAD, (FLOAT)1);
     s2b_mac(alpha == (FLOAT)-1, k, a, wm, b, wn);
