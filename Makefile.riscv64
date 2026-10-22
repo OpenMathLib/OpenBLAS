@@ -1,6 +1,15 @@
 ifeq ($(CORE), C910V)
+# Upstream GCC 14+ rejects the Xuantie march string and -mtune=c920.
+# It spells T-Head vector as xtheadvector and requires a th. prefix in
+# the C910 GEMM kernels (see kernel/riscv64/c910v_asm.h).
+C910V_UPSTREAM_GCC := $(shell printf '%s\n' 'int c910v_probe;' | $(CC) -march=rv64gc_xtheadvector -mabi=lp64d -x c -c -o /dev/null - >/dev/null 2>&1 && echo 1)
+ifeq ($(C910V_UPSTREAM_GCC), 1)
+CCOMMON_OPT += -march=rv64gc_xtheadvector -mabi=lp64d
+FCOMMON_OPT += -march=rv64gc_xtheadvector -mabi=lp64d -static
+else
 CCOMMON_OPT += -march=rv64imafdcv0p7_zfh_xtheadc -mabi=lp64d -mtune=c920
 FCOMMON_OPT += -march=rv64imafdcv0p7_zfh_xtheadc -mabi=lp64d -mtune=c920 -static
+endif
 endif
 ifeq ($(CORE), x280)
 CCOMMON_OPT += -march=rv64imafdcv_zba_zbb_zfh_zvl512b -mabi=lp64d 
