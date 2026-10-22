@@ -246,7 +246,7 @@ static integer c__2 = 2;
 /* > DLARRF rather than from the current DSTEMR kernels. */
 /* > \endverbatim */
 
-/* Subroutine */ void dlarrf_tgk__(char *rep, integer *n, doublereal *d__, 
+/* Subroutine */ void dlarrf_tgk_(char *rep, integer *n, doublereal *d__, 
 	doublereal *l, doublereal *ld, doublereal *lld, integer *ifirst, 
 	integer *ilast, doublereal *w, doublereal *sigma, doublereal *dplus, 
 	doublereal *lplus, doublereal *work, integer *iseed, integer *info)

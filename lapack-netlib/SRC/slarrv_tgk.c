@@ -313,7 +313,7 @@ of the LAPACK 3.0 SLARRV). */
 /* > SLARRF rather than from the current SSTEMR kernels. */
 /* > \endverbatim */
 
-/* Subroutine */ void slarrv_tgk__(integer *n, real *d__, real *l, integer *
+/* Subroutine */ void slarrv_tgk_(integer *n, real *d__, real *l, integer *
 	isplit, integer *m, real *w, integer *iblock, integer *indexw, real *
 	gersch, real *tol, real *z__, integer *ldz, integer *isuppz, real *
 	work, integer *iwork, integer *info)
@@ -324,12 +324,12 @@ of the LAPACK 3.0 SLARRV). */
 
     /* Local variables */
     integer i__, j, k, p, q, k2, im, in;
-    extern /* Subroutine */ void slar1v_tgk__(char *, integer *, integer *, 
+    extern /* Subroutine */ void slar1v_tgk_(char *, integer *, integer *, 
 	    integer *, real *, real *, real *, real *, real *, real *, real *,
 	     real *, real *, real *, integer *, integer *, real *), 
-	    slarrb_tgk__(integer *, real *, real *, real *, real *, integer *,
+	    slarrb_tgk_(integer *, real *, real *, real *, real *, integer *,
 	     integer *, real *, real *, integer *, real *, real *, real *, 
-	    real *, integer *, integer *), slarrf_tgk__(char *, integer *, 
+	    real *, integer *, integer *), slarrf_tgk_(char *, integer *, 
 	    real *, real *, real *, real *, integer *, integer *, real *, 
 	    real *, real *, real *, real *, integer *, integer *);
     real gap;
@@ -575,7 +575,7 @@ L40:
 		    q = indexw[wbegin - 1 + oldlst];
 		    r__1 = eps * 4.f;
 		    i__3 = p - oldfst;
-		    slarrb_tgk__(&in, &d__[ibegin], &l[ibegin], &work[indld + 
+		    slarrb_tgk_(&in, &d__[ibegin], &l[ibegin], &work[indld + 
 			    1], &work[indlld + 1], &p, &q, &reltol, &r__1, &
 			    i__3, &work[1], &work[indgap + 1], &work[inderr + 
 			    1], &work[indwrk + in], &iwork[iindwk], &iinfo);
@@ -618,7 +618,7 @@ L40:
 /*                    REP='T' at the root forms the child from the TGK */
 /*                    matrix; REP='L' forms it from the parent L D L^T. */
 
-			slarrf_tgk__(rep, &in, &d__[ibegin], &l[ibegin], &
+			slarrf_tgk_(rep, &in, &d__[ibegin], &l[ibegin], &
 				work[indld + 1], &work[indlld + 1], &newfrs, &
 				newlst, &work[1], &sigma, &z__[ibegin + 
 				newftt * z_dim1], &z__[ibegin + (newftt + 1) *
@@ -705,7 +705,7 @@ L90:
 /*                       Given LAMBDA, compute the eigenvector.  REP='T' */
 /*                       uses the TGK matrix as input at the root. */
 
-			    slar1v_tgk__(rep, &in, &c__1, &in, &lambda, &d__[
+			    slar1v_tgk_(rep, &in, &c__1, &in, &lambda, &d__[
 				    ibegin], &l[ibegin], &work[indld + 1], &
 				    work[indlld + 1], &w[wbegin + k - 1], &
 				    gersch[(oldien << 1) + 1], &z__[ibegin + 
@@ -832,7 +832,7 @@ L142:
 /*                    slar1v_tgk.f but not used: the two eigenvectors are */
 /*                    computed by separate one-lane calls (reference code). */
 			if (! done1) {
-			    slar1v_tgk__(rep, &in, &c__1, &in, &lambda, &d__[
+			    slar1v_tgk_(rep, &in, &c__1, &in, &lambda, &d__[
 				    ibegin], &l[ibegin], &work[indld + 1], &
 				    work[indlld + 1], &w[wbegin + k - 1], &
 				    gersch[(oldien << 1) + 1], &z__[ibegin + 
@@ -841,7 +841,7 @@ L142:
 				    work[indwrk]);
 			}
 			if (! done2) {
-			    slar1v_tgk__(rep, &in, &c__1, &in, &lambda2, &d__[
+			    slar1v_tgk_(rep, &in, &c__1, &in, &lambda2, &d__[
 				    ibegin], &l[ibegin], &work[indld + 1], &
 				    work[indlld + 1], &w[wbegin + k2 - 1], &
 				    gersch[(oldien << 1) + 1], &z__[ibegin + 
@@ -921,7 +921,7 @@ L142:
 			iter = 0;
 L143:
 			lambda = work[k];
-			slar1v_tgk__(rep, &in, &c__1, &in, &lambda, &d__[
+			slar1v_tgk_(rep, &in, &c__1, &in, &lambda, &d__[
 				ibegin], &l[ibegin], &work[indld + 1], &work[
 				indlld + 1], &w[wbegin + k - 1], &gersch[(
 				oldien << 1) + 1], &z__[ibegin + ktot * 

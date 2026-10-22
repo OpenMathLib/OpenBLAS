@@ -243,7 +243,7 @@ RBTGK_STURM4 (four-lane Sturm count) and DLARRBTGK_STURM_SLOW (reference Sturm c
 /* > DLARRF rather than from the current DSTEMR kernels. */
 /* > \endverbatim */
 
-/* Subroutine */ void dlarrb_tgk__(integer *n, doublereal *d__, doublereal *l, 
+/* Subroutine */ void dlarrb_tgk_(integer *n, doublereal *d__, doublereal *l, 
 	doublereal *ld, doublereal *lld, integer *ifirst, integer *ilast, 
 	doublereal *rtol1, doublereal *rtol2, integer *offset, doublereal *w, 
 	doublereal *wgap, doublereal *werr, doublereal *work, integer *iwork, 
@@ -268,7 +268,7 @@ RBTGK_STURM4 (four-lane Sturm count) and DLARRBTGK_STURM_SLOW (reference Sturm c
     doublereal right, width;
     integer bnext[4];
     doublereal dplus, error;
-    extern /* Subroutine */ void dlarrbtgk_sturm_slow__(integer *, doublereal *
+    extern /* Subroutine */ void dlarrbtgk_sturm_slow_(integer *, doublereal *
 	    , doublereal *, doublereal *, integer *);
     extern doublereal dlamch_(char *);
     integer bafter, bnrght[4], nright, olnint;
@@ -645,7 +645,7 @@ L85:
 /*     each midpoint is counted by the reference one-shift routine. */
     i__1 = nb;
     for (b = 1; b <= i__1; ++b) {
-	dlarrbtgk_sturm_slow__(n, &d__[1], &lld[1], &bmid[b - 1], &bcnt[b - 1]
+	dlarrbtgk_sturm_slow_(n, &d__[1], &lld[1], &bmid[b - 1], &bcnt[b - 1]
 		);
 /* L88: */
     }
@@ -766,7 +766,7 @@ L100:
 
 } /* dlarrb_tgk__ */
 
-/* Subroutine */ void dlarrbtgk_sturm4__(integer *n, doublereal *d__, 
+/* Subroutine */ void dlarrbtgk_sturm4_(integer *n, doublereal *d__, 
 	doublereal *lld, integer *nb, doublereal *x, integer *cnt)
 {
     /* System generated locals */
@@ -775,7 +775,7 @@ L100:
     /* Local variables */
     integer j, c1, c2, c3, c4;
     doublereal s1, s2, s3, s4, dp1, dp2, dp3, dp4;
-    extern /* Subroutine */ void dlarrbtgk_sturm_slow__(integer *, doublereal *
+    extern /* Subroutine */ void dlarrbtgk_sturm_slow_(integer *, doublereal *
 	    , doublereal *, doublereal *, integer *);
 
 
@@ -932,27 +932,27 @@ L100:
 /*     the performance target. */
 
     if (! (s1 > 0. || s1 < 1.)) {
-	dlarrbtgk_sturm_slow__(n, &d__[1], &lld[1], &x[1], &cnt[1]);
+	dlarrbtgk_sturm_slow_(n, &d__[1], &lld[1], &x[1], &cnt[1]);
     }
     if (*nb >= 2) {
 	if (! (s2 > 0. || s2 < 1.)) {
-	    dlarrbtgk_sturm_slow__(n, &d__[1], &lld[1], &x[2], &cnt[2]);
+	    dlarrbtgk_sturm_slow_(n, &d__[1], &lld[1], &x[2], &cnt[2]);
 	}
     }
     if (*nb >= 3) {
 	if (! (s3 > 0. || s3 < 1.)) {
-	    dlarrbtgk_sturm_slow__(n, &d__[1], &lld[1], &x[3], &cnt[3]);
+	    dlarrbtgk_sturm_slow_(n, &d__[1], &lld[1], &x[3], &cnt[3]);
 	}
     }
     if (*nb >= 4) {
 	if (! (s4 > 0. || s4 < 1.)) {
-	    dlarrbtgk_sturm_slow__(n, &d__[1], &lld[1], &x[4], &cnt[4]);
+	    dlarrbtgk_sturm_slow_(n, &d__[1], &lld[1], &x[4], &cnt[4]);
 	}
     }
     return;
 } /* dlarrbtgk_sturm4__ */
 
-/* Subroutine */ void dlarrbtgk_sturm_slow__(integer *n, doublereal *d__, 
+/* Subroutine */ void dlarrbtgk_sturm_slow_(integer *n, doublereal *d__, 
 	doublereal *lld, doublereal *x, integer *cnt)
 {
     /* System generated locals */

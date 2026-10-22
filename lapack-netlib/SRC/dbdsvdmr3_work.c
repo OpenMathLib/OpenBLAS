@@ -248,7 +248,7 @@ n matrix, extraction of singular vectors. */
 /* > DLARRF rather than from the current DSTEMR kernels. */
 /* > \endverbatim */
 
-/* Subroutine */ void dbdsvdmr3_work__(char *jobz, char *uplo, integer *n, 
+/* Subroutine */ void dbdsvdmr3_work_(char *jobz, char *uplo, integer *n, 
 	doublereal *d__, doublereal *e, doublereal *s, doublereal *u, integer 
 	*ldu, doublereal *vt, integer *ldvt, integer *m, doublereal *work, 
 	integer *lwork, integer *iwork, integer *liwork, integer *info)
@@ -260,7 +260,7 @@ n matrix, extraction of singular vectors. */
     /* Local variables */
     integer i__, j, k, l, kb, iq;
     doublereal ze, zg;
-    extern /* Subroutine */ void dlarrv_tgk__(integer *, doublereal *, 
+    extern /* Subroutine */ void dlarrv_tgk_(integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *, 
 	    integer *, doublereal *, integer *, integer *);
@@ -718,7 +718,7 @@ n matrix, extraction of singular vectors. */
 	tol = f2cmax(d__1,0.);
 	i__1 = *n << 1;
 	i__2 = *n << 1;
-	dlarrv_tgk__(&i__1, &work[indtgk], &work[inde2], &iwork[indisp], &
+	dlarrv_tgk_(&i__1, &work[indtgk], &work[inde2], &iwork[indisp], &
 		mpos, &s[1], &iwork[indbl], &iwork[indixw], &work[indgsc], &
 		tol, &work[indwk], &i__2, &iwork[indisup], &work[indwk + (*n 
 		<< 1) * mpos], &iwork[indiwk], &iinfo);

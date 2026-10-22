@@ -310,7 +310,7 @@ ing the full support (Golub-Kahan variant of SLAR1V); also SLAR1V2_TGK, the two-
 /* > SLARRF rather than from the current SSTEMR kernels. */
 /* > \endverbatim */
 
-/* Subroutine */ void slar1v_tgk__(char *rep, integer *n, integer *b1, integer 
+/* Subroutine */ void slar1v_tgk_(char *rep, integer *n, integer *b1, integer 
 	*bn, real *sigma, real *d__, real *l, real *ld, real *lld, real *eval,
 	 real *gersch, real *z__, real *ztz, real *mingma, integer *r__, 
 	integer *isuppz, real *work)
@@ -670,7 +670,7 @@ L90:
 
 } /* slar1v_tgk__ */
 
-/* Subroutine */ void slar1v2_tgk__(char *rep, integer *n, integer *b1, 
+/* Subroutine */ void slar1v2_tgk_(char *rep, integer *n, integer *b1, 
 	integer *bn, real *sigma1, real *sigma2, real *d__, real *l, real *ld,
 	 real *lld, real *eval1, real *eval2, real *gersch, real *z1, real *
 	z2, real *ztz1, real *ztz2, real *mingma1, real *mingma2, integer *
@@ -683,7 +683,7 @@ L90:
     /* Local variables */
     integer i__;
     real sa, sb;
-    extern /* Subroutine */ void slar1v_tgk__(char *, integer *, integer *, 
+    extern /* Subroutine */ void slar1v_tgk_(char *, integer *, integer *, 
 	    integer *, real *, real *, real *, real *, real *, real *, real *,
 	     real *, real *, real *, integer *, integer *, real *);
     integer r1a, r1b, r2a, r2b;
@@ -982,10 +982,10 @@ L80:
     return;
 
 L300:
-    slar1v_tgk__(rep, n, b1, bn, sigma1, &d__[1], &l[1], &ld[1], &lld[1], 
+    slar1v_tgk_(rep, n, b1, bn, sigma1, &d__[1], &l[1], &ld[1], &lld[1], 
 	    eval1, &gersch[1], &z1[1], ztz1, mingma1, rone, &isup1[1], &work1[
 	    1]);
-    slar1v_tgk__(rep, n, b1, bn, sigma2, &d__[1], &l[1], &ld[1], &lld[1], 
+    slar1v_tgk_(rep, n, b1, bn, sigma2, &d__[1], &l[1], &ld[1], &lld[1], 
 	    eval2, &gersch[1], &z2[1], ztz2, mingma2, rtwo, &isup2[1], &work2[
 	    1]);
     return;

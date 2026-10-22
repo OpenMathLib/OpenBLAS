@@ -248,7 +248,7 @@ of the LAPACK 3.0 DLARRV). */
 /* > DLARRF rather than from the current DSTEMR kernels. */
 /* > \endverbatim */
 
-/* Subroutine */ void dlarrv_tgk__(integer *n, doublereal *d__, doublereal *l, 
+/* Subroutine */ void dlarrv_tgk_(integer *n, doublereal *d__, doublereal *l, 
 	integer *isplit, integer *m, doublereal *w, integer *iblock, integer *
 	indexw, doublereal *gersch, doublereal *tol, doublereal *z__, integer 
 	*ldz, integer *isuppz, doublereal *work, integer *iwork, integer *
@@ -260,15 +260,15 @@ of the LAPACK 3.0 DLARRV). */
 
     /* Local variables */
     integer i__, j, k, p, q, k2;
-    extern /* Subroutine */ void dlar1v_tgk__(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlar1v_tgk_(char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *);
     integer im, in;
-    extern /* Subroutine */ void dlarrb_tgk__(integer *, doublereal *, 
+    extern /* Subroutine */ void dlarrb_tgk_(integer *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, doublereal *,
-	     doublereal *, doublereal *, integer *, integer *), dlarrf_tgk__(
+	     doublereal *, doublereal *, integer *, integer *), dlarrf_tgk_(
 	    char *, integer *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, integer *, integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, integer *, integer *);
@@ -518,7 +518,7 @@ L40:
 		    q = indexw[wbegin - 1 + oldlst];
 		    d__1 = eps * 4.;
 		    i__3 = p - oldfst;
-		    dlarrb_tgk__(&in, &d__[ibegin], &l[ibegin], &work[indld + 
+		    dlarrb_tgk_(&in, &d__[ibegin], &l[ibegin], &work[indld + 
 			    1], &work[indlld + 1], &p, &q, &reltol, &d__1, &
 			    i__3, &work[1], &work[indgap + 1], &work[inderr + 
 			    1], &work[indwrk + in], &iwork[iindwk], &iinfo);
@@ -561,7 +561,7 @@ L40:
 /*                    REP='T' at the root forms the child from the TGK */
 /*                    matrix; REP='L' forms it from the parent L D L^T. */
 
-			dlarrf_tgk__(rep, &in, &d__[ibegin], &l[ibegin], &
+			dlarrf_tgk_(rep, &in, &d__[ibegin], &l[ibegin], &
 				work[indld + 1], &work[indlld + 1], &newfrs, &
 				newlst, &work[1], &sigma, &z__[ibegin + 
 				newftt * z_dim1], &z__[ibegin + (newftt + 1) *
@@ -648,7 +648,7 @@ L90:
 /*                       Given LAMBDA, compute the eigenvector.  REP='T' */
 /*                       uses the TGK matrix as input at the root. */
 
-			    dlar1v_tgk__(rep, &in, &c__1, &in, &lambda, &d__[
+			    dlar1v_tgk_(rep, &in, &c__1, &in, &lambda, &d__[
 				    ibegin], &l[ibegin], &work[indld + 1], &
 				    work[indlld + 1], &w[wbegin + k - 1], &
 				    gersch[(oldien << 1) + 1], &z__[ibegin + 
@@ -775,7 +775,7 @@ L142:
 /*                    dlar1v_tgk.f but not used: the two eigenvectors are */
 /*                    computed by separate one-lane calls (reference code). */
 			if (! done1) {
-			    dlar1v_tgk__(rep, &in, &c__1, &in, &lambda, &d__[
+			    dlar1v_tgk_(rep, &in, &c__1, &in, &lambda, &d__[
 				    ibegin], &l[ibegin], &work[indld + 1], &
 				    work[indlld + 1], &w[wbegin + k - 1], &
 				    gersch[(oldien << 1) + 1], &z__[ibegin + 
@@ -784,7 +784,7 @@ L142:
 				    work[indwrk]);
 			}
 			if (! done2) {
-			    dlar1v_tgk__(rep, &in, &c__1, &in, &lambda2, &d__[
+			    dlar1v_tgk_(rep, &in, &c__1, &in, &lambda2, &d__[
 				    ibegin], &l[ibegin], &work[indld + 1], &
 				    work[indlld + 1], &w[wbegin + k2 - 1], &
 				    gersch[(oldien << 1) + 1], &z__[ibegin + 
@@ -864,7 +864,7 @@ L142:
 			iter = 0;
 L143:
 			lambda = work[k];
-			dlar1v_tgk__(rep, &in, &c__1, &in, &lambda, &d__[
+			dlar1v_tgk_(rep, &in, &c__1, &in, &lambda, &d__[
 				ibegin], &l[ibegin], &work[indld + 1], &work[
 				indlld + 1], &w[wbegin + k - 1], &gersch[(
 				oldien << 1) + 1], &z__[ibegin + ktot * 

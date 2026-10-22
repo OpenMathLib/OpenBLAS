@@ -311,7 +311,7 @@ static integer c__2 = 2;
 /* > SLARRF rather than from the current SSTEMR kernels. */
 /* > \endverbatim */
 
-/* Subroutine */ void slarrf_tgk__(char *rep, integer *n, real *d__, real *l, 
+/* Subroutine */ void slarrf_tgk_(char *rep, integer *n, real *d__, real *l, 
 	real *ld, real *lld, integer *ifirst, integer *ilast, real *w, real *
 	sigma, real *dplus, real *lplus, real *work, integer *iseed, integer *
 	info)

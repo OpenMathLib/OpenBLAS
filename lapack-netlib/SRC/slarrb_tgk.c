@@ -308,7 +308,7 @@ RBTGK_STURM4 (four-lane Sturm count) and SLARRBTGK_STURM_SLOW (reference Sturm c
 /* > SLARRF rather than from the current SSTEMR kernels. */
 /* > \endverbatim */
 
-/* Subroutine */ void slarrb_tgk__(integer *n, real *d__, real *l, real *ld, 
+/* Subroutine */ void slarrb_tgk_(integer *n, real *d__, real *l, real *ld, 
 	real *lld, integer *ifirst, integer *ilast, real *rtol1, real *rtol2, 
 	integer *offset, real *w, real *wgap, real *werr, real *work, integer 
 	*iwork, integer *info)
@@ -332,7 +332,7 @@ RBTGK_STURM4 (four-lane Sturm count) and SLARRBTGK_STURM_SLOW (reference Sturm c
     real right, width;
     integer bnext[4];
     real dplus, error;
-    extern /* Subroutine */ void slarrbtgk_sturm_slow__(integer *, real *, 
+    extern /* Subroutine */ void slarrbtgk_sturm_slow_(integer *, real *, 
 	    real *, real *, integer *);
     integer bafter;
     extern real slamch_(char *);
@@ -710,7 +710,7 @@ L85:
 /*     each midpoint is counted by the reference one-shift routine. */
     i__1 = nb;
     for (b = 1; b <= i__1; ++b) {
-	slarrbtgk_sturm_slow__(n, &d__[1], &lld[1], &bmid[b - 1], &bcnt[b - 1]
+	slarrbtgk_sturm_slow_(n, &d__[1], &lld[1], &bmid[b - 1], &bcnt[b - 1]
 		);
 /* L88: */
     }
@@ -831,7 +831,7 @@ L100:
 
 } /* slarrb_tgk__ */
 
-/* Subroutine */ void slarrbtgk_sturm4__(integer *n, real *d__, real *lld, 
+/* Subroutine */ void slarrbtgk_sturm4_(integer *n, real *d__, real *lld, 
 	integer *nb, real *x, integer *cnt)
 {
     /* System generated locals */
@@ -840,7 +840,7 @@ L100:
     /* Local variables */
     integer j, c1, c2, c3, c4;
     real s1, s2, s3, s4, dp1, dp2, dp3, dp4;
-    extern /* Subroutine */ void slarrbtgk_sturm_slow__(integer *, real *, 
+    extern /* Subroutine */ void slarrbtgk_sturm_slow_(integer *, real *, 
 	    real *, real *, integer *);
 
 
@@ -997,27 +997,27 @@ L100:
 /*     the performance target. */
 
     if (! (s1 > 0.f || s1 < 1.f)) {
-	slarrbtgk_sturm_slow__(n, &d__[1], &lld[1], &x[1], &cnt[1]);
+	slarrbtgk_sturm_slow_(n, &d__[1], &lld[1], &x[1], &cnt[1]);
     }
     if (*nb >= 2) {
 	if (! (s2 > 0.f || s2 < 1.f)) {
-	    slarrbtgk_sturm_slow__(n, &d__[1], &lld[1], &x[2], &cnt[2]);
+	    slarrbtgk_sturm_slow_(n, &d__[1], &lld[1], &x[2], &cnt[2]);
 	}
     }
     if (*nb >= 3) {
 	if (! (s3 > 0.f || s3 < 1.f)) {
-	    slarrbtgk_sturm_slow__(n, &d__[1], &lld[1], &x[3], &cnt[3]);
+	    slarrbtgk_sturm_slow_(n, &d__[1], &lld[1], &x[3], &cnt[3]);
 	}
     }
     if (*nb >= 4) {
 	if (! (s4 > 0.f || s4 < 1.f)) {
-	    slarrbtgk_sturm_slow__(n, &d__[1], &lld[1], &x[4], &cnt[4]);
+	    slarrbtgk_sturm_slow_(n, &d__[1], &lld[1], &x[4], &cnt[4]);
 	}
     }
     return;
 } /* slarrbtgk_sturm4__ */
 
-/* Subroutine */ void slarrbtgk_sturm_slow__(integer *n, real *d__, real *lld, 
+/* Subroutine */ void slarrbtgk_sturm_slow_(integer *n, real *d__, real *lld, 
 	real *x, integer *cnt)
 {
     /* System generated locals */

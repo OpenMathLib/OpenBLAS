@@ -562,7 +562,7 @@ static integer c__1 = 1;
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     logical badout;
     integer iiweng, iwkeng, idcopy, iecopy, mfound, isfull, liwmin, iufull;
-    extern /* Subroutine */ void sbdsvdmr3_work__(char *, char *, integer *, 
+    extern /* Subroutine */ void sbdsvdmr3_work_(char *, char *, integer *, 
 	    real *, real *, real *, real *, integer *, real *, integer *, 
 	    integer *, real *, integer *, integer *, integer *, integer *);
     logical lquery;
@@ -759,13 +759,13 @@ static integer c__1 = 1;
     iwkeng = *lwork - iwrk + 1;
     iiweng = *liwork;
     if (wantz) {
-	sbdsvdmr3_work__("V", uplo, n, &work[idcopy], &work[iecopy], &work[
+	sbdsvdmr3_work_("V", uplo, n, &work[idcopy], &work[iecopy], &work[
 		isfull], &work[iufull], n, &work[ivtfull], n, &mfound, &work[
 		iwrk], &iwkeng, &iwork[1], &iiweng, info);
     } else {
 	i__1 = f2cmax(1,*n);
 	i__2 = f2cmax(1,*n);
-	sbdsvdmr3_work__("N", uplo, n, &work[idcopy], &work[iecopy], &work[
+	sbdsvdmr3_work_("N", uplo, n, &work[idcopy], &work[iecopy], &work[
 		isfull], &work[iufull], &i__1, &work[ivtfull], &i__2, &mfound,
 		 &work[iwrk], &iwkeng, &iwork[1], &iiweng, info);
     }

@@ -313,7 +313,7 @@ n matrix, extraction of singular vectors. */
 /* > SLARRF rather than from the current SSTEMR kernels. */
 /* > \endverbatim */
 
-/* Subroutine */ void sbdsvdmr3_work__(char *jobz, char *uplo, integer *n, 
+/* Subroutine */ void sbdsvdmr3_work_(char *jobz, char *uplo, integer *n, 
 	real *d__, real *e, real *s, real *u, integer *ldu, real *vt, integer 
 	*ldvt, integer *m, real *work, integer *lwork, integer *iwork, 
 	integer *liwork, integer *info)
@@ -325,7 +325,7 @@ n matrix, extraction of singular vectors. */
     /* Local variables */
     integer i__, j, k, l, kb, iq;
     real ze, zg, rt2;
-    extern /* Subroutine */ void slarrv_tgk__(integer *, real *, real *, 
+    extern /* Subroutine */ void slarrv_tgk_(integer *, real *, real *, 
 	    integer *, integer *, real *, integer *, integer *, real *, real *
 	    , real *, integer *, integer *, real *, integer *, integer *);
     real scl, eps, tol;
@@ -784,7 +784,7 @@ n matrix, extraction of singular vectors. */
 	tol = f2cmax(r__1,0.f);
 	i__1 = *n << 1;
 	i__2 = *n << 1;
-	slarrv_tgk__(&i__1, &work[indtgk], &work[inde2], &iwork[indisp], &
+	slarrv_tgk_(&i__1, &work[indtgk], &work[inde2], &iwork[indisp], &
 		mpos, &s[1], &iwork[indbl], &iwork[indixw], &work[indgsc], &
 		tol, &work[indwk], &i__2, &iwork[indisup], &work[indwk + (*n 
 		<< 1) * mpos], &iwork[indiwk], &iinfo);

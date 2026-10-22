@@ -242,7 +242,7 @@ ing the full support (Golub-Kahan variant of DLAR1V); also DLAR1V2_TGK, the two-
 /* > DLARRF rather than from the current DSTEMR kernels. */
 /* > \endverbatim */
 
-/* Subroutine */ void dlar1v_tgk__(char *rep, integer *n, integer *b1, integer 
+/* Subroutine */ void dlar1v_tgk_(char *rep, integer *n, integer *b1, integer 
 	*bn, doublereal *sigma, doublereal *d__, doublereal *l, doublereal *
 	ld, doublereal *lld, doublereal *eval, doublereal *gersch, doublereal 
 	*z__, doublereal *ztz, doublereal *mingma, integer *r__, integer *
@@ -603,7 +603,7 @@ L90:
 
 } /* dlar1v_tgk__ */
 
-/* Subroutine */ void dlar1v2_tgk__(char *rep, integer *n, integer *b1, 
+/* Subroutine */ void dlar1v2_tgk_(char *rep, integer *n, integer *b1, 
 	integer *bn, doublereal *sigma1, doublereal *sigma2, doublereal *d__, 
 	doublereal *l, doublereal *ld, doublereal *lld, doublereal *eval1, 
 	doublereal *eval2, doublereal *gersch, doublereal *z1, doublereal *z2,
@@ -616,7 +616,7 @@ L90:
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ void dlar1v_tgk__(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlar1v_tgk_(char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *);
@@ -917,10 +917,10 @@ L80:
     return;
 
 L300:
-    dlar1v_tgk__(rep, n, b1, bn, sigma1, &d__[1], &l[1], &ld[1], &lld[1], 
+    dlar1v_tgk_(rep, n, b1, bn, sigma1, &d__[1], &l[1], &ld[1], &lld[1], 
 	    eval1, &gersch[1], &z1[1], ztz1, mingma1, rone, &isup1[1], &work1[
 	    1]);
-    dlar1v_tgk__(rep, n, b1, bn, sigma2, &d__[1], &l[1], &ld[1], &lld[1], 
+    dlar1v_tgk_(rep, n, b1, bn, sigma2, &d__[1], &l[1], &ld[1], &lld[1], 
 	    eval2, &gersch[1], &z2[1], ztz2, mingma2, rtwo, &isup2[1], &work2[
 	    1]);
     return;
