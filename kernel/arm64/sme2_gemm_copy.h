@@ -46,11 +46,13 @@ static inline BLASLONG s2c_clip(BLASLONG x, BLASLONG lo, BLASLONG hi) { return x
 #define S2C_WL(a, b) svwhilelt_b64_s64(a, b)
 #define S2C_LD svld1_f64
 #define S2C_ST svst1_f64
+#define S2C_DUP svdup_n_f64
 #else
 #define S2C_VL 16
 #define S2C_WL(a, b) svwhilelt_b32_s64(a, b)
 #define S2C_LD svld1_f32
 #define S2C_ST svst1_f32
+#define S2C_DUP svdup_n_f32
 #endif
 
 static inline __attribute__((always_inline)) void s2c_rows_s(BLASLONG m, BLASLONG w, const FLOAT *a, BLASLONG lda,
@@ -251,5 +253,33 @@ static inline void s2c_b_panels(int rows, BLASLONG m, BLASLONG n, const FLOAT *a
 static inline void s2c_zero(BLASLONG m, BLASLONG w, FLOAT *b) {
   if (m > 0) memset(b, 0, (size_t)(m * w) * sizeof(FLOAT));
 }
+
+/* Rows i1..i2 of a diagonal block, diagonal in column d0 + i: zeros left (zl) or right of it, 1 there with unit. */
+static inline void s2c_tri(BLASLONG i1, BLASLONG i2, BLASLONG w, BLASLONG d0, int zl, int unit, FLOAT *b) {
+  for (BLASLONG i = i1; i < i2; ++i) {
+    const BLASLONG d = d0 + i;
+    FLOAT *bi = b + i * w;
+    for (BLASLONG c = zl ? 0 : d + 1; c < (zl ? d : w); ++c) bi[c] = ZERO;
+    if (unit) bi[d] = ONE;
+  }
+}
+
+#ifdef HAVE_SME2_GEMM
+static inline __attribute__((always_inline)) void s2c_zero_s(BLASLONG m, BLASLONG w, FLOAT *b) __arm_streaming {
+  for (BLASLONG k = 0; k < m * w; k += S2C_VL) S2C_ST(S2C_WL(k, m * w), b + k, S2C_DUP(0));
+}
+
+static inline __attribute__((always_inline)) void s2c_tri_s(BLASLONG i1, BLASLONG i2, BLASLONG w, BLASLONG d0, int zl,
+                                                            int unit, FLOAT *b) __arm_streaming {
+  for (BLASLONG i = i1; i < i2; ++i) {
+    const BLASLONG d = d0 + i;
+    for (BLASLONG c = 0; c < w; c += S2C_VL) {
+      const svbool_t pw = S2C_WL(c, w), pd = S2C_WL(c, d), pd1 = S2C_WL(c, d + 1);
+      S2C_ST(zl ? pd : svbic_b_z(pw, pw, pd1), b + i * w + c, S2C_DUP(0));
+      if (unit) S2C_ST(svbic_b_z(pw, pd1, pd), b + i * w + c, S2C_DUP(1));
+    }
+  }
+}
+#endif
 
 #endif
