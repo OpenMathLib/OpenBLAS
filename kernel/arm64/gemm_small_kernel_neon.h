@@ -68,7 +68,7 @@ SK_INL sk_v sk_fmal(sk_v acc, sk_v a, sk_v b, const int t) {
 }
 
 /* C block of MV vectors x NR columns at (a, b, c); the first skip rows of the block are left unchanged in C. */
-/* As in the reference GEMM for A op(B), alpha scales op(B) before the products (no overflow of A B for a small alpha). */
+/* As in the reference GEMM for A op(B), alpha scales op(B) before the products. */
 SK_INL void sk_blk(const int TB, const int MV, const int NR, int skip, BLASLONG k, const FLOAT *a, BLASLONG lda,
                    const FLOAT *b, BLASLONG ldb, FLOAT alpha, FLOAT beta, FLOAT *c, BLASLONG ldc) {
   const sk_v va = SK_DUP(alpha), vb = SK_DUP(beta);
@@ -123,8 +123,8 @@ SK_INL void sk_blk(const int TB, const int MV, const int NR, int skip, BLASLONG 
 }
 
 /* Rows fewer than one vector: plain loops. */
-static void sk_rows(int tb, BLASLONG m, BLASLONG n, BLASLONG k, const FLOAT *a, BLASLONG lda, const FLOAT *b,
-                   BLASLONG ldb, FLOAT alpha, FLOAT beta, FLOAT *c, BLASLONG ldc) {
+static inline void sk_rows(int tb, BLASLONG m, BLASLONG n, BLASLONG k, const FLOAT *a, BLASLONG lda, const FLOAT *b,
+                           BLASLONG ldb, FLOAT alpha, FLOAT beta, FLOAT *c, BLASLONG ldc) {
   const BLASLONG sl = tb ? ldb : 1, sj = tb ? 1 : ldb;
   for (BLASLONG j = 0; j < n; ++j)
     for (BLASLONG i = 0; i < m; ++i) {
@@ -135,8 +135,8 @@ static void sk_rows(int tb, BLASLONG m, BLASLONG n, BLASLONG k, const FLOAT *a, 
 }
 
 /* One block column of NR columns: two-vector row blocks, one-vector blocks, and the row tail as an overlapped block. */
-SK_INL void sk_col(const int TB, const int NR, BLASLONG m, BLASLONG k, const FLOAT *a, BLASLONG lda, const FLOAT *b, BLASLONG ldb,
-                 FLOAT alpha, FLOAT beta, FLOAT *c, BLASLONG ldc) {
+SK_INL void sk_col(const int TB, const int NR, BLASLONG m, BLASLONG k, const FLOAT *a, BLASLONG lda, const FLOAT *b,
+                   BLASLONG ldb, FLOAT alpha, FLOAT beta, FLOAT *c, BLASLONG ldc) {
   BLASLONG i = 0;
   for (; i + 2 * SK_NV <= m; i += 2 * SK_NV) sk_blk(TB, 2, NR, 0, k, a + i, lda, b, ldb, alpha, beta, c + i, ldc);
   if (i + SK_NV <= m) {
@@ -144,14 +144,16 @@ SK_INL void sk_col(const int TB, const int NR, BLASLONG m, BLASLONG k, const FLO
     i += SK_NV;
   }
   if (i < m) {
-    if (m >= SK_NV) sk_blk(TB, 1, NR, (int)(SK_NV - (m - i)), k, a + m - SK_NV, lda, b, ldb, alpha, beta, c + m - SK_NV, ldc);
-    else sk_rows(TB, m, NR, k, a, lda, b, ldb, alpha, beta, c, ldc);
+    if (m >= SK_NV)
+      sk_blk(TB, 1, NR, (int)(SK_NV - (m - i)), k, a + m - SK_NV, lda, b, ldb, alpha, beta, c + m - SK_NV, ldc);
+    else
+      sk_rows(TB, m, NR, k, a, lda, b, ldb, alpha, beta, c, ldc);
   }
 }
 
 /* C = alpha A op(B) + beta C with A column-major; tb: B transposed. */
-static void sk_gemm_n(int tb, BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, const FLOAT *a, BLASLONG lda, const FLOAT *b,
-                     BLASLONG ldb, FLOAT beta, FLOAT *c, BLASLONG ldc) {
+static inline void sk_gemm_n(int tb, BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, const FLOAT *a, BLASLONG lda,
+                             const FLOAT *b, BLASLONG ldb, FLOAT beta, FLOAT *c, BLASLONG ldc) {
   const BLASLONG sj = tb ? 1 : ldb;
   BLASLONG j = 0;
   if (tb)
@@ -177,7 +179,7 @@ static void sk_gemm_n(int tb, BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, c
 
 /* C block of R rows x NR columns for C = alpha A^T B + beta C: dot products along the contiguous depth. */
 SK_INL void sk_dot(const int R, const int NR, BLASLONG k, const FLOAT *a, BLASLONG lda, const FLOAT *b, BLASLONG ldb,
-                 FLOAT alpha, FLOAT beta, FLOAT *c, BLASLONG ldc) {
+                   FLOAT alpha, FLOAT beta, FLOAT *c, BLASLONG ldc) {
   sk_v acc[4][4];
   for (int r = 0; r < R; ++r)
     for (int j = 0; j < NR; ++j) acc[r][j] = SK_DUP(0);
@@ -198,8 +200,8 @@ SK_INL void sk_dot(const int R, const int NR, BLASLONG k, const FLOAT *a, BLASLO
     }
 }
 
-SK_INL void sk_dot_rows(const int NR, BLASLONG m, BLASLONG k, const FLOAT *a, BLASLONG lda, const FLOAT *b, BLASLONG ldb,
-                      FLOAT alpha, FLOAT beta, FLOAT *c, BLASLONG ldc) {
+SK_INL void sk_dot_rows(const int NR, BLASLONG m, BLASLONG k, const FLOAT *a, BLASLONG lda, const FLOAT *b,
+                        BLASLONG ldb, FLOAT alpha, FLOAT beta, FLOAT *c, BLASLONG ldc) {
   BLASLONG i = 0;
   for (; i + 4 <= m; i += 4) sk_dot(4, NR, k, a + i * lda, lda, b, ldb, alpha, beta, c + i, ldc);
   switch (m - i) {
@@ -210,8 +212,8 @@ SK_INL void sk_dot_rows(const int NR, BLASLONG m, BLASLONG k, const FLOAT *a, BL
 }
 
 /* C = alpha A^T B + beta C. */
-static void sk_gemm_tn(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, const FLOAT *a, BLASLONG lda, const FLOAT *b,
-                      BLASLONG ldb, FLOAT beta, FLOAT *c, BLASLONG ldc) {
+static inline void sk_gemm_tn(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, const FLOAT *a, BLASLONG lda,
+                              const FLOAT *b, BLASLONG ldb, FLOAT beta, FLOAT *c, BLASLONG ldc) {
   BLASLONG j = 0;
   for (; j + 4 <= n; j += 4) sk_dot_rows(4, m, k, a, lda, b + j * ldb, ldb, alpha, beta, c + j * ldc, ldc);
   switch (n - j) {
@@ -222,8 +224,8 @@ static void sk_gemm_tn(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, const FL
 }
 
 /* C = alpha A^T B^T + beta C: plain loops. */
-static void sk_gemm_tt(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, const FLOAT *a, BLASLONG lda, const FLOAT *b,
-                       BLASLONG ldb, FLOAT beta, FLOAT *c, BLASLONG ldc) {
+static inline void sk_gemm_tt(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, const FLOAT *a, BLASLONG lda,
+                              const FLOAT *b, BLASLONG ldb, FLOAT beta, FLOAT *c, BLASLONG ldc) {
   for (BLASLONG j = 0; j < n; ++j)
     for (BLASLONG i = 0; i < m; ++i) {
       FLOAT s = 0;
@@ -232,23 +234,5 @@ static void sk_gemm_tt(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, const FL
       *cc = alpha * s + (beta == (FLOAT)0 ? (FLOAT)0 : beta * *cc);
     }
 }
-
-/* The small-matrix kernel interface; B0: beta = 0, C not read. */
-#ifdef B0
-#define SK_KERNEL(call)                                                                                              \
-  int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, IFLOAT *A, BLASLONG lda, FLOAT alpha, IFLOAT *B, BLASLONG ldb,      \
-            FLOAT *C, BLASLONG ldc) {                                                                               \
-    const FLOAT beta = ZERO;                                                                                         \
-    call;                                                                                                            \
-    return 0;                                                                                                        \
-  }
-#else
-#define SK_KERNEL(call)                                                                                              \
-  int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, IFLOAT *A, BLASLONG lda, FLOAT alpha, IFLOAT *B, BLASLONG ldb,      \
-            FLOAT beta, FLOAT *C, BLASLONG ldc) {                                                                    \
-    call;                                                                                                            \
-    return 0;                                                                                                        \
-  }
-#endif
 
 #endif

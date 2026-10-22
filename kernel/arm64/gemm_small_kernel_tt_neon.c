@@ -30,4 +30,17 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #include "gemm_small_kernel_neon.h"
 
-SK_KERNEL(sk_gemm_tt(M, N, K, alpha, A, lda, B, ldb, beta, C, ldc))
+#ifdef B0
+int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, IFLOAT *A, BLASLONG lda, FLOAT alpha, IFLOAT *B, BLASLONG ldb, FLOAT *C,
+          BLASLONG ldc)
+#else
+int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, IFLOAT *A, BLASLONG lda, FLOAT alpha, IFLOAT *B, BLASLONG ldb, FLOAT beta,
+          FLOAT *C, BLASLONG ldc)
+#endif
+{
+#ifdef B0
+  const FLOAT beta = ZERO;
+#endif
+  sk_gemm_tt(M, N, K, alpha, A, lda, B, ldb, beta, C, ldc);
+  return 0;
+}
