@@ -51,4 +51,9 @@ SSYMMUCOPY_M   = symm_copy_sme2.c
 SSYMMLCOPY_M   = symm_copy_sme2.c
 DSYMMUCOPY_M   = symm_copy_sme2.c
 DSYMMLCOPY_M   = symm_copy_sme2.c
+
+SGEMVNKERNEL   = gemv_n_sme2.c
+SGEMVTKERNEL   = gemv_t_sme2.c
+DGEMVNKERNEL   = gemv_n_sme2.c
+DGEMVTKERNEL   = gemv_t_sme2.c
 endif
