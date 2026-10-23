@@ -582,13 +582,21 @@ else if (order == CblasRowMajor && k==lda && n==ldb && n==ldc && TransA == Cblas
 
 #if !defined(BFLOAT16)  && !defined(HFLOAT16)
 #if defined(ARCH_ARM64) && (defined(USE_SGEMM_KERNEL_DIRECT)||defined(DYNAMIC_ARCH))
+int sme_kernel = 1;
 #if defined(DYNAMIC_ARCH)
-if (strcmp(gotoblas_corename(), "armv9sme") == 0
+sme_kernel = strcmp(gotoblas_corename(), "armv9sme") == 0
 #if defined(__clang__)
  || strcmp(gotoblas_corename(), "vortexm4") == 0
 #endif
-)
+;
 #endif //defined dynarch
+#if USE_SMALL_MATRIX_OPT && !defined(COMPLEX)
+/* a target's small-matrix kernels come before its SME kernels */
+if (sme_kernel && *(FLOAT *)args.alpha != ZERO &&
+    GEMM_SMALL_MATRIX_PERMIT(transa, transb, args.m, args.n, args.k, *(FLOAT *)args.alpha, *(FLOAT *)args.beta))
+  sme_kernel = 0;
+#endif
+if (sme_kernel)
 {
 char* TA,*TB;
       if (transa & 1) 
