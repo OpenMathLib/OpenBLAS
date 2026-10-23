@@ -235,7 +235,8 @@ SLASRC_O = \
    ssbev_2stage.o ssbevx_2stage.o ssbevd_2stage.o ssygv_2stage.o \
    sgesvdq.o slatrs3.o strsyl3.o sgelst.o sgedmd.o sgedmdq.o sgecxx.o \
    sbdsvdmr3.o sbdsvdmr3_work.o sbdtgk.o sgesvdmr3.o slar1v_tgk.o \
-   slarrb_tgk.o slarrf_tgk.o slarrv_tgk.o
+   slarrb_tgk.o slarrf_tgk.o slarrv_tgk.o slaed0_br.o slaed0_merge_pair.o \
+   slaed4_br.o slaed7_br.o slaed8_br.o slaed9_br.o sstebr.o ssteqr_boundary_br.o
 endif
 
 ifneq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE))" ""
@@ -448,7 +449,8 @@ DLASRC_O = \
    dsbev_2stage.o dsbevx_2stage.o dsbevd_2stage.o dsygv_2stage.o \
    dgesvdq.o dlatrs3.o dtrsyl3.o dgelst.o dgedmd.o dgedmdq.o dgecxx.o \
    dbdsvdmr3.o dbdsvdmr3_work.o dbdtgk.o dgesvdmr3.o dlar1v_tgk.o \
-   dlarrb_tgk.o dlarrf_tgk.o dlarrv_tgk.o
+   dlarrb_tgk.o dlarrf_tgk.o dlarrv_tgk.o dlaed0_br.o dlaed0_merge_pair.o \
+   dlaed4_br.o dlaed7_br.o dlaed8_br.o dlaed9_br.o dstebr.o dsteqr_boundary_br.o
 endif
 
 ifdef USEXBLAS
