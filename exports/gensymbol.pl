@@ -897,7 +897,8 @@ zpotri,
     clatrs3,
     crscl,
     ctrsyl3,
-    cgecxx
+    cgecxx,
+    cgesvdmr3
     );
 #    claqz0
 #    claqz1
@@ -913,7 +914,15 @@ zpotri,
     dlarmm,
     dlatrs3,
     dtrsyl3,
-    dgecxx
+    dgecxx,
+    dbdsvdmr3,
+    dbdsvdmr3_work,
+    dbdtgk,
+    dgesvdmr3,
+    dlar1v_tgk,
+    dlarrb_tgk,
+    dlarrf_tgk,
+    dlarrv_tgk
     );
 
 @lapackobjs2s = (@lapackobjs2s,
@@ -924,7 +933,15 @@ zpotri,
     slarmm,
     slatrs3,
     strsyl3,
-    sgecxx
+    sgecxx,
+    sbdsvdmr3,
+    sbdsvdmr3_work,
+    sbdtgk,
+    sgesvdmr3,
+    slar1v_tgk,
+    slarrb_tgk,
+    slarrf_tgk,
+    slarrv_tgk
     );
 
 @lapackobjs2z = (@lapackobjs2z,
@@ -935,7 +952,8 @@ zpotri,
     zlatrs3,
     zrscl,
     ztrsyl3,
-    zgecxx
+    zgecxx,
+    zgesvdmr3
     );
 #    zlaqz0
 #    zlaqz1
@@ -1714,7 +1732,9 @@ zpotri,
     LAPACKE_ctz_nancheck,
     LAPACKE_ctz_trans,
     LAPACKE_cunhr_col,
-    LAPACKE_cunhr_col_work
+    LAPACKE_cunhr_col_work,
+    LAPACKE_cgesvdmr3,
+    LAPACKE_cgesvdmr3_work
 );
 @lapackeobjsd = (
     LAPACKE_dgb_nancheck,
@@ -2341,7 +2361,10 @@ zpotri,
     LAPACKE_dtrsyl3_work,
     LAPACKE_dtz_nancheck,
     LAPACKE_dtz_trans,
-
+    LAPACKE_dbdsvdmr3,
+    LAPACKE_dbdsvdmr3_work,
+    LAPACKE_dgesvdmr3,
+    LAPACKE_dgesvdmr3_work
 );
 @lapackeobjss = (
     LAPACKE_sgb_nancheck,
@@ -2960,7 +2983,10 @@ zpotri,
     LAPACKE_strsyl3_work,
     LAPACKE_stz_nancheck,
     LAPACKE_stz_trans,
-
+    LAPACKE_sbdsvdmr3,
+    LAPACKE_sbdsvdmr3_work,
+    LAPACKE_sgesvdmr3,
+    LAPACKE_sgesvdmr3_work
 );
 @lapackeobjsz = (    
     LAPACKE_zgb_nancheck,
@@ -3517,6 +3543,8 @@ zpotri,
     LAPACKE_ztrsyl3_work,
     LAPACKE_ztz_nancheck,
     LAPACKE_ztz_trans,
+    LAPACKE_zgesvdmr3,
+    LAPACKE_zgesvdmr3_work
 
     ## @(SRCX_OBJ) from `lapack-3.4.1/lapacke/src/Makefile`
     ## Not exported: requires LAPACKE_EXTENDED to be set and depends on the
