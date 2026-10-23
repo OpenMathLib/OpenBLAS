@@ -655,7 +655,7 @@
      $                   SOPGTR, SORGTR, SPTEQR, SSPT21, SSPTRD, SSTEBZ,
      $                   SSTEBR, SSTECH, SSTEDC, SSTEMR, SSTEIN, SSTEQR,
      $                   SSTERF, SSTT21, SSTT22, SSYT21, SSYTRD,
-     $                   XER_REPLACE, XLAENV
+     $                   XERBLA, XLAENV
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, INT, LOG, MAX, MIN, REAL, SQRT
@@ -710,7 +710,7 @@
       END IF
 *
       IF( INFO.NE.0 ) THEN
-         CALL XER_REPLACE( 'SCHKST', -INFO )
+         CALL XERBLA( 'SCHKST', -INFO )
          RETURN
       END IF
 *
