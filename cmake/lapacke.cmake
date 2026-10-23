@@ -1036,6 +1036,8 @@ set(DSRC
   lapacke_dsptri_work.c
   lapacke_dsptrs.c
   lapacke_dsptrs_work.c
+  lapacke_dstebr.c
+  lapacke_dstebr_work.c
   lapacke_dstebz.c
   lapacke_dstebz_work.c
   lapacke_dstedc.c
@@ -1619,6 +1621,8 @@ set(SSRC
   lapacke_ssptri_work.c
   lapacke_ssptrs.c
   lapacke_ssptrs_work.c
+  lapacke_sstebr.c
+  lapacke_sstebr_work.c
   lapacke_sstebz.c
   lapacke_sstebz_work.c
   lapacke_sstedc.c
