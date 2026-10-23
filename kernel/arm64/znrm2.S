@@ -223,6 +223,9 @@ KERNEL_S1_END:
 
 	.align 5
 
+	/* Preserve the source for rare exact range recovery. */
+	mov	x4, X
+	mov	x5, INC_X
 	INIT
 
 	cmp	N, #0
@@ -279,10 +282,44 @@ KERNEL_S1_END:
 
 
 .Lznrm2_kernel_L999:
+	/* With fewer than 2^64 real components, a norm near overflow must
+	 * have scale >= 2^991 (double) or 2^95 (float). Exclude nonfinite
+	 * scale so the existing special-value path remains separate.
+	 */
+#if !defined(DOUBLE)
+	fmov	w6, SCALE
+	ubfx	x6, x6, #23, #8
+	sub	x6, x6, #222
+	cmp	x6, #33
+#else
+	fmov	x6, SCALE
+	ubfx	x6, x6, #52, #11
+	sub	x6, x6, #2014
+	cmp	x6, #33
+#endif
+	blo	.Lznrm2_range
 	fsqrt	SSQ, SSQ
 	fmul	SSQ, SCALE, SSQ
 
 	ret
+
+.Lznrm2_range:
+	mov	X, x4
+	mov	INC_X, x5
+	mov	w3, #2
+#if defined(__APPLE__)
+#if defined(DOUBLE)
+	b	_openblas_dnrm2_range
+#else
+	b	_openblas_snrm2_range
+#endif
+#else
+#if defined(DOUBLE)
+	b	openblas_dnrm2_range
+#else
+	b	openblas_snrm2_range
+#endif
+#endif
 
 	EPILOGUE
 
