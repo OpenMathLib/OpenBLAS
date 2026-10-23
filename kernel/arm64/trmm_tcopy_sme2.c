@@ -53,11 +53,18 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
     s2c_rows(i1, w, ap, lda, b);
     s2c_zero(m - i2, w, b + i2 * w);
 #endif
-    for (BLASLONG i = i1; i < i2; ++i)
-      for (BLASLONG c = 0; c < w; ++c) {
-        const BLASLONG r = posX + i, col = lo + c;
-        b[i * w + c] = r == col ? DIAG(ap[c + i * lda]) : (KEEP(r, col) ? ap[c + i * lda] : ZERO);
+    /* Diagonal block: a copy, then the zero side of the diagonal (column d of row i) and the unit diagonal. */
+    s2c_rows(i2 - i1, w, ap + i1 * lda, lda, b + i1 * w);
+    for (BLASLONG i = i1; i < i2; ++i) {
+      const BLASLONG d = posX + i - lo;
+      FLOAT *bi = b + i * w;
+      if (KEEP(0, 1)) {
+        for (BLASLONG c = 0; c < d; ++c) bi[c] = ZERO;
+      } else {
+        for (BLASLONG c = d + 1; c < w; ++c) bi[c] = ZERO;
       }
+      bi[d] = DIAG(bi[d]);
+    }
     b += m * w;
   }
   return 0;
