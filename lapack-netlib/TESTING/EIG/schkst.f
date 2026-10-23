@@ -152,6 +152,10 @@
 *> (26)    | D1 - D2 | / ( |D1| ulp )           SSTEDC('V') and
 *>                                              SSTEDC('N')
 *>
+*> (38)    | D1 - D5 | / ( |D1| ulp )           SSTEBR
+*>         (values-only boundary-row divide-and-conquer)
+*>         Maximum over SMLSIZ = 2, 8, and 25.
+*>
 *> Test 27 is disabled at the moment because SSTEMR does not
 *> guarantee high relatvie accuracy.
 *>
@@ -588,6 +592,7 @@
      $                   NOUNIT, A, LDA, AP, SD, SE, D1, D2, D3, D4, D5,
      $                   WA1, WA2, WA3, WR, U, LDU, V, VP, TAU, Z, WORK,
      $                   LWORK, IWORK, LIWORK, RESULT, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -626,9 +631,10 @@
 *     .. Local Scalars ..
       LOGICAL            BADNN, TRYRAC
       INTEGER            I, IINFO, IL, IMODE, ITEMP, ITYPE, IU, J, JC,
-     $                   JR, JSIZE, JTYPE, LGN, LIWEDC, LOG2UI, LWEDC,
-     $                   M, M2, M3, MTYPES, N, NAP, NBLOCK, NERRS,
-     $                   NMATS, NMAX, NSPLIT, NTEST, NTESTT
+     $                   JR, JSIZE, JSM, JTYPE, LGN, LIWEDC, LOG2UI,
+     $                   LWEDC, M, M2, M3, MTYPES, N, NAP, NBLOCK,
+     $                   NERRS, NMATS, NMAX, NSPLIT, NTEST, NTESTT,
+     $                   SMLSAV
       REAL               ABSTOL, ANINV, ANORM, COND, OVFL, RTOVFL,
      $                   RTUNFL, TEMP1, TEMP2, TEMP3, TEMP4, ULP,
      $                   ULPINV, UNFL, VL, VU
@@ -636,7 +642,7 @@
 *     .. Local Arrays ..
       INTEGER            IDUMMA( 1 ), IOLDSD( 4 ), ISEED2( 4 ),
      $                   KMAGN( MAXTYP ), KMODE( MAXTYP ),
-     $                   KTYPE( MAXTYP )
+     $                   KTYPE( MAXTYP ), SMLSZS( 3 )
       REAL               DUMMA( 1 )
 *     ..
 *     .. External Functions ..
@@ -647,13 +653,15 @@
 *     .. External Subroutines ..
       EXTERNAL           SCOPY, SLACPY, SLASET, SLASUM, SLATMR, SLATMS,
      $                   SOPGTR, SORGTR, SPTEQR, SSPT21, SSPTRD, SSTEBZ,
-     $                   SSTECH, SSTEDC, SSTEMR, SSTEIN, SSTEQR, SSTERF,
-     $                   SSTT21, SSTT22, SSYT21, SSYTRD, XERBLA
+     $                   SSTEBR, SSTECH, SSTEDC, SSTEMR, SSTEIN, SSTEQR,
+     $                   SSTERF, SSTT21, SSTT22, SSYT21, SSYTRD,
+     $                   XER_REPLACE, XLAENV
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, INT, LOG, MAX, MIN, REAL, SQRT
 *     ..
 *     .. Data statements ..
+      DATA               SMLSZS / 2, 8, 25 /
       DATA               KTYPE / 1, 2, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 8,
      $                   8, 8, 9, 9, 9, 9, 9, 10 /
       DATA               KMAGN / 1, 1, 1, 1, 1, 2, 3, 1, 1, 1, 2, 3, 1,
@@ -702,7 +710,7 @@
       END IF
 *
       IF( INFO.NE.0 ) THEN
-         CALL XERBLA( 'SCHKST', -INFO )
+         CALL XER_REPLACE( 'SCHKST', -INFO )
          RETURN
       END IF
 *
@@ -797,7 +805,7 @@
             GO TO 70
 *
    60       CONTINUE
-            ANORM = RTUNFL*N*ULPINV
+            ANORM = RTUNFL*REAL( N )*ULPINV
             GO TO 70
 *
    70       CONTINUE
@@ -1284,8 +1292,8 @@
 *
 *              Do test 17
 *
-               TEMP2 = TWO*( TWO*N-ONE )*ULP*( ONE+EIGHT*HALF**2 ) /
-     $                 ( ONE-HALF )**4
+               TEMP2 = TWO*( TWO*REAL( N )-ONE )*ULP*
+     $                 ( ONE+EIGHT*HALF**2 ) / ( ONE-HALF )**4
 *
                TEMP1 = ZERO
                DO 190 J = 1, N
@@ -1336,8 +1344,8 @@
                IL = 1
                IU = N
             ELSE
-               IL = 1 + ( N-1 )*INT( SLARND( 1, ISEED2 ) )
-               IU = 1 + ( N-1 )*INT( SLARND( 1, ISEED2 ) )
+               IL = 1 + INT( REAL( N )*SLARND( 1, ISEED2 ) )
+               IU = 1 + INT( REAL( N )*SLARND( 1, ISEED2 ) )
                IF( IU.LT.IL ) THEN
                   ITEMP = IU
                   IU = IL
@@ -1586,8 +1594,8 @@
 *
 *              Do test 27
 *
-                  TEMP2 = TWO*( TWO*N-ONE )*ULP*( ONE+EIGHT*HALF**2 ) /
-     $                    ( ONE-HALF )**4
+                  TEMP2 = TWO*( TWO*REAL( N )-ONE )*ULP*
+     $                    ( ONE+EIGHT*HALF**2 ) / ( ONE-HALF )**4
 *
                   TEMP1 = ZERO
                   DO 220 J = 1, N
@@ -1597,8 +1605,8 @@
 *
                   RESULT( 27 ) = TEMP1 / TEMP2
 *
-                  IL = 1 + ( N-1 )*INT( SLARND( 1, ISEED2 ) )
-                  IU = 1 + ( N-1 )*INT( SLARND( 1, ISEED2 ) )
+                  IL = 1 + INT( REAL( N )*SLARND( 1, ISEED2 ) )
+                  IU = 1 + INT( REAL( N )*SLARND( 1, ISEED2 ) )
                   IF( IU.LT.IL ) THEN
                      ITEMP = IU
                      IU = IL
@@ -1628,7 +1636,7 @@
 *
 *                 Do test 28
 *
-                     TEMP2 = TWO*( TWO*N-ONE )*ULP*
+                     TEMP2 = TWO*( TWO*REAL( N )-ONE )*ULP*
      $                       ( ONE+EIGHT*HALF**2 ) / ( ONE-HALF )**4
 *
                      TEMP1 = ZERO
@@ -1657,8 +1665,8 @@
 *
                IF( SRANGE ) THEN
                   NTEST = 29
-                  IL = 1 + ( N-1 )*INT( SLARND( 1, ISEED2 ) )
-                  IU = 1 + ( N-1 )*INT( SLARND( 1, ISEED2 ) )
+                  IL = 1 + INT( REAL( N )*SLARND( 1, ISEED2 ) )
+                  IU = 1 + INT( REAL( N )*SLARND( 1, ISEED2 ) )
                   IF( IU.LT.IL ) THEN
                      ITEMP = IU
                      IU = IL
@@ -1897,6 +1905,52 @@
      $                        ULP*MAX( TEMP1, TEMP2 ) )
             END IF
   270       CONTINUE
+*
+*           Call SSTEBR (values-only boundary-row DC), do test 38.
+*           Compare against D1 from SSTEQR('V'), same ratio as tests
+*           12 and 26.  Vary SMLSIZ to exercise merges even with the
+*           small matrix sizes in sep.in, and retain the worst ratio.
+*
+            DO 265 JR = NTEST + 1, 37
+               RESULT( JR ) = ZERO
+  265       CONTINUE
+*
+            NTEST = 38
+            RESULT( 38 ) = ZERO
+            SMLSAV = ILAENV( 9, 'SSTEBR', ' ', 0, 0, 0, 0 )
+            DO 267 JSM = 1, 3
+               CALL SCOPY( N, SD, 1, D5, 1 )
+               IF( N.GT.0 )
+     $            CALL SCOPY( N-1, SE, 1, WORK, 1 )
+*
+               CALL XLAENV( 9, SMLSZS( JSM ) )
+               CALL SSTEBR( N, D5, WORK, WORK( N+1 ), LWORK-N,
+     $                      IWORK, LIWORK, IINFO )
+               CALL XLAENV( 9, SMLSAV )
+               IF( IINFO.NE.0 ) THEN
+                  WRITE( NOUNIT, FMT = 9999 )'SSTEBR', IINFO, N,
+     $               JTYPE, IOLDSD
+                  INFO = ABS( IINFO )
+                  IF( IINFO.LT.0 ) THEN
+                     RETURN
+                  ELSE
+                     RESULT( 38 ) = ULPINV
+                     GO TO 280
+                  END IF
+               END IF
+*
+               TEMP1 = ZERO
+               TEMP2 = ZERO
+*
+               DO 266 J = 1, N
+                  TEMP1 = MAX( TEMP1, ABS( D1( J ) ), ABS( D5( J ) ) )
+                  TEMP2 = MAX( TEMP2, ABS( D1( J )-D5( J ) ) )
+  266          CONTINUE
+*
+               RESULT( 38 ) = MAX( RESULT( 38 ), TEMP2 /
+     $                        MAX( UNFL, ULP*MAX( TEMP1, TEMP2 ) ) )
+  267       CONTINUE
+*
   280       CONTINUE
             NTESTT = NTESTT + NTEST
 *
