@@ -69,26 +69,26 @@
 	salq	$ZBASE_SHIFT, INCX
 
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 
 	pxor	%xmm15, %xmm15
 	comisd	%xmm0, %xmm15
-	jne	.L30		# Alpha_r != ZERO
-	jp	.L30
+	jne	L(30)		# Alpha_r != ZERO
+	jp	L(30)
 	comisd	%xmm1, %xmm15
-	jne	.L30		# Alpha_i != ZERO
+	jne	L(30)		# Alpha_i != ZERO
 
 
 /* Alpha == ZERO */
 	cmpq	$2 * SIZE, INCX
-	jne	.L20
+	jne	L(20)
 
 	movq	M,  I
 	sarq	$2, I
-	jle	.L12
+	jle	L(12)
 	ALIGN_4
 
-.L11:
+L(11):
 	movsd	%xmm1,  0 * SIZE(X)
 	movsd	%xmm1,  1 * SIZE(X)
 	movsd	%xmm1,  2 * SIZE(X)
@@ -101,12 +101,12 @@
 
 	addq	$8 * SIZE, X
 	decq	I
-	jg	.L11
+	jg	L(11)
 	ALIGN_4
 
-.L12:
+L(12):
 	testq  $2, M
-	je    .L14
+	je    L(14)
 
 	movsd	%xmm1,  0 * SIZE(X)
 	movsd	%xmm1,  1 * SIZE(X)
@@ -116,23 +116,23 @@
 	addq	$4 * SIZE, X
 	ALIGN_3
 
-.L14:
+L(14):
 	testq  $1, M
-	je    .L999
+	je    L(999)
 
 	movsd	%xmm1,  0 * SIZE(X)
 	movsd	%xmm1,  1 * SIZE(X)
 	addq	$2 * SIZE, X
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
-.L20:
+L(20):
 	movq	M,  I		# rcx = n
 	sarq	$2, I
-	jle	.L22
+	jle	L(22)
 	ALIGN_4
 
-.L21:
+L(21):
 	movsd	%xmm1, 0 * SIZE(X)
 	movsd	%xmm1, 1 * SIZE(X)
 	addq	INCX, X
@@ -146,12 +146,12 @@
 	movsd	%xmm1, 1 * SIZE(X)
 	addq	INCX, X
 	decq	I
-	jg	.L21
+	jg	L(21)
 	ALIGN_4
 
-.L22:
+L(22):
 	testq	$2, M
-	je	.L23
+	je	L(23)
 
 	movsd	%xmm1, 0 * SIZE(X)
 	movsd	%xmm1, 1 * SIZE(X)
@@ -161,22 +161,22 @@
 	addq	INCX, X
 	ALIGN_3
 
-.L23:
+L(23):
 	testq	$1, M
-	je	.L999
+	je	L(999)
 
 	movsd	%xmm1, 0 * SIZE(X)
 	movsd	%xmm1, 1 * SIZE(X)
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
 /* Alpha != ZERO */
-.L30:
+L(30):
 	movq	X, XX
 
 	movq	M,  I
 	sarq	$2, I
-	jle	.L35
+	jle	L(35)
 
 	movsd	 0 * SIZE(X), %xmm2
 	movsd	 1 * SIZE(X), %xmm3
@@ -209,10 +209,10 @@
 	mulsd	%xmm1, %xmm4
 
 	decq	  I
-	jle	  .L32
+	jle	  L(32)
 	ALIGN_4
 
-.L31:
+L(31):
 #ifdef PREFETCHW
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -282,10 +282,10 @@
 	mulsd	%xmm1, %xmm4
 
 	decq	I
-	jg	.L31
+	jg	L(31)
 	ALIGN_4
 
-.L32:
+L(32):
 	subsd	%xmm5,  %xmm6
 	movsd	%xmm2,  0 * SIZE(XX)
 	addsd	%xmm4,  %xmm7
@@ -323,9 +323,9 @@
 	addq	INCX, XX
 	ALIGN_3
 
-.L35:
+L(35):
 	testq	$2, M
-	je	.L37
+	je	L(37)
 
 	movsd	 0 * SIZE(X), %xmm2
 	movsd	 1 * SIZE(X), %xmm3
@@ -362,9 +362,9 @@
 	addq	INCX, XX
 	ALIGN_3
 
-.L37:
+L(37):
 	testq	$1, M
-	je	.L999
+	je	L(999)
 
 	movsd	 0 * SIZE(X), %xmm2
 	movsd	 1 * SIZE(X), %xmm3
@@ -383,7 +383,7 @@
 	movsd	%xmm3,  1 * SIZE(XX)
 	ALIGN_3
 
-.L999:
+L(999):
 	xorq	%rax, %rax
 
 	RESTOREREGISTERS

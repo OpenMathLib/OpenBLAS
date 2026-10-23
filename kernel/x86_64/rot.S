@@ -69,19 +69,19 @@
 	salq	$BASE_SHIFT, INCY
 
 	testq	N, N
-	jle	.L999
+	jle	L(999)
 
 	cmpq	$SIZE, INCX
-	jne	.L50
+	jne	L(50)
 	cmpq	$SIZE, INCY
-	jne	.L50
+	jne	L(50)
 
 	movq	N,  I
 	sarq	$2, I
-	jle	.L15
+	jle	L(15)
 	ALIGN_4
 
-.L10:
+L(10):
 #ifdef PREFETCHW
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -170,16 +170,16 @@
 	addq	$4 * SIZE, Y
 
 	decq	I
-	jg	.L10
+	jg	L(10)
 	ALIGN_4
 
-.L15:
+L(15):
 	movq	N,  I
 	andq	$3, I
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L16:
+L(16):
 	FLD	0 * SIZE(X)
 	FLD	0 * SIZE(Y)
 
@@ -203,17 +203,17 @@
 	addq	$SIZE, Y
 
 	decq	I
-	jg	.L16
-	jmp	.L999
+	jg	L(16)
+	jmp	L(999)
 	ALIGN_4
 
-.L50:
+L(50):
 	movq	N,  I
 	sarq	$2, I
-	jle	.L55
+	jle	L(55)
 	ALIGN_4
 
-.L51:
+L(51):
 	FLD	0 * SIZE(X)
 	FLD	0 * SIZE(Y)
 
@@ -303,16 +303,16 @@
 	addq	INCY, Y
 
 	decq	I
-	jg	.L51
+	jg	L(51)
 	ALIGN_4
 
-.L55:
+L(55):
 	movq	N,  I
 	andq	$3, I
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L56:
+L(56):
 	FLD	0 * SIZE(X)
 	FLD	0 * SIZE(Y)
 
@@ -336,11 +336,11 @@
 	addq	INCY, Y
 
 	decq	I
-	jg	.L56
+	jg	L(56)
 	ALIGN_4
 
 
-.L999:
+L(999):
 	ffreep	%st
 	ffreep	%st
 	ret

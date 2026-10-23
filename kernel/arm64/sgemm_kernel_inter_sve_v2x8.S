@@ -855,38 +855,38 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	mov	counterJ, origN
 	asr 	counterJ, counterJ, #3		// J = J / 8
 	cmp 	counterJ, #0
-	ble	.Lsgemm_kernel_L4_BEGIN
+	ble	L(sgemm_kernel_L4_BEGIN)
 
 /******************************************************************************/
 /* Repeat this as long as there are 8 left in N */
 
 	.align 5
-.Lsgemm_kernel_L8_BEGIN:
+L(sgemm_kernel_L8_BEGIN):
 	mov	pCRow0, pC
 
     add pC, pC, LDC, lsl #3 // add 8 x LDC
 
 	mov	pA1, origPA			// pA1 = start of A array
 
-.Lsgemm_kernel_L8_Mv2_BEGIN:
+L(sgemm_kernel_L8_Mv2_BEGIN):
 
     mov counterI, #0
     cmp origM, vec_lenx2        // Check if M < 2*SVE_LEN
-    blt .Lsgemm_kernel_L8_Mv1_BEGIN
+    blt L(sgemm_kernel_L8_Mv1_BEGIN)
 
     mov counterI, origM
 
 /* Until we have at least 2*SVE_LEN iters left in M, we do them with V2*8 kernel */
 
 	.align 5
-.Lsgemm_kernel_L8_Mv2_20:
+L(sgemm_kernel_L8_Mv2_20):
 
 	mov	pB, origPB
     INITv2x8                     // fill with zeros
 
 	asr 	counterL , origK, #3		// L = K / 8
 	cmp	counterL , #2			// is there at least 4 to do?
-	blt	.Lsgemm_kernel_L8_Mv2_32
+	blt	L(sgemm_kernel_L8_Mv2_32)
 
 	KERNELv2x8_I
 	KERNELv2x8_M2
@@ -898,10 +898,10 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	KERNELv2x8_M2
 
 	subs	counterL, counterL, #2		// subtract 2
-	ble	.Lsgemm_kernel_L8_Mv2_22a
+	ble	L(sgemm_kernel_L8_Mv2_22a)
 
 	.align 5
-.Lsgemm_kernel_L8_Mv2_22:
+L(sgemm_kernel_L8_Mv2_22):
 
 	KERNELv2x8_M1
 	KERNELv2x8_M2
@@ -913,10 +913,10 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	KERNELv2x8_M2
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L8_Mv2_22
+	bgt	L(sgemm_kernel_L8_Mv2_22)
 
 	.align 5
-.Lsgemm_kernel_L8_Mv2_22a:
+L(sgemm_kernel_L8_Mv2_22a):
 
 	KERNELv2x8_M1
 	KERNELv2x8_M2
@@ -927,13 +927,13 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	KERNELv2x8_M1
 	KERNELv2x8_E
 
-	b	 .Lsgemm_kernel_L8_Mv2_44
+	b	 L(sgemm_kernel_L8_Mv2_44)
 
 	.align 5
-.Lsgemm_kernel_L8_Mv2_32:
+L(sgemm_kernel_L8_Mv2_32):
 
 	tst	counterL, #1
-	ble	.Lsgemm_kernel_L8_Mv2_40
+	ble	L(sgemm_kernel_L8_Mv2_40)
 
 	KERNELv2x8_I
 	KERNELv2x8_M2
@@ -945,54 +945,54 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	KERNELv2x8_E
 
 
-	b	.Lsgemm_kernel_L8_Mv2_44
+	b	L(sgemm_kernel_L8_Mv2_44)
 
-.Lsgemm_kernel_L8_Mv2_40:
+L(sgemm_kernel_L8_Mv2_40):
 
 	INITv2x8
 
-.Lsgemm_kernel_L8_Mv2_44:
+L(sgemm_kernel_L8_Mv2_44):
 
 	ands	counterL , origK, #7
-	ble	.Lsgemm_kernel_L8_Mv2_100
+	ble	L(sgemm_kernel_L8_Mv2_100)
 
 	.align 5
-.Lsgemm_kernel_L8_Mv2_46:
+L(sgemm_kernel_L8_Mv2_46):
 
 	KERNELv2x8_SUB
 
 	subs	counterL, counterL, #1
-	bne	.Lsgemm_kernel_L8_Mv2_46
+	bne	L(sgemm_kernel_L8_Mv2_46)
 
-.Lsgemm_kernel_L8_Mv2_100:
+L(sgemm_kernel_L8_Mv2_100):
 
 	SAVEv2x8
 
-.Lsgemm_kernel_L8_Mv2_END:
+L(sgemm_kernel_L8_Mv2_END):
     sub counterI, counterI, vec_lenx2
     cmp counterI, vec_lenx2
-    bge .Lsgemm_kernel_L8_Mv2_20
+    bge L(sgemm_kernel_L8_Mv2_20)
     sub counterI, origM, counterI
 
     cmp counterI, origM
-    beq .Lsgemm_kernel_L8_END
+    beq L(sgemm_kernel_L8_END)
 
 //////////////////////////////////////////
 // We have less than 2*SVE_LEN left. We do this with V1x8 kernel.
-.Lsgemm_kernel_L8_Mv1_BEGIN:
+L(sgemm_kernel_L8_Mv1_BEGIN):
 
     whilelt p1.s, counterI, origM               //SVE instruction
     cntp lanes, p0, p1.s                        // lanes contain number of active SVE lanes in M dimension
 
 	.align 5
-.Lsgemm_kernel_L8_Mv1_20:
+L(sgemm_kernel_L8_Mv1_20):
 
 	mov	pB, origPB
     INITv1x8                     // fill with zeros
 
 	asr 	counterL , origK, #3		// L = K / 8
 	cmp	counterL , #2			// is there at least 4 to do?
-	blt	.Lsgemm_kernel_L8_Mv1_32
+	blt	L(sgemm_kernel_L8_Mv1_32)
 
 	KERNELv1x8_I
 	KERNELv1x8_M2
@@ -1004,10 +1004,10 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	KERNELv1x8_M2
 
 	subs	counterL, counterL, #2		// subtract 2
-	ble	.Lsgemm_kernel_L8_Mv1_22a
+	ble	L(sgemm_kernel_L8_Mv1_22a)
 
 	.align 5
-.Lsgemm_kernel_L8_Mv1_22:
+L(sgemm_kernel_L8_Mv1_22):
 
 	KERNELv1x8_M1
 	KERNELv1x8_M2
@@ -1019,10 +1019,10 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	KERNELv1x8_M2
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L8_Mv1_22
+	bgt	L(sgemm_kernel_L8_Mv1_22)
 
 	.align 5
-.Lsgemm_kernel_L8_Mv1_22a:
+L(sgemm_kernel_L8_Mv1_22a):
 
 	KERNELv1x8_M1
 	KERNELv1x8_M2
@@ -1033,13 +1033,13 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	KERNELv1x8_M1
 	KERNELv1x8_E
 
-	b	 .Lsgemm_kernel_L8_Mv1_44
+	b	 L(sgemm_kernel_L8_Mv1_44)
 
 	.align 5
-.Lsgemm_kernel_L8_Mv1_32:
+L(sgemm_kernel_L8_Mv1_32):
 
 	tst	counterL, #1
-	ble	.Lsgemm_kernel_L8_Mv1_40
+	ble	L(sgemm_kernel_L8_Mv1_40)
 
 	KERNELv1x8_I
 	KERNELv1x8_M2
@@ -1051,53 +1051,53 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	KERNELv1x8_E
 
 
-	b	.Lsgemm_kernel_L8_Mv1_44
+	b	L(sgemm_kernel_L8_Mv1_44)
 
-.Lsgemm_kernel_L8_Mv1_40:
+L(sgemm_kernel_L8_Mv1_40):
 
 	INITv1x8
 
-.Lsgemm_kernel_L8_Mv1_44:
+L(sgemm_kernel_L8_Mv1_44):
 
 	ands	counterL , origK, #7
-	ble	.Lsgemm_kernel_L8_Mv1_100
+	ble	L(sgemm_kernel_L8_Mv1_100)
 
 	.align 5
-.Lsgemm_kernel_L8_Mv1_46:
+L(sgemm_kernel_L8_Mv1_46):
 
 	KERNELv1x8_SUB
 
 	subs	counterL, counterL, #1
-	bne	.Lsgemm_kernel_L8_Mv1_46
+	bne	L(sgemm_kernel_L8_Mv1_46)
 
-.Lsgemm_kernel_L8_Mv1_100:
+L(sgemm_kernel_L8_Mv1_100):
 
 	SAVEv1x8
 
-.Lsgemm_kernel_L8_Mv1_END:
+L(sgemm_kernel_L8_Mv1_END):
 
     incw    counterI
     whilelt p1.s, counterI, origM             //SVE instruction
     cntp lanes, p0, p1.s                        // lanes contain number of active SVE lanes in M dimension
-    b.any   .Lsgemm_kernel_L8_Mv1_20
+    b.any   L(sgemm_kernel_L8_Mv1_20)
 
-.Lsgemm_kernel_L8_END:
+L(sgemm_kernel_L8_END):
 
 	lsl	temp, origK, #5
 	add	origPB, origPB, temp		// B = B + K * 8 * 4
 
 	subs	counterJ, counterJ , #1		// j--
-	bgt	.Lsgemm_kernel_L8_BEGIN
+	bgt	L(sgemm_kernel_L8_BEGIN)
 
 /******************************************************************************/
 /* Repeat the same thing if 4 left in N */
 
 	.align 5
-.Lsgemm_kernel_L4_BEGIN:
+L(sgemm_kernel_L4_BEGIN):
 
 	mov	counterJ , origN
 	tst	counterJ , #4
-	ble	.Lsgemm_kernel_L2_BEGIN
+	ble	L(sgemm_kernel_L2_BEGIN)
 
 
 	mov	pCRow0, pC
@@ -1106,26 +1106,26 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 
 	mov	pA1, origPA			// pA1 = start of A array
 
-.Lsgemm_kernel_L4_Mv2_BEGIN:
+L(sgemm_kernel_L4_Mv2_BEGIN):
 
     mov counterI, #0
     cmp origM, vec_lenx2
-    blt .Lsgemm_kernel_L4_Mv1_BEGIN
+    blt L(sgemm_kernel_L4_Mv1_BEGIN)
 
     mov counterI, origM
 
 	.align 5
-.Lsgemm_kernel_L4_Mv2_20:
+L(sgemm_kernel_L4_Mv2_20):
 
 	mov	pB, origPB
     INITv2x4                     // fill with zeros
 
 	asr 	counterL , origK, #3		// L = K / 8
 	cmp	counterL , #0			// is there at least 4 to do?
-	ble	.Lsgemm_kernel_L4_Mv2_44
+	ble	L(sgemm_kernel_L4_Mv2_44)
 
 	.align 5
-.Lsgemm_kernel_L4_Mv2_22:
+L(sgemm_kernel_L4_Mv2_22):
 
 	KERNELv2x4_SUB
 	KERNELv2x4_SUB
@@ -1137,53 +1137,53 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	KERNELv2x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L4_Mv2_22
+	bgt	L(sgemm_kernel_L4_Mv2_22)
 
-.Lsgemm_kernel_L4_Mv2_44:
+L(sgemm_kernel_L4_Mv2_44):
 
 	ands	counterL , origK, #7
-	ble	.Lsgemm_kernel_L4_Mv2_100
+	ble	L(sgemm_kernel_L4_Mv2_100)
 
 	.align 5
-.Lsgemm_kernel_L4_Mv2_46:
+L(sgemm_kernel_L4_Mv2_46):
 
 	KERNELv2x4_SUB
 
 	subs	counterL, counterL, #1
-	bne	.Lsgemm_kernel_L4_Mv2_46
+	bne	L(sgemm_kernel_L4_Mv2_46)
 
-.Lsgemm_kernel_L4_Mv2_100:
+L(sgemm_kernel_L4_Mv2_100):
 
 	SAVEv2x4
 
-.Lsgemm_kernel_L4_Mv2_END:
+L(sgemm_kernel_L4_Mv2_END):
     sub counterI, counterI, vec_lenx2
     cmp counterI, vec_lenx2
-    bge .Lsgemm_kernel_L4_Mv2_20
+    bge L(sgemm_kernel_L4_Mv2_20)
     sub counterI, origM, counterI
 
     cmp counterI, origM
-    beq .Lsgemm_kernel_L4_END
+    beq L(sgemm_kernel_L4_END)
 
 //////////////////////////////////
 // We have less than 2*SVE_LEN left. We do this with V1x4 kernel.
-.Lsgemm_kernel_L4_Mv1_BEGIN:
+L(sgemm_kernel_L4_Mv1_BEGIN):
 
     whilelt p1.s, counterI, origM               //SVE instruction
     cntp lanes, p0, p1.s                        // lanes contain number of active SVE lanes in M dimension
 
 	.align 5
-.Lsgemm_kernel_L4_Mv1_20:
+L(sgemm_kernel_L4_Mv1_20):
 
 	mov	pB, origPB
     INITv1x4                     // fill with zeros
 
 	asr 	counterL , origK, #3		// L = K / 8
 	cmp	counterL , #0			// is there at least 4 to do?
-	ble	.Lsgemm_kernel_L4_Mv1_44
+	ble	L(sgemm_kernel_L4_Mv1_44)
 
 	.align 5
-.Lsgemm_kernel_L4_Mv1_22:
+L(sgemm_kernel_L4_Mv1_22):
 
 	KERNELv1x4_SUB
 	KERNELv1x4_SUB
@@ -1195,34 +1195,34 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	KERNELv1x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L4_Mv1_22
+	bgt	L(sgemm_kernel_L4_Mv1_22)
 
-.Lsgemm_kernel_L4_Mv1_44:
+L(sgemm_kernel_L4_Mv1_44):
 
 	ands	counterL , origK, #7
-	ble	.Lsgemm_kernel_L4_Mv1_100
+	ble	L(sgemm_kernel_L4_Mv1_100)
 
 	.align 5
-.Lsgemm_kernel_L4_Mv1_46:
+L(sgemm_kernel_L4_Mv1_46):
 
 	KERNELv1x4_SUB
 
 	subs	counterL, counterL, #1
-	bne	.Lsgemm_kernel_L4_Mv1_46
+	bne	L(sgemm_kernel_L4_Mv1_46)
 
-.Lsgemm_kernel_L4_Mv1_100:
+L(sgemm_kernel_L4_Mv1_100):
 
 	SAVEv1x4
 
-.Lsgemm_kernel_L4_Mv1_END:
+L(sgemm_kernel_L4_Mv1_END):
 
     incw    counterI
     whilelt p1.s, counterI, origM             //SVE instruction
     cntp lanes, p0, p1.s
-    b.any   .Lsgemm_kernel_L4_Mv1_20
+    b.any   L(sgemm_kernel_L4_Mv1_20)
 
 
-.Lsgemm_kernel_L4_END:
+L(sgemm_kernel_L4_END):
 	lsl	temp, origK, #4
 	add	origPB, origPB, temp	// B = B + K * 4 * 4
 
@@ -1230,11 +1230,11 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 /* Repeat the same thing if 2 left in N */
 
 	.align 5
-.Lsgemm_kernel_L2_BEGIN:
+L(sgemm_kernel_L2_BEGIN):
 
 	mov	counterJ , origN
 	tst	counterJ , #2
-	ble	.Lsgemm_kernel_L1_BEGIN
+	ble	L(sgemm_kernel_L1_BEGIN)
 
 	mov	pCRow0, pC
 
@@ -1242,26 +1242,26 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 
 	mov	pA1, origPA			// pA1 = start of A array
 
-.Lsgemm_kernel_L2_Mv2_BEGIN:
+L(sgemm_kernel_L2_Mv2_BEGIN):
 
     mov counterI, #0
     cmp origM, vec_lenx2
-    blt .Lsgemm_kernel_L2_Mv1_BEGIN
+    blt L(sgemm_kernel_L2_Mv1_BEGIN)
 
     mov counterI, origM
 
 	.align 5
-.Lsgemm_kernel_L2_Mv2_20:
+L(sgemm_kernel_L2_Mv2_20):
 
 	mov	pB, origPB
     INITv2x2                     // fill with zeros
 
 	asr 	counterL , origK, #3		// L = K / 8
 	cmp	counterL , #0			// is there at least 4 to do?
-	ble	.Lsgemm_kernel_L2_Mv2_44
+	ble	L(sgemm_kernel_L2_Mv2_44)
 
 	.align 5
-.Lsgemm_kernel_L2_Mv2_22:
+L(sgemm_kernel_L2_Mv2_22):
 
 	KERNELv2x2_SUB
 	KERNELv2x2_SUB
@@ -1273,54 +1273,54 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	KERNELv2x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L2_Mv2_22
+	bgt	L(sgemm_kernel_L2_Mv2_22)
 
-.Lsgemm_kernel_L2_Mv2_44:
+L(sgemm_kernel_L2_Mv2_44):
 
 	ands	counterL , origK, #7
-	ble	.Lsgemm_kernel_L2_Mv2_100
+	ble	L(sgemm_kernel_L2_Mv2_100)
 
 	.align 5
-.Lsgemm_kernel_L2_Mv2_46:
+L(sgemm_kernel_L2_Mv2_46):
 
 	KERNELv2x2_SUB
 
 	subs	counterL, counterL, #1
-	bne	.Lsgemm_kernel_L2_Mv2_46
+	bne	L(sgemm_kernel_L2_Mv2_46)
 
-.Lsgemm_kernel_L2_Mv2_100:
+L(sgemm_kernel_L2_Mv2_100):
 
 	SAVEv2x2
 
-.Lsgemm_kernel_L2_Mv2_END:
+L(sgemm_kernel_L2_Mv2_END):
     sub counterI, counterI, vec_lenx2
     cmp counterI, vec_lenx2
-    bge .Lsgemm_kernel_L2_Mv2_20
+    bge L(sgemm_kernel_L2_Mv2_20)
     sub counterI, origM, counterI
 
     cmp counterI, origM
-    beq .Lsgemm_kernel_L2_END
+    beq L(sgemm_kernel_L2_END)
 
 
 //////////////////////////////////
 // We have less than 2*SVE_LEN left. We do this with V1x2 kernel.
-.Lsgemm_kernel_L2_Mv1_BEGIN:
+L(sgemm_kernel_L2_Mv1_BEGIN):
 
     whilelt p1.s, counterI, origM               //SVE instruction
     cntp lanes, p0, p1.s
 
 	.align 5
-.Lsgemm_kernel_L2_Mv1_20:
+L(sgemm_kernel_L2_Mv1_20):
 
 	mov	pB, origPB
     INITv1x2                     // fill with zeros
 
 	asr 	counterL , origK, #3		// L = K / 8
 	cmp	counterL , #0			// is there at least 4 to do?
-	ble	.Lsgemm_kernel_L2_Mv1_44
+	ble	L(sgemm_kernel_L2_Mv1_44)
 
 	.align 5
-.Lsgemm_kernel_L2_Mv1_22:
+L(sgemm_kernel_L2_Mv1_22):
 
 	KERNELv1x2_SUB
 	KERNELv1x2_SUB
@@ -1332,45 +1332,45 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	KERNELv1x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L2_Mv1_22
+	bgt	L(sgemm_kernel_L2_Mv1_22)
 
-.Lsgemm_kernel_L2_Mv1_44:
+L(sgemm_kernel_L2_Mv1_44):
 
 	ands	counterL , origK, #7
-	ble	.Lsgemm_kernel_L2_Mv1_100
+	ble	L(sgemm_kernel_L2_Mv1_100)
 
 	.align 5
-.Lsgemm_kernel_L2_Mv1_46:
+L(sgemm_kernel_L2_Mv1_46):
 
 	KERNELv1x2_SUB
 
 	subs	counterL, counterL, #1
-	bne	.Lsgemm_kernel_L2_Mv1_46
+	bne	L(sgemm_kernel_L2_Mv1_46)
 
-.Lsgemm_kernel_L2_Mv1_100:
+L(sgemm_kernel_L2_Mv1_100):
 
 	SAVEv1x2
 
-.Lsgemm_kernel_L2_Mv1_END:
+L(sgemm_kernel_L2_Mv1_END):
 
     incw    counterI
     whilelt p1.s, counterI, origM             //SVE instruction
     cntp lanes, p0, p1.s
-    b.any   .Lsgemm_kernel_L2_Mv1_20
+    b.any   L(sgemm_kernel_L2_Mv1_20)
 
 
-.Lsgemm_kernel_L2_END:
+L(sgemm_kernel_L2_END):
 	add	origPB, origPB, origK, lsl #3	// B = B + K * 2 * 4
 
 /******************************************************************************/
 /* Repeat the same thing if 1 left in N */
 
 	.align 5
-.Lsgemm_kernel_L1_BEGIN:
+L(sgemm_kernel_L1_BEGIN):
 
 	mov	counterJ , origN
 	tst	counterJ , #1
-	ble	.Lsgemm_kernel_L999 // done
+	ble	L(sgemm_kernel_L999) // done
 
 	mov	pCRow0, pC
 
@@ -1378,26 +1378,26 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 
 	mov	pA1, origPA			// pA1 = start of A array
 
-.Lsgemm_kernel_L1_Mv2_BEGIN:
+L(sgemm_kernel_L1_Mv2_BEGIN):
 
     mov counterI, #0
     cmp origM, vec_lenx2
-    blt .Lsgemm_kernel_L1_Mv1_BEGIN
+    blt L(sgemm_kernel_L1_Mv1_BEGIN)
 
     mov counterI, origM
 
 	.align 5
-.Lsgemm_kernel_L1_Mv2_20:
+L(sgemm_kernel_L1_Mv2_20):
 
 	mov	pB, origPB
     INITv2x1                     // fill with zeros
 
 	asr 	counterL , origK, #3		// L = K / 8
 	cmp	counterL , #0			// is there at least 8 to do?
-	ble	.Lsgemm_kernel_L1_Mv2_44
+	ble	L(sgemm_kernel_L1_Mv2_44)
 
 	.align 5
-.Lsgemm_kernel_L1_Mv2_22:
+L(sgemm_kernel_L1_Mv2_22):
 
 	KERNELv2x1_SUB
 	KERNELv2x1_SUB
@@ -1409,54 +1409,54 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	KERNELv2x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L1_Mv2_22
+	bgt	L(sgemm_kernel_L1_Mv2_22)
 
-.Lsgemm_kernel_L1_Mv2_44:
+L(sgemm_kernel_L1_Mv2_44):
 
 	ands	counterL , origK, #7
-	ble	.Lsgemm_kernel_L1_Mv2_100
+	ble	L(sgemm_kernel_L1_Mv2_100)
 
 	.align 5
-.Lsgemm_kernel_L1_Mv2_46:
+L(sgemm_kernel_L1_Mv2_46):
 
 	KERNELv2x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L1_Mv2_46
+	bgt	L(sgemm_kernel_L1_Mv2_46)
 
-.Lsgemm_kernel_L1_Mv2_100:
+L(sgemm_kernel_L1_Mv2_100):
 
 	SAVEv2x1
 
-.Lsgemm_kernel_L1_Mv2_END:
+L(sgemm_kernel_L1_Mv2_END):
     sub counterI, counterI, vec_lenx2
     cmp counterI, vec_lenx2
-    bge .Lsgemm_kernel_L1_Mv2_20
+    bge L(sgemm_kernel_L1_Mv2_20)
     sub counterI, origM, counterI
 
     cmp counterI, origM
-    beq .Lsgemm_kernel_L1_END
+    beq L(sgemm_kernel_L1_END)
 
 
 //////////////////////////////////
 // We have less than 2*SVE_LEN left. We do this with V1x1 kernel.
-.Lsgemm_kernel_L1_Mv1_BEGIN:
+L(sgemm_kernel_L1_Mv1_BEGIN):
 
     whilelt p1.s, counterI, origM               //SVE instruction
     cntp lanes, p0, p1.s
 
 	.align 5
-.Lsgemm_kernel_L1_Mv1_20:
+L(sgemm_kernel_L1_Mv1_20):
 
 	mov	pB, origPB
     INITv1x1                     // fill with zeros
 
 	asr 	counterL , origK, #3		// L = K / 8
 	cmp	counterL , #0			// is there at least 8 to do?
-	ble	.Lsgemm_kernel_L1_Mv1_44
+	ble	L(sgemm_kernel_L1_Mv1_44)
 
 	.align 5
-.Lsgemm_kernel_L1_Mv1_22:
+L(sgemm_kernel_L1_Mv1_22):
 
 	KERNELv1x1_SUB
 	KERNELv1x1_SUB
@@ -1468,38 +1468,38 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	KERNELv1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L1_Mv1_22
+	bgt	L(sgemm_kernel_L1_Mv1_22)
 
-.Lsgemm_kernel_L1_Mv1_44:
+L(sgemm_kernel_L1_Mv1_44):
 
 	ands	counterL , origK, #7
-	ble	.Lsgemm_kernel_L1_Mv1_100
+	ble	L(sgemm_kernel_L1_Mv1_100)
 
 	.align 5
-.Lsgemm_kernel_L1_Mv1_46:
+L(sgemm_kernel_L1_Mv1_46):
 
 	KERNELv1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lsgemm_kernel_L1_Mv1_46
+	bgt	L(sgemm_kernel_L1_Mv1_46)
 
-.Lsgemm_kernel_L1_Mv1_100:
+L(sgemm_kernel_L1_Mv1_100):
 
 	SAVEv1x1
 
-.Lsgemm_kernel_L1_Mv1_END:
+L(sgemm_kernel_L1_Mv1_END):
 
     incw    counterI
     whilelt p1.s, counterI, origM             //SVE instruction
     cntp lanes, p0, p1.s
-    b.any   .Lsgemm_kernel_L1_Mv1_20
+    b.any   L(sgemm_kernel_L1_Mv1_20)
 
 
-.Lsgemm_kernel_L1_END:
+L(sgemm_kernel_L1_END):
 
 /******************************************************************************/
 
-.Lsgemm_kernel_L999:
+L(sgemm_kernel_L999):
 	mov	x0, #0				// set return value
 	ldp	d8, d9, [sp, #(0 * 16)]
 	ldp	d10, d11, [sp, #(1 * 16)]

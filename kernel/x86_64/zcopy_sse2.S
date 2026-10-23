@@ -70,9 +70,9 @@
 	salq	$ZBASE_SHIFT, INCY
 
 	cmpq	$2 * SIZE, INCX
-	jne	.L50
+	jne	L(50)
 	cmpq	$2 * SIZE, INCY
-	jne	.L50
+	jne	L(50)
 
 	addq	M, M
 
@@ -81,17 +81,17 @@
 #else
 	testq	$SIZE, X
 #endif
-	je	.L10
+	je	L(10)
 
 	movsd	(X), %xmm0
 	movsd	%xmm0, (Y)
 	addq	$1 * SIZE, X
 	addq	$1 * SIZE, Y
 	decq	M
-	jle	.L19
+	jle	L(19)
 	ALIGN_4
 
-.L10:
+L(10):
 	subq	$-16 * SIZE, X
 	subq	$-16 * SIZE, Y
 
@@ -100,11 +100,11 @@
 #else
 	testq	$SIZE, Y
 #endif
-	jne	.L20
+	jne	L(20)
 
 	movq	M,  %rax
 	sarq	$4, %rax
-	jle	.L13
+	jle	L(13)
 
 	movaps	-16 * SIZE(X), %xmm0
 	movaps	-14 * SIZE(X), %xmm1
@@ -116,10 +116,10 @@
 	movaps	 -2 * SIZE(X), %xmm7
 
 	decq	%rax
-	jle .L12
+	jle L(12)
 	ALIGN_3
 
-.L11:
+L(11):
 #ifdef PREFETCHW
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(Y)
 #endif
@@ -159,10 +159,10 @@
 	subq	$-16 * SIZE, Y
 	subq	$-16 * SIZE, X
 	decq	%rax
-	jg	.L11
+	jg	L(11)
 	ALIGN_3
 
-.L12:
+L(12):
 	movaps	%xmm0, -16 * SIZE(Y)
 	movaps	%xmm1, -14 * SIZE(Y)
 	movaps	%xmm2, -12 * SIZE(Y)
@@ -176,9 +176,9 @@
 	subq	$-16 * SIZE, X
 	ALIGN_3
 
-.L13:
+L(13):
 	testq	$8, M
-	jle	.L14
+	jle	L(14)
 	ALIGN_3
 
 	movaps	-16 * SIZE(X), %xmm0
@@ -195,9 +195,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L14:
+L(14):
 	testq	$4, M
-	jle	.L15
+	jle	L(15)
 	ALIGN_3
 
 	movaps	-16 * SIZE(X), %xmm0
@@ -210,9 +210,9 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L15:
+L(15):
 	testq	$2, M
-	jle	.L16
+	jle	L(16)
 	ALIGN_3
 
 	movaps	-16 * SIZE(X), %xmm0
@@ -222,16 +222,16 @@
 	addq	$2 * SIZE, Y
 	ALIGN_3
 
-.L16:
+L(16):
 	testq	$1, M
-	jle	.L19
+	jle	L(19)
 	ALIGN_3
 
 	movsd	-16 * SIZE(X), %xmm0
 	movsd	%xmm0, 	-16 * SIZE(Y)
 	ALIGN_3
 
-.L19:
+L(19):
 	xorq	%rax,%rax
 
 	RESTOREREGISTERS
@@ -239,14 +239,14 @@
 	ret
 	ALIGN_3
 
-.L20:
+L(20):
 #ifdef ALIGNED_ACCESS
 
 	movhps	-16 * SIZE(X), %xmm0
 
 	movq	M,  %rax
 	sarq	$4, %rax
-	jle	.L23
+	jle	L(23)
 
 	movaps	-15 * SIZE(X), %xmm1
 	movaps	-13 * SIZE(X), %xmm2
@@ -257,10 +257,10 @@
 	movaps	 -3 * SIZE(X), %xmm7
 
 	decq	%rax
-	jle .L22
+	jle L(22)
 	ALIGN_4
 
-.L21:
+L(21):
 #ifdef PREFETCHW
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(Y)
 #endif
@@ -312,10 +312,10 @@
 	subq	$-16 * SIZE, X
 	subq	$-16 * SIZE, Y
 	decq	%rax
-	jg	.L21
+	jg	L(21)
 	ALIGN_3
 
-.L22:
+L(22):
 	SHUFPD_1 %xmm1, %xmm0
 	movaps	%xmm0, -16 * SIZE(Y)
 	LOAD(-1 * SIZE, X, %xmm0)
@@ -342,9 +342,9 @@
 	subq	$-16 * SIZE, Y
 	ALIGN_3
 
-.L23:
+L(23):
 	testq	$8, M
-	jle	.L24
+	jle	L(24)
 	ALIGN_3
 
 	movaps	-15 * SIZE(X), %xmm1
@@ -370,9 +370,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L24:
+L(24):
 	testq	$4, M
-	jle	.L25
+	jle	L(25)
 	ALIGN_3
 
 	movaps	-15 * SIZE(X), %xmm1
@@ -389,9 +389,9 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L25:
+L(25):
 	testq	$2, M
-	jle	.L26
+	jle	L(26)
 	ALIGN_3
 
 	movaps	-15 * SIZE(X), %xmm1
@@ -403,16 +403,16 @@
 	addq	$2 * SIZE, Y
 	ALIGN_3
 
-.L26:
+L(26):
 	testq	$1, M
-	jle	.L29
+	jle	L(29)
 	ALIGN_3
 
 	movsd	-16 * SIZE(X), %xmm0
 	movsd	%xmm0, 	-16 * SIZE(Y)
 	ALIGN_3
 
-.L29:
+L(29):
 	xorq	%rax,%rax
 
 	RESTOREREGISTERS
@@ -424,7 +424,7 @@
 
 	movq	M,  %rax
 	sarq	$4, %rax
-	jle	.L23
+	jle	L(23)
 
 	movaps	-16 * SIZE(X), %xmm0
 	movaps	-14 * SIZE(X), %xmm1
@@ -436,10 +436,10 @@
 	movaps	 -2 * SIZE(X), %xmm7
 
 	decq	%rax
-	jle .L22
+	jle L(22)
 	ALIGN_3
 
-.L21:
+L(21):
 #ifdef PREFETCHW
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(Y)
 #endif
@@ -487,10 +487,10 @@
 	subq	$-16 * SIZE, Y
 	subq	$-16 * SIZE, X
 	decq	%rax
-	jg	.L21
+	jg	L(21)
 	ALIGN_3
 
-.L22:
+L(22):
 	movlps	%xmm0, -16 * SIZE(Y)
 	movhps	%xmm0, -15 * SIZE(Y)
 	movlps	%xmm1, -14 * SIZE(Y)
@@ -512,9 +512,9 @@
 	subq	$-16 * SIZE, X
 	ALIGN_3
 
-.L23:
+L(23):
 	testq	$8, M
-	jle	.L24
+	jle	L(24)
 	ALIGN_3
 
 	movaps	-16 * SIZE(X), %xmm0
@@ -534,9 +534,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L24:
+L(24):
 	testq	$4, M
-	jle	.L25
+	jle	L(25)
 	ALIGN_3
 
 	movaps	-16 * SIZE(X), %xmm0
@@ -550,9 +550,9 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L25:
+L(25):
 	testq	$2, M
-	jle	.L26
+	jle	L(26)
 	ALIGN_3
 
 	movaps	-16 * SIZE(X), %xmm0
@@ -563,16 +563,16 @@
 	addq	$2 * SIZE, Y
 	ALIGN_3
 
-.L26:
+L(26):
 	testq	$1, M
-	jle	.L29
+	jle	L(29)
 	ALIGN_3
 
 	movsd	-16 * SIZE(X), %xmm0
 	movsd	%xmm0, 	-16 * SIZE(Y)
 	ALIGN_3
 
-.L29:
+L(29):
 	xorq	%rax,%rax
 
 	RESTOREREGISTERS
@@ -582,13 +582,13 @@
 
 #endif
 
-.L50:
+L(50):
 	movq	M,  %rax
 	sarq	$2, %rax
-	jle	.L55
+	jle	L(55)
 	ALIGN_3
 
-.L51:
+L(51):
 	movsd	0 * SIZE(X), %xmm0
 	movhps	1 * SIZE(X), %xmm0
 	addq	INCX, X
@@ -623,16 +623,16 @@
 	addq	INCY, Y
 
 	decq	%rax
-	jg	.L51
+	jg	L(51)
 	ALIGN_3
 
-.L55:
+L(55):
 	movq	M,  %rax
 	andq	$3, %rax
-	jle	.L57
+	jle	L(57)
 	ALIGN_3
 
-.L56:
+L(56):
 	movsd	0 * SIZE(X), %xmm0
 	movhps	1 * SIZE(X), %xmm0
 	addq	INCX, X
@@ -642,10 +642,10 @@
 	addq	INCY, Y
 
 	decq	%rax
-	jg	.L56
+	jg	L(56)
 	ALIGN_3
 
-.L57:
+L(57):
 	xorq	%rax, %rax
 
 	RESTOREREGISTERS

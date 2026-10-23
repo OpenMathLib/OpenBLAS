@@ -60,21 +60,21 @@
 	salq	$BASE_SHIFT, INCY
 
 	testq	M, M
-	jle	.L40
+	jle	L(40)
 
 	cmpq	$SIZE, INCX
-	jne	.L14
+	jne	L(14)
 	cmpq	$SIZE, INCY
-	jne	.L14
+	jne	L(14)
 
 	movq	M,  %rax
 	sarq	$3, %rax
-	jle	.L15
+	jle	L(15)
 	ALIGN_3
 
 #define PRESIZE 33
 
-.L16:
+L(16):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -134,16 +134,16 @@
 	addq	$8 * SIZE, X
 	addq	$8 * SIZE, Y
 	decq	%rax
-	jg	.L16
+	jg	L(16)
 	ALIGN_3
 
-.L15:
+L(15):
 	movq	M, %rax
 	andq	$7,   %rax
-	jle	.L40
+	jle	L(40)
 	ALIGN_3
 
-.L22:
+L(22):
 	FLD	0 * SIZE(X)
 	fmul	%st(1),%st
 	FLD	0 * SIZE(Y)
@@ -152,17 +152,17 @@
 	addq	$SIZE, X
 	addq	$SIZE, Y
 	decq	%rax
-	jg	.L22
-	jmp	.L40
+	jg	L(22)
+	jmp	L(40)
 	ALIGN_3
 
-.L14:
+L(14):
 	movq	M, %rax
 	sarq	$2,   %rax
-	jle	.L28
+	jle	L(28)
 	ALIGN_3
 
-.L29:
+L(29):
 	FLD	(X)
 	fmul	%st(1),%st
 	FLD	(Y)
@@ -196,16 +196,16 @@
 	addq	INCY, Y
 
 	decq	%rax
-	jg	.L29
+	jg	L(29)
 	ALIGN_3
 
-.L28:
+L(28):
 	movq	M, %rax
 	andq	$3,   %rax
-	jle	.L40
+	jle	L(40)
 	ALIGN_3
 
-.L35:
+L(35):
 	FLD	(X)
 	fmul	%st(1),%st
 	FLD	(Y)
@@ -215,9 +215,9 @@
 	addq	INCY, Y
 
 	decq	%rax
-	jg	.L35
+	jg	L(35)
 
-.L40:
+L(40):
 	ffreep	%st(0)
 	ret
 

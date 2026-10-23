@@ -72,23 +72,23 @@
 	pshufd	$0x44, %xmm1, S
 
 	cmpq	$0, N
-	jle	.L999
+	jle	L(999)
 
 	cmpq	$2 * SIZE, INCX
-	jne	.L50
+	jne	L(50)
 	cmpq	$2 * SIZE, INCY
-	jne	.L50
+	jne	L(50)
 
-.L10:
+L(10):
 	testq	$SIZE, X
-	jne	.L30
+	jne	L(30)
 
 	testq	$SIZE, Y
-	jne	.L20
+	jne	L(20)
 
 	movq	N,  %rax
 	sarq	$3, %rax
-	jle	.L14
+	jle	L(14)
 
 	movapd	0 * SIZE(Y), %xmm1
 	movapd	2 * SIZE(Y), %xmm3
@@ -101,10 +101,10 @@
 	movapd	6 * SIZE(X), %xmm10
 
 	decq	%rax
-	jle	.L12
+	jle	L(12)
 	ALIGN_3
 
-.L11:
+L(11):
 #ifdef PREFETCHW
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -237,10 +237,10 @@
 	addq	$16 * SIZE, Y
 
 	decq	%rax
-	jg	.L11
+	jg	L(11)
 	ALIGN_3
 
-.L12:
+L(12):
 	movapd	%xmm1, %xmm4
 	mulpd	S, %xmm1
 	movapd	%xmm3, %xmm6
@@ -350,12 +350,12 @@
 	addq	$16 * SIZE, Y
 	ALIGN_3
 
-.L14:
+L(14):
 	testq	$7, N
-	jle	.L999
+	jle	L(999)
 
 	testq	$4, N
-	jle	.L15
+	jle	L(15)
 
 	movapd	0 * SIZE(Y), %xmm1
 	movapd	0 * SIZE(X), %xmm0
@@ -421,9 +421,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L15:
+L(15):
 	testq	$2, N
-	jle	.L16
+	jle	L(16)
 
 	movapd	0 * SIZE(Y), %xmm1
 	movapd	0 * SIZE(X), %xmm0
@@ -459,9 +459,9 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L16:
+L(16):
 	testq	$1, N
-	jle	.L999
+	jle	L(999)
 
 	movapd	0 * SIZE(Y), %xmm1
 	movapd	0 * SIZE(X), %xmm0
@@ -480,18 +480,18 @@
 
 	movapd	%xmm0, 0 * SIZE(X)
 	movapd	%xmm2, 0 * SIZE(Y)
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_3
 
-.L20:
+L(20):
 	movapd	-1 * SIZE(Y), %xmm1
 
 	movq	N,  %rax
 	sarq	$3, %rax
-	jle	.L24
+	jle	L(24)
 	ALIGN_3
 
-.L21:
+L(21):
 #if defined(PREFETCHW)
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -652,15 +652,15 @@
 	addq	$16 * SIZE, X
 	addq	$16 * SIZE, Y
 	decq	%rax
-	jg	.L21
+	jg	L(21)
 	ALIGN_3
 
-.L24:
+L(24):
 	testq	$7, N
-	jle	.L999
+	jle	L(999)
 
 	testq	$4, N
-	jle	.L25
+	jle	L(25)
 
 	movapd	1 * SIZE(Y), %xmm3
 	movapd	3 * SIZE(Y), %xmm8
@@ -736,9 +736,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L25:
+L(25):
 	testq	$2, N
-	jle	.L26
+	jle	L(26)
 
 	movapd	1 * SIZE(Y), %xmm3
 	movapd	3 * SIZE(Y), %xmm8
@@ -780,9 +780,9 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L26:
+L(26):
 	testq	$1, N
-	jle	.L999
+	jle	L(999)
 
 	movapd	1 * SIZE(Y), %xmm4
 	movapd	0 * SIZE(X), %xmm0
@@ -803,21 +803,21 @@
 	movapd	%xmm0, 0 * SIZE(X)
 	movlps	%xmm2, 0 * SIZE(Y)
 	movhps	%xmm2, 1 * SIZE(Y)
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_3
 
-.L30:
+L(30):
 	testq	$SIZE, Y
-	jne	.L40
+	jne	L(40)
 
 	movapd	-1 * SIZE(X), %xmm0
 
 	movq	N,  %rax
 	sarq	$3, %rax
-	jle	.L34
+	jle	L(34)
 	ALIGN_3
 
-.L31:
+L(31):
 #if defined(PREFETCHW)
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -977,15 +977,15 @@
 	addq	$16 * SIZE, Y
 	addq	$16 * SIZE, X
 	decq	%rax
-	jg	.L31
+	jg	L(31)
 	ALIGN_3
 
-.L34:
+L(34):
 	testq	$7, N
-	jle	.L999
+	jle	L(999)
 
 	testq	$4, N
-	jle	.L35
+	jle	L(35)
 
 	movapd	1 * SIZE(X), %xmm2
 	movapd	3 * SIZE(X), %xmm8
@@ -1061,9 +1061,9 @@
 	addq	$8 * SIZE, X
 	ALIGN_3
 
-.L35:
+L(35):
 	testq	$2, N
-	jle	.L36
+	jle	L(36)
 
 	movapd	1 * SIZE(X), %xmm2
 	movapd	3 * SIZE(X), %xmm8
@@ -1106,9 +1106,9 @@
 	addq	$4 * SIZE, X
 	ALIGN_3
 
-.L36:
+L(36):
 	testq	$1, N
-	jle	.L999
+	jle	L(999)
 
 	movapd	 1 * SIZE(X), %xmm4
 	movapd	 0 * SIZE(Y), %xmm1
@@ -1129,10 +1129,10 @@
 	movlps	%xmm0, 0 * SIZE(X)
 	movhps	%xmm0, 1 * SIZE(X)
 	movapd	%xmm2, 0 * SIZE(Y)
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_3
 
-.L40:
+L(40):
 	movsd	0 * SIZE(Y), %xmm1
 	movsd	0 * SIZE(X), %xmm0
 
@@ -1154,11 +1154,11 @@
 	addq	$1 * SIZE, X
 
 	decq	N
-	jle	.L47
+	jle	L(47)
 
 	movq	N,  %rax
 	sarq	$3, %rax
-	jle	.L44
+	jle	L(44)
 
 	movapd	0 * SIZE(Y), %xmm1
 	movapd	2 * SIZE(Y), %xmm3
@@ -1171,10 +1171,10 @@
 	movapd	6 * SIZE(X), %xmm10
 
 	decq	%rax
-	jle	.L42
+	jle	L(42)
 	ALIGN_3
 
-.L41:
+L(41):
 #if defined(PREFETCHW)
 	PREFETCHW (PREFETCHSIZE +   0) - PREOFFSET(X)
 #endif
@@ -1307,10 +1307,10 @@
 	addq	$16 * SIZE, Y
 
 	decq	%rax
-	jg	.L41
+	jg	L(41)
 	ALIGN_3
 
-.L42:
+L(42):
 	movapd	%xmm1, %xmm4
 	mulpd	S, %xmm1
 	movapd	%xmm3, %xmm6
@@ -1420,9 +1420,9 @@
 	addq	$16 * SIZE, Y
 	ALIGN_3
 
-.L44:
+L(44):
 	testq	$4, N
-	jle	.L45
+	jle	L(45)
 
 	movapd	0 * SIZE(Y), %xmm1
 	movapd	0 * SIZE(X), %xmm0
@@ -1488,9 +1488,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L45:
+L(45):
 	testq	$2, N
-	jle	.L46
+	jle	L(46)
 
 	movapd	0 * SIZE(Y), %xmm1
 	movapd	0 * SIZE(X), %xmm0
@@ -1526,9 +1526,9 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L46:
+L(46):
 	testq	$1, N
-	jle	.L47
+	jle	L(47)
 
 	movapd	0 * SIZE(Y), %xmm1
 	movapd	0 * SIZE(X), %xmm0
@@ -1551,7 +1551,7 @@
 	addq	$2 * SIZE, X
 	ALIGN_3
 
-.L47:
+L(47):
 	movsd	0 * SIZE(Y), %xmm1
 	movsd	0 * SIZE(X), %xmm0
 
@@ -1569,16 +1569,16 @@
 
 	movsd	%xmm0, 0 * SIZE(X)
 	movsd	%xmm2, 0 * SIZE(Y)
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_3
 
-.L50:
+L(50):
 	movq	N,  %rax
 	sarq	$2, %rax
-	jle	.L55
+	jle	L(55)
 	ALIGN_3
 
-.L53:
+L(53):
 	movsd	0 * SIZE(Y), %xmm1
 	movhps	1 * SIZE(Y), %xmm1
 	movsd	0 * SIZE(X), %xmm0
@@ -1680,16 +1680,16 @@
 	addq	INCY, Y
 
 	decq	%rax
-	jg	.L53
+	jg	L(53)
 	ALIGN_3
 
-.L55:
+L(55):
 	movq	N,  %rax
 	andq	$3, %rax
-	jle	.L999
+	jle	L(999)
 	ALIGN_3
 
-.L56:
+L(56):
 	movsd	0 * SIZE(Y), %xmm1
 	movhps	1 * SIZE(Y), %xmm1
 	movsd	0 * SIZE(X), %xmm0
@@ -1716,10 +1716,10 @@
 	addq	INCY, Y
 
 	decq	%rax
-	jg	.L56
+	jg	L(56)
 	ALIGN_3
 
-.L999:
+L(999):
 	RESTOREREGISTERS
 
 	ret

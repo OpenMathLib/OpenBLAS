@@ -44,6 +44,12 @@ extern int blas_level1_thread_with_return_value(int mode, BLASLONG m, BLASLONG n
 #define TMPF		"d16"
 #define SSQ		"d0"
 
+#if defined(__APPLE__)
+#define L(x)		"L" #x
+#else
+#define L(x)		".L" #x
+#endif
+
 #if !defined(COMPLEX)
 #define N_DIV_SHIFT	"5"
 #define N_REM_MASK	"31"
@@ -143,62 +149,62 @@ static double nrm2_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	"	fmov	d6, xzr				\n"
 	"	fmov	d7, xzr				\n"
 	"	cmp	"N", xzr			\n"
-	"	ble	.Lnrm2_kernel_L999		\n"
+	"	ble	"L(nrm2_kernel_L999)"		\n"
 	"	cmp	"INC_X", xzr			\n"
-	"	ble	.Lnrm2_kernel_L999		\n"
+	"	ble	"L(nrm2_kernel_L999)"		\n"
 	"	cmp	"INC_X", #1			\n"
-	"	bne	.Lnrm2_kernel_S_BEGIN		\n"
+	"	bne	"L(nrm2_kernel_S_BEGIN)"		\n"
 
-	".Lnrm2_kernel_F_BEGIN:				\n"
+	L(nrm2_kernel_F_BEGIN)":				\n"
 	"	lsl	"INC_X", "INC_X", #"INC_SHIFT"	\n"
 	"	asr	"J", "N", #"N_DIV_SHIFT"	\n"
 	"	cmp	"J", xzr			\n"
-	"	beq	.Lnrm2_kernel_F1		\n"
+	"	beq	"L(nrm2_kernel_F1)"		\n"
 
 /* https://github.com/llvm/llvm-project/issues/149547 */
 #if !(defined(__clang__) && defined(OS_WINDOWS))
 	"	.align 5				\n"
 #endif
-	".Lnrm2_kernel_F:				\n"
+	L(nrm2_kernel_F)":				\n"
 	"	"KERNEL_F"				\n"
 	"	subs	"J", "J", #1			\n"
-	"	bne	.Lnrm2_kernel_F			\n"
+	"	bne	"L(nrm2_kernel_F)"			\n"
 	"	"KERNEL_F_FINALIZE"			\n"
 
-	".Lnrm2_kernel_F1:				\n"
+	L(nrm2_kernel_F1)":				\n"
 	"	ands	"J", "N", #"N_REM_MASK"		\n"
-	"	ble	.Lnrm2_kernel_L999		\n"
+	"	ble	"L(nrm2_kernel_L999)"		\n"
 
-	".Lnrm2_kernel_F10:				\n"
+	L(nrm2_kernel_F10)":				\n"
 	"	"KERNEL_F1"				\n"
 	"	subs	"J", "J", #1			\n"
-	"	bne	.Lnrm2_kernel_F10		\n"
-	"	b	.Lnrm2_kernel_L999		\n"
+	"	bne	"L(nrm2_kernel_F10)"		\n"
+	"	b	"L(nrm2_kernel_L999)"		\n"
 
-	".Lnrm2_kernel_S_BEGIN:				\n"
+	L(nrm2_kernel_S_BEGIN)":				\n"
 	"	lsl	"INC_X", "INC_X", #"INC_SHIFT"	\n"
 	"	asr	"J", "N", #2			\n"
 	"	cmp	"J", xzr			\n"
-	"	ble	.Lnrm2_kernel_S1		\n"
+	"	ble	"L(nrm2_kernel_S1)"		\n"
 
-	".Lnrm2_kernel_S4:				\n"
+	L(nrm2_kernel_S4)":				\n"
 	"	"KERNEL_F1"				\n"
 	"	"KERNEL_F1"				\n"
 	"	"KERNEL_F1"				\n"
 	"	"KERNEL_F1"				\n"
 	"	subs	"J", "J", #1			\n"
-	"	bne	.Lnrm2_kernel_S4		\n"
+	"	bne	"L(nrm2_kernel_S4)"		\n"
 
-	".Lnrm2_kernel_S1:				\n"
+	L(nrm2_kernel_S1)":				\n"
 	"	ands	"J", "N", #3			\n"
-	"	ble	.Lnrm2_kernel_L999		\n"
+	"	ble	"L(nrm2_kernel_L999)"		\n"
 
-	".Lnrm2_kernel_S10:				\n"
+	L(nrm2_kernel_S10)":				\n"
 	"	"KERNEL_F1"				\n"
 	"	subs	"J", "J", #1			\n"
-	"	bne	.Lnrm2_kernel_S10		\n"
+	"	bne	"L(nrm2_kernel_S10)"		\n"
 
-	".Lnrm2_kernel_L999:				\n"
+	L(nrm2_kernel_L999)":				\n"
 	"	"KERNEL_FINALIZE"			\n"
 	"	str	"SSQ", [%[RET_]]		\n"
 

@@ -1107,13 +1107,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         STACK_TOUCH
 
 	cmpq	$ 0, OLD_M
-	je	.L999
+	je	L(999)
 
 	cmpq	$ 0, OLD_N
-	je	.L999
+	je	L(999)
 
 	cmpq	$ 0, OLD_K
-	je	.L999
+	je	L(999)
 
 	movq	OLD_M, M
 	movq	OLD_N, N
@@ -1134,16 +1134,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	
 
 /************************************************************************************************/
-.L6_00_0:
+L(6_00_0):
 
 	movq	Ndiv6,  J
 	cmpq	$ 0, J
-	je	.L2_00_0
+	je	L(2_00_0)
 	ALIGN_4
 
 
 
-.L6_00_01:
+L(6_00_01):
 	// copy to sub buffer
 	movq	B, BO1
 	leaq    BUFFER1, BO		// first buffer to BO
@@ -1154,7 +1154,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	movq	K, %rax
 	ALIGN_4
 
-.L6_00_02b:
+L(6_00_02b):
 
 	vmovups		(BO1), %xmm0
 	vmovups	2 * SIZE(BO1), %xmm1
@@ -1166,13 +1166,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addq	$ 4*SIZE,BO2
 	addq	$ 6*SIZE,BO
 	decq	%rax
-	jnz	.L6_00_02b
+	jnz	L(6_00_02b)
 
-.L6_00_02c:
+L(6_00_02c):
 
 
 
-.L6_00_10:
+L(6_00_10):
 	movq	C, CO1
 	leaq	(C, LDC, 2), C		// c += 2 * ldc
 	leaq	(C, LDC, 1), C		// c += 1 * ldc
@@ -1181,13 +1181,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	movq	M,  I
 	sarq	$ 2, I			// i = (m >> 2)
-	je	.L6_2_10
+	je	L(6_2_10)
 
 	ALIGN_4
 
 /******************************************************************************************************************/
 
-.L6_4_11:
+L(6_4_11):
 
 	leaq	BUFFER1, BO		// first buffer to BO
 
@@ -1196,10 +1196,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         movq    K, %rax
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L6_4_16
+	je	L(6_4_16)
 	ALIGN_4
 
-.L6_4_12:
+L(6_4_12):
 
 	KERNEL4x3_SUB
 	KERNEL4x3_SUB
@@ -1211,7 +1211,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x3_SUB
 	KERNEL4x3_SUB
 
-	je	.L6_4_16
+	je	L(6_4_16)
 
 	KERNEL4x3_SUB
 	KERNEL4x3_SUB
@@ -1223,33 +1223,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x3_SUB
 	KERNEL4x3_SUB
 
-	je	.L6_4_16
+	je	L(6_4_16)
 
-	jmp	.L6_4_12
+	jmp	L(6_4_12)
 	ALIGN_4
 
-.L6_4_16:
+L(6_4_16):
         movq    K, %rax
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L6_4_19
+	je L(6_4_19)
 	ALIGN_4
 
-.L6_4_17:
+L(6_4_17):
 
 	KERNEL4x3_SUB
 
-	jnz	.L6_4_17
+	jnz	L(6_4_17)
 	ALIGN_4
 
 
-.L6_4_19:
+L(6_4_19):
 
 	SAVE4x3
 
 	addq	$ 8 * SIZE, CO1		# coffset += 8
 	decq	I			# i --
-	jg	.L6_4_11
+	jg	L(6_4_11)
 	ALIGN_4	
 
 
@@ -1259,11 +1259,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /******************************************************************************************************************/
-.L6_2_10:
+L(6_2_10):
 	testq	$ 2, M		
-	jz	.L6_2_40		// to next 2 lines of N
+	jz	L(6_2_40)		// to next 2 lines of N
 
-.L6_2_11:
+L(6_2_11):
 
 	leaq	BUFFER1, BO		// first buffer to BO
 
@@ -1272,10 +1272,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         movq    K, %rax
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L6_2_16
+	je	L(6_2_16)
 	ALIGN_4
 
-.L6_2_12:
+L(6_2_12):
 
 	KERNEL2x3_SUB
 	KERNEL2x3_SUB
@@ -1287,7 +1287,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x3_SUB
 	KERNEL2x3_SUB
 
-	je	.L6_2_16
+	je	L(6_2_16)
 
 	KERNEL2x3_SUB
 	KERNEL2x3_SUB
@@ -1299,27 +1299,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x3_SUB
 	KERNEL2x3_SUB
 
-	je	.L6_2_16
+	je	L(6_2_16)
 
-	jmp	.L6_2_12
+	jmp	L(6_2_12)
 	ALIGN_4
 
-.L6_2_16:
+L(6_2_16):
         movq    K, %rax
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L6_2_19
+	je L(6_2_19)
 	ALIGN_4
 
-.L6_2_17:
+L(6_2_17):
 
 	KERNEL2x3_SUB
 
-	jnz	.L6_2_17
+	jnz	L(6_2_17)
 	ALIGN_4
 
 
-.L6_2_19:
+L(6_2_19):
 
 	SAVE2x3
 
@@ -1330,13 +1330,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
-.L6_2_40:
+L(6_2_40):
 	testq	$ 1, M		
-	jz	.L6_2_60		// to next 2 lines of N
+	jz	L(6_2_60)		// to next 2 lines of N
 
 	ALIGN_4
 
-.L6_2_41:
+L(6_2_41):
 
 	leaq	BUFFER1, BO		// first buffer to BO
 
@@ -1345,11 +1345,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         movq    K, %rax
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L6_2_46
+	je	L(6_2_46)
 
 	ALIGN_4
 
-.L6_2_42:
+L(6_2_42):
 
 	KERNEL1x3_SUB
 	KERNEL1x3_SUB
@@ -1361,7 +1361,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x3_SUB
 	KERNEL1x3_SUB
 
-	je	.L6_2_46
+	je	L(6_2_46)
 
 	KERNEL1x3_SUB
 	KERNEL1x3_SUB
@@ -1373,40 +1373,40 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x3_SUB
 	KERNEL1x3_SUB
 
-	je	.L6_2_46
+	je	L(6_2_46)
 
-	jmp	.L6_2_42
+	jmp	L(6_2_42)
 	ALIGN_4
 
-.L6_2_46:
+L(6_2_46):
         movq    K, %rax
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L6_2_49
+	je L(6_2_49)
 
 	ALIGN_4
 
-.L6_2_47:
+L(6_2_47):
 
 	KERNEL1x3_SUB
 
-	jnz	.L6_2_47
+	jnz	L(6_2_47)
 	ALIGN_4
 
 
-.L6_2_49:
+L(6_2_49):
 
 	SAVE1x3
 
 	addq	$ 2 * SIZE, CO1		# coffset += 2
 	decq	I			# i --
-	jg	.L6_2_41
+	jg	L(6_2_41)
 	ALIGN_4	
 
 
 
 	
-.L6_2_60:
+L(6_2_60):
 
 
 /************************************************************************************************/
@@ -1414,7 +1414,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /************************************************************************************************/
 
 
-.L7_00_01:
+L(7_00_01):
 	// copy to sub buffer
 	movq	B, BO1
 	leaq    BUFFER1, BO		// first buffer to BO
@@ -1424,7 +1424,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	movq	K, %rax
 	ALIGN_4
 
-.L7_00_02b:
+L(7_00_02b):
 
 	vmovups	2 * SIZE(BO1), %xmm0
 	vmovups	        (BO2), %xmm1
@@ -1436,14 +1436,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addq	$ 4*SIZE,BO2
 	addq	$ 6*SIZE,BO
 	decq	%rax
-	jnz	.L7_00_02b
+	jnz	L(7_00_02b)
 
-.L7_00_02c:
+L(7_00_02c):
 
 	movq	BO2, B			// next offset of B
 
 
-.L7_00_10:
+L(7_00_10):
 	movq	C, CO1
 	leaq	(C, LDC, 2), C		// c += 2 * ldc
 	leaq	(C, LDC, 1), C		// c += 1 * ldc
@@ -1452,13 +1452,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	movq	M,  I
 	sarq	$ 2, I			// i = (m >> 2)
-	je	.L7_2_10
+	je	L(7_2_10)
 
 	ALIGN_4
 
 /******************************************************************************************************************/
 
-.L7_4_11:
+L(7_4_11):
 
 	leaq	BUFFER1, BO		// first buffer to BO
 
@@ -1467,10 +1467,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         movq    K, %rax
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L7_4_16
+	je	L(7_4_16)
 	ALIGN_4
 
-.L7_4_12:
+L(7_4_12):
 
 	KERNEL4x3_SUB
 	KERNEL4x3_SUB
@@ -1482,7 +1482,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x3_SUB
 	KERNEL4x3_SUB
 
-	je	.L7_4_16
+	je	L(7_4_16)
 
 	KERNEL4x3_SUB
 	KERNEL4x3_SUB
@@ -1494,34 +1494,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x3_SUB
 	KERNEL4x3_SUB
 
-	je	.L7_4_16
+	je	L(7_4_16)
 
-	jmp	.L7_4_12
+	jmp	L(7_4_12)
 	ALIGN_4
 
-.L7_4_16:
+L(7_4_16):
         movq    K, %rax
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L7_4_19
+	je L(7_4_19)
 
 	ALIGN_4
 
-.L7_4_17:
+L(7_4_17):
 
 	KERNEL4x3_SUB
 
-	jnz	.L7_4_17
+	jnz	L(7_4_17)
 	ALIGN_4
 
 
-.L7_4_19:
+L(7_4_19):
 
 	SAVE4x3
 
 	addq	$ 8 * SIZE, CO1		# coffset += 8
 	decq	I			# i --
-	jg	.L7_4_11
+	jg	L(7_4_11)
 	ALIGN_4	
 
 
@@ -1531,11 +1531,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /******************************************************************************************************************/
-.L7_2_10:
+L(7_2_10):
 	testq	$ 2, M		
-	jz	.L7_2_40		// to next 2 lines of N
+	jz	L(7_2_40)		// to next 2 lines of N
 
-.L7_2_11:
+L(7_2_11):
 
 	leaq	BUFFER1, BO		// first buffer to BO
 
@@ -1544,10 +1544,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         movq    K, %rax
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L7_2_16
+	je	L(7_2_16)
 	ALIGN_4
 
-.L7_2_12:
+L(7_2_12):
 
 	KERNEL2x3_SUB
 	KERNEL2x3_SUB
@@ -1559,7 +1559,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x3_SUB
 	KERNEL2x3_SUB
 
-	je	.L7_2_16
+	je	L(7_2_16)
 
 	KERNEL2x3_SUB
 	KERNEL2x3_SUB
@@ -1571,28 +1571,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x3_SUB
 	KERNEL2x3_SUB
 
-	je	.L7_2_16
+	je	L(7_2_16)
 
-	jmp	.L7_2_12
+	jmp	L(7_2_12)
 	ALIGN_4
 
-.L7_2_16:
+L(7_2_16):
         movq    K, %rax
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L7_2_19
+	je L(7_2_19)
 
 	ALIGN_4
 
-.L7_2_17:
+L(7_2_17):
 
 	KERNEL2x3_SUB
 
-	jnz	.L7_2_17
+	jnz	L(7_2_17)
 	ALIGN_4
 
 
-.L7_2_19:
+L(7_2_19):
 
 	SAVE2x3
 
@@ -1603,13 +1603,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
-.L7_2_40:
+L(7_2_40):
 	testq	$ 1, M		
-	jz	.L7_2_60		// to next 2 lines of N
+	jz	L(7_2_60)		// to next 2 lines of N
 
 	ALIGN_4
 
-.L7_2_41:
+L(7_2_41):
 
 	leaq	BUFFER1, BO		// first buffer to BO
 
@@ -1618,11 +1618,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         movq    K, %rax
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L7_2_46
+	je	L(7_2_46)
 
 	ALIGN_4
 
-.L7_2_42:
+L(7_2_42):
 
 	KERNEL1x3_SUB
 	KERNEL1x3_SUB
@@ -1634,7 +1634,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x3_SUB
 	KERNEL1x3_SUB
 
-	je	.L7_2_46
+	je	L(7_2_46)
 
 	KERNEL1x3_SUB
 	KERNEL1x3_SUB
@@ -1646,66 +1646,66 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x3_SUB
 	KERNEL1x3_SUB
 
-	je	.L7_2_46
+	je	L(7_2_46)
 
-	jmp	.L7_2_42
+	jmp	L(7_2_42)
 	ALIGN_4
 
-.L7_2_46:
+L(7_2_46):
         movq    K, %rax
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L7_2_49
+	je L(7_2_49)
 	ALIGN_4
 
-.L7_2_47:
+L(7_2_47):
 
 	KERNEL1x3_SUB
 
-	jnz	.L7_2_47
+	jnz	L(7_2_47)
 	ALIGN_4
 
 
-.L7_2_49:
+L(7_2_49):
 
 	SAVE1x3
 
 	addq	$ 2 * SIZE, CO1		# coffset += 2
 	decq	I			# i --
-	jg	.L7_2_41
+	jg	L(7_2_41)
 	ALIGN_4	
 
 
 
 	
-.L7_2_60:
+L(7_2_60):
 
 	decq	J			// j --
-	jg	.L6_00_01		// next 6 lines of N
+	jg	L(6_00_01)		// next 6 lines of N
 
 /************************************************************************************************/
 
 
 
 /************************************************************************************************/
-.L2_00_0:
+L(2_00_0):
 
 	movq	Nmod6,  J
 	sarq	$1, J		// j = j / 2
 	cmpq	$ 0, J
-	je	.L1_2_0
+	je	L(1_2_0)
 	ALIGN_4
 
 
 
-.L2_00_01:
+L(2_00_01):
 	// copy to sub buffer
 	movq	B, BO1
 	leaq    BUFFER1, BO		// first buffer to BO
 	movq	K, %rax
 	ALIGN_4
 
-.L2_00_02b:
+L(2_00_02b):
 
 	vmovups		(BO1), %xmm0
 	vmovups	2 * SIZE(BO1), %xmm1
@@ -1714,14 +1714,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addq	$ 4*SIZE,BO1
 	addq	$ 4*SIZE,BO
 	decq	%rax
-	jnz	.L2_00_02b
+	jnz	L(2_00_02b)
 
-.L2_00_02c:
+L(2_00_02c):
 
 	movq	BO1, B			// next offset of B
 
 
-.L2_00_10:
+L(2_00_10):
 	movq	C, CO1
 	leaq	(C, LDC, 2), C		// c += 2 * ldc
 
@@ -1735,13 +1735,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	movq	M,  I
 	sarq	$ 2, I			// i = (m >> 2)
-	je	.L2_2_10
+	je	L(2_2_10)
 
 	ALIGN_4
 
 /******************************************************************************************************************/
 
-.L2_4_11:
+L(2_4_11):
 
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -1779,7 +1779,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L2_4_16
+	je	L(2_4_16)
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
 
@@ -1790,7 +1790,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L2_4_12:
+L(2_4_12):
 
         prefetcht0      A_PR1(AO,%rax,SIZE)
         prefetcht0      B_PR1(BO,BI  ,SIZE)
@@ -1814,7 +1814,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         prefetcht0      A_PR1(AO,%rax,SIZE)
 	KERNEL4x2_SUB
 
-	je	.L2_4_16
+	je	L(2_4_16)
 
         prefetcht0      A_PR1(AO,%rax,SIZE)
         prefetcht0      B_PR1(BO,BI  ,SIZE)
@@ -1838,12 +1838,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         prefetcht0      A_PR1(AO,%rax,SIZE)
 	KERNEL4x2_SUB
 
-	je	.L2_4_16
+	je	L(2_4_16)
 
-	jmp	.L2_4_12
+	jmp	L(2_4_12)
 	ALIGN_4
 
-.L2_4_16:
+L(2_4_16):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -1851,7 +1851,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L2_4_19
+	je L(2_4_19)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
@@ -1863,15 +1863,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L2_4_17:
+L(2_4_17):
 
 	KERNEL4x2_SUB
 
-	jl	.L2_4_17
+	jl	L(2_4_17)
 	ALIGN_4
 
 
-.L2_4_19:
+L(2_4_19):
 
 	SAVE4x2
 
@@ -1893,7 +1893,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addq	$ 8 * SIZE, CO1		# coffset += 8
 	decq	I			# i --
-	jg	.L2_4_11
+	jg	L(2_4_11)
 	ALIGN_4	
 
 
@@ -1903,11 +1903,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /******************************************************************************************************************/
-.L2_2_10:
+L(2_2_10):
 	testq	$ 2, M		
-	jz	.L2_2_40		// to next 2 lines of N
+	jz	L(2_2_40)		// to next 2 lines of N
 
-.L2_2_11:
+L(2_2_11):
 
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -1945,7 +1945,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L2_2_16
+	je	L(2_2_16)
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
 
@@ -1956,7 +1956,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L2_2_12:
+L(2_2_12):
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
@@ -1976,7 +1976,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
 
-	je	.L2_2_16
+	je	L(2_2_16)
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
@@ -1996,12 +1996,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
 
-	je	.L2_2_16
+	je	L(2_2_16)
 
-	jmp	.L2_2_12
+	jmp	L(2_2_12)
 	ALIGN_4
 
-.L2_2_16:
+L(2_2_16):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -2009,7 +2009,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L2_2_19
+	je L(2_2_19)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
@@ -2021,15 +2021,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L2_2_17:
+L(2_2_17):
 
 	KERNEL2x2_SUB
 
-	jl	.L2_2_17
+	jl	L(2_2_17)
 	ALIGN_4
 
 
-.L2_2_19:
+L(2_2_19):
 
 	SAVE2x2
 
@@ -2056,13 +2056,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
-.L2_2_40:
+L(2_2_40):
 	testq	$ 1, M		
-	jz	.L2_2_60		// to next 2 lines of N
+	jz	L(2_2_60)		// to next 2 lines of N
 
 	ALIGN_4
 
-.L2_2_41:
+L(2_2_41):
 
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -2100,7 +2100,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L2_2_46
+	je	L(2_2_46)
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
 
@@ -2111,7 +2111,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L2_2_42:
+L(2_2_42):
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
@@ -2129,7 +2129,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 
-	je	.L2_2_46
+	je	L(2_2_46)
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
@@ -2147,12 +2147,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 
-	je	.L2_2_46
+	je	L(2_2_46)
 
-	jmp	.L2_2_42
+	jmp	L(2_2_42)
 	ALIGN_4
 
-.L2_2_46:
+L(2_2_46):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -2160,7 +2160,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L2_2_49
+	je L(2_2_49)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
@@ -2172,15 +2172,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L2_2_47:
+L(2_2_47):
 
 	KERNEL1x2_SUB
 
-	jl	.L2_2_47
+	jl	L(2_2_47)
 	ALIGN_4
 
 
-.L2_2_49:
+L(2_2_49):
 
 	SAVE1x2
 
@@ -2202,23 +2202,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addq	$ 2 * SIZE, CO1		# coffset += 2
 	decq	I			# i --
-	jg	.L2_2_41
+	jg	L(2_2_41)
 	ALIGN_4	
 
 
 
 	
-.L2_2_60:
+L(2_2_60):
 #if defined(TRMMKERNEL) && !defined(LEFT)
         addq    $ 2, KK
 #endif
 
 	decq	J			// j --
-	jg	.L2_00_01			// next 2 lines of N
+	jg	L(2_00_01)			// next 2 lines of N
 
 
 
-.L1_2_0:
+L(1_2_0):
 
 /************************************************************************************************
 * Loop for Nmod6 % 2 > 0
@@ -2226,30 +2226,30 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	movq	Nmod6, J		
 	andq	$ 1, J			// j % 2
-	je	.L999
+	je	L(999)
 	ALIGN_4
 
-.L1_00_01:
+L(1_00_01):
 	// copy to sub buffer
 	movq	B, BO1
 	leaq    BUFFER1, BO		// first buffer to BO
 	movq	K, %rax
 	ALIGN_4
 
-.L1_00_02b:
+L(1_00_02b):
 
 	vmovups		(BO1), %xmm0
 	vmovups	%xmm0,       (BO)
 	addq	$ 2*SIZE,BO1
 	addq	$ 2*SIZE,BO
 	decq	%rax
-	jnz	.L1_00_02b
+	jnz	L(1_00_02b)
 
-.L1_00_02c:
+L(1_00_02c):
 
 	movq	BO1, B			// next offset of B
 
-.L1_00_10:
+L(1_00_10):
 	movq	C, CO1
 	leaq	(C, LDC, 1), C		// c += 1 * ldc
 
@@ -2263,14 +2263,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	movq	M,  I
 	sarq	$ 2, I			// i = (m >> 2)
-	je	.L1_2_10
+	je	L(1_2_10)
 
 	ALIGN_4
 
 /*******************************************************************************************************/
 
 
-.L1_4_11:
+L(1_4_11):
 
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -2308,7 +2308,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L1_4_16
+	je	L(1_4_16)
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
 
@@ -2319,7 +2319,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L1_4_12:
+L(1_4_12):
 
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
@@ -2331,7 +2331,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
 
-	je	.L1_4_16
+	je	L(1_4_16)
 
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
@@ -2343,12 +2343,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
 
-	je	.L1_4_16
+	je	L(1_4_16)
 
-	jmp	.L1_4_12
+	jmp	L(1_4_12)
 	ALIGN_4
 
-.L1_4_16:
+L(1_4_16):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -2356,7 +2356,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L1_4_19
+	je L(1_4_19)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
@@ -2368,15 +2368,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L1_4_17:
+L(1_4_17):
 
 	KERNEL4x1_SUB
 
-	jl	.L1_4_17
+	jl	L(1_4_17)
 	ALIGN_4
 
 
-.L1_4_19:
+L(1_4_19):
 
 	SAVE4x1
 
@@ -2399,19 +2399,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addq	$ 8 * SIZE, CO1		# coffset += 8
 	decq	I			# i --
-	jg	.L1_4_11
+	jg	L(1_4_11)
 	ALIGN_4	
 
 
 
 
 /*******************************************************************************************************/
-.L1_2_10:
+L(1_2_10):
 	testq	$ 2, M		
-	jz	.L1_2_40
+	jz	L(1_2_40)
 
 
-.L1_2_11:
+L(1_2_11):
 
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -2449,7 +2449,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L1_2_16
+	je	L(1_2_16)
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
 
@@ -2460,7 +2460,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L1_2_12:
+L(1_2_12):
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
@@ -2477,7 +2477,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x1_SUB
 	KERNEL2x1_SUB
 
-	je	.L1_2_16
+	je	L(1_2_16)
 
 	prefetcht0	B_PR1(BO,BI,SIZE)
 	KERNEL2x1_SUB
@@ -2493,12 +2493,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x1_SUB
 	KERNEL2x1_SUB
 
-	je	.L1_2_16
+	je	L(1_2_16)
 
-	jmp	.L1_2_12
+	jmp	L(1_2_12)
 	ALIGN_4
 
-.L1_2_16:
+L(1_2_16):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -2506,7 +2506,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L1_2_19
+	je L(1_2_19)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
@@ -2518,15 +2518,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L1_2_17:
+L(1_2_17):
 
 	KERNEL2x1_SUB
 
-	jl	.L1_2_17
+	jl	L(1_2_17)
 	ALIGN_4
 
 
-.L1_2_19:
+L(1_2_19):
 
 	SAVE2x1
 
@@ -2554,13 +2554,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
-.L1_2_40:
+L(1_2_40):
 	testq	$ 1, M		
-	jz	.L999
+	jz	L(999)
 
 	ALIGN_4
 
-.L1_2_41:
+L(1_2_41):
 
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -2598,7 +2598,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L1_2_46
+	je	L(1_2_46)
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
 
@@ -2609,7 +2609,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L1_2_42:
+L(1_2_42):
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
@@ -2625,7 +2625,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
 
-	je	.L1_2_46
+	je	L(1_2_46)
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
@@ -2641,12 +2641,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
 
-	je	.L1_2_46
+	je	L(1_2_46)
 
-	jmp	.L1_2_42
+	jmp	L(1_2_42)
 	ALIGN_4
 
-.L1_2_46:
+L(1_2_46):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -2654,7 +2654,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L1_2_49
+	je L(1_2_49)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
@@ -2666,15 +2666,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L1_2_47:
+L(1_2_47):
 
 	KERNEL1x1_SUB
 
-	jl	.L1_2_47
+	jl	L(1_2_47)
 	ALIGN_4
 
 
-.L1_2_49:
+L(1_2_49):
 
 	SAVE1x1
 
@@ -2696,7 +2696,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addq	$ 2 * SIZE, CO1		# coffset += 2
 	decq	I			# i --
-	jg	.L1_2_41
+	jg	L(1_2_41)
 	ALIGN_4	
 
 
@@ -2704,7 +2704,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-.L999:
+L(999):
 	vzeroupper
 
 	movq   		SP, %rsp
@@ -2796,13 +2796,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         STACK_TOUCH
 
 	cmpq	$ 0, OLD_M
-	je	.L999
+	je	L(999)
 
 	cmpq	$ 0, OLD_N
-	je	.L999
+	je	L(999)
 
 	cmpq	$ 0, OLD_K
-	je	.L999
+	je	L(999)
 
 	movq	OLD_M, M
 	movq	OLD_N, N
@@ -2830,23 +2830,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif	
 #endif
 
-.L2_00_0:
+L(2_00_0):
 
 	movq	Ndiv6,  J
 	cmpq	$ 0, J
-	je	.L1_2_0
+	je	L(1_2_0)
 	ALIGN_4
 
 
 
-.L2_00_01:
+L(2_00_01):
 	// copy to sub buffer
 	movq	B, BO1
 	leaq    BUFFER1, BO		// first buffer to BO
 	movq	K, %rax
 	ALIGN_4
 
-.L2_00_02b:
+L(2_00_02b):
 
 	vmovups		(BO1), %xmm0
 	vmovups	2 * SIZE(BO1), %xmm1
@@ -2855,14 +2855,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addq	$ 4*SIZE,BO1
 	addq	$ 4*SIZE,BO
 	decq	%rax
-	jnz	.L2_00_02b
+	jnz	L(2_00_02b)
 
-.L2_00_02c:
+L(2_00_02c):
 
 	movq	BO1, B			// next offset of B
 
 
-.L2_00_10:
+L(2_00_10):
 	movq	C, CO1
 	leaq	(C, LDC, 2), C		// c += 2 * ldc
 
@@ -2876,13 +2876,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	movq	M,  I
 	sarq	$ 2, I			// i = (m >> 2)
-	je	.L2_2_10
+	je	L(2_2_10)
 
 	ALIGN_4
 
 /******************************************************************************************************************/
 
-.L2_4_11:
+L(2_4_11):
 
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -2920,7 +2920,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L2_4_16
+	je	L(2_4_16)
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
 
@@ -2931,7 +2931,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L2_4_12:
+L(2_4_12):
 
         prefetcht0      A_PR1(AO,%rax,SIZE)
         prefetcht0      B_PR1(BO,BI  ,SIZE)
@@ -2955,7 +2955,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         prefetcht0      A_PR1(AO,%rax,SIZE)
 	KERNEL4x2_SUB
 
-	je	.L2_4_16
+	je	L(2_4_16)
 
         prefetcht0      A_PR1(AO,%rax,SIZE)
         prefetcht0      B_PR1(BO,BI  ,SIZE)
@@ -2979,12 +2979,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         prefetcht0      A_PR1(AO,%rax,SIZE)
 	KERNEL4x2_SUB
 
-	je	.L2_4_16
+	je	L(2_4_16)
 
-	jmp	.L2_4_12
+	jmp	L(2_4_12)
 	ALIGN_4
 
-.L2_4_16:
+L(2_4_16):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -2992,7 +2992,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L2_4_19
+	je L(2_4_19)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
@@ -3004,15 +3004,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L2_4_17:
+L(2_4_17):
 
 	KERNEL4x2_SUB
 
-	jl	.L2_4_17
+	jl	L(2_4_17)
 	ALIGN_4
 
 
-.L2_4_19:
+L(2_4_19):
 
 	SAVE4x2
 
@@ -3034,7 +3034,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addq	$ 8 * SIZE, CO1		# coffset += 8
 	decq	I			# i --
-	jg	.L2_4_11
+	jg	L(2_4_11)
 	ALIGN_4	
 
 
@@ -3044,11 +3044,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /******************************************************************************************************************/
-.L2_2_10:
+L(2_2_10):
 	testq	$ 2, M		
-	jz	.L2_2_40		// to next 2 lines of N
+	jz	L(2_2_40)		// to next 2 lines of N
 
-.L2_2_11:
+L(2_2_11):
 
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -3086,7 +3086,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L2_2_16
+	je	L(2_2_16)
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
 
@@ -3097,7 +3097,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L2_2_12:
+L(2_2_12):
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
@@ -3117,7 +3117,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
 
-	je	.L2_2_16
+	je	L(2_2_16)
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
@@ -3137,12 +3137,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
 
-	je	.L2_2_16
+	je	L(2_2_16)
 
-	jmp	.L2_2_12
+	jmp	L(2_2_12)
 	ALIGN_4
 
-.L2_2_16:
+L(2_2_16):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -3150,7 +3150,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L2_2_19
+	je L(2_2_19)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
@@ -3162,15 +3162,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L2_2_17:
+L(2_2_17):
 
 	KERNEL2x2_SUB
 
-	jl	.L2_2_17
+	jl	L(2_2_17)
 	ALIGN_4
 
 
-.L2_2_19:
+L(2_2_19):
 
 	SAVE2x2
 
@@ -3197,13 +3197,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
-.L2_2_40:
+L(2_2_40):
 	testq	$ 1, M		
-	jz	.L2_2_60		// to next 2 lines of N
+	jz	L(2_2_60)		// to next 2 lines of N
 
 	ALIGN_4
 
-.L2_2_41:
+L(2_2_41):
 
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -3241,7 +3241,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L2_2_46
+	je	L(2_2_46)
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
 
@@ -3252,7 +3252,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L2_2_42:
+L(2_2_42):
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
@@ -3270,7 +3270,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 
-	je	.L2_2_46
+	je	L(2_2_46)
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
@@ -3288,12 +3288,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 
-	je	.L2_2_46
+	je	L(2_2_46)
 
-	jmp	.L2_2_42
+	jmp	L(2_2_42)
 	ALIGN_4
 
-.L2_2_46:
+L(2_2_46):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -3301,7 +3301,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L2_2_49
+	je L(2_2_49)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,4), BI                    //  BI = BI * 4 ; number of values
@@ -3313,15 +3313,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L2_2_47:
+L(2_2_47):
 
 	KERNEL1x2_SUB
 
-	jl	.L2_2_47
+	jl	L(2_2_47)
 	ALIGN_4
 
 
-.L2_2_49:
+L(2_2_49):
 
 	SAVE1x2
 
@@ -3343,23 +3343,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addq	$ 2 * SIZE, CO1		# coffset += 2
 	decq	I			# i --
-	jg	.L2_2_41
+	jg	L(2_2_41)
 	ALIGN_4	
 
 
 
 	
-.L2_2_60:
+L(2_2_60):
 #if defined(TRMMKERNEL) && !defined(LEFT)
         addq    $ 2, KK
 #endif
 
 	decq	J			// j --
-	jg	.L2_00_01			// next 2 lines of N
+	jg	L(2_00_01)			// next 2 lines of N
 
 
 
-.L1_2_0:
+L(1_2_0):
 
 /************************************************************************************************
 * Loop for Nmod6 % 2 > 0
@@ -3367,30 +3367,30 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	movq	Nmod6, J		
 	andq	$ 1, J			// j % 2
-	je	.L999
+	je	L(999)
 	ALIGN_4
 
-.L1_00_01:
+L(1_00_01):
 	// copy to sub buffer
 	movq	B, BO1
 	leaq    BUFFER1, BO		// first buffer to BO
 	movq	K, %rax
 	ALIGN_4
 
-.L1_00_02b:
+L(1_00_02b):
 
 	vmovups		(BO1), %xmm0
 	vmovups	%xmm0,       (BO)
 	addq	$ 2*SIZE,BO1
 	addq	$ 2*SIZE,BO
 	decq	%rax
-	jnz	.L1_00_02b
+	jnz	L(1_00_02b)
 
-.L1_00_02c:
+L(1_00_02c):
 
 	movq	BO1, B			// next offset of B
 
-.L1_00_10:
+L(1_00_10):
 	movq	C, CO1
 	leaq	(C, LDC, 1), C		// c += 1 * ldc
 
@@ -3404,14 +3404,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	movq	M,  I
 	sarq	$ 2, I			// i = (m >> 2)
-	je	.L1_2_10
+	je	L(1_2_10)
 
 	ALIGN_4
 
 /*******************************************************************************************************/
 
 
-.L1_4_11:
+L(1_4_11):
 
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -3449,7 +3449,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L1_4_16
+	je	L(1_4_16)
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
 
@@ -3460,7 +3460,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L1_4_12:
+L(1_4_12):
 
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
@@ -3472,7 +3472,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
 
-	je	.L1_4_16
+	je	L(1_4_16)
 
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
@@ -3484,12 +3484,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
 
-	je	.L1_4_16
+	je	L(1_4_16)
 
-	jmp	.L1_4_12
+	jmp	L(1_4_12)
 	ALIGN_4
 
-.L1_4_16:
+L(1_4_16):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -3497,7 +3497,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L1_4_19
+	je L(1_4_19)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
@@ -3509,15 +3509,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L1_4_17:
+L(1_4_17):
 
 	KERNEL4x1_SUB
 
-	jl	.L1_4_17
+	jl	L(1_4_17)
 	ALIGN_4
 
 
-.L1_4_19:
+L(1_4_19):
 
 	SAVE4x1
 
@@ -3540,19 +3540,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addq	$ 8 * SIZE, CO1		# coffset += 8
 	decq	I			# i --
-	jg	.L1_4_11
+	jg	L(1_4_11)
 	ALIGN_4	
 
 
 
 
 /*******************************************************************************************************/
-.L1_2_10:
+L(1_2_10):
 	testq	$ 2, M		
-	jz	.L1_2_40
+	jz	L(1_2_40)
 
 
-.L1_2_11:
+L(1_2_11):
 
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -3590,7 +3590,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L1_2_16
+	je	L(1_2_16)
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
 
@@ -3601,7 +3601,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L1_2_12:
+L(1_2_12):
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
@@ -3618,7 +3618,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x1_SUB
 	KERNEL2x1_SUB
 
-	je	.L1_2_16
+	je	L(1_2_16)
 
 	prefetcht0	B_PR1(BO,BI,SIZE)
 	KERNEL2x1_SUB
@@ -3634,12 +3634,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL2x1_SUB
 	KERNEL2x1_SUB
 
-	je	.L1_2_16
+	je	L(1_2_16)
 
-	jmp	.L1_2_12
+	jmp	L(1_2_12)
 	ALIGN_4
 
-.L1_2_16:
+L(1_2_16):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -3647,7 +3647,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L1_2_19
+	je L(1_2_19)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
@@ -3659,15 +3659,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L1_2_17:
+L(1_2_17):
 
 	KERNEL2x1_SUB
 
-	jl	.L1_2_17
+	jl	L(1_2_17)
 	ALIGN_4
 
 
-.L1_2_19:
+L(1_2_19):
 
 	SAVE2x1
 
@@ -3695,13 +3695,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
-.L1_2_40:
+L(1_2_40):
 	testq	$ 1, M		
-	jz	.L999
+	jz	L(999)
 
 	ALIGN_4
 
-.L1_2_41:
+L(1_2_41):
 
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -3739,7 +3739,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	andq	$ -8, %rax			//  K = K - ( K % 8 )
-	je	.L1_2_46
+	je	L(1_2_46)
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
 
@@ -3750,7 +3750,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L1_2_42:
+L(1_2_42):
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
@@ -3766,7 +3766,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
 
-	je	.L1_2_46
+	je	L(1_2_46)
 
 	prefetcht0	A_PR1(AO,%rax,SIZE)
 	prefetcht0	B_PR1(BO,BI,SIZE)
@@ -3782,12 +3782,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
 
-	je	.L1_2_46
+	je	L(1_2_46)
 
-	jmp	.L1_2_42
+	jmp	L(1_2_42)
 	ALIGN_4
 
-.L1_2_46:
+L(1_2_46):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -3795,7 +3795,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	andq	$ 7, %rax		# if (k & 1)
-	je .L1_2_49
+	je L(1_2_49)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    ( ,BI,2), BI                    //  BI = BI * 2 ; number of values
@@ -3807,15 +3807,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	negq	%rax
 	ALIGN_4
 
-.L1_2_47:
+L(1_2_47):
 
 	KERNEL1x1_SUB
 
-	jl	.L1_2_47
+	jl	L(1_2_47)
 	ALIGN_4
 
 
-.L1_2_49:
+L(1_2_49):
 
 	SAVE1x1
 
@@ -3837,7 +3837,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addq	$ 2 * SIZE, CO1		# coffset += 2
 	decq	I			# i --
-	jg	.L1_2_41
+	jg	L(1_2_41)
 	ALIGN_4	
 
 
@@ -3845,7 +3845,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-.L999:
+L(999):
 	vzeroupper
 
 	movq   		SP, %rsp

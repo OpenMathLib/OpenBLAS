@@ -480,9 +480,9 @@
 
 	movq	N,  J
 	sarq	$2, J		# j = (n >> 2)
-	jle	.L40
+	jle	L(40)
 
-.L01:
+L(01):
 #if defined(LT) || defined(RN)
 	movq	A, AO
 #else
@@ -521,10 +521,10 @@
 
 	movq	M,  I
 	sarq	$2, I	# i = (m >> 2)
-	jle	.L20
+	jle	L(20)
 	ALIGN_4
 
-.L11:
+L(11):
 #ifdef LN
        movq	K, %rax
        salq	$2 + BASE_SHIFT, %rax
@@ -593,10 +593,10 @@
 	leaq	(BO, %rax, 4), BO
 	negq	%rax
 	NOBRANCH
-	je	.L15
+	je	L(15)
 	ALIGN_4
 
-.L12:
+L(12):
 	KERNEL1(16 *  0)
 	KERNEL2(16 *  0)
 	KERNEL3(16 *  0)
@@ -606,10 +606,10 @@
 	KERNEL7(16 *  0)
 	KERNEL8(16 *  0)
 	BRANCH
-	jl	.L12
+	jl	L(12)
 	ALIGN_4
 
-.L15:
+L(15):
 	prefetch	  -8 * SIZE(BB)
 	subq		 $-16 * SIZE, BB
 
@@ -620,7 +620,7 @@
 	subq	KK, %rax
 #endif
 	testq	$4, %rax
-	je .L16
+	je L(16)
 	xorq	%rax, %rax
 	ALIGN_4
 
@@ -633,7 +633,7 @@
 	subq	$-16 * SIZE, AO
 	ALIGN_4
 
-.L16:
+L(16):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -641,7 +641,7 @@
 	subq	KK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L19
+	je L(19)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 4), AO
@@ -649,7 +649,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L17:
+L(17):
 	mulpd	%xmm1, %xmm0
 	mulpd	-14 * SIZE(AO, %rax, 4), %xmm1
 	addpd	%xmm0, %xmm8
@@ -676,10 +676,10 @@
 	movapd	%xmm0, %xmm2
 
 	addq	$SIZE, %rax
-	jl	.L17
+	jl	L(17)
 	ALIGN_4
 
-.L19:
+L(19):
 #if defined(LN) || defined(RT)
 	movq	KK, %rax
 #ifdef LN
@@ -1086,18 +1086,18 @@
 #endif
 
 	decq	I			# i --
-	jg	.L11
+	jg	L(11)
 	ALIGN_4
 
-.L20:
+L(20):
 	testq	$3, M
-	je	.L39
+	je	L(39)
 
 	testq	$2, M
-	je	.L30
+	je	L(30)
 	ALIGN_4
 
-.L21:
+L(21):
 #ifdef LN
        movq	K, %rax
        salq	$1 + BASE_SHIFT, %rax
@@ -1141,10 +1141,10 @@
 	leaq	(BO, %rax, 4), BO
 	negq	%rax
 	NOBRANCH
-	je	.L26
+	je	L(26)
 	ALIGN_4
 
-.L22:
+L(22):
 	mulpd	%xmm0, %xmm1
 	addpd	%xmm1, %xmm8
 	movddup	-14 * SIZE(BO, %rax, 4), %xmm1
@@ -1200,10 +1200,10 @@
 
 	addq	$4 * SIZE, %rax
 	BRANCH
-	jl	.L22
+	jl	L(22)
 	ALIGN_4
 
-.L26:
+L(26):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -1211,7 +1211,7 @@
 	subq	KK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L29
+	je L(29)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 2), AO
@@ -1219,7 +1219,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L27:
+L(27):
 	mulpd	%xmm0, %xmm1
 	addpd	%xmm1, %xmm8
 	movddup	-14 * SIZE(BO, %rax, 4), %xmm1
@@ -1235,10 +1235,10 @@
 	movddup	-11 * SIZE(BO, %rax, 4), %xmm5
 
 	addq	$SIZE, %rax
-	jl	.L27
+	jl	L(27)
 	ALIGN_4
 
-.L29:
+L(29):
 #if defined(LN) || defined(RT)
 	movq	KK, %rax
 #ifdef LN
@@ -1456,9 +1456,9 @@
 #endif
 	ALIGN_4
 
-.L30:
+L(30):
 	testq	$1, M
-	je	.L39
+	je	L(39)
 
 #ifdef LN
        movq	K, %rax
@@ -1503,10 +1503,10 @@
 	leaq	(BO, %rax, 4), BO
 	negq	%rax
 	NOBRANCH
-	je	.L36
+	je	L(36)
 	ALIGN_4
 
-.L32:
+L(32):
 	mulpd	%xmm0, %xmm1
 	mulpd	-14 * SIZE(BO, %rax, 4), %xmm0
 	addpd	%xmm1, %xmm8
@@ -1534,10 +1534,10 @@
 
 	addq	$4 * SIZE, %rax
 	BRANCH
-	jl	.L32
+	jl	L(32)
 	ALIGN_4
 
-.L36:
+L(36):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -1545,7 +1545,7 @@
 	subq	KK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L38
+	je L(38)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 1), AO
@@ -1553,7 +1553,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L37:
+L(37):
 	mulpd	%xmm0, %xmm1
 	mulpd	-14 * SIZE(BO, %rax, 4), %xmm0
 	addpd	%xmm1, %xmm8
@@ -1562,10 +1562,10 @@
 	movddup	-15 * SIZE(AO, %rax, 1), %xmm0
 
 	addq	$SIZE, %rax
-	jl	.L37
+	jl	L(37)
 	ALIGN_4
 
-.L38:
+L(38):
 	addpd	%xmm10, %xmm8
 	addpd	%xmm11, %xmm9
 
@@ -1746,7 +1746,7 @@
 #endif
 	ALIGN_4
 
-.L39:
+L(39):
 #ifdef LN
        leaq	(, K, SIZE), %rax
        leaq	(B, %rax, 4), B
@@ -1765,12 +1765,12 @@
 #endif
 
 	decq	J			# j --
-	jg	.L01
+	jg	L(01)
 	ALIGN_4
 
-.L40:
+L(40):
 	testq	$2, N
-	je	.L80
+	je	L(80)
 
 #if defined(LT) || defined(RN)
 	movq	A, AO
@@ -1806,10 +1806,10 @@
 
 	movq	M,  I
 	sarq	$2, I	# i = (m >> 2)
-	jle	.L60
+	jle	L(60)
 	ALIGN_4
 
-.L51:
+L(51):
 #ifdef LN
        movq	K, %rax
        salq	$2 + BASE_SHIFT, %rax
@@ -1864,10 +1864,10 @@
 	leaq	(BO, %rax, 2), BO
 	negq	%rax
 	NOBRANCH
-	je	.L56
+	je	L(56)
 	ALIGN_4
 
-.L52:
+L(52):
 	mulpd	%xmm1, %xmm0
 	mulpd	-14 * SIZE(AO, %rax, 4), %xmm1
 	addpd	%xmm0, %xmm8
@@ -1919,10 +1919,10 @@
 
 	addq	$4 * SIZE, %rax
 	BRANCH
-	jl	.L52
+	jl	L(52)
 	ALIGN_4
 
-.L56:
+L(56):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -1930,7 +1930,7 @@
 	subq	KK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L59
+	je L(59)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 4), AO
@@ -1938,7 +1938,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L57:
+L(57):
 	mulpd	%xmm1, %xmm0
 	mulpd	-14 * SIZE(AO, %rax, 4), %xmm1
 	addpd	%xmm0, %xmm8
@@ -1953,10 +1953,10 @@
 	movapd	%xmm0, %xmm2
 
 	addq	$SIZE, %rax
-	jl	.L57
+	jl	L(57)
 	ALIGN_4
 
-.L59:
+L(59):
 #if defined(LN) || defined(RT)
 	movq	KK, %rax
 #ifdef LN
@@ -2169,12 +2169,12 @@
 #endif
 
 	decq	I			# i --
-	jg	.L51
+	jg	L(51)
 	ALIGN_4
 
-.L60:
+L(60):
 	testq	$2, M
-	je	.L70
+	je	L(70)
 
 #ifdef LN
        movq	K, %rax
@@ -2218,10 +2218,10 @@
 	leaq	(BO, %rax, 2), BO
 	negq	%rax
 	NOBRANCH
-	je	.L66
+	je	L(66)
 	ALIGN_4
 
-.L62:
+L(62):
 	mulpd	%xmm0, %xmm1
 	addpd	%xmm1, %xmm8
 	movddup	-14 * SIZE(BO, %rax, 2), %xmm1
@@ -2253,10 +2253,10 @@
 
 	addq	$4 * SIZE, %rax
 	BRANCH
-	jl	.L62
+	jl	L(62)
 	ALIGN_4
 
-.L66:
+L(66):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -2264,7 +2264,7 @@
 	subq	KK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L69
+	je L(69)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 2), AO
@@ -2272,7 +2272,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L67:
+L(67):
 	mulpd	%xmm0, %xmm1
 	addpd	%xmm1, %xmm8
 	movddup	-14 * SIZE(BO, %rax, 2), %xmm1
@@ -2282,10 +2282,10 @@
 	movddup	-13 * SIZE(BO, %rax, 2), %xmm3
 
 	addq	$SIZE, %rax
-	jl	.L67
+	jl	L(67)
 	ALIGN_4
 
-.L69:
+L(69):
 	addpd	%xmm10, %xmm8
 	addpd	%xmm11, %xmm9
 
@@ -2426,12 +2426,12 @@
 #endif
 	ALIGN_4
 
-.L70:
+L(70):
 	testq	$1, M
-	je	.L79
+	je	L(79)
 	ALIGN_4
 
-.L71:
+L(71):
 #ifdef LN
        movq	K, %rax
        salq	$0 + BASE_SHIFT, %rax
@@ -2474,10 +2474,10 @@
 	leaq	(BO, %rax, 2), BO
 	negq	%rax
 	NOBRANCH
-	je	.L76
+	je	L(76)
 	ALIGN_4
 
-.L72:
+L(72):
 	mulpd	-16 * SIZE(BO, %rax, 2), %xmm0
 	addpd	%xmm0, %xmm8
 	movddup	-12 * SIZE(AO, %rax, 1), %xmm0
@@ -2496,10 +2496,10 @@
 
 	addq	$4 * SIZE, %rax
 	BRANCH
-	jl	.L72
+	jl	L(72)
 	ALIGN_4
 
-.L76:
+L(76):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -2507,7 +2507,7 @@
 	subq	KK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L78
+	je L(78)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 1), AO
@@ -2515,16 +2515,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L77:
+L(77):
 	mulpd	-16 * SIZE(BO, %rax, 2), %xmm0
 	addpd	%xmm0, %xmm8
 	movddup	-15 * SIZE(AO, %rax, 1), %xmm0
 
 	addq	$SIZE, %rax
-	jl	.L77
+	jl	L(77)
 	ALIGN_4
 
-.L78:
+L(78):
 	addpd	%xmm9,  %xmm8
 	addpd	%xmm11, %xmm10
 	addpd	%xmm10, %xmm8
@@ -2627,7 +2627,7 @@
 #endif
 	ALIGN_4
 
-.L79:
+L(79):
 #ifdef LN
        leaq	(, K, SIZE), %rax
        leaq	(B, %rax, 2), B
@@ -2646,9 +2646,9 @@
 #endif
 	ALIGN_4
 
-.L80:
+L(80):
 	testq	$1, N
-	je	.L999
+	je	L(999)
 
 #if defined(LT) || defined(RN)
 	movq	A, AO
@@ -2682,10 +2682,10 @@
 
 	movq	M,  I
 	sarq	$2, I	# i = (m >> 2)
-	jle	.L100
+	jle	L(100)
 	ALIGN_4
 
-.L91:
+L(91):
 #ifdef LN
        movq	K, %rax
        salq	$2 + BASE_SHIFT, %rax
@@ -2734,10 +2734,10 @@
 	leaq	(BO, %rax, 1), BO
 	negq	%rax
 	NOBRANCH
-	je	.L96
+	je	L(96)
 	ALIGN_4
 
-.L92:
+L(92):
 	mulpd	%xmm1, %xmm0
 	mulpd	-14 * SIZE(AO, %rax, 4), %xmm1
 	addpd	%xmm0, %xmm8
@@ -2765,10 +2765,10 @@
 
 	addq	$4 * SIZE, %rax
 	BRANCH
-	jl	.L92
+	jl	L(92)
 	ALIGN_4
 
-.L96:
+L(96):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -2776,7 +2776,7 @@
 	subq	KK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L99
+	je L(99)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 4), AO
@@ -2784,7 +2784,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L97:
+L(97):
 	mulpd	%xmm1, %xmm0
 	mulpd	-14 * SIZE(AO, %rax, 4), %xmm1
 	addpd	%xmm0, %xmm8
@@ -2793,9 +2793,9 @@
 	movddup	-15 * SIZE(BO, %rax, 1), %xmm1
 
 	addq	$SIZE, %rax
-	jl	.L97
+	jl	L(97)
 	ALIGN_4
-.L99:
+L(99):
 	addpd	%xmm10, %xmm8
 	addpd	%xmm11, %xmm9
 
@@ -2972,12 +2972,12 @@
 #endif
 
 	decq	I			# i --
-	jg	.L91
+	jg	L(91)
 	ALIGN_4
 
-.L100:
+L(100):
 	testq	$2, M
-	je	.L110
+	je	L(110)
 
 #ifdef LN
       movq	K, %rax
@@ -3020,10 +3020,10 @@
 	leaq	(BO, %rax, 1), BO
 	negq	%rax
 	NOBRANCH
-	je	.L106
+	je	L(106)
 	ALIGN_4
 
-.L102:
+L(102):
 	mulpd	-16 * SIZE(AO, %rax, 2), %xmm0
 	addpd	%xmm0, %xmm8
 	movddup	-12 * SIZE(BO, %rax, 1), %xmm0
@@ -3042,10 +3042,10 @@
 
 	addq	$4 * SIZE, %rax
 	BRANCH
-	jl	.L102
+	jl	L(102)
 	ALIGN_4
 
-.L106:
+L(106):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -3053,7 +3053,7 @@
 	subq	KK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L109
+	je L(109)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 2), AO
@@ -3061,16 +3061,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L107:
+L(107):
 	movddup	-16 * SIZE(BO, %rax, 1), %xmm0
 	mulpd	-16 * SIZE(AO, %rax, 2), %xmm0
 	addpd	%xmm0, %xmm8
 
 	addq	$SIZE, %rax
-	jl	.L107
+	jl	L(107)
 	ALIGN_4
 
-.L109:
+L(109):
 	addpd	%xmm9, %xmm8
 	addpd	%xmm11, %xmm10
 	addpd	%xmm10, %xmm8
@@ -3187,12 +3187,12 @@
 #endif
 	ALIGN_4
 
-.L110:
+L(110):
 	testq	$1, M
-	je	.L119
+	je	L(119)
 	ALIGN_4
 
-.L111:
+L(111):
 #ifdef LN
        movq	K, %rax
        salq	$0 + BASE_SHIFT, %rax
@@ -3230,10 +3230,10 @@
 	leaq	(BO, %rax, 1), BO
 	negq	%rax
 	NOBRANCH
-	je	.L116
+	je	L(116)
 	ALIGN_4
 
-.L112:
+L(112):
 	mulpd	-16 * SIZE(BO, %rax, 1), %xmm0
 	addpd	%xmm0, %xmm8
 	movapd	-12 * SIZE(AO, %rax, 1), %xmm0
@@ -3244,10 +3244,10 @@
 
 	addq	$4 * SIZE, %rax
 	BRANCH
-	jl	.L112
+	jl	L(112)
 	ALIGN_4
 
-.L116:
+L(116):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -3255,7 +3255,7 @@
 	subq	KK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L118
+	je L(118)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 1), AO
@@ -3263,16 +3263,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L117:
+L(117):
 	mulsd	-16 * SIZE(BO, %rax, 1), %xmm0
 	addsd	%xmm0, %xmm8
 	movsd	-15 * SIZE(AO, %rax, 1), %xmm0
 
 	addq	$SIZE, %rax
-	jl	.L117
+	jl	L(117)
 	ALIGN_4
 
-.L118:
+L(118):
 	addpd	%xmm9, %xmm8
 	haddpd	%xmm8, %xmm8
 
@@ -3348,7 +3348,7 @@
 #endif
 	ALIGN_4
 
-.L119:
+L(119):
 #ifdef LN
        leaq	(B, K, SIZE), B
 #endif
@@ -3367,7 +3367,7 @@
 	ALIGN_4
 
 
-.L999:
+L(999):
 	movq	   (%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12
