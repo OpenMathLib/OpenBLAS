@@ -5,6 +5,7 @@
 #include <stdalign.h>
 #include <stdbool.h>
 #include "common.h"
+#include "sme_gemm_buffer.h"
 #ifndef stdmin
 #define stdmin(a,b)   (a>b? b:a)
 #endif
@@ -174,10 +175,12 @@ static void cgemm_sme_NN(int M, int N, int K, const cfloat alpha, const cfloat *
 
 
 
-    alignas(256) /*thread_local*/ static float A_pack[MC * KC * 2];
-    alignas(256) /*thread_local*/ static float B_pack[KC * NC * 2];
 #pragma omp parallel for schedule(dynamic, 1)
     for (int j = 0; j < N; j += NC) {
+        /* per thread (and OpenMP task): the panels are never shared between threads */
+        void *pool;
+        const size_t kc = stdmin(KC, K), nb = kc * (stdmin(NC, N) + 64) * 2, na = kc * (stdmin(MC, M) + 64) * 2;
+        float *B_pack = (float *)sme_buf_get((nb + na) * sizeof(float), &pool), *A_pack = B_pack + nb;
         int current_N = stdmin(NC, N - j);
         int N_pad = (current_N + 15) & ~15;
         for (int k = 0; k < K; k += KC) {
@@ -242,6 +245,7 @@ static void cgemm_sme_NN(int M, int N, int K, const cfloat alpha, const cfloat *
                 }
             }
         }
+        sme_buf_put(pool);
     }
 }
 
@@ -263,10 +267,12 @@ static void cgemm_sme_TN(int M, int N, int K, const cfloat alpha, const cfloat *
 	}
         return;
     }
-    alignas(256) /*thread_local*/ static float A_pack[MC * KC * 2];
-    alignas(256) /*thread_local*/ static float B_pack[KC * NC * 2];
 #pragma omp parallel for schedule(dynamic, 1)
     for (int j = 0; j < N; j += NC) {
+        /* per thread (and OpenMP task): the panels are never shared between threads */
+        void *pool;
+        const size_t kc = stdmin(KC, K), nb = kc * (stdmin(NC, N) + 64) * 2, na = kc * (stdmin(MC, M) + 64) * 2;
+        float *B_pack = (float *)sme_buf_get((nb + na) * sizeof(float), &pool), *A_pack = B_pack + nb;
         int current_N = stdmin(NC, N - j);
         int N_pad = (current_N + 15) & ~15;
         for (int k = 0; k < K; k += KC) {
@@ -332,6 +338,7 @@ static void cgemm_sme_TN(int M, int N, int K, const cfloat alpha, const cfloat *
                 }
             }
         }
+        sme_buf_put(pool);
     }
 }
 
@@ -353,10 +360,12 @@ static void cgemm_sme_NT(int M, int N, int K, const cfloat alpha, const cfloat *
 	}
         return;
     }
-    alignas(256) /*thread_local*/ static float A_pack[MC * KC * 2];
-    alignas(256) /*thread_local*/ static float B_pack[KC * NC * 2];
 #pragma omp parallel for schedule(dynamic, 1)
     for (int j = 0; j < N; j += NC) {
+        /* per thread (and OpenMP task): the panels are never shared between threads */
+        void *pool;
+        const size_t kc = stdmin(KC, K), nb = kc * (stdmin(NC, N) + 64) * 2, na = kc * (stdmin(MC, M) + 64) * 2;
+        float *B_pack = (float *)sme_buf_get((nb + na) * sizeof(float), &pool), *A_pack = B_pack + nb;
         int current_N = stdmin(NC, N - j);
         int N_pad = (current_N + 15) & ~15;
         for (int k = 0; k < K; k += KC) {
@@ -422,6 +431,7 @@ static void cgemm_sme_NT(int M, int N, int K, const cfloat alpha, const cfloat *
                 }
             }
         }
+        sme_buf_put(pool);
     }
 }
 
@@ -443,10 +453,12 @@ static void cgemm_sme_TT(int M, int N, int K, const cfloat alpha, const cfloat *
 	}
         return;
     }
-    alignas(256) /*thread_local*/ static float A_pack[MC * KC * 2];
-    alignas(256) /*thread_local*/ static float B_pack[KC * NC * 2];
 #pragma omp parallel for schedule(dynamic, 1)
     for (int j = 0; j < N; j += NC) {
+        /* per thread (and OpenMP task): the panels are never shared between threads */
+        void *pool;
+        const size_t kc = stdmin(KC, K), nb = kc * (stdmin(NC, N) + 64) * 2, na = kc * (stdmin(MC, M) + 64) * 2;
+        float *B_pack = (float *)sme_buf_get((nb + na) * sizeof(float), &pool), *A_pack = B_pack + nb;
         int current_N = stdmin(NC, N - j);
         int N_pad = (current_N + 15) & ~15;
         for (int k = 0; k < K; k += KC) {
@@ -512,6 +524,7 @@ static void cgemm_sme_TT(int M, int N, int K, const cfloat alpha, const cfloat *
                 }
             }
         }
+        sme_buf_put(pool);
     }
 }
 

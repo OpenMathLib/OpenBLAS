@@ -20,6 +20,7 @@ set(CPP_THREAD_SAFETY_DGEMM_ARGS "" CACHE STRING "Arguments passed to the DGEMM 
 set(CPP_THREAD_SAFETY_DGEMM_MIXED_ARGS "" CACHE STRING "Arguments passed to the mixed DGEMM thread safety test")
 set(CPP_THREAD_SAFETY_DGEMV_ARGS "" CACHE STRING "Arguments passed to the DGEMV thread safety test")
 set(CPP_THREAD_SAFETY_SHUTDOWN_ARGS "" CACHE STRING "Arguments passed to the DGEMM shutdown safety test")
+set(CPP_THREAD_SAFETY_ZGEMM_ARGS "" CACHE STRING "Arguments passed to the ZGEMM thread safety test")
 
 if (CPP_THREAD_SAFETY_TEST)
   message(STATUS "building thread safety test")
@@ -30,6 +31,10 @@ if (CPP_THREAD_SAFETY_TEST)
   add_executable(dgemm_thread_safety_mixed dgemm_thread_safety_mixed.cpp)
   target_link_libraries(dgemm_thread_safety_mixed ${CPP_THREAD_SAFETY_LIBS})
   add_test(NAME dgemm_thread_safety_mixed COMMAND ${CMAKE_CURRENT_BINARY_DIR}/dgemm_thread_safety_mixed ${CPP_THREAD_SAFETY_DGEMM_MIXED_ARGS})
+
+  add_executable(zgemm_thread_safety zgemm_thread_safety.cpp)
+  target_link_libraries(zgemm_thread_safety ${CPP_THREAD_SAFETY_LIBS})
+  add_test(NAME zgemm_thread_safety COMMAND ${CMAKE_CURRENT_BINARY_DIR}/zgemm_thread_safety ${CPP_THREAD_SAFETY_ZGEMM_ARGS})
 
   if (WIN32)
     add_executable(dgemm_thread_safety_shutdown dgemm_thread_safety_shutdown.cpp)
