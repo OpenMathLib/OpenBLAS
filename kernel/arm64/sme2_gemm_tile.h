@@ -508,15 +508,29 @@ S2_INL void s2_c_store(const int TM, const int TN, FLOAT *C, BLASLONG ldc, int m
   }
 }
 
+/* alpha z, plus the C row at p (add). */
+S2_INL s2_v s2_alpha_v(s2_v z, FLOAT *p, svbool_t pg, FLOAT alpha, int add) S2_S {
+  return add ? S2_MLA(S2_LD1(pg, p), z, alpha) : S2_MUL(z, alpha);
+}
 /* C = C + alpha ZA (add) or C = alpha ZA from a row of TN tiles: rows < mrows, columns < ncols. */
 S2_INL void s2_c_store_alpha(const int TN, FLOAT *C, BLASLONG ldc, int mrows, int ncols, FLOAT alpha, int add) S2_S
     S2_ZA {
-  for (int s = 0; s < mrows; ++s) {
-    FLOAT *row = C + (BLASLONG)s * ldc;
+  int s = 0;
+  for (; s + 4 <= mrows; s += 4) { /* four rows per ZA move (MOVA vg4) */
     S2_UNROLL for (int Q = 0; Q < TN; ++Q) {
       const svbool_t pg = S2_PW(Q * S2_VL, ncols);
-      const s2_v z = s2_rdh(Q, s);
-      S2_ST1(pg, row + Q * S2_VL, add ? S2_MLA(S2_LD1(pg, row + Q * S2_VL), z, alpha) : S2_MUL(z, alpha));
+      const s2_v4 q = s2_rdh4(Q, s);
+      S2_UNROLL for (int u = 0; u < 4; ++u) {
+        FLOAT *p = C + (BLASLONG)(s + u) * ldc + Q * S2_VL;
+        S2_ST1(pg, p, s2_alpha_v(s2_get4(q, u), p, pg, alpha, add));
+      }
+    }
+  }
+  for (; s < mrows; ++s) {
+    S2_UNROLL for (int Q = 0; Q < TN; ++Q) {
+      const svbool_t pg = S2_PW(Q * S2_VL, ncols);
+      FLOAT *p = C + (BLASLONG)s * ldc + Q * S2_VL;
+      S2_ST1(pg, p, s2_alpha_v(s2_rdh(Q, s), p, pg, alpha, add));
     }
   }
 }
