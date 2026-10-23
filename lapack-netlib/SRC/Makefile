@@ -613,29 +613,29 @@ SLAPACKOBJS     = \
         sgetrf.o sgetrs.o spotrf.o sgetf2.o \
         spotf2.o slaswp.o sgesv.o slauu2.o  \
         slauum.o slauum_blocked.o slauum_recursive.o \
-	strti2.o strtri.o strtrs.o \
-	ssymv.o ssyr.o sspmv.o sspr.o
+		strti2.o strtri.o strtrs.o \
+		ssymv.o ssyr.o sspmv.o sspr.o
 
 DLAPACKOBJS     = \
         dgetrf.o dgetrs.o dpotrf.o dgetf2.o \
         dpotf2.o dlaswp.o dgesv.o dlauu2.o  \
         dlauum.o dlauum_blocked.o dlauum_recursive.o \ 
-	dtrti2.o dtrtri.o dtrtrs.o \
-	dsymv.o dsyr.o dspmv.o dspr.o
+		dtrti2.o dtrtri.o dtrtrs.o \
+		dsymv.o dsyr.o dspmv.o dspr.o
 
 CLAPACKOBJS     = \
         cgetrf.o cgetrs.o cpotrf.o cgetf2.o \
         cpotf2.o claswp.o cgesv.o clauu2.o \
         clauum.o clauum_blocked.o clauum_recursive.o \
-	ctrti2.o ctrtri.o ctrtrs.o \
-	csymv.o csyr.o cspmv.o cspr.o
+		ctrti2.o ctrtri.o ctrtrs.o \
+		csymv.o csyr.o cspmv.o cspr.o
 
 ZLAPACKOBJS     = \
         zgetrf.o zgetrs.o zpotrf.o zgetf2.o \
         zpotf2.o zlaswp.o zgesv.o  zlauu2.o \
         zlauum.o zlauum_blocked.o zlauum_recursive.o \
-	ztrti2.o ztrtri.o ztrtrs.o \
-	zsymv.o zsyr.o zspmv.o zspr.o
+		ztrti2.o ztrtri.o ztrtrs.o \
+		zsymv.o zsyr.o zspmv.o zspr.o
 
 ALLAUX = $(filter-out $(ALL_AUX_OBJS),$(ALLAUX_O))
 SCLAUX = $(filter-out $(SCL_AUX_OBJS),$(SCLAUX_O))
