@@ -411,9 +411,6 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	-lf2c -lm   (in that order)
 */
 
-
-
-
 /* Table of constant values */
 
 static complex c_b1 = {1.f,0.f};
@@ -427,7 +424,6 @@ nblocked algorithm). */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download CLAUU2 + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clauu2.
 f"> */
@@ -438,7 +434,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clauu2.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -492,7 +487,9 @@ f"> */
 /* >          On exit, if UPLO = 'U', the upper triangle of A is */
 /* >          overwritten with the upper triangle of the product U * U**H; */
 /* >          if UPLO = 'L', the lower triangle of A is overwritten with */
-/* >          the lower triangle of the product L**H * L. */
+/* >          the lower triangle of the product L**H * L. Regardless, */
+/* >          the diagonal elements are explicitly set to be real by casting */
+/* .          to REAL before exit. */
 /* > \endverbatim */
 /* > */
 /* > \param[in] LDA */
@@ -516,9 +513,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup complexOTHERauxiliary */
+/* > \ingroup lauu2 */
 
 /*  ===================================================================== */
 /* Subroutine */ void clauu2_(char *uplo, integer *n, complex *a, integer *lda,
@@ -526,28 +521,24 @@ f"> */
 {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2, i__3;
-    real r__1=0.;
-    complex q__1={0.,0.};
+    real r__1;
+    complex q__1;
 
     /* Local variables */
-    integer i__;
-    extern /* Complex */ VOID cdotc_(complex *, integer *, complex *, integer 
-	    *, complex *, integer *);
+    integer i__, j;
+    complex aii, ajj;
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
+	    integer *), cgemm_(char *, char *, integer *, integer *, integer *
+	    , complex *, complex *, integer *, complex *, integer *, complex *
+	    , complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
-	    , complex *, integer *, complex *, integer *, complex *, complex *
-	    , integer *);
     logical upper;
-    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *), 
-	    csscal_(integer *, real *, complex *, integer *);
-    extern void xerbla_(char *, integer *, ftnlen);
-    real aii;
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
 
 
-/*  -- LAPACK auxiliary routine (version 3.7.0) -- */
+/*  -- LAPACK auxiliary routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -557,7 +548,7 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
 
     /* Function Body */
@@ -587,30 +578,30 @@ f"> */
 /*        Compute the product U * U**H. */
 
 	i__1 = *n;
-	for (i__ = 1; i__ <= i__1; ++i__) {
-	    i__2 = i__ + i__ * a_dim1;
-	    aii = a[i__2].r;
-	    if (i__ < *n) {
-		i__2 = i__ + i__ * a_dim1;
-		i__3 = *n - i__;
-		cdotc_(&q__1, &i__3, &a[i__ + (i__ + 1) * a_dim1], lda, &a[
-			i__ + (i__ + 1) * a_dim1], lda);
-		r__1 = aii * aii + q__1.r;
-		a[i__2].r = r__1, a[i__2].i = 0.f;
-		i__2 = *n - i__;
-		clacgv_(&i__2, &a[i__ + (i__ + 1) * a_dim1], lda);
-		i__2 = i__ - 1;
-		i__3 = *n - i__;
-		q__1.r = aii, q__1.i = 0.f;
-		cgemv_("No transpose", &i__2, &i__3, &c_b1, &a[(i__ + 1) * 
-			a_dim1 + 1], lda, &a[i__ + (i__ + 1) * a_dim1], lda, &
-			q__1, &a[i__ * a_dim1 + 1], &c__1);
-		i__2 = *n - i__;
-		clacgv_(&i__2, &a[i__ + (i__ + 1) * a_dim1], lda);
+	for (j = 1; j <= i__1; ++j) {
+	    r_cnjg(&q__1, &a[j + j * a_dim1]);
+	    ajj.r = q__1.r, ajj.i = q__1.i;
+	    if (j == *n) {
+
+/*              We have this case separate just to ensure we never */
+/*              access A out of bounds when we do A(J,J+1) = A(N,N+1) */
+
+		cscal_(n, &ajj, &a[*n * a_dim1 + 1], &c__1);
 	    } else {
-		csscal_(&i__, &aii, &a[i__ * a_dim1 + 1], &c__1);
+		i__2 = *n - j;
+		cgemm_("No Transpose", "Conjugate Transpose", &j, &c__1, &
+			i__2, &c_b1, &a[(j + 1) * a_dim1 + 1], lda, &a[j + (j 
+			+ 1) * a_dim1], lda, &ajj, &a[j * a_dim1 + 1], lda);
 	    }
-/* L10: */
+
+/*           Since in exact arithmetic the diagonal will be real on output */
+/*           we explicitly cast the diagonal to real (zero out the */
+/*           imaginary component) */
+
+	    i__2 = j + j * a_dim1;
+	    i__3 = j + j * a_dim1;
+	    r__1 = a[i__3].r;
+	    a[i__2].r = r__1, a[i__2].i = 0.f;
 	}
 
     } else {
@@ -619,29 +610,29 @@ f"> */
 
 	i__1 = *n;
 	for (i__ = 1; i__ <= i__1; ++i__) {
-	    i__2 = i__ + i__ * a_dim1;
-	    aii = a[i__2].r;
-	    if (i__ < *n) {
-		i__2 = i__ + i__ * a_dim1;
-		i__3 = *n - i__;
-		cdotc_(&q__1, &i__3, &a[i__ + 1 + i__ * a_dim1], &c__1, &a[
-			i__ + 1 + i__ * a_dim1], &c__1);
-		r__1 = aii * aii + q__1.r;
-		a[i__2].r = r__1, a[i__2].i = 0.f;
-		i__2 = i__ - 1;
-		clacgv_(&i__2, &a[i__ + a_dim1], lda);
-		i__2 = *n - i__;
-		i__3 = i__ - 1;
-		q__1.r = aii, q__1.i = 0.f;
-		cgemv_("Conjugate transpose", &i__2, &i__3, &c_b1, &a[i__ + 1 
-			+ a_dim1], lda, &a[i__ + 1 + i__ * a_dim1], &c__1, &
-			q__1, &a[i__ + a_dim1], lda);
-		i__2 = i__ - 1;
-		clacgv_(&i__2, &a[i__ + a_dim1], lda);
+	    r_cnjg(&q__1, &a[i__ + i__ * a_dim1]);
+	    aii.r = q__1.r, aii.i = q__1.i;
+	    if (i__ == *n) {
+
+/*              We have this case separate just to ensure we never */
+/*              access A out of bounds when we do A(I+1,I) = A(N+1,N) */
+
+		cscal_(n, &aii, &a[*n + a_dim1], lda);
 	    } else {
-		csscal_(&i__, &aii, &a[i__ + a_dim1], lda);
+		i__2 = *n - i__;
+		cgemm_("Conjugate Transpose", "No Transpose", &c__1, &i__, &
+			i__2, &c_b1, &a[i__ + 1 + i__ * a_dim1], lda, &a[i__ 
+			+ 1 + a_dim1], lda, &aii, &a[i__ + a_dim1], lda);
 	    }
-/* L20: */
+
+/*           Since in exact arithmetic the diagonal will be real on output */
+/*           we explicitly cast the diagonal to real (zero out the */
+/*           imaginary component) */
+
+	    i__2 = i__ + i__ * a_dim1;
+	    i__3 = i__ + i__ * a_dim1;
+	    r__1 = a[i__3].r;
+	    a[i__2].r = r__1, a[i__2].i = 0.f;
 	}
     }
 

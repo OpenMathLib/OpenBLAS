@@ -179,8 +179,8 @@
       INTRINSIC          CHAR, ICHAR, INT, MIN, REAL
 *     ..
 *     .. External Functions ..
-      INTEGER            IEEECK, IPARMQ, IPARAM2STAGE
-      EXTERNAL           IEEECK, IPARMQ, IPARAM2STAGE
+      INTEGER            IEEECK, IPARMQ
+      EXTERNAL           IEEECK, IPARMQ
 *     ..
 *     .. Executable Statements ..
 *
@@ -678,6 +678,12 @@
          END IF
       ELSE IF( C2.EQ.'LA' ) THEN
          IF( C3.EQ.'RFT' ) THEN
+            NX = 64
+         ELSE IF( C3.EQ.'UUM' ) THEN
+*
+*           Note that this matches on *lauum_recursive, which is the
+*           only place we currently use this
+*
             NX = 64
          END IF
       END IF
