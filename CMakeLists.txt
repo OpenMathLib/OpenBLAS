@@ -2,7 +2,7 @@
 ## Author: Hank Anderson <hank@statease.com>
 ##
 
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.21.0)
 
 set (CMAKE_ASM_SOURCE_FILE_EXTENSIONS "S")
 project(OpenBLAS C ASM)
