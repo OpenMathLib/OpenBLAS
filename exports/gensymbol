@@ -949,6 +949,14 @@ lapackobjs2d="$lapackobjs2d
     dlarrb_tgk
     dlarrf_tgk
     dlarrv_tgk
+    dlaed0_br
+    dlaed0_merge_pair
+    dlaed4_br
+    dlaed7_br
+    dlaed8_br
+    dlaed9_br
+    dstebr
+    dsteqr_boundary_br
     "
 #    dlaqz0
 #    dlaqz1
@@ -973,6 +981,14 @@ lapackobjs2s="$lapackobjs2s
     slarrb_tgk
     slarrf_tgk
     slarrv_tgk
+    dlaed0_br
+    dlaed0_merge_pair
+    dlaed4_br
+    dlaed7_br
+    dlaed8_br
+    dlaed9_br
+    dstebr
+    dsteqr_boundary_br
     "
 
 lapackobjs2z="$lapackobjs2z
@@ -2401,6 +2417,8 @@ lapackeobjsd="
     LAPACKE_dbdsvdmr3_work
     LAPACKE_dgesvdmr3
     LAPACKE_dgesvdmr3_work
+    LAPACKE_dstebr
+    LAPACKE_dstebr_work
 "
 
 lapackeobjss="
@@ -3024,6 +3042,8 @@ lapackeobjss="
     LAPACKE_sbdsvdmr3_work
     LAPACKE_sgesvdmr3
     LAPACKE_sgesvdmr3_work
+    LAPACKE_sstebr
+    LAPACKE_sstebr_work
 "
 
 lapackeobjsz="
