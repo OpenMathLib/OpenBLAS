@@ -416,7 +416,7 @@ recursive algorithm). */
 		 q__2.i + a[i__2].i * q__2.r;
 	r__1 = q__1.r;
 	a[i__1].r = r__1, a[i__1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     Determine crossover point for when to bail to level2 */
