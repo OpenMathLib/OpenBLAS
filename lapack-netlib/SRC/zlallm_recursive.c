@@ -538,7 +538,7 @@ recursive algorithm). */
 /*        Compute L_{22} */
 
 	i__1 = *n - k;
-	zlallm___(uplo, &i__1, &a[k + 1 + (k + 1) * a_dim1], lda, info);
+	zlallm_recursive_(uplo, &i__1, &a[k + 1 + (k + 1) * a_dim1], lda, info);
 	i__1 = *n - k;
 	zherk_("Lower", "No Transpose", &i__1, &k, &c_b13, &a[k + 1 + a_dim1],
 		 lda, &c_b13, &a[k + 1 + (k + 1) * a_dim1], lda);
