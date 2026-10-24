@@ -619,7 +619,7 @@ SLAPACKOBJS     = \
 DLAPACKOBJS     = \
         dgetrf.o dgetrs.o dpotrf.o dgetf2.o \
         dpotf2.o dlaswp.o dgesv.o dlauu2.o  \
-        dlauum.o dlauum_blocked.o dlauum_recursive.o \ 
+        dlauum.o dlauum_blocked.o dlauum_recursive.o \
         dtrti2.o dtrtri.o dtrtrs.o \
         dsymv.o dsyr.o dspmv.o dspr.o
 
