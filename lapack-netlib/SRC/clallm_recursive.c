@@ -397,13 +397,13 @@ recursive algorithm). */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CLALLM_RECURSIVE", &i__1, (ftnlen)17);
-	return 0;
+	return;
     }
 
 /*     Early termination criteria */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Base Case */
@@ -425,7 +425,7 @@ recursive algorithm). */
 	    ftnlen)1);
     if (*n <= nx) {
 	clall2_(uplo, n, &a[a_offset], lda, info);
-	return 0;
+	return;
     }
 
 /*     Beginning of executable statements for the recursive case */

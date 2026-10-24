@@ -376,7 +376,7 @@ recursive algorithm). */
 
     if (*n == 1) {
 	a[a_dim1 + 1] *= a[a_dim1 + 1];
-	return 0;
+	return;
     }
 
 /*     Determine crossover point for when to bail to level2 */

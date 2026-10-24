@@ -383,7 +383,7 @@ recursive algorithm). */
 	    ftnlen)1);
     if (*n <= nx) {
 	slall2_(uplo, n, &a[a_offset], lda, info);
-	return 0;
+	return;
     }
 
 /*     Beginning of executable statements for the recursive case */

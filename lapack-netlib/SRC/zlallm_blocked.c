@@ -429,7 +429,7 @@ locked algorithm). */
 /*        Use unblocked code */
 
 	zlall2_(uplo, n, &a[a_offset], lda, info);
-	return 0;
+	return;
     }
 
 /*     Determine the size of the last block */
