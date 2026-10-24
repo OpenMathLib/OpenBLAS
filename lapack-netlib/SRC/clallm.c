@@ -398,7 +398,7 @@ river algorithm). */
 
     clallm_recursive_(uplo, n, &a[a_offset], lda, info);
     //clallm_blocked(uplo, n, &a[a_offset], lda, info);
-    return 0;
+    return;
 
 /*     End of CLAUUM */
 
