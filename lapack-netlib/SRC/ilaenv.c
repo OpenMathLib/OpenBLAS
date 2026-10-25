@@ -367,7 +367,7 @@ integer ilaenv_(integer *ispec, char *name__, char *opts, integer *n1,
     integer nbmin;
     logical sname;
     extern integer ieeeck_(integer *, real *, real *);
-    char subnam[16];
+    char subnam[17];
     extern integer iparmq_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *);
 
