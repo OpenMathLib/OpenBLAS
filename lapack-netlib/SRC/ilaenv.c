@@ -434,13 +434,13 @@ L10:
 
 /*        EBCDIC character set */
 
-	if ((ic >= 129 && ic <= 137) || (ic >= 145 && ic <= 153) || (ic >= 162 && 
-		ic <= 169)) {
+	if (ic >= 129 && ic <= 137 || ic >= 145 && ic <= 153 || ic >= 162 && 
+		ic <= 169) {
 	    *(unsigned char *)subnam = (char) (ic + 64);
 	    for (i__ = 2; i__ <= 6; ++i__) {
 		ic = *(unsigned char *)&subnam[i__ - 1];
-		if ((ic >= 129 && ic <= 137) || (ic >= 145 && ic <= 153) || (ic >= 
-			162 && ic <= 169)) {
+		if (ic >= 129 && ic <= 137 || ic >= 145 && ic <= 153 || ic >= 
+			162 && ic <= 169) {
 		    *(unsigned char *)&subnam[i__ - 1] = (char) (ic + 64);
 		}
 /* L30: */
@@ -751,6 +751,12 @@ L50:
 	    } else {
 		nb = 32;
 	    }
+	} else if (s_cmp(c3, "LLM", (ftnlen)3, (ftnlen)3) == 0) {
+	    if (sname) {
+		nb = 64;
+	    } else {
+		nb = 64;
+	    }
 	}
     } else if (sname && s_cmp(c2, "ST", (ftnlen)2, (ftnlen)2) == 0) {
 	if (s_cmp(c3, "EBZ", (ftnlen)3, (ftnlen)3) == 0) {
@@ -944,6 +950,10 @@ L70:
     } else if (s_cmp(c2, "LA", (ftnlen)2, (ftnlen)2) == 0) {
 	if (s_cmp(c3, "RFT", (ftnlen)3, (ftnlen)3) == 0) {
 	    nx = 64;
+	} else if (s_cmp(c3, "LLM", (ftnlen)3, (ftnlen)3) == 0) {
+
+/*           Note that this matches on *lallm*, but we only use it in */
+/*           *lallm_recursive at the moment */
 	} else if (s_cmp(c3, "UUM", (ftnlen)3, (ftnlen)3) == 0) {
 
 /*           Note that this matches on *lauum_recursive, which is the */

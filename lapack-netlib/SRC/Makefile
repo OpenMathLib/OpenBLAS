@@ -236,7 +236,8 @@ SLASRC_O = \
    sgesvdq.o slatrs3.o strsyl3.o sgelst.o sgedmd.o sgedmdq.o sgecxx.o \
    sbdsvdmr3.o sbdsvdmr3_work.o sbdtgk.o sgesvdmr3.o slar1v_tgk.o \
    slarrb_tgk.o slarrf_tgk.o slarrv_tgk.o slaed0_br.o slaed0_merge_pair.o \
-   slaed4_br.o slaed7_br.o slaed8_br.o slaed9_br.o sstebr.o ssteqr_boundary_br.o
+   slaed4_br.o slaed7_br.o slaed8_br.o slaed9_br.o sstebr.o ssteqr_boundary_br.o \
+   slall2.o slallm.o slallm_blocked.o slallm_recursive.o
 endif
 
 ifneq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE))" ""
@@ -346,7 +347,7 @@ CLASRC_O = \
    cheevd_2stage.o cheev_2stage.o cheevx_2stage.o cheevr_2stage.o \
    chbev_2stage.o chbevx_2stage.o chbevd_2stage.o chegv_2stage.o \
    cgesvdq.o clatrs3.o ctrsyl3.o cgelst.o cgedmd.o cgedmdq.o cgecxx.o \
-   cgesvdmr3.o
+   cgesvdmr3.o clall2.o clallm.o clallm_blocked.o clallm_recursive.o
 endif
 
 ifdef USEXBLAS
@@ -450,7 +451,8 @@ DLASRC_O = \
    dgesvdq.o dlatrs3.o dtrsyl3.o dgelst.o dgedmd.o dgedmdq.o dgecxx.o \
    dbdsvdmr3.o dbdsvdmr3_work.o dbdtgk.o dgesvdmr3.o dlar1v_tgk.o \
    dlarrb_tgk.o dlarrf_tgk.o dlarrv_tgk.o dlaed0_br.o dlaed0_merge_pair.o \
-   dlaed4_br.o dlaed7_br.o dlaed8_br.o dlaed9_br.o dstebr.o dsteqr_boundary_br.o
+   dlaed4_br.o dlaed7_br.o dlaed8_br.o dlaed9_br.o dstebr.o dsteqr_boundary_br.o \
+   dlall2.o dlallm.o dlallm_blocked.o dlallm_recursive.o
 endif
 
 ifdef USEXBLAS
@@ -560,7 +562,7 @@ ZLASRC_O = \
    zheevd_2stage.o zheev_2stage.o zheevx_2stage.o zheevr_2stage.o \
    zhbev_2stage.o zhbevx_2stage.o zhbevd_2stage.o zhegv_2stage.o \
    zgesvdq.o zlatrs3.o ztrsyl3.o zgelst.o zgedmd.o zgedmdq.o zgecxx.o \
-   zgesvdmr3.o
+   zgesvdmr3.o zlall2.o zlallm.o zlallm_blocked.o zlallm_recursive.o
 endif
 
 ifdef USEXBLAS
