@@ -922,7 +922,15 @@ zpotri,
     dlar1v_tgk,
     dlarrb_tgk,
     dlarrf_tgk,
-    dlarrv_tgk
+    dlarrv_tgk,
+	dlaed0_br,
+    dlaed0_merge_pair,
+    dlaed4_br,
+    dlaed7_br,
+    dlaed8_br,
+    dlaed9_br,
+    dstebr,
+    dsteqr_boundary_br
     );
 
 @lapackobjs2s = (@lapackobjs2s,
@@ -941,7 +949,15 @@ zpotri,
     slar1v_tgk,
     slarrb_tgk,
     slarrf_tgk,
-    slarrv_tgk
+    slarrv_tgk,
+	slaed0_br,
+    slaed0_merge_pair,
+    slaed4_br,
+    slaed7_br,
+    slaed8_br,
+    slaed9_br,
+    sstebr,
+    ssteqr_boundary_br
     );
 
 @lapackobjs2z = (@lapackobjs2z,
@@ -2364,7 +2380,9 @@ zpotri,
     LAPACKE_dbdsvdmr3,
     LAPACKE_dbdsvdmr3_work,
     LAPACKE_dgesvdmr3,
-    LAPACKE_dgesvdmr3_work
+    LAPACKE_dgesvdmr3_work,
+	LAPACKE_dstebr,
+	LAPACKE_dstebr_work
 );
 @lapackeobjss = (
     LAPACKE_sgb_nancheck,
@@ -2986,7 +3004,9 @@ zpotri,
     LAPACKE_sbdsvdmr3,
     LAPACKE_sbdsvdmr3_work,
     LAPACKE_sgesvdmr3,
-    LAPACKE_sgesvdmr3_work
+    LAPACKE_sgesvdmr3_work,
+	LAPACKE_sstebr,
+	LAPACKE_sstebr_work
 );
 @lapackeobjsz = (    
     LAPACKE_zgb_nancheck,

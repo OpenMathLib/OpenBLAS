@@ -136,7 +136,8 @@ set(SLASRC
    slaorhr_col_getrfnp2.f sorgtsqr.f sorgtsqr_row.f sorhr_col.f 
    slatrs3.f strsyl3.f sgelst.f sgedmd.f90 sgedmdq.f90 sgecxx.f
    sbdsvdmr3.f sbdsvdmr3_work.f sgesvdmr3.f sbdtgk.f slar1v_tgk.f
-   slarrf_tgk.f slarrb_tgk.f slarrv_tgk.f)
+   slarrf_tgk.f slarrb_tgk.f slarrv_tgk.f slaed0_br.f slaed0_merge_pair.f
+   slaed4_br.f slaed7_br.f slaed8_br.f slaed9_br.f sstebr.f ssteqr_boundary_br.f)
 
 set(SXLASRC sgesvxx.f sgerfsx.f sla_gerfsx_extended.f sla_geamv.f
    sla_gercond.f sla_gerpvgrw.f ssysvxx.f ssyrfsx.f
@@ -332,7 +333,8 @@ set(DLASRC
    dlaorhr_col_getrfnp2.f dorgtsqr.f dorgtsqr_row.f dorhr_col.f 
    dlatrs3.f dtrsyl3.f dgelst.f dgedmd.f90 dgedmdq.f90 dgecxx.f
    dbdsvdmr3.f dbdsvdmr3_work.f dgesvdmr3.f dbdtgk.f dlar1v_tgk.f
-   dlarrf_tgk.f dlarrb_tgk.f dlarrv_tgk.f)
+   dlarrf_tgk.f dlarrb_tgk.f dlarrv_tgk.f dlaed0_br.f dlaed0_merge_pair.f
+   dlaed4_br.f dlaed7_br.f dlaed8_br.f dlaed9_br.f dstebr.f dsteqr_boundary_br.f)
 
 set(DXLASRC dgesvxx.f dgerfsx.f dla_gerfsx_extended.f dla_geamv.f
    dla_gercond.f dla_gerpvgrw.f dsysvxx.f dsyrfsx.f
@@ -647,7 +649,8 @@ set(SLASRC
    slaorhr_col_getrfnp2.c sorgtsqr.c sorgtsqr_row.c sorhr_col.c 
    slatrs3.c strsyl3.c sgelst.c sgedmd.c sgedmdq.c sgecxx.c
    sbdsvdmr3.c sbdsvdmr3_work.c sgesvdmr3.c sbdtgk.c slar1v_tgk.c
-   slarrf_tgk.c slarrb_tgk.c slarrv_tgk.c)
+   slarrf_tgk.c slarrb_tgk.c slarrv_tgk.c slaed0_br.c slaed0_merge_pair.c
+   slaed4_br.c slaed7_br.c slaed8_br.c slaed9_br.c sstebr.c ssteqr_boundary_br.c)
 
 set(SXLASRC sgesvxx.c sgerfsx.c sla_gerfsx_extended.c sla_geamv.c
    sla_gercond.c sla_gerpvgrw.c ssysvxx.c ssyrfsx.c
@@ -840,7 +843,8 @@ set(DLASRC
    dlaorhr_col_getrfnp2.c dorgtsqr.c dorgtsqr_row.c dorhr_col.c 
    dlatrs3.c dtrsyl3.c dgelst.c dgedmd.c dgedmdq.c dgecxx.c
    dbdsvdmr3.c dbdsvdmr3_work.c dgesvdmr3.c dbdtgk.c dlar1v_tgk.c
-   dlarrf_tgk.c dlarrb_tgk.c dlarrv_tgk.c)
+   dlarrf_tgk.c dlarrb_tgk.c dlarrv_tgk.c dlaed0_br.c dlaed0_merge_pair.c
+   dlaed4_br.c dlaed7_br.c dlaed8_br.c dlaed9_br.c dstebr.c dsteqr_boundary_br.c)
 
 set(DXLASRC dgesvxx.c dgerfsx.c dla_gerfsx_extended.c dla_geamv.c
    dla_gercond.c dla_gerpvgrw.c dsysvxx.c dsyrfsx.c
