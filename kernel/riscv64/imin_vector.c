@@ -43,8 +43,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VCOMPRESS(va, vm, gvl) RISCV_RVV(vcompress_vm_u64m8)(vm, compressed, va, gvl)
 #else
 #define VFREDMINVS_FLOAT RISCV_RVV(vfredmin_vs_f64m8_f64m1)
-#define VIDV_MASK_UINT RISCV_RVV(vid_v_u64m8_m)
-#define VADDVX_MASK_UINT RISCV_RVV(vadd_vx_u64m8_m)
+#define VIDV_MASK_UINT(mask, gvl) RISCV_RVV(vid_v_u64m8_mu)(mask, v_min_index, gvl)
+#define VADDVX_MASK_UINT(mask, a, b, gvl) RISCV_RVV(vadd_vx_u64m8_mu)(mask, a, a, b, gvl)
 #define VCOMPRESS RISCV_RVV(vcompress_vm_u64m8)
 #endif
 #define MASK_T vbool8_t
@@ -73,8 +73,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VCOMPRESS(va, vm, gvl) RISCV_RVV(vcompress_vm_u32m8)(vm, compressed, va, gvl)
 #else
 #define VFREDMINVS_FLOAT __riscv_vfredmin_vs_f32m8_f32m1
-#define VIDV_MASK_UINT __riscv_vid_v_u32m8_m
-#define VADDVX_MASK_UINT __riscv_vadd_vx_u32m8_m
+#define VIDV_MASK_UINT(mask, gvl) __riscv_vid_v_u32m8_mu(mask, v_min_index, gvl)
+#define VADDVX_MASK_UINT(mask, a, b, gvl) __riscv_vadd_vx_u32m8_mu(mask, a, a, b, gvl)
 #define VCOMPRESS RISCV_RVV(vcompress_vm_u32m8)
 #endif
 #define MASK_T vbool4_t
@@ -135,7 +135,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
                         v_res = VFREDMINVS_FLOAT(v_min, v_res, gvl);
                         FLOAT cur_minf = EXTRACT_FLOAT(v_res);
-                        if(cur_minf > minf){
+                        if(cur_minf < minf){
                                 //tail index
                                 v_min_index = VIDV_UINT(gvl);
                                 v_min_index = VADDVX_UINT(v_min_index, j, gvl);
@@ -178,7 +178,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                         v_min = VLSEV_FLOAT(&x[idx], stride_x, gvl);
                         v_res = VFREDMINVS_FLOAT(v_min, v_res, gvl);
                         FLOAT cur_minf = EXTRACT_FLOAT(v_res);
-                        if(cur_minf > minf){
+                        if(cur_minf < minf){
                                 //tail index
                                 v_min_index = VIDV_UINT(gvl);
                                 v_min_index = VADDVX_UINT(v_min_index, j, gvl);
