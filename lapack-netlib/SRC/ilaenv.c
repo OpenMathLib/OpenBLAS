@@ -188,8 +188,8 @@ typedef struct Namelist Namelist;
 /* Table of constant values */
 
 static integer c__1 = 1;
-static real c_b179 = 0.f;
-static real c_b180 = 1.f;
+static real c_b185 = 0.f;
+static real c_b186 = 1.f;
 static integer c__0 = 0;
 
 /* > \brief \b ILAENV */
@@ -199,7 +199,6 @@ static integer c__0 = 0;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download ILAENV + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ilaenv.
 f"> */
@@ -210,7 +209,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ilaenv.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -363,13 +361,12 @@ integer ilaenv_(integer *ispec, char *name__, char *opts, integer *n1,
     /* Local variables */
     logical twostage;
     integer i__;
+    char c1[1], c2[2], c3[3], c4[2];
+    integer ic, nb, iz, nx;
     logical cname;
     integer nbmin;
     logical sname;
-    char c1[1], c2[2], c3[3], c4[2];
-    integer ic, nb;
     extern integer ieeeck_(integer *, real *, real *);
-    integer iz, nx;
     char subnam[17];
     extern integer iparmq_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *);
@@ -413,7 +410,7 @@ L10:
 /*     Convert NAME to upper case if the first character is lower case. */
 
     ret_val = 1;
-    //s_copy(subnam, name__, (ftnlen)16, name_len);
+//    s_copy(subnam, name__, (ftnlen)16, name_len);
     strncpy(subnam,name__,16);
     subnam[16]='\0';
     ic = *(unsigned char *)subnam;
@@ -503,6 +500,16 @@ L50:
 	} else {
 	    nb = 32;
 	}
+    } else if (s_cmp(subnam + 1, "TZRZF", (ftnlen)5, (ftnlen)5) == 0) {
+	if (sname) {
+	    nb = 64;
+	} else {
+	    nb = 32;
+	}
+    } else if (s_cmp(subnam + 1, "ORMRZ", (ftnlen)5, (ftnlen)5) == 0) {
+	nb = 64;
+    } else if (s_cmp(subnam + 1, "UNMRZ", (ftnlen)5, (ftnlen)5) == 0) {
+	nb = 32;
     } else if (s_cmp(c2, "GE", (ftnlen)2, (ftnlen)2) == 0) {
 	if (s_cmp(c3, "TRF", (ftnlen)3, (ftnlen)3) == 0) {
 	    if (sname) {
@@ -934,6 +941,16 @@ L70:
 	if (s_cmp(c3, "HD3", (ftnlen)3, (ftnlen)3) == 0) {
 	    nx = 128;
 	}
+    } else if (s_cmp(c2, "LA", (ftnlen)2, (ftnlen)2) == 0) {
+	if (s_cmp(c3, "RFT", (ftnlen)3, (ftnlen)3) == 0) {
+	    nx = 64;
+	} else if (s_cmp(c3, "UUM", (ftnlen)3, (ftnlen)3) == 0) {
+
+/*           Note that this matches on *lauum_recursive, which is the */
+/*           only place we currently use this */
+
+	    nx = 64;
+	}
     }
     ret_val = nx;
     return ret_val;
@@ -989,7 +1006,7 @@ L140:
 /*     ILAENV = 0 */
     ret_val = 1;
     if (ret_val == 1) {
-	ret_val = ieeeck_(&c__1, &c_b179, &c_b180);
+	ret_val = ieeeck_(&c__1, &c_b185, &c_b186);
     }
     return ret_val;
 
@@ -1000,7 +1017,7 @@ L150:
 /*     ILAENV = 0 */
     ret_val = 1;
     if (ret_val == 1) {
-	ret_val = ieeeck_(&c__0, &c_b179, &c_b180);
+	ret_val = ieeeck_(&c__0, &c_b185, &c_b186);
     }
     return ret_val;
 
