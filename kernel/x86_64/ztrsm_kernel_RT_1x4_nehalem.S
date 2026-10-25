@@ -168,11 +168,11 @@
 #endif
 
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 
 	testq	$1, N
 	BRANCH
-	jle	.L20
+	jle	L(20)
 
 #if defined(LT) || defined(RN)
 	movq	A, AO
@@ -204,7 +204,7 @@
 	movq	M,  I
 	ALIGN_4
 
-.L31:
+L(31):
 #ifdef LN
        movq	K, %rax
        salq	$ZBASE_SHIFT, %rax
@@ -241,10 +241,10 @@
 #endif
 	sarq	$2, %rax
 	NOBRANCH
-	jle	.L35
+	jle	L(35)
 	ALIGN_3
 
-.L32:
+L(32):
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	ADD1	%xmm1, %xmm8
@@ -284,13 +284,13 @@
 
 	subq	$1, %rax
 	BRANCH
-	jg	.L32
+	jg	L(32)
 
 	addpd	%xmm10, %xmm8
 	addpd	%xmm11, %xmm9
 	ALIGN_3
 
-.L35:
+L(35):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -299,10 +299,10 @@
 #endif
 	andq	$3, %rax
 	BRANCH
-	je	.L38
+	je	L(38)
 	ALIGN_3
 
-.L36:
+L(36):
 	ADD1	%xmm1, %xmm8
 	movaps	-16 * SIZE(BO), %xmm1
 	ADD2	%xmm2, %xmm9
@@ -316,10 +316,10 @@
 
 	subq	$1, %rax
 	BRANCH
-	jg	.L36
+	jg	L(36)
 	ALIGN_3
 
-.L38:
+L(38):
 #if defined(LN) || defined(RT)
 	movq	KK, %rax
 	subq	$1, %rax
@@ -445,7 +445,7 @@
 #endif
 	decq	I
 	BRANCH
-	jg	.L31
+	jg	L(31)
 
 #ifdef LN
        movq	K, %rax
@@ -466,10 +466,10 @@
 #endif
 	ALIGN_4
 
-.L20:
+L(20):
 	testq	$2, N
 	BRANCH
-	jle	.L30
+	jle	L(30)
 
 #if defined(LT) || defined(RN)
 	movq	A, AO
@@ -504,7 +504,7 @@
 	movq	M,  I
 	ALIGN_4
 
-.L21:
+L(21):
 #ifdef LN
        movq	K, %rax
        salq	$ZBASE_SHIFT, %rax
@@ -544,10 +544,10 @@
 #endif
 	sarq	$2, %rax
 	NOBRANCH
-	jle	.L25
+	jle	L(25)
 	ALIGN_3
 
-.L22:
+L(22):
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	ADD1	%xmm1, %xmm8
@@ -619,10 +619,10 @@
 
 	subq	$1, %rax
 	BRANCH
-	jg	.L22
+	jg	L(22)
 	ALIGN_3
 
-.L25:
+L(25):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -631,10 +631,10 @@
 #endif
 	andq	$3, %rax		# if (k & 1)
 	BRANCH
-	je	.L28
+	je	L(28)
 	ALIGN_3
 
-.L26:
+L(26):
 	ADD1	%xmm1, %xmm8
 	movaps	-16 * SIZE(BO), %xmm1
 	ADD2	%xmm2, %xmm9
@@ -656,10 +656,10 @@
 
 	subq	$1, %rax
 	BRANCH
-	jg	.L26
+	jg	L(26)
 	ALIGN_3
 
-.L28:
+L(28):
 #if defined(LN) || defined(RT)
 	movq	KK, %rax
 #ifdef LN
@@ -861,7 +861,7 @@
 
 	decq	I
 	BRANCH
-	jg	.L21
+	jg	L(21)
 
 #ifdef LN
        movq	K, %rax
@@ -882,14 +882,14 @@
 #endif
 	ALIGN_4
 
-.L30:
+L(30):
 	movq	N,  J
 	sarq	$2, J
 	NOBRANCH
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L01:
+L(01):
 #if defined(LT) || defined(RN)
 	movq	A, AO
 #else
@@ -927,7 +927,7 @@
 	movq	M,  I
 	ALIGN_4
 
-.L11:
+L(11):
 #ifdef LN
        movq	K, %rax
        salq	$ZBASE_SHIFT, %rax
@@ -977,10 +977,10 @@
 #endif
 	sarq	$2, %rax
 	NOBRANCH
-	jle	.L15
+	jle	L(15)
 	ALIGN_3
 
-.L12:
+L(12):
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
 
 	ADD1	%xmm1, %xmm12
@@ -1104,10 +1104,10 @@
 
 	subq	$1, %rax
 	BRANCH
-	jg	.L12
+	jg	L(12)
 	ALIGN_3
 
-.L15:
+L(15):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -1116,10 +1116,10 @@
 #endif
 	andq	$3, %rax		# if (k & 1)
 	BRANCH
-	je	.L18
+	je	L(18)
 	ALIGN_3
 
-.L16:
+L(16):
 	ADD1	%xmm1, %xmm12
 	movaps	-16 * SIZE(BO), %xmm1
 	ADD2	%xmm2, %xmm13
@@ -1155,10 +1155,10 @@
 
 	subq	$1, %rax
 	BRANCH
-	jg	.L16
+	jg	L(16)
 	ALIGN_3
 
-.L18:
+L(18):
 #if defined(LN) || defined(RT)
 	movq	KK, %rax
 #ifdef LN
@@ -1532,7 +1532,7 @@
 
 	decq	I
 	BRANCH
-	jg	.L11
+	jg	L(11)
 
 #ifdef LN
        movq	K, %rax
@@ -1554,10 +1554,10 @@
 
 	subq	$1, J
 	BRANCH
-	jg	.L01
+	jg	L(01)
 	ALIGN_4
 
-.L999:
+L(999):
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12

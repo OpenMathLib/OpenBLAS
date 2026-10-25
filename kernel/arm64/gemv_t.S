@@ -242,18 +242,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	SAVE_REGS
 
 	cmp	N, xzr
-	ble	.Lgemv_t_kernel_L999
+	ble	L(gemv_t_kernel_L999)
 	cmp	M, xzr
-	ble	.Lgemv_t_kernel_L999
+	ble	L(gemv_t_kernel_L999)
 
 	lsl	LDA, LDA, #SHZ
 	lsl	INC_Y, INC_Y, #SHZ
 	mov	J, N
 
 	cmp	INC_X, #1
-	bne	.Lgemv_t_kernel_S_BEGIN
+	bne	L(gemv_t_kernel_S_BEGIN)
 
-.Lgemv_t_kernel_F_LOOP:
+L(gemv_t_kernel_F_LOOP):
 
 	fmov	TEMP, REG0
 	fmov	TEMP1, REG0
@@ -263,64 +263,64 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mov	A_PTR, A
 	mov	X_PTR, X
 
-.Lgemv_t_kernel_F32:
+L(gemv_t_kernel_F32):
 
 	asr	I, M, #5
 	cmp	I, xzr
-	beq	.Lgemv_t_kernel_F8
+	beq	L(gemv_t_kernel_F8)
 
-.Lgemv_t_kernel_F320:
+L(gemv_t_kernel_F320):
 
 	KERNEL_F32
 
 	subs	I, I, #1
-	bne	.Lgemv_t_kernel_F320
+	bne	L(gemv_t_kernel_F320)
 
 	KERNEL_F32_FINALIZE
 
-.Lgemv_t_kernel_F8:
+L(gemv_t_kernel_F8):
 	ands	I, M, #31
 	asr	I, I, #3
 	cmp	I, xzr
-	beq	.Lgemv_t_kernel_F1
+	beq	L(gemv_t_kernel_F1)
 
-.Lgemv_t_kernel_F80:
+L(gemv_t_kernel_F80):
 
 	KERNEL_F8
 
 	subs	I, I, #1
-	bne	.Lgemv_t_kernel_F80
+	bne	L(gemv_t_kernel_F80)
 
-.Lgemv_t_kernel_F1:
+L(gemv_t_kernel_F1):
 
 	KERNEL_F8_FINALIZE
 
 	ands	I, M, #7
-	ble	.Lgemv_t_kernel_F_END
+	ble	L(gemv_t_kernel_F_END)
 
-.Lgemv_t_kernel_F10:
+L(gemv_t_kernel_F10):
 
 	KERNEL_F1
 
 	subs	I, I, #1
-	bne	.Lgemv_t_kernel_F10
+	bne	L(gemv_t_kernel_F10)
 
-.Lgemv_t_kernel_F_END:
+L(gemv_t_kernel_F_END):
 
 	ld1	TMPV1, [Y]
 	add	A, A, LDA
 	subs	J, J, #1
 	fmadd	TMP1, ALPHA, TEMP, TMP1
 	st1	TMPV1, [Y], INC_Y
-	bne	.Lgemv_t_kernel_F_LOOP
+	bne	L(gemv_t_kernel_F_LOOP)
 
-	b	.Lgemv_t_kernel_L999
+	b	L(gemv_t_kernel_L999)
 
-.Lgemv_t_kernel_S_BEGIN:
+L(gemv_t_kernel_S_BEGIN):
 
 	INIT_S
 
-.Lgemv_t_kernel_S_LOOP:
+L(gemv_t_kernel_S_LOOP):
 
 	fmov	TEMP, REG0
 	mov	A_PTR, A
@@ -328,9 +328,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	I, M, #2
 	cmp	I, xzr
-	ble	.Lgemv_t_kernel_S1
+	ble	L(gemv_t_kernel_S1)
 
-.Lgemv_t_kernel_S4:
+L(gemv_t_kernel_S4):
 
 	KERNEL_S1
 	KERNEL_S1
@@ -338,30 +338,30 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Lgemv_t_kernel_S4
+	bne	L(gemv_t_kernel_S4)
 
-.Lgemv_t_kernel_S1:
+L(gemv_t_kernel_S1):
 
 	ands	I, M, #3
-	ble	.Lgemv_t_kernel_S_END
+	ble	L(gemv_t_kernel_S_END)
 
-.Lgemv_t_kernel_S10:
+L(gemv_t_kernel_S10):
 
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Lgemv_t_kernel_S10
+	bne	L(gemv_t_kernel_S10)
 
-.Lgemv_t_kernel_S_END:
+L(gemv_t_kernel_S_END):
 
 	ld1	TMPV1, [Y]
 	add	A, A, LDA
 	subs    J, J, #1
 	fmadd	TMP1, ALPHA, TEMP, TMP1
 	st1	TMPV1, [Y], INC_Y
-        bne     .Lgemv_t_kernel_S_LOOP
+        bne     L(gemv_t_kernel_S_LOOP)
 
-.Lgemv_t_kernel_L999:
+L(gemv_t_kernel_L999):
 
 	RESTORE_REGS
 

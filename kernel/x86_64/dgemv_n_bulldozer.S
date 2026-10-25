@@ -174,9 +174,9 @@
 #endif
 
 	testq	N, N		# if n <= 0 goto END
-	jle	.L999
+	jle	L(999)
 	testq	M, M		# if n <= 0 goto END
-	jle	.L999
+	jle	L(999)
 
 #if !defined(COPY_FORCE) && !defined(ALIGNED_ACCESS)
 #ifndef  NOCOPY_UNALIGNED
@@ -186,7 +186,7 @@
 #endif
 	testq	%rax, %rax
  	cmoveq	Y, BUFFER
-	je	.L10
+	je	L(10)
 #endif
 
 	movq	BUFFER, Y1
@@ -198,7 +198,7 @@
 	sarq	$4,  %rax
 	ALIGN_3
 
-.L01:
+L(01):
 	vmovups	%xmm4,  0 * SIZE(Y1)
 	vmovups	%xmm4,  2 * SIZE(Y1)
 	vmovups	%xmm4,  4 * SIZE(Y1)
@@ -209,10 +209,10 @@
 	vmovups	%xmm4, 14 * SIZE(Y1)
 	subq	$-16 * SIZE, Y1
 	decq	%rax
-	jg	.L01
+	jg	L(01)
 	ALIGN_3
 
-.L10:
+L(10):
 
 #ifdef ALIGNED_ACCESS
 	leaq	SIZE(BUFFER), %rax
@@ -220,16 +220,16 @@
 	cmovne	%rax, BUFFER
 
 	testq	$SIZE, LDA
-	jne	.L50
+	jne	L(50)
 #endif
 
 #if GEMV_UNROLL >= 8
 
 	cmpq	$8, N
-	jl	.L20
+	jl	L(20)
 	ALIGN_3
 
-.L11:
+L(11):
 	subq	$8, N
 
 	leaq	16 * SIZE(BUFFER), Y1
@@ -267,7 +267,7 @@
 
 #ifdef ALIGNED_ACCESS
 	testq	$SIZE, A
-	je	.L1X
+	je	L(1X)
 
 	vmovsd	 -16 * SIZE(Y1),         %xmm0
 
@@ -299,12 +299,12 @@
 	addq	 $SIZE, Y1
 	ALIGN_3
 
-.L1X:
+L(1X):
 #endif
 
 	movq	MM,  I
 	sarq	$3,  I
-	jle	.L15
+	jle	L(15)
 
 	VMOVUPS_YL1(-16 * SIZE, Y1, %xmm0)
 	VMOVUPS_YL1(-14 * SIZE, Y1, %xmm1)
@@ -312,10 +312,10 @@
 	VMOVUPS_YL1(-10 * SIZE, Y1, %xmm3)
 
 	decq	 I
-	jle	 .L14
+	jle	 L(14)
 	ALIGN_5
 
-.L13:
+L(13):
 
 
 	prefetchnta	A_PRE(A1)
@@ -387,10 +387,10 @@
 
 	subq	 $1, I
 	BRANCH
-	jg	.L13
+	jg	L(13)
 	ALIGN_3
 
-.L14:
+L(14):
 
 	vfmaddpd %xmm0 , -16 * SIZE(A1) , %xmm8, %xmm0
 	vfmaddpd %xmm1 , -14 * SIZE(A1) , %xmm8, %xmm1
@@ -445,9 +445,9 @@
 	subq	 $-8 * SIZE, Y1
 	ALIGN_3
 
-.L15:
+L(15):
 	testq	$4, MM
-	je	.L16
+	je	L(16)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm4)
 	VMOVUPS_A1(-14 * SIZE, A1, %xmm5)
@@ -501,9 +501,9 @@
 	addq	 $4 * SIZE, Y1
 	ALIGN_3
 
-.L16:
+L(16):
 	testq	$2, MM
-	je	.L17
+	je	L(17)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm4)
 	VMOVUPS_A2(-16 * SIZE, A1, LDA,  1, %xmm5)
@@ -534,9 +534,9 @@
 	addq	 $2 * SIZE, Y1
 	ALIGN_3
 
-.L17:
+L(17):
 	testq	$1, MM
-	je	.L18
+	je	L(18)
 
 	vmovsd	 -16 * SIZE(A1),         %xmm4
 	vmovsd	 -16 * SIZE(A1, LDA),    %xmm5
@@ -565,23 +565,23 @@
 	vmovsd	 %xmm0, -16 * SIZE(Y1)
 	ALIGN_3
 
-.L18:
+L(18):
 	cmpq	$8, N
-	jge	.L11
+	jge	L(11)
 	ALIGN_3
 
-.L20:
+L(20):
 #endif
 
 #if GEMV_UNROLL >= 4
 
 	cmpq	$4, N
-	jl	.L30
+	jl	L(30)
 
 #if GEMV_UNROLL == 4
 	ALIGN_3
 
-.L21:
+L(21):
 #endif
 
 	subq	$4, N
@@ -609,7 +609,7 @@
 
 #ifdef ALIGNED_ACCESS
 	testq	$SIZE, A
-	je	.L2X
+	je	L(2X)
 
 	vmovsd	 -16 * SIZE(A1),         %xmm4
 	vmovsd	 -16 * SIZE(A1, LDA),    %xmm5
@@ -630,12 +630,12 @@
 	addq	 $SIZE, Y1
 	ALIGN_3
 
-.L2X:
+L(2X):
 #endif
 
 	movq	MM,  I
 	sarq	$3,  I
-	jle	.L25
+	jle	L(25)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm0)
 	VMOVUPS_A1(-14 * SIZE, A1, %xmm1)
@@ -653,10 +653,10 @@
 	VMOVUPS_A2(-10 * SIZE, A1, LDA, 1, %xmm7)
 
 	decq	 I
-	jle	 .L24
+	jle	 L(24)
 	ALIGN_3
 
-.L23:
+L(23):
 
 
 
@@ -722,10 +722,10 @@
 
 	subq	 $1, I
 	BRANCH
-	jg	.L23
+	jg	L(23)
 	ALIGN_3
 
-.L24:
+L(24):
 
 	vfmaddpd %xmm8 , %xmm12, %xmm0 , %xmm8
 	vfmaddpd %xmm9 , %xmm12, %xmm1 , %xmm9
@@ -767,9 +767,9 @@
 	subq	 $-8 * SIZE, Y1
 	ALIGN_3
 
-.L25:
+L(25):
 	testq	$4, MM
-	je	.L26
+	je	L(26)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm0)
 	VMOVUPS_A1(-14 * SIZE, A1, %xmm1)
@@ -806,9 +806,9 @@
 	addq	 $4 * SIZE, Y1
 	ALIGN_3
 
-.L26:
+L(26):
 	testq	$2, MM
-	je	.L27
+	je	L(27)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm8)
 	VMOVUPS_A2(-16 * SIZE, A1, LDA, 1, %xmm9)
@@ -829,12 +829,12 @@
 	addq	 $2 * SIZE, Y1
 	ALIGN_3
 
-.L27:
+L(27):
 	testq	$1, MM
 #if GEMV_UNROLL == 4
-	je	.L28
+	je	L(28)
 #else
-	je	.L30
+	je	L(30)
 #endif
 
 	vmovsd	 -16 * SIZE(Y1), %xmm0
@@ -853,25 +853,25 @@
 	ALIGN_3
 
 #if GEMV_UNROLL == 4
-.L28:
+L(28):
 	cmpq	$4, N
-	jge	.L21
+	jge	L(21)
 	ALIGN_3
 
 #endif
 
-.L30:
+L(30):
 #endif
 
 #if GEMV_UNROLL >= 2
 
 	cmpq	$2, N
-	jl	.L40
+	jl	L(40)
 
 #if GEMV_UNROLL == 2
 	ALIGN_3
 
-.L31:
+L(31):
 #endif
 
 	subq	$2, N
@@ -893,7 +893,7 @@
 
 #ifdef ALIGNED_ACCESS
 	testq	$SIZE, A
-	je	.L3X
+	je	L(3X)
 
 	vmovsd	 -16 * SIZE(A1), %xmm4
 	vmovsd	 -16 * SIZE(A2), %xmm5
@@ -910,12 +910,12 @@
 	addq	 $SIZE, Y1
 	ALIGN_3
 
-.L3X:
+L(3X):
 #endif
 
 	movq	MM,  I
 	sarq	$3,  I
-	jle	.L35
+	jle	L(35)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm0)
 	VMOVUPS_A1(-14 * SIZE, A1, %xmm1)
@@ -933,10 +933,10 @@
 	VMOVUPS_A1(-10 * SIZE, A2, %xmm7)
 
 	decq	 I
-	jle	 .L34
+	jle	 L(34)
 	ALIGN_3
 
-.L33:
+L(33):
 
 
 	vfmaddpd %xmm8 , %xmm12 , %xmm0 , %xmm8
@@ -980,10 +980,10 @@
 
 	subq	 $1, I
 	BRANCH
-	jg	.L33
+	jg	L(33)
 	ALIGN_3
 
-.L34:
+L(34):
 	vfmaddpd %xmm8 , %xmm12 , %xmm0 , %xmm8
 	vfmaddpd %xmm9 , %xmm12 , %xmm1 , %xmm9
 	vfmaddpd %xmm10, %xmm12 , %xmm2 , %xmm10
@@ -1004,9 +1004,9 @@
 	subq	 $-8 * SIZE, Y1
 	ALIGN_3
 
-.L35:
+L(35):
 	testq	$4, MM
-	je	.L36
+	je	L(36)
 
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm0)
@@ -1032,9 +1032,9 @@
 	addq	 $4 * SIZE, Y1
 	ALIGN_3
 
-.L36:
+L(36):
 	testq	$2, MM
-	je	.L37
+	je	L(37)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm8)
 	VMOVUPS_A1(-16 * SIZE, A2, %xmm9)
@@ -1051,12 +1051,12 @@
 	addq	 $2 * SIZE, Y1
 	ALIGN_3
 
-.L37:
+L(37):
 	testq	$1, MM
 #if GEMV_UNROLL == 2
-	je	.L38
+	je	L(38)
 #else
-	je	.L40
+	je	L(40)
 #endif
 
 	vmovsd	 -16 * SIZE(Y1), %xmm0
@@ -1071,16 +1071,16 @@
 	ALIGN_3
 
 #if GEMV_UNROLL == 2
-.L38:
+L(38):
 	cmpq	$2, N
-	jge	.L31
+	jge	L(31)
 	ALIGN_3
 
 #endif
 
-.L40:
+L(40):
 	cmpq	$1, N
-	jl	.L900
+	jl	L(900)
 #endif
 
 	leaq	16 * SIZE(BUFFER), Y1
@@ -1095,7 +1095,7 @@
 
 #ifdef ALIGNED_ACCESS
 	testq	$SIZE, A
-	je	.L4X
+	je	L(4X)
 
 	vmovsd	 -16 * SIZE(A1), %xmm4
 	vmovsd	 -16 * SIZE(Y1), %xmm0
@@ -1108,12 +1108,12 @@
 	addq	 $SIZE, Y1
 	ALIGN_3
 
-.L4X:
+L(4X):
 #endif
 
 	movq	MM,  I
 	sarq	$3,  I
-	jle	.L45
+	jle	L(45)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm0)
 	VMOVUPS_A1(-14 * SIZE, A1, %xmm1)
@@ -1126,10 +1126,10 @@
 	VMOVUPS_YL1(-10 * SIZE, Y1, %xmm11)
 
 	decq	 I
-	jle	 .L44
+	jle	 L(44)
 	ALIGN_3
 
-.L43:
+L(43):
 
 
 	vfmaddpd %xmm8 , %xmm12 , %xmm0 , %xmm8
@@ -1158,10 +1158,10 @@
 
 	subq	 $1, I
 	BRANCH
-	jg	.L43
+	jg	L(43)
 	ALIGN_3
 
-.L44:
+L(44):
 
 	vfmaddpd %xmm8 , %xmm12 , %xmm0 , %xmm8
 	vfmaddpd %xmm9 , %xmm12 , %xmm1 , %xmm9
@@ -1177,9 +1177,9 @@
 	subq	 $-8 * SIZE, Y1
 	ALIGN_3
 
-.L45:
+L(45):
 	testq	$4, MM
-	je	.L46
+	je	L(46)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm0)
 	VMOVUPS_A1(-14 * SIZE, A1, %xmm1)
@@ -1197,9 +1197,9 @@
 	addq	 $4 * SIZE, Y1
 	ALIGN_3
 
-.L46:
+L(46):
 	testq	$2, MM
-	je	.L47
+	je	L(47)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm8)
 
@@ -1213,9 +1213,9 @@
 	addq	 $2 * SIZE, Y1
 	ALIGN_3
 
-.L47:
+L(47):
 	testq	$1, MM
-	je	.L900
+	je	L(900)
 
 	vmovsd	 -16 * SIZE(Y1), %xmm0
 	vmovsd	 -16 * SIZE(A1), %xmm8
@@ -1226,17 +1226,17 @@
 	ALIGN_3
 
 #ifdef ALIGNED_ACCESS
-	jmp	.L900
+	jmp	L(900)
 	ALIGN_3
 
-.L50:
+L(50):
 #if GEMV_UNROLL >= 4
 
 	cmpq	$4, N
-	jl	.L60
+	jl	L(60)
 	ALIGN_3
 
-.L51:
+L(51):
 
 	subq	$4, N
 
@@ -1262,7 +1262,7 @@
 	vmulpd	%xmm0, %xmm15 , %xmm15
 
 	testq	$SIZE, A
-	je	.L5X
+	je	L(5X)
 
 	vmovsd	 -16 * SIZE(A1),         %xmm4
 	vmovsd	 -16 * SIZE(A1, LDA),    %xmm5
@@ -1283,13 +1283,13 @@
 	addq	 $SIZE, Y1
 	ALIGN_3
 
-.L5X:
+L(5X):
 	vmovhpd	-16 * SIZE(A1, LDA), %xmm8, %xmm8
 	vmovhpd	-16 * SIZE(A2, LDA), %xmm9, %xmm9
 
 	movq	MM,  I
 	sarq	$3,  I
-	jle	.L55
+	jle	L(55)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm4)
 	VMOVUPS_A1(-14 * SIZE, A1, %xmm5)
@@ -1301,10 +1301,10 @@
 	VMOVUPS_YL1(-10 * SIZE, Y1, %xmm3)
 
 	decq	 I
-	jle	 .L54
+	jle	 L(54)
 	ALIGN_3
 
-.L53:
+L(53):
 
 
 
@@ -1381,11 +1381,11 @@
 
         subq     $1, I
         BRANCH
-        jg      .L53
+        jg      L(53)
         ALIGN_3
 
 
-.L54:
+L(54):
 
 	vfmaddpd %xmm0 , %xmm12 , %xmm4 , %xmm0
 	VMOVUPS_A1(-10 * SIZE, A1, %xmm7)
@@ -1442,9 +1442,9 @@
 	subq	 $-8 * SIZE, Y1
 	ALIGN_3
 
-.L55:
+L(55):
 	testq	$4, MM
-	je	.L56
+	je	L(56)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm4)
 	VMOVUPS_A1(-14 * SIZE, A1, %xmm5)
@@ -1487,9 +1487,9 @@
 	addq	 $4 * SIZE, Y1
 	ALIGN_3
 
-.L56:
+L(56):
 	testq	$2, MM
-	je	.L57
+	je	L(57)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm4)
 	VMOVUPS_A2(-15 * SIZE, A1, LDA, 1, %xmm5)
@@ -1514,9 +1514,9 @@
 	addq	 $2 * SIZE, Y1
 	ALIGN_3
 
-.L57:
+L(57):
 	testq	$1, MM
-	je	.L58
+	je	L(58)
 
 	vmovsd	 -16 * SIZE(Y1), %xmm0
 
@@ -1533,23 +1533,23 @@
 	vmovsd	 %xmm0, -16 * SIZE(Y1)
 	ALIGN_3
 
-.L58:
+L(58):
 	cmpq	$4, N
-	jge	.L51
+	jge	L(51)
 	ALIGN_3
 
-.L60:
+L(60):
 #endif
 
 #if GEMV_UNROLL >= 2
 
 	cmpq	$2, N
-	jl	.L70
+	jl	L(70)
 
 #if GEMV_UNROLL == 2
 	ALIGN_3
 
-.L61:
+L(61):
 #endif
 
 	subq	$2, N
@@ -1570,7 +1570,7 @@
 	vmulpd	%xmm0, %xmm13 , %xmm13
 
 	testq	$SIZE, A
-	je	.L6X
+	je	L(6X)
 
 	vmovsd	 -16 * SIZE(A1), %xmm4
 	vmovsd	 -16 * SIZE(A2), %xmm5
@@ -1587,12 +1587,12 @@
 	addq	 $SIZE, Y1
 	ALIGN_3
 
-.L6X:
+L(6X):
 	vmovhpd	-16 * SIZE(A2), %xmm8, %xmm8
 
 	movq	MM,  I
 	sarq	$3,  I
-	jle	.L65
+	jle	L(65)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm4)
 	VMOVUPS_A1(-14 * SIZE, A1, %xmm5)
@@ -1604,10 +1604,10 @@
 	VMOVUPS_YL1(-10 * SIZE, Y1, %xmm3)
 
 	decq	 I
-	jle	 .L64
+	jle	 L(64)
 	ALIGN_3
 
-.L63:
+L(63):
 
 	vfmaddpd %xmm0 , %xmm12 , %xmm4 , %xmm0
 	VMOVUPS_A1(-10 * SIZE, A1, %xmm7)
@@ -1654,10 +1654,10 @@
 
 	subq	 $1, I
 	BRANCH
-	jg	.L63
+	jg	L(63)
 	ALIGN_3
 
-.L64:
+L(64):
 
 	vfmaddpd %xmm0 , %xmm12 , %xmm4 , %xmm0
 	VMOVUPS_A1(-10 * SIZE, A1, %xmm7)
@@ -1690,9 +1690,9 @@
 	subq	 $-8 * SIZE, Y1
 	ALIGN_3
 
-.L65:
+L(65):
 	testq	$4, MM
-	je	.L66
+	je	L(66)
 
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm4)
@@ -1721,9 +1721,9 @@
 	addq	 $4 * SIZE, Y1
 	ALIGN_3
 
-.L66:
+L(66):
 	testq	$2, MM
-	je	.L67
+	je	L(67)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm4)
 	VMOVUPS_A1(-15 * SIZE, A2, %xmm5)
@@ -1742,12 +1742,12 @@
 	addq	 $2 * SIZE, Y1
 	ALIGN_3
 
-.L67:
+L(67):
 	testq	$1, MM
 #if GEMV_UNROLL == 2
-	je	.L68
+	je	L(68)
 #else
-	je	.L70
+	je	L(70)
 #endif
 
 	vmovsd	 -16 * SIZE(Y1), %xmm0
@@ -1762,16 +1762,16 @@
 	ALIGN_3
 
 #if GEMV_UNROLL == 2
-.L68:
+L(68):
 	cmpq	$2, N
-	jge	.L61
+	jge	L(61)
 	ALIGN_3
 
 #endif
 
-.L70:
+L(70):
 	cmpq	$1, N
-	jl	.L900
+	jl	L(900)
 
 #endif
 
@@ -1786,7 +1786,7 @@
 	vmulpd	%xmm0, %xmm12 , %xmm12
 
 	testq	$SIZE, A
-	je	.L7X
+	je	L(7X)
 
 	vmovsd	 -16 * SIZE(A1), %xmm4
 	vmovsd	 -16 * SIZE(Y1), %xmm0
@@ -1799,11 +1799,11 @@
 	addq	 $SIZE, Y1
 	ALIGN_3
 
-.L7X:
+L(7X):
 
 	movq	MM,  I
 	sarq	$3,  I
-	jle	.L75
+	jle	L(75)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm0)
 	VMOVUPS_A1(-14 * SIZE, A1, %xmm1)
@@ -1816,10 +1816,10 @@
 	VMOVUPS_YL1(-10 * SIZE, Y1, %xmm11)
 
 	decq	 I
-	jle	 .L74
+	jle	 L(74)
 	ALIGN_3
 
-.L73:
+L(73):
 
 	vfmaddpd %xmm8 , %xmm12 , %xmm0 , %xmm8
 	VMOVUPS_A1( -8 * SIZE, A1, %xmm0)
@@ -1849,10 +1849,10 @@
 
 	subq	 $1, I
 	BRANCH
-	jg	.L73
+	jg	L(73)
 	ALIGN_3
 
-.L74:
+L(74):
 
 	vfmaddpd %xmm8 , %xmm12 , %xmm0 , %xmm8
 	VMOVUPS_YS1(-16 * SIZE, Y1, %xmm8)
@@ -1867,9 +1867,9 @@
 	subq	 $-8 * SIZE, Y1
 	ALIGN_3
 
-.L75:
+L(75):
 	testq	$4, MM
-	je	.L76
+	je	L(76)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm0)
 	VMOVUPS_A1(-14 * SIZE, A1, %xmm1)
@@ -1886,9 +1886,9 @@
 	addq	 $4 * SIZE, Y1
 	ALIGN_3
 
-.L76:
+L(76):
 	testq	$2, MM
-	je	.L77
+	je	L(77)
 
 	VMOVUPS_A1(-16 * SIZE, A1, %xmm8)
 
@@ -1902,9 +1902,9 @@
 	addq	 $2 * SIZE, Y1
 	ALIGN_3
 
-.L77:
+L(77):
 	testq	$1, MM
-	je	.L900
+	je	L(900)
 
 	vmovsd	 -16 * SIZE(Y1), %xmm0
 	vmovsd	 -16 * SIZE(A1), %xmm8
@@ -1916,17 +1916,17 @@
 	ALIGN_3
 
 
-.L900:
+L(900):
 #ifndef COPY_FORCE
 	cmpq	Y, BUFFER
-	je	.L999
+	je	L(999)
 #endif
 
 	cmpq	$SIZE, INCY
-	jne	.L950
+	jne	L(950)
 
 	testq	$SIZE, Y
-	je	.L910
+	je	L(910)
 
 	vmovsd	(Y), %xmm0
 	vaddsd	(BUFFER), %xmm0, %xmm0
@@ -1936,19 +1936,19 @@
 	addq	$SIZE, BUFFER
 
 	decq	M
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L910:
+L(910):
 	testq	$SIZE, BUFFER
-	jne	.L920
+	jne	L(920)
 
 	movq	M,   %rax
 	sarq	$3,  %rax
-	jle	.L914
+	jle	L(914)
 	ALIGN_3
 
-.L912:
+L(912):
 
 	vmovups	0 * SIZE(Y), %xmm0
 	vmovups	2 * SIZE(Y), %xmm1
@@ -1975,15 +1975,15 @@
 	addq	$8 * SIZE, BUFFER
 
 	decq	%rax
-	jg	.L912
+	jg	L(912)
 	ALIGN_3
 
-.L914:
+L(914):
 	testq	$7, M
-	jle	.L999
+	jle	L(999)
 
 	testq	$4, M
-	jle	.L915
+	jle	L(915)
 
 	vmovups	0 * SIZE(Y), %xmm0
 	vmovups	2 * SIZE(Y), %xmm1
@@ -2001,9 +2001,9 @@
 	addq	$4 * SIZE, BUFFER
 	ALIGN_3
 
-.L915:
+L(915):
 	testq	$2, M
-	jle	.L916
+	jle	L(916)
 
 	vmovups	(Y), %xmm0
 
@@ -2017,9 +2017,9 @@
 	addq	$2 * SIZE, BUFFER
 	ALIGN_3
 
-.L916:
+L(916):
 	testq	$1, M
-	jle	.L999
+	jle	L(999)
 
 	vmovsd	(Y), %xmm0
 
@@ -2030,18 +2030,18 @@
 	vmovsd	%xmm0, (Y)
 	ALIGN_3
 
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
-.L920:
+L(920):
 	vmovups	-1 * SIZE(BUFFER), %xmm4
 
 	movq	M,   %rax
 	sarq	$3,  %rax
-	jle	.L924
+	jle	L(924)
 	ALIGN_3
 
-.L922:
+L(922):
 
 	vmovups	 0 * SIZE(Y), %xmm0
 	vmovups	 2 * SIZE(Y), %xmm1
@@ -2075,15 +2075,15 @@
 	addq	$8 * SIZE, BUFFER
 
 	decq	%rax
-	jg	.L922
+	jg	L(922)
 	ALIGN_3
 
-.L924:
+L(924):
 	testq	$7, M
-	jle	.L999
+	jle	L(999)
 
 	testq	$4, M
-	jle	.L925
+	jle	L(925)
 
 	vmovups	 0 * SIZE(Y), %xmm0
 	vmovups	 2 * SIZE(Y), %xmm1
@@ -2106,9 +2106,9 @@
 	addq	$4 * SIZE, BUFFER
 	ALIGN_3
 
-.L925:
+L(925):
 	testq	$2, M
-	jle	.L926
+	jle	L(926)
 
 	vmovups	 (Y), %xmm0
 
@@ -2126,9 +2126,9 @@
 	addq	$2 * SIZE, BUFFER
 	ALIGN_3
 
-.L926:
+L(926):
 	testq	$1, M
-	jle	.L999
+	jle	L(999)
 
 	vmovsd	(Y), %xmm0
 
@@ -2139,12 +2139,12 @@
 	vmovsd	%xmm0, (Y)
 	ALIGN_3
 
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
-.L950:
+L(950):
 	testq	$SIZE, BUFFER
-	je	.L960
+	je	L(960)
 
 	vmovsd	(Y), %xmm0
 	vaddsd	(BUFFER), %xmm0, %xmm0
@@ -2154,18 +2154,18 @@
 	addq	$SIZE, BUFFER
 
 	decq	M
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L960:
+L(960):
 	movq	Y,  Y1
 
 	movq	M,   %rax
 	sarq	$3,  %rax
-	jle	.L964
+	jle	L(964)
 	ALIGN_3
 
-.L962:
+L(962):
 	vmovsd	(Y), %xmm0
 	addq	INCY, Y
 	vmovhpd	(Y), %xmm0, %xmm0
@@ -2223,15 +2223,15 @@
 
 	addq	$8 * SIZE, BUFFER
 	decq	%rax
-	jg	.L962
+	jg	L(962)
 	ALIGN_3
 
-.L964:
+L(964):
 	testq	$7, M
-	jle	.L999
+	jle	L(999)
 
 	testq	$4, M
-	jle	.L965
+	jle	L(965)
 
 	vmovsd	(Y), %xmm0
 	addq	INCY, Y
@@ -2262,9 +2262,9 @@
 	addq	$4 * SIZE, BUFFER
 	ALIGN_3
 
-.L965:
+L(965):
 	testq	$2, M
-	jle	.L966
+	jle	L(966)
 
 	vmovsd	(Y), %xmm0
 	addq	INCY, Y
@@ -2283,9 +2283,9 @@
 	addq	$2 * SIZE, BUFFER
 	ALIGN_3
 
-.L966:
+L(966):
 	testq	$1, M
-	jle	.L999
+	jle	L(999)
 
 	vmovsd	(Y), %xmm0
 
@@ -2296,7 +2296,7 @@
 	vmovsd	%xmm0, (Y1)
 	ALIGN_3
 
-.L999:
+L(999):
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12

@@ -142,10 +142,10 @@
 	leaq	(, N, SIZE), M8
 
 	cmpq	$2, N
-	jl	.L40
+	jl	L(40)
 	ALIGN_4
 
-.L31:
+L(31):
 	subq	$2, N
 
 	movq	A, AO1
@@ -157,10 +157,10 @@
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L34
+	jle	L(34)
 	ALIGN_4
 
-.L33:
+L(33):
 #ifdef PREFETCH
 	PREFETCH	PREFETCHSIZE * 2 * SIZE(AO1)
 #endif
@@ -201,12 +201,12 @@
 	addq	$8 * SIZE, AO2
 
 	decq	I
-	jg	.L33
+	jg	L(33)
 	ALIGN_4
 
-.L34:
+L(34):
 	testq	$4, M
-	jle	.L36
+	jle	L(36)
 
 	MOVUPS_A1(0 * SIZE, AO1, %xmm0)
 	MOVUPS_A1(2 * SIZE, AO1, %xmm1)
@@ -223,9 +223,9 @@
 	leaq	(B0, M8, 4), B0
 	ALIGN_4
 
-.L36:
+L(36):
 	testq	$2, M
-	jle	.L38
+	jle	L(38)
 
 	MOVUPS_A1(0 * SIZE, AO1, %xmm0)
 	MOVUPS_A1(0 * SIZE, AO2, %xmm1)
@@ -238,9 +238,9 @@
 	leaq	(B0, M8, 2), B0
 	ALIGN_4
 
-.L38:
+L(38):
 	testq	$1, M
-	jle	.L39
+	jle	L(39)
 
 	movsd	0 * SIZE(AO1),      %xmm0
 	movhpd	0 * SIZE(AO2),      %xmm0
@@ -249,24 +249,24 @@
 	subq	$-2 * SIZE, B3
 	ALIGN_4
 
-.L39:
+L(39):
 	cmpq	$2, N
-	jge	.L31
+	jge	L(31)
 	ALIGN_4
 
-.L40:
+L(40):
 	cmpq	$1, N
-	jl	.L999
+	jl	L(999)
 
 	movq	A, AO1
 	movq	B, B0
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L44
+	jle	L(44)
 	ALIGN_4
 
-.L43:
+L(43):
 #ifdef PREFETCH
 	PREFETCH	PREFETCHSIZE * 4 * SIZE(AO1)
 #endif
@@ -290,12 +290,12 @@
 	leaq	(B0, M8, 4), B0
 
 	decq	I
-	jg	.L43
+	jg	L(43)
 	ALIGN_4
 
-.L44:
+L(44):
 	testq	$4, M
-	jle	.L45
+	jle	L(45)
 
 	MOVUPS_A1(0 * SIZE, AO1, %xmm0)
 	MOVUPS_A1(2 * SIZE, AO1, %xmm1)
@@ -307,9 +307,9 @@
 	leaq	(B0, M8, 4), B0
 	ALIGN_4
 
-.L45:
+L(45):
 	testq	$2, M
-	jle	.L46
+	jle	L(46)
 
 	MOVUPS_A1(0 * SIZE, AO1, %xmm0)
 
@@ -318,16 +318,16 @@
 	addq	$2 * SIZE, AO1
 	ALIGN_4
 
-.L46:
+L(46):
 	testq	$1, M
-	jle	.L999
+	jle	L(999)
 
 	movsd	0 * SIZE(AO1),      %xmm0
 
 	movlpd	%xmm0,  -16 * SIZE(B3)
 	ALIGN_4
 
-.L999:
+L(999):
 	popq	%rbp
 	popq	%r13
 	popq	%r12

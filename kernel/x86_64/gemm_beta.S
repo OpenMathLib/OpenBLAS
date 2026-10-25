@@ -93,28 +93,28 @@
 	pxor	%xmm1, %xmm1
 
 	test	M, M
-	jle	.L999
+	jle	L(999)
 	test	N, N
-	jle	.L999
+	jle	L(999)
 
 #ifdef DOUBLE
 	ucomisd	%xmm1, %xmm0
 #else
 	ucomiss	%xmm1, %xmm0
 #endif
-	jne	.L201
+	jne	L(201)
 	ALIGN_4
 
-.L101:
+L(101):
 	movq	 C, C1
 	leaq	(C, LDC, SIZE), C
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L103
+	jle	L(103)
 	ALIGN_4
 
-.L102:
+L(102):
 #ifdef OPTERON
 	prefetchw	32 * SIZE(C1)
 #endif
@@ -129,37 +129,37 @@
 	MOVSD	%xmm0, 7 * SIZE(C1)
 	addq	$8 * SIZE, C1
 	decq	I
-	jg	.L102
+	jg	L(102)
 	ALIGN_4
 
-.L103:
+L(103):
 	movq	M,  I
 	andq	$7, I
-	jle	.L105
+	jle	L(105)
 	ALIGN_4
 
-.L104:
+L(104):
 	MOVSD	%xmm0, 0 * SIZE(C1)
 	addq	$SIZE, C1
 	decq	I
-	jg	.L104
+	jg	L(104)
 	ALIGN_4
 
-.L105:
+L(105):
 	decq	N
-	jg	.L101
-	jmp	.L999
+	jg	L(101)
+	jmp	L(999)
 	ALIGN_3
 
-.L201:
+L(201):
 	movq	 C, C1			# c_offset = c
 	leaq	(C, LDC, SIZE), C	# c += ldc
 	movq	M, I
 	sarq	$3,   I
-	jle	.L203
+	jle	L(203)
 	ALIGN_4
 
-.L202:
+L(202):
 #ifdef OPTERON
 	prefetchw	32 * SIZE(C1)
 #endif
@@ -193,30 +193,30 @@
 
 	addq	$8 * SIZE, C1
 	decq	I
-	jg	.L202
+	jg	L(202)
 	ALIGN_4
 
-.L203:
+L(203):
 	movq	M, I
 	andq	$7,   I
-	jle	.L205
+	jle	L(205)
 	ALIGN_4
 
-.L204:
+L(204):
 	MOVSD	0 * SIZE(C1), %xmm8
 	MULSD	%xmm0, %xmm8
 	MOVSD	%xmm8,  0 * SIZE(C1)
 	addq	$SIZE, C1
 	decq	I
-	jg	.L204
+	jg	L(204)
 	ALIGN_4
 
-.L205:
+L(205):
 	decq	N
-	jg	.L201
+	jg	L(201)
 	ALIGN_3
 
-.L999:
+L(999):
 	xorq	%rax, %rax
 
 #ifdef WINDOWS_ABI

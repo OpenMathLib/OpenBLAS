@@ -102,19 +102,19 @@
 
 	testq	N, N
 	movq	N, J
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L12:
+L(12):
 	movq	A, AO1
 	addq	LDA, A
 
 	movq	M,  I
 	sarq	$2, I
-	jle	.L14
+	jle	L(14)
 	ALIGN_4
 
-.L13:
+L(13):
 #ifndef DOUBLE
 	movsd	0 * SIZE(AO1), %xmm0
 	movhps	2 * SIZE(AO1), %xmm0
@@ -146,16 +146,16 @@
 	addq	$8 * SIZE, AO1
 	addq	$8 * SIZE, B
 	decq	I
-	jg	.L13
+	jg	L(13)
 	ALIGN_4
 
-.L14:
+L(14):
 	movq	M,  I
 	andq	$3, I
-	jle	.L16
+	jle	L(16)
 	ALIGN_4
 
-.L15:
+L(15):
 #ifndef DOUBLE
 	movsd	0 * SIZE(AO1), %xmm0
 	movsd	%xmm0,   0 * SIZE(B)
@@ -169,15 +169,15 @@
 	addq	$2 * SIZE, AO1
 	addq	$2 * SIZE, B
 	decq	I
-	jg	.L15
+	jg	L(15)
 	ALIGN_4
 
-.L16:
+L(16):
 	decq	J
-	jg	.L12
+	jg	L(12)
 	ALIGN_4
 
-.L999:
+L(999):
 #ifdef WINDOWS_ABI
 	movups	  0(%rsp), %xmm6
 	movups	 16(%rsp), %xmm7

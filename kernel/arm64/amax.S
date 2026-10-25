@@ -160,62 +160,62 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 
 	cmp	N, xzr
-	ble	.Lamax_kernel_zero
+	ble	L(amax_kernel_zero)
 	cmp	INC_X, xzr
-	ble	.Lamax_kernel_zero
+	ble	L(amax_kernel_zero)
 
 	cmp	INC_X, #1
-	bne	.Lamax_kernel_S_BEGIN
+	bne	L(amax_kernel_S_BEGIN)
 
-.Lamax_kernel_F_BEGIN:
+L(amax_kernel_F_BEGIN):
 
 	asr	I, N, #2
 	cmp	I, xzr
-	beq	.Lamax_kernel_F1_INIT
+	beq	L(amax_kernel_F1_INIT)
 
 	INIT_F4
 	subs	I, I, #1
-	beq	.Lamax_kernel_F1
+	beq	L(amax_kernel_F1)
 
-.Lamax_kernel_F4:
+L(amax_kernel_F4):
 
 	KERNEL_F4
 
 	subs	I, I, #1
-	bne	.Lamax_kernel_F4
+	bne	L(amax_kernel_F4)
 
-.Lamax_kernel_F1:
+L(amax_kernel_F1):
 
 	ands	I, N, #3
-	ble	.Lamax_kernel_L999
+	ble	L(amax_kernel_L999)
 
-.Lamax_kernel_F10:
+L(amax_kernel_F10):
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     .Lamax_kernel_F10
+        bne     L(amax_kernel_F10)
 
 	ret
 
-.Lamax_kernel_F1_INIT:
+L(amax_kernel_F1_INIT):
 
 	INIT_F1
 	subs	N, N, #1
-	b	.Lamax_kernel_F1
+	b	L(amax_kernel_F1)
 
-.Lamax_kernel_S_BEGIN:
+L(amax_kernel_S_BEGIN):
 
 	INIT_S
 
 	subs	N, N, #1
-	ble	.Lamax_kernel_L999
+	ble	L(amax_kernel_L999)
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	.Lamax_kernel_S1
+	ble	L(amax_kernel_S1)
 
-.Lamax_kernel_S4:
+L(amax_kernel_S4):
 
 	KERNEL_S1
 	KERNEL_S1
@@ -223,25 +223,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Lamax_kernel_S4
+	bne	L(amax_kernel_S4)
 
-.Lamax_kernel_S1:
+L(amax_kernel_S1):
 
 	ands	I, N, #3
-	ble	.Lamax_kernel_L999
+	ble	L(amax_kernel_L999)
 
-.Lamax_kernel_S10:
+L(amax_kernel_S10):
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     .Lamax_kernel_S10
+        bne     L(amax_kernel_S10)
 
-.Lamax_kernel_L999:
+L(amax_kernel_L999):
 
 	ret
 
-.Lamax_kernel_zero:
+L(amax_kernel_zero):
 
 	fmov	MAXF, REG0
 	ret

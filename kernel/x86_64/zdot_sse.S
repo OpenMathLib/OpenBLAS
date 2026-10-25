@@ -69,22 +69,22 @@
 	xorps	%xmm3, %xmm3
 
 	testq	N, N
-	jle	.L999
+	jle	L(999)
 
 	cmpq	$2 * SIZE, INCX
-	jne	.L200
+	jne	L(200)
 	cmpq	$2 * SIZE, INCY
-	jne	.L200
+	jne	L(200)
 
 	subq	$-32 * SIZE, X
 	subq	$-32 * SIZE, Y
 
 	testq	$SIZE, X
-	jne	.L50
+	jne	L(50)
 
-.L0x:
+L(0x):
 	testq	$2 * SIZE, X
-	je	.L10
+	je	L(10)
 
 #ifdef movsd
 	xorps	%xmm4, %xmm4
@@ -100,13 +100,13 @@
 	decq	N
 	ALIGN_3
 
-.L10:
+L(10):
 	testq	$3 * SIZE, Y
-	jne	.L20
+	jne	L(20)
 
 	movq	N,  %rax
 	sarq	$4, %rax
-	jle	.L15
+	jle	L(15)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-28 * SIZE(X), %xmm5
@@ -118,10 +118,10 @@
 	movaps	-20 * SIZE(Y), %xmm11
 
 	decq	%rax
-	jle	.L12
+	jle	L(12)
 	ALIGN_3
 
-.L11:
+L(11):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -206,10 +206,10 @@
 	subq	$-32 * SIZE, Y
 
 	decq	%rax
-	jg	.L11
+	jg	L(11)
 	ALIGN_3
 
-.L12:
+L(12):
 	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -270,9 +270,9 @@
 	subq	$-32 * SIZE, Y
 	ALIGN_3
 
-.L15:
+L(15):
 	testq	$8, N
-	jle	.L16
+	jle	L(16)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-32 * SIZE(Y), %xmm8
@@ -314,9 +314,9 @@
 	addq	$16 * SIZE, Y
 	ALIGN_3
 
-.L16:
+L(16):
 	testq	$4, N
-	jle	.L17
+	jle	L(17)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-32 * SIZE(Y), %xmm8
@@ -339,9 +339,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L17:
+L(17):
 	testq	$2, N
-	jle	.L18
+	jle	L(18)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-32 * SIZE(Y), %xmm8
@@ -356,9 +356,9 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L18:
+L(18):
 	testq	$1, N
-	jle	.L98
+	jle	L(98)
 
 #ifdef movsd
 	xorps	%xmm4, %xmm4
@@ -374,14 +374,14 @@
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
 	addps	%xmm12, %xmm1
-	jmp	.L98
+	jmp	L(98)
 	ALIGN_3
 
-.L20:
+L(20):
 #ifdef ALIGNED_ACCESS
 
 	testq	$2 * SIZE, Y
-	jne	.L30
+	jne	L(30)
 
 	movaps	-33 * SIZE(Y), %xmm8
 	addq	$3 * SIZE, Y
@@ -390,7 +390,7 @@
 
 	movq	N,  %rax
 	sarq	$4, %rax
-	jle	.L25
+	jle	L(25)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-32 * SIZE(Y), %xmm9
@@ -401,10 +401,10 @@
 	movaps	-20 * SIZE(X), %xmm7
 
 	decq	%rax
-	jle	.L22
+	jle	L(22)
 	ALIGN_3
 
-.L21:
+L(21):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(Y)
 #endif
@@ -505,10 +505,10 @@
 	subq	$-32 * SIZE, Y
 
 	decq	%rax
-	jg	.L21
+	jg	L(21)
 	ALIGN_3
 
-.L22:
+L(22):
 	movss	%xmm9,  %xmm8
 	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
@@ -586,9 +586,9 @@
 	subq	$-32 * SIZE, Y
 	ALIGN_3
 
-.L25:
+L(25):
 	testq	$8, N
-	jle	.L26
+	jle	L(26)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-32 * SIZE(Y), %xmm9
@@ -637,9 +637,9 @@
 	addq	$16 * SIZE, Y
 	ALIGN_3
 
-.L26:
+L(26):
 	testq	$4, N
-	jle	.L27
+	jle	L(27)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-32 * SIZE(Y), %xmm9
@@ -669,9 +669,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L27:
+L(27):
 	testq	$2, N
-	jle	.L28
+	jle	L(28)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-32 * SIZE(Y), %xmm9
@@ -689,9 +689,9 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L28:
+L(28):
 	testq	$1, N
-	jle	.L29
+	jle	L(29)
 
 #ifdef movsd
 	xorps	%xmm4, %xmm4
@@ -706,21 +706,21 @@
 	addps	%xmm12, %xmm1
 	ALIGN_3
 
-.L29:
+L(29):
 	shufps	$0xb1, %xmm1, %xmm1
 	shufps	$0xb1, %xmm3, %xmm3
-	jmp	.L98
+	jmp	L(98)
 	ALIGN_3
 
-.L30:
+L(30):
 
 	testq	$SIZE, Y
-	jne	.L40
+	jne	L(40)
 #endif
 
 	movq	N,  %rax
 	sarq	$4, %rax
-	jle	.L35
+	jle	L(35)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movsd	-32 * SIZE(Y), %xmm8
@@ -737,10 +737,10 @@
 	movhps	-18 * SIZE(Y), %xmm11
 
 	decq	%rax
-	jle	.L32
+	jle	L(32)
 	ALIGN_3
 
-.L31:
+L(31):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -833,10 +833,10 @@
 	subq	$-32 * SIZE, Y
 
 	decq	%rax
-	jg	.L31
+	jg	L(31)
 	ALIGN_3
 
-.L32:
+L(32):
 	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -901,9 +901,9 @@
 	subq	$-32 * SIZE, Y
 	ALIGN_3
 
-.L35:
+L(35):
 	testq	$8, N
-	jle	.L36
+	jle	L(36)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movsd	-32 * SIZE(Y), %xmm8
@@ -949,9 +949,9 @@
 	addq	$16 * SIZE, Y
 	ALIGN_3
 
-.L36:
+L(36):
 	testq	$4, N
-	jle	.L37
+	jle	L(37)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movsd	-32 * SIZE(Y), %xmm8
@@ -977,9 +977,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L37:
+L(37):
 	testq	$2, N
-	jle	.L38
+	jle	L(38)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movsd	-32 * SIZE(Y), %xmm8
@@ -995,9 +995,9 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L38:
+L(38):
 	testq	$1, N
-	jle	.L98
+	jle	L(98)
 
 #ifdef movsd
 	xorps	%xmm4, %xmm4
@@ -1013,11 +1013,11 @@
 	addps	%xmm8,  %xmm0
 	mulps	%xmm4,  %xmm12
 	addps	%xmm12, %xmm1
-	jmp	.L98
+	jmp	L(98)
 	ALIGN_3
 
 #ifdef ALIGNED_ACCESS
-.L40:
+L(40):
 	movaps	-35 * SIZE(Y), %xmm8
 	addq	$1 * SIZE, Y
 
@@ -1025,7 +1025,7 @@
 
 	movq	N,  %rax
 	sarq	$4, %rax
-	jle	.L45
+	jle	L(45)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-32 * SIZE(Y), %xmm9
@@ -1036,10 +1036,10 @@
 	movaps	-20 * SIZE(X), %xmm7
 
 	decq	%rax
-	jle	.L42
+	jle	L(42)
 	ALIGN_3
 
-.L41:
+L(41):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(Y)
 #endif
@@ -1140,10 +1140,10 @@
 	subq	$-32 * SIZE, Y
 
 	decq	%rax
-	jg	.L41
+	jg	L(41)
 	ALIGN_3
 
-.L42:
+L(42):
 	movss	%xmm9,  %xmm8
 	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
@@ -1221,9 +1221,9 @@
 	subq	$-32 * SIZE, Y
 	ALIGN_3
 
-.L45:
+L(45):
 	testq	$8, N
-	jle	.L46
+	jle	L(46)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-32 * SIZE(Y), %xmm9
@@ -1272,9 +1272,9 @@
 	addq	$16 * SIZE, Y
 	ALIGN_3
 
-.L46:
+L(46):
 	testq	$4, N
-	jle	.L47
+	jle	L(47)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-32 * SIZE(Y), %xmm9
@@ -1304,9 +1304,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L47:
+L(47):
 	testq	$2, N
-	jle	.L48
+	jle	L(48)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-32 * SIZE(Y), %xmm9
@@ -1324,9 +1324,9 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L48:
+L(48):
 	testq	$1, N
-	jle	.L49
+	jle	L(49)
 
 #ifdef movsd
 	xorps	%xmm4, %xmm4
@@ -1343,21 +1343,21 @@
 	addps	%xmm12, %xmm1
 	ALIGN_3
 
-.L49:
+L(49):
 	shufps	$0xb1, %xmm1, %xmm1
 	shufps	$0xb1, %xmm3, %xmm3
-	jmp	.L98
+	jmp	L(98)
 	ALIGN_3
 #endif
 
-.L50:
+L(50):
 	testq	$SIZE, Y
-	jne	.L70
+	jne	L(70)
 
 #ifdef ALIGNED_ACCESS
 
 	testq	$2 * SIZE, Y
-	je	.L50x
+	je	L(50x)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -1377,9 +1377,9 @@
 	decq	N
 	ALIGN_3
 
-.L50x:
+L(50x):
 	testq	$2 * SIZE, X
-	jne	.L60
+	jne	L(60)
 
 	movaps	-33 * SIZE(X), %xmm8
 	addq	$3 * SIZE, X
@@ -1388,7 +1388,7 @@
 
 	movq	N,  %rax
 	sarq	$4, %rax
-	jle	.L55
+	jle	L(55)
 
 	movaps	-32 * SIZE(Y), %xmm4
 	movaps	-32 * SIZE(X), %xmm9
@@ -1399,10 +1399,10 @@
 	movaps	-20 * SIZE(Y), %xmm7
 
 	decq	%rax
-	jle	.L52
+	jle	L(52)
 	ALIGN_3
 
-.L51:
+L(51):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -1503,10 +1503,10 @@
 	subq	$-32 * SIZE, Y
 
 	decq	%rax
-	jg	.L51
+	jg	L(51)
 	ALIGN_3
 
-.L52:
+L(52):
 	movss	%xmm9,  %xmm8
 	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x39,  %xmm8, %xmm8
@@ -1584,9 +1584,9 @@
 	subq	$-32 * SIZE, Y
 	ALIGN_3
 
-.L55:
+L(55):
 	testq	$8, N
-	jle	.L56
+	jle	L(56)
 
 	movaps	-32 * SIZE(Y), %xmm4
 	movaps	-32 * SIZE(X), %xmm9
@@ -1635,9 +1635,9 @@
 	addq	$16 * SIZE, Y
 	ALIGN_3
 
-.L56:
+L(56):
 	testq	$4, N
-	jle	.L57
+	jle	L(57)
 
 	movaps	-32 * SIZE(Y), %xmm4
 	movaps	-32 * SIZE(X), %xmm9
@@ -1667,9 +1667,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L57:
+L(57):
 	testq	$2, N
-	jle	.L58
+	jle	L(58)
 
 	movaps	-32 * SIZE(Y), %xmm4
 	movaps	-32 * SIZE(X), %xmm9
@@ -1687,9 +1687,9 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L58:
+L(58):
 	testq	$1, N
-	jle	.L98
+	jle	L(98)
 
 #ifdef movsd
 	xorps	%xmm4, %xmm4
@@ -1702,10 +1702,10 @@
 	addps	%xmm4,  %xmm0
 	mulps	%xmm8,  %xmm12
 	addps	%xmm12, %xmm1
-	jmp	.L98
+	jmp	L(98)
 	ALIGN_3
 
-.L60:
+L(60):
 	movaps	-35 * SIZE(X), %xmm8
 	addq	$1 * SIZE, X
 
@@ -1713,7 +1713,7 @@
 
 	movq	N,  %rax
 	sarq	$4, %rax
-	jle	.L65
+	jle	L(65)
 
 	movaps	-32 * SIZE(Y), %xmm4
 	movaps	-32 * SIZE(X), %xmm9
@@ -1724,10 +1724,10 @@
 	movaps	-20 * SIZE(Y), %xmm7
 
 	decq	%rax
-	jle	.L62
+	jle	L(62)
 	ALIGN_3
 
-.L61:
+L(61):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -1828,10 +1828,10 @@
 	subq	$-32 * SIZE, Y
 
 	decq	%rax
-	jg	.L61
+	jg	L(61)
 	ALIGN_3
 
-.L62:
+L(62):
 	movss	%xmm9,  %xmm8
 	pshufd	$0xb1,  %xmm4, %xmm12
 	shufps	$0x93,  %xmm9, %xmm8
@@ -1909,9 +1909,9 @@
 	subq	$-32 * SIZE, Y
 	ALIGN_3
 
-.L65:
+L(65):
 	testq	$8, N
-	jle	.L66
+	jle	L(66)
 
 	movaps	-32 * SIZE(Y), %xmm4
 	movaps	-32 * SIZE(X), %xmm9
@@ -1960,9 +1960,9 @@
 	addq	$16 * SIZE, Y
 	ALIGN_3
 
-.L66:
+L(66):
 	testq	$4, N
-	jle	.L67
+	jle	L(67)
 
 	movaps	-32 * SIZE(Y), %xmm4
 	movaps	-32 * SIZE(X), %xmm9
@@ -1992,9 +1992,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L67:
+L(67):
 	testq	$2, N
-	jle	.L68
+	jle	L(68)
 
 	movaps	-32 * SIZE(Y), %xmm4
 	movaps	-32 * SIZE(X), %xmm9
@@ -2012,9 +2012,9 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L68:
+L(68):
 	testq	$1, N
-	jle	.L98
+	jle	L(98)
 
 #ifdef movsd
 	xorps	%xmm4, %xmm4
@@ -2029,13 +2029,13 @@
 	addps	%xmm4,  %xmm0
 	mulps	%xmm8,  %xmm12
 	addps	%xmm12, %xmm1
-	jmp	.L98
+	jmp	L(98)
 	ALIGN_3
 
 #else
 
 	testq	$2 * SIZE, Y
-	je	.L50x
+	je	L(50x)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -2055,10 +2055,10 @@
 	decq	N
 	ALIGN_3
 
-.L50x:
+L(50x):
 	movq	N,  %rax
 	sarq	$4, %rax
-	jle	.L55
+	jle	L(55)
 
 	movaps	-32 * SIZE(Y), %xmm4
 	movlps	-32 * SIZE(X), %xmm8
@@ -2075,10 +2075,10 @@
 	movhps	-18 * SIZE(X), %xmm11
 
 	decq	%rax
-	jle	.L52
+	jle	L(52)
 	ALIGN_3
 
-.L51:
+L(51):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -2171,10 +2171,10 @@
 	subq	$-32 * SIZE, Y
 
 	decq	%rax
-	jg	.L51
+	jg	L(51)
 	ALIGN_3
 
-.L52:
+L(52):
 	pshufd	$0xb1,  %xmm4, %xmm12
 	mulps	%xmm8,  %xmm4
 	addps	%xmm4,  %xmm0
@@ -2239,9 +2239,9 @@
 	subq	$-32 * SIZE, Y
 	ALIGN_3
 
-.L55:
+L(55):
 	testq	$8, N
-	jle	.L56
+	jle	L(56)
 
 	movaps	-32 * SIZE(Y), %xmm4
 	movlps	-32 * SIZE(X), %xmm8
@@ -2287,9 +2287,9 @@
 	addq	$16 * SIZE, Y
 	ALIGN_3
 
-.L56:
+L(56):
 	testq	$4, N
-	jle	.L57
+	jle	L(57)
 
 	movaps	-32 * SIZE(Y), %xmm4
 	movlps	-32 * SIZE(X), %xmm8
@@ -2315,9 +2315,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L57:
+L(57):
 	testq	$2, N
-	jle	.L58
+	jle	L(58)
 
 	movaps	-32 * SIZE(Y), %xmm4
 	movlps	-32 * SIZE(X), %xmm8
@@ -2334,9 +2334,9 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L58:
+L(58):
 	testq	$1, N
-	jle	.L98
+	jle	L(98)
 
 #ifdef movsd
 	xorps	%xmm4, %xmm4
@@ -2352,13 +2352,13 @@
 	addps	%xmm4,  %xmm0
 	mulps	%xmm8,  %xmm12
 	addps	%xmm12, %xmm1
-	jmp	.L98
+	jmp	L(98)
 	ALIGN_3
 #endif
 
-.L70:
+L(70):
 	testq	$2 * SIZE, Y
-	je	.L70x
+	je	L(70x)
 
 #ifdef movsd
 	xorps	%xmm4, %xmm4
@@ -2379,9 +2379,9 @@
 	decq	N
 	ALIGN_3
 
-.L70x:
+L(70x):
 	testq	$2 * SIZE, X
-	jne	.L80
+	jne	L(80)
 
 	movaps	-33 * SIZE(X), %xmm4
 	addq	$3 * SIZE, X
@@ -2390,7 +2390,7 @@
 
 	movq	N,  %rax
 	sarq	$4, %rax
-	jle	.L75
+	jle	L(75)
 
 	movaps	-32 * SIZE(X), %xmm5
 	movaps	-32 * SIZE(Y), %xmm9
@@ -2400,10 +2400,10 @@
 	movaps	-24 * SIZE(Y), %xmm11
 
 	decq	%rax
-	jle	.L72
+	jle	L(72)
 	ALIGN_3
 
-.L71:
+L(71):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -2504,10 +2504,10 @@
 	subq	$-32 * SIZE, Y
 
 	decq	%rax
-	jg	.L71
+	jg	L(71)
 	ALIGN_3
 
-.L72:
+L(72):
 	movss	%xmm9,  %xmm8
 	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
@@ -2586,9 +2586,9 @@
 	subq	$-32 * SIZE, Y
 	ALIGN_3
 
-.L75:
+L(75):
 	testq	$8, N
-	jle	.L76
+	jle	L(76)
 
 	movaps	-32 * SIZE(X), %xmm5
 	movaps	-32 * SIZE(Y), %xmm9
@@ -2638,9 +2638,9 @@
 	addq	$16 * SIZE, Y
 	ALIGN_3
 
-.L76:
+L(76):
 	testq	$4, N
-	jle	.L77
+	jle	L(77)
 
 	movaps	-32 * SIZE(X), %xmm5
 	movaps	-32 * SIZE(Y), %xmm9
@@ -2670,9 +2670,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L77:
+L(77):
 	testq	$2, N
-	jle	.L78
+	jle	L(78)
 
 	movaps	-32 * SIZE(X), %xmm5
 	movaps	-32 * SIZE(Y), %xmm9
@@ -2689,9 +2689,9 @@
 	movaps	%xmm9, %xmm8
 	ALIGN_3
 
-.L78:
+L(78):
 	testq	$1, N
-	jle	.L79
+	jle	L(79)
 
 	xorps	%xmm5, %xmm5
 	movss	%xmm5, %xmm4
@@ -2707,15 +2707,15 @@
 	addps	%xmm12, %xmm1
 	ALIGN_3
 
-.L79:
+L(79):
 	shufps	$0x39, %xmm0, %xmm0
 	shufps	$0x39, %xmm1, %xmm1
 	shufps	$0x39, %xmm2, %xmm2
 	shufps	$0x39, %xmm3, %xmm3
-	jmp	.L98
+	jmp	L(98)
 	ALIGN_3
 
-.L80:
+L(80):
 	movsd	-33 * SIZE(X), %xmm4
 	movhps	-31 * SIZE(X), %xmm4
 	addq	$3 * SIZE, X
@@ -2724,7 +2724,7 @@
 
 	movq	N,  %rax
 	sarq	$4, %rax
-	jle	.L85
+	jle	L(85)
 
 	movsd	-32 * SIZE(X), %xmm5
 	movhps	-30 * SIZE(X), %xmm5
@@ -2739,10 +2739,10 @@
 	movaps	-24 * SIZE(Y), %xmm11
 
 	decq	%rax
-	jle	.L82
+	jle	L(82)
 	ALIGN_3
 
-.L81:
+L(81):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -2851,10 +2851,10 @@
 	subq	$-32 * SIZE, Y
 
 	decq	%rax
-	jg	.L81
+	jg	L(81)
 	ALIGN_3
 
-.L82:
+L(82):
 	movss	%xmm9,  %xmm8
 	pshufd	$0x1b,  %xmm8, %xmm12
 	movss	%xmm5,  %xmm4
@@ -2938,9 +2938,9 @@
 	subq	$-32 * SIZE, Y
 	ALIGN_3
 
-.L85:
+L(85):
 	testq	$8, N
-	jle	.L86
+	jle	L(86)
 
 	movsd	-32 * SIZE(X), %xmm5
 	movhps	-30 * SIZE(X), %xmm5
@@ -2994,9 +2994,9 @@
 	addq	$16 * SIZE, Y
 	ALIGN_3
 
-.L86:
+L(86):
 	testq	$4, N
-	jle	.L87
+	jle	L(87)
 
 	movsd	-32 * SIZE(X), %xmm5
 	movhps	-30 * SIZE(X), %xmm5
@@ -3029,9 +3029,9 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L87:
+L(87):
 	testq	$2, N
-	jle	.L88
+	jle	L(88)
 
 	movsd	-32 * SIZE(X), %xmm5
 	movhps	-30 * SIZE(X), %xmm5
@@ -3049,9 +3049,9 @@
 	movaps	%xmm9, %xmm8
 	ALIGN_3
 
-.L88:
+L(88):
 	testq	$1, N
-	jle	.L89
+	jle	L(89)
 
 	xorps	%xmm5, %xmm5
 	movss	%xmm5, %xmm4
@@ -3067,18 +3067,18 @@
 	addps	%xmm12, %xmm1
 	ALIGN_3
 
-.L89:
+L(89):
 	shufps	$0x39, %xmm0, %xmm0
 	shufps	$0x39, %xmm1, %xmm1
 	shufps	$0x39, %xmm2, %xmm2
 	shufps	$0x39, %xmm3, %xmm3
-	jmp	.L98
+	jmp	L(98)
 	ALIGN_3
 
-.L200:
+L(200):
 	movq	N,  %rax
 	sarq	$4, %rax
-	jle	.L205
+	jle	L(205)
 
 	movsd	(X), %xmm4
 	addq	INCX, X
@@ -3117,10 +3117,10 @@
 	addq	INCY, Y
 
 	decq	%rax
-	jle	.L204
+	jle	L(204)
 	ALIGN_3
 
-.L203:
+L(203):
 	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -3235,10 +3235,10 @@
 	addps	%xmm12, %xmm3
 
 	decq	%rax
-	jg	.L203
+	jg	L(203)
 	ALIGN_3
 
-.L204:
+L(204):
 	pshufd	$0xb1,  %xmm8, %xmm12
 	mulps	%xmm4,  %xmm8
 	addps	%xmm8,  %xmm0
@@ -3320,9 +3320,9 @@
 	addps	%xmm12, %xmm3
 	ALIGN_3
 
-.L205:
+L(205):
 	testq	$8, N
-	jle	.L206
+	jle	L(206)
 
 	movsd	(X), %xmm4
 	addq	INCX, X
@@ -3385,9 +3385,9 @@
 	addps	%xmm12, %xmm3
 	ALIGN_3
 
-.L206:
+L(206):
 	testq	$4, N
-	jle	.L207
+	jle	L(207)
 
 	movsd	(X), %xmm4
 	addq	INCX, X
@@ -3420,9 +3420,9 @@
 	addps	%xmm12, %xmm3
 	ALIGN_3
 
-.L207:
+L(207):
 	testq	$2, N
-	jle	.L208
+	jle	L(208)
 
 	movsd	(X), %xmm4
 	addq	INCX, X
@@ -3440,9 +3440,9 @@
 	addps	%xmm12, %xmm1
 	ALIGN_3
 
-.L208:
+L(208):
 	testq	$1, N
-	jle	.L98
+	jle	L(98)
 
 #ifdef movsd
 	xorps	%xmm4, %xmm4
@@ -3460,7 +3460,7 @@
 	addps	%xmm12, %xmm1
 	ALIGN_3
 
-.L98:
+L(98):
 	addps	%xmm2, %xmm0
 	addps	%xmm3, %xmm1
 
@@ -3474,7 +3474,7 @@
 	pshufd	$1, %xmm1, %xmm3
 	ALIGN_3
 
-.L999:
+L(999):
 #ifndef CONJ
 	subss	 %xmm2, %xmm0
 	addss	 %xmm3, %xmm1

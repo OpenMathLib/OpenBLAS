@@ -63,9 +63,9 @@
 	pxor	%xmm0, %xmm0
 	xor	RET, RET
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 	testq	INCX, INCX
-	jle	.L999
+	jle	L(999)
 
 	salq	$ZBASE_SHIFT, INCX
 	movq	M, MM
@@ -84,15 +84,15 @@
 	shufps	$0, %xmm0, %xmm0
 	movaps	%xmm0, %xmm1
 	cmpq	$2 * SIZE, INCX
-	jne	.L70
+	jne	L(70)
 
-.L30:
+L(30):
 	movq	M,  I
 	sarq	$3, I
-	jle	.L35
+	jle	L(35)
 	ALIGN_4
 
-.L31:
+L(31):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -128,15 +128,15 @@
 
 	addq	$16 * SIZE, X
 	decq	I
-	jg	.L31
+	jg	L(31)
 	ALIGN_4
 
-.L35:
+L(35):
 	andq	$7,  M
-	jle	.L40
+	jle	L(40)
 
 	testq	$4, M
-	je	.L36
+	je	L(36)
 
 	movsd	0 * SIZE(X), %xmm4
 	movhps	2 * SIZE(X), %xmm4
@@ -155,9 +155,9 @@
 	addq	$8 * SIZE, X
 	ALIGN_3
 
-.L36:
+L(36):
 	testq	$2, M
-	je	.L37
+	je	L(37)
 
 	movss	0 * SIZE(X), %xmm4
 	movss	1 * SIZE(X), %xmm5
@@ -174,9 +174,9 @@
 	addq	$4 * SIZE, X
 	ALIGN_3
 
-.L37:
+L(37):
 	testq	$1, M
-	je	.L40
+	je	L(40)
 
 	movss	0 * SIZE(X), %xmm4
 	movss	1 * SIZE(X), %xmm5
@@ -186,7 +186,7 @@
 	maxss	%xmm4,  %xmm0
 	ALIGN_4
 
-.L40:
+L(40):
 	movq	XX, X
 	movq	MM, M
 
@@ -201,10 +201,10 @@
 
 	movq	M,  I
 	sarq	$2, I
-	jle	.L45
+	jle	L(45)
 	ALIGN_4
 
-.L41:
+L(41):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -230,16 +230,16 @@
 	.long	0xd9500f4c
 #endif
 	testq	 $15, %r11
-	jne	 .L43
+	jne	 L(43)
 
 	addq	$8 * SIZE, X
 	addq	$4, RET
 	decq	I
-	jg	.L41
-	jmp	.L45
+	jg	L(41)
+	jmp	L(45)
 	ALIGN_4
 
-.L43:
+L(43):
 	movss	0 * SIZE(X), %xmm1
 	movss	1 * SIZE(X), %xmm2
 	movss	2 * SIZE(X), %xmm3
@@ -266,21 +266,21 @@
 
 	incq	RET
 	comiss	%xmm0, %xmm1
-	je	.L999
+	je	L(999)
 	incq	RET
 	comiss	%xmm0, %xmm3
-	je	.L999
+	je	L(999)
 	incq	RET
 	comiss	%xmm0, %xmm5
-	je	.L999
+	je	L(999)
 	incq	RET
 	comiss	%xmm0, %xmm7
-	je	.L999
+	je	L(999)
 	ALIGN_3
 
-.L45:
+L(45):
 	testq	$2, M
-	je	.L47
+	je	L(47)
 
 	movss	0 * SIZE(X), %xmm1
 	movss	1 * SIZE(X), %xmm2
@@ -297,24 +297,24 @@
 
 	incq	RET
 	comiss	%xmm0, %xmm1
-	je	.L999
+	je	L(999)
 	incq	RET
 	comiss	%xmm0, %xmm3
-	je	.L999
+	je	L(999)
 	ALIGN_3
 
-.L47:
+L(47):
 	incq	RET
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_3
 
-.L70:
+L(70):
 	movq	M,  I
 	sarq	$3, I
-	jle	.L75
+	jle	L(75)
 	ALIGN_4
 
-.L71:
+L(71):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -357,15 +357,15 @@
 	maxps	%xmm7,  %xmm0
 
 	decq	I
-	jg	.L71
+	jg	L(71)
 	ALIGN_4
 
-.L75:
+L(75):
 	andq	$7,  M
-	jle	.L80
+	jle	L(80)
 
 	testq	$4, M
-	je	.L76
+	je	L(76)
 
 	movsd	0 * SIZE(X), %xmm4
 	addq	INCX, X
@@ -386,9 +386,9 @@
 	maxps	%xmm4,  %xmm0
 	ALIGN_3
 
-.L76:
+L(76):
 	testq	$2, M
-	je	.L77
+	je	L(77)
 
 	movss	0 * SIZE(X), %xmm4
 	movss	1 * SIZE(X), %xmm5
@@ -406,9 +406,9 @@
 	maxss	%xmm6,  %xmm1
 	ALIGN_3
 
-.L77:
+L(77):
 	testq	$1, M
-	je	.L80
+	je	L(80)
 
 	movss	0 * SIZE(X), %xmm4
 	movss	1 * SIZE(X), %xmm5
@@ -418,7 +418,7 @@
 	maxss	%xmm4,  %xmm0
 	ALIGN_4
 
-.L80:
+L(80):
 	movq	XX, X
 	movq	MM, M
 
@@ -433,10 +433,10 @@
 
 	movq	M,  I
 	sarq	$2, I
-	jle	.L85
+	jle	L(85)
 	ALIGN_4
 
-.L81:
+L(81):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -466,15 +466,15 @@
 	.long	0xd9500f4c
 #endif
 	testq	 $15, %r11
-	jne	 .L83
+	jne	 L(83)
 
 	addq	$4, RET
 	decq	I
-	jg	.L81
-	jmp	.L85
+	jg	L(81)
+	jmp	L(85)
 	ALIGN_4
 
-.L83:
+L(83):
 	subq	INCX, X
 	movss	0 * SIZE(X), %xmm7
 	movss	1 * SIZE(X), %xmm8
@@ -504,21 +504,21 @@
 
 	incq	RET
 	comiss	%xmm0, %xmm1
-	je	.L999
+	je	L(999)
 	incq	RET
 	comiss	%xmm0, %xmm3
-	je	.L999
+	je	L(999)
 	incq	RET
 	comiss	%xmm0, %xmm5
-	je	.L999
+	je	L(999)
 	incq	RET
 	comiss	%xmm0, %xmm7
-	je	.L999
+	je	L(999)
 	ALIGN_3
 
-.L85:
+L(85):
 	testq	$2, M
-	je	.L87
+	je	L(87)
 
 	movss	0 * SIZE(X), %xmm1
 	movss	1 * SIZE(X), %xmm2
@@ -536,17 +536,17 @@
 
 	incq	RET
 	comiss	%xmm0, %xmm1
-	je	.L999
+	je	L(999)
 	incq	RET
 	comiss	%xmm0, %xmm3
-	je	.L999
+	je	L(999)
 	ALIGN_3
 
-.L87:
+L(87):
 	incq	RET
 	ALIGN_4
 
-.L999:
+L(999):
 	RESTOREREGISTERS
 
 	ret

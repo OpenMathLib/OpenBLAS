@@ -123,15 +123,15 @@
 	salq	$ZBASE_SHIFT, LDC
 
 	cmpq	$0, M
-	jle	.L999
+	jle	L(999)
 
 	movq	N,   %rax
 	movq	%rax, J
 	testq	%rax, %rax
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L01:
+L(01):
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movq	OFFSET, %rax
 	movq	%rax, KK
@@ -145,7 +145,7 @@
 	movq	M,  I
 	ALIGN_4
 
-.L11:
+L(11):
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
 	(defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -184,10 +184,10 @@
 	movq	%rax, KKK
 #endif
 	sarq	$2, %rax
- 	je	.L15
+ 	je	L(15)
 	ALIGN_4
 
-.L12:
+L(12):
 	PREFETCH	(PREFETCHSIZE + 0) * SIZE(AO)
 
 	FLD	 -8 * SIZE(AO)
@@ -268,20 +268,20 @@
 	addq	$8 * SIZE,BO
 
 	decq	%rax
-	jne	.L12
+	jne	L(12)
 	ALIGN_4
 
-.L15:
+L(15):
 #ifndef TRMMKERNEL
 	movq	K, %rax
 #else
 	movq	KKK, %rax
 #endif
 	and	$3,  %rax
-	je	.L18
+	je	L(18)
 	ALIGN_4
 
-.L16:
+L(16):
 	FLD	 -8 * SIZE(AO)
 
 	FLD	 -8 * SIZE(BO)
@@ -304,10 +304,10 @@
 	addq	$2 * SIZE,BO
 
 	decq	%rax
-	jne	 .L16
+	jne	 L(16)
 	ALIGN_4
 
-.L18:
+L(18):
 	faddp	%st, %st(3)
 	faddp	%st, %st(1)
 
@@ -352,7 +352,7 @@
 
 	addq	$2 * SIZE, CO
 	decq	I
-	jne	.L11
+	jne	L(11)
 
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	addq	$1, KK
@@ -360,10 +360,10 @@
 
 	movq	BO, B
 	decq	J
-	jne	.L01
+	jne	L(01)
 	ALIGN_4
 
-.L999:
+L(999):
 	EMMS
 
 	movq	  0(%rsp), %rbx

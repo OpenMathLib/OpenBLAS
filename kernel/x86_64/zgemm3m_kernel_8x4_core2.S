@@ -166,10 +166,10 @@
 
 	movq	N,  J
 	sarq	$2, J
-	jle	.L50
+	jle	L(50)
 	ALIGN_4
 
-.L01:
+L(01):
 #if defined(TRMMKERNEL) && defined(LEFT)
 	movq	OFFSET, %rax
 	movq	%rax, KK
@@ -180,10 +180,10 @@
 
 	movq	K, %rax
 	sarq	$2, %rax
-	jle	.L05
+	jle	L(05)
 	ALIGN_4
 
-.L02:
+L(02):
 	prefetcht0	(PREFETCH_R + 0) * SIZE(B)
 	movaps	 -32 * SIZE(B), %xmm3
 	movaps	 -28 * SIZE(B), %xmm7
@@ -233,17 +233,17 @@
 	subq	$-16 * SIZE, B
 	subq	$-64 * SIZE, BO
 	subq	$1, %rax
-	jne	.L02
+	jne	L(02)
 	ALIGN_4
 
-.L05:
+L(05):
 	movq	K, %rax
 	andq	$3, %rax
 	BRANCH
-	jle	.L10
+	jle	L(10)
 	ALIGN_4
 
-.L06:
+L(06):
 	movaps	 -32 * SIZE(B), %xmm3
 
 	pshufd	$0x00, %xmm3,  %xmm0
@@ -259,10 +259,10 @@
 	addq	$ 4 * SIZE, B
 	addq	$16 * SIZE, BO
 	subq	$1, %rax
-	jne	.L06
+	jne	L(06)
 	ALIGN_4
 
-.L10:
+L(10):
 	movq	B, BB
 
 	movq	C, CO1			# coffset1 = c
@@ -271,10 +271,10 @@
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L20
+	jle	L(20)
 	ALIGN_4
 
-.L11:
+L(11):
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
 	(defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -331,10 +331,10 @@
 	movq	%rax, KKK
 #endif
 	sarq	$2, %rax
-	jle	.L15
+	jle	L(15)
 	ALIGN_4
 
-.L12:
+L(12):
 	addps	%xmm2, %xmm10
 	movaps	-32 * SIZE(BO), %xmm2
 	addps	%xmm3, %xmm14
@@ -463,10 +463,10 @@
 	subq	$-64 * SIZE, BO
 	subq	$1, %rax
 	BRANCH
-	jg	.L12
+	jg	L(12)
 	ALIGN_4
 
-.L15:
+L(15):
 #ifndef TRMMKERNEL
 	movq	K, %rax
 #else
@@ -474,10 +474,10 @@
 #endif
 	andq	$3, %rax		# if (k & 1)
 	BRANCH
-	je .L18
+	je L(18)
 	ALIGN_4
 
-.L16:
+L(16):
 	addps	%xmm2, %xmm10
 	movaps	-32 * SIZE(BO), %xmm2
 	addps	%xmm3, %xmm14
@@ -512,10 +512,10 @@
 
 	subq	$1, %rax
 	BRANCH
-	jg	.L16
+	jg	L(16)
 	ALIGN_4
 
-.L18:
+L(18):
 	movaps	ALPHA, %xmm7
 
 	addps	%xmm2, %xmm10
@@ -658,12 +658,12 @@
 	addq	$16 * SIZE, CO1
 	addq	$16 * SIZE, CO2
 	subq	$1, I
-	jg	.L11
+	jg	L(11)
 	ALIGN_4
 
-.L20:
+L(20):
 	testq	$4, M
-	jle	.L30
+	jle	L(30)
 
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -699,10 +699,10 @@
 	movq	%rax, KKK
 #endif
 	sarq	$2, %rax
-	jle	.L25
+	jle	L(25)
 	ALIGN_4
 
-.L21:
+L(21):
 	PREFETCH (PREFETCHSIZE +  0) * SIZE(AO)
 
 	movaps	-32 * SIZE(AO), %xmm0
@@ -772,10 +772,10 @@
 	subq	$-16 * SIZE, AO
 	subq	$-64 * SIZE, BO
 	subq	$1, %rax
-	jg	.L21
+	jg	L(21)
 	ALIGN_4
 
-.L25:
+L(25):
 	movaps	ALPHA, %xmm7
 
 #ifndef TRMMKERNEL
@@ -784,10 +784,10 @@
 	movq	KKK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L28
+	je L(28)
 	ALIGN_4
 
-.L26:
+L(26):
 	movaps	-32 * SIZE(AO), %xmm0
 	movaps	-32 * SIZE(BO), %xmm2
 	movaps	-28 * SIZE(BO), %xmm3
@@ -807,10 +807,10 @@
 	addq	$ 4 * SIZE, AO
 	addq	$16 * SIZE, BO
 	subq	$1, %rax
-	jg	.L26
+	jg	L(26)
 	ALIGN_4
 
-.L28:
+L(28):
 	movsd	 0 * SIZE(CO1), %xmm0
 	movhps	 2 * SIZE(CO1), %xmm0
 	movsd	 4 * SIZE(CO1), %xmm1
@@ -887,9 +887,9 @@
 	addq	$8 * SIZE, CO2
 	ALIGN_4
 
-.L30:
+L(30):
 	testq	$2, M
-	jle	.L40
+	jle	L(40)
 
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -930,10 +930,10 @@
 	movq	%rax, KKK
 #endif
 	sarq	$2, %rax
-	jle	.L35
+	jle	L(35)
 	ALIGN_4
 
-.L31:
+L(31):
 	PREFETCH (PREFETCHSIZE +  0) * SIZE(AO)
 
 	movsd	-32 * SIZE(AO), %xmm0
@@ -1003,10 +1003,10 @@
 	subq	$ -8 * SIZE, AO
 	subq	$-64 * SIZE, BO
 	subq	$1, %rax
-	jg	.L31
+	jg	L(31)
 	ALIGN_4
 
-.L35:
+L(35):
 	movaps	ALPHA, %xmm7
 
 #ifndef TRMMKERNEL
@@ -1015,10 +1015,10 @@
 	movq	KKK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L38
+	je L(38)
 	ALIGN_4
 
-.L36:
+L(36):
 	movsd	-32 * SIZE(AO), %xmm0
 	movsd	-32 * SIZE(BO), %xmm2
 	movsd	-28 * SIZE(BO), %xmm3
@@ -1038,10 +1038,10 @@
 	addq	$ 2 * SIZE, AO
 	addq	$16 * SIZE, BO
 	subq	$1, %rax
-	jg	.L36
+	jg	L(36)
 	ALIGN_4
 
-.L38:
+L(38):
 	movsd	 0 * SIZE(CO1), %xmm0
 	movhps	 2 * SIZE(CO1), %xmm0
 
@@ -1086,9 +1086,9 @@
 	addq	$4 * SIZE, CO2
 	ALIGN_4
 
-.L40:
+L(40):
 	testq	$1, M
-	jle	.L49
+	jle	L(49)
 
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -1130,10 +1130,10 @@
 	movq	%rax, KKK
 #endif
 	sarq	$2, %rax
-	jle	.L45
+	jle	L(45)
 	ALIGN_4
 
-.L41:
+L(41):
 	PREFETCH (PREFETCHSIZE +  0) * SIZE(AO)
 
 	movss	-32 * SIZE(AO), %xmm0
@@ -1203,10 +1203,10 @@
 	subq	$ -4 * SIZE, AO
 	subq	$-64 * SIZE, BO
 	subq	$1, %rax
-	jg	.L41
+	jg	L(41)
 	ALIGN_4
 
-.L45:
+L(45):
 	movaps	ALPHA, %xmm7
 
 #ifndef TRMMKERNEL
@@ -1215,10 +1215,10 @@
 	movq	KKK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L48
+	je L(48)
 	ALIGN_4
 
-.L46:
+L(46):
 	movss	-32 * SIZE(AO), %xmm0
 	movss	-32 * SIZE(BO), %xmm2
 	movss	-28 * SIZE(BO), %xmm3
@@ -1238,10 +1238,10 @@
 	addq	$ 1 * SIZE, AO
 	addq	$16 * SIZE, BO
 	subq	$1, %rax
-	jg	.L46
+	jg	L(46)
 	ALIGN_4
 
-.L48:
+L(48):
 	movsd	 0 * SIZE(CO1), %xmm0
 
 	pshufd	$0x50, %xmm8,  %xmm4
@@ -1275,22 +1275,22 @@
 	movlps	%xmm4,   0 * SIZE(CO2, LDC, 2)
 	ALIGN_4
 
-.L49:
+L(49):
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	addl	$4, KK
 #endif
 
 	leaq	(C, LDC, 4), C
 	subq	$1, J
-	jg	.L01
+	jg	L(01)
 	ALIGN_4
 
-.L50:
+L(50):
 	testq	$2, N
-	jle	.L100
+	jle	L(100)
 	ALIGN_4
 
-.L51:
+L(51):
 /* Copying to Sub Buffer */
 	leaq	BUFFER, BO
 
@@ -1301,12 +1301,12 @@
 
 	movq	K, %rax
 	sarq	$3, %rax
-	jle	.L53
+	jle	L(53)
 
 	addq	%rax, %rax
 	ALIGN_4
 
-.L52:
+L(52):
 	movaps	 -32 * SIZE(B), %xmm3
 	movaps	 -28 * SIZE(B), %xmm7
 
@@ -1336,17 +1336,17 @@
 	addq	$32 * SIZE, BO
 
 	subq	$1, %rax
-	jne	.L52
+	jne	L(52)
 	ALIGN_4
 
-.L53:
+L(53):
 	movq	K, %rax
 	andq	$7, %rax
 	BRANCH
-	jle	.L55
+	jle	L(55)
 	ALIGN_4
 
-.L54:
+L(54):
 	movss	 -32 * SIZE(B), %xmm8
 	movss	 -31 * SIZE(B), %xmm9
 
@@ -1359,20 +1359,20 @@
 	addq	$2 * SIZE, B
 	addq	$8 * SIZE, BO
 	subq	$1, %rax
-	jne	.L54
+	jne	L(54)
 	ALIGN_4
 
-.L55:
+L(55):
 	movq	C, CO1
 	leaq	(C, LDC, 1), CO2
 	movq	A, AO		# aoffset = a
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L70
+	jle	L(70)
 	ALIGN_4
 
-.L60:
+L(60):
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
 	(defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -1410,10 +1410,10 @@
 	movq	%rax, KKK
 #endif
 	sarq	$2, %rax
-	jle	.L65
+	jle	L(65)
 	ALIGN_4
 
-.L61:
+L(61):
 	PREFETCH (PREFETCHSIZE +  0) * SIZE(AO)
 
 	movaps	-32 * SIZE(AO), %xmm0
@@ -1491,10 +1491,10 @@
 	subq	$-32 * SIZE, AO
 	subq	$-32 * SIZE, BO
 	subq	$1, %rax
-	jg	.L61
+	jg	L(61)
 	ALIGN_4
 
-.L65:
+L(65):
 	movaps	ALPHA, %xmm7
 
 #ifndef TRMMKERNEL
@@ -1503,10 +1503,10 @@
 	movq	KKK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L68
+	je L(68)
 	ALIGN_4
 
-.L66:
+L(66):
 	movaps	-32 * SIZE(AO), %xmm0
 	movaps	-28 * SIZE(AO), %xmm1
 
@@ -1528,10 +1528,10 @@
 	addq	$8 * SIZE, AO
 	addq	$8 * SIZE, BO
 	subq	$1, %rax
-	jg	.L66
+	jg	L(66)
 	ALIGN_4
 
-.L68:
+L(68):
 	movsd	 0 * SIZE(CO1), %xmm0
 	movhps	 2 * SIZE(CO1), %xmm0
 	movsd	 4 * SIZE(CO1), %xmm1
@@ -1601,12 +1601,12 @@
 	addq	$16 * SIZE, CO1
 	addq	$16 * SIZE, CO2
 	subq	$1, I
-	jg	.L60
+	jg	L(60)
 	ALIGN_4
 
-.L70:
+L(70):
 	testq	$4, M
-	jle	.L80
+	jle	L(80)
 
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -1642,10 +1642,10 @@
 	movq	%rax, KKK
 #endif
 	sarq	$2, %rax
-	jle	.L75
+	jle	L(75)
 	ALIGN_4
 
-.L71:
+L(71):
 	PREFETCH (PREFETCHSIZE +  0) * SIZE(AO)
 
 	movaps	-32 * SIZE(AO), %xmm0
@@ -1685,10 +1685,10 @@
 	subq	$-16 * SIZE, AO
 	subq	$-32 * SIZE, BO
 	subq	$1, %rax
-	jg	.L71
+	jg	L(71)
 	ALIGN_4
 
-.L75:
+L(75):
 	movaps	ALPHA, %xmm7
 
 #ifndef TRMMKERNEL
@@ -1697,10 +1697,10 @@
 	movq	KKK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L78
+	je L(78)
 	ALIGN_4
 
-.L76:
+L(76):
 	movaps	-32 * SIZE(AO), %xmm0
 	movaps	-32 * SIZE(BO), %xmm2
 	movaps	-28 * SIZE(BO), %xmm3
@@ -1714,10 +1714,10 @@
 	addq	$4 * SIZE, AO
 	addq	$8 * SIZE, BO
 	subq	$1, %rax
-	jg	.L76
+	jg	L(76)
 	ALIGN_4
 
-.L78:
+L(78):
 	addps	%xmm10, %xmm8
 	addps	%xmm11, %xmm9
 
@@ -1761,9 +1761,9 @@
 	addq	$8 * SIZE, CO2
 	ALIGN_4
 
-.L80:
+L(80):
 	testq	$2, M
-	jle	.L90
+	jle	L(90)
 
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -1799,10 +1799,10 @@
 	movq	%rax, KKK
 #endif
 	sarq	$2, %rax
-	jle	.L85
+	jle	L(85)
 	ALIGN_4
 
-.L81:
+L(81):
 	PREFETCH (PREFETCHSIZE +  0) * SIZE(AO)
 
 	movsd	-32 * SIZE(AO), %xmm0
@@ -1842,10 +1842,10 @@
 	subq	$ -8 * SIZE, AO
 	subq	$-32 * SIZE, BO
 	subq	$1, %rax
-	jg	.L81
+	jg	L(81)
 	ALIGN_4
 
-.L85:
+L(85):
 	movaps	ALPHA, %xmm7
 
 #ifndef TRMMKERNEL
@@ -1854,10 +1854,10 @@
 	movq	KKK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L88
+	je L(88)
 	ALIGN_4
 
-.L86:
+L(86):
 	movsd	-32 * SIZE(AO), %xmm0
 	movsd	-32 * SIZE(BO), %xmm2
 	movsd	-28 * SIZE(BO), %xmm3
@@ -1871,10 +1871,10 @@
 	addq	$2 * SIZE, AO
 	addq	$8 * SIZE, BO
 	subq	$1, %rax
-	jg	.L86
+	jg	L(86)
 	ALIGN_4
 
-.L88:
+L(88):
 	addps	%xmm10, %xmm8
 	addps	%xmm11, %xmm9
 
@@ -1904,9 +1904,9 @@
 	addq	$4 * SIZE, CO2
 	ALIGN_4
 
-.L90:
+L(90):
 	testq	$1, M
-	jle	.L99
+	jle	L(99)
 
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -1942,10 +1942,10 @@
 	movq	%rax, KKK
 #endif
 	sarq	$2, %rax
-	jle	.L95
+	jle	L(95)
 	ALIGN_4
 
-.L91:
+L(91):
 
 	PREFETCH (PREFETCHSIZE +  0) * SIZE(AO)
 
@@ -1986,10 +1986,10 @@
 	subq	$ -4 * SIZE, AO
 	subq	$-32 * SIZE, BO
 	subq	$1, %rax
-	jg	.L91
+	jg	L(91)
 	ALIGN_4
 
-.L95:
+L(95):
 	movaps	ALPHA, %xmm7
 
 #ifndef TRMMKERNEL
@@ -1998,10 +1998,10 @@
 	movq	KKK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L98
+	je L(98)
 	ALIGN_4
 
-.L96:
+L(96):
 	movss	-32 * SIZE(AO), %xmm0
 	movss	-32 * SIZE(BO), %xmm2
 	movss	-28 * SIZE(BO), %xmm3
@@ -2015,10 +2015,10 @@
 	addq	$1 * SIZE, AO
 	addq	$8 * SIZE, BO
 	subq	$1, %rax
-	jg	.L96
+	jg	L(96)
 	ALIGN_4
 
-.L98:
+L(98):
 	addss	%xmm10, %xmm8
 	addss	%xmm11, %xmm9
 
@@ -2041,7 +2041,7 @@
 	movlps	%xmm4,   0 * SIZE(CO2)
 	ALIGN_4
 
-.L99:
+L(99):
 #if defined(TRMMKERNEL) && !defined(LEFT)
 	addl	$2, KK
 #endif
@@ -2051,12 +2051,12 @@
 
 
 
-.L100:
+L(100):
 	testq	$1, N
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L101:
+L(101):
 /* Copying to Sub Buffer */
 	leaq	BUFFER, BO
 
@@ -2067,12 +2067,12 @@
 
 	movq	K, %rax
 	sarq	$4, %rax
-	jle	.L103
+	jle	L(103)
 
 	addq	%rax, %rax
 	ALIGN_4
 
-.L102:
+L(102):
 	movss	 -32 * SIZE(B), %xmm0
 	movss	 -31 * SIZE(B), %xmm1
 	movss	 -30 * SIZE(B), %xmm2
@@ -2103,17 +2103,17 @@
 	addq	$  8 * SIZE, B
 	subq	$-32 * SIZE, BO
 	subq	$1, %rax
-	jne	.L102
+	jne	L(102)
 	ALIGN_4
 
-.L103:
+L(103):
 	movq	K, %rax
 	andq	$15, %rax
 	BRANCH
-	jle	.L105
+	jle	L(105)
 	ALIGN_4
 
-.L104:
+L(104):
 	movss	 -32 * SIZE(B), %xmm8
 
 	shufps	$0, %xmm8,  %xmm8
@@ -2123,19 +2123,19 @@
 	addq	$1 * SIZE, B
 	addq	$4 * SIZE, BO
 	subq	$1, %rax
-	jne	.L104
+	jne	L(104)
 	ALIGN_4
 
-.L105:
+L(105):
 	movq	C, CO1
 	movq	A, AO
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L120
+	jle	L(120)
 	ALIGN_4
 
-.L110:
+L(110):
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
 	(defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -2172,10 +2172,10 @@
 	movq	%rax, KKK
 #endif
 	sarq	$2, %rax
-	jle	.L115
+	jle	L(115)
 	ALIGN_4
 
-.L111:
+L(111):
 	PREFETCH (PREFETCHSIZE +  0) * SIZE(AO)
 
 	movaps	-32 * SIZE(AO), %xmm0
@@ -2221,10 +2221,10 @@
 	subq	$-32 * SIZE, AO
 	subq	$-16 * SIZE, BO
 	subq	$1, %rax
-	jg	.L111
+	jg	L(111)
 	ALIGN_4
 
-.L115:
+L(115):
 	movaps	ALPHA, %xmm7
 
 #ifndef TRMMKERNEL
@@ -2233,10 +2233,10 @@
 	movq	KKK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L118
+	je L(118)
 	ALIGN_4
 
-.L116:
+L(116):
 	movaps	-32 * SIZE(AO), %xmm0
 	movaps	-28 * SIZE(AO), %xmm1
 
@@ -2251,10 +2251,10 @@
 	addq	$8 * SIZE, AO
 	addq	$4 * SIZE, BO
 	subq	$1, %rax
-	jg	.L116
+	jg	L(116)
 	ALIGN_4
 
-.L118:
+L(118):
 	addps	%xmm9,  %xmm8
 	addps	%xmm13, %xmm12
 
@@ -2293,12 +2293,12 @@
 
 	addq	$16 * SIZE, CO1
 	subq	$1, I
-	jg	.L110
+	jg	L(110)
 	ALIGN_4
 
-.L120:
+L(120):
 	testq	$4, M
-	jle	.L130
+	jle	L(130)
 
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -2334,10 +2334,10 @@
 	movq	%rax, KKK
 #endif
 	sarq	$2, %rax
-	jle	.L125
+	jle	L(125)
 	ALIGN_4
 
-.L121:
+L(121):
 	PREFETCH (PREFETCHSIZE +  0) * SIZE(AO)
 
 	movaps	-32 * SIZE(AO), %xmm0
@@ -2365,10 +2365,10 @@
 	subq	$-16 * SIZE, AO
 	subq	$-16 * SIZE, BO
 	subq	$1, %rax
-	jg	.L121
+	jg	L(121)
 	ALIGN_4
 
-.L125:
+L(125):
 	movaps	ALPHA, %xmm7
 
 #ifndef TRMMKERNEL
@@ -2377,10 +2377,10 @@
 	movq	KKK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L128
+	je L(128)
 	ALIGN_4
 
-.L126:
+L(126):
 	movaps	-32 * SIZE(AO), %xmm0
 	movaps	-32 * SIZE(BO), %xmm2
 
@@ -2390,10 +2390,10 @@
 	addq	$4 * SIZE, AO
 	addq	$4 * SIZE, BO
 	subq	$1, %rax
-	jg	.L126
+	jg	L(126)
 	ALIGN_4
 
-.L128:
+L(128):
 	addps	%xmm10, %xmm8
 	addps	%xmm11, %xmm9
 
@@ -2420,9 +2420,9 @@
 	addq	$8 * SIZE, CO1
 	ALIGN_4
 
-.L130:
+L(130):
 	testq	$2, M
-	jle	.L140
+	jle	L(140)
 
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -2458,10 +2458,10 @@
 	movq	%rax, KKK
 #endif
 	sarq	$2, %rax
-	jle	.L135
+	jle	L(135)
 	ALIGN_4
 
-.L131:
+L(131):
 	PREFETCH (PREFETCHSIZE +  0) * SIZE(AO)
 
 	movsd	-32 * SIZE(AO), %xmm0
@@ -2487,10 +2487,10 @@
 	subq	$ -8 * SIZE, AO
 	subq	$-16 * SIZE, BO
 	subq	$1, %rax
-	jg	.L131
+	jg	L(131)
 	ALIGN_4
 
-.L135:
+L(135):
 	movaps	ALPHA, %xmm7
 
 #ifndef TRMMKERNEL
@@ -2499,10 +2499,10 @@
 	movq	KKK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L138
+	je L(138)
 	ALIGN_4
 
-.L136:
+L(136):
 	movsd	-32 * SIZE(AO), %xmm0
 	movsd	-32 * SIZE(BO), %xmm2
 
@@ -2512,10 +2512,10 @@
 	addq	$2 * SIZE, AO
 	addq	$4 * SIZE, BO
 	subq	$1, %rax
-	jg	.L136
+	jg	L(136)
 	ALIGN_4
 
-.L138:
+L(138):
 	addps	%xmm10, %xmm8
 	addps	%xmm11, %xmm9
 	addps	%xmm9,  %xmm8
@@ -2534,9 +2534,9 @@
 	addq	$4 * SIZE, CO1
 	ALIGN_4
 
-.L140:
+L(140):
 	testq	$1, M
-	jle	.L999
+	jle	L(999)
 
 #if !defined(TRMMKERNEL) || \
 	(defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -2572,10 +2572,10 @@
 	movq	%rax, KKK
 #endif
 	sarq	$2, %rax
-	jle	.L145
+	jle	L(145)
 	ALIGN_4
 
-.L141:
+L(141):
 	PREFETCH (PREFETCHSIZE +  0) * SIZE(AO)
 
 	movss	-32 * SIZE(AO), %xmm0
@@ -2601,10 +2601,10 @@
 	subq	$ -4 * SIZE, AO
 	subq	$-16 * SIZE, BO
 	subq	$1, %rax
-	jg	.L141
+	jg	L(141)
 	ALIGN_4
 
-.L145:
+L(145):
 	movaps	ALPHA, %xmm7
 
 #ifndef TRMMKERNEL
@@ -2613,10 +2613,10 @@
 	movq	KKK, %rax
 #endif
 	andq	$3, %rax		# if (k & 1)
-	je .L148
+	je L(148)
 	ALIGN_4
 
-.L146:
+L(146):
 	movss	-32 * SIZE(AO), %xmm0
 	movss	-32 * SIZE(BO), %xmm2
 
@@ -2626,10 +2626,10 @@
 	addq	$1 * SIZE, AO
 	addq	$4 * SIZE, BO
 	subq	$1, %rax
-	jg	.L146
+	jg	L(146)
 	ALIGN_4
 
-.L148:
+L(148):
 	addss	%xmm10, %xmm8
 	addss	%xmm11, %xmm9
 	addss	%xmm9, %xmm8
@@ -2644,7 +2644,7 @@
 	movlps	%xmm4,   0 * SIZE(CO1)
 	ALIGN_4
 
-.L999:
+L(999):
 	movq	%r15, %rsp
 
 	movq	  0(%rsp), %rbx
