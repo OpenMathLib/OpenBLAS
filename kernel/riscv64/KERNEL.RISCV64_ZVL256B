@@ -1,5 +1,5 @@
 SAMAXKERNEL  = amax_vector.c
-DAMAXKERNEL  = amax_vector.c
+DAMAXKERNEL  = amax_zvl256b.c
 CAMAXKERNEL  = zamax_vector.c
 ZAMAXKERNEL  = zamax_vector.c
 
