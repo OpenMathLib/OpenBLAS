@@ -188,8 +188,8 @@ typedef struct Namelist Namelist;
 /* Table of constant values */
 
 static integer c__1 = 1;
-static real c_b187 = 0.f;
-static real c_b188 = 1.f;
+static real c_b185 = 0.f;
+static real c_b186 = 1.f;
 static integer c__0 = 0;
 
 /* > \brief \b ILAENV */
@@ -410,7 +410,9 @@ L10:
 /*     Convert NAME to upper case if the first character is lower case. */
 
     ret_val = 1;
-    s_copy(subnam, name__, (ftnlen)16, name_len);
+//    s_copy(subnam, name__, (ftnlen)16, name_len);
+    strncpy(subnam,name__,16);
+    subnam[16]='\0';
     ic = *(unsigned char *)subnam;
     iz = 'Z';
     if (iz == 90 || iz == 122) {
@@ -1014,7 +1016,7 @@ L140:
 /*     ILAENV = 0 */
     ret_val = 1;
     if (ret_val == 1) {
-	ret_val = ieeeck_(&c__1, &c_b187, &c_b188);
+	ret_val = ieeeck_(&c__1, &c_b185, &c_b186);
     }
     return ret_val;
 
@@ -1025,7 +1027,7 @@ L150:
 /*     ILAENV = 0 */
     ret_val = 1;
     if (ret_val == 1) {
-	ret_val = ieeeck_(&c__0, &c_b187, &c_b188);
+	ret_val = ieeeck_(&c__0, &c_b185, &c_b186);
     }
     return ret_val;
 

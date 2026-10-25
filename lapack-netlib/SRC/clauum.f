@@ -1,11 +1,10 @@
-*> \brief \b CLAUUM computes the product UUH or LHL, where U and L are upper or lower triangular matrices (blocked algorithm).
+*> \brief \b CLAUUM computes the product UUH or LHL, where U and L are upper or lower triangular matrices (driver algorithm).
 *
 *  =========== DOCUMENTATION ===========
 *
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CLAUUM + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clauum.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clauum.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -39,11 +37,13 @@
 *> the array A.
 *>
 *> If UPLO = 'U' or 'u' then the upper triangle of the result is stored,
-*> overwriting the factor U in A.
+*> overwriting the factor U in A, and the strictly lower triangular part
+*> of A is not referenced.
 *> If UPLO = 'L' or 'l' then the lower triangle of the result is stored,
-*> overwriting the factor L in A.
+*> overwriting the factor L in A, and the strictly upper triangular part
+*> of A is not referenced.
 *>
-*> This is the blocked form of the algorithm, calling Level 3 BLAS.
+*> This is the driver that dispatches to either blocked or recursive
 *> \endverbatim
 *
 *  Arguments:
@@ -69,9 +69,13 @@
 *>          A is COMPLEX array, dimension (LDA,N)
 *>          On entry, the triangular factor U or L.
 *>          On exit, if UPLO = 'U', the upper triangle of A is
-*>          overwritten with the upper triangle of the product U * U**H;
-*>          if UPLO = 'L', the lower triangle of A is overwritten with
-*>          the lower triangle of the product L**H * L.
+*>          overwritten with the upper triangle of the product U * U**H,
+*>          and the strictly lower triangular part of A is not referenced.
+*>          If UPLO = 'L', the lower triangle of A is overwritten with
+*>          the lower triangle of the product L**H * L, and the strictly upper
+*>          triangular part of A is not referenced. Regardless,
+*>          the diagonal elements are explicitly set to be real by casting
+*.          to REAL before exit.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -95,10 +99,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERauxiliary
+*> \ingroup lauum
 *
 *  =====================================================================
       SUBROUTINE CLAUUM( UPLO, N, A, LDA, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -114,26 +119,20 @@
 *
 *  =====================================================================
 *
-*     .. Parameters ..
-      REAL               ONE
-      PARAMETER          ( ONE = 1.0E+0 )
-      COMPLEX            CONE
-      PARAMETER          ( CONE = ( 1.0E+0, 0.0E+0 ) )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            UPPER
-      INTEGER            I, IB, NB
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      INTEGER            ILAENV
-      EXTERNAL           LSAME, ILAENV
+      EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CGEMM, CHERK, CLAUU2, CTRMM, XERBLA
+      EXTERNAL           XERBLA, CLAUUM_RECURSIVE,
+     $                   CLAUUM_BLOCKED
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN
+      INTRINSIC          MAX
 *     ..
 *     .. Executable Statements ..
 *
@@ -158,61 +157,13 @@
       IF( N.EQ.0 )
      $   RETURN
 *
-*     Determine the block size for this environment.
+*     Here we dispatch to whatever is more efficient in a particular environment
+*     We are defaulting to recursive, but if you want to use the blocked variant
+*     Comment out the line starting with `CALL CLAUUM_RECURSIVE...`
+*     and uncomment the line starting with `CALL CLAUUM_BLOCKED...`
 *
-      NB = ILAENV( 1, 'CLAUUM', UPLO, N, -1, -1, -1 )
-*
-      IF( NB.LE.1 .OR. NB.GE.N ) THEN
-*
-*        Use unblocked code
-*
-         CALL CLAUU2( UPLO, N, A, LDA, INFO )
-      ELSE
-*
-*        Use blocked code
-*
-         IF( UPPER ) THEN
-*
-*           Compute the product U * U**H.
-*
-            DO 10 I = 1, N, NB
-               IB = MIN( NB, N-I+1 )
-               CALL CTRMM( 'Right', 'Upper', 'Conjugate transpose',
-     $                     'Non-unit', I-1, IB, CONE, A( I, I ), LDA,
-     $                     A( 1, I ), LDA )
-               CALL CLAUU2( 'Upper', IB, A( I, I ), LDA, INFO )
-               IF( I+IB.LE.N ) THEN
-                  CALL CGEMM( 'No transpose', 'Conjugate transpose',
-     $                        I-1, IB, N-I-IB+1, CONE, A( 1, I+IB ),
-     $                        LDA, A( I, I+IB ), LDA, CONE, A( 1, I ),
-     $                        LDA )
-                  CALL CHERK( 'Upper', 'No transpose', IB, N-I-IB+1,
-     $                        ONE, A( I, I+IB ), LDA, ONE, A( I, I ),
-     $                        LDA )
-               END IF
-   10       CONTINUE
-         ELSE
-*
-*           Compute the product L**H * L.
-*
-            DO 20 I = 1, N, NB
-               IB = MIN( NB, N-I+1 )
-               CALL CTRMM( 'Left', 'Lower', 'Conjugate transpose',
-     $                     'Non-unit', IB, I-1, CONE, A( I, I ), LDA,
-     $                     A( I, 1 ), LDA )
-               CALL CLAUU2( 'Lower', IB, A( I, I ), LDA, INFO )
-               IF( I+IB.LE.N ) THEN
-                  CALL CGEMM( 'Conjugate transpose', 'No transpose', IB,
-     $                        I-1, N-I-IB+1, CONE, A( I+IB, I ), LDA,
-     $                        A( I+IB, 1 ), LDA, CONE, A( I, 1 ), LDA )
-                  CALL CHERK( 'Lower', 'Conjugate transpose', IB,
-     $                        N-I-IB+1, ONE, A( I+IB, I ), LDA, ONE,
-     $                        A( I, I ), LDA )
-               END IF
-   20       CONTINUE
-         END IF
-      END IF
-*
+      CALL CLAUUM_RECURSIVE(UPLO, N, A, LDA, INFO)
+*      CALL CLAUUM_BLOCKED(UPLO, N, A, LDA, INFO)
       RETURN
 *
 *     End of CLAUUM
