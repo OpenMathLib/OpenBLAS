@@ -450,7 +450,7 @@ f"> */
     extern doublereal dlapy2_(doublereal *, doublereal *);
     doublereal absakk;
     extern logical disnan_(doublereal *);
-    extern /* Subroutine */ void xerbla_(char *, integer *), zdscal_(
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen), zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     doublereal colmax;
     extern integer izamax_(integer *, doublecomplex *, integer *);
