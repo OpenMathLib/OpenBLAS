@@ -490,7 +490,7 @@ rk.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ void chetf2_rk__(char *uplo, integer *n, complex *a, integer *
+/* Subroutine */ void chetf2_rk_(char *uplo, integer *n, complex *a, integer *
 	lda, complex *e, integer *ipiv, integer *info)
 {
     /* System generated locals */

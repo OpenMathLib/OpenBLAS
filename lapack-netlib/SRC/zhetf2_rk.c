@@ -499,7 +499,7 @@ rk.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ void zhetf2_rk__(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zhetf2_rk_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *e, integer *ipiv, integer *info)
 {
     /* System generated locals */
