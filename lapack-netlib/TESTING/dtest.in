@@ -15,7 +15,7 @@ T                      Put T to test the LAPACK routines
 T                      Put T to test the driver routines
 T                      Put T to test the error exits
 DGE   11               List types on next line if 0 < NTYPES < 11
-DGB    8               List types on next line if 0 < NTYPES <  8
+DGB    9               List types on next line if 0 < NTYPES <  9
 DGT   12               List types on next line if 0 < NTYPES < 12
 DPO    9               List types on next line if 0 < NTYPES <  9
 DPS    9               List types on next line if 0 < NTYPES <  9
