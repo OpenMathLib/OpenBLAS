@@ -39,8 +39,21 @@ typedef float real;
 typedef double doublereal;
 typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
-typedef blasint logical;
-
+#ifdef _MSC_VER
+static inline _Fcomplex Cf(complex *z) {_Fcomplex zz={z->r , z->i}; return zz;}
+static inline _Dcomplex Cd(doublecomplex *z) {_Dcomplex zz={z->r , z->i};return zz;}
+static inline _Fcomplex * _pCf(complex *z) {return (_Fcomplex*)z;}
+static inline _Dcomplex * _pCd(doublecomplex *z) {return (_Dcomplex*)z;}
+#else
+static inline _Complex float Cf(complex *z) {return z->r + z->i*_Complex_I;}
+static inline _Complex double Cd(doublecomplex *z) {return z->r + z->i*_Complex_I;}
+static inline _Complex float * _pCf(complex *z) {return (_Complex float*)z;}
+static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*)z;}
+#endif
+#define pCf(z) (*_pCf(z))
+#define pCd(z) (*_pCd(z))
+typedef int logical;
+typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
 
@@ -174,15 +187,33 @@ typedef struct Namelist Namelist;
 #define bit_set(a,b)	((a) |  ((uinteger)1 << (b)))
 
 #define abort_() { sig_die("Fortran abort routine called", 1); }
+#define c_abs(z) (cabsf(Cf(z)))
+#define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
+#ifdef _MSC_VER
+#define c_div(c, a, b) {Cf(c)._Val[0] = (Cf(a)._Val[0]/Cf(b)._Val[0]); Cf(c)._Val[1]=(Cf(a)._Val[1]/Cf(b)._Val[1]);}
+#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/Cd(b)._Val[1]);}
+#else
+#define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
+#define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
+#endif
+#define c_exp(R, Z) {pCf(R) = cexpf(Cf(Z));}
+#define c_log(R, Z) {pCf(R) = clogf(Cf(Z));}
+#define c_sin(R, Z) {pCf(R) = csinf(Cf(Z));}
+//#define c_sqrt(R, Z) {*(R) = csqrtf(Cf(Z));}
+#define c_sqrt(R, Z) {pCf(R) = csqrtf(Cf(Z));}
 #define d_abs(x) (fabs(*(x)))
 #define d_acos(x) (acos(*(x)))
 #define d_asin(x) (asin(*(x)))
 #define d_atan(x) (atan(*(x)))
 #define d_atn2(x, y) (atan2(*(x),*(y)))
+#define d_cnjg(R, Z) { pCd(R) = conj(Cd(Z)); }
+#define r_cnjg(R, Z) { pCf(R) = conjf(Cf(Z)); }
 #define d_cos(x) (cos(*(x)))
 #define d_cosh(x) (cosh(*(x)))
 #define d_dim(__a, __b) ( *(__a) > *(__b) ? *(__a) - *(__b) : 0.0 )
 #define d_exp(x) (exp(*(x)))
+#define d_imag(z) (cimag(Cd(z)))
+#define r_imag(z) (cimagf(Cf(z)))
 #define d_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define r_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define d_lg10(x) ( 0.43429448190325182765 * log(*(x)) )
@@ -204,18 +235,274 @@ typedef struct Namelist Namelist;
 #define i_len(s, n) (n)
 #define i_nint(x) ((integer)u_nint(*(x)))
 #define i_sign(a,b) ((integer)u_sign((integer)*(a),(integer)*(b)))
+#define pow_dd(ap, bp) ( pow(*(ap), *(bp)))
+#define pow_si(B,E) spow_ui(*(B),*(E))
+#define pow_ri(B,E) spow_ui(*(B),*(E))
+#define pow_di(B,E) dpow_ui(*(B),*(E))
+#define pow_zi(p, a, b) {pCd(p) = zpow_ui(Cd(a), *(b));}
+#define pow_ci(p, a, b) {pCf(p) = cpow_ui(Cf(a), *(b));}
+#define pow_zz(R,A,B) {pCd(R) = cpow(Cd(A),*(B));}
 #define s_cat(lpp, rpp, rnp, np, llp) { 	ftnlen i, nc, ll; char *f__rp, *lp; 	ll = (llp); lp = (lpp); 	for(i=0; i < (int)*(np); ++i) {         	nc = ll; 	        if((rnp)[i] < nc) nc = (rnp)[i]; 	        ll -= nc;         	f__rp = (rpp)[i]; 	        while(--nc >= 0) *lp++ = *(f__rp)++;         } 	while(--ll >= 0) *lp++ = ' '; }
 #define s_cmp(a,b,c,d) ((integer)strncmp((a),(b),f2cmin((c),(d))))
 #define s_copy(A,B,C,D) { int __i,__m; for (__i=0, __m=f2cmin((C),(D)); __i<__m && (B)[__i] != 0; ++__i) (A)[__i] = (B)[__i]; }
 #define sig_die(s, kill) { exit(1); }
 #define s_stop(s, n) {exit(0);}
+static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
+#define z_abs(z) (cabs(Cd(z)))
+#define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
+#define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
 #define myexit_() break;
-#define mycycle() continue;
-#define myceiling(w) {ceil(w)}
-#define myhuge(w) {HUGE_VAL}
+#define mycycle_() continue;
+#define myceiling_(w) {ceil(w)}
+#define myhuge_(w) {HUGE_VAL}
+#define myscale(w,i) {w*2**i}
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
-#define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
+#define mymaxloc_(w,s,e,n) dmaxloc_(w,*(s),*(e),n)
 
+/* procedure parameter types for -A and -C++ */
+
+#define F2C_proc_par_types 1
+#ifdef __cplusplus
+typedef logical (*L_fp)(...);
+#else
+typedef logical (*L_fp)();
+#endif
+
+static float spow_ui(float x, integer n) {
+	float pow=1.0; unsigned long int u;
+	if(n != 0) {
+		if(n < 0) n = -n, x = 1/x;
+		for(u = n; ; ) {
+			if(u & 01) pow *= x;
+			if(u >>= 1) x *= x;
+			else break;
+		}
+	}
+	return pow;
+}
+static double dpow_ui(double x, integer n) {
+	double pow=1.0; unsigned long int u;
+	if(n != 0) {
+		if(n < 0) n = -n, x = 1/x;
+		for(u = n; ; ) {
+			if(u & 01) pow *= x;
+			if(u >>= 1) x *= x;
+			else break;
+		}
+	}
+	return pow;
+}
+#ifdef _MSC_VER
+static _Fcomplex cpow_ui(complex x, integer n) {
+	complex pow={1.0,0.0}; unsigned long int u;
+		if(n != 0) {
+		if(n < 0) n = -n, x.r = 1/x.r, x.i=1/x.i;
+		for(u = n; ; ) {
+			if(u & 01) pow.r *= x.r, pow.i *= x.i;
+			if(u >>= 1) x.r *= x.r, x.i *= x.i;
+			else break;
+		}
+	}
+	_Fcomplex p={pow.r, pow.i};
+	return p;
+}
+#else
+static _Complex float cpow_ui(_Complex float x, integer n) {
+	_Complex float pow=1.0; unsigned long int u;
+	if(n != 0) {
+		if(n < 0) n = -n, x = 1/x;
+		for(u = n; ; ) {
+			if(u & 01) pow *= x;
+			if(u >>= 1) x *= x;
+			else break;
+		}
+	}
+	return pow;
+}
+#endif
+#ifdef _MSC_VER
+static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
+	_Dcomplex pow={1.0,0.0}; unsigned long int u;
+	if(n != 0) {
+		if(n < 0) n = -n, x._Val[0] = 1/x._Val[0], x._Val[1] =1/x._Val[1];
+		for(u = n; ; ) {
+			if(u & 01) pow._Val[0] *= x._Val[0], pow._Val[1] *= x._Val[1];
+			if(u >>= 1) x._Val[0] *= x._Val[0], x._Val[1] *= x._Val[1];
+			else break;
+		}
+	}
+	_Dcomplex p = {pow._Val[0], pow._Val[1]};
+	return p;
+}
+#else
+static _Complex double zpow_ui(_Complex double x, integer n) {
+	_Complex double pow=1.0; unsigned long int u;
+	if(n != 0) {
+		if(n < 0) n = -n, x = 1/x;
+		for(u = n; ; ) {
+			if(u & 01) pow *= x;
+			if(u >>= 1) x *= x;
+			else break;
+		}
+	}
+	return pow;
+}
+#endif
+static integer pow_ii(integer x, integer n) {
+	integer pow; unsigned long int u;
+	if (n <= 0) {
+		if (n == 0 || x == 1) pow = 1;
+		else if (x != -1) pow = x == 0 ? 1/x : 0;
+		else n = -n;
+	}
+	if ((n > 0) || !(n == 0 || x == 1 || x != -1)) {
+		u = n;
+		for(pow = 1; ; ) {
+			if(u & 01) pow *= x;
+			if(u >>= 1) x *= x;
+			else break;
+		}
+	}
+	return pow;
+}
+static integer dmaxloc_(double *w, integer s, integer e, integer *n)
+{
+	double m; integer i, mi;
+	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
+		if (w[i-1]>m) mi=i ,m=w[i-1];
+	return mi-s+1;
+}
+static integer smaxloc_(float *w, integer s, integer e, integer *n)
+{
+	float m; integer i, mi;
+	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
+		if (w[i-1]>m) mi=i ,m=w[i-1];
+	return mi-s+1;
+}
+static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
+	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef _MSC_VER
+	_Fcomplex zdotc = {0.0, 0.0};
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += conjf(Cf(&x[i]))._Val[0] * Cf(&y[i])._Val[0];
+			zdotc._Val[1] += conjf(Cf(&x[i]))._Val[1] * Cf(&y[i])._Val[1];
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += conjf(Cf(&x[i*incx]))._Val[0] * Cf(&y[i*incy])._Val[0];
+			zdotc._Val[1] += conjf(Cf(&x[i*incx]))._Val[1] * Cf(&y[i*incy])._Val[1];
+		}
+	}
+	pCf(z) = zdotc;
+}
+#else
+	_Complex float zdotc = 0.0;
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc += conjf(Cf(&x[i])) * Cf(&y[i]);
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc += conjf(Cf(&x[i*incx])) * Cf(&y[i*incy]);
+		}
+	}
+	pCf(z) = zdotc;
+}
+#endif
+static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
+	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef _MSC_VER
+	_Dcomplex zdotc = {0.0, 0.0};
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += conj(Cd(&x[i]))._Val[0] * Cd(&y[i])._Val[0];
+			zdotc._Val[1] += conj(Cd(&x[i]))._Val[1] * Cd(&y[i])._Val[1];
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += conj(Cd(&x[i*incx]))._Val[0] * Cd(&y[i*incy])._Val[0];
+			zdotc._Val[1] += conj(Cd(&x[i*incx]))._Val[1] * Cd(&y[i*incy])._Val[1];
+		}
+	}
+	pCd(z) = zdotc;
+}
+#else
+	_Complex double zdotc = 0.0;
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc += conj(Cd(&x[i])) * Cd(&y[i]);
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc += conj(Cd(&x[i*incx])) * Cd(&y[i*incy]);
+		}
+	}
+	pCd(z) = zdotc;
+}
+#endif	
+static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
+	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef _MSC_VER
+	_Fcomplex zdotc = {0.0, 0.0};
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0];
+			zdotc._Val[1] += Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0];
+			zdotc._Val[1] += Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
+		}
+	}
+	pCf(z) = zdotc;
+}
+#else
+	_Complex float zdotc = 0.0;
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc += Cf(&x[i]) * Cf(&y[i]);
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc += Cf(&x[i*incx]) * Cf(&y[i*incy]);
+		}
+	}
+	pCf(z) = zdotc;
+}
+#endif
+static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
+	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef _MSC_VER
+	_Dcomplex zdotc = {0.0, 0.0};
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0];
+			zdotc._Val[1] += Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0];
+			zdotc._Val[1] += Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
+		}
+	}
+	pCd(z) = zdotc;
+}
+#else
+	_Complex double zdotc = 0.0;
+	if (incx == 1 && incy == 1) {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc += Cd(&x[i]) * Cd(&y[i]);
+		}
+	} else {
+		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+			zdotc += Cd(&x[i*incx]) * Cd(&y[i*incy]);
+		}
+	}
+	pCd(z) = zdotc;
+}
+#endif
 /*  -- translated by f2c (version 20000121).
    You must link the resulting object file with the libraries:
 	-lf2c -lm   (in that order)
@@ -223,13 +510,28 @@ typedef struct Namelist Namelist;
 
 
 
+/*  -- translated by f2c (version 20200916).
+   You must link the resulting object file with libf2c:
+	on Microsoft Windows system, link with libf2c.lib;
+	on Linux or Unix systems, link with .../path/to/libf2c.a -lm
+	or, if you install libf2c.a in a standard place, with -lf2c -lm
+	-- in that order, at the end of the command line, as in
+		cc *.o -lf2c -lm
+	Source for libf2c is in /netlib/f2c/libf2c.zip, e.g.,
+
+		http://www.netlib.org/f2c/libf2c.zip
+*/
+
+
 
 /* Table of constant values */
 
 static integer c__1 = 1;
 static integer c_n1 = -1;
-static real c_b31 = -1.f;
-static real c_b33 = 1.f;
+static real c_b24 = 0.f;
+static integer c__0 = 0;
+static real c_b28 = 1.f;
+static real c_b60 = -1.f;
 
 /* > \brief <b> SGGLSE solves overdetermined or underdetermined systems for OTHER matrices</b> */
 
@@ -238,7 +540,6 @@ static real c_b33 = 1.f;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download SGGLSE + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgglse.
 f"> */
@@ -249,7 +550,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgglse.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -284,6 +584,16 @@ f"> */
 /* > matrices (B, A) given by */
 /* > */
 /* >    B = (0 R)*Q,   A = Z*T*Q. */
+/* > */
+/* > Callers of this subroutine should note that the singularity/rank-deficiency checks */
+/* > implemented in this subroutine are rudimentary. The STRTRS subroutine called by this */
+/* > subroutine only signals a failure due to singularity if the problem is exactly singular. */
+/* > */
+/* > It is conceivable for one (or more) of the factors involved in the generalized RQ */
+/* > factorization of the pair (B, A) to be subnormally close to singularity without this */
+/* > subroutine signalling an error. The solutions computed for such almost-rank-deficient */
+/* > problems may be less accurate due to a loss of numerical precision. */
+/* > */
 /* > \endverbatim */
 
 /*  Arguments: */
@@ -385,12 +695,12 @@ f"> */
 /* >          = 0:  successful exit. */
 /* >          < 0:  if INFO = -i, the i-th argument had an illegal value. */
 /* >          = 1:  the upper triangular factor R associated with B in the */
-/* >                generalized RQ factorization of the pair (B, A) is */
+/* >                generalized RQ factorization of the pair (B, A) is exactly */
 /* >                singular, so that rank(B) < P; the least squares */
 /* >                solution could not be computed. */
 /* >          = 2:  the (N-P) by (N-P) part of the upper trapezoidal factor */
 /* >                T associated with A in the generalized RQ factorization */
-/* >                of the pair (B, A) is singular, so that */
+/* >                of the pair (B, A) is exactly singular, so that */
 /* >                rank( (A) ) < N; the least squares solution could not */
 /* >                    ( (B) ) */
 /* >                be computed. */
@@ -404,47 +714,59 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup realOTHERsolve */
+/* > \ingroup gglse */
 
 /*  ===================================================================== */
-/* Subroutine */ void sgglse_(integer *m, integer *n, integer *p, real *a, 
+/* Subroutine */ int sgglse_(integer *m, integer *n, integer *p, real *a, 
 	integer *lda, real *b, integer *ldb, real *c__, real *d__, real *x, 
 	real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
-    integer a_dim1, a_offset, b_dim1, b_offset, i__1, i__2;
+    integer a_dim1, a_offset, b_dim1, b_offset, i__1, i__2, i__3;
+    real r__1, r__2;
 
     /* Local variables */
-    integer lopt;
-    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
-	    real *, integer *, real *, integer *, real *, real *, integer *), scopy_(integer *, real *, integer *, real *, integer *), 
-	    saxpy_(integer *, real *, real *, integer *, real *, integer *), 
-	    strmv_(char *, char *, char *, integer *, real *, integer *, real 
-	    *, integer *);
-    integer nb, mn, nr;
-    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
+    integer ia, ib, ic, id, ka, kb, nb, mn, iu, kt, nr, nb1, nb2, nb3, nb4, 
+	    ibig;
+    real anrm, bnrm, cnrm, dnrm;
+    integer isml, lopt;
+    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+	    sgemv_(char *, integer *, integer *, real *, real *, integer *, 
+	    real *, integer *, real *, real *, integer *), scopy_(
+	    integer *, real *, integer *, real *, integer *);
+    extern integer myexp_(real *);
+    real rwork[1];
+    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+	    real *, integer *), strmv_(char *, char *, char *, integer *, 
+	    real *, integer *, real *, integer *);
+    extern real slamch_(char *), slange_(char *, integer *, integer *,
+	     real *, integer *, real *);
+    extern /* Subroutine */ int xerbla_(char *, integer *);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ void sggrqf_(integer *, integer *, integer *, real 
-	    *, integer *, real *, real *, integer *, real *, real *, integer *
-	    , integer *);
-    integer lwkmin, nb1, nb2, nb3, nb4, lwkopt;
+    real bignum;
+    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+	    real *, integer *, integer *, real *, integer *, integer *), sggrqf_(integer *, integer *, integer *, real *, integer 
+	    *, real *, real *, integer *, real *, real *, integer *, integer *
+	    );
+    extern real myhuge_();
+    integer lwkmin;
+    real smlnum;
+    integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *), sormrq_(char *, char *, 
 	    integer *, integer *, integer *, real *, integer *, real *, real *
-	    , integer *, real *, integer *, integer *); 
-    extern void strtrs_(char *, char *, char *, integer *, integer *, real *, 
+	    , integer *, real *, integer *, integer *), 
+	    strtrs_(char *, char *, char *, integer *, integer *, real *, 
 	    integer *, real *, integer *, integer *);
+    extern real sroundup_lwork__(integer *), myscale_(real *, integer *);
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -454,10 +776,10 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --c__;
     --d__;
@@ -501,7 +823,7 @@ f"> */
 	    lwkmin = *m + *n + *p;
 	    lwkopt = *p + mn + f2cmax(*m,*n) * nb;
 	}
-	work[1] = (real) lwkopt;
+	work[1] = sroundup_lwork__(&lwkopt);
 
 	if (*lwork < lwkmin && ! lquery) {
 	    *info = -12;
@@ -510,16 +832,106 @@ f"> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SGGLSE", &i__1, (ftnlen)6);
-	return;
+	xerbla_("SGGLSE", &i__1);
+	return 0;
     } else if (lquery) {
-	return;
+	return 0;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return;
+	return 0;
+    }
+
+/*     Get machine parameters */
+
+    smlnum = slamch_("S") / slamch_("P");
+    bignum = 1.f / smlnum;
+    isml = myexp_(&smlnum);
+    ibig = myexp_(&bignum) - 1;
+
+/*     Scale A, B, c and d by powers of two so that their largest */
+/*     entries lie in [SMLNUM,BIGNUM), the values whose MYEXP lies */
+/*     in [ISML,IBIG].  A and B are scaled independently, by 2**KA and */
+/*     2**KB.  c is scaled by 2**(KA+KT) and d by 2**(KB+KT), which */
+/*     keeps the constraint and the residual consistent and scales x by */
+/*     2**KT; KT brings the larger of the two right-hand sides into */
+/*     range.  Scaling by a power of two is exact.  A norm that is zero, */
+/*     infinite or NaN takes no part.  SLASCL is called with both */
+/*     endpoints at or above one so that forming the factor raises no */
+/*     underflow. */
+
+    anrm = slange_("M", m, n, &a[a_offset], lda, rwork);
+    ka = 0;
+    if (anrm > 0.f && anrm <= myhuge_(&c_b24)) {
+	ia = myexp_(&anrm);
+	if (ia < isml) {
+	    ka = isml - ia;
+	} else if (ia > ibig) {
+	    ka = ibig - ia;
+	}
+    }
+    if (ka != 0) {
+/* Computing MAX */
+	i__2 = -ka;
+	i__1 = f2cmax(i__2,0);
+	r__1 = myscale_(&c_b28, &i__1);
+	i__3 = f2cmax(ka,0);
+	r__2 = myscale_(&c_b28, &i__3);
+	slascl_("G", &c__0, &c__0, &r__1, &r__2, m, n, &a[a_offset], lda, 
+		info);
+    }
+
+    bnrm = slange_("M", p, n, &b[b_offset], ldb, rwork);
+    kb = 0;
+    if (bnrm > 0.f && bnrm <= myhuge_(&c_b24)) {
+	ib = myexp_(&bnrm);
+	if (ib < isml) {
+	    kb = isml - ib;
+	} else if (ib > ibig) {
+	    kb = ibig - ib;
+	}
+    }
+    if (kb != 0) {
+/* Computing MAX */
+	i__2 = -kb;
+	i__1 = f2cmax(i__2,0);
+	r__1 = myscale_(&c_b28, &i__1);
+	i__3 = f2cmax(kb,0);
+	r__2 = myscale_(&c_b28, &i__3);
+	slascl_("G", &c__0, &c__0, &r__1, &r__2, p, n, &b[b_offset], ldb, 
+		info);
+    }
+
+    i__1 = f2cmax(1,*m);
+    cnrm = slange_("M", m, &c__1, &c__[1], &i__1, rwork);
+    i__1 = f2cmax(1,*p);
+    dnrm = slange_("M", p, &c__1, &d__[1], &i__1, rwork);
+    ic = -myhuge_(&c__0);
+    if (cnrm > 0.f && cnrm <= myhuge_(&c_b24)) {
+	ic = myexp_(&cnrm) + ka;
+    }
+    id = -myhuge_(&c__0);
+    if (dnrm > 0.f && dnrm <= myhuge_(&c_b24)) {
+	id = myexp_(&dnrm) + kb;
+    }
+    iu = f2cmax(ic,id);
+    kt = 0;
+    if (iu > ibig) {
+	kt = ibig - iu;
+    } else if (iu < isml && (real) iu != -myhuge_(&c__0)) {
+	kt = isml - iu;
+    }
+    if (ka + kt != 0) {
+	i__1 = ka + kt;
+	r__1 = myscale_(&c_b28, &i__1);
+	sscal_(m, &r__1, &c__[1], &c__1);
+    }
+    if (kb + kt != 0) {
+	i__1 = kb + kt;
+	r__1 = myscale_(&c_b28, &i__1);
+	sscal_(p, &r__1, &d__[1], &c__1);
     }
 
 /*     Compute the GRQ factorization of matrices B and A: */
@@ -534,7 +946,7 @@ f"> */
     i__1 = *lwork - *p - mn;
     sggrqf_(p, m, n, &b[b_offset], ldb, &work[1], &a[a_offset], lda, &work[*p 
 	    + 1], &work[*p + mn + 1], &i__1, info);
-    lopt = work[*p + mn + 1];
+    lopt = (integer) work[*p + mn + 1];
 
 /*     Update c = Z**T *c = ( c1 ) N-P */
 /*                          ( c2 ) M+P-N */
@@ -555,7 +967,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 1;
-	    return;
+	    return 0;
 	}
 
 /*        Put the solution in X */
@@ -565,8 +977,8 @@ f"> */
 /*        Update c1 */
 
 	i__1 = *n - *p;
-	sgemv_("No transpose", &i__1, p, &c_b31, &a[(*n - *p + 1) * a_dim1 + 
-		1], lda, &d__[1], &c__1, &c_b33, &c__[1], &c__1);
+	sgemv_("No transpose", &i__1, p, &c_b60, &a[(*n - *p + 1) * a_dim1 + 
+		1], lda, &d__[1], &c__1, &c_b28, &c__[1], &c__1);
     }
 
 /*     Solve R11*x1 = c1 for x1 */
@@ -579,7 +991,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 2;
-	    return;
+	    return 0;
 	}
 
 /*        Put the solutions in X */
@@ -594,8 +1006,8 @@ f"> */
 	nr = *m + *p - *n;
 	if (nr > 0) {
 	    i__1 = *n - *m;
-	    sgemv_("No transpose", &nr, &i__1, &c_b31, &a[*n - *p + 1 + (*m + 
-		    1) * a_dim1], lda, &d__[nr + 1], &c__1, &c_b33, &c__[*n - 
+	    sgemv_("No transpose", &nr, &i__1, &c_b60, &a[*n - *p + 1 + (*m + 
+		    1) * a_dim1], lda, &d__[nr + 1], &c__1, &c_b28, &c__[*n - 
 		    *p + 1], &c__1);
 	}
     } else {
@@ -604,7 +1016,7 @@ f"> */
     if (nr > 0) {
 	strmv_("Upper", "No transpose", "Non unit", &nr, &a[*n - *p + 1 + (*n 
 		- *p + 1) * a_dim1], lda, &d__[1], &c__1);
-	saxpy_(&nr, &c_b31, &d__[1], &c__1, &c__[*n - *p + 1], &c__1);
+	saxpy_(&nr, &c_b60, &d__[1], &c__1, &c__[*n - *p + 1], &c__1);
     }
 
 /*     Backward transformation x = Q**T*x */
@@ -612,11 +1024,27 @@ f"> */
     i__1 = *lwork - *p - mn;
     sormrq_("Left", "Transpose", n, &c__1, p, &b[b_offset], ldb, &work[1], &x[
 	    1], n, &work[*p + mn + 1], &i__1, info);
+
+/*     Undo scaling: x carries 2**KT and the residual in c(N-P+1:M) */
+/*     carries 2**(KA+KT) */
+
+    if (kt != 0) {
+	i__1 = -kt;
+	r__1 = myscale_(&c_b28, &i__1);
+	sscal_(n, &r__1, &x[1], &c__1);
+    }
+    if (ka + kt != 0 && *m + *p > *n) {
+	i__1 = *m + *p - *n;
+	i__2 = -ka - kt;
+	r__1 = myscale_(&c_b28, &i__2);
+	sscal_(&i__1, &r__1, &c__[*n - *p + 1], &c__1);
+    }
+
 /* Computing MAX */
     i__1 = lopt, i__2 = (integer) work[*p + mn + 1];
     work[1] = (real) (*p + mn + f2cmax(i__1,i__2));
 
-    return;
+    return 0;
 
 /*     End of SGGLSE */
 

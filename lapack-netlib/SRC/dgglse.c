@@ -216,7 +216,10 @@ typedef struct Namelist Namelist;
 #define myexit_() break;
 #define mycycle() continue;
 #define myceiling(w) {ceil(w)}
-#define myhuge(w) {HUGE_VAL}
+static int my_expfunc(double *x) {int e; (void)frexp(*x,&e); return e;}
+static double myscale_(double *w, integer *i) {double myscale=*w*pow(2.,*(double*)i); return(myscale);}
+static double myhuge_(double *w) {return(HUGE_VAL);}
+
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
 #define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
 
@@ -226,14 +229,14 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
 static integer c_n1 = -1;
-static doublereal c_b31 = -1.;
-static doublereal c_b33 = 1.;
+static doublereal c_b24 = 0.;
+static integer c__0 = 0;
+static doublereal c_b28 = 1.;
+static doublereal c_b60 = -1.;
 
 /* > \brief <b> DGGLSE solves overdetermined or underdetermined systems for OTHER matrices</b> */
 
@@ -242,7 +245,6 @@ static doublereal c_b33 = 1.;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DGGLSE + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgglse.
 f"> */
@@ -253,7 +255,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgglse.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -288,6 +289,16 @@ f"> */
 /* > matrices (B, A) given by */
 /* > */
 /* >    B = (0 R)*Q,   A = Z*T*Q. */
+/* > */
+/* > Callers of this subroutine should note that the singularity/rank-deficiency checks */
+/* > implemented in this subroutine are rudimentary. The DTRTRS subroutine called by this */
+/* > subroutine only signals a failure due to singularity if the problem is exactly singular. */
+/* > */
+/* > It is conceivable for one (or more) of the factors involved in the generalized RQ */
+/* > factorization of the pair (B, A) to be subnormally close to singularity without this */
+/* > subroutine signalling an error. The solutions computed for such almost-rank-deficient */
+/* > problems may be less accurate due to a loss of numerical precision. */
+/* > */
 /* > \endverbatim */
 
 /*  Arguments: */
@@ -389,12 +400,12 @@ f"> */
 /* >          = 0:  successful exit. */
 /* >          < 0:  if INFO = -i, the i-th argument had an illegal value. */
 /* >          = 1:  the upper triangular factor R associated with B in the */
-/* >                generalized RQ factorization of the pair (B, A) is */
+/* >                generalized RQ factorization of the pair (B, A) is exactly */
 /* >                singular, so that rank(B) < P; the least squares */
 /* >                solution could not be computed. */
 /* >          = 2:  the (N-P) by (N-P) part of the upper trapezoidal factor */
 /* >                T associated with A in the generalized RQ factorization */
-/* >                of the pair (B, A) is singular, so that */
+/* >                of the pair (B, A) is exactly singular, so that */
 /* >                rank( (A) ) < N; the least squares solution could not */
 /* >                    ( (B) ) */
 /* >                be computed. */
@@ -408,9 +419,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup doubleOTHERsolve */
+/* > \ingroup gglse */
 
 /*  ===================================================================== */
 /* Subroutine */ void dgglse_(integer *m, integer *n, integer *p, doublereal *
@@ -419,31 +428,41 @@ f"> */
 	integer *info)
 {
     /* System generated locals */
-    integer a_dim1, a_offset, b_dim1, b_offset, i__1, i__2;
+    integer a_dim1, a_offset, b_dim1, b_offset, i__1, i__2, i__3;
+    real r__1, r__2;
 
     /* Local variables */
-    integer lopt;
-    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
-	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
-	    doublereal *, doublereal *, integer *), dcopy_(integer *, 
-	    doublereal *, integer *, doublereal *, integer *), daxpy_(integer 
-	    *, doublereal *, doublereal *, integer *, doublereal *, integer *)
-	    , dtrmv_(char *, char *, char *, integer *, doublereal *, integer 
-	    *, doublereal *, integer *);
-    integer nb, mn, nr;
-    extern /* Subroutine */ void dggrqf_(integer *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
-	    doublereal *, doublereal *, integer *, integer *);
-    extern void xerbla_(char *, integer *, ftnlen);
+    integer ia, ib, ic, id, ka, kb, nb, mn, iu, kt, nr, nb1, nb2, nb3, nb4, 
+	    ibig;
+    doublereal anrm, bnrm, cnrm, dnrm;
+    integer isml, lopt;
+    extern /* Subroutine */ void dscal_(integer *, real *, doublereal *, 
+	    integer *), dgemv_(char *, integer *, integer *, doublereal *, 
+	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
+	    doublereal *, integer *), dcopy_(integer *, doublereal *, 
+	    integer *, doublereal *, integer *), daxpy_(integer *, doublereal 
+	    *, doublereal *, integer *, doublereal *, integer *), dtrmv_(char 
+	    *, char *, char *, integer *, doublereal *, integer *, doublereal 
+	    *, integer *);
+    doublereal rwork[1];
+    extern doublereal dlamch_(char *), dlange_(char *, integer *, 
+	    integer *, doublereal *, integer *, doublereal *);
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, real *, 
+	    real *, integer *, integer *, doublereal *, integer *, integer *),
+	    dggrqf_(integer *, integer *, integer *, doublereal *, 
+	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
+	    doublereal *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    integer lwkmin, nb1, nb2, nb3, nb4;
+    doublereal bignum;
+    integer lwkmin;
     extern /* Subroutine */ void dormqr_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *), 
 	    dormrq_(char *, char *, integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *, integer *);
+    doublereal smlnum;
     integer lwkopt;
     logical lquery;
     extern /* Subroutine */ void dtrtrs_(char *, char *, char *, integer *, 
@@ -451,10 +470,9 @@ f"> */
 	    integer *);
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -464,10 +482,10 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --c__;
     --d__;
@@ -532,6 +550,96 @@ f"> */
 	return;
     }
 
+/*     Get machine parameters */
+
+    smlnum = dlamch_("S") / dlamch_("P");
+    bignum = 1. / smlnum;
+    isml = myexp_(&smlnum);
+    ibig = myexp_(&bignum) - 1;
+
+/*     Scale A, B, c and d by powers of two so that their largest */
+/*     entries lie in [SMLNUM,BIGNUM), the values whose MYEXP lies */
+/*     in [ISML,IBIG].  A and B are scaled independently, by 2**KA and */
+/*     2**KB.  c is scaled by 2**(KA+KT) and d by 2**(KB+KT), which */
+/*     keeps the constraint and the residual consistent and scales x by */
+/*     2**KT; KT brings the larger of the two right-hand sides into */
+/*     range.  Scaling by a power of two is exact.  A norm that is zero, */
+/*     infinite or NaN takes no part.  DLASCL is called with both */
+/*     endpoints at or above one so that forming the factor raises no */
+/*     underflow. */
+
+    anrm = dlange_("M", m, n, &a[a_offset], lda, rwork);
+    ka = 0;
+    if (anrm > 0. && anrm <= myhuge_(&c_b24)) {
+	ia = myexp_(&anrm);
+	if (ia < isml) {
+	    ka = isml - ia;
+	} else if (ia > ibig) {
+	    ka = ibig - ia;
+	}
+    }
+    if (ka != 0) {
+/* Computing MAX */
+	i__2 = -ka;
+	i__1 = f2cmax(i__2,0);
+	r__1 = myscale_(&c_b28, &i__1);
+	i__3 = f2cmax(ka,0);
+	r__2 = myscale_(&c_b28, &i__3);
+	dlascl_("G", &c__0, &c__0, &r__1, &r__2, m, n, &a[a_offset], lda, 
+		info);
+    }
+
+    bnrm = dlange_("M", p, n, &b[b_offset], ldb, rwork);
+    kb = 0;
+    if (bnrm > 0. && bnrm <= myhuge_(&c_b24)) {
+	ib = myexp_(&bnrm);
+	if (ib < isml) {
+	    kb = isml - ib;
+	} else if (ib > ibig) {
+	    kb = ibig - ib;
+	}
+    }
+    if (kb != 0) {
+/* Computing MAX */
+	i__2 = -kb;
+	i__1 = f2cmax(i__2,0);
+	r__1 = myscale_(&c_b28, &i__1);
+	i__3 = f2cmax(kb,0);
+	r__2 = myscale_(&c_b28, &i__3);
+	dlascl_("G", &c__0, &c__0, &r__1, &r__2, p, n, &b[b_offset], ldb, 
+		info);
+    }
+
+    i__1 = f2cmax(1,*m);
+    cnrm = dlange_("M", m, &c__1, &c__[1], &i__1, rwork);
+    i__1 = f2cmax(1,*p);
+    dnrm = dlange_("M", p, &c__1, &d__[1], &i__1, rwork);
+    ic = -myhuge_(&c__0);
+    if (cnrm > 0. && cnrm <= myhuge_(&c_b24)) {
+	ic = myexp_(&cnrm) + ka;
+    }
+    id = -myhuge_(&c__0);
+    if (dnrm > 0. && dnrm <= myhuge_(&c_b24)) {
+	id = myexp_(&dnrm) + kb;
+    }
+    iu = f2cmax(ic,id);
+    kt = 0;
+    if (iu > ibig) {
+	kt = ibig - iu;
+    } else if (iu < isml && (real) iu != -myhuge_(&c__0)) {
+	kt = isml - iu;
+    }
+    if (ka + kt != 0) {
+	i__1 = ka + kt;
+	r__1 = myscale_(&c_b28, &i__1);
+	dscal_(m, &r__1, &c__[1], &c__1);
+    }
+    if (kb + kt != 0) {
+	i__1 = kb + kt;
+	r__1 = myscale_(&c_b28, &i__1);
+	dscal_(p, &r__1, &d__[1], &c__1);
+    }
+
 /*     Compute the GRQ factorization of matrices B and A: */
 
 /*            B*Q**T = (  0  T12 ) P   Z**T*A*Q**T = ( R11 R12 ) N-P */
@@ -575,8 +683,8 @@ f"> */
 /*        Update c1 */
 
 	i__1 = *n - *p;
-	dgemv_("No transpose", &i__1, p, &c_b31, &a[(*n - *p + 1) * a_dim1 + 
-		1], lda, &d__[1], &c__1, &c_b33, &c__[1], &c__1);
+	dgemv_("No transpose", &i__1, p, &c_b60, &a[(*n - *p + 1) * a_dim1 + 
+		1], lda, &d__[1], &c__1, &c_b28, &c__[1], &c__1);
     }
 
 /*     Solve R11*x1 = c1 for x1 */
@@ -604,8 +712,8 @@ f"> */
 	nr = *m + *p - *n;
 	if (nr > 0) {
 	    i__1 = *n - *m;
-	    dgemv_("No transpose", &nr, &i__1, &c_b31, &a[*n - *p + 1 + (*m + 
-		    1) * a_dim1], lda, &d__[nr + 1], &c__1, &c_b33, &c__[*n - 
+	    dgemv_("No transpose", &nr, &i__1, &c_b60, &a[*n - *p + 1 + (*m + 
+		    1) * a_dim1], lda, &d__[nr + 1], &c__1, &c_b28, &c__[*n - 
 		    *p + 1], &c__1);
 	}
     } else {
@@ -614,7 +722,7 @@ f"> */
     if (nr > 0) {
 	dtrmv_("Upper", "No transpose", "Non unit", &nr, &a[*n - *p + 1 + (*n 
 		- *p + 1) * a_dim1], lda, &d__[1], &c__1);
-	daxpy_(&nr, &c_b31, &d__[1], &c__1, &c__[*n - *p + 1], &c__1);
+	daxpy_(&nr, &c_b60, &d__[1], &c__1, &c__[*n - *p + 1], &c__1);
     }
 
 /*     Backward transformation x = Q**T*x */
@@ -622,6 +730,22 @@ f"> */
     i__1 = *lwork - *p - mn;
     dormrq_("Left", "Transpose", n, &c__1, p, &b[b_offset], ldb, &work[1], &x[
 	    1], n, &work[*p + mn + 1], &i__1, info);
+
+/*     Undo scaling: x carries 2**KT and the residual in c(N-P+1:M) */
+/*     carries 2**(KA+KT) */
+
+    if (kt != 0) {
+	i__1 = -kt;
+	r__1 = myscale_(&c_b28, &i__1);
+	dscal_(n, &r__1, &x[1], &c__1);
+    }
+    if (ka + kt != 0 && *m + *p > *n) {
+	i__1 = *m + *p - *n;
+	i__2 = -ka - kt;
+	r__1 = myscale_(&c_b28, &i__2);
+	dscal_(&i__1, &r__1, &c__[*n - *p + 1], &c__1);
+    }
+
 /* Computing MAX */
     i__1 = lopt, i__2 = (integer) work[*p + mn + 1];
     work[1] = (doublereal) (*p + mn + f2cmax(i__1,i__2));

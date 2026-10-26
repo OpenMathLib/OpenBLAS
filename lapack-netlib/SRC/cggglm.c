@@ -216,7 +216,11 @@ typedef struct Namelist Namelist;
 #define myexit_() break;
 #define mycycle() continue;
 #define myceiling(w) {ceil(w)}
-#define myhuge(w) {HUGE_VAL}
+#define myexp_(w) my_expfunc(w)
+static int my_expfunc(float *x) {int e; (void)frexp(*x,&e); return e;}
+static float myscale_(float *w, integer *i) {float myscale=*w*pow(2.,*(double*)i); return(myscale);}
+static float myhuge_(float *w) {return(HUGE_VAL);}
+
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
 #define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
 
@@ -226,13 +230,14 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static complex c_b2 = {1.f,0.f};
 static integer c__1 = 1;
 static integer c_n1 = -1;
+static real c_b26 = 0.f;
+static integer c__0 = 0;
+static real c_b30 = 1.f;
 
 /* > \brief \b CGGGLM */
 
@@ -241,7 +246,6 @@ static integer c_n1 = -1;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download CGGGLM + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cggglm.
 f"> */
@@ -252,7 +256,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cggglm.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -296,6 +299,16 @@ f"> */
 /* >                  x */
 /* > */
 /* > where inv(B) denotes the inverse of B. */
+/* > */
+/* > Callers of this subroutine should note that the singularity/rank-deficiency checks */
+/* > implemented in this subroutine are rudimentary. The CTRTRS subroutine called by this */
+/* > subroutine only signals a failure due to singularity if the problem is exactly singular. */
+/* > */
+/* > It is conceivable for one (or more) of the factors involved in the generalized QR */
+/* > factorization of the pair (A, B) to be subnormally close to singularity without this */
+/* > subroutine signalling an error. The solutions computed for such almost-rank-deficient */
+/* > problems may be less accurate due to a loss of numerical precision. */
+/* > */
 /* > \endverbatim */
 
 /*  Arguments: */
@@ -394,12 +407,12 @@ f"> */
 /* >          = 0:  successful exit. */
 /* >          < 0:  if INFO = -i, the i-th argument had an illegal value. */
 /* >          = 1:  the upper triangular factor R associated with A in the */
-/* >                generalized QR factorization of the pair (A, B) is */
+/* >                generalized QR factorization of the pair (A, B) is exactly */
 /* >                singular, so that rank(A) < M; the least squares */
 /* >                solution could not be computed. */
 /* >          = 2:  the bottom (N-M) by (N-M) part of the upper trapezoidal */
 /* >                factor T associated with B in the generalized QR */
-/* >                factorization of the pair (A, B) is singular, so that */
+/* >                factorization of the pair (A, B) is exactly singular, so that */
 /* >                rank( A B ) < N; the least squares solution could not */
 /* >                be computed. */
 /* > \endverbatim */
@@ -412,9 +425,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup complexOTHEReigen */
+/* > \ingroup ggglm */
 
 /*  ===================================================================== */
 /* Subroutine */ void cggglm_(integer *n, integer *m, integer *p, complex *a, 
@@ -423,37 +434,49 @@ f"> */
 {
     /* System generated locals */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1, i__2, i__3, i__4;
-    complex q__1={0.,0.};
+    real r__1, r__2;
+    complex q__1;
 
     /* Local variables */
-    integer lopt, i__;
+    integer i__, ia, ib, ka, id, kb, kd, nb, np, nb1, nb2, nb3, nb4, ibig;
+    real anrm, bnrm, dnrm;
+    integer isml, lopt;
     extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *), ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
-    integer nb, np;
-    extern /* Subroutine */ void cggqrf_(integer *, integer *, integer *, 
-	    complex *, integer *, complex *, complex *, integer *, complex *, 
-	    complex *, integer *, integer *);
-    extern void xerbla_(char *, integer *, ftnlen);
+    real rwork[1];
+    extern real clange_(char *, integer *, integer *, complex *, integer *, 
+	    real *);
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
+	    real *, integer *, integer *, complex *, integer *, integer *);
+    extern real slamch_(char *);
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
+	    *), cggqrf_(integer *, integer *, integer *, complex *, integer *,
+	     complex *, complex *, integer *, complex *, complex *, integer *,
+	     integer *), xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    integer lwkmin, nb1, nb2, nb3, nb4;
+    real bignum;
+    //extern real myhuge_(real *);
+    integer lwkmin;
     extern /* Subroutine */ void cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *), cunmrq_(char *, 
 	    char *, integer *, integer *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *, complex *, integer *, integer *);
+    real smlnum;
     integer lwkopt;
     logical lquery;
     extern /* Subroutine */ void ctrtrs_(char *, char *, char *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, integer *);
+    extern real sroundup_lwork__(integer *);
+    //, myscale_(real *, integer *);
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  =================================================================== */
@@ -463,10 +486,10 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --d__;
     --x;
@@ -510,7 +533,8 @@ f"> */
 	    lwkmin = *m + *n + *p;
 	    lwkopt = *m + np + f2cmax(*n,*p) * nb;
 	}
-	work[1].r = (real) lwkopt, work[1].i = 0.f;
+	r__1 = sroundup_lwork__(&lwkopt);
+	work[1].r = r__1, work[1].i = 0.f;
 
 	if (*lwork < lwkmin && ! lquery) {
 	    *info = -12;
@@ -541,6 +565,78 @@ f"> */
 	return;
     }
 
+/*     Get machine parameters */
+
+    smlnum = slamch_("S") / slamch_("P");
+    bignum = 1.f / smlnum;
+    isml = myexp_(&smlnum);
+    ibig = myexp_(&bignum) - 1;
+
+/*     Scale A, B and d independently by powers of two 2**KA, 2**KB and */
+/*     2**KD so that their largest entries lie in [SMLNUM,BIGNUM), the */
+/*     values whose MYEXP lies in [ISML,IBIG].  x is then scaled by */
+/*     2**(KD-KA) and y by 2**(KD-KB).  Scaling by a power of two is */
+/*     exact.  A norm that is zero, infinite or NaN takes no part. */
+/*     CLASCL is called with both endpoints at or above one so that */
+/*     forming the factor raises no underflow. */
+
+    anrm = clange_("M", n, m, &a[a_offset], lda, rwork);
+    ka = 0;
+    if (anrm > 0.f && anrm <= myhuge_(&c_b26)) {
+	ia = myexp_(&anrm);
+	if (ia < isml) {
+	    ka = isml - ia;
+	} else if (ia > ibig) {
+	    ka = ibig - ia;
+	}
+    }
+    if (ka != 0) {
+/* Computing MAX */
+	i__2 = -ka;
+	i__1 = f2cmax(i__2,0);
+	r__1 = myscale_(&c_b30, &i__1);
+	i__3 = f2cmax(ka,0);
+	r__2 = myscale_(&c_b30, &i__3);
+	clascl_("G", &c__0, &c__0, &r__1, &r__2, n, m, &a[a_offset], lda, 
+		info);
+    }
+
+    bnrm = clange_("M", n, p, &b[b_offset], ldb, rwork);
+    kb = 0;
+    if (bnrm > 0.f && bnrm <= myhuge_(&c_b26)) {
+	ib = myexp_(&bnrm);
+	if (ib < isml) {
+	    kb = isml - ib;
+	} else if (ib > ibig) {
+	    kb = ibig - ib;
+	}
+    }
+    if (kb != 0) {
+/* Computing MAX */
+	i__2 = -kb;
+	i__1 = f2cmax(i__2,0);
+	r__1 = myscale_(&c_b30, &i__1);
+	i__3 = f2cmax(kb,0);
+	r__2 = myscale_(&c_b30, &i__3);
+	clascl_("G", &c__0, &c__0, &r__1, &r__2, n, p, &b[b_offset], ldb, 
+		info);
+    }
+
+    dnrm = clange_("M", n, &c__1, &d__[1], n, rwork);
+    kd = 0;
+    if (dnrm > 0.f && dnrm <= myhuge_(&c_b26)) {
+	id = myexp_(&dnrm);
+	if (id < isml) {
+	    kd = isml - id;
+	} else if (id > ibig) {
+	    kd = ibig - id;
+	}
+    }
+    if (kd != 0) {
+	r__1 = myscale_(&c_b30, &kd);
+	csscal_(n, &r__1, &d__[1], &c__1);
+    }
+
 /*     Compute the GQR factorization of matrices A and B: */
 
 /*          Q**H*A = ( R11 ) M,    Q**H*B*Z**H = ( T11   T12 ) M */
@@ -554,7 +650,7 @@ f"> */
     cggqrf_(n, m, p, &a[a_offset], lda, &work[1], &b[b_offset], ldb, &work[*m 
 	    + 1], &work[*m + np + 1], &i__1, info);
     i__1 = *m + np + 1;
-    lopt = work[i__1].r;
+    lopt = (integer) work[i__1].r;
 
 /*     Update left-hand-side vector d = Q**H*d = ( d1 ) M */
 /*                                               ( d2 ) N-M */
@@ -598,7 +694,7 @@ f"> */
 /*     Update d1 = d1 - T12*y2 */
 
     i__1 = *n - *m;
-    q__1.r = -1.f, q__1.i = 0.f;
+    q__1.r = -1.f, q__1.i = -0.f;
     cgemv_("No transpose", m, &i__1, &q__1, &b[(*m + *p - *n + 1) * b_dim1 + 
 	    1], ldb, &y[*m + *p - *n + 1], &c__1, &c_b2, &d__[1], &c__1);
 
@@ -627,11 +723,26 @@ f"> */
     cunmrq_("Left", "Conjugate transpose", p, &c__1, &np, &b[f2cmax(i__1,i__2) + 
 	    b_dim1], ldb, &work[*m + 1], &y[1], &i__3, &work[*m + np + 1], &
 	    i__4, info);
+
+/*     Undo scaling: x carries 2**(KD-KA) and y carries 2**(KD-KB) */
+
+    if (ka != kd) {
+	i__1 = ka - kd;
+	r__1 = myscale_(&c_b30, &i__1);
+	csscal_(m, &r__1, &x[1], &c__1);
+    }
+    if (kb != kd) {
+	i__1 = kb - kd;
+	r__1 = myscale_(&c_b30, &i__1);
+	csscal_(p, &r__1, &y[1], &c__1);
+    }
+
 /* Computing MAX */
     i__4 = *m + np + 1;
     i__2 = lopt, i__3 = (integer) work[i__4].r;
     i__1 = *m + np + f2cmax(i__2,i__3);
-    work[1].r = (real) i__1, work[1].i = 0.f;
+    q__1.r = (real) i__1, q__1.i = 0.f;
+    work[1].r = q__1.r, work[1].i = q__1.i;
 
     return;
 
