@@ -300,7 +300,7 @@
          END IF
          WRITE( IOUNIT, FMT = '( '' Matrix types:'' )' )
          IF( SORD ) THEN
-            WRITE( IOUNIT, FMT = 9972 )
+            WRITE( IOUNIT, FMT = 7972 )
          ELSE
             WRITE( IOUNIT, FMT = 9971 )
          END IF
@@ -913,6 +913,21 @@
      $      'TRF, no test ratios are computed)' )
 *
 *     SSY, SSR, SSP, CHE, CHR, CHP matrix types
+*
+*
+*     SSY matrix types
+*
+ 7972 FORMAT( 4X, '1. Diagonal', 24X,
+     $      '6. Last n/2 rows and columns zero', / 4X,
+     $      '2. Random, CNDNUM = 2', 14X,
+     $      '7. Random, CNDNUM = sqrt(0.1/EPS)', / 4X,
+     $      '3. First row and column zero', 7X,
+     $      '8. Random, CNDNUM = 0.1/EPS', / 4X,
+     $      '4. Last row and column zero', 8X,
+     $      '9. Scaled near underflow', / 4X,
+     $      '5. Middle row and column zero', 5X,
+     $      '10. Scaled near overflow', / 39X,
+     $      '11. Subnormal 2 by 2 pivot block' )
 *
  9972 FORMAT( 4X, '1. Diagonal', 24X,
      $      '6. Last n/2 rows and columns zero', / 4X,

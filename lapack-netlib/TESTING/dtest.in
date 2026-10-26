@@ -22,7 +22,7 @@ DPS    9               List types on next line if 0 < NTYPES <  9
 DPP    9               List types on next line if 0 < NTYPES <  9
 DPB    8               List types on next line if 0 < NTYPES <  8
 DPT   12               List types on next line if 0 < NTYPES < 12
-DSY   10               List types on next line if 0 < NTYPES < 10
+DSY   11               List types on next line if 0 < NTYPES < 11
 DSR   10               List types on next line if 0 < NTYPES < 10
 DSK   10               List types on next line if 0 < NTYPES < 10
 DSA   10               List types on next line if 0 < NTYPES < 10
