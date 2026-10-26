@@ -831,7 +831,8 @@
      $      '2. First column zero', 15X, '6. Random, CNDNUM = .01/EPS',
      $      / 4X, '3. Last column zero', 16X,
      $      '7. Scaled near underflow', / 4X,
-     $      '4. Last n/2 columns zero', 11X, '8. Scaled near overflow' )
+     $      '4. Last n/2 columns zero', 11X, '8. Scaled near overflow',
+     $      / 39X, '9. Scaled into the subnormal range' )
 *
 *     GT matrix types
 *

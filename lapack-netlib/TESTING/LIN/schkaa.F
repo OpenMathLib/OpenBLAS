@@ -503,7 +503,7 @@
 *
          LA = ( 2*KDMAX+1 )*NMAX
          LAFAC = ( 3*KDMAX+1 )*NMAX
-         NTYPES = 8
+         NTYPES = 9
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
 *
          IF( TSTCHK ) THEN
