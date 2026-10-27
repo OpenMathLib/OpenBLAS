@@ -446,7 +446,6 @@ f"> */
 	    complex *, integer *), caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *), ctrmv_(char *, char *, char *, 
 	    integer *, complex *, integer *, complex *, integer *);
-    extern integer myexp_(real *);
     real rwork[1];
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);

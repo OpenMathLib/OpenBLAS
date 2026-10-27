@@ -467,7 +467,6 @@ f"> */
     extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
-    extern integer myexp_(doublereal *);
     doublereal rwork[1];
     extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zaxpy_(integer *, doublecomplex *, 
