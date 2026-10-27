@@ -7,7 +7,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download DSBEVX_2STAGE + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dsbevx_2stage.f">
 *> [TGZ]</a>
@@ -15,7 +14,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dsbevx_2stage.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -235,7 +233,7 @@
 *> \verbatim
 *>          LWORK is INTEGER
 *>          The length of the array WORK. LWORK >= 1, when N <= 1;
-*>          otherwise  
+*>          otherwise
 *>          If JOBZ = 'N' and N > 1, LWORK must be queried.
 *>                                   LWORK = MAX(1, 7*N, dimension) where
 *>                                   dimension = (2KD+1)*N + KD*NTHREADS + 2*N
@@ -284,7 +282,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHEReigen
+*> \ingroup hbevx_2stage
 *
 *> \par Further Details:
 *  =====================
@@ -302,7 +300,7 @@
 *>  http://doi.acm.org/10.1145/2063384.2063394
 *>
 *>  A. Haidar, J. Kurzak, P. Luszczek, 2013.
-*>  An improved parallel singular value algorithm and its implementation 
+*>  An improved parallel singular value algorithm and its implementation
 *>  for multicore hardware, In Proceedings of 2013 International Conference
 *>  for High Performance Computing, Networking, Storage and Analysis (SC '13).
 *>  Denver, Colorado, USA, 2013.
@@ -310,16 +308,17 @@
 *>  http://doi.acm.org/10.1145/2503210.2503292
 *>
 *>  A. Haidar, R. Solca, S. Tomov, T. Schulthess and J. Dongarra.
-*>  A novel hybrid CPU-GPU generalized eigensolver for electronic structure 
+*>  A novel hybrid CPU-GPU generalized eigensolver for electronic structure
 *>  calculations based on fine-grained memory aware tasks.
 *>  International Journal of High Performance Computing Applications.
 *>  Volume 28 Issue 2, Pages 196-209, May 2014.
-*>  http://hpc.sagepub.com/content/28/2/196 
+*>  http://hpc.sagepub.com/content/28/2/196
 *>
 *> \endverbatim
 *
 *  =====================================================================
-      SUBROUTINE DSBEVX_2STAGE( JOBZ, RANGE, UPLO, N, KD, AB, LDAB, Q,
+      SUBROUTINE DSBEVX_2STAGE( JOBZ, RANGE, UPLO, N, KD, AB, LDAB,
+     $                          Q,
      $                          LDQ, VL, VU, IL, IU, ABSTOL, M, W, Z,
      $                          LDZ, WORK, LWORK, IWORK, IFAIL, INFO )
 *
@@ -350,7 +349,7 @@
       LOGICAL            ALLEIG, INDEIG, LOWER, TEST, VALEIG, WANTZ,
      $                   LQUERY
       CHARACTER          ORDER
-      INTEGER            I, IINFO, IMAX, INDD, INDE, INDEE, INDIBL,
+      INTEGER            I, IINFO, INDD, INDE, INDEE, INDIBL,
      $                   INDISP, INDIWO, INDWRK, ISCALE, ITMP1, J, JJ,
      $                   LLWORK, LWMIN, LHTRD, LWTRD, IB, INDHOUS,
      $                   NSPLIT
@@ -364,7 +363,8 @@
       EXTERNAL           LSAME, DLAMCH, DLANSB, ILAENV2STAGE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DGEMV, DLACPY, DLASCL, DSCAL,
+      EXTERNAL           DCOPY, DGEMV, DLACPY, DLASCL,
+     $                   DSCAL,
      $                   DSTEBZ, DSTEIN, DSTEQR, DSTERF, DSWAP, XERBLA,
      $                   DSYTRD_SB2ST
 *     ..
@@ -490,14 +490,19 @@
          ISCALE = 1
          SIGMA = RMIN / ANRM
       ELSE IF( ANRM.GT.RMAX ) THEN
-         ISCALE = 1
+*        An infinite norm gives SIGMA = 0; leave such a matrix
+*        unscaled so that VL and VU remain a valid interval.
          SIGMA = RMAX / ANRM
+         IF( SIGMA.GT.ZERO )
+     $      ISCALE = 1
       END IF
       IF( ISCALE.EQ.1 ) THEN
          IF( LOWER ) THEN
-            CALL DLASCL( 'B', KD, KD, ONE, SIGMA, N, N, AB, LDAB, INFO )
+            CALL DLASCL( 'B', KD, KD, ONE, SIGMA, N, N, AB, LDAB,
+     $                   INFO )
          ELSE
-            CALL DLASCL( 'Q', KD, KD, ONE, SIGMA, N, N, AB, LDAB, INFO )
+            CALL DLASCL( 'Q', KD, KD, ONE, SIGMA, N, N, AB, LDAB,
+     $                   INFO )
          END IF
          IF( ABSTOL.GT.0 )
      $      ABSTLL = ABSTOL*SIGMA
@@ -515,8 +520,9 @@
       INDWRK  = INDHOUS + LHTRD
       LLWORK  = LWORK - INDWRK + 1
 *
-      CALL DSYTRD_SB2ST( "N", JOBZ, UPLO, N, KD, AB, LDAB, WORK( INDD ),
-     $                    WORK( INDE ), WORK( INDHOUS ), LHTRD, 
+      CALL DSYTRD_SB2ST( "N", JOBZ, UPLO, N, KD, AB, LDAB,
+     $                   WORK( INDD ),
+     $                    WORK( INDE ), WORK( INDHOUS ), LHTRD,
      $                    WORK( INDWRK ), LLWORK, IINFO )
 *
 *     If all eigenvalues are desired and ABSTOL is less than or equal
@@ -593,14 +599,8 @@
 *     If matrix was scaled, then rescale eigenvalues appropriately.
 *
    30 CONTINUE
-      IF( ISCALE.EQ.1 ) THEN
-         IF( INFO.EQ.0 ) THEN
-            IMAX = M
-         ELSE
-            IMAX = INFO - 1
-         END IF
-         CALL DSCAL( IMAX, ONE / SIGMA, W, 1 )
-      END IF
+      IF( ISCALE.EQ.1 )
+     $   CALL DSCAL( M, ONE / SIGMA, W, 1 )
 *
 *     If eigenvalues are not in order, then sort them, along with
 *     eigenvectors.

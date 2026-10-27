@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
@@ -240,7 +238,6 @@ matrices</b> */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DSTEVX + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dstevx.
 f"> */
@@ -251,7 +248,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dstevx.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -441,8 +437,11 @@ f"> */
 /* >          INFO is INTEGER */
 /* >          = 0:  successful exit */
 /* >          < 0:  if INFO = -i, the i-th argument had an illegal value */
-/* >          > 0:  if INFO = i, then i eigenvectors failed to converge. */
-/* >                Their indices are stored in array IFAIL. */
+/* >          > 0:  if INFO = i, and i is: */
+/* >                <= N: then i eigenvectors failed to converge in */
+/* >                     DSTEIN; their indices are stored in IFAIL. */
+/* >                > N: DSTEBZ returned INFO = INFO - N; */
+/* >                     see DSTEBZ for details. */
 /* > \endverbatim */
 
 /*  Authors: */
@@ -453,9 +452,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date June 2016 */
-
-/* > \ingroup doubleOTHEReigen */
+/* > \ingroup stevx */
 
 /*  ===================================================================== */
 /* Subroutine */ void dstevx_(char *jobz, char *range, integer *n, doublereal *
@@ -469,25 +466,23 @@ f"> */
     doublereal d__1, d__2;
 
     /* Local variables */
-    integer imax;
-    doublereal rmin, rmax;
+    integer iscale, i__, j, jj;
+    doublereal eps, vll, vuu, tmp1, rmin, rmax;
     logical test;
     doublereal tnrm;
-    integer itmp1, i__, j;
+    integer itmp1;
     extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
+    integer iinfo;
     char order[1];
     extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     logical wantz;
-    integer jj;
     extern doublereal dlamch_(char *);
-    logical alleig, indeig;
-    integer iscale, indibl;
-    logical valeig;
+    logical alleig, indeig, valeig;
     doublereal safmin;
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
@@ -506,13 +501,12 @@ f"> */
     extern /* Subroutine */ void dsteqr_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *);
     integer nsplit;
-    doublereal smlnum, eps, vll, vuu, tmp1;
+    doublereal smlnum;
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     June 2016 */
 
 
 /*  ===================================================================== */
@@ -525,7 +519,7 @@ f"> */
     --e;
     --w;
     z_dim1 = *ldz;
-    z_offset = 1 + z_dim1 * 1;
+    z_offset = 1 + z_dim1;
     z__ -= z_offset;
     --work;
     --iwork;
@@ -618,8 +612,12 @@ f"> */
 	iscale = 1;
 	sigma = rmin / tnrm;
     } else if (tnrm > rmax) {
-	iscale = 1;
+/*        An infinite norm gives SIGMA = 0; leave such a matrix */
+/*        unscaled so that VL and VU remain a valid interval. */
 	sigma = rmax / tnrm;
+	if (sigma > 0.) {
+	    iscale = 1;
+	}
     }
     if (iscale == 1) {
 	dscal_(n, &sigma, &d__[1], &c__1);
@@ -674,30 +672,33 @@ f"> */
 	*(unsigned char *)order = 'E';
     }
     indwrk = 1;
-    indibl = 1;
-    indisp = indibl + *n;
+    indisp = *n + 1;
     indiwo = indisp + *n;
     dstebz_(range, order, n, &vll, &vuu, il, iu, abstol, &d__[1], &e[1], m, &
-	    nsplit, &w[1], &iwork[indibl], &iwork[indisp], &work[indwrk], &
-	    iwork[indiwo], info);
+	    nsplit, &w[1], &iwork[1], &iwork[indisp], &work[indwrk], &iwork[
+	    indiwo], &iinfo);
+    if (iinfo != 0) {
+	*info = *n + iinfo;
+	if (iinfo != 1) {
+	    goto L20;
+	}
+    }
 
     if (wantz) {
-	dstein_(n, &d__[1], &e[1], m, &w[1], &iwork[indibl], &iwork[indisp], &
-		z__[z_offset], ldz, &work[indwrk], &iwork[indiwo], &ifail[1], 
-		info);
+	dstein_(n, &d__[1], &e[1], m, &w[1], &iwork[1], &iwork[indisp], &z__[
+		z_offset], ldz, &work[indwrk], &iwork[indiwo], &ifail[1], &
+		iinfo);
+	if (iinfo != 0 && *info == 0) {
+	    *info = iinfo;
+	}
     }
 
 /*     If matrix was scaled, then rescale eigenvalues appropriately. */
 
 L20:
     if (iscale == 1) {
-	if (*info == 0) {
-	    imax = *m;
-	} else {
-	    imax = *info - 1;
-	}
 	d__1 = 1. / sigma;
-	dscal_(&imax, &d__1, &w[1], &c__1);
+	dscal_(m, &d__1, &w[1], &c__1);
     }
 
 /*     If eigenvalues are not in order, then sort them, along with */
@@ -718,11 +719,11 @@ L20:
 	    }
 
 	    if (i__ != 0) {
-		itmp1 = iwork[indibl + i__ - 1];
+		itmp1 = iwork[i__];
 		w[i__] = w[j];
-		iwork[indibl + i__ - 1] = iwork[indibl + j - 1];
+		iwork[i__] = iwork[j];
 		w[j] = tmp1;
-		iwork[indibl + j - 1] = itmp1;
+		iwork[j] = itmp1;
 		dswap_(n, &z__[i__ * z_dim1 + 1], &c__1, &z__[j * z_dim1 + 1],
 			 &c__1);
 		if (*info != 0) {

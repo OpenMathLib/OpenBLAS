@@ -7,7 +7,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download SSYEVX_2STAGE + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssyevx_2stage.f">
 *> [TGZ]</a>
@@ -15,7 +14,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssyevx_2stage.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -327,7 +325,7 @@
       LOGICAL            ALLEIG, INDEIG, LOWER, LQUERY, TEST, VALEIG,
      $                   WANTZ
       CHARACTER          ORDER
-      INTEGER            I, IINFO, IMAX, INDD, INDE, INDEE, INDIBL,
+      INTEGER            I, IINFO, INDD, INDE, INDEE, INDIBL,
      $                   INDISP, INDIWO, INDTAU, INDWKN, INDWRK, ISCALE,
      $                   ITMP1, J, JJ, LLWORK, LLWRKN,
      $                   NSPLIT, LWMIN, LHTRD, LWTRD, KD, IB, INDHOUS
@@ -342,7 +340,8 @@
      $                   SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SLACPY, SORGTR, SORMTR, SSCAL, SSTEBZ,
+      EXTERNAL           SCOPY, SLACPY, SORGTR, SORMTR, SSCAL,
+     $                   SSTEBZ,
      $                   SSTEIN, SSTEQR, SSTERF, SSWAP, XERBLA,
      $                   SSYTRD_2STAGE
 *     ..
@@ -403,7 +402,7 @@
             LWTRD = ILAENV2STAGE( 4, 'SSYTRD_2STAGE', JOBZ,
      $                            N, KD, IB, -1 )
             LWMIN = MAX( 8*N, 3*N + LHTRD + LWTRD )
-            WORK( 1 )  = LWMIN
+            WORK( 1 )  = REAL( LWMIN )
          END IF
 *
          IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY )
@@ -461,8 +460,11 @@
          ISCALE = 1
          SIGMA = RMIN / ANRM
       ELSE IF( ANRM.GT.RMAX ) THEN
-         ISCALE = 1
+*        An infinite norm gives SIGMA = 0; leave such a matrix
+*        unscaled so that VL and VU remain a valid interval.
          SIGMA = RMAX / ANRM
+         IF( SIGMA.GT.ZERO )
+     $      ISCALE = 1
       END IF
       IF( ISCALE.EQ.1 ) THEN
          IF( LOWER ) THEN
@@ -563,21 +565,16 @@
 *
          INDWKN = INDE
          LLWRKN = LWORK - INDWKN + 1
-         CALL SORMTR( 'L', UPLO, 'N', N, M, A, LDA, WORK( INDTAU ), Z,
+         CALL SORMTR( 'L', UPLO, 'N', N, M, A, LDA, WORK( INDTAU ),
+     $                Z,
      $                LDZ, WORK( INDWKN ), LLWRKN, IINFO )
       END IF
 *
 *     If matrix was scaled, then rescale eigenvalues appropriately.
 *
    40 CONTINUE
-      IF( ISCALE.EQ.1 ) THEN
-         IF( INFO.EQ.0 ) THEN
-            IMAX = M
-         ELSE
-            IMAX = INFO - 1
-         END IF
-         CALL SSCAL( IMAX, ONE / SIGMA, W, 1 )
-      END IF
+      IF( ISCALE.EQ.1 )
+     $   CALL SSCAL( M, ONE / SIGMA, W, 1 )
 *
 *     If eigenvalues are not in order, then sort them, along with
 *     eigenvectors.

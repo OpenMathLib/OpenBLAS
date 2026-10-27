@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__10 = 10;
@@ -244,7 +242,6 @@ matrices</b> */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DSTEVR + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dstevr.
 f"> */
@@ -255,7 +252,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dstevr.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -525,9 +521,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date June 2016 */
-
-/* > \ingroup doubleOTHEReigen */
+/* > \ingroup stevr */
 
 /* > \par Contributors: */
 /*  ================== */
@@ -549,11 +543,11 @@ f"> */
     doublereal d__1, d__2;
 
     /* Local variables */
-    integer imax;
-    doublereal rmin, rmax;
+    integer iscale, i__, j, jj;
+    doublereal eps, vll, vuu, tmp1, rmin, rmax;
     logical test;
     doublereal tnrm;
-    integer itmp1, i__, j;
+    integer itmp1;
     extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
@@ -564,10 +558,9 @@ f"> */
 	    *, doublereal *, integer *);
     integer lwmin;
     logical wantz;
-    integer jj;
     extern doublereal dlamch_(char *);
     logical alleig, indeig;
-    integer iscale, ieeeok, indibl, indifl;
+    integer ieeeok, indibl, indifl;
     logical valeig;
     doublereal safmin;
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
@@ -584,24 +577,22 @@ f"> */
     extern /* Subroutine */ void dstebz_(char *, char *, integer *, doublereal 
 	    *, doublereal *, integer *, integer *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *, doublereal *, integer *, 
-	    integer *, doublereal *, integer *, integer *), 
-	    dstemr_(char *, char *, integer *, doublereal *, doublereal *, 
-	    doublereal *, doublereal *, integer *, integer *, integer *, 
-	    doublereal *, doublereal *, integer *, integer *, integer *, 
-	    logical *, doublereal *, integer *, integer *, integer *, integer 
-	    *);
+	    integer *, doublereal *, integer *, integer *);
     integer liwmin;
+    extern /* Subroutine */ void dstemr_(char *, char *, integer *, doublereal 
+	    *, doublereal *, doublereal *, doublereal *, integer *, integer *,
+	     integer *, doublereal *, doublereal *, integer *, integer *, 
+	    integer *, logical *, doublereal *, integer *, integer *, integer 
+	    *, integer *);
     logical tryrac;
     integer nsplit;
     doublereal smlnum;
     logical lquery;
-    doublereal eps, vll, vuu, tmp1;
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     June 2016 */
 
 
 /*  ===================================================================== */
@@ -615,7 +606,7 @@ f"> */
     --e;
     --w;
     z_dim1 = *ldz;
-    z_offset = 1 + z_dim1 * 1;
+    z_offset = 1 + z_dim1;
     z__ -= z_offset;
     --isuppz;
     --work;
@@ -732,8 +723,12 @@ f"> */
 	iscale = 1;
 	sigma = rmin / tnrm;
     } else if (tnrm > rmax) {
-	iscale = 1;
+/*        An infinite norm gives SIGMA = 0; leave such a matrix */
+/*        unscaled so that VL and VU remain a valid interval. */
 	sigma = rmax / tnrm;
+	if (sigma > 0.) {
+	    iscale = 1;
+	}
     }
     if (iscale == 1) {
 	dscal_(n, &sigma, &d__[1], &c__1);
@@ -818,13 +813,8 @@ f"> */
 
 L10:
     if (iscale == 1) {
-	if (*info == 0) {
-	    imax = *m;
-	} else {
-	    imax = *info - 1;
-	}
 	d__1 = 1. / sigma;
-	dscal_(&imax, &d__1, &w[1], &c__1);
+	dscal_(m, &d__1, &w[1], &c__1);
     }
 
 /*     If eigenvalues are not in order, then sort them, along with */
