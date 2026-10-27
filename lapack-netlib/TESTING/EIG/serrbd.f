@@ -52,6 +52,7 @@
 *
 *  =====================================================================
       SUBROUTINE SERRBD( PATH, NUNIT )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -86,8 +87,8 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CHKXER, SBDSDC, SBDSQR, SBDSVDX, SGEBD2,
-     $                   SGEBRD, SORGBR, SORMBR
+      EXTERNAL           CHKXER, SBDSDC, SBDSQR, SBDSVDX, SBDSVDMR3,
+     $                   SGEBD2, SGEBRD, SORGBR, SORMBR
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -111,7 +112,7 @@
 *
       DO 20 J = 1, NMAX
          DO 10 I = 1, NMAX
-            A( I, J ) = 1.D0 / REAL( I+J )
+            A( I, J ) = ONE / REAL( I+J )
    10    CONTINUE
    20 CONTINUE
       OK = .TRUE.
@@ -353,6 +354,58 @@
          CALL SBDSVDX( 'L', 'V', 'A', 4, D, E, ZERO, ZERO, 0, 0,
      $                    NS, S, Q, 2, W, IW, INFO)
          CALL CHKXER( 'SBDSVDX', INFOT, NOUT, LERR, OK )
+*
+*        SBDSVDMR3
+*
+         SRNAMT = 'SBDSVDMR3'
+         INFOT = 1
+         CALL SBDSVDMR3( 'X', 'N', 'A', 1, D, E, ZERO, ONE, 0, 0, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL SBDSVDMR3( 'U', 'X', 'A', 1, D, E, ZERO, ONE, 0, 0, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL SBDSVDMR3( 'U', 'V', 'X', 1, D, E, ZERO, ONE, 0, 0, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL SBDSVDMR3( 'U', 'V', 'A', -1, D, E, ZERO, ONE, 0, 0, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL SBDSVDMR3( 'U', 'V', 'V', 2, D, E, -ONE, ZERO, 0, 0, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL SBDSVDMR3( 'U', 'V', 'V', 2, D, E, ONE, ZERO, 0, 0, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL SBDSVDMR3( 'L', 'V', 'I', 2, D, E, ZERO, ZERO, 0, 2, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL SBDSVDMR3( 'L', 'V', 'I', 4, D, E, ZERO, ZERO, 5, 2, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL SBDSVDMR3( 'L', 'V', 'I', 4, D, E, ZERO, ZERO, 3, 2, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL SBDSVDMR3( 'L', 'V', 'I', 4, D, E, ZERO, ZERO, 3, 5, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 14
+         CALL SBDSVDMR3( 'L', 'V', 'A', 4, D, E, ZERO, ZERO, 0, 0, NS,
+     $                 S, Q, 0, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 14
+         CALL SBDSVDMR3( 'L', 'V', 'A', 4, D, E, ZERO, ZERO, 0, 0, NS,
+     $                 S, Q, 2, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
          NT = NT + 12
       END IF
 *
