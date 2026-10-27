@@ -217,7 +217,7 @@ typedef struct Namelist Namelist;
 static int my_expfunc(float *x) {int e; (void)frexp(*x,&e); return e;}
 static float myscale_(float *w, integer *i) {float myscale=*w*pow(2.,*(double*)i); return(myscale);}
 static float myhuge_(float *w) {return(HUGE_VALF);}
-static int myihuge_(int *w) {return(INT_MAX);}
+static integer myihuge_(integer *w) {return(INT_MAX);}
 
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
 #define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
