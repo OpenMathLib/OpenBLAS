@@ -548,7 +548,7 @@
       EXTERNAL           ALASUM, DBDSDC, DBDSQR, DBDSVDX, DBDT01,
      $                   DBDT02, DBDT03, DBDT04, DCOPY, DGEBRD,
      $                   DGEMM, DLACPY, DLAHD2, DLASET, DLATMR,
-     $                   DLATMS, DORGBR, DORT01, XER_REPLACE
+     $                   DLATMS, DORGBR, DORT01, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, EXP, INT, LOG, MAX, MIN, SQRT
@@ -618,7 +618,7 @@
       END IF
 *
       IF( INFO.NE.0 ) THEN
-         CALL XER_REPLACE( 'DCHKBD', -INFO )
+         CALL XERBLA( 'DCHKBD', -INFO )
          RETURN
       END IF
 *
