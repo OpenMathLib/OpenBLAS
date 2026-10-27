@@ -981,14 +981,14 @@ lapackobjs2s="$lapackobjs2s
     slarrb_tgk
     slarrf_tgk
     slarrv_tgk
-    dlaed0_br
-    dlaed0_merge_pair
-    dlaed4_br
-    dlaed7_br
-    dlaed8_br
-    dlaed9_br
-    dstebr
-    dsteqr_boundary_br
+    slaed0_br
+    slaed0_merge_pair
+    slaed4_br
+    slaed7_br
+    slaed8_br
+    slaed9_br
+    sstebr
+    ssteqr_boundary_br
     "
 
 lapackobjs2z="$lapackobjs2z

@@ -103,7 +103,7 @@ int main(int argc, char *argv[]){
   int to   = 200;
   int step =   1;
 
-  FLOAT maxerr;
+  FLOAT maxerr = 0.0;
 
   double time1;
 
