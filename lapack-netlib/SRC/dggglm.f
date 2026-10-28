@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download DGGGLM + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dggglm.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dggglm.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -61,6 +59,16 @@
 *>                  x
 *>
 *> where inv(B) denotes the inverse of B.
+*>
+*> Callers of this subroutine should note that the singularity/rank-deficiency checks
+*> implemented in this subroutine are rudimentary. The DTRTRS subroutine called by this
+*> subroutine only signals a failure due to singularity if the problem is exactly singular.
+*>
+*> It is conceivable for one (or more) of the factors involved in the generalized QR
+*> factorization of the pair (A, B) to be subnormally close to singularity without this
+*> subroutine signalling an error. The solutions computed for such almost-rank-deficient
+*> problems may be less accurate due to a loss of numerical precision.
+*> 
 *> \endverbatim
 *
 *  Arguments:
@@ -159,12 +167,12 @@
 *>          = 0:  successful exit.
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value.
 *>          = 1:  the upper triangular factor R associated with A in the
-*>                generalized QR factorization of the pair (A, B) is
+*>                generalized QR factorization of the pair (A, B) is exactly
 *>                singular, so that rank(A) < M; the least squares
 *>                solution could not be computed.
 *>          = 2:  the bottom (N-M) by (N-M) part of the upper trapezoidal
 *>                factor T associated with B in the generalized QR
-*>                factorization of the pair (A, B) is singular, so that
+*>                factorization of the pair (A, B) is exactly singular, so that
 *>                rank( A B ) < N; the least squares solution could not
 *>                be computed.
 *> \endverbatim
@@ -177,11 +185,13 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHEReigen
+*> \ingroup ggglm
 *
 *  =====================================================================
-      SUBROUTINE DGGGLM( N, M, P, A, LDA, B, LDB, D, X, Y, WORK, LWORK,
+      SUBROUTINE DGGGLM( N, M, P, A, LDA, B, LDB, D, X, Y, WORK,
+     $                   LWORK,
      $                   INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -205,17 +215,23 @@
       LOGICAL            LQUERY
       INTEGER            I, LOPT, LWKMIN, LWKOPT, NB, NB1, NB2, NB3,
      $                   NB4, NP
+      INTEGER            IA, IB, IBIG, ID, ISML, KA, KB, KD
+      DOUBLE PRECISION   ANRM, BIGNUM, BNRM, DNRM, SMLNUM
+*     ..
+*     .. Local Arrays ..
+      DOUBLE PRECISION   RWORK( 1 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DGEMV, DGGQRF, DORMQR, DORMRQ, DTRTRS,
-     $                   XERBLA
+      EXTERNAL           DCOPY, DGEMV, DGGQRF, DLASCL, DORMQR, DORMRQ,
+     $                   DSCAL, DTRTRS, XERBLA
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      DOUBLE PRECISION   DLAMCH, DLANGE
+      EXTERNAL           DLAMCH, DLANGE, ILAENV
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          INT, MAX, MIN
+      INTRINSIC          EXPONENT, HUGE, INT, MAX, MIN, SCALE
 *     ..
 *     .. Executable Statements ..
 *
@@ -277,6 +293,62 @@
          RETURN
       END IF
 *
+*     Get machine parameters
+*
+      SMLNUM = DLAMCH( 'S' ) / DLAMCH( 'P' )
+      BIGNUM = ONE / SMLNUM
+      ISML = EXPONENT( SMLNUM )
+      IBIG = EXPONENT( BIGNUM ) - 1
+*
+*     Scale A, B and d independently by powers of two 2**KA, 2**KB and
+*     2**KD so that their largest entries lie in [SMLNUM,BIGNUM), the
+*     values whose EXPONENT lies in [ISML,IBIG].  x is then scaled by
+*     2**(KD-KA) and y by 2**(KD-KB).  Scaling by a power of two is
+*     exact.  A norm that is zero, infinite or NaN takes no part.
+*     DLASCL is called with both endpoints at or above one so that
+*     forming the factor raises no underflow.
+*
+      ANRM = DLANGE( 'M', N, M, A, LDA, RWORK )
+      KA = 0
+      IF( ANRM.GT.ZERO .AND. ANRM.LE.HUGE( ZERO ) ) THEN
+         IA = EXPONENT( ANRM )
+         IF( IA.LT.ISML ) THEN
+            KA = ISML - IA
+         ELSE IF( IA.GT.IBIG ) THEN
+            KA = IBIG - IA
+         END IF
+      END IF
+      IF( KA.NE.0 )
+     $   CALL DLASCL( 'G', 0, 0, SCALE( ONE, MAX( -KA, 0 ) ),
+     $                SCALE( ONE, MAX( KA, 0 ) ), N, M, A, LDA, INFO )
+*
+      BNRM = DLANGE( 'M', N, P, B, LDB, RWORK )
+      KB = 0
+      IF( BNRM.GT.ZERO .AND. BNRM.LE.HUGE( ZERO ) ) THEN
+         IB = EXPONENT( BNRM )
+         IF( IB.LT.ISML ) THEN
+            KB = ISML - IB
+         ELSE IF( IB.GT.IBIG ) THEN
+            KB = IBIG - IB
+         END IF
+      END IF
+      IF( KB.NE.0 )
+     $   CALL DLASCL( 'G', 0, 0, SCALE( ONE, MAX( -KB, 0 ) ),
+     $                SCALE( ONE, MAX( KB, 0 ) ), N, P, B, LDB, INFO )
+*
+      DNRM = DLANGE( 'M', N, 1, D, N, RWORK )
+      KD = 0
+      IF( DNRM.GT.ZERO .AND. DNRM.LE.HUGE( ZERO ) ) THEN
+         ID = EXPONENT( DNRM )
+         IF( ID.LT.ISML ) THEN
+            KD = ISML - ID
+         ELSE IF( ID.GT.IBIG ) THEN
+            KD = IBIG - ID
+         END IF
+      END IF
+      IF( KD.NE.0 )
+     $   CALL DSCAL( N, SCALE( ONE, KD ), D, 1 )
+*
 *     Compute the GQR factorization of matrices A and B:
 *
 *          Q**T*A = ( R11 ) M,    Q**T*B*Z**T = ( T11   T12 ) M
@@ -325,7 +397,8 @@
 *     Solve triangular system: R11*x = d1
 *
       IF( M.GT.0 ) THEN
-         CALL DTRTRS( 'Upper', 'No Transpose', 'Non unit', M, 1, A, LDA,
+         CALL DTRTRS( 'Upper', 'No Transpose', 'Non unit', M, 1, A,
+     $                LDA,
      $                D, M, INFO )
 *
          IF( INFO.GT.0 ) THEN
@@ -343,6 +416,14 @@
       CALL DORMRQ( 'Left', 'Transpose', P, 1, NP,
      $             B( MAX( 1, N-P+1 ), 1 ), LDB, WORK( M+1 ), Y,
      $             MAX( 1, P ), WORK( M+NP+1 ), LWORK-M-NP, INFO )
+*
+*     Undo scaling: x carries 2**(KD-KA) and y carries 2**(KD-KB)
+*
+      IF( KA.NE.KD )
+     $   CALL DSCAL( M, SCALE( ONE, KA-KD ), X, 1 )
+      IF( KB.NE.KD )
+     $   CALL DSCAL( P, SCALE( ONE, KB-KD ), Y, 1 )
+*
       WORK( 1 ) = M + NP + MAX( LOPT, INT( WORK( M+NP+1 ) ) )
 *
       RETURN
