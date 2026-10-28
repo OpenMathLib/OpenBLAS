@@ -134,7 +134,7 @@ jobs:
         run: ccache -s
 
       - name: Install benchmark dependencies
-        run: pip install meson ninja numpy pytest==8.1 pytest-codspeed --user
+        run: pip install meson ninja numpy pytest==9.1.1 pytest-codspeed --user
 
       - name: Build the wrapper
         run: |
