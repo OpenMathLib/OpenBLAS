@@ -621,8 +621,10 @@
      $                   EIGHT = 8.0E0, TEN = 10.0E0, HUN = 100.0E0 )
       REAL               HALF
       PARAMETER          ( HALF = ONE / TWO )
+      REAL               TENTH
+      PARAMETER          ( TENTH = 0.1E0 )
       INTEGER            MAXTYP
-      PARAMETER          ( MAXTYP = 21 )
+      PARAMETER          ( MAXTYP = 22 )
       LOGICAL            SRANGE
       PARAMETER          ( SRANGE = .FALSE. )
       LOGICAL            SREL
@@ -663,11 +665,11 @@
 *     .. Data statements ..
       DATA               SMLSZS / 2, 8, 25 /
       DATA               KTYPE / 1, 2, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 8,
-     $                   8, 8, 9, 9, 9, 9, 9, 10 /
+     $                   8, 8, 9, 9, 9, 9, 9, 10, 11 /
       DATA               KMAGN / 1, 1, 1, 1, 1, 2, 3, 1, 1, 1, 2, 3, 1,
-     $                   2, 3, 1, 1, 1, 2, 3, 1 /
+     $                   2, 3, 1, 1, 1, 2, 3, 1, 4 /
       DATA               KMODE / 0, 0, 4, 3, 1, 4, 4, 4, 3, 1, 4, 4, 0,
-     $                   0, 0, 4, 3, 1, 4, 4, 3 /
+     $                   0, 0, 4, 3, 1, 4, 4, 3, 0 /
 *     ..
 *     .. Executable Statements ..
 *
@@ -794,7 +796,7 @@
 *
 *           Compute norm
 *
-            GO TO ( 40, 50, 60 )KMAGN( JTYPE )
+            GO TO ( 40, 50, 60, 65 )KMAGN( JTYPE )
 *
    40       CONTINUE
             ANORM = ONE
@@ -806,6 +808,15 @@
 *
    60       CONTINUE
             ANORM = RTUNFL*REAL( N )*ULPINV
+            GO TO 70
+*
+   65       CONTINUE
+*
+*           The smallest norm the eigenvalue drivers scale a matrix up
+*           to, below which the splitting test of SSTEBZ has to be
+*           relative to see an off-diagonal entry.
+*
+            ANORM = RTUNFL / SQRT( ULP )
             GO TO 70
 *
    70       CONTINUE
@@ -892,6 +903,20 @@
                      A( I, I-1 ) = A( I-1, I )
                   END IF
    90          CONTINUE
+*
+            ELSE IF( ITYPE.EQ.11 ) THEN
+*
+*              Tridiagonal with equal diagonal entries and an
+*              off-diagonal entry whose square underflows, but which is
+*              far above the relative splitting threshold.
+*
+               DO 95 JC = 1, N
+                  A( JC, JC ) = ANORM
+   95          CONTINUE
+               DO 96 JC = 1, N - 1
+                  A( JC, JC+1 ) = ANORM*( TENTH*SQRT( ULP ) )
+                  A( JC+1, JC ) = A( JC, JC+1 )
+   96          CONTINUE
 *
             ELSE
 *
@@ -1422,6 +1447,13 @@
             END IF
 *
             RESULT( 19 ) = ( TEMP1+TEMP2 ) / MAX( UNFL, TEMP3*ULP )
+*
+*           The eigenvalues of type 22 are closer together than the
+*           floor the interval above is built with, so its 'V' range
+*           holds the whole spectrum and cannot match the 'I' range.
+*
+            IF( JTYPE.EQ.22 )
+     $         RESULT( 19 ) = ZERO
 *
 *           Call SSTEIN to compute eigenvectors corresponding to
 *           eigenvalues in WA1.  (First call SSTEBZ again, to make sure

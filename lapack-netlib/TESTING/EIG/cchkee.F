@@ -1885,7 +1885,7 @@
 *           NBMIN = minimum block size
 *           NX    = crossover point
 *
-         MAXTYP = 21
+         MAXTYP = 22
          NTYPES = MIN( MAXTYP, NTYPES )
          CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
          CALL XLAENV( 1, 1 )
