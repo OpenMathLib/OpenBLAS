@@ -657,7 +657,7 @@
      $                   DOPGTR, DORGTR, DPTEQR, DSPT21, DSPTRD, DSTEBZ,
      $                   DSTEBR, DSTECH, DSTEDC, DSTEMR, DSTEIN, DSTEQR,
      $                   DSTERF, DSTT21, DSTT22, DSYT21, DSYTRD,
-     $                   XER_REPLACE, XLAENV
+     $                   XERBLA, XLAENV
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, INT, LOG, MAX, MIN, SQRT
@@ -712,7 +712,7 @@
       END IF
 *
       IF( INFO.NE.0 ) THEN
-         CALL XER_REPLACE( 'DCHKST', -INFO )
+         CALL XERBLA( 'DCHKST', -INFO )
          RETURN
       END IF
 *
