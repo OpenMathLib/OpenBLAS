@@ -238,18 +238,16 @@ typedef struct Namelist Namelist;
 #define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
 #define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
 #define myexit_() break;
-#define mycycle_() continue;
-#define myceiling_(w) {ceil(w)}
-#define myhuge_(w) {HUGE_VAL}
+#define mycycle() continue;
+#define myceiling(w) {ceil(w)}
+#define myhuge(w) {HUGE_VAL}
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
-#define mymaxloc_(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
+#define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
 
 /*  -- translated by f2c (version 20000121).
    You must link the resulting object file with the libraries:
 	-lf2c -lm   (in that order)
 */
-
-
 
 
 /* Table of constant values */
@@ -261,409 +259,6 @@ static integer c__3 = 3;
 static integer c__4 = 4;
 static integer c_n1 = -1;
 
-/* > \brief <b> ZHEEVR_2STAGE computes the eigenvalues and, optionally, the left and/or right eigenvectors for
- HE matrices</b> */
-
-/*  @precisions fortran z -> s d c */
-
-/*  =========== DOCUMENTATION =========== */
-
-/* Online html documentation available at */
-/*            http://www.netlib.org/lapack/explore-html/ */
-
-/* > \htmlonly */
-/* > Download ZHEEVR_2STAGE + dependencies */
-/* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zheevr_
-2stage.f"> */
-/* > [TGZ]</a> */
-/* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zheevr_
-2stage.f"> */
-/* > [ZIP]</a> */
-/* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zheevr_
-2stage.f"> */
-/* > [TXT]</a> */
-/* > \endhtmlonly */
-
-/*  Definition: */
-/*  =========== */
-
-/*       SUBROUTINE ZHEEVR_2STAGE( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, */
-/*                                 IL, IU, ABSTOL, M, W, Z, LDZ, ISUPPZ, */
-/*                                 WORK, LWORK, RWORK, LRWORK, IWORK, */
-/*                                 LIWORK, INFO ) */
-
-/*       IMPLICIT NONE */
-
-/*       CHARACTER          JOBZ, RANGE, UPLO */
-/*       INTEGER            IL, INFO, IU, LDA, LDZ, LIWORK, LRWORK, LWORK, */
-/*      $                   M, N */
-/*       DOUBLE PRECISION   ABSTOL, VL, VU */
-/*       INTEGER            ISUPPZ( * ), IWORK( * ) */
-/*       DOUBLE PRECISION   RWORK( * ), W( * ) */
-/*       COMPLEX*16         A( LDA, * ), WORK( * ), Z( LDZ, * ) */
-
-
-/* > \par Purpose: */
-/*  ============= */
-/* > */
-/* > \verbatim */
-/* > */
-/* > ZHEEVR_2STAGE computes selected eigenvalues and, optionally, eigenvectors */
-/* > of a complex Hermitian matrix A using the 2stage technique for */
-/* > the reduction to tridiagonal.  Eigenvalues and eigenvectors can */
-/* > be selected by specifying either a range of values or a range of */
-/* > indices for the desired eigenvalues. */
-/* > */
-/* > ZHEEVR_2STAGE first reduces the matrix A to tridiagonal form T with a call */
-/* > to ZHETRD.  Then, whenever possible, ZHEEVR_2STAGE calls ZSTEMR to compute */
-/* > eigenspectrum using Relatively Robust Representations.  ZSTEMR */
-/* > computes eigenvalues by the dqds algorithm, while orthogonal */
-/* > eigenvectors are computed from various "good" L D L^T representations */
-/* > (also known as Relatively Robust Representations). Gram-Schmidt */
-/* > orthogonalization is avoided as far as possible. More specifically, */
-/* > the various steps of the algorithm are as follows. */
-/* > */
-/* > For each unreduced block (submatrix) of T, */
-/* >    (a) Compute T - sigma I  = L D L^T, so that L and D */
-/* >        define all the wanted eigenvalues to high relative accuracy. */
-/* >        This means that small relative changes in the entries of D and L */
-/* >        cause only small relative changes in the eigenvalues and */
-/* >        eigenvectors. The standard (unfactored) representation of the */
-/* >        tridiagonal matrix T does not have this property in general. */
-/* >    (b) Compute the eigenvalues to suitable accuracy. */
-/* >        If the eigenvectors are desired, the algorithm attains full */
-/* >        accuracy of the computed eigenvalues only right before */
-/* >        the corresponding vectors have to be computed, see steps c) and d). */
-/* >    (c) For each cluster of close eigenvalues, select a new */
-/* >        shift close to the cluster, find a new factorization, and refine */
-/* >        the shifted eigenvalues to suitable accuracy. */
-/* >    (d) For each eigenvalue with a large enough relative separation compute */
-/* >        the corresponding eigenvector by forming a rank revealing twisted */
-/* >        factorization. Go back to (c) for any clusters that remain. */
-/* > */
-/* > The desired accuracy of the output can be specified by the input */
-/* > parameter ABSTOL. */
-/* > */
-/* > For more details, see DSTEMR's documentation and: */
-/* > - Inderjit S. Dhillon and Beresford N. Parlett: "Multiple representations */
-/* >   to compute orthogonal eigenvectors of symmetric tridiagonal matrices," */
-/* >   Linear Algebra and its Applications, 387(1), pp. 1-28, August 2004. */
-/* > - Inderjit Dhillon and Beresford Parlett: "Orthogonal Eigenvectors and */
-/* >   Relative Gaps," SIAM Journal on Matrix Analysis and Applications, Vol. 25, */
-/* >   2004.  Also LAPACK Working Note 154. */
-/* > - Inderjit Dhillon: "A new O(n^2) algorithm for the symmetric */
-/* >   tridiagonal eigenvalue/eigenvector problem", */
-/* >   Computer Science Division Technical Report No. UCB/CSD-97-971, */
-/* >   UC Berkeley, May 1997. */
-/* > */
-/* > */
-/* > Note 1 : ZHEEVR_2STAGE calls ZSTEMR when the full spectrum is requested */
-/* > on machines which conform to the ieee-754 floating point standard. */
-/* > ZHEEVR_2STAGE calls DSTEBZ and ZSTEIN on non-ieee machines and */
-/* > when partial spectrum requests are made. */
-/* > */
-/* > Normal execution of ZSTEMR may create NaNs and infinities and */
-/* > hence may abort due to a floating point exception in environments */
-/* > which do not handle NaNs and infinities in the ieee standard default */
-/* > manner. */
-/* > \endverbatim */
-
-/*  Arguments: */
-/*  ========== */
-
-/* > \param[in] JOBZ */
-/* > \verbatim */
-/* >          JOBZ is CHARACTER*1 */
-/* >          = 'N':  Compute eigenvalues only; */
-/* >          = 'V':  Compute eigenvalues and eigenvectors. */
-/* >                  Not available in this release. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] RANGE */
-/* > \verbatim */
-/* >          RANGE is CHARACTER*1 */
-/* >          = 'A': all eigenvalues will be found. */
-/* >          = 'V': all eigenvalues in the half-open interval (VL,VU] */
-/* >                 will be found. */
-/* >          = 'I': the IL-th through IU-th eigenvalues will be found. */
-/* >          For RANGE = 'V' or 'I' and IU - IL < N - 1, DSTEBZ and */
-/* >          ZSTEIN are called */
-/* > \endverbatim */
-/* > */
-/* > \param[in] UPLO */
-/* > \verbatim */
-/* >          UPLO is CHARACTER*1 */
-/* >          = 'U':  Upper triangle of A is stored; */
-/* >          = 'L':  Lower triangle of A is stored. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] N */
-/* > \verbatim */
-/* >          N is INTEGER */
-/* >          The order of the matrix A.  N >= 0. */
-/* > \endverbatim */
-/* > */
-/* > \param[in,out] A */
-/* > \verbatim */
-/* >          A is COMPLEX*16 array, dimension (LDA, N) */
-/* >          On entry, the Hermitian matrix A.  If UPLO = 'U', the */
-/* >          leading N-by-N upper triangular part of A contains the */
-/* >          upper triangular part of the matrix A.  If UPLO = 'L', */
-/* >          the leading N-by-N lower triangular part of A contains */
-/* >          the lower triangular part of the matrix A. */
-/* >          On exit, the lower triangle (if UPLO='L') or the upper */
-/* >          triangle (if UPLO='U') of A, including the diagonal, is */
-/* >          destroyed. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] LDA */
-/* > \verbatim */
-/* >          LDA is INTEGER */
-/* >          The leading dimension of the array A.  LDA >= f2cmax(1,N). */
-/* > \endverbatim */
-/* > */
-/* > \param[in] VL */
-/* > \verbatim */
-/* >          VL is DOUBLE PRECISION */
-/* >          If RANGE='V', the lower bound of the interval to */
-/* >          be searched for eigenvalues. VL < VU. */
-/* >          Not referenced if RANGE = 'A' or 'I'. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] VU */
-/* > \verbatim */
-/* >          VU is DOUBLE PRECISION */
-/* >          If RANGE='V', the upper bound of the interval to */
-/* >          be searched for eigenvalues. VL < VU. */
-/* >          Not referenced if RANGE = 'A' or 'I'. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] IL */
-/* > \verbatim */
-/* >          IL is INTEGER */
-/* >          If RANGE='I', the index of the */
-/* >          smallest eigenvalue to be returned. */
-/* >          1 <= IL <= IU <= N, if N > 0; IL = 1 and IU = 0 if N = 0. */
-/* >          Not referenced if RANGE = 'A' or 'V'. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] IU */
-/* > \verbatim */
-/* >          IU is INTEGER */
-/* >          If RANGE='I', the index of the */
-/* >          largest eigenvalue to be returned. */
-/* >          1 <= IL <= IU <= N, if N > 0; IL = 1 and IU = 0 if N = 0. */
-/* >          Not referenced if RANGE = 'A' or 'V'. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] ABSTOL */
-/* > \verbatim */
-/* >          ABSTOL is DOUBLE PRECISION */
-/* >          The absolute error tolerance for the eigenvalues. */
-/* >          An approximate eigenvalue is accepted as converged */
-/* >          when it is determined to lie in an interval [a,b] */
-/* >          of width less than or equal to */
-/* > */
-/* >                  ABSTOL + EPS *   f2cmax( |a|,|b| ) , */
-/* > */
-/* >          where EPS is the machine precision.  If ABSTOL is less than */
-/* >          or equal to zero, then  EPS*|T|  will be used in its place, */
-/* >          where |T| is the 1-norm of the tridiagonal matrix obtained */
-/* >          by reducing A to tridiagonal form. */
-/* > */
-/* >          See "Computing Small Singular Values of Bidiagonal Matrices */
-/* >          with Guaranteed High Relative Accuracy," by Demmel and */
-/* >          Kahan, LAPACK Working Note #3. */
-/* > */
-/* >          If high relative accuracy is important, set ABSTOL to */
-/* >          DLAMCH( 'Safe minimum' ).  Doing so will guarantee that */
-/* >          eigenvalues are computed to high relative accuracy when */
-/* >          possible in future releases.  The current code does not */
-/* >          make any guarantees about high relative accuracy, but */
-/* >          future releases will. See J. Barlow and J. Demmel, */
-/* >          "Computing Accurate Eigensystems of Scaled Diagonally */
-/* >          Dominant Matrices", LAPACK Working Note #7, for a discussion */
-/* >          of which matrices define their eigenvalues to high relative */
-/* >          accuracy. */
-/* > \endverbatim */
-/* > */
-/* > \param[out] M */
-/* > \verbatim */
-/* >          M is INTEGER */
-/* >          The total number of eigenvalues found.  0 <= M <= N. */
-/* >          If RANGE = 'A', M = N, and if RANGE = 'I', M = IU-IL+1. */
-/* > \endverbatim */
-/* > */
-/* > \param[out] W */
-/* > \verbatim */
-/* >          W is DOUBLE PRECISION array, dimension (N) */
-/* >          The first M elements contain the selected eigenvalues in */
-/* >          ascending order. */
-/* > \endverbatim */
-/* > */
-/* > \param[out] Z */
-/* > \verbatim */
-/* >          Z is COMPLEX*16 array, dimension (LDZ, f2cmax(1,M)) */
-/* >          If JOBZ = 'V', then if INFO = 0, the first M columns of Z */
-/* >          contain the orthonormal eigenvectors of the matrix A */
-/* >          corresponding to the selected eigenvalues, with the i-th */
-/* >          column of Z holding the eigenvector associated with W(i). */
-/* >          If JOBZ = 'N', then Z is not referenced. */
-/* >          Note: the user must ensure that at least f2cmax(1,M) columns are */
-/* >          supplied in the array Z; if RANGE = 'V', the exact value of M */
-/* >          is not known in advance and an upper bound must be used. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] LDZ */
-/* > \verbatim */
-/* >          LDZ is INTEGER */
-/* >          The leading dimension of the array Z.  LDZ >= 1, and if */
-/* >          JOBZ = 'V', LDZ >= f2cmax(1,N). */
-/* > \endverbatim */
-/* > */
-/* > \param[out] ISUPPZ */
-/* > \verbatim */
-/* >          ISUPPZ is INTEGER array, dimension ( 2*f2cmax(1,M) ) */
-/* >          The support of the eigenvectors in Z, i.e., the indices */
-/* >          indicating the nonzero elements in Z. The i-th eigenvector */
-/* >          is nonzero only in elements ISUPPZ( 2*i-1 ) through */
-/* >          ISUPPZ( 2*i ). This is an output of ZSTEMR (tridiagonal */
-/* >          matrix). The support of the eigenvectors of A is typically */
-/* >          1:N because of the unitary transformations applied by ZUNMTR. */
-/* >          Implemented only for RANGE = 'A' or 'I' and IU - IL = N - 1 */
-/* > \endverbatim */
-/* > */
-/* > \param[out] WORK */
-/* > \verbatim */
-/* >          WORK is COMPLEX*16 array, dimension (MAX(1,LWORK)) */
-/* >          On exit, if INFO = 0, WORK(1) returns the optimal LWORK. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] LWORK */
-/* > \verbatim */
-/* >          LWORK is INTEGER */
-/* >          The dimension of the array WORK. */
-/* >          If JOBZ = 'N' and N > 1, LWORK must be queried. */
-/* >                                   LWORK = MAX(1, 26*N, dimension) where */
-/* >                                   dimension = f2cmax(stage1,stage2) + (KD+1)*N + N */
-/* >                                             = N*KD + N*f2cmax(KD+1,FACTOPTNB) */
-/* >                                               + f2cmax(2*KD*KD, KD*NTHREADS) */
-/* >                                               + (KD+1)*N + N */
-/* >                                   where KD is the blocking size of the reduction, */
-/* >                                   FACTOPTNB is the blocking used by the QR or LQ */
-/* >                                   algorithm, usually FACTOPTNB=128 is a good choice */
-/* >                                   NTHREADS is the number of threads used when */
-/* >                                   openMP compilation is enabled, otherwise =1. */
-/* >          If JOBZ = 'V' and N > 1, LWORK must be queried. Not yet available */
-/* > */
-/* >          If LWORK = -1, then a workspace query is assumed; the routine */
-/* >          only calculates the optimal sizes of the WORK, RWORK and */
-/* >          IWORK arrays, returns these values as the first entries of */
-/* >          the WORK, RWORK and IWORK arrays, and no error message */
-/* >          related to LWORK or LRWORK or LIWORK is issued by XERBLA. */
-/* > \endverbatim */
-/* > */
-/* > \param[out] RWORK */
-/* > \verbatim */
-/* >          RWORK is DOUBLE PRECISION array, dimension (MAX(1,LRWORK)) */
-/* >          On exit, if INFO = 0, RWORK(1) returns the optimal */
-/* >          (and minimal) LRWORK. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] LRWORK */
-/* > \verbatim */
-/* >          LRWORK is INTEGER */
-/* >          The length of the array RWORK.  LRWORK >= f2cmax(1,24*N). */
-/* > */
-/* >          If LRWORK = -1, then a workspace query is assumed; the */
-/* >          routine only calculates the optimal sizes of the WORK, RWORK */
-/* >          and IWORK arrays, returns these values as the first entries */
-/* >          of the WORK, RWORK and IWORK arrays, and no error message */
-/* >          related to LWORK or LRWORK or LIWORK is issued by XERBLA. */
-/* > \endverbatim */
-/* > */
-/* > \param[out] IWORK */
-/* > \verbatim */
-/* >          IWORK is INTEGER array, dimension (MAX(1,LIWORK)) */
-/* >          On exit, if INFO = 0, IWORK(1) returns the optimal */
-/* >          (and minimal) LIWORK. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] LIWORK */
-/* > \verbatim */
-/* >          LIWORK is INTEGER */
-/* >          The dimension of the array IWORK.  LIWORK >= f2cmax(1,10*N). */
-/* > */
-/* >          If LIWORK = -1, then a workspace query is assumed; the */
-/* >          routine only calculates the optimal sizes of the WORK, RWORK */
-/* >          and IWORK arrays, returns these values as the first entries */
-/* >          of the WORK, RWORK and IWORK arrays, and no error message */
-/* >          related to LWORK or LRWORK or LIWORK is issued by XERBLA. */
-/* > \endverbatim */
-/* > */
-/* > \param[out] INFO */
-/* > \verbatim */
-/* >          INFO is INTEGER */
-/* >          = 0:  successful exit */
-/* >          < 0:  if INFO = -i, the i-th argument had an illegal value */
-/* >          > 0:  Internal error */
-/* > \endverbatim */
-
-/*  Authors: */
-/*  ======== */
-
-/* > \author Univ. of Tennessee */
-/* > \author Univ. of California Berkeley */
-/* > \author Univ. of Colorado Denver */
-/* > \author NAG Ltd. */
-
-/* > \date June 2016 */
-
-/* > \ingroup complex16HEeigen */
-
-/* > \par Contributors: */
-/*  ================== */
-/* > */
-/* >     Inderjit Dhillon, IBM Almaden, USA \n */
-/* >     Osni Marques, LBNL/NERSC, USA \n */
-/* >     Ken Stanley, Computer Science Division, University of */
-/* >       California at Berkeley, USA \n */
-/* >     Jason Riedy, Computer Science Division, University of */
-/* >       California at Berkeley, USA \n */
-/* > */
-/* > \par Further Details: */
-/*  ===================== */
-/* > */
-/* > \verbatim */
-/* > */
-/* >  All details about the 2stage techniques are available in: */
-/* > */
-/* >  Azzam Haidar, Hatem Ltaief, and Jack Dongarra. */
-/* >  Parallel reduction to condensed forms for symmetric eigenvalue problems */
-/* >  using aggregated fine-grained and memory-aware kernels. In Proceedings */
-/* >  of 2011 International Conference for High Performance Computing, */
-/* >  Networking, Storage and Analysis (SC '11), New York, NY, USA, */
-/* >  Article 8 , 11 pages. */
-/* >  http://doi.acm.org/10.1145/2063384.2063394 */
-/* > */
-/* >  A. Haidar, J. Kurzak, P. Luszczek, 2013. */
-/* >  An improved parallel singular value algorithm and its implementation */
-/* >  for multicore hardware, In Proceedings of 2013 International Conference */
-/* >  for High Performance Computing, Networking, Storage and Analysis (SC '13). */
-/* >  Denver, Colorado, USA, 2013. */
-/* >  Article 90, 12 pages. */
-/* >  http://doi.acm.org/10.1145/2503210.2503292 */
-/* > */
-/* >  A. Haidar, R. Solca, S. Tomov, T. Schulthess and J. Dongarra. */
-/* >  A novel hybrid CPU-GPU generalized eigensolver for electronic structure */
-/* >  calculations based on fine-grained memory aware tasks. */
-/* >  International Journal of High Performance Computing Applications. */
-/* >  Volume 28 Issue 2, Pages 196-209, May 2014. */
-/* >  http://hpc.sagepub.com/content/28/2/196 */
-/* > */
-/* > \endverbatim */
-
-/*  ===================================================================== */
 /* Subroutine */ void zheevr_2stage_(char *jobz, char *range, char *uplo, 
 	integer *n, doublecomplex *a, integer *lda, doublereal *vl, 
 	doublereal *vu, integer *il, integer *iu, doublereal *abstol, integer 
@@ -676,13 +271,13 @@ static integer c_n1 = -1;
     doublereal d__1, d__2;
 
     /* Local variables */
+    integer iscale, i__, j, ib, kd, jj;
+    doublereal eps, vll, vuu, tmp1;
     extern integer ilaenv2stage_(integer *, char *, char *, integer *, 
 	    integer *, integer *, integer *);
-    doublereal anrm;
-    integer imax;
-    doublereal rmin, rmax;
+    doublereal anrm, rmin, rmax;
     logical test;
-    integer itmp1, i__, j;
+    integer itmp1;
     extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     integer indrd, indre;
@@ -703,16 +298,14 @@ static integer c_n1 = -1;
     logical wantz;
     extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
-    integer ib, kd, jj;
     extern doublereal dlamch_(char *);
     logical alleig, indeig;
-    integer iscale, ieeeok, indibl, indrdd, indifl, indree;
+    integer ieeeok, indibl, indrdd, indifl, indree;
     logical valeig;
     doublereal safmin;
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
-    extern void zdscal_(
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen), zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     doublereal abstll, bignum;
     integer indtau, indisp;
@@ -741,16 +334,13 @@ static integer c_n1 = -1;
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, integer *
 	    );
-    doublereal eps, vll, vuu;
     integer indhous, llrwork;
-    doublereal tmp1;
 
 
 
-/*  -- LAPACK driver routine (version 3.8.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     June 2016 */
 
 
 /*  ===================================================================== */
@@ -760,11 +350,11 @@ static integer c_n1 = -1;
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     --w;
     z_dim1 = *ldz;
-    z_offset = 1 + z_dim1 * 1;
+    z_offset = 1 + z_dim1;
     z__ -= z_offset;
     --isuppz;
     --work;
@@ -787,13 +377,16 @@ static integer c_n1 = -1;
     ib = ilaenv2stage_(&c__2, "ZHETRD_2STAGE", jobz, n, &kd, &c_n1, &c_n1);
     lhtrd = ilaenv2stage_(&c__3, "ZHETRD_2STAGE", jobz, n, &kd, &ib, &c_n1);
     lwtrd = ilaenv2stage_(&c__4, "ZHETRD_2STAGE", jobz, n, &kd, &ib, &c_n1);
-    lwmin = *n + lhtrd + lwtrd;
-/* Computing MAX */
-    i__1 = 1, i__2 = *n * 24;
-    lrwmin = f2cmax(i__1,i__2);
-/* Computing MAX */
-    i__1 = 1, i__2 = *n * 10;
-    liwmin = f2cmax(i__1,i__2);
+
+    if (*n <= 1) {
+	lwmin = 1;
+	lrwmin = 1;
+	liwmin = 1;
+    } else {
+	lwmin = *n + lhtrd + lwtrd;
+	lrwmin = *n * 24;
+	liwmin = *n * 10;
+    }
 
     *info = 0;
     if (! lsame_(jobz, "N")) {
@@ -856,7 +449,7 @@ static integer c_n1 = -1;
     }
 
     if (*n == 1) {
-	work[1].r = 2., work[1].i = 0.;
+	work[1].r = 1., work[1].i = 0.;
 	if (alleig || indeig) {
 	    *m = 1;
 	    i__1 = a_dim1 + 1;
@@ -903,8 +496,12 @@ static integer c_n1 = -1;
 	iscale = 1;
 	sigma = rmin / anrm;
     } else if (anrm > rmax) {
-	iscale = 1;
+/*        An infinite norm gives SIGMA = 0; leave such a matrix */
+/*        unscaled so that VL and VU remain a valid interval. */
 	sigma = rmax / anrm;
+	if (sigma > 0.) {
+	    iscale = 1;
+	}
     }
     if (iscale == 1) {
 	if (lower) {
@@ -1053,13 +650,8 @@ static integer c_n1 = -1;
 
 L30:
     if (iscale == 1) {
-	if (*info == 0) {
-	    imax = *m;
-	} else {
-	    imax = *info - 1;
-	}
 	d__1 = 1. / sigma;
-	dscal_(&imax, &d__1, &w[1], &c__1);
+	dscal_(m, &d__1, &w[1], &c__1);
     }
 
 /*     If eigenvalues are not in order, then sort them, along with */

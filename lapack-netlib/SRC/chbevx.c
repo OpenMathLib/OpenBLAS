@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static complex c_b1 = {0.f,0.f};
@@ -243,7 +241,6 @@ matrices</b> */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download CHBEVX + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chbevx.
 f"> */
@@ -254,7 +251,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chbevx.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -483,8 +479,11 @@ f"> */
 /* >          INFO is INTEGER */
 /* >          = 0:  successful exit */
 /* >          < 0:  if INFO = -i, the i-th argument had an illegal value */
-/* >          > 0:  if INFO = i, then i eigenvectors failed to converge. */
-/* >                Their indices are stored in array IFAIL. */
+/* >          > 0:  if INFO = i, and i is: */
+/* >                <= N: then i eigenvectors failed to converge in */
+/* >                     CSTEIN; their indices are stored in IFAIL. */
+/* >                > N: SSTEBZ returned INFO = INFO - N; */
+/* >                     see SSTEBZ for details. */
 /* > \endverbatim */
 
 /*  Authors: */
@@ -495,9 +494,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date June 2016 */
-
-/* > \ingroup complexOTHEReigen */
+/* > \ingroup hbevx */
 
 /*  ===================================================================== */
 /* Subroutine */ void chbevx_(char *jobz, char *range, char *uplo, integer *n, 
@@ -512,13 +509,13 @@ f"> */
     real r__1, r__2;
 
     /* Local variables */
+    integer imyscale, i__, j, jj;
+    real eps, vll, vuu, tmp1;
     integer indd, inde;
-    real anrm;
-    integer imax;
-    real rmin, rmax;
+    real anrm, rmin, rmax;
     logical test;
     complex ctmp1;
-    integer itmp1, i__, j, indee;
+    integer itmp1, indee;
     real sigma;
     extern logical lsame_(char *, char *);
     extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
@@ -534,11 +531,10 @@ f"> */
     extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     logical wantz;
-    integer jj;
     extern real clanhb_(char *, char *, integer *, integer *, complex *, 
 	    integer *, real *);
     logical alleig, indeig;
-    integer iscale, indibl;
+    integer indibl;
     extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *), chbtrd_(char *, char *, integer *, integer *, complex *, 
 	    integer *, real *, real *, complex *, integer *, complex *, 
@@ -563,13 +559,12 @@ f"> */
 	    real *, integer *, integer *, real *, real *, real *, integer *, 
 	    integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *);
-    real smlnum, eps, vll, vuu, tmp1;
+    real smlnum;
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     June 2016 */
 
 
 /*  ===================================================================== */
@@ -579,14 +574,14 @@ f"> */
 
     /* Parameter adjustments */
     ab_dim1 = *ldab;
-    ab_offset = 1 + ab_dim1 * 1;
+    ab_offset = 1 + ab_dim1;
     ab -= ab_offset;
     q_dim1 = *ldq;
-    q_offset = 1 + q_dim1 * 1;
+    q_offset = 1 + q_dim1;
     q -= q_offset;
     --w;
     z_dim1 = *ldz;
-    z_offset = 1 + z_dim1 * 1;
+    z_offset = 1 + z_dim1;
     z__ -= z_offset;
     --work;
     --rwork;
@@ -685,7 +680,7 @@ f"> */
 
 /*     Scale matrix to allowable range, if necessary. */
 
-    iscale = 0;
+    imyscale = 0;
     abstll = *abstol;
     if (valeig) {
 	vll = *vl;
@@ -696,13 +691,17 @@ f"> */
     }
     anrm = clanhb_("M", uplo, n, kd, &ab[ab_offset], ldab, &rwork[1]);
     if (anrm > 0.f && anrm < rmin) {
-	iscale = 1;
+	imyscale = 1;
 	sigma = rmin / anrm;
     } else if (anrm > rmax) {
-	iscale = 1;
+/*        An infinite norm gives SIGMA = 0; leave such a matrix */
+/*        unscaled so that VL and VU remain a valid interval. */
 	sigma = rmax / anrm;
+	if (sigma > 0.f) {
+	    imyscale = 1;
+	}
     }
-    if (iscale == 1) {
+    if (imyscale == 1) {
 	if (lower) {
 	    clascl_("B", kd, kd, &c_b16, &sigma, n, n, &ab[ab_offset], ldab, 
 		    info);
@@ -778,12 +777,21 @@ f"> */
     indiwk = indisp + *n;
     sstebz_(range, order, n, &vll, &vuu, il, iu, &abstll, &rwork[indd], &
 	    rwork[inde], m, &nsplit, &w[1], &iwork[indibl], &iwork[indisp], &
-	    rwork[indrwk], &iwork[indiwk], info);
+	    rwork[indrwk], &iwork[indiwk], &iinfo);
+    if (iinfo != 0) {
+	*info = *n + iinfo;
+	if (iinfo != 1) {
+	    goto L30;
+	}
+    }
 
     if (wantz) {
 	cstein_(n, &rwork[indd], &rwork[inde], m, &w[1], &iwork[indibl], &
 		iwork[indisp], &z__[z_offset], ldz, &rwork[indrwk], &iwork[
-		indiwk], &ifail[1], info);
+		indiwk], &ifail[1], &iinfo);
+	if (iinfo != 0 && *info == 0) {
+	    *info = iinfo;
+	}
 
 /*        Apply unitary matrix used in reduction to tridiagonal */
 /*        form to eigenvectors returned by CSTEIN. */
@@ -800,14 +808,9 @@ f"> */
 /*     If matrix was scaled, then rescale eigenvalues appropriately. */
 
 L30:
-    if (iscale == 1) {
-	if (*info == 0) {
-	    imax = *m;
-	} else {
-	    imax = *info - 1;
-	}
+    if (imyscale == 1) {
 	r__1 = 1.f / sigma;
-	sscal_(&imax, &r__1, &w[1], &c__1);
+	sscal_(m, &r__1, &w[1], &c__1);
     }
 
 /*     If eigenvalues are not in order, then sort them, along with */

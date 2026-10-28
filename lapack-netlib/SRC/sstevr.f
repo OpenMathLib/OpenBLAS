@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download SSTEVR + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sstevr.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sstevr.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -300,9 +298,11 @@
 *>       California at Berkeley, USA \n
 *>
 *  =====================================================================
-      SUBROUTINE SSTEVR( JOBZ, RANGE, N, D, E, VL, VU, IL, IU, ABSTOL,
+      SUBROUTINE SSTEVR( JOBZ, RANGE, N, D, E, VL, VU, IL, IU,
+     $                   ABSTOL,
      $                   M, W, Z, LDZ, ISUPPZ, WORK, LWORK, IWORK,
      $                   LIWORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -328,7 +328,7 @@
       LOGICAL            ALLEIG, INDEIG, TEST, LQUERY, VALEIG, WANTZ,
      $                   TRYRAC
       CHARACTER          ORDER
-      INTEGER            I, IEEEOK, IMAX, INDIBL, INDIFL, INDISP,
+      INTEGER            I, IEEEOK, INDIBL, INDIFL, INDISP,
      $                   INDIWO, ISCALE, J, JJ, LIWMIN, LWMIN, NSPLIT
       REAL               BIGNUM, EPS, RMAX, RMIN, SAFMIN, SIGMA, SMLNUM,
      $                   TMP1, TNRM, VLL, VUU
@@ -337,10 +337,12 @@
       LOGICAL            LSAME
       INTEGER            ILAENV
       REAL               SLAMCH, SLANST, SROUNDUP_LWORK
-      EXTERNAL           LSAME, ILAENV, SLAMCH, SLANST, SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SLAMCH, SLANST,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SSCAL, SSTEBZ, SSTEMR, SSTEIN, SSTERF,
+      EXTERNAL           SCOPY, SSCAL, SSTEBZ, SSTEMR, SSTEIN,
+     $                   SSTERF,
      $                   SSWAP, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -450,8 +452,11 @@
          ISCALE = 1
          SIGMA = RMIN / TNRM
       ELSE IF( TNRM.GT.RMAX ) THEN
-         ISCALE = 1
+*        An infinite norm gives SIGMA = 0; leave such a matrix
+*        unscaled so that VL and VU remain a valid interval.
          SIGMA = RMAX / TNRM
+         IF( SIGMA.GT.ZERO )
+     $      ISCALE = 1
       END IF
       IF( ISCALE.EQ.1 ) THEN
          CALL SSCAL( N, SIGMA, D, 1 )
@@ -497,7 +502,7 @@
             CALL SSTERF( N, W, WORK, INFO )
          ELSE
             CALL SCOPY( N, D, 1, WORK( N+1 ), 1 )
-            IF (ABSTOL .LE. TWO*N*EPS) THEN
+            IF (ABSTOL .LE. TWO*REAL( N )*EPS) THEN
                TRYRAC = .TRUE.
             ELSE
                TRYRAC = .FALSE.
@@ -522,12 +527,14 @@
          ORDER = 'E'
       END IF
 
-      CALL SSTEBZ( RANGE, ORDER, N, VLL, VUU, IL, IU, ABSTOL, D, E, M,
+      CALL SSTEBZ( RANGE, ORDER, N, VLL, VUU, IL, IU, ABSTOL, D, E,
+     $             M,
      $             NSPLIT, W, IWORK( INDIBL ), IWORK( INDISP ), WORK,
      $             IWORK( INDIWO ), INFO )
 *
       IF( WANTZ ) THEN
-         CALL SSTEIN( N, D, E, M, W, IWORK( INDIBL ), IWORK( INDISP ),
+         CALL SSTEIN( N, D, E, M, W, IWORK( INDIBL ),
+     $                IWORK( INDISP ),
      $                Z, LDZ, WORK, IWORK( INDIWO ), IWORK( INDIFL ),
      $                INFO )
       END IF
@@ -535,14 +542,8 @@
 *     If matrix was scaled, then rescale eigenvalues appropriately.
 *
    10 CONTINUE
-      IF( ISCALE.EQ.1 ) THEN
-         IF( INFO.EQ.0 ) THEN
-            IMAX = M
-         ELSE
-            IMAX = INFO - 1
-         END IF
-         CALL SSCAL( IMAX, ONE / SIGMA, W, 1 )
-      END IF
+      IF( ISCALE.EQ.1 )
+     $   CALL SSCAL( M, ONE / SIGMA, W, 1 )
 *
 *     If eigenvalues are not in order, then sort them, along with
 *     eigenvectors.
