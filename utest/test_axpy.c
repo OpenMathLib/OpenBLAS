@@ -157,3 +157,58 @@ CTEST(axpy,caxpy_incx_0)
 }
 #endif
 
+
+
+#ifdef BUILD_DOUBLE
+CTEST(axpy,daxpy_zero_output_stride)
+{
+    const blasint lengths[] = {1, 2, 9, 17, 33};
+    const blasint strides[] = {1, 2, -1, -2};
+    const double seeds[] = {-2, 0, 2};
+    const double alphas[] = {0, 1, -1, 0.5};
+    int ni, si, yi, ai, k;
+    for (ni = 0; ni < 5; ++ni)
+        for (si = 0; si < 4; ++si)
+            for (yi = 0; yi < 3; ++yi)
+                for (ai = 0; ai < 4; ++ai) {
+                    blasint n = lengths[ni], incx = strides[si], incy = 0;
+                    double alpha = alphas[ai], x[65], y[3] = {99, 0, 99};
+                    double expected = seeds[yi] + n * alpha;
+                    y[1] = seeds[yi];
+                    for (k = 0; k < 65; ++k) x[k] = 1;
+                    BLASFUNC(daxpy)(&n, &alpha, x, &incx, y + 1, &incy);
+                    ASSERT_DBL_NEAR_TOL(expected, y[1], DOUBLE_EPS);
+                    ASSERT_DBL_NEAR_TOL(99, y[0], DOUBLE_EPS);
+                    ASSERT_DBL_NEAR_TOL(99, y[2], DOUBLE_EPS);
+                    for (k = 0; k < 65; ++k)
+                        ASSERT_DBL_NEAR_TOL(1, x[k], DOUBLE_EPS);
+                }
+}
+#endif
+
+#ifdef BUILD_SINGLE
+CTEST(axpy,saxpy_zero_output_stride)
+{
+    const blasint lengths[] = {1, 2, 9, 17, 33};
+    const blasint strides[] = {1, 2, -1, -2};
+    const float seeds[] = {-2, 0, 2};
+    const float alphas[] = {0, 1, -1, 0.5};
+    int ni, si, yi, ai, k;
+    for (ni = 0; ni < 5; ++ni)
+        for (si = 0; si < 4; ++si)
+            for (yi = 0; yi < 3; ++yi)
+                for (ai = 0; ai < 4; ++ai) {
+                    blasint n = lengths[ni], incx = strides[si], incy = 0;
+                    float alpha = alphas[ai], x[65], y[3] = {99, 0, 99};
+                    float expected = seeds[yi] + n * alpha;
+                    y[1] = seeds[yi];
+                    for (k = 0; k < 65; ++k) x[k] = 1;
+                    BLASFUNC(saxpy)(&n, &alpha, x, &incx, y + 1, &incy);
+                    ASSERT_DBL_NEAR_TOL(expected, y[1], DOUBLE_EPS);
+                    ASSERT_DBL_NEAR_TOL(99, y[0], DOUBLE_EPS);
+                    ASSERT_DBL_NEAR_TOL(99, y[2], DOUBLE_EPS);
+                    for (k = 0; k < 65; ++k)
+                        ASSERT_DBL_NEAR_TOL(1, x[k], DOUBLE_EPS);
+                }
+}
+#endif

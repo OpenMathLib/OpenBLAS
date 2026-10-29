@@ -161,6 +161,17 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 			j += gvl;
 		}
 	} else if( 0 == inc_y ) {
+#if defined(RISCV64_ZVL256B)
+        /* Zero output stride is an ordered update of one scalar. Do not
+           broadcast its initial value into every reduction lane. */
+        for (BLASLONG k = 0; k < n; ++k) {
+#if defined(DOUBLE)
+                y[0] = __builtin_fma(da, x[k * inc_x], y[0]);
+#else
+                y[0] = __builtin_fmaf(da, x[k * inc_x], y[0]);
+#endif
+        }
+#else
 	        BLASLONG stride_x = inc_x * sizeof(FLOAT);
 	        size_t in_vl = VSETVL(n);
 	        vy0 = VFMVVF_FLOAT( y[0], in_vl );
@@ -173,6 +184,8 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 	        FLOAT_V_M1_T v_res = VFMVVF_FLOAT_M1( 0.0f, 1 );
 	        v_res = VFREDSUMVS_FLOAT( vy0, v_res, in_vl );
 	        y[0] = EXTRACT_FLOAT(v_res);
+#endif
+
 	}else{
 		stride_x = inc_x * sizeof(FLOAT);
 		stride_y = inc_y * sizeof(FLOAT);
