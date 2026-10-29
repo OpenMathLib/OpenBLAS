@@ -268,8 +268,6 @@ static integer pow_ii(integer x, integer n) {
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__9 = 9;
@@ -277,7 +275,7 @@ static integer c__0 = 0;
 static integer c__2 = 2;
 static integer c__1 = 1;
 
-/* > \brief \b ZLAED0 used by sstedc. Computes all eigenvalues and corresponding eigenvectors of an unreduced 
+/* > \brief \b ZLAED0 used by ZSTEDC. Computes all eigenvalues and corresponding eigenvectors of an unreduced 
 symmetric tridiagonal matrix using the divide and conquer method. */
 
 /*  =========== DOCUMENTATION =========== */
@@ -285,7 +283,6 @@ symmetric tridiagonal matrix using the divide and conquer method. */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download ZLAED0 + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlaed0.
 f"> */
@@ -296,7 +293,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlaed0.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -386,16 +382,15 @@ f"> */
 /* > \param[out] QSTORE */
 /* > \verbatim */
 /* >          QSTORE is COMPLEX*16 array, dimension (LDQS, N) */
-/* >         Used to store parts of */
-/* >         the eigenvector matrix when the updating matrix multiplies */
-/* >         take place. */
+/* >         Workspace: holds the products of the leaf eigenvector */
+/* >         matrices and the QSIZ*N workspace of ZLAED7. */
 /* > \endverbatim */
 /* > */
 /* > \param[in] LDQS */
 /* > \verbatim */
 /* >          LDQS is INTEGER */
 /* >         The leading dimension of the array QSTORE. */
-/* >         LDQS >= f2cmax(1,N). */
+/* >         LDQS >= f2cmax(1,QSIZ). */
 /* > \endverbatim */
 /* > */
 /* > \param[out] INFO */
@@ -416,9 +411,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup complex16OTHERcomputational */
+/* > \ingroup laed0 */
 
 /*  ===================================================================== */
 /* Subroutine */ void zlaed0_(integer *qsiz, integer *n, doublereal *d__, 
@@ -430,8 +423,9 @@ f"> */
     doublereal d__1;
 
     /* Local variables */
+    integer i__, j, k, ll, iq, lgn, msd2, smm1, spm1, spm2;
     doublereal temp;
-    integer curr, i__, j, k, iperm;
+    integer curr, iperm;
     extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer indxq, iwrem, iqptr, tlvls;
@@ -442,7 +436,7 @@ f"> */
 	     integer *, integer *, integer *, integer *, integer *, 
 	    doublereal *, doublecomplex *, doublereal *, integer *, integer *)
 	    ;
-    integer ll, iq, igivcl;
+    integer igivcl;
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
@@ -451,14 +445,14 @@ f"> */
 	    doublereal *);
     integer igivnm, submat, curprb, subpbs, igivpt;
     extern /* Subroutine */ void dsteqr_(char *, integer *, doublereal *, 
-	    doublereal *, doublereal *, integer *, doublereal *, integer *);
-    integer curlvl, matsiz, iprmpt, smlsiz, lgn, msd2, smm1, spm1, spm2;
+	    doublereal *, doublereal *, integer *, doublereal *, integer *), zlacpy_(char *, integer *, integer *, doublecomplex *, 
+	    integer *, doublecomplex *, integer *);
+    integer curlvl, matsiz, iprmpt, smlsiz;
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -472,10 +466,10 @@ f"> */
     --d__;
     --e;
     q_dim1 = *ldq;
-    q_offset = 1 + q_dim1 * 1;
+    q_offset = 1 + q_dim1;
     q -= q_offset;
     qstore_dim1 = *ldqs;
-    qstore_offset = 1 + qstore_dim1 * 1;
+    qstore_offset = 1 + qstore_dim1;
     qstore -= qstore_offset;
     --rwork;
     --iwork;
@@ -554,10 +548,10 @@ L10:
 
     temp = log((doublereal) (*n)) / log(2.);
     lgn = (integer) temp;
-    if (pow_ii(c__2, lgn) < *n) {
+    if (pow_ii(&c__2, &lgn) < *n) {
 	++lgn;
     }
-    if (pow_ii(c__2, lgn) < *n) {
+    if (pow_ii(&c__2, &lgn) < *n) {
 	++lgn;
     }
     iprmpt = indxq + *n + 1;
@@ -599,6 +593,8 @@ L10:
 	zlacrm_(qsiz, &matsiz, &q[submat * q_dim1 + 1], ldq, &rwork[ll], &
 		matsiz, &qstore[submat * qstore_dim1 + 1], ldqs, &rwork[iwrem]
 		);
+	zlacpy_("A", qsiz, &matsiz, &qstore[submat * qstore_dim1 + 1], ldqs, &
+		q[submat * q_dim1 + 1], ldq);
 /* Computing 2nd power */
 	i__2 = matsiz;
 	iwork[iqptr + curr + 1] = iwork[iqptr + curr] + i__2 * i__2;
@@ -645,14 +641,16 @@ L80:
 /*     when the eigenvectors of a full or band Hermitian matrix (which */
 /*     was reduced to tridiagonal form) are desired. */
 
-/*     I am free to use Q as a valuable working space until Loop 150. */
+/*     The eigenvectors stay in Q, which has leading dimension LDQ, and */
+/*     the contiguous QSTORE is the QSIZ*MATSIZ workspace of ZLAED7: */
+/*     Q(N+1:LDQ,:) belongs to the caller and must not be touched. */
 
 	    zlaed7_(&matsiz, &msd2, qsiz, &tlvls, &curlvl, &curprb, &d__[
-		    submat], &qstore[submat * qstore_dim1 + 1], ldqs, &e[
-		    submat + msd2 - 1], &iwork[indxq + submat], &rwork[iq], &
-		    iwork[iqptr], &iwork[iprmpt], &iwork[iperm], &iwork[
-		    igivpt], &iwork[igivcl], &rwork[igivnm], &q[submat * 
-		    q_dim1 + 1], &rwork[iwrem], &iwork[subpbs + 1], info);
+		    submat], &q[submat * q_dim1 + 1], ldq, &e[submat + msd2 - 
+		    1], &iwork[indxq + submat], &rwork[iq], &iwork[iqptr], &
+		    iwork[iprmpt], &iwork[iperm], &iwork[igivpt], &iwork[
+		    igivcl], &rwork[igivnm], &qstore[qstore_offset], &rwork[
+		    iwrem], &iwork[subpbs + 1], info);
 	    if (*info > 0) {
 		*info = submat * (*n + 1) + submat + matsiz - 1;
 		return;
@@ -674,11 +672,12 @@ L80:
     for (i__ = 1; i__ <= i__1; ++i__) {
 	j = iwork[indxq + i__];
 	rwork[i__] = d__[j];
-	zcopy_(qsiz, &qstore[j * qstore_dim1 + 1], &c__1, &q[i__ * q_dim1 + 1]
+	zcopy_(qsiz, &q[j * q_dim1 + 1], &c__1, &qstore[i__ * qstore_dim1 + 1]
 		, &c__1);
 /* L100: */
     }
     dcopy_(n, &rwork[1], &c__1, &d__[1], &c__1);
+    zlacpy_("A", qsiz, n, &qstore[qstore_offset], ldqs, &q[q_offset], ldq);
 
     return;
 
