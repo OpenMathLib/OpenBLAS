@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static complex c_b1 = {0.f,0.f};
@@ -245,7 +243,6 @@ static real c_b59 = 0.f;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download CGELSS + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgelss.
 f"> */
@@ -256,7 +253,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgelss.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -409,9 +405,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date June 2016 */
-
-/* > \ingroup complexGEsolve */
+/* > \ingroup gelss */
 
 /*  ===================================================================== */
 /* Subroutine */ void cgelss_(integer *m, integer *n, integer *nrhs, complex *
@@ -421,13 +415,14 @@ f"> */
 {
     /* System generated locals */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1, i__2, i__3;
-    real r__1=0.;
+    real r__1;
 
     /* Local variables */
-    real anrm, bnrm;
+    integer i__, bl, ie, il, mm;
+    complex dum[1];
+    real eps, thr, anrm, bnrm;
     integer itau, lwork_cgebrd__, lwork_cgelqf__, lwork_cgeqrf__, 
-	    lwork_cungbr__, lwork_cunmbr__, i__, lwork_cunmlq__, 
-	    lwork_cunmqr__;
+	    lwork_cungbr__, lwork_cunmbr__, lwork_cunmlq__, lwork_cunmqr__;
     extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
@@ -439,13 +434,12 @@ f"> */
     real sfmin;
     extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
-    integer minmn, maxmn, itaup, itauq, mnthr, iwork, bl, ie, il;
+    integer minmn, maxmn, itaup, itauq, mnthr, iwork;
     extern /* Subroutine */ void cgebrd_(integer *, integer *, complex *, 
 	    integer *, real *, real *, complex *, complex *, complex *, 
-	    integer *, integer *), slabad_(real *, real *);
+	    integer *, integer *);
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
-    integer mm;
     extern /* Subroutine */ void cgelqf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *), clascl_(
 	    char *, integer *, integer *, real *, real *, integer *, integer *
@@ -455,9 +449,7 @@ f"> */
     extern real slamch_(char *);
     extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *), claset_(char *, 
-	    integer *, integer *, complex *, complex *, complex *, integer *);
-    extern void xerbla_(char *, integer *, ftnlen);
-    extern void cbdsqr_(char *, 
+	    integer *, integer *, complex *, complex *, complex *, integer *), xerbla_(char *, integer *, ftnlen), cbdsqr_(char *, 
 	    integer *, integer *, integer *, integer *, real *, real *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *, 
 	    real *, integer *);
@@ -483,14 +475,12 @@ f"> */
     real smlnum;
     integer irwork;
     logical lquery;
-    complex dum[1];
-    real eps, thr;
+    extern real sroundup_lwork__(integer *);
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     June 2016 */
 
 
 /*  ===================================================================== */
@@ -500,10 +490,10 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --s;
     --work;
@@ -548,11 +538,11 @@ f"> */
 
 /*              Compute space needed for CGEQRF */
 		cgeqrf_(m, n, &a[a_offset], lda, dum, dum, &c_n1, info);
-		lwork_cgeqrf__ = dum[0].r;
+		lwork_cgeqrf__ = (integer) dum[0].r;
 /*              Compute space needed for CUNMQR */
 		cunmqr_("L", "C", m, nrhs, n, &a[a_offset], lda, dum, &b[
 			b_offset], ldb, dum, &c_n1, info);
-		lwork_cunmqr__ = dum[0].r;
+		lwork_cunmqr__ = (integer) dum[0].r;
 		mm = *n;
 /* Computing MAX */
 		i__1 = maxwrk, i__2 = *n + *n * ilaenv_(&c__1, "CGEQRF", 
@@ -570,15 +560,15 @@ f"> */
 /*              Compute space needed for CGEBRD */
 		cgebrd_(&mm, n, &a[a_offset], lda, &s[1], &s[1], dum, dum, 
 			dum, &c_n1, info);
-		lwork_cgebrd__ = dum[0].r;
+		lwork_cgebrd__ = (integer) dum[0].r;
 /*              Compute space needed for CUNMBR */
 		cunmbr_("Q", "L", "C", &mm, nrhs, n, &a[a_offset], lda, dum, &
 			b[b_offset], ldb, dum, &c_n1, info);
-		lwork_cunmbr__ = dum[0].r;
+		lwork_cunmbr__ = (integer) dum[0].r;
 /*              Compute space needed for CUNGBR */
 		cungbr_("P", n, n, n, &a[a_offset], lda, dum, dum, &c_n1, 
 			info);
-		lwork_cungbr__ = dum[0].r;
+		lwork_cungbr__ = (integer) dum[0].r;
 /*              Compute total workspace needed */
 /* Computing MAX */
 		i__1 = maxwrk, i__2 = (*n << 1) + lwork_cgebrd__;
@@ -603,23 +593,23 @@ f"> */
 
 /*                 Compute space needed for CGELQF */
 		    cgelqf_(m, n, &a[a_offset], lda, dum, dum, &c_n1, info);
-		    lwork_cgelqf__ = dum[0].r;
+		    lwork_cgelqf__ = (integer) dum[0].r;
 /*                 Compute space needed for CGEBRD */
 		    cgebrd_(m, m, &a[a_offset], lda, &s[1], &s[1], dum, dum, 
 			    dum, &c_n1, info);
-		    lwork_cgebrd__ = dum[0].r;
+		    lwork_cgebrd__ = (integer) dum[0].r;
 /*                 Compute space needed for CUNMBR */
 		    cunmbr_("Q", "L", "C", m, nrhs, n, &a[a_offset], lda, dum,
 			     &b[b_offset], ldb, dum, &c_n1, info);
-		    lwork_cunmbr__ = dum[0].r;
+		    lwork_cunmbr__ = (integer) dum[0].r;
 /*                 Compute space needed for CUNGBR */
 		    cungbr_("P", m, m, m, &a[a_offset], lda, dum, dum, &c_n1, 
 			    info);
-		    lwork_cungbr__ = dum[0].r;
+		    lwork_cungbr__ = (integer) dum[0].r;
 /*                 Compute space needed for CUNMLQ */
 		    cunmlq_("L", "C", n, nrhs, m, &a[a_offset], lda, dum, &b[
 			    b_offset], ldb, dum, &c_n1, info);
-		    lwork_cunmlq__ = dum[0].r;
+		    lwork_cunmlq__ = (integer) dum[0].r;
 /*                 Compute total workspace needed */
 		    maxwrk = *m + lwork_cgelqf__;
 /* Computing MAX */
@@ -650,15 +640,15 @@ f"> */
 /*                 Compute space needed for CGEBRD */
 		    cgebrd_(m, n, &a[a_offset], lda, &s[1], &s[1], dum, dum, 
 			    dum, &c_n1, info);
-		    lwork_cgebrd__ = dum[0].r;
+		    lwork_cgebrd__ = (integer) dum[0].r;
 /*                 Compute space needed for CUNMBR */
 		    cunmbr_("Q", "L", "C", m, nrhs, m, &a[a_offset], lda, dum,
 			     &b[b_offset], ldb, dum, &c_n1, info);
-		    lwork_cunmbr__ = dum[0].r;
+		    lwork_cunmbr__ = (integer) dum[0].r;
 /*                 Compute space needed for CUNGBR */
 		    cungbr_("P", m, n, m, &a[a_offset], lda, dum, dum, &c_n1, 
 			    info);
-		    lwork_cungbr__ = dum[0].r;
+		    lwork_cungbr__ = (integer) dum[0].r;
 		    maxwrk = (*m << 1) + lwork_cgebrd__;
 /* Computing MAX */
 		    i__1 = maxwrk, i__2 = (*m << 1) + lwork_cunmbr__;
@@ -673,7 +663,8 @@ f"> */
 	    }
 	    maxwrk = f2cmax(minwrk,maxwrk);
 	}
-	work[1].r = (real) maxwrk, work[1].i = 0.f;
+	r__1 = sroundup_lwork__(&maxwrk);
+	work[1].r = r__1, work[1].i = 0.f;
 
 	if (*lwork < minwrk && ! lquery) {
 	    *info = -12;
@@ -701,7 +692,6 @@ f"> */
     sfmin = slamch_("S");
     smlnum = sfmin / eps;
     bignum = 1.f / smlnum;
-    slabad_(&smlnum, &bignum);
 
 /*     Scale A if f2cmax element outside range [SMLNUM,BIGNUM] */
 
@@ -878,7 +868,7 @@ f"> */
 		clacpy_("G", n, &bl, &work[1], n, &b[i__ * b_dim1 + 1], ldb);
 /* L20: */
 	    }
-	} else {
+	} else if (*nrhs == 1) {
 	    cgemv_("C", n, n, &c_b2, &a[a_offset], lda, &b[b_offset], &c__1, &
 		    c_b1, &work[1], &c__1);
 	    ccopy_(n, &work[1], &c__1, &b[b_offset], &c__1);
@@ -1009,7 +999,7 @@ f"> */
 			    , ldb);
 /* L40: */
 		}
-	    } else {
+	    } else if (*nrhs == 1) {
 		cgemv_("C", m, m, &c_b2, &work[il], &ldwork, &b[b_dim1 + 1], &
 			c__1, &c_b1, &work[iwork], &c__1);
 		ccopy_(m, &work[iwork], &c__1, &b[b_dim1 + 1], &c__1);
@@ -1121,7 +1111,7 @@ f"> */
 			    ldb);
 /* L60: */
 		}
-	    } else {
+	    } else if (*nrhs == 1) {
 		cgemv_("C", m, n, &c_b2, &a[a_offset], lda, &b[b_offset], &
 			c__1, &c_b1, &work[1], &c__1);
 		ccopy_(n, &work[1], &c__1, &b[b_offset], &c__1);
@@ -1129,28 +1119,41 @@ f"> */
 	}
     }
 
-/*     Undo scaling */
+/*     Undo scaling.  The solution carries the factor of B divided by */
+/*     the factor of A.  When both were scaled to the same end of the */
+/*     range the constants cancel and BNRM/ANRM is applied in one step: */
+/*     applied in two, the first step could flush or overflow an entry */
+/*     that the second would have brought back into range. */
 
+    if (iascl == ibscl && iascl != 0) {
+	clascl_("G", &c__0, &c__0, &anrm, &bnrm, n, nrhs, &b[b_offset], ldb, 
+		info);
+    } else {
+	if (iascl == 1) {
+	    clascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (iascl == 2) {
+	    clascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+	if (ibscl == 1) {
+	    clascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (ibscl == 2) {
+	    clascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+    }
     if (iascl == 1) {
-	clascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	slascl_("G", &c__0, &c__0, &smlnum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
     } else if (iascl == 2) {
-	clascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	slascl_("G", &c__0, &c__0, &bignum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
     }
-    if (ibscl == 1) {
-	clascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
-    } else if (ibscl == 2) {
-	clascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
-    }
 L70:
-    work[1].r = (real) maxwrk, work[1].i = 0.f;
+    r__1 = sroundup_lwork__(&maxwrk);
+    work[1].r = r__1, work[1].i = 0.f;
     return;
 
 /*     End of CGELSS */

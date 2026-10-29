@@ -39,11 +39,6 @@ typedef float real;
 typedef double doublereal;
 typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
-#ifdef _MSC_VER
-static inline _Fcomplex Cf(complex *z) {_Fcomplex zz={z->r , z->i}; return zz;}
-#else
-static inline _Complex float Cf(complex *z) {return z->r + z->i*_Complex_I;}
-#endif
 typedef blasint logical;
 
 typedef char logical1;
@@ -183,8 +178,10 @@ typedef struct Namelist Namelist;
 #define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
 #ifdef _MSC_VER
 #define c_div(c, a, b) {float nenn=crealf(_FCmulcc(Cf(b),conjf(Cf(b)))); _Fcomplex zaehl=_FCmulcc(Cf(a),conjf(Cf(b))); pCf(c)=_FCbuild(crealf(zaehl)/nenn,cimagf(zaehl)/nenn);}
+#define z_div(c, a, b) {double nenn=creal(_Cmulcc(Cd(b),conj(Cd(b)))); _Dcomplex zaehl=_Cmulcc(Cd(a),conj(Cd(b))); pCd(c)=_Cbuild(creal(zaehl)/nenn,cimag(zaehl)/nenn);}
 #else
 #define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
+#define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
 #endif
 #define c_exp(R, Z) {pCf(R) = cexpf(Cf(Z));}
 #define c_log(R, Z) {pCf(R) = clogf(Cf(Z));}
@@ -196,11 +193,13 @@ typedef struct Namelist Namelist;
 #define d_asin(x) (asin(*(x)))
 #define d_atan(x) (atan(*(x)))
 #define d_atn2(x, y) (atan2(*(x),*(y)))
+#define d_cnjg(R, Z) { pCd(R) = conj(Cd(Z)); }
 #define r_cnjg(R, Z) { pCf(R) = conjf(Cf(Z)); }
 #define d_cos(x) (cos(*(x)))
 #define d_cosh(x) (cosh(*(x)))
 #define d_dim(__a, __b) ( *(__a) > *(__b) ? *(__a) - *(__b) : 0.0 )
 #define d_exp(x) (exp(*(x)))
+#define d_imag(z) (cimag(Cd(z)))
 #define r_imag(z) (cimagf(Cf(z)))
 #define d_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define r_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
@@ -227,25 +226,25 @@ typedef struct Namelist Namelist;
 #define pow_si(B,E) spow_ui(*(B),*(E))
 #define pow_ri(B,E) spow_ui(*(B),*(E))
 #define pow_di(B,E) dpow_ui(*(B),*(E))
+#define pow_zi(p, a, b) {pCd(p) = zpow_ui(Cd(a), *(b));}
 #define pow_ci(p, a, b) {pCf(p) = cpow_ui(Cf(a), *(b));}
+#define pow_zz(R,A,B) {pCd(R) = cpow(Cd(A),*(B));}
 #define s_cat(lpp, rpp, rnp, np, llp) { 	ftnlen i, nc, ll; char *f__rp, *lp; 	ll = (llp); lp = (lpp); 	for(i=0; i < (int)*(np); ++i) {         	nc = ll; 	        if((rnp)[i] < nc) nc = (rnp)[i]; 	        ll -= nc;         	f__rp = (rpp)[i]; 	        while(--nc >= 0) *lp++ = *(f__rp)++;         } 	while(--ll >= 0) *lp++ = ' '; }
 #define s_cmp(a,b,c,d) ((integer)strncmp((a),(b),f2cmin((c),(d))))
 #define s_copy(A,B,C,D) { int __i,__m; for (__i=0, __m=f2cmin((C),(D)); __i<__m && (B)[__i] != 0; ++__i) (A)[__i] = (B)[__i]; }
 #define sig_die(s, kill) { exit(1); }
 #define s_stop(s, n) {exit(0);}
 #define myexit_() break;
-#define mycycle() continue;
-#define myceiling(w) {ceil(w)}
-#define myhuge(w) {HUGE_VAL}
+#define mycycle_() continue;
+#define myceiling_(w) {ceil(w)}
+#define myhuge_(w) {HUGE_VAL}
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
-#define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
+#define mymaxloc_(w,s,e,n) dmaxloc_(w,*(s),*(e),n)
 
 /*  -- translated by f2c (version 20000121).
    You must link the resulting object file with the libraries:
 	-lf2c -lm   (in that order)
 */
-
-
 
 
 /* Table of constant values */
@@ -264,7 +263,6 @@ static integer c__2 = 2;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download CGELSY + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgelsy.
 f"> */
@@ -275,7 +273,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgelsy.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -374,6 +371,7 @@ f"> */
 /* >          B is COMPLEX array, dimension (LDB,NRHS) */
 /* >          On entry, the M-by-NRHS right hand side matrix B. */
 /* >          On exit, the N-by-NRHS solution matrix X. */
+/* >          If M = 0 or N = 0, B is not referenced. */
 /* > \endverbatim */
 /* > */
 /* > \param[in] LDB */
@@ -406,6 +404,7 @@ f"> */
 /* >          The effective rank of A, i.e., the order of the submatrix */
 /* >          R11.  This is the same as the order of the submatrix T11 */
 /* >          in the complete orthogonal factorization of A. */
+/* >          If NRHS = 0, RANK = 0 on output. */
 /* > \endverbatim */
 /* > */
 /* > \param[out] WORK */
@@ -453,9 +452,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup complexGEsolve */
+/* > \ingroup gelsy */
 
 /* > \par Contributors: */
 /*  ================== */
@@ -472,41 +469,38 @@ f"> */
 {
     /* System generated locals */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1, i__2, i__3, i__4;
-    real r__1=0., r__2=0.;
-    complex q__1={0.,0.};
+    real r__1, r__2;
+    complex q__1;
 
     /* Local variables */
+    integer i__, j;
+    complex c1, c2, s1, s2;
+    integer nb, mn, nb1, nb2, nb3, nb4;
     real anrm, bnrm, smin, smax;
-    integer i__, j, iascl, ibscl;
+    integer iascl, ibscl;
     extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer ismin, ismax;
-    complex c1, c2;
     extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *), claic1_(integer *, 
 	    integer *, complex *, real *, complex *, complex *, real *, 
 	    complex *, complex *);
     real wsize;
-    complex s1, s2;
     extern /* Subroutine */ void cgeqp3_(integer *, integer *, complex *, 
 	    integer *, integer *, complex *, complex *, integer *, real *, 
 	    integer *);
-    integer nb;
-    extern /* Subroutine */ void slabad_(real *, real *);
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
-    integer mn;
     extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *);
     extern real slamch_(char *);
     extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
-	    *, complex *, complex *, integer *);
-    extern void xerbla_(char *, integer *, ftnlen);
+	    *, complex *, complex *, integer *), xerbla_(char *, 
+	    integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
-    integer nb1, nb2, nb3, nb4;
     extern /* Subroutine */ void cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
@@ -520,10 +514,9 @@ f"> */
 	    integer *, complex *, complex *, integer *, integer *);
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -531,10 +524,10 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --jpvt;
     --work;
@@ -550,11 +543,11 @@ f"> */
     *info = 0;
     nb1 = ilaenv_(&c__1, "CGEQRF", " ", m, n, &c_n1, &c_n1, (ftnlen)6, (
 	    ftnlen)1);
-    nb2 = ilaenv_(&c__1, "CGERQF", " ", m, n, &c_n1, &c_n1, (ftnlen)6, (
+    nb2 = ilaenv_(&c__1, "CTZRZF", " ", m, n, &c_n1, &c_n1, (ftnlen)6, (
 	    ftnlen)1);
     nb3 = ilaenv_(&c__1, "CUNMQR", " ", m, n, nrhs, &c_n1, (ftnlen)6, (ftnlen)
 	    1);
-    nb4 = ilaenv_(&c__1, "CUNMRQ", " ", m, n, nrhs, &c_n1, (ftnlen)6, (ftnlen)
+    nb4 = ilaenv_(&c__1, "CUNMRZ", " ", m, n, nrhs, &c_n1, (ftnlen)6, (ftnlen)
 	    1);
 /* Computing MAX */
     i__1 = f2cmax(nb1,nb2), i__1 = f2cmax(i__1,nb3);
@@ -610,7 +603,6 @@ f"> */
 
     smlnum = slamch_("S") / slamch_("P");
     bignum = 1.f / smlnum;
-    slabad_(&smlnum, &bignum);
 
 /*     Scale A, B if f2cmax entries outside range [SMLNUM,BIGNUM] */
 
@@ -665,7 +657,7 @@ f"> */
     cgeqp3_(m, n, &a[a_offset], lda, &jpvt[1], &work[1], &work[mn + 1], &i__1,
 	     &rwork[1], info);
     i__1 = mn + 1;
-    wsize = mn + work[i__1].r;
+    wsize = (real) mn + work[i__1].r;
 
 /*     complex workspace: MN+NB*(N+1). real workspace 2*N. */
 /*     Details of Householder rotations stored in WORK(1:MN). */
@@ -745,7 +737,7 @@ L10:
 	    work[1], &b[b_offset], ldb, &work[(mn << 1) + 1], &i__1, info);
 /* Computing MAX */
     i__1 = (mn << 1) + 1;
-    r__1 = wsize, r__2 = (mn << 1) + work[i__1].r;
+    r__1 = wsize, r__2 = (real) (mn << 1) + work[i__1].r;
     wsize = f2cmax(r__1,r__2);
 
 /*     complex workspace: 2*MN+NB*NRHS. */
@@ -795,25 +787,37 @@ L10:
 
 /*     complex workspace: N. */
 
-/*     Undo scaling */
+/*     Undo scaling.  The solution carries the factor of B divided by */
+/*     the factor of A.  When both were scaled to the same end of the */
+/*     range the constants cancel and BNRM/ANRM is applied in one step: */
+/*     applied in two, the first step could flush or overflow an entry */
+/*     that the second would have brought back into range. */
 
+    if (iascl == ibscl && iascl != 0) {
+	clascl_("G", &c__0, &c__0, &anrm, &bnrm, n, nrhs, &b[b_offset], ldb, 
+		info);
+    } else {
+	if (iascl == 1) {
+	    clascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (iascl == 2) {
+	    clascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+	if (ibscl == 1) {
+	    clascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (ibscl == 2) {
+	    clascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+    }
     if (iascl == 1) {
-	clascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	clascl_("U", &c__0, &c__0, &smlnum, &anrm, rank, rank, &a[a_offset], 
 		lda, info);
     } else if (iascl == 2) {
-	clascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	clascl_("U", &c__0, &c__0, &bignum, &anrm, rank, rank, &a[a_offset], 
 		lda, info);
-    }
-    if (ibscl == 1) {
-	clascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
-    } else if (ibscl == 2) {
-	clascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
     }
 
 L70:

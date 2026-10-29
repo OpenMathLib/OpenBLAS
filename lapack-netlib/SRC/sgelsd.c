@@ -222,8 +222,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__9 = 9;
@@ -241,7 +239,6 @@ static real c_b81 = 0.f;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download SGELSD + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgelsd.
 f"> */
@@ -252,7 +249,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgelsd.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -294,12 +290,6 @@ f"> */
 /* > singular values which are less than RCOND times the largest singular */
 /* > value. */
 /* > */
-/* > The divide and conquer algorithm makes very mild assumptions about */
-/* > floating point arithmetic. It will work on machines with a guard */
-/* > digit in add/subtract, or on those binary machines without guard */
-/* > digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or */
-/* > Cray-2. It could conceivably fail on hexadecimal or decimal machines */
-/* > without guard digits, but we know of none. */
 /* > \endverbatim */
 
 /*  Arguments: */
@@ -430,9 +420,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date June 2017 */
-
-/* > \ingroup realGEsolve */
+/* > \ingroup gelsd */
 
 /* > \par Contributors: */
 /*  ================== */
@@ -450,12 +438,11 @@ f"> */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1, i__2, i__3, i__4;
 
     /* Local variables */
-    real anrm, bnrm;
+    integer ie, il, mm;
+    real eps, anrm, bnrm;
     integer itau, nlvl, iascl, ibscl;
     real sfmin;
-    integer minmn, maxmn, itaup, itauq, mnthr, nwork, ie, il;
-    extern /* Subroutine */ void slabad_(real *, real *);
-    integer mm;
+    integer minmn, maxmn, itaup, itauq, mnthr, nwork;
     extern /* Subroutine */ void sgebrd_(integer *, integer *, real *, integer 
 	    *, real *, real *, real *, real *, real *, integer *, integer *);
     extern real slamch_(char *), slange_(char *, integer *, integer *,
@@ -490,13 +477,12 @@ f"> */
     extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
-    real eps;
+    extern real sroundup_lwork__(integer *);
 
 
-/*  -- LAPACK driver routine (version 3.7.1) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     June 2017 */
 
 
 /*  ===================================================================== */
@@ -514,7 +500,7 @@ f"> */
     --s;
     --work;
     --iwork;
-fprintf(stdout,"start of SGELSD\n");
+
     /* Function Body */
     *info = 0;
     minmn = f2cmin(*m,*n);
@@ -549,7 +535,7 @@ fprintf(stdout,"start of SGELSD\n");
 	    mnthr = ilaenv_(&c__6, "SGELSD", " ", m, n, nrhs, &c_n1, (ftnlen)
 		    6, (ftnlen)1);
 /* Computing MAX */
-	    i__1 = (integer) (logf((real) minmn / (real) (smlsiz + 1)) / logf(
+	    i__1 = (integer) (log((real) minmn / (real) (smlsiz + 1)) / log(
 		    2.f)) + 1;
 	    nlvl = f2cmax(i__1,0);
 	    liwork = minmn * 3 * nlvl + minmn * 11;
@@ -678,7 +664,7 @@ fprintf(stdout,"start of SGELSD\n");
 	    }
 	}
 	minwrk = f2cmin(minwrk,maxwrk);
-	work[1] = (real) maxwrk;
+	work[1] = sroundup_lwork__(&maxwrk);
 	iwork[1] = liwork;
 
 	if (*lwork < minwrk && ! lquery) {
@@ -697,7 +683,6 @@ fprintf(stdout,"start of SGELSD\n");
 /*     Quick return if possible. */
 
     if (*m == 0 || *n == 0) {
-	    fprintf(stdout,"SGELSD quickreturn rank=0\n");
 	*rank = 0;
 	return;
     }
@@ -708,10 +693,6 @@ fprintf(stdout,"start of SGELSD\n");
     sfmin = slamch_("S");
     smlnum = sfmin / eps;
     bignum = 1.f / smlnum;
-//    FILE *bla=fopen("/tmp/bla","w");
-//fprintf(bla,"SGELSD eps=%g sfmin=%g smlnum=%g bignum=%g\n",eps,sfmin,smlnum,bignum);
-//fclose(bla);
-    slabad_(&smlnum, &bignum);
 
 /*     Scale A if f2cmax entry outside range [SMLNUM,BIGNUM]. */
 
@@ -720,7 +701,7 @@ fprintf(stdout,"start of SGELSD\n");
     if (anrm > 0.f && anrm < smlnum) {
 
 /*        Scale matrix norm up to SMLNUM. */
-fprintf(stdout,"scaling A up to SML\n");
+
 	slascl_("G", &c__0, &c__0, &anrm, &smlnum, m, n, &a[a_offset], lda, 
 		info);
 	iascl = 1;
@@ -728,7 +709,6 @@ fprintf(stdout,"scaling A up to SML\n");
 
 /*        Scale matrix norm down to BIGNUM. */
 
-fprintf(stdout,"scaling A down to BIG\n");
 	slascl_("G", &c__0, &c__0, &anrm, &bignum, m, n, &a[a_offset], lda, 
 		info);
 	iascl = 2;
@@ -736,7 +716,6 @@ fprintf(stdout,"scaling A down to BIG\n");
 
 /*        Matrix all zero. Return zero solution. */
 
-fprintf(stdout,"A is zero soln\n");
 	i__1 = f2cmax(*m,*n);
 	slaset_("F", &i__1, nrhs, &c_b81, &c_b81, &b[b_offset], ldb);
 	slaset_("F", &minmn, &c__1, &c_b81, &c_b81, &s[1], &c__1);
@@ -751,7 +730,6 @@ fprintf(stdout,"A is zero soln\n");
     if (bnrm > 0.f && bnrm < smlnum) {
 
 /*        Scale matrix norm up to SMLNUM. */
-fprintf(stdout,"scaling B up to SML\n");
 
 	slascl_("G", &c__0, &c__0, &bnrm, &smlnum, m, nrhs, &b[b_offset], ldb,
 		 info);
@@ -759,7 +737,6 @@ fprintf(stdout,"scaling B up to SML\n");
     } else if (bnrm > bignum) {
 
 /*        Scale matrix norm down to BIGNUM. */
-fprintf(stdout,"scaling B down to BIG\n");
 
 	slascl_("G", &c__0, &c__0, &bnrm, &bignum, m, nrhs, &b[b_offset], ldb,
 		 info);
@@ -770,14 +747,12 @@ fprintf(stdout,"scaling B down to BIG\n");
 
     if (*m < *n) {
 	i__1 = *n - *m;
-fprintf(stdout,"zeroing parts of B \n");
 	slaset_("F", &i__1, nrhs, &c_b81, &c_b81, &b[*m + 1 + b_dim1], ldb);
     }
 
 /*     Overdetermined case. */
 
     if (*m >= *n) {
-fprintf(stdout,"overdetermined, path 1 \n");
 
 /*        Path 1 - overdetermined or exactly determined. */
 
@@ -785,7 +760,6 @@ fprintf(stdout,"overdetermined, path 1 \n");
 	if (*m >= mnthr) {
 
 /*           Path 1a - overdetermined, with many more rows than columns. */
-fprintf(stdout,"overdetermined, path 1a \n");
 
 	    mm = *n;
 	    itau = 1;
@@ -839,7 +813,6 @@ fprintf(stdout,"overdetermined, path 1a \n");
 	slalsd_("U", &smlsiz, n, nrhs, &s[1], &work[ie], &b[b_offset], ldb, 
 		rcond, rank, &work[nwork], &iwork[1], info);
 	if (*info != 0) {
-		fprintf(stdout,"info !=0 nach slalsd\n");
 	    goto L10;
 	}
 
@@ -850,7 +823,6 @@ fprintf(stdout,"overdetermined, path 1a \n");
 		b[b_offset], ldb, &work[nwork], &i__1, info);
 
     } else /* if(complicated condition) */ {
-fprintf(stdout,"not overdetermined \n");
 /* Computing MAX */
 	i__1 = *m, i__2 = (*m << 1) - 4, i__1 = f2cmax(i__1,i__2), i__1 = f2cmax(
 		i__1,*nrhs), i__2 = *n - *m * 3, i__1 = f2cmax(i__1,i__2);
@@ -858,8 +830,6 @@ fprintf(stdout,"not overdetermined \n");
 
 /*        Path 2a - underdetermined, with many more columns than rows */
 /*        and sufficient workspace for an efficient algorithm. */
-
-fprintf(stdout,"not overdetermined, path 2a\n");
 
 	    ldwork = *m;
 /* Computing MAX */
@@ -940,7 +910,6 @@ fprintf(stdout,"not overdetermined, path 2a\n");
 	} else {
 
 /*        Path 2 - remaining underdetermined cases. */
-fprintf(stdout,"other underdetermined, path 2");
 
 	    ie = 1;
 	    itauq = ie + *m;
@@ -978,35 +947,42 @@ fprintf(stdout,"other underdetermined, path 2");
 	}
     }
 
-/*     Undo scaling. */
+/*     Undo scaling.  The solution carries the factor of B divided by */
+/*     the factor of A.  When both were scaled to the same end of the */
+/*     range the constants cancel and BNRM/ANRM is applied in one step: */
+/*     applied in two, the first step could flush or overflow an entry */
+/*     that the second would have brought back into range. */
 
+    if (iascl == ibscl && iascl != 0) {
+	slascl_("G", &c__0, &c__0, &anrm, &bnrm, n, nrhs, &b[b_offset], ldb, 
+		info);
+    } else {
+	if (iascl == 1) {
+	    slascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (iascl == 2) {
+	    slascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+	if (ibscl == 1) {
+	    slascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (ibscl == 2) {
+	    slascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+    }
     if (iascl == 1) {
-	    fprintf(stdout," unscaling a1\n");
-	slascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	slascl_("G", &c__0, &c__0, &smlnum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
     } else if (iascl == 2) {
-	    fprintf(stdout," unscaling a2\n");
-	slascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	slascl_("G", &c__0, &c__0, &bignum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
     }
-    if (ibscl == 1) {
-	    fprintf(stdout," unscaling b1\n");
-	slascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
-    } else if (ibscl == 2) {
-	    fprintf(stdout," unscaling b2\n");
-	slascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
-    }
 
 L10:
-    work[1] = (real) maxwrk;
+    work[1] = sroundup_lwork__(&maxwrk);
     iwork[1] = liwork;
-fprintf(stdout, "end of SGELSD\n");
     return;
 
 /*     End of SGELSD */
