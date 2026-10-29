@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
@@ -241,7 +239,6 @@ static integer c__0 = 0;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DLASQ1 + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlasq1.
 f"> */
@@ -252,7 +249,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlasq1.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -318,7 +314,8 @@ f"> */
 /* >        = 0: successful exit */
 /* >        < 0: if INFO = -i, the i-th argument had an illegal value */
 /* >        > 0: the algorithm failed */
-/* >             = 1, a split was marked by a positive value in E */
+/* >             = 1, a split was marked by a positive value in E, or */
+/* >                  the input contains a NaN */
 /* >             = 2, current block of Z not diagonalized after 100*N */
 /* >                  iterations (in inner while loop)  On exit D and E */
 /* >                  represent a matrix with the same singular values */
@@ -336,9 +333,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup auxOTHERcomputational */
+/* > \ingroup lasq1 */
 
 /*  ===================================================================== */
 /* Subroutine */ void dlasq1_(integer *n, doublereal *d__, doublereal *e, 
@@ -349,9 +344,10 @@ f"> */
     doublereal d__1, d__2, d__3;
 
     /* Local variables */
+    integer i__;
+    doublereal eps;
     extern /* Subroutine */ void dlas2_(doublereal *, doublereal *, doublereal 
 	    *, doublereal *, doublereal *);
-    integer i__;
     doublereal scale;
     integer iinfo;
     doublereal sigmn;
@@ -363,17 +359,15 @@ f"> */
     extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
+    extern logical disnan_(doublereal *);
     doublereal safmin;
-    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
-    extern void dlasrt_(
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen), dlasrt_(
 	    char *, integer *, doublereal *, integer *);
-    doublereal eps;
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -390,7 +384,7 @@ f"> */
 	*info = -1;
 	i__1 = -(*info);
 	xerbla_("DLASQ1", &i__1, (ftnlen)6);
-	return;
+	return 0;
     } else if (*n == 0) {
 	return;
     } else if (*n == 1) {
@@ -429,6 +423,14 @@ f"> */
 	d__1 = sigmx, d__2 = d__[i__];
 	sigmx = f2cmax(d__1,d__2);
 /* L20: */
+    }
+
+/*     A NaN in D or E can make SIGMX a NaN, which DLASCL would reject */
+/*     by stopping in XERBLA; report it through INFO instead. */
+
+    if (disnan_(&sigmx)) {
+	*info = 1;
+	return;
     }
 
 /*     Copy D and E into WORK (in the Z format) and scale (squaring the */
