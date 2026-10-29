@@ -67,13 +67,14 @@
 *
 *     .. Parameters ..
       INTEGER            NMAX, LW
-      PARAMETER          ( NMAX = 4, LW = NMAX )
+      PARAMETER          ( NMAX = 4, LW = 4*NMAX )
       DOUBLE PRECISION   ZERO, ONE
       PARAMETER          ( ZERO = 0.0D0, ONE = 1.0D0 )
 *     ..
 *     .. Local Scalars ..
       CHARACTER*2        C2
       INTEGER            I, INFO, J, NS, NT
+      DOUBLE PRECISION   RNAN, RONE
 *     ..
 *     .. Local Arrays ..
       INTEGER            IQ( NMAX, NMAX ), IW( NMAX )
@@ -101,7 +102,7 @@
       COMMON             / SRNAMC / SRNAMT
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DBLE
+      INTRINSIC          DBLE, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -279,6 +280,29 @@
          CALL CHKXER( 'DBDSQR', INFOT, NOUT, LERR, OK )
          NT = NT + 8
 *
+*        DBDSQR without singular vectors must return when D contains a
+*        NaN, which the dqds path would otherwise pass to DLASCL as a
+*        scaling factor, instead of stopping in XERBLA.
+*
+         RONE = ONE
+         RNAN = SQRT( -RONE )
+         DO 30 J = 1, NMAX
+            D( J ) = DBLE( J )
+            E( J ) = ONE / DBLE( J+1 )
+   30    CONTINUE
+         D( NMAX ) = RNAN
+         E( NMAX ) = ZERO
+         SRNAMT = 'DBDSQR'
+         INFOT = 0
+         LERR = .FALSE.
+         CALL DBDSQR( 'U', NMAX, 0, 0, 0, D, E, V, 1, U, 1, A, 1, W,
+     $                INFO )
+         IF( LERR ) THEN
+            WRITE( NOUT, FMT = 9997 )'DBDSQR'
+            OK = .FALSE.
+         END IF
+         NT = NT + 1
+*
 *        DBDSDC
 *
          SRNAMT = 'DBDSDC'
@@ -422,6 +446,8 @@
      $      ' (', I3, ' tests done)' )
  9998 FORMAT( ' *** ', A3, ' routines failed the tests of the error ',
      $      'exits ***' )
+ 9997 FORMAT( ' *** ', A6, ' called XERBLA for a matrix with a NaN',
+     $      ' ***' )
 *
       RETURN
 *
