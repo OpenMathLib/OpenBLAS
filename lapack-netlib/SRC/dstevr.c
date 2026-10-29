@@ -566,7 +566,7 @@ f"> */
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
-    doublereal bignum;
+    doublereal abstll, bignum;
     extern doublereal dlanst_(char *, integer *, doublereal *, doublereal *);
     integer indisp;
     extern /* Subroutine */ void dstein_(integer *, doublereal *, doublereal *,
@@ -713,6 +713,7 @@ f"> */
 /*     Scale matrix to allowable range, if necessary. */
 
     iscale = 0;
+    abstll = *abstol;
     if (valeig) {
 	vll = *vl;
 	vuu = *vu;
@@ -734,6 +735,17 @@ f"> */
 	dscal_(n, &sigma, &d__[1], &c__1);
 	i__1 = *n - 1;
 	dscal_(&i__1, &sigma, &e[1], &c__1);
+
+/*        Scale a positive ABSTOL with the matrix.  Keep the product */
+/*        positive, as DSTEBZ takes ABSTOL <= 0 as a request for its */
+/*        default tolerance EPS*|T|, and cap ABSTOL at |T| so that the */
+/*        product cannot overflow. */
+
+	if (*abstol > 0.) {
+/* Computing MAX */
+	    d__1 = f2cmin(*abstol,tnrm) * sigma;
+	    abstll = f2cmax(d__1,safmin);
+	}
 	if (valeig) {
 	    vll = *vl * sigma;
 	    vuu = *vu * sigma;
@@ -799,7 +811,7 @@ f"> */
     } else {
 	*(unsigned char *)order = 'E';
     }
-    dstebz_(range, order, n, &vll, &vuu, il, iu, abstol, &d__[1], &e[1], m, &
+    dstebz_(range, order, n, &vll, &vuu, il, iu, &abstll, &d__[1], &e[1], m, &
 	    nsplit, &w[1], &iwork[indibl], &iwork[indisp], &work[1], &iwork[
 	    indiwo], info);
 

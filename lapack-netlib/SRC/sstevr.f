@@ -330,7 +330,8 @@
       CHARACTER          ORDER
       INTEGER            I, IEEEOK, INDIBL, INDIFL, INDISP,
      $                   INDIWO, ISCALE, J, JJ, LIWMIN, LWMIN, NSPLIT
-      REAL               BIGNUM, EPS, RMAX, RMIN, SAFMIN, SIGMA, SMLNUM,
+      REAL               ABSTLL, BIGNUM, EPS, RMAX, RMIN, SAFMIN, SIGMA,
+     $                   SMLNUM,
      $                   TMP1, TNRM, VLL, VUU
 *     ..
 *     .. External Functions ..
@@ -442,6 +443,7 @@
 *     Scale matrix to allowable range, if necessary.
 *
       ISCALE = 0
+      ABSTLL = ABSTOL
       IF( VALEIG ) THEN
          VLL = VL
          VUU = VU
@@ -461,6 +463,14 @@
       IF( ISCALE.EQ.1 ) THEN
          CALL SSCAL( N, SIGMA, D, 1 )
          CALL SSCAL( N-1, SIGMA, E( 1 ), 1 )
+*
+*        Scale a positive ABSTOL with the matrix.  Keep the product
+*        positive, as SSTEBZ takes ABSTOL <= 0 as a request for its
+*        default tolerance EPS*|T|, and cap ABSTOL at |T| so that the
+*        product cannot overflow.
+*
+         IF( ABSTOL.GT.ZERO )
+     $      ABSTLL = MAX( MIN( ABSTOL, TNRM )*SIGMA, SAFMIN )
          IF( VALEIG ) THEN
             VLL = VL*SIGMA
             VUU = VU*SIGMA
@@ -527,7 +537,7 @@
          ORDER = 'E'
       END IF
 
-      CALL SSTEBZ( RANGE, ORDER, N, VLL, VUU, IL, IU, ABSTOL, D, E,
+      CALL SSTEBZ( RANGE, ORDER, N, VLL, VUU, IL, IU, ABSTLL, D, E,
      $             M,
      $             NSPLIT, W, IWORK( INDIBL ), IWORK( INDISP ), WORK,
      $             IWORK( INDIWO ), INFO )
