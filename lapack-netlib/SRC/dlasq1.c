@@ -384,7 +384,7 @@ f"> */
 	*info = -1;
 	i__1 = -(*info);
 	xerbla_("DLASQ1", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (*n == 0) {
 	return;
     } else if (*n == 1) {

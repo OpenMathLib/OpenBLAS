@@ -406,7 +406,7 @@ f"> */
 
     if (sigmx == 0.f) {
 	slasrt_("D", n, &d__[1], &iinfo);
-	return 0;
+	return;
     }
 
     i__1 = *n;
