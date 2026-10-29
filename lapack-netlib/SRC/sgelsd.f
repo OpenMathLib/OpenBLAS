@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download SGELSD + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgelsd.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgelsd.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -201,6 +199,7 @@
 *  =====================================================================
       SUBROUTINE SGELSD( M, N, NRHS, A, LDA, B, LDB, S, RCOND,
      $                   RANK, WORK, LWORK, IWORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -229,13 +228,15 @@
       REAL               ANRM, BIGNUM, BNRM, EPS, SFMIN, SMLNUM
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SGEBRD, SGELQF, SGEQRF, SLACPY, SLALSD, SLASCL,
+      EXTERNAL           SGEBRD, SGELQF, SGEQRF, SLACPY, SLALSD,
+     $                   SLASCL,
      $                   SLASET, SORMBR, SORMLQ, SORMQR, XERBLA
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
       REAL               SLAMCH, SLANGE, SROUNDUP_LWORK
-      EXTERNAL           SLAMCH, SLANGE, ILAENV, SROUNDUP_LWORK
+      EXTERNAL           SLAMCH, SLANGE, ILAENV,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          INT, LOG, MAX, MIN, REAL
@@ -284,9 +285,11 @@
 *                        columns.
 *
                MM = N
-               MAXWRK = MAX( MAXWRK, N + N*ILAENV( 1, 'SGEQRF', ' ', M,
+               MAXWRK = MAX( MAXWRK, N + N*ILAENV( 1, 'SGEQRF', ' ',
+     $                       M,
      $                       N, -1, -1 ) )
-               MAXWRK = MAX( MAXWRK, N + NRHS*ILAENV( 1, 'SORMQR', 'LT',
+               MAXWRK = MAX( MAXWRK, N + NRHS*ILAENV( 1, 'SORMQR',
+     $                       'LT',
      $                       M, NRHS, N, -1 ) )
             END IF
             IF( M.GE.N ) THEN
@@ -318,7 +321,8 @@
      $                          'SGEBRD', ' ', M, M, -1, -1 ) )
                   MAXWRK = MAX( MAXWRK, M*M + 4*M + NRHS*ILAENV( 1,
      $                          'SORMBR', 'QLT', M, NRHS, M, -1 ) )
-                  MAXWRK = MAX( MAXWRK, M*M + 4*M + ( M - 1 )*ILAENV( 1,
+                  MAXWRK = MAX( MAXWRK,
+     $                          M*M + 4*M + ( M - 1 )*ILAENV( 1,
      $                          'SORMBR', 'PLN', M, NRHS, M, -1 ) )
                   IF( NRHS.GT.1 ) THEN
                      MAXWRK = MAX( MAXWRK, M*M + M + M*NRHS )
@@ -336,9 +340,11 @@
 *
 *                 Path 2 - remaining underdetermined cases.
 *
-                  MAXWRK = 3*M + ( N + M )*ILAENV( 1, 'SGEBRD', ' ', M,
+                  MAXWRK = 3*M + ( N + M )*ILAENV( 1, 'SGEBRD', ' ',
+     $                             M,
      $                     N, -1, -1 )
-                  MAXWRK = MAX( MAXWRK, 3*M + NRHS*ILAENV( 1, 'SORMBR',
+                  MAXWRK = MAX( MAXWRK, 3*M + NRHS*ILAENV( 1,
+     $                          'SORMBR',
      $                          'QLT', M, NRHS, N, -1 ) )
                   MAXWRK = MAX( MAXWRK, 3*M + M*ILAENV( 1, 'SORMBR',
      $                          'PLN', N, NRHS, M, -1 ) )
@@ -411,13 +417,15 @@
 *
 *        Scale matrix norm up to SMLNUM.
 *
-         CALL SLASCL( 'G', 0, 0, BNRM, SMLNUM, M, NRHS, B, LDB, INFO )
+         CALL SLASCL( 'G', 0, 0, BNRM, SMLNUM, M, NRHS, B, LDB,
+     $                INFO )
          IBSCL = 1
       ELSE IF( BNRM.GT.BIGNUM ) THEN
 *
 *        Scale matrix norm down to BIGNUM.
 *
-         CALL SLASCL( 'G', 0, 0, BNRM, BIGNUM, M, NRHS, B, LDB, INFO )
+         CALL SLASCL( 'G', 0, 0, BNRM, BIGNUM, M, NRHS, B, LDB,
+     $                INFO )
          IBSCL = 2
       END IF
 *
@@ -450,13 +458,15 @@
 *           Multiply B by transpose(Q).
 *           (Workspace: need N+NRHS, prefer N+NRHS*NB)
 *
-            CALL SORMQR( 'L', 'T', M, NRHS, N, A, LDA, WORK( ITAU ), B,
+            CALL SORMQR( 'L', 'T', M, NRHS, N, A, LDA, WORK( ITAU ),
+     $                   B,
      $                   LDB, WORK( NWORK ), LWORK-NWORK+1, INFO )
 *
 *           Zero out below R.
 *
             IF( N.GT.1 ) THEN
-               CALL SLASET( 'L', N-1, N-1, ZERO, ZERO, A( 2, 1 ), LDA )
+               CALL SLASET( 'L', N-1, N-1, ZERO, ZERO, A( 2, 1 ),
+     $                      LDA )
             END IF
          END IF
 *
@@ -475,7 +485,8 @@
 *        Multiply B by transpose of left bidiagonalizing vectors of R.
 *        (Workspace: need 3*N+NRHS, prefer 3*N+NRHS*NB)
 *
-         CALL SORMBR( 'Q', 'L', 'T', MM, NRHS, N, A, LDA, WORK( ITAUQ ),
+         CALL SORMBR( 'Q', 'L', 'T', MM, NRHS, N, A, LDA,
+     $                WORK( ITAUQ ),
      $                B, LDB, WORK( NWORK ), LWORK-NWORK+1, INFO )
 *
 *        Solve the bidiagonal least squares problem.
@@ -488,7 +499,8 @@
 *
 *        Multiply B by right bidiagonalizing vectors of R.
 *
-         CALL SORMBR( 'P', 'L', 'N', N, NRHS, N, A, LDA, WORK( ITAUP ),
+         CALL SORMBR( 'P', 'L', 'N', N, NRHS, N, A, LDA,
+     $                WORK( ITAUP ),
      $                B, LDB, WORK( NWORK ), LWORK-NWORK+1, INFO )
 *
       ELSE IF( N.GE.MNTHR .AND. LWORK.GE.4*M+M*M+
@@ -578,7 +590,8 @@
 *        Multiply B by transpose of left bidiagonalizing vectors.
 *        (Workspace: need 3*M+NRHS, prefer 3*M+NRHS*NB)
 *
-         CALL SORMBR( 'Q', 'L', 'T', M, NRHS, N, A, LDA, WORK( ITAUQ ),
+         CALL SORMBR( 'Q', 'L', 'T', M, NRHS, N, A, LDA,
+     $                WORK( ITAUQ ),
      $                B, LDB, WORK( NWORK ), LWORK-NWORK+1, INFO )
 *
 *        Solve the bidiagonal least squares problem.
@@ -591,26 +604,43 @@
 *
 *        Multiply B by right bidiagonalizing vectors of A.
 *
-         CALL SORMBR( 'P', 'L', 'N', N, NRHS, M, A, LDA, WORK( ITAUP ),
+         CALL SORMBR( 'P', 'L', 'N', N, NRHS, M, A, LDA,
+     $                WORK( ITAUP ),
      $                B, LDB, WORK( NWORK ), LWORK-NWORK+1, INFO )
 *
       END IF
 *
-*     Undo scaling.
+*     Undo scaling.  The solution carries the factor of B divided by
+*     the factor of A.  When both were scaled to the same end of the
+*     range the constants cancel and BNRM/ANRM is applied in one step:
+*     applied in two, the first step could flush or overflow an entry
+*     that the second would have brought back into range.
 *
+      IF( IASCL.EQ.IBSCL .AND. IASCL.NE.0 ) THEN
+         CALL SLASCL( 'G', 0, 0, ANRM, BNRM, N, NRHS, B, LDB,
+     $                INFO )
+      ELSE
+         IF( IASCL.EQ.1 ) THEN
+            CALL SLASCL( 'G', 0, 0, ANRM, SMLNUM, N, NRHS, B, LDB,
+     $                   INFO )
+         ELSE IF( IASCL.EQ.2 ) THEN
+            CALL SLASCL( 'G', 0, 0, ANRM, BIGNUM, N, NRHS, B, LDB,
+     $                   INFO )
+         END IF
+         IF( IBSCL.EQ.1 ) THEN
+            CALL SLASCL( 'G', 0, 0, SMLNUM, BNRM, N, NRHS, B, LDB,
+     $                   INFO )
+         ELSE IF( IBSCL.EQ.2 ) THEN
+            CALL SLASCL( 'G', 0, 0, BIGNUM, BNRM, N, NRHS, B, LDB,
+     $                   INFO )
+         END IF
+      END IF
       IF( IASCL.EQ.1 ) THEN
-         CALL SLASCL( 'G', 0, 0, ANRM, SMLNUM, N, NRHS, B, LDB, INFO )
          CALL SLASCL( 'G', 0, 0, SMLNUM, ANRM, MINMN, 1, S, MINMN,
      $                INFO )
       ELSE IF( IASCL.EQ.2 ) THEN
-         CALL SLASCL( 'G', 0, 0, ANRM, BIGNUM, N, NRHS, B, LDB, INFO )
          CALL SLASCL( 'G', 0, 0, BIGNUM, ANRM, MINMN, 1, S, MINMN,
      $                INFO )
-      END IF
-      IF( IBSCL.EQ.1 ) THEN
-         CALL SLASCL( 'G', 0, 0, SMLNUM, BNRM, N, NRHS, B, LDB, INFO )
-      ELSE IF( IBSCL.EQ.2 ) THEN
-         CALL SLASCL( 'G', 0, 0, BIGNUM, BNRM, N, NRHS, B, LDB, INFO )
       END IF
 *
    10 CONTINUE
