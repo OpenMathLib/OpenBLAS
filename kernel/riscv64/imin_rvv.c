@@ -53,6 +53,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f64m1_f64
 #define VSLIDEDOWN_UINT         __riscv_vslidedown_vx_u64m8
 #define VMVVXS_UINT             __riscv_vmv_x_s_u64m8_u64
+#define VMERGE_UINT             __riscv_vmerge_vvm_u64m8
+#define VREDMINU_UINT           __riscv_vredminu_vs_u64m8_u64m1
+#define UINT_V_T_M1             vuint64m1_t
+#define VMVVX_UINT_M1           __riscv_vmv_v_x_u64m1
+#define VMVXS_UINT_M1           __riscv_vmv_x_s_u64m1_u64
+#define INDEX_MAX               0xffffffffffffffffULL
 #else
 #define VSETVL(n)               __riscv_vsetvl_e32m8(n)
 #define VSETVL_MAX              __riscv_vsetvlmax_e32m8()
@@ -78,6 +84,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f32m1_f32
 #define VSLIDEDOWN_UINT         __riscv_vslidedown_vx_u32m8
 #define VMVVXS_UINT             __riscv_vmv_x_s_u32m8_u32
+#define VMERGE_UINT             __riscv_vmerge_vvm_u32m8
+#define VREDMINU_UINT           __riscv_vredminu_vs_u32m8_u32m1
+#define UINT_V_T_M1             vuint32m1_t
+#define VMVVX_UINT_M1           __riscv_vmv_v_x_u32m1
+#define VMVXS_UINT_M1           __riscv_vmv_x_s_u32m1_u32
+#define INDEX_MAX               0xffffffffU
 #endif
 
 BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
@@ -137,10 +149,11 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
     v_res = VFREDMINVS_FLOAT(v_min, v_res, vlmax);
     minf = VFMVFS_FLOAT_M1(v_res);
     mask = VMFLEVF_FLOAT(v_min, minf, vlmax);
-    min_index = VFIRSTM(mask, vlmax);
-
-    v_min_index = VSLIDEDOWN_UINT(v_min_index, min_index, vlmax);
-    min_index = VMVVXS_UINT(v_min_index);
+    // Several lanes can hold the extreme value; BLAS returns its first occurrence, which is the
+    // smallest index recorded by those lanes (each lane keeps the first occurrence it has seen).
+    v_min_index = VMERGE_UINT(VMVVX_UINT(INDEX_MAX, vlmax), v_min_index, mask, vlmax);
+    UINT_V_T_M1 v_first = VREDMINU_UINT(v_min_index, VMVVX_UINT_M1(INDEX_MAX, 1), vlmax);
+    min_index = VMVXS_UINT_M1(v_first);
 
     return(min_index+1);
 }
