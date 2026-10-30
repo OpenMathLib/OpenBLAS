@@ -35,7 +35,7 @@
 *> overwriting the factor L in A, and the strictly upper triangular part
 *> of A is not referenced. Regardless, the diagonal elements are explicitly
 *> set to be real by casting to DBLE before exit.
-*> This is the driver that idpatches to either blocked or recursive
+*> This is the driver that dispatches to either blocked or recursive
 *> \endverbatim
 *
 *  Arguments:
