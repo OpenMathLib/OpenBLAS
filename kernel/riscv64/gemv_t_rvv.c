@@ -28,16 +28,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if !defined(DOUBLE)
-#define VSETVL(n)               __riscv_vsetvl_e32m8(n)
-#define VSETVL_MAX              __riscv_vsetvlmax_e32m8()
+#define VSETVL(n)               __riscv_vsetvl_e32m4(n)
+#define VSETVL_MAX              __riscv_vsetvlmax_e32m4()
 #define VSETVL_MAX_M1           __riscv_vsetvlmax_e32m1()
-#define FLOAT_V_T               vfloat32m8_t
+#define FLOAT_V_T               vfloat32m4_t
 #define FLOAT_V_T_M1            vfloat32m1_t
-#define VLEV_FLOAT              __riscv_vle32_v_f32m8
-#define VLSEV_FLOAT             __riscv_vlse32_v_f32m8
-#define VFREDSUM_FLOAT          __riscv_vfredusum_vs_f32m8_f32m1
-#define VFMACCVV_FLOAT_TU       __riscv_vfmacc_vv_f32m8_tu
-#define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m8
+#define VLEV_FLOAT              __riscv_vle32_v_f32m4
+#define VLSEV_FLOAT             __riscv_vlse32_v_f32m4
+#define VFREDSUM_FLOAT          __riscv_vfredusum_vs_f32m4_f32m1
+#define VFMACCVV_FLOAT_TU       __riscv_vfmacc_vv_f32m4_tu
+#define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m4
 #define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f32m1
 #define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f32m1_f32
 #else
@@ -68,7 +68,40 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
     if(inc_x == 1) {
 
-        for(i = 0; i < n; i++) {
+#if !defined(DOUBLE)
+        /* Two output columns share one x vector load.  Each column keeps its own accumulator
+           and its own reduction order, so results are bit-identical to the one-column loop. */
+        for(i = 0; i + 1 < n; i += 2) {
+            FLOAT_V_T vr1;
+            j = m;
+            a_ptr = a;
+            x_ptr = x;
+            vr  = VFMVVF_FLOAT(0, vlmax);
+            vr1 = VFMVVF_FLOAT(0, vlmax);
+
+            for (size_t vl; j > 0; j -= vl, a_ptr += vl, x_ptr += vl) {
+                vl = VSETVL(j);
+
+                vx  = VLEV_FLOAT(x_ptr, vl);
+                va  = VLEV_FLOAT(a_ptr, vl);
+                vr  = VFMACCVV_FLOAT_TU(vr, va, vx, vl);
+                va  = VLEV_FLOAT(a_ptr + lda, vl);
+                vr1 = VFMACCVV_FLOAT_TU(vr1, va, vx, vl);
+            }
+
+            v_res = VFREDSUM_FLOAT(vr, v_z0, vlmax);
+            *y += alpha * VFMVFS_FLOAT_M1(v_res);
+            y += inc_y;
+            v_res = VFREDSUM_FLOAT(vr1, v_z0, vlmax);
+            *y += alpha * VFMVFS_FLOAT_M1(v_res);
+            y += inc_y;
+            a += 2 * lda;
+        }
+#else
+        i = 0;
+#endif
+
+        for(; i < n; i++) {
             j = m;
             a_ptr = a;
             x_ptr = x;
@@ -91,8 +124,39 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
     } else {
 
         BLASLONG stride_x = inc_x * sizeof(FLOAT);
-  
-        for(i = 0; i < n; i++) {
+
+#if !defined(DOUBLE)
+        for(i = 0; i + 1 < n; i += 2) {
+            FLOAT_V_T vr1;
+            j = m;
+            a_ptr = a;
+            x_ptr = x;
+            vr  = VFMVVF_FLOAT(0, vlmax);
+            vr1 = VFMVVF_FLOAT(0, vlmax);
+
+            for (size_t vl; j > 0; j -= vl, a_ptr += vl, x_ptr += vl*inc_x) {
+                vl = VSETVL(j);
+
+                vx  = VLSEV_FLOAT(x_ptr, stride_x, vl);
+                va  = VLEV_FLOAT(a_ptr, vl);
+                vr  = VFMACCVV_FLOAT_TU(vr, va, vx, vl);
+                va  = VLEV_FLOAT(a_ptr + lda, vl);
+                vr1 = VFMACCVV_FLOAT_TU(vr1, va, vx, vl);
+            }
+
+            v_res = VFREDSUM_FLOAT(vr, v_z0, vlmax);
+            *y += alpha * VFMVFS_FLOAT_M1(v_res);
+            y += inc_y;
+            v_res = VFREDSUM_FLOAT(vr1, v_z0, vlmax);
+            *y += alpha * VFMVFS_FLOAT_M1(v_res);
+            y += inc_y;
+            a += 2 * lda;
+        }
+#else
+        i = 0;
+#endif
+
+        for(; i < n; i++) {
             j = m;
             a_ptr = a;
             x_ptr = x;
