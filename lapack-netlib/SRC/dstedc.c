@@ -485,6 +485,7 @@ f"> */
     logical lquery;
     integer smlsiz, storez, strtrw, lgn;
     doublereal eps;
+    extern doublereal droundup_lwork__(integer *);
 
 
 /*  -- LAPACK computational routine (version 3.7.1) -- */
@@ -560,7 +561,7 @@ f"> */
 		liwmin = *n * 5 + 3;
 	    }
 	}
-	work[1] = (doublereal) lwmin;
+	work[1] = droundup_lwork__( &lwmin );
 	iwork[1] = liwmin;
 
 	if (*lwork < lwmin && ! lquery) {
@@ -766,7 +767,7 @@ L20:
     }
 
 L50:
-    work[1] = (doublereal) lwmin;
+    work[1] = droundup_lwork__( &lwmin );
     iwork[1] = liwmin;
 
     return;
