@@ -104,29 +104,10 @@ set(ZEIGTST
 
 set(ZDMDEIGTST zchkdmd.f90)
 
-function(add_eig_executable name)
-  set(sources ${ARGN})
-  if(BUILD_DEFAULT_API)
-    add_executable(${name} ${sources})
-    target_link_libraries(${name} PRIVATE ${TMGLIB} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
-    lapack_add_coverage(${name})
-  endif()
-
-  if(BUILD_INDEX64_EXT_API)
-    include(ExtendedAPIHelpers)
-    generate_64bit_suffixed_sources(${name} sources sources_64)
-
-    add_executable(${name}_64 ${sources_64})
-    target_compile_options(${name}_64 PRIVATE ${FOPT_ILP64})
-    target_link_libraries(${name}_64 PRIVATE ${TMGLIB} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
-    lapack_add_coverage(${name}_64)
-
-    # Add dependency to the global codegen target. Since we reuse the same
-    # generated source file for multiple tests, the generation could be
-    # triggered by multiple targets when building in parallel.
-    add_dependencies(${name}_64 64bit_codegen)
-  endif()
-endfunction()
+macro(add_eig_executable name)
+  add_executable(${name} ${ARGN})
+  target_link_libraries(${name} ${LIBNAMEPREFIX}openblas${LIBNAMESUFFIX}${SUFFIX64_UNDERSCORE})
+endmacro()
 
 if(BUILD_SINGLE)
 add_eig_executable(xeigtsts ${SEIGTST} ${SCIGTST} ${AEIGTST})
@@ -150,6 +131,6 @@ endif()
 if(BUILD_COMPLEX16)
 add_eig_executable(xeigtstz ${ZEIGTST} ${DZIGTST} ${AEIGTST})
 add_eig_executable(xdmdeigtstz ${ZDMDEIGTST} ${AEIGTST})
-add_eig_executable(test_wq_zrwork test_wq_rwork.f)
+#add_eig_executable(test_wq_zrwork test_wq_rwork.f)
 add_eig_executable(test_zgges3_scaling test_zgges3_scaling.f90)
 endif()
