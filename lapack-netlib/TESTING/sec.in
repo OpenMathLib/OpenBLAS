@@ -1,5 +1,6 @@
 SEC             Key indicating type of input
 20.0            Threshold value for test ratios
+T                 Put T to test the error exits
    8   2   7
   1.0E+00  1.0E+00  1.1E+00  1.3E+00  2.0E+00  3.0E+00 -4.7E+00  3.3E+00
  -1.0E+00  1.0E+00  3.7E+00  7.9E+00  4.0E+00  5.3E+00  3.3E+00 -9.0E-01

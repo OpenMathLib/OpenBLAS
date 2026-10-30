@@ -247,9 +247,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
-
 /* Table of constant values */
 
 static complex c_b1 = {0.f,0.f};
@@ -266,7 +263,6 @@ zation with compact WY representation of Q.</b> */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download CGELST + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgelst.
 f"> */
@@ -277,7 +273,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgelst.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -298,7 +293,16 @@ f"> */
 /* > CGELST solves overdetermined or underdetermined real linear systems */
 /* > involving an M-by-N matrix A, or its conjugate-transpose, using a QR */
 /* > or LQ factorization of A with compact WY representation of Q. */
-/* > It is assumed that A has full rank. */
+/* > */
+/* > It is assumed that A has full rank, and only a rudimentary protection */
+/* > against rank-deficient matrices is provided. This subroutine only detects */
+/* > exact rank-deficiency, where a diagonal element of the triangular factor */
+/* > of A is exactly zero. */
+/* > */
+/* > It is conceivable for one (or more) of the diagonal elements of the triangular */
+/* > factor of A to be subnormally tiny numbers without this subroutine signalling */
+/* > an error. The solutions computed for such almost-rank-deficient matrices may */
+/* > be less accurate due to a loss of numerical precision. */
 /* > */
 /* > The following options are provided: */
 /* > */
@@ -423,7 +427,7 @@ f"> */
 /* >          = 0:  successful exit */
 /* >          < 0:  if INFO = -i, the i-th argument had an illegal value */
 /* >          > 0:  if INFO =  i, the i-th diagonal element of the */
-/* >                triangular factor of A is zero, so that A does not have */
+/* >                triangular factor of A is exactly zero, so that A does not have */
 /* >                full rank; the least squares solution could not be */
 /* >                computed. */
 /* > \endverbatim */
@@ -436,7 +440,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \ingroup complexGEsolve */
+/* > \ingroup gelst */
 
 /* > \par Contributors: */
 /*  ================== */
@@ -458,24 +462,23 @@ f"> */
     real r__1;
 
     /* Local variables */
+    integer i__, j, nb, mn;
     real anrm, bnrm;
     integer brow;
     logical tpsd;
-    integer i__, j, iascl, ibscl;
+    integer iascl, ibscl;
     extern logical lsame_(char *, char *);
     integer nbmin;
     real rwork[1];
-    integer lwopt, nb;
-    extern /* Subroutine */ void slabad_(real *, real *);
+    integer lwopt;
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
-    integer mn;
     extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *);
     extern real slamch_(char *);
     extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
-	    *, complex *, complex *, integer *);
-    extern void xerbla_(char *, integer *, ftnlen);
+	    *, complex *, complex *, integer *), xerbla_(char *, 
+	    integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     extern /* Subroutine */ void cgelqt_(integer *, integer *, integer *, 
@@ -489,11 +492,13 @@ f"> */
     logical lquery;
     extern /* Subroutine */ void ctrtrs_(char *, char *, char *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, integer *);
-    extern void cgemlqt_(char *, char *, integer *, 
-	    integer *, integer *, integer *, complex *, integer *, complex *, 
-	    integer *, complex *, integer *, complex *, integer *), cgemqrt_(char *, char *, integer *, integer *, integer *,
-	     integer *, complex *, integer *, complex *, integer *, complex *,
-	     integer *, complex *, integer *);
+    extern real sroundup_lwork__(integer *);
+    extern /* Subroutine */ void cgemlqt_(char *, char *, integer *, integer *,
+	     integer *, integer *, complex *, integer *, complex *, integer *,
+	     complex *, integer *, complex *, integer *), 
+	    cgemqrt_(char *, char *, integer *, integer *, integer *, integer 
+	    *, complex *, integer *, complex *, integer *, complex *, integer 
+	    *, complex *, integer *);
 
 
 /*  -- LAPACK driver routine -- */
@@ -508,10 +513,10 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --work;
 
@@ -559,14 +564,14 @@ f"> */
 /* Computing MAX */
 	i__1 = 1, i__2 = (mn + mnnrhs) * nb;
 	lwopt = f2cmax(i__1,i__2);
-	r__1 = (real) lwopt;
+	r__1 = sroundup_lwork__(&lwopt);
 	work[1].r = r__1, work[1].i = 0.f;
 
     }
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CGELST ", &i__1, 6);
+	xerbla_("CGELST", &i__1, (ftnlen)6);
 	return;
     } else if (lquery) {
 	return;
@@ -579,7 +584,7 @@ f"> */
     if (f2cmin(i__1,*nrhs) == 0) {
 	i__1 = f2cmax(*m,*n);
 	claset_("Full", &i__1, nrhs, &c_b1, &c_b1, &b[b_offset], ldb);
-	r__1 = (real) lwopt;
+	r__1 = sroundup_lwork__(&lwopt);
 	work[1].r = r__1, work[1].i = 0.f;
 	return;
     }
@@ -613,7 +618,6 @@ f"> */
 
     smlnum = slamch_("S") / slamch_("P");
     bignum = 1.f / smlnum;
-    slabad_(&smlnum, &bignum);
 
 /*     Scale A, B if f2cmax element outside range [SMLNUM,BIGNUM] */
 
@@ -639,7 +643,7 @@ f"> */
 
 	i__1 = f2cmax(*m,*n);
 	claset_("Full", &i__1, nrhs, &c_b1, &c_b1, &b[b_offset], ldb);
-	r__1 = (real) lwopt;
+	r__1 = sroundup_lwork__(&lwopt);
 	work[1].r = r__1, work[1].i = 0.f;
 	return;
     }
@@ -820,24 +824,33 @@ f"> */
 
     }
 
-/*     Undo scaling */
+/*     Undo scaling.  The solution carries the factor of B divided by */
+/*     the factor of A.  When both were scaled to the same end of the */
+/*     range the constants cancel and BNRM/ANRM is applied in one step: */
+/*     applied in two, the first step could flush or overflow an entry */
+/*     that the second would have brought back into range. */
 
-    if (iascl == 1) {
-	clascl_("G", &c__0, &c__0, &anrm, &smlnum, &scllen, nrhs, &b[b_offset]
-		, ldb, info);
-    } else if (iascl == 2) {
-	clascl_("G", &c__0, &c__0, &anrm, &bignum, &scllen, nrhs, &b[b_offset]
-		, ldb, info);
-    }
-    if (ibscl == 1) {
-	clascl_("G", &c__0, &c__0, &smlnum, &bnrm, &scllen, nrhs, &b[b_offset]
-		, ldb, info);
-    } else if (ibscl == 2) {
-	clascl_("G", &c__0, &c__0, &bignum, &bnrm, &scllen, nrhs, &b[b_offset]
-		, ldb, info);
+    if (iascl == ibscl && iascl != 0) {
+	clascl_("G", &c__0, &c__0, &anrm, &bnrm, &scllen, nrhs, &b[b_offset], 
+		ldb, info);
+    } else {
+	if (iascl == 1) {
+	    clascl_("G", &c__0, &c__0, &anrm, &smlnum, &scllen, nrhs, &b[
+		    b_offset], ldb, info);
+	} else if (iascl == 2) {
+	    clascl_("G", &c__0, &c__0, &anrm, &bignum, &scllen, nrhs, &b[
+		    b_offset], ldb, info);
+	}
+	if (ibscl == 1) {
+	    clascl_("G", &c__0, &c__0, &smlnum, &bnrm, &scllen, nrhs, &b[
+		    b_offset], ldb, info);
+	} else if (ibscl == 2) {
+	    clascl_("G", &c__0, &c__0, &bignum, &bnrm, &scllen, nrhs, &b[
+		    b_offset], ldb, info);
+	}
     }
 
-    r__1 = (real) lwopt;
+    r__1 = sroundup_lwork__(&lwopt);
     work[1].r = r__1, work[1].i = 0.f;
 
     return;

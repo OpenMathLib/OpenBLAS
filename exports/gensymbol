@@ -924,6 +924,7 @@ lapackobjs2c="$lapackobjs2c
     crscl
     ctrsyl3
     cgecxx
+    cgesvdmr3
     "
 #    claqz0
 #    claqz1
@@ -940,6 +941,22 @@ lapackobjs2d="$lapackobjs2d
     dlatrs3
     dtrsyl3
     dgecxx
+    dbdsvdmr3
+    dbdsvdmr3_work
+    dbdtgk
+    dgesvdmr3
+    dlar1v_tgk
+    dlarrb_tgk
+    dlarrf_tgk
+    dlarrv_tgk
+    dlaed0_br
+    dlaed0_merge_pair
+    dlaed4_br
+    dlaed7_br
+    dlaed8_br
+    dlaed9_br
+    dstebr
+    dsteqr_boundary_br
     "
 #    dlaqz0
 #    dlaqz1
@@ -956,6 +973,22 @@ lapackobjs2s="$lapackobjs2s
     slatrs3
     strsyl3
     sgecxx
+    sbdsvdmr3
+    sbdsvdmr3_work
+    sbdtgk
+    sgesvdmr3
+    slar1v_tgk
+    slarrb_tgk
+    slarrf_tgk
+    slarrv_tgk
+    slaed0_br
+    slaed0_merge_pair
+    slaed4_br
+    slaed7_br
+    slaed8_br
+    slaed9_br
+    sstebr
+    ssteqr_boundary_br
     "
 
 lapackobjs2z="$lapackobjs2z
@@ -967,6 +1000,7 @@ lapackobjs2z="$lapackobjs2z
     zrscl
     ztrsyl3
     zgecxx
+    zgesvdmr3
     "
 #    zlaqz0
 #    zlaqz1
@@ -1750,6 +1784,8 @@ lapackeobjsc="
     LAPACKE_ctz_trans
     LAPACKE_cunhr_col
     LAPACKE_cunhr_col_work
+    LAPACKE_cgesvdmr3
+    LAPACKE_cgesvdmr3_work
 "
 
 lapackeobjsd="
@@ -2377,6 +2413,12 @@ lapackeobjsd="
     LAPACKE_dtrsyl3_work
     LAPACKE_dtz_nancheck
     LAPACKE_dtz_trans
+    LAPACKE_dbdsvdmr3
+    LAPACKE_dbdsvdmr3_work
+    LAPACKE_dgesvdmr3
+    LAPACKE_dgesvdmr3_work
+    LAPACKE_dstebr
+    LAPACKE_dstebr_work
 "
 
 lapackeobjss="
@@ -2996,6 +3038,12 @@ lapackeobjss="
     LAPACKE_strsyl3_work
     LAPACKE_stz_nancheck
     LAPACKE_stz_trans
+    LAPACKE_sbdsvdmr3
+    LAPACKE_sbdsvdmr3_work
+    LAPACKE_sgesvdmr3
+    LAPACKE_sgesvdmr3_work
+    LAPACKE_sstebr
+    LAPACKE_sstebr_work
 "
 
 lapackeobjsz="
@@ -3673,6 +3721,8 @@ lapackeobjsz="
     LAPACKE_ztz_trans
     LAPACKE_zunhr_col
     LAPACKE_zunhr_col_work
+    LAPACKE_zgesvdmr3
+    LAPACKE_zgesvdmr3_work
 "
 ## @(SRCX_OBJ) from `lapack-3.4.1/lapacke/src/Makefile`
 ## Not exported: requires LAPACKE_EXTENDED to be set and depends on the
