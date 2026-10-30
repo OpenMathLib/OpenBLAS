@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download SLAUU2 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slauu2.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slauu2.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -95,10 +93,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERauxiliary
+*> \ingroup lauu2
 *
 *  =====================================================================
       SUBROUTINE SLAUU2( UPLO, N, A, LDA, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -164,8 +163,10 @@
          DO 10 I = 1, N
             AII = A( I, I )
             IF( I.LT.N ) THEN
-               A( I, I ) = SDOT( N-I+1, A( I, I ), LDA, A( I, I ), LDA )
-               CALL SGEMV( 'No transpose', I-1, N-I, ONE, A( 1, I+1 ),
+               A( I, I ) = SDOT( N-I+1, A( I, I ), LDA, A( I, I ),
+     $            LDA )
+               CALL SGEMV( 'No transpose', I-1, N-I, ONE, A( 1,
+     $                     I+1 ),
      $                     LDA, A( I, I+1 ), LDA, AII, A( 1, I ), 1 )
             ELSE
                CALL SSCAL( I, AII, A( 1, I ), 1 )
@@ -180,7 +181,8 @@
             AII = A( I, I )
             IF( I.LT.N ) THEN
                A( I, I ) = SDOT( N-I+1, A( I, I ), 1, A( I, I ), 1 )
-               CALL SGEMV( 'Transpose', N-I, I-1, ONE, A( I+1, 1 ), LDA,
+               CALL SGEMV( 'Transpose', N-I, I-1, ONE, A( I+1, 1 ),
+     $                     LDA,
      $                     A( I+1, I ), 1, AII, A( I, 1 ), LDA )
             ELSE
                CALL SSCAL( I, AII, A( I, 1 ), LDA )

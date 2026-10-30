@@ -490,6 +490,7 @@
      $                   ISEED, THRESH, A, LDA, BD, BE, S1, S2, X, LDX,
      $                   Y, Z, Q, LDQ, PT, LDPT, U, VT, WORK, LWORK,
      $                   IWORK, NOUT, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -527,6 +528,7 @@
      $                   JTYPE, LOG2UI, M, MINWRK, MMAX, MNMAX, MNMIN,
      $                   MNMIN2, MQ, MTYPES, N, NFAIL, NMAX,
      $                   NS1, NS2, NTEST
+      INTEGER            LWED, LIWED
       DOUBLE PRECISION   ABSTOL, AMNINV, ANORM, COND, OVFL, RTOVFL,
      $                   RTUNFL, TEMP1, TEMP2, ULP, ULPINV, UNFL,
      $                   VL, VU
@@ -535,17 +537,18 @@
       INTEGER            IDUM( 1 ), IOLDSD( 4 ), ISEED2( 4 ),
      $                   KMAGN( MAXTYP ), KMODE( MAXTYP ),
      $                   KTYPE( MAXTYP )
-      DOUBLE PRECISION   DUM( 1 ), DUMMA( 1 ), RESULT( 40 )
+      DOUBLE PRECISION   DUM( 1 ), DUMMA( 1 ), RESULT( 55 )
 *     ..
 *     .. External Functions ..
-      DOUBLE PRECISION   DLAMCH, DLARND, DSXT1
-      EXTERNAL           DLAMCH, DLARND, DSXT1
+      DOUBLE PRECISION   DLAMCH, DLARND
+      EXTERNAL           DLAMCH, DLARND
 *     ..
 *     .. External Subroutines ..
+      EXTERNAL           DBDSVDMR3
       EXTERNAL           ALASUM, DBDSDC, DBDSQR, DBDSVDX, DBDT01,
      $                   DBDT02, DBDT03, DBDT04, DCOPY, DGEBRD,
-     $                   DGEMM, DLABAD, DLACPY, DLAHD2, DLASET,
-     $                   DLATMR, DLATMS, DORGBR, DORT01, XERBLA
+     $                   DGEMM, DLACPY, DLAHD2, DLASET, DLATMR,
+     $                   DLATMS, DORGBR, DORT01, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, EXP, INT, LOG, MAX, MIN, SQRT
@@ -627,7 +630,6 @@
       NTEST = 0
       UNFL = DLAMCH( 'Safe minimum' )
       OVFL = DLAMCH( 'Overflow' )
-      CALL DLABAD( UNFL, OVFL )
       ULP = DLAMCH( 'Precision' )
       ULPINV = ONE / ULP
       LOG2UI = INT( LOG( ULPINV ) / LOG( TWO ) )
@@ -658,7 +660,7 @@
                IOLDSD( J ) = ISEED( J )
    20       CONTINUE
 *
-            DO 30 J = 1, 34
+            DO 30 J = 1, 49
                RESULT( J ) = -ONE
    30       CONTINUE
 *
@@ -1261,8 +1263,8 @@
                IL = 1
                IU = MNMIN
             ELSE
-               IL = 1 + INT( ( MNMIN-1 )*DLARND( 1, ISEED2 ) )
-               IU = 1 + INT( ( MNMIN-1 )*DLARND( 1, ISEED2 ) )
+               IL = 1 + INT( MNMIN*DLARND( 1, ISEED2 ) )
+               IU = 1 + INT( MNMIN*DLARND( 1, ISEED2 ) )
                IF( IU.LT.IL ) THEN
                   ITEMP = IU
                   IU = IL
@@ -1493,7 +1495,388 @@
 *
   270       CONTINUE
 *
-            DO 280 J = 1, 34
+*
+*     Tests 35-49: DBDSVDMR3 (MRRR), mirroring tests 20-34.
+*
+*
+*           Use DBDSVDMR3 to compute the SVD of the bidiagonal matrix B:
+*           B := U * S1 * VT
+*
+            IF( JTYPE.EQ.10 .OR. JTYPE.EQ.16 ) THEN
+*              =================================
+*              Matrix types temporarily disabled
+*              =================================
+               RESULT( 35:49 ) = ZERO
+               GO TO 870
+            END IF
+*
+            IWBS = 1
+            IWBD = IWBS + MNMIN
+            IWBE = IWBD + MNMIN
+            IWBZ = IWBE + MNMIN
+            IWWORK = IWBZ + 2*MNMIN*(MNMIN+1)
+            LWED = LWORK - IWWORK + 1
+            LIWED = MAX( 1, 24*MNMIN )
+*           DBDSVDMR3 needs 5*MNMIN**2 + 37*MNMIN doubles; skip these
+*           tests (rather than fail) when the caller's LWORK is smaller.
+            IF( LWED.LT.5*MNMIN*MNMIN+37*MNMIN ) THEN
+               RESULT( 35:49 ) = ZERO
+               GO TO 870
+            END IF
+            MNMIN2 = MAX( 1,MNMIN*2 )
+*
+            CALL DCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
+            IF( MNMIN.GT.0 )
+     $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
+*
+            CALL DBDSVDMR3(UPLO, 'V', 'A', MNMIN, WORK( IWBD ),
+     $                    WORK( IWBE ), ZERO, ZERO, 0, 0, NS1, S1,
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
+     $                    LWED, IWORK, LIWED, IINFO )
+*
+*           Check error code from DBDSVDMR3.
+*
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUT, FMT = 9998 )'DBDSVDMR3(vects,A)', IINFO, M,
+     $              N,
+     $            JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               IF( IINFO.LT.0 ) THEN
+                  RETURN
+               ELSE
+                  RESULT( 35 ) = ULPINV
+                  GO TO 870
+               END IF
+            END IF
+*
+            J = IWBZ
+            DO 770 I = 1, NS1
+               CALL DCOPY( MNMIN, WORK( J ), 1, U( 1,I ), 1 )
+               J = J + MNMIN
+               CALL DCOPY( MNMIN, WORK( J ), 1, VT( I,1 ), LDPT )
+               J = J + MNMIN
+  770       CONTINUE
+*
+*           Use DBDSVDMR3 to compute only the singular values of the
+*           bidiagonal matrix B;  U and VT should not be modified.
+*
+            IF( JTYPE.EQ.9 ) THEN
+*              =================================
+*              Matrix types temporarily disabled
+*              =================================
+               RESULT( 39 ) = ZERO
+               GO TO 870
+            END IF
+*
+            CALL DCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
+            IF( MNMIN.GT.0 )
+     $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
+*
+            CALL DBDSVDMR3(UPLO, 'N', 'A', MNMIN, WORK( IWBD ),
+     $                    WORK( IWBE ), ZERO, ZERO, 0, 0, NS2, S2,
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
+     $                    LWED, IWORK, LIWED, IINFO )
+*
+*           Check error code from DBDSVDMR3.
+*
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUT, FMT = 9998 )'DBDSVDMR3(values,A)', IINFO,
+     $            M, N, JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               IF( IINFO.LT.0 ) THEN
+                  RETURN
+               ELSE
+                  RESULT( 39 ) = ULPINV
+                  GO TO 870
+               END IF
+            END IF
+*
+*           Save S1 for tests 30-34.
+*
+            CALL DCOPY( MNMIN, S1, 1, WORK( IWBS ), 1 )
+*
+*           Test 20:  Check the decomposition B := U * S1 * VT
+*                21:  Check the orthogonality of U
+*                22:  Check the orthogonality of VT
+*                23:  Check that the singular values are sorted in
+*                     non-increasing order and are non-negative
+*                24:  Compare DBDSVDMR3 with and without singular vectors
+*
+            CALL DBDT03( UPLO, MNMIN, 1, BD, BE, U, LDPT, S1, VT,
+     $                   LDPT, WORK( IWBS+MNMIN ), RESULT( 35 ) )
+            CALL DORT01( 'Columns', MNMIN, MNMIN, U, LDPT,
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
+     $                   RESULT( 36 ) )
+            CALL DORT01( 'Rows', MNMIN, MNMIN, VT, LDPT,
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
+     $                   RESULT( 37 ) )
+*
+            RESULT( 38 ) = ZERO
+            DO 780 I = 1, MNMIN - 1
+               IF( S1( I ).LT.S1( I+1 ) )
+     $            RESULT( 38 ) = ULPINV
+               IF( S1( I ).LT.ZERO )
+     $            RESULT( 38 ) = ULPINV
+  780       CONTINUE
+            IF( MNMIN.GE.1 ) THEN
+               IF( S1( MNMIN ).LT.ZERO )
+     $            RESULT( 38 ) = ULPINV
+            END IF
+*
+            TEMP2 = ZERO
+            DO 790 J = 1, MNMIN
+               TEMP1 = ABS( S1( J )-S2( J ) ) /
+     $                 MAX( SQRT( UNFL )*MAX( S1( 1 ), ONE ),
+     $                 ULP*MAX( ABS( S1( 1 ) ), ABS( S2( 1 ) ) ) )
+               TEMP2 = MAX( TEMP1, TEMP2 )
+  790       CONTINUE
+            RESULT( 39 ) = TEMP2
+            ANORM = S1( 1 )
+*
+*           Use DBDSVDMR3 with RANGE='I': choose random values for IL and
+*           IU, and ask for the IL-th through IU-th singular values
+*           and corresponding vectors.
+*
+            DO 800 I = 1, 4
+               ISEED2( I ) = ISEED( I )
+  800       CONTINUE
+            IF( MNMIN.LE.1 ) THEN
+               IL = 1
+               IU = MNMIN
+            ELSE
+               IL = 1 + INT( MNMIN*DLARND( 1, ISEED2 ) )
+               IU = 1 + INT( MNMIN*DLARND( 1, ISEED2 ) )
+               IF( IU.LT.IL ) THEN
+                  ITEMP = IU
+                  IU = IL
+                  IL = ITEMP
+               END IF
+            END IF
+*
+            CALL DCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
+            IF( MNMIN.GT.0 )
+     $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
+*
+            CALL DBDSVDMR3(UPLO, 'V', 'I', MNMIN, WORK( IWBD ),
+     $                    WORK( IWBE ), ZERO, ZERO, IL, IU, NS1,
+     $                    S1, WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
+     $                    LWED, IWORK, LIWED, IINFO )
+*
+*           Check error code from DBDSVDMR3.
+*
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUT, FMT = 9998 )'DBDSVDMR3(vects,I)', IINFO,
+     $            M, N, JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               IF( IINFO.LT.0 ) THEN
+                  RETURN
+               ELSE
+                  RESULT( 40 ) = ULPINV
+                  GO TO 870
+               END IF
+            END IF
+*
+            J = IWBZ
+            DO 810 I = 1, NS1
+               CALL DCOPY( MNMIN, WORK( J ), 1, U( 1,I ), 1 )
+               J = J + MNMIN
+               CALL DCOPY( MNMIN, WORK( J ), 1, VT( I,1 ), LDPT )
+               J = J + MNMIN
+  810       CONTINUE
+*
+*           Use DBDSVDMR3 to compute only the singular values of the
+*           bidiagonal matrix B;  U and VT should not be modified.
+*
+            CALL DCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
+            IF( MNMIN.GT.0 )
+     $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
+*
+            CALL DBDSVDMR3(UPLO, 'N', 'I', MNMIN, WORK( IWBD ),
+     $                    WORK( IWBE ), ZERO, ZERO, IL, IU, NS2,
+     $                    S2, WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
+     $                    LWED, IWORK, LIWED, IINFO )
+*
+*           Check error code from DBDSVDMR3.
+*
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUT, FMT = 9998 )'DBDSVDMR3(values,I)', IINFO,
+     $            M, N, JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               IF( IINFO.LT.0 ) THEN
+                  RETURN
+               ELSE
+                  RESULT( 44 ) = ULPINV
+                  GO TO 870
+               END IF
+            END IF
+*
+*           Test 25:  Check S1 - U' * B * VT'
+*                26:  Check the orthogonality of U
+*                27:  Check the orthogonality of VT
+*                28:  Check that the singular values are sorted in
+*                     non-increasing order and are non-negative
+*                29:  Compare DBDSVDMR3 with and without singular vectors
+*
+            CALL DBDT04( UPLO, MNMIN, BD, BE, S1, NS1, U,
+     $                   LDPT, VT, LDPT, WORK( IWBS+MNMIN ),
+     $                   RESULT( 40 ) )
+            CALL DORT01( 'Columns', MNMIN, NS1, U, LDPT,
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
+     $                   RESULT( 41 ) )
+            CALL DORT01( 'Rows', NS1, MNMIN, VT, LDPT,
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
+     $                   RESULT( 42 ) )
+*
+            RESULT( 43 ) = ZERO
+            DO 820 I = 1, NS1 - 1
+               IF( S1( I ).LT.S1( I+1 ) )
+     $            RESULT( 43 ) = ULPINV
+               IF( S1( I ).LT.ZERO )
+     $            RESULT( 43 ) = ULPINV
+  820       CONTINUE
+            IF( NS1.GE.1 ) THEN
+               IF( S1( NS1 ).LT.ZERO )
+     $            RESULT( 43 ) = ULPINV
+            END IF
+*
+            TEMP2 = ZERO
+            DO 830 J = 1, NS1
+               TEMP1 = ABS( S1( J )-S2( J ) ) /
+     $                 MAX( SQRT( UNFL )*MAX( S1( 1 ), ONE ),
+     $                 ULP*MAX( ABS( S1( 1 ) ), ABS( S2( 1 ) ) ) )
+               TEMP2 = MAX( TEMP1, TEMP2 )
+  830       CONTINUE
+            RESULT( 44 ) = TEMP2
+*
+*           Use DBDSVDMR3 with RANGE='V': determine the values VL and VU
+*           of the IL-th and IU-th singular values and ask for all
+*           singular values in this range.
+*
+            CALL DCOPY( MNMIN, WORK( IWBS ), 1, S1, 1 )
+*
+            IF( MNMIN.GT.0 ) THEN
+               IF( IL.NE.1 ) THEN
+                  VU = S1( IL ) + MAX( HALF*ABS( S1( IL )-S1( IL-1 ) ),
+     $                 ULP*ANORM, TWO*RTUNFL )
+               ELSE
+                  VU = S1( 1 ) + MAX( HALF*ABS( S1( MNMIN )-S1( 1 ) ),
+     $                 ULP*ANORM, TWO*RTUNFL )
+               END IF
+               IF( IU.NE.NS1 ) THEN
+                  VL = S1( IU ) - MAX( ULP*ANORM, TWO*RTUNFL,
+     $                 HALF*ABS( S1( IU+1 )-S1( IU ) ) )
+               ELSE
+                  VL = S1( NS1 ) - MAX( ULP*ANORM, TWO*RTUNFL,
+     $                 HALF*ABS( S1( MNMIN )-S1( 1 ) ) )
+               END IF
+               VL = MAX( VL,ZERO )
+               VU = MAX( VU,ZERO )
+               IF( VL.GE.VU ) VU = MAX( VU*2, VU+VL+HALF )
+            ELSE
+               VL = ZERO
+               VU = ONE
+            END IF
+*
+            CALL DCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
+            IF( MNMIN.GT.0 )
+     $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
+*
+            CALL DBDSVDMR3(UPLO, 'V', 'V', MNMIN, WORK( IWBD ),
+     $                    WORK( IWBE ), VL, VU, 0, 0, NS1, S1,
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
+     $                    LWED, IWORK, LIWED, IINFO )
+*
+*           Check error code from DBDSVDMR3.
+*
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUT, FMT = 9998 )'DBDSVDMR3(vects,V)', IINFO,
+     $            M, N, JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               IF( IINFO.LT.0 ) THEN
+                  RETURN
+               ELSE
+                  RESULT( 45 ) = ULPINV
+                  GO TO 870
+               END IF
+            END IF
+*
+            J = IWBZ
+            DO 840 I = 1, NS1
+               CALL DCOPY( MNMIN, WORK( J ), 1, U( 1,I ), 1 )
+               J = J + MNMIN
+               CALL DCOPY( MNMIN, WORK( J ), 1, VT( I,1 ), LDPT )
+               J = J + MNMIN
+  840       CONTINUE
+*
+*           Use DBDSVDMR3 to compute only the singular values of the
+*           bidiagonal matrix B;  U and VT should not be modified.
+*
+            CALL DCOPY( MNMIN, BD, 1, WORK( IWBD ), 1 )
+            IF( MNMIN.GT.0 )
+     $         CALL DCOPY( MNMIN-1, BE, 1, WORK( IWBE ), 1 )
+*
+            CALL DBDSVDMR3(UPLO, 'N', 'V', MNMIN, WORK( IWBD ),
+     $                    WORK( IWBE ), VL, VU, 0, 0, NS2, S2,
+     $                    WORK( IWBZ ), MNMIN2, WORK( IWWORK ),
+     $                    LWED, IWORK, LIWED, IINFO )
+*
+*           Check error code from DBDSVDMR3.
+*
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUT, FMT = 9998 )'DBDSVDMR3(values,V)', IINFO,
+     $            M, N, JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               IF( IINFO.LT.0 ) THEN
+                  RETURN
+               ELSE
+                  RESULT( 49 ) = ULPINV
+                  GO TO 870
+               END IF
+            END IF
+*
+*           Test 30:  Check S1 - U' * B * VT'
+*                31:  Check the orthogonality of U
+*                32:  Check the orthogonality of VT
+*                33:  Check that the singular values are sorted in
+*                     non-increasing order and are non-negative
+*                34:  Compare DBDSVDMR3 with and without singular vectors
+*
+            CALL DBDT04( UPLO, MNMIN, BD, BE, S1, NS1, U,
+     $                   LDPT, VT, LDPT, WORK( IWBS+MNMIN ),
+     $                   RESULT( 45 ) )
+            CALL DORT01( 'Columns', MNMIN, NS1, U, LDPT,
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
+     $                   RESULT( 46 ) )
+            CALL DORT01( 'Rows', NS1, MNMIN, VT, LDPT,
+     $                   WORK( IWBS+MNMIN ), LWORK-MNMIN,
+     $                   RESULT( 47 ) )
+*
+            RESULT( 48 ) = ZERO
+            DO 850 I = 1, NS1 - 1
+               IF( S1( I ).LT.S1( I+1 ) )
+     $            RESULT( 48 ) = ULPINV
+               IF( S1( I ).LT.ZERO )
+     $            RESULT( 48 ) = ULPINV
+  850       CONTINUE
+            IF( NS1.GE.1 ) THEN
+               IF( S1( NS1 ).LT.ZERO )
+     $            RESULT( 48 ) = ULPINV
+            END IF
+*
+            TEMP2 = ZERO
+            DO 860 J = 1, NS1
+               TEMP1 = ABS( S1( J )-S2( J ) ) /
+     $                 MAX( SQRT( UNFL )*MAX( S1( 1 ), ONE ),
+     $                 ULP*MAX( ABS( S1( 1 ) ), ABS( S2( 1 ) ) ) )
+               TEMP2 = MAX( TEMP1, TEMP2 )
+  860       CONTINUE
+            RESULT( 49 ) = TEMP2
+*
+*           End of Loop -- Check for RESULT(j) > THRESH
+*
+  870       CONTINUE
+*
+            DO 280 J = 1, 49
                IF( RESULT( J ).GE.THRESH ) THEN
                   IF( NFAIL.EQ.0 )
      $               CALL DLAHD2( NOUT, PATH )
@@ -1503,9 +1886,9 @@
                END IF
   280       CONTINUE
             IF( .NOT.BIDIAG ) THEN
-               NTEST = NTEST + 34
+               NTEST = NTEST + 49
             ELSE
-               NTEST = NTEST + 30
+               NTEST = NTEST + 45
             END IF
 *
   290    CONTINUE
