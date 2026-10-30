@@ -137,7 +137,7 @@
 *>
 *> \param[out] IWORK
 *> \verbatim
-*>          IWORK is INTEGER array, dimension (2*NMAX)
+*>          IWORK is INTEGER array, dimension (2*NMAX+2)
 *> \endverbatim
 *>
 *> \param[in] NOUT
@@ -160,6 +160,7 @@
       SUBROUTINE DCHKSP( DOTYPE, NN, NVAL, NNS, NSVAL, THRESH, TSTERR,
      $                   NMAX, A, AFAC, AINV, B, X, XACT, WORK, RWORK,
      $                   IWORK, NOUT )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -180,8 +181,10 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   ZERO
-      PARAMETER          ( ZERO = 0.0D+0 )
+      DOUBLE PRECISION   ZERO, ONE, TWO
+      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0, TWO = 2.0D+0 )
+      INTEGER            IGUARD
+      PARAMETER          ( IGUARD = -9999 )
       INTEGER            NTYPES
       PARAMETER          ( NTYPES = 10 )
       INTEGER            NTESTS
@@ -195,6 +198,7 @@
      $                   IZERO, J, K, KL, KU, LDA, MODE, N, NERRS,
      $                   NFAIL, NIMAT, NPP, NRHS, NRUN, NT
       DOUBLE PRECISION   ANORM, CNDNUM, RCOND, RCONDC
+      DOUBLE PRECISION   RNAN, RONE
 *     ..
 *     .. Local Arrays ..
       CHARACTER          UPLOS( 2 )
@@ -213,7 +217,7 @@
      $                   DSPTRS
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN
+      INTRINSIC          MAX, MIN, SQRT
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -549,6 +553,70 @@
   160    CONTINUE
   170 CONTINUE
 *
+*     A NaN on the diagonal of the last column that DSPTRF visits --
+*     column N for UPLO = 'L', column 1 for UPLO = 'U' -- must be
+*     reported in INFO.  That column has no off-diagonal candidate, so
+*     COLMAX is zero and IMAX is never assigned; unless the pivot itself
+*     is tested for a NaN every later comparison is false, the code
+*     reaches the 2-by-2 branch, and it writes IPIV( K+1 ) or
+*     IPIV( K-1 ) -- one element past an end of IPIV -- with INFO left
+*     at zero.  The NaN column is otherwise zero and the remaining rows
+*     and columns hold I + ones, which is positive definite, so no
+*     interchange precedes the NaN and INFO is exactly its index.  IPIV
+*     is passed as IWORK( 2 ) so that a write below its first element
+*     lands inside IWORK.
+*
+      RONE = ONE
+      RNAN = SQRT( -RONE )
+      DO 200 IN = 1, NN
+         N = NVAL( IN )
+         IF( N.LT.1 )
+     $      GO TO 200
+         NPP = N*( N+1 ) / 2
+         DO 195 IUPLO = 1, 2
+            UPLO = UPLOS( IUPLO )
+            DO 180 I = 1, NPP
+               AFAC( I ) = ONE
+  180       CONTINUE
+            IF( IUPLO.EQ.1 ) THEN
+               IZERO = 1
+               DO 185 J = 1, N
+                  IOFF = J*( J-1 ) / 2
+                  AFAC( IOFF+J ) = TWO
+                  AFAC( IOFF+1 ) = ZERO
+  185          CONTINUE
+               AFAC( 1 ) = RNAN
+            ELSE
+               IZERO = N
+               DO 190 J = 1, N
+                  IOFF = ( J-1 )*( 2*N-J ) / 2
+                  AFAC( IOFF+J ) = TWO
+                  AFAC( IOFF+N ) = ZERO
+  190          CONTINUE
+               AFAC( NPP ) = RNAN
+            END IF
+*
+            IWORK( 1 ) = IGUARD
+            IWORK( N+2 ) = IGUARD
+            SRNAMT = 'DSPTRF'
+            CALL DSPTRF( UPLO, N, AFAC, IWORK( 2 ), INFO )
+*
+            IF( INFO.NE.IZERO ) THEN
+               IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
+     $            CALL ALAHD( NOUT, PATH )
+               WRITE( NOUT, FMT = 9997 )'DSPTRF', INFO, IZERO, UPLO, N
+               NFAIL = NFAIL + 1
+            END IF
+            IF( IWORK( 1 ).NE.IGUARD .OR. IWORK( N+2 ).NE.IGUARD ) THEN
+               IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
+     $            CALL ALAHD( NOUT, PATH )
+               WRITE( NOUT, FMT = 9996 )'DSPTRF', UPLO, N
+               NFAIL = NFAIL + 1
+            END IF
+            NRUN = NRUN + 2
+  195    CONTINUE
+  200 CONTINUE
+*
 *     Print a summary of the results.
 *
       CALL ALASUM( PATH, NOUT, NFAIL, NRUN, NERRS )
@@ -557,6 +625,10 @@
      $      I2, ', ratio =', G12.5 )
  9998 FORMAT( ' UPLO = ''', A1, ''', N =', I5, ', NRHS=', I3, ', type ',
      $      I2, ', test(', I2, ') =', G12.5 )
+ 9997 FORMAT( ' *** ', A, ' with a NaN pivot returned INFO =', I5,
+     $      ' instead of', I5, ' for UPLO = ''', A1, ''', N =', I5 )
+ 9996 FORMAT( ' *** ', A, ' with a NaN pivot wrote outside IPIV for',
+     $      ' UPLO = ''', A1, ''', N =', I5 )
       RETURN
 *
 *     End of DCHKSP
