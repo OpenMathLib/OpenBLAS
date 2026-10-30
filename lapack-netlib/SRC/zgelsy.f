@@ -452,24 +452,36 @@
 *
 *     complex workspace: N.
 *
-*     Undo scaling
+*     Undo scaling.  The solution carries the factor of B divided by
+*     the factor of A.  When both were scaled to the same end of the
+*     range the constants cancel and BNRM/ANRM is applied in one step:
+*     applied in two, the first step could flush or overflow an entry
+*     that the second would have brought back into range.
 *
-      IF( IASCL.EQ.1 ) THEN
-         CALL ZLASCL( 'G', 0, 0, ANRM, SMLNUM, N, NRHS, B, LDB,
+      IF( IASCL.EQ.IBSCL .AND. IASCL.NE.0 ) THEN
+         CALL ZLASCL( 'G', 0, 0, ANRM, BNRM, N, NRHS, B, LDB,
      $                INFO )
+      ELSE
+         IF( IASCL.EQ.1 ) THEN
+            CALL ZLASCL( 'G', 0, 0, ANRM, SMLNUM, N, NRHS, B, LDB,
+     $                   INFO )
+         ELSE IF( IASCL.EQ.2 ) THEN
+            CALL ZLASCL( 'G', 0, 0, ANRM, BIGNUM, N, NRHS, B, LDB,
+     $                   INFO )
+         END IF
+         IF( IBSCL.EQ.1 ) THEN
+            CALL ZLASCL( 'G', 0, 0, SMLNUM, BNRM, N, NRHS, B, LDB,
+     $                   INFO )
+         ELSE IF( IBSCL.EQ.2 ) THEN
+            CALL ZLASCL( 'G', 0, 0, BIGNUM, BNRM, N, NRHS, B, LDB,
+     $                   INFO )
+         END IF
+      END IF
+      IF( IASCL.EQ.1 ) THEN
          CALL ZLASCL( 'U', 0, 0, SMLNUM, ANRM, RANK, RANK, A, LDA,
      $                INFO )
       ELSE IF( IASCL.EQ.2 ) THEN
-         CALL ZLASCL( 'G', 0, 0, ANRM, BIGNUM, N, NRHS, B, LDB,
-     $                INFO )
          CALL ZLASCL( 'U', 0, 0, BIGNUM, ANRM, RANK, RANK, A, LDA,
-     $                INFO )
-      END IF
-      IF( IBSCL.EQ.1 ) THEN
-         CALL ZLASCL( 'G', 0, 0, SMLNUM, BNRM, N, NRHS, B, LDB,
-     $                INFO )
-      ELSE IF( IBSCL.EQ.2 ) THEN
-         CALL ZLASCL( 'G', 0, 0, BIGNUM, BNRM, N, NRHS, B, LDB,
      $                INFO )
       END IF
 *

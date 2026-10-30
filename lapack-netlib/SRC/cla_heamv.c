@@ -627,7 +627,7 @@ mv.f"> */
 			i__3 = j + i__ * a_dim1;
 			temp = (r__1 = a[i__3].r, abs(r__1)) + (r__2 = r_imag(
 				&a[j + i__ * a_dim1]), abs(r__2));
-			i__3 = j;
+			i__3 = jx;
 			symb_zero__ = symb_zero__ && ((x[i__3].r == 0.f && x[
 				i__3].i == 0.f) || temp == 0.f);
 			i__3 = jx;
@@ -640,7 +640,7 @@ mv.f"> */
 			i__3 = i__ + j * a_dim1;
 			temp = (r__1 = a[i__3].r, abs(r__1)) + (r__2 = r_imag(
 				&a[i__ + j * a_dim1]), abs(r__2));
-			i__3 = j;
+			i__3 = jx;
 			symb_zero__ = symb_zero__ && ((x[i__3].r == 0.f && x[
 				i__3].i == 0.f) || temp == 0.f);
 			i__3 = jx;
@@ -673,7 +673,7 @@ mv.f"> */
 			i__3 = i__ + j * a_dim1;
 			temp = (r__1 = a[i__3].r, abs(r__1)) + (r__2 = r_imag(
 				&a[i__ + j * a_dim1]), abs(r__2));
-			i__3 = j;
+			i__3 = jx;
 			symb_zero__ = symb_zero__ && ((x[i__3].r == 0.f && x[
 				i__3].i == 0.f) || temp == 0.f);
 			i__3 = jx;
@@ -686,7 +686,7 @@ mv.f"> */
 			i__3 = j + i__ * a_dim1;
 			temp = (r__1 = a[i__3].r, abs(r__1)) + (r__2 = r_imag(
 				&a[j + i__ * a_dim1]), abs(r__2));
-			i__3 = j;
+			i__3 = jx;
 			symb_zero__ = symb_zero__ && ((x[i__3].r == 0.f && x[
 				i__3].i == 0.f) || temp == 0.f);
 			i__3 = jx;

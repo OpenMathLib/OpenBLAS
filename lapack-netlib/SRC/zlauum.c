@@ -529,20 +529,15 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
 /* Table of constant values */
 
-static doublecomplex c_b1 = {1.,0.};
-static integer c__1 = 1;
-static integer c_n1 = -1;
-static doublereal c_b21 = 1.;
 
-/* > \brief \b ZLAUUM computes the product UUH or LHL, where U and L are upper or lower triangular matrices (b
-locked algorithm). */
+/* > \brief \b ZLAUUM computes the product UUH or LHL, where U and L are upper or lower triangular matrices (d
+river algorithm). */
 
 /*  =========== DOCUMENTATION =========== */
 
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download ZLAUUM + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlauum.
 f"> */
@@ -553,7 +548,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlauum.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -575,11 +569,13 @@ f"> */
 /* > the array A. */
 /* > */
 /* > If UPLO = 'U' or 'u' then the upper triangle of the result is stored, */
-/* > overwriting the factor U in A. */
+/* > overwriting the factor U in A, and the strictly lower triangular part */
+/* > of A is not referenced. */
 /* > If UPLO = 'L' or 'l' then the lower triangle of the result is stored, */
-/* > overwriting the factor L in A. */
+/* > overwriting the factor L in A, and the strictly upper triangular part */
+/* > of A is not referenced. */
 /* > */
-/* > This is the blocked form of the algorithm, calling Level 3 BLAS. */
+/* > This is the driver that dispatches to either blocked or recursive */
 /* > \endverbatim */
 
 /*  Arguments: */
@@ -605,9 +601,13 @@ f"> */
 /* >          A is COMPLEX*16 array, dimension (LDA,N) */
 /* >          On entry, the triangular factor U or L. */
 /* >          On exit, if UPLO = 'U', the upper triangle of A is */
-/* >          overwritten with the upper triangle of the product U * U**H; */
-/* >          if UPLO = 'L', the lower triangle of A is overwritten with */
-/* >          the lower triangle of the product L**H * L. */
+/* >          overwritten with the upper triangle of the product U * U**H, */
+/* >          and the strictly lower triangular part of A is not referenced. */
+/* >          If UPLO = 'L', the lower triangle of A is overwritten with */
+/* >          the lower triangle of the product L**H * L, and the strictly */
+/* >          upper triangular part of A is not referenced. Regardless, */
+/* >          the diagonal elements are explicitly set to be real by casting */
+/* .          to DBLE before exit. */
 /* > \endverbatim */
 /* > */
 /* > \param[in] LDA */
@@ -631,42 +631,25 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup complex16OTHERauxiliary */
+/* > \ingroup lauum */
 
 /*  ===================================================================== */
 /* Subroutine */ void zlauum_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *info)
 {
     /* System generated locals */
-    integer a_dim1, a_offset, i__1, i__2, i__3, i__4;
+    integer a_dim1, a_offset, i__1;
 
     /* Local variables */
-    integer i__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
-	    integer *, doublecomplex *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *), zherk_(char *, char *, integer *, 
-	    integer *, doublereal *, doublecomplex *, integer *, doublereal *,
-	     doublecomplex *, integer *);
     logical upper;
-    extern /* Subroutine */ void ztrmm_(char *, char *, char *, char *, 
-	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
-	     doublecomplex *, integer *);
-    integer ib, nb;
-    extern /* Subroutine */ void zlauu2_(char *, integer *, doublecomplex *, 
-	    integer *, integer *);
-    extern void xerbla_(char *, integer *, ftnlen);
-    extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
-	    integer *, integer *, ftnlen, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen), zlauum_recursive_(
+	    char *, integer *, doublecomplex *, integer *, integer *);
 
 
-/*  -- LAPACK auxiliary routine (version 3.7.0) -- */
+/*  -- LAPACK auxiliary routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -676,7 +659,7 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
 
     /* Function Body */
@@ -701,81 +684,13 @@ f"> */
 	return;
     }
 
-/*     Determine the block size for this environment. */
+/*     Here we dispatch to whatever is more efficient in a particular environment */
+/*     We are defaulting to recursive, but if you want to use the blocked variant */
+/*     Comment out the line starting with `CALL ZLAUUM_...` */
+/*     and uncomment the line starting with `CALL ZLAUUM_BLOCKED...` */
 
-    nb = ilaenv_(&c__1, "ZLAUUM", uplo, n, &c_n1, &c_n1, &c_n1, (ftnlen)6, (
-	    ftnlen)1);
-
-    if (nb <= 1 || nb >= *n) {
-
-/*        Use unblocked code */
-
-	zlauu2_(uplo, n, &a[a_offset], lda, info);
-    } else {
-
-/*        Use blocked code */
-
-	if (upper) {
-
-/*           Compute the product U * U**H. */
-
-	    i__1 = *n;
-	    i__2 = nb;
-	    for (i__ = 1; i__2 < 0 ? i__ >= i__1 : i__ <= i__1; i__ += i__2) {
-/* Computing MIN */
-		i__3 = nb, i__4 = *n - i__ + 1;
-		ib = f2cmin(i__3,i__4);
-		i__3 = i__ - 1;
-		ztrmm_("Right", "Upper", "Conjugate transpose", "Non-unit", &
-			i__3, &ib, &c_b1, &a[i__ + i__ * a_dim1], lda, &a[i__ 
-			* a_dim1 + 1], lda);
-		zlauu2_("Upper", &ib, &a[i__ + i__ * a_dim1], lda, info);
-		if (i__ + ib <= *n) {
-		    i__3 = i__ - 1;
-		    i__4 = *n - i__ - ib + 1;
-		    zgemm_("No transpose", "Conjugate transpose", &i__3, &ib, 
-			    &i__4, &c_b1, &a[(i__ + ib) * a_dim1 + 1], lda, &
-			    a[i__ + (i__ + ib) * a_dim1], lda, &c_b1, &a[i__ *
-			     a_dim1 + 1], lda);
-		    i__3 = *n - i__ - ib + 1;
-		    zherk_("Upper", "No transpose", &ib, &i__3, &c_b21, &a[
-			    i__ + (i__ + ib) * a_dim1], lda, &c_b21, &a[i__ + 
-			    i__ * a_dim1], lda);
-		}
-/* L10: */
-	    }
-	} else {
-
-/*           Compute the product L**H * L. */
-
-	    i__2 = *n;
-	    i__1 = nb;
-	    for (i__ = 1; i__1 < 0 ? i__ >= i__2 : i__ <= i__2; i__ += i__1) {
-/* Computing MIN */
-		i__3 = nb, i__4 = *n - i__ + 1;
-		ib = f2cmin(i__3,i__4);
-		i__3 = i__ - 1;
-		ztrmm_("Left", "Lower", "Conjugate transpose", "Non-unit", &
-			ib, &i__3, &c_b1, &a[i__ + i__ * a_dim1], lda, &a[i__ 
-			+ a_dim1], lda);
-		zlauu2_("Lower", &ib, &a[i__ + i__ * a_dim1], lda, info);
-		if (i__ + ib <= *n) {
-		    i__3 = i__ - 1;
-		    i__4 = *n - i__ - ib + 1;
-		    zgemm_("Conjugate transpose", "No transpose", &ib, &i__3, 
-			    &i__4, &c_b1, &a[i__ + ib + i__ * a_dim1], lda, &
-			    a[i__ + ib + a_dim1], lda, &c_b1, &a[i__ + a_dim1]
-			    , lda);
-		    i__3 = *n - i__ - ib + 1;
-		    zherk_("Lower", "Conjugate transpose", &ib, &i__3, &c_b21,
-			     &a[i__ + ib + i__ * a_dim1], lda, &c_b21, &a[i__ 
-			    + i__ * a_dim1], lda);
-		}
-/* L20: */
-	    }
-	}
-    }
-
+    zlauum_recursive_(uplo, n, &a[a_offset], lda, info);
+    //zlauum_bblocked_(uplo, n, &a[a_offset], lda, info);
     return;
 
 /*     End of ZLAUUM */

@@ -249,20 +249,6 @@ typedef struct Namelist Namelist;
 */
 
 
-/*  -- translated by f2c (version 20000121).
-   You must link the resulting object file with the libraries:
-	-lf2c -lm   (in that order)
-*/
-
-
-
-/*  -- translated by f2c (version 20000121).
-   You must link the resulting object file with the libraries:
-	-lf2c -lm   (in that order)
-*/
-
-
-
 /* Table of constant values */
 
 static complex c_b1 = {1.f,0.f};
@@ -276,7 +262,6 @@ static integer c__65 = 65;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download CGBTRF + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgbtrf.
 f"> */
@@ -287,7 +272,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgbtrf.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -385,9 +369,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup complexGBcomputational */
+/* > \ingroup gbtrf */
 
 /* > \par Further Details: */
 /*  ===================== */
@@ -417,30 +399,31 @@ f"> */
 {
     /* System generated locals */
     integer ab_dim1, ab_offset, i__1, i__2, i__3, i__4, i__5, i__6;
-    complex q__1={0.,0.};
+    complex q__1;
 
     /* Local variables */
+    integer i__, j, i2, i3, j2, j3, k2, jb, nb, ii, jj, jm, ip, jp, km, ju, 
+	    kv, nw;
     complex temp;
-    integer i__, j;
     extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), cgemm_(char *, char *, integer *, integer *, integer *
 	    , complex *, complex *, integer *, complex *, integer *, complex *
 	    , complex *, integer *), cgeru_(integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
-	    complex *, integer *), ccopy_(integer *, complex *, integer *, 
+	    complex *, integer *);
+    real sfmin;
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     complex work13[4160]	/* was [65][64] */, work31[4160]	/* 
 	    was [65][64] */;
     extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
+	    integer *), cgbtf2_(integer *, 
+	    integer *, integer *, integer *, complex *, integer *, integer *, 
 	    integer *);
-    integer i2, i3, j2, j3, k2;
-    extern /* Subroutine */ void cgbtf2_(integer *, integer *, integer *, 
-	    integer *, complex *, integer *, integer *, integer *);
-    integer jb, nb, ii, jj, jm, ip, jp, km, ju, kv;
     extern integer icamax_(integer *, complex *, integer *);
-    integer nw;
+    extern real slamch_(char *);
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
@@ -448,10 +431,9 @@ f"> */
 	    integer *, integer *, integer *, integer *);
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -462,7 +444,7 @@ f"> */
 
     /* Parameter adjustments */
     ab_dim1 = *ldab;
-    ab_offset = 1 + ab_dim1 * 1;
+    ab_offset = 1 + ab_dim1;
     ab -= ab_offset;
     --ipiv;
 
@@ -494,6 +476,10 @@ f"> */
     if (*m == 0 || *n == 0) {
 	return;
     }
+
+/*     Compute machine safe minimum */
+
+    sfmin = slamch_("S");
 
 /*     Determine the block size for this environment */
 
@@ -650,8 +636,19 @@ f"> */
 
 /*                 Compute multipliers */
 
-		    c_div(&q__1, &c_b1, &ab[kv + 1 + jj * ab_dim1]);
-		    cscal_(&km, &q__1, &ab[kv + 2 + jj * ab_dim1], &c__1);
+		    if (c_abs(&ab[kv + 1 + jj * ab_dim1]) >= sfmin) {
+			c_div(&q__1, &c_b1, &ab[kv + 1 + jj * ab_dim1]);
+			cscal_(&km, &q__1, &ab[kv + 2 + jj * ab_dim1], &c__1);
+		    } else {
+			i__4 = km;
+			for (i__ = 1; i__ <= i__4; ++i__) {
+			    i__5 = kv + 1 + i__ + jj * ab_dim1;
+			    c_div(&q__1, &ab[kv + 1 + i__ + jj * ab_dim1], &
+				    ab[kv + 1 + jj * ab_dim1]);
+			    ab[i__5].r = q__1.r, ab[i__5].i = q__1.i;
+/* L75: */
+			}
+		    }
 
 /*                 Update trailing submatrix within the band and within */
 /*                 the current block. JM is the index of the last column */
@@ -662,7 +659,7 @@ f"> */
 		    jm = f2cmin(i__4,i__5);
 		    if (jm > jj) {
 			i__4 = jm - jj;
-			q__1.r = -1.f, q__1.i = 0.f;
+			q__1.r = -1.f, q__1.i = -0.f;
 			i__5 = *ldab - 1;
 			i__6 = *ldab - 1;
 			cgeru_(&km, &i__4, &q__1, &ab[kv + 2 + jj * ab_dim1], 
@@ -756,7 +753,7 @@ f"> */
 
 /*                    Update A22 */
 
-			q__1.r = -1.f, q__1.i = 0.f;
+			q__1.r = -1.f, q__1.i = -0.f;
 			i__3 = *ldab - 1;
 			i__4 = *ldab - 1;
 			i__5 = *ldab - 1;
@@ -771,7 +768,7 @@ f"> */
 
 /*                    Update A32 */
 
-			q__1.r = -1.f, q__1.i = 0.f;
+			q__1.r = -1.f, q__1.i = -0.f;
 			i__3 = *ldab - 1;
 			i__4 = *ldab - 1;
 			cgemm_("No transpose", "No transpose", &i3, &j2, &jb, 
@@ -810,7 +807,7 @@ f"> */
 
 /*                    Update A23 */
 
-			q__1.r = -1.f, q__1.i = 0.f;
+			q__1.r = -1.f, q__1.i = -0.f;
 			i__3 = *ldab - 1;
 			i__4 = *ldab - 1;
 			cgemm_("No transpose", "No transpose", &i2, &j3, &jb, 
@@ -823,7 +820,7 @@ f"> */
 
 /*                    Update A33 */
 
-			q__1.r = -1.f, q__1.i = 0.f;
+			q__1.r = -1.f, q__1.i = -0.f;
 			i__3 = *ldab - 1;
 			cgemm_("No transpose", "No transpose", &i3, &j3, &jb, 
 				&q__1, work31, &c__65, work13, &c__65, &c_b1, 

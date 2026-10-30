@@ -194,19 +194,40 @@
 *     .. Allocate memory dynamically ..
 *
       ALLOCATE ( IWORK( 34*NMAX ), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( A( ( KDMAX+1 )*NMAX, 8 ), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( B( NMAX*MAXRHS, 4 ), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( WORK( NMAX, 3*NMAX+MAXRHS+30 ), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( E( NMAX ), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( S( 2*NMAX ), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
       ALLOCATE ( RWORK( 5*NMAX+2*MAXRHS ), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      IF (AllocateStatus /= 0) THEN
+         WRITE( NOUT, FMT = * )'*** Not enough memory ***'
+         STOP 1
+      END IF
 *     ..
 *     .. Executable Statements ..
 *
@@ -390,7 +411,7 @@
 *
       IF( FATAL ) THEN
          WRITE( NOUT, FMT = 9999 )
-         STOP
+         STOP 1
       END IF
 *
 *     Calculate and print the machine dependent constants.
@@ -482,7 +503,7 @@
 *
          LA = ( 2*KDMAX+1 )*NMAX
          LAFAC = ( 3*KDMAX+1 )*NMAX
-         NTYPES = 8
+         NTYPES = 9
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
 *
          IF( TSTCHK ) THEN
@@ -646,7 +667,7 @@
 *        SY:  symmetric indefinite matrices,
 *             with partial (Bunch-Kaufman) pivoting algorithm
 *
-         NTYPES = 10
+         NTYPES = 11
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
 *
          IF( TSTCHK ) THEN
@@ -1103,7 +1124,8 @@
       DEALLOCATE (E, STAT = AllocateStatus)
       DEALLOCATE (S, STAT = AllocateStatus)
       DEALLOCATE (WORK, STAT = AllocateStatus)
-      DEALLOCATE (RWORK,  STAT = AllocateStatus)
+      DEALLOCATE (RWORK, STAT = AllocateStatus)
+      DEALLOCATE (IWORK, STAT = AllocateStatus)
 *
  9999 FORMAT( / ' Execution not attempted due to input errors' )
  9998 FORMAT( / ' End of tests' )

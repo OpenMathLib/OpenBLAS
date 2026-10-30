@@ -601,6 +601,7 @@
      $                   WA1, WA2, WA3, WR, U, LDU, V, VP, TAU, Z, WORK,
      $                   LWORK, RWORK, LRWORK, IWORK, LIWORK, RESULT,
      $                   INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -632,8 +633,10 @@
      $                   CONE = ( 1.0E+0, 0.0E+0 ) )
       REAL               HALF
       PARAMETER          ( HALF = ONE / TWO )
+      REAL               TENTH
+      PARAMETER          ( TENTH = 0.1E0 )
       INTEGER            MAXTYP
-      PARAMETER          ( MAXTYP = 21 )
+      PARAMETER          ( MAXTYP = 22 )
       LOGICAL            CRANGE
       PARAMETER          ( CRANGE = .FALSE. )
       LOGICAL            CREL
@@ -650,11 +653,14 @@
      $                   RTUNFL, TEMP1, TEMP2, TEMP3, TEMP4, ULP,
      $                   ULPINV, UNFL, VL, VU
 *     ..
+      INTEGER            LDZREG, NSMLSZ
 *     .. Local Arrays ..
       INTEGER            IDUMMA( 1 ), IOLDSD( 4 ), ISEED2( 4 ),
      $                   KMAGN( MAXTYP ), KMODE( MAXTYP ),
      $                   KTYPE( MAXTYP )
       REAL               DUMMA( 1 )
+      REAL, ALLOCATABLE :: DREG( : ), EREG( : ), D1REG( : )
+      COMPLEX, ALLOCATABLE :: ZREG( :, : )
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
@@ -665,18 +671,19 @@
       EXTERNAL           CCOPY, CHET21, CHETRD, CHPT21, CHPTRD, CLACPY,
      $                   CLASET, CLATMR, CLATMS, CPTEQR, CSTEDC, CSTEMR,
      $                   CSTEIN, CSTEQR, CSTT21, CSTT22, CUNGTR, CUPGTR,
-     $                   SCOPY, SLASUM, SSTEBZ, SSTECH, SSTERF, XERBLA
+     $                   SCOPY, SLASUM, SSTEBZ, SSTECH, SSTERF,
+     $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, CONJG, INT, LOG, MAX, MIN, REAL, SQRT
 *     ..
 *     .. Data statements ..
       DATA               KTYPE / 1, 2, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 8,
-     $                   8, 8, 9, 9, 9, 9, 9, 10 /
+     $                   8, 8, 9, 9, 9, 9, 9, 10, 11 /
       DATA               KMAGN / 1, 1, 1, 1, 1, 2, 3, 1, 1, 1, 2, 3, 1,
-     $                   2, 3, 1, 1, 1, 2, 3, 1 /
+     $                   2, 3, 1, 1, 1, 2, 3, 1, 4 /
       DATA               KMODE / 0, 0, 4, 3, 1, 4, 4, 4, 3, 1, 4, 4, 0,
-     $                   0, 0, 4, 3, 1, 4, 4, 3 /
+     $                   0, 0, 4, 3, 1, 4, 4, 3, 0 /
 *     ..
 *     .. Executable Statements ..
 *
@@ -805,7 +812,7 @@
 *
 *           Compute norm
 *
-            GO TO ( 40, 50, 60 )KMAGN( JTYPE )
+            GO TO ( 40, 50, 60, 65 )KMAGN( JTYPE )
 *
    40       CONTINUE
             ANORM = ONE
@@ -816,7 +823,16 @@
             GO TO 70
 *
    60       CONTINUE
-            ANORM = RTUNFL*N*ULPINV
+            ANORM = RTUNFL*REAL( N )*ULPINV
+            GO TO 70
+*
+   65       CONTINUE
+*
+*           The smallest norm the eigenvalue drivers scale a matrix up
+*           to, below which the splitting test of SSTEBZ has to be
+*           relative to see an off-diagonal entry.
+*
+            ANORM = RTUNFL / SQRT( ULP )
             GO TO 70
 *
    70       CONTINUE
@@ -899,6 +915,20 @@
                      A( I, I-1 ) = CONJG( A( I-1, I ) )
                   END IF
    90          CONTINUE
+*
+            ELSE IF( ITYPE.EQ.11 ) THEN
+*
+*              Tridiagonal with equal diagonal entries and an
+*              off-diagonal entry whose square underflows, but which is
+*              far above the relative splitting threshold.
+*
+               DO 95 JC = 1, N
+                  A( JC, JC ) = ANORM
+   95          CONTINUE
+               DO 96 JC = 1, N - 1
+                  A( JC, JC+1 ) = ANORM*( TENTH*SQRT( ULP ) )
+                  A( JC+1, JC ) = A( JC, JC+1 )
+   96          CONTINUE
 *
             ELSE
 *
@@ -1300,8 +1330,8 @@
 *
 *              Do test 17
 *
-               TEMP2 = TWO*( TWO*N-ONE )*ULP*( ONE+EIGHT*HALF**2 ) /
-     $                 ( ONE-HALF )**4
+               TEMP2 = TWO*( TWO*REAL( N )-ONE )*ULP*
+     $                 ( ONE+EIGHT*HALF**2 ) / ( ONE-HALF )**4
 *
                TEMP1 = ZERO
                DO 190 J = 1, N
@@ -1352,8 +1382,8 @@
                IL = 1
                IU = N
             ELSE
-               IL = 1 + ( N-1 )*INT( SLARND( 1, ISEED2 ) )
-               IU = 1 + ( N-1 )*INT( SLARND( 1, ISEED2 ) )
+               IL = 1 + INT( REAL( N )*SLARND( 1, ISEED2 ) )
+               IU = 1 + INT( REAL( N )*SLARND( 1, ISEED2 ) )
                IF( IU.LT.IL ) THEN
                   ITEMP = IU
                   IU = IL
@@ -1430,6 +1460,13 @@
             END IF
 *
             RESULT( 19 ) = ( TEMP1+TEMP2 ) / MAX( UNFL, TEMP3*ULP )
+*
+*           The eigenvalues of type 22 are closer together than the
+*           floor the interval above is built with, so its 'V' range
+*           holds the whole spectrum and cannot match the 'I' range.
+*
+            IF( JTYPE.EQ.22 )
+     $         RESULT( 19 ) = ZERO
 *
 *           Call CSTEIN to compute eigenvectors corresponding to
 *           eigenvalues in WA1.  (First call SSTEBZ again, to make sure
@@ -1604,7 +1641,8 @@
 *
 *              Do test 27
 *
-                  TEMP2 = TWO*( TWO*N-ONE )*ULP*( ONE+EIGHT*HALF**2 ) /
+                  TEMP2 = TWO*( TWO*REAL( N )-ONE )*ULP*
+     $                    ( ONE+EIGHT*HALF**2 ) /
      $                    ( ONE-HALF )**4
 *
                   TEMP1 = ZERO
@@ -1615,8 +1653,8 @@
 *
                   RESULT( 27 ) = TEMP1 / TEMP2
 *
-                  IL = 1 + ( N-1 )*INT( SLARND( 1, ISEED2 ) )
-                  IU = 1 + ( N-1 )*INT( SLARND( 1, ISEED2 ) )
+                  IL = 1 + INT( REAL( N )*SLARND( 1, ISEED2 ) )
+                  IU = 1 + INT( REAL( N )*SLARND( 1, ISEED2 ) )
                   IF( IU.LT.IL ) THEN
                      ITEMP = IU
                      IU = IL
@@ -1646,7 +1684,7 @@
 *
 *                 Do test 28
 *
-                     TEMP2 = TWO*( TWO*N-ONE )*ULP*
+                     TEMP2 = TWO*( TWO*REAL( N )-ONE )*ULP*
      $                       ( ONE+EIGHT*HALF**2 ) / ( ONE-HALF )**4
 *
                      TEMP1 = ZERO
@@ -1675,8 +1713,8 @@
 *
                IF( CRANGE ) THEN
                   NTEST = 29
-                  IL = 1 + ( N-1 )*INT( SLARND( 1, ISEED2 ) )
-                  IU = 1 + ( N-1 )*INT( SLARND( 1, ISEED2 ) )
+                  IL = 1 + INT( REAL( N )*SLARND( 1, ISEED2 ) )
+                  IU = 1 + INT( REAL( N )*SLARND( 1, ISEED2 ) )
                   IF( IU.LT.IL ) THEN
                      ITEMP = IU
                      IU = IL
@@ -1951,11 +1989,76 @@
   300    CONTINUE
   310 CONTINUE
 *
+*
+*     CSTEDC( 'V' ) must leave the rows of Z below N alone.  CLAED0
+*     used the caller's Z as a packed QSIZ by N workspace, which
+*     spills into rows N+1 to LDZ whenever LDZ > N.  The sizes in the
+*     input file do not reach the divide and conquer recursion, so it
+*     is exercised with local arrays and N > SMLSIZ.  LDU does not
+*     give the capacity of the caller's eigenvalue arrays or Z columns.
+*
+      NSMLSZ = ILAENV( 9, 'CSTEDC', ' ', 0, 0, 0, 0 )
+      N = MAX( 2, NSMLSZ+1 )
+      LDZREG = N + 1
+      ALLOCATE( DREG( N ), EREG( N ), D1REG( N ),
+     $          ZREG( LDZREG, N ) )
+      CALL CSTEDC( 'V', N, DREG, RWORK, ZREG, LDZREG, WORK, -1,
+     $             RWORK, -1, IWORK, -1, IINFO )
+      IF( IINFO.EQ.0 .AND. INT( REAL( WORK( 1 ) ) ).LE.LWORK .AND.
+     $    INT( RWORK( 1 ) ).LE.LRWORK-N .AND. IWORK( 1 ).LE.LIWORK )
+     $    THEN
+         DO 390 J = 1, N
+            DREG( J ) = REAL( J )
+            EREG( J ) = ONE / REAL( J+1 )
+  390    CONTINUE
+         EREG( N ) = ZERO
+         CALL SCOPY( N, DREG, 1, D1REG, 1 )
+         CALL SCOPY( N-1, EREG, 1, RWORK, 1 )
+         CALL CLASET( 'Full', N, N, CZERO, CONE, ZREG, LDZREG )
+         CALL CLASET( 'Full', LDZREG-N, N, -CONE, -CONE,
+     $                ZREG( N+1, 1 ), LDZREG )
+         CALL CSTEDC( 'V', N, D1REG, RWORK, ZREG, LDZREG, WORK, LWORK,
+     $                RWORK( N+1 ), LRWORK-N, IWORK, LIWORK, IINFO )
+         NTESTT = NTESTT + 1
+         IF( IINFO.NE.0 ) THEN
+            WRITE( NOUNIT, FMT = 9982 )N, IINFO
+            NERRS = NERRS + 1
+         ELSE
+            ITEMP = 0
+            DO 410 J = 1, N
+               DO 400 I = N + 1, LDZREG
+                  IF( ZREG( I, J ).NE.-CONE )
+     $               ITEMP = ITEMP + 1
+  400          CONTINUE
+  410       CONTINUE
+            IF( ITEMP.GT.0 ) THEN
+               WRITE( NOUNIT, FMT = 9981 )N, ITEMP
+               NERRS = NERRS + 1
+            END IF
+            CALL CSTT21( N, 0, DREG, EREG, D1REG, DUMMA, ZREG,
+     $                   LDZREG, WORK, RWORK( N+1 ), RESULT( 1 ) )
+            DO 420 J = 1, 2
+               IF( RESULT( J ).GE.THRESH ) THEN
+                  WRITE( NOUNIT, FMT = 9980 )N, J, RESULT( J )
+                  NERRS = NERRS + 1
+               END IF
+  420       CONTINUE
+            NTESTT = NTESTT + 3
+         END IF
+      END IF
+      DEALLOCATE( DREG, EREG, D1REG, ZREG )
+*
 *     Summary
 *
       CALL SLASUM( 'CST', NOUNIT, NERRS, NTESTT )
       RETURN
 *
+ 9982 FORMAT( ' CCHKST: CSTEDC( V ) with N=', I5, ' returned INFO=',
+     $      I6 )
+ 9981 FORMAT( ' CCHKST: CSTEDC( V ) with N=', I5, ' overwrote ', I6,
+     $      ' entries of Z below row N' )
+ 9980 FORMAT( ' CCHKST: CSTEDC( V ) with N=', I5, ', test ', I2,
+     $      ' ratio=', G10.3, ' >= threshold' )
  9999 FORMAT( ' CCHKST: ', A, ' returned INFO=', I6, '.', / 9X, 'N=',
      $      I6, ', JTYPE=', I6, ', ISEED=(', 3( I5, ',' ), I5, ')' )
 *

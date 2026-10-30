@@ -10,6 +10,6 @@ T                                 Put T to test the LAPACK routines
 T                                 Put T to test the driver routines
 T                                 Put T to test the error exits
 1                                 Code to interpret the seed
-SEP 20
-1 2 3 4 5 6 7 8 10 11 12 13 14 15 16 17 18 19 20 21
+SEP 21
+1 2 3 4 5 6 7 8 10 11 12 13 14 15 16 17 18 19 20 21 22
 

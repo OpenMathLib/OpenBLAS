@@ -219,12 +219,10 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
-static real c_b9 = -1.f;
+static real c_b11 = -1.f;
 
 /* > \brief \b SGBTF2 computes the LU factorization of a general band matrix using the unblocked version of th
 e algorithm. */
@@ -234,7 +232,6 @@ e algorithm. */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download SGBTF2 + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgbtf2.
 f"> */
@@ -245,7 +242,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgbtf2.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -343,9 +339,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup realGBcomputational */
+/* > \ingroup gbtf2 */
 
 /* > \par Further Details: */
 /*  ===================== */
@@ -379,20 +373,21 @@ f"> */
     real r__1;
 
     /* Local variables */
+    integer i__, j, km, jp, ju, kv;
     extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
-	    integer *, real *, integer *, real *, integer *);
-    integer i__, j;
-    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
-	    sswap_(integer *, real *, integer *, real *, integer *);
-    integer km, jp, ju, kv;
+	    integer *, real *, integer *, real *, integer *), sscal_(integer *
+	    , real *, real *, integer *);
+    real sfmin;
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
+	    integer *);
+    extern real slamch_(char *);
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern integer isamax_(integer *, real *, integer *);
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -403,7 +398,7 @@ f"> */
 
     /* Parameter adjustments */
     ab_dim1 = *ldab;
-    ab_offset = 1 + ab_dim1 * 1;
+    ab_offset = 1 + ab_dim1;
     ab -= ab_offset;
     --ipiv;
 
@@ -435,6 +430,10 @@ f"> */
     if (*m == 0 || *n == 0) {
 	return;
     }
+
+/*     Compute machine safe minimum */
+
+    sfmin = slamch_("S");
 
 /*     Gaussian elimination with partial pivoting */
 
@@ -498,8 +497,17 @@ f"> */
 
 /*              Compute multipliers. */
 
-		r__1 = 1.f / ab[kv + 1 + j * ab_dim1];
-		sscal_(&km, &r__1, &ab[kv + 2 + j * ab_dim1], &c__1);
+		if ((r__1 = ab[kv + 1 + j * ab_dim1], abs(r__1)) >= sfmin) {
+		    r__1 = 1.f / ab[kv + 1 + j * ab_dim1];
+		    sscal_(&km, &r__1, &ab[kv + 2 + j * ab_dim1], &c__1);
+		} else {
+		    i__2 = km;
+		    for (i__ = 1; i__ <= i__2; ++i__) {
+			ab[kv + 1 + i__ + j * ab_dim1] /= ab[kv + 1 + j * 
+				ab_dim1];
+/* L35: */
+		    }
+		}
 
 /*              Update trailing submatrix within the band. */
 
@@ -507,9 +515,9 @@ f"> */
 		    i__2 = ju - j;
 		    i__3 = *ldab - 1;
 		    i__4 = *ldab - 1;
-		    sger_(&km, &i__2, &c_b9, &ab[kv + 2 + j * ab_dim1], &c__1,
-			     &ab[kv + (j + 1) * ab_dim1], &i__3, &ab[kv + 1 + 
-			    (j + 1) * ab_dim1], &i__4);
+		    sger_(&km, &i__2, &c_b11, &ab[kv + 2 + j * ab_dim1], &
+			    c__1, &ab[kv + (j + 1) * ab_dim1], &i__3, &ab[kv 
+			    + 1 + (j + 1) * ab_dim1], &i__4);
 		}
 	    }
 	} else {

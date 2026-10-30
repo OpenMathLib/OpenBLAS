@@ -221,6 +221,7 @@ typedef struct Namelist Namelist;
 	-lf2c -lm   (in that order)
 */
 
+
 /* Table of constant values */
 
 static integer c__6 = 6;
@@ -1107,25 +1108,37 @@ f"> */
 	}
     }
 
-/*     Undo scaling */
+/*     Undo scaling.  The solution carries the factor of B divided by */
+/*     the factor of A.  When both were scaled to the same end of the */
+/*     range the constants cancel and BNRM/ANRM is applied in one step: */
+/*     applied in two, the first step could flush or overflow an entry */
+/*     that the second would have brought back into range. */
 
+    if (iascl == ibscl && iascl != 0) {
+	slascl_("G", &c__0, &c__0, &anrm, &bnrm, n, nrhs, &b[b_offset], ldb, 
+		info);
+    } else {
+	if (iascl == 1) {
+	    slascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (iascl == 2) {
+	    slascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+	if (ibscl == 1) {
+	    slascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (ibscl == 2) {
+	    slascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+    }
     if (iascl == 1) {
-	slascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	slascl_("G", &c__0, &c__0, &smlnum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
     } else if (iascl == 2) {
-	slascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	slascl_("G", &c__0, &c__0, &bignum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
-    }
-    if (ibscl == 1) {
-	slascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
-    } else if (ibscl == 2) {
-	slascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
     }
 
 L70:

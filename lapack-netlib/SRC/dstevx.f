@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download DSTEVX + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dstevx.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dstevx.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -222,11 +220,13 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHEReigen
+*> \ingroup stevx
 *
 *  =====================================================================
-      SUBROUTINE DSTEVX( JOBZ, RANGE, N, D, E, VL, VU, IL, IU, ABSTOL,
+      SUBROUTINE DSTEVX( JOBZ, RANGE, N, D, E, VL, VU, IL, IU,
+     $                   ABSTOL,
      $                   M, W, Z, LDZ, WORK, IWORK, IFAIL, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -251,9 +251,10 @@
 *     .. Local Scalars ..
       LOGICAL            ALLEIG, INDEIG, TEST, VALEIG, WANTZ
       CHARACTER          ORDER
-      INTEGER            I, IINFO, IMAX, INDISP, INDIWO, INDWRK,
+      INTEGER            I, IINFO, INDISP, INDIWO, INDWRK,
      $                   ISCALE, ITMP1, J, JJ, NSPLIT
-      DOUBLE PRECISION   BIGNUM, EPS, RMAX, RMIN, SAFMIN, SIGMA, SMLNUM,
+      DOUBLE PRECISION   ABSTLL, BIGNUM, EPS, RMAX, RMIN, SAFMIN, SIGMA,
+     $                   SMLNUM,
      $                   TMP1, TNRM, VLL, VUU
 *     ..
 *     .. External Functions ..
@@ -262,7 +263,8 @@
       EXTERNAL           LSAME, DLAMCH, DLANST
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DSCAL, DSTEBZ, DSTEIN, DSTEQR, DSTERF,
+      EXTERNAL           DCOPY, DSCAL, DSTEBZ, DSTEIN, DSTEQR,
+     $                   DSTERF,
      $                   DSWAP, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -339,6 +341,7 @@
 *     Scale matrix to allowable range, if necessary.
 *
       ISCALE = 0
+      ABSTLL = ABSTOL
       IF( VALEIG ) THEN
          VLL = VL
          VUU = VU
@@ -351,12 +354,23 @@
          ISCALE = 1
          SIGMA = RMIN / TNRM
       ELSE IF( TNRM.GT.RMAX ) THEN
-         ISCALE = 1
+*        An infinite norm gives SIGMA = 0; leave such a matrix
+*        unscaled so that VL and VU remain a valid interval.
          SIGMA = RMAX / TNRM
+         IF( SIGMA.GT.ZERO )
+     $      ISCALE = 1
       END IF
       IF( ISCALE.EQ.1 ) THEN
          CALL DSCAL( N, SIGMA, D, 1 )
          CALL DSCAL( N-1, SIGMA, E( 1 ), 1 )
+*
+*        Scale a positive ABSTOL with the matrix.  Keep the product
+*        positive, as DSTEBZ takes ABSTOL <= 0 as a request for its
+*        default tolerance EPS*|T|, and cap ABSTOL at |T| so that the
+*        product cannot overflow.
+*
+         IF( ABSTOL.GT.ZERO )
+     $      ABSTLL = MAX( MIN( ABSTOL, TNRM )*SIGMA, SAFMIN )
          IF( VALEIG ) THEN
             VLL = VL*SIGMA
             VUU = VU*SIGMA
@@ -380,7 +394,8 @@
          IF( .NOT.WANTZ ) THEN
             CALL DSTERF( N, W, WORK, INFO )
          ELSE
-            CALL DSTEQR( 'I', N, W, WORK, Z, LDZ, WORK( INDWRK ), INFO )
+            CALL DSTEQR( 'I', N, W, WORK, Z, LDZ, WORK( INDWRK ),
+     $                   INFO )
             IF( INFO.EQ.0 ) THEN
                DO 10 I = 1, N
                   IFAIL( I ) = 0
@@ -404,7 +419,8 @@
       INDWRK = 1
       INDISP = 1 + N
       INDIWO = INDISP + N
-      CALL DSTEBZ( RANGE, ORDER, N, VLL, VUU, IL, IU, ABSTOL, D, E, M,
+      CALL DSTEBZ( RANGE, ORDER, N, VLL, VUU, IL, IU, ABSTLL, D, E,
+     $             M,
      $             NSPLIT, W, IWORK( 1 ), IWORK( INDISP ),
      $             WORK( INDWRK ), IWORK( INDIWO ), IINFO )
       IF( IINFO.NE.0 ) THEN
@@ -424,14 +440,8 @@
 *     If matrix was scaled, then rescale eigenvalues appropriately.
 *
    20 CONTINUE
-      IF( ISCALE.EQ.1 ) THEN
-         IF( INFO.EQ.0 ) THEN
-            IMAX = M
-         ELSE
-            IMAX = INFO - 1
-         END IF
-         CALL DSCAL( IMAX, ONE / SIGMA, W, 1 )
-      END IF
+      IF( ISCALE.EQ.1 )
+     $   CALL DSCAL( M, ONE / SIGMA, W, 1 )
 *
 *     If eigenvalues are not in order, then sort them, along with
 *     eigenvectors.
