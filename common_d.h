@@ -344,6 +344,7 @@
 
 #endif
 
+#define DGEMM_SMALL_KERNEL_BASE		FUNC_BASE(dgemm_small_kernel_nn)
 #define DGEMM_SMALL_KERNEL_NN		FUNC_OFFSET(dgemm_small_kernel_nn)
 #define DGEMM_SMALL_KERNEL_NT		FUNC_OFFSET(dgemm_small_kernel_nt)
 #define DGEMM_SMALL_KERNEL_TN		FUNC_OFFSET(dgemm_small_kernel_tn)
