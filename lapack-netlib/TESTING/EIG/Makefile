@@ -130,10 +130,10 @@ ZDMDEIGTST = zchkdmd.o
 all: single complex double complex16
 
 .PHONY: single complex double complex16
-single: xeigtsts xdmdeigtsts
-complex: xeigtstc xdmdeigtstc
-double: xeigtstd xdmdeigtstd
-complex16: xeigtstz xdmdeigtstz
+single: xeigtsts xdmdeigtsts test_sgges3_scaling
+complex: xeigtstc xdmdeigtstc test_cgges3_scaling
+double: xeigtstd xdmdeigtstd test_dgges3_scaling
+complex16: xeigtstz xdmdeigtstz test_zgges3_scaling
 
 xdmdeigtsts: $(SDMDEIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
 	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
@@ -159,6 +159,30 @@ xeigtstd: $(DEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
 xeigtstz: $(ZEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
 	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
+test_sgges3_scaling: test_sgges3_scaling.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+
+test_dgges3_scaling: test_dgges3_scaling.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+
+test_cgges3_scaling: test_cgges3_scaling.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+
+test_zgges3_scaling: test_zgges3_scaling.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+
+test_sgesvj_emptsw: test_sgesvj_emptsw.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+
+test_dgesvj_emptsw: test_dgesvj_emptsw.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+
+test_cgesvj_emptsw: test_cgesvj_emptsw.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+
+test_zgesvj_emptsw: test_zgesvj_emptsw.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+
 $(SDMDEIGTST): $(FRC)
 $(CDMDEIGTST): $(FRC)
 $(DDMDEIGTST): $(FRC)
@@ -179,7 +203,7 @@ clean: cleanobj cleanexe
 cleanobj:
 	rm -f *.o
 cleanexe:
-	rm -f xeigtst* xdmdeigtst*
+	rm -f xeigtst* xdmdeigtst* test_?gges3_scaling test_?gesvj_emptsw
 
 schkee.o: schkee.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<
