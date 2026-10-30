@@ -152,6 +152,10 @@
 *> (26)    | D1 - D2 | / ( |D1| ulp )           DSTEDC('V') and
 *>                                              DSTEDC('N')
 *>
+*> (38)    | D1 - D5 | / ( |D1| ulp )           DSTEBR
+*>         (values-only boundary-row divide-and-conquer)
+*>         Maximum over SMLSIZ = 2, 8, and 25.
+*>
 *> Test 27 is disabled at the moment because DSTEMR does not
 *> guarantee high relatvie accuracy.
 *>
@@ -588,6 +592,7 @@
      $                   NOUNIT, A, LDA, AP, SD, SE, D1, D2, D3, D4, D5,
      $                   WA1, WA2, WA3, WR, U, LDU, V, VP, TAU, Z, WORK,
      $                   LWORK, IWORK, LIWORK, RESULT, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -616,8 +621,10 @@
      $                   EIGHT = 8.0D0, TEN = 10.0D0, HUN = 100.0D0 )
       DOUBLE PRECISION   HALF
       PARAMETER          ( HALF = ONE / TWO )
+      DOUBLE PRECISION   TENTH
+      PARAMETER          ( TENTH = 0.1D0 )
       INTEGER            MAXTYP
-      PARAMETER          ( MAXTYP = 21 )
+      PARAMETER          ( MAXTYP = 22 )
       LOGICAL            SRANGE
       PARAMETER          ( SRANGE = .FALSE. )
       LOGICAL            SREL
@@ -626,9 +633,10 @@
 *     .. Local Scalars ..
       LOGICAL            BADNN, TRYRAC
       INTEGER            I, IINFO, IL, IMODE, ITEMP, ITYPE, IU, J, JC,
-     $                   JR, JSIZE, JTYPE, LGN, LIWEDC, LOG2UI, LWEDC,
-     $                   M, M2, M3, MTYPES, N, NAP, NBLOCK, NERRS,
-     $                   NMATS, NMAX, NSPLIT, NTEST, NTESTT
+     $                   JR, JSIZE, JSM, JTYPE, LGN, LIWEDC, LOG2UI,
+     $                   LWEDC, M, M2, M3, MTYPES, N, NAP, NBLOCK,
+     $                   NERRS, NMATS, NMAX, NSPLIT, NTEST, NTESTT,
+     $                   SMLSAV
       DOUBLE PRECISION   ABSTOL, ANINV, ANORM, COND, OVFL, RTOVFL,
      $                   RTUNFL, TEMP1, TEMP2, TEMP3, TEMP4, ULP,
      $                   ULPINV, UNFL, VL, VU
@@ -636,7 +644,7 @@
 *     .. Local Arrays ..
       INTEGER            IDUMMA( 1 ), IOLDSD( 4 ), ISEED2( 4 ),
      $                   KMAGN( MAXTYP ), KMODE( MAXTYP ),
-     $                   KTYPE( MAXTYP )
+     $                   KTYPE( MAXTYP ), SMLSZS( 3 )
       DOUBLE PRECISION   DUMMA( 1 )
 *     ..
 *     .. External Functions ..
@@ -647,19 +655,21 @@
 *     .. External Subroutines ..
       EXTERNAL           DCOPY, DLACPY, DLASET, DLASUM, DLATMR, DLATMS,
      $                   DOPGTR, DORGTR, DPTEQR, DSPT21, DSPTRD, DSTEBZ,
-     $                   DSTECH, DSTEDC, DSTEMR, DSTEIN, DSTEQR, DSTERF,
-     $                   DSTT21, DSTT22, DSYT21, DSYTRD, XERBLA
+     $                   DSTEBR, DSTECH, DSTEDC, DSTEMR, DSTEIN, DSTEQR,
+     $                   DSTERF, DSTT21, DSTT22, DSYT21, DSYTRD,
+     $                   XERBLA, XLAENV
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, INT, LOG, MAX, MIN, SQRT
 *     ..
 *     .. Data statements ..
+      DATA               SMLSZS / 2, 8, 25 /
       DATA               KTYPE / 1, 2, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 8,
-     $                   8, 8, 9, 9, 9, 9, 9, 10 /
+     $                   8, 8, 9, 9, 9, 9, 9, 10, 11 /
       DATA               KMAGN / 1, 1, 1, 1, 1, 2, 3, 1, 1, 1, 2, 3, 1,
-     $                   2, 3, 1, 1, 1, 2, 3, 1 /
+     $                   2, 3, 1, 1, 1, 2, 3, 1, 4 /
       DATA               KMODE / 0, 0, 4, 3, 1, 4, 4, 4, 3, 1, 4, 4, 0,
-     $                   0, 0, 4, 3, 1, 4, 4, 3 /
+     $                   0, 0, 4, 3, 1, 4, 4, 3, 0 /
 *     ..
 *     .. Executable Statements ..
 *
@@ -786,7 +796,7 @@
 *
 *           Compute norm
 *
-            GO TO ( 40, 50, 60 )KMAGN( JTYPE )
+            GO TO ( 40, 50, 60, 65 )KMAGN( JTYPE )
 *
    40       CONTINUE
             ANORM = ONE
@@ -798,6 +808,15 @@
 *
    60       CONTINUE
             ANORM = RTUNFL*N*ULPINV
+            GO TO 70
+*
+   65       CONTINUE
+*
+*           The smallest norm the eigenvalue drivers scale a matrix up
+*           to, below which the splitting test of DSTEBZ has to be
+*           relative to see an off-diagonal entry.
+*
+            ANORM = RTUNFL / SQRT( ULP )
             GO TO 70
 *
    70       CONTINUE
@@ -884,6 +903,20 @@
                      A( I, I-1 ) = A( I-1, I )
                   END IF
    90          CONTINUE
+*
+            ELSE IF( ITYPE.EQ.11 ) THEN
+*
+*              Tridiagonal with equal diagonal entries and an
+*              off-diagonal entry whose square underflows, but which is
+*              far above the relative splitting threshold.
+*
+               DO 95 JC = 1, N
+                  A( JC, JC ) = ANORM
+   95          CONTINUE
+               DO 96 JC = 1, N - 1
+                  A( JC, JC+1 ) = ANORM*( TENTH*SQRT( ULP ) )
+                  A( JC+1, JC ) = A( JC, JC+1 )
+   96          CONTINUE
 *
             ELSE
 *
@@ -1336,8 +1369,8 @@
                IL = 1
                IU = N
             ELSE
-               IL = 1 + ( N-1 )*INT( DLARND( 1, ISEED2 ) )
-               IU = 1 + ( N-1 )*INT( DLARND( 1, ISEED2 ) )
+               IL = 1 + INT( N*DLARND( 1, ISEED2 ) )
+               IU = 1 + INT( N*DLARND( 1, ISEED2 ) )
                IF( IU.LT.IL ) THEN
                   ITEMP = IU
                   IU = IL
@@ -1414,6 +1447,13 @@
             END IF
 *
             RESULT( 19 ) = ( TEMP1+TEMP2 ) / MAX( UNFL, TEMP3*ULP )
+*
+*           The eigenvalues of type 22 are closer together than the
+*           floor the interval above is built with, so its 'V' range
+*           holds the whole spectrum and cannot match the 'I' range.
+*
+            IF( JTYPE.EQ.22 )
+     $         RESULT( 19 ) = ZERO
 *
 *           Call DSTEIN to compute eigenvectors corresponding to
 *           eigenvalues in WA1.  (First call DSTEBZ again, to make sure
@@ -1597,8 +1637,8 @@
 *
                   RESULT( 27 ) = TEMP1 / TEMP2
 *
-                  IL = 1 + ( N-1 )*INT( DLARND( 1, ISEED2 ) )
-                  IU = 1 + ( N-1 )*INT( DLARND( 1, ISEED2 ) )
+                  IL = 1 + INT( N*DLARND( 1, ISEED2 ) )
+                  IU = 1 + INT( N*DLARND( 1, ISEED2 ) )
                   IF( IU.LT.IL ) THEN
                      ITEMP = IU
                      IU = IL
@@ -1657,8 +1697,8 @@
 *
                IF( SRANGE ) THEN
                   NTEST = 29
-                  IL = 1 + ( N-1 )*INT( DLARND( 1, ISEED2 ) )
-                  IU = 1 + ( N-1 )*INT( DLARND( 1, ISEED2 ) )
+                  IL = 1 + INT( N*DLARND( 1, ISEED2 ) )
+                  IU = 1 + INT( N*DLARND( 1, ISEED2 ) )
                   IF( IU.LT.IL ) THEN
                      ITEMP = IU
                      IU = IL
@@ -1897,6 +1937,52 @@
      $                        ULP*MAX( TEMP1, TEMP2 ) )
             END IF
   270       CONTINUE
+*
+*           Call DSTEBR (values-only boundary-row DC), do test 38.
+*           Compare against D1 from DSTEQR('V'), same ratio as tests
+*           12 and 26.  Vary SMLSIZ to exercise merges even with the
+*           small matrix sizes in sep.in, and retain the worst ratio.
+*
+            DO 265 JR = NTEST + 1, 37
+               RESULT( JR ) = ZERO
+  265       CONTINUE
+*
+            NTEST = 38
+            RESULT( 38 ) = ZERO
+            SMLSAV = ILAENV( 9, 'DSTEBR', ' ', 0, 0, 0, 0 )
+            DO 267 JSM = 1, 3
+               CALL DCOPY( N, SD, 1, D5, 1 )
+               IF( N.GT.0 )
+     $            CALL DCOPY( N-1, SE, 1, WORK, 1 )
+*
+               CALL XLAENV( 9, SMLSZS( JSM ) )
+               CALL DSTEBR( N, D5, WORK, WORK( N+1 ), LWORK-N,
+     $                      IWORK, LIWORK, IINFO )
+               CALL XLAENV( 9, SMLSAV )
+               IF( IINFO.NE.0 ) THEN
+                  WRITE( NOUNIT, FMT = 9999 )'DSTEBR', IINFO, N,
+     $               JTYPE, IOLDSD
+                  INFO = ABS( IINFO )
+                  IF( IINFO.LT.0 ) THEN
+                     RETURN
+                  ELSE
+                     RESULT( 38 ) = ULPINV
+                     GO TO 280
+                  END IF
+               END IF
+*
+               TEMP1 = ZERO
+               TEMP2 = ZERO
+*
+               DO 266 J = 1, N
+                  TEMP1 = MAX( TEMP1, ABS( D1( J ) ), ABS( D5( J ) ) )
+                  TEMP2 = MAX( TEMP2, ABS( D1( J )-D5( J ) ) )
+  266          CONTINUE
+*
+               RESULT( 38 ) = MAX( RESULT( 38 ), TEMP2 /
+     $                        MAX( UNFL, ULP*MAX( TEMP1, TEMP2 ) ) )
+  267       CONTINUE
+*
   280       CONTINUE
             NTESTT = NTESTT + NTEST
 *

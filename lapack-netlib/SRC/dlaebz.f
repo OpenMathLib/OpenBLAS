@@ -63,7 +63,7 @@
 *> Note that the intervals are in all cases half-open intervals,
 *> i.e., of the form  (a,b] , which includes  b  but not  a .
 *>
-*> To avoid underflow, the matrix should be scaled so that its largest
+*> To avoid overflow, the matrix should be scaled so that its largest
 *> element is no greater than  overflow**(1/2) * underflow**(1/4)
 *> in absolute value.  To assure the most accurate computation
 *> of small eigenvalues, the matrix should be scaled to be

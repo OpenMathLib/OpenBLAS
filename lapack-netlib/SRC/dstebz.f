@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download DSTEBZ + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dstebz.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dstebz.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -264,12 +262,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup auxOTHERcomputational
+*> \ingroup stebz
 *
 *  =====================================================================
-      SUBROUTINE DSTEBZ( RANGE, ORDER, N, VL, VU, IL, IU, ABSTOL, D, E,
+      SUBROUTINE DSTEBZ( RANGE, ORDER, N, VL, VU, IL, IU, ABSTOL, D,
+     $                   E,
      $                   M, NSPLIT, W, IBLOCK, ISPLIT, WORK, IWORK,
      $                   INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -419,7 +419,16 @@
 *
       DO 10 J = 2, N
          TMP1 = E( J-1 )**2
-         IF( ABS( D( J )*D( J-1 ) )*ULP**2+SAFEMN.GT.TMP1 ) THEN
+*        Split where e(j)**2 < ulp**2 |d(j) d(j+1)| (Kahan's relative
+*        criterion, as in xLARRA) or e(j) = 0.  No absolute floor: the
+*        drivers scale small matrices to sqrt(SAFEMN/ULP), where a floor
+*        of SAFEMN on e(j)**2 would discard off-diagonals as large as
+*        sqrt(ULP) relative to the matrix.  The threshold is formed as
+*        a product of scaled factors so that it cannot overflow before
+*        e(j)**2 does.
+*
+         TMP2 = ( ABS( D( J ) )*ULP )*( ABS( D( J-1 ) )*ULP )
+         IF( TMP1.LT.TMP2 .OR. TMP1.EQ.ZERO ) THEN
             ISPLIT( NSPLIT ) = J - 1
             NSPLIT = NSPLIT + 1
             WORK( J-1 ) = ZERO
@@ -481,7 +490,8 @@
          IWORK( 5 ) = IL - 1
          IWORK( 6 ) = IU
 *
-         CALL DLAEBZ( 3, ITMAX, N, 2, 2, NB, ATOLI, RTOLI, PIVMIN, D, E,
+         CALL DLAEBZ( 3, ITMAX, N, 2, 2, NB, ATOLI, RTOLI, PIVMIN, D,
+     $                E,
      $                WORK, IWORK( 5 ), WORK( N+1 ), WORK( N+5 ), IOUT,
      $                IWORK, W, IBLOCK, IINFO )
 *
@@ -595,7 +605,7 @@
             END IF
 *
             IF( IRANGE.GT.1 ) THEN
-               IF( GU.LT.WL ) THEN
+               IF( GU.LE.WL ) THEN
                   NWL = NWL + IN
                   NWU = NWU + IN
                   GO TO 70
@@ -623,7 +633,8 @@
 *
             ITMAX = INT( ( LOG( GU-GL+PIVMIN )-LOG( PIVMIN ) ) /
      $              LOG( TWO ) ) + 2
-            CALL DLAEBZ( 2, ITMAX, IN, IN, 1, NB, ATOLI, RTOLI, PIVMIN,
+            CALL DLAEBZ( 2, ITMAX, IN, IN, 1, NB, ATOLI, RTOLI,
+     $                   PIVMIN,
      $                   D( IBEGIN ), E( IBEGIN ), WORK( IBEGIN ),
      $                   IDUMMA, WORK( N+1 ), WORK( N+2*IN+1 ), IOUT,
      $                   IWORK, W( M+1 ), IBLOCK( M+1 ), IINFO )
@@ -698,7 +709,7 @@
                         WKILL = W( JE )
                      END IF
    90             CONTINUE
-                  IBLOCK( IW ) = 0
+                  IF( IW .NE. 0) IBLOCK( IW ) = 0
   100          CONTINUE
             END IF
             IF( IDISCU.GT.0 ) THEN
@@ -713,7 +724,7 @@
                         WKILL = W( JE )
                      END IF
   110             CONTINUE
-                  IBLOCK( IW ) = 0
+                  IF( IW .NE. 0) IBLOCK( IW ) = 0
   120          CONTINUE
             END IF
             IM = 0

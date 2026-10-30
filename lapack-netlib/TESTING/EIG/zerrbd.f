@@ -21,7 +21,8 @@
 *>
 *> \verbatim
 *>
-*> ZERRBD tests the error exits for ZGEBRD, ZUNGBR, ZUNMBR, and ZBDSQR.
+*> ZERRBD tests the error exits for ZGEBD2, ZGEBRD, ZUNGBR, ZUNMBR,
+*> and ZBDSQR.
 *> \endverbatim
 *
 *  Arguments:
@@ -51,6 +52,7 @@
 *
 *  =====================================================================
       SUBROUTINE ZERRBD( PATH, NUNIT )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -66,10 +68,13 @@
 *     .. Parameters ..
       INTEGER            NMAX, LW
       PARAMETER          ( NMAX = 4, LW = NMAX )
+      DOUBLE PRECISION   ZERO, ONE
+      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
 *     ..
 *     .. Local Scalars ..
       CHARACTER*2        C2
       INTEGER            I, INFO, J, NT
+      DOUBLE PRECISION   RNAN, RONE
 *     ..
 *     .. Local Arrays ..
       DOUBLE PRECISION   D( NMAX ), E( NMAX ), RW( 4*NMAX )
@@ -81,7 +86,8 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CHKXER, ZBDSQR, ZGEBRD, ZUNGBR, ZUNMBR
+      EXTERNAL           CHKXER, ZBDSQR, ZGEBD2, ZGEBRD, ZUNGBR,
+     $                   ZUNMBR
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -93,7 +99,7 @@
       COMMON             / SRNAMC / SRNAMT
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DBLE
+      INTRINSIC          DBLE, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -105,7 +111,7 @@
 *
       DO 20 J = 1, NMAX
          DO 10 I = 1, NMAX
-            A( I, J ) = 1.D0 / DBLE( I+J )
+            A( I, J ) = ONE / DBLE( I+J )
    10    CONTINUE
    20 CONTINUE
       OK = .TRUE.
@@ -131,6 +137,20 @@
          CALL ZGEBRD( 2, 1, A, 2, D, E, TQ, TP, W, 1, INFO )
          CALL CHKXER( 'ZGEBRD', INFOT, NOUT, LERR, OK )
          NT = NT + 4
+*
+*        ZGEBD2
+*
+         SRNAMT = 'ZGEBD2'
+         INFOT = 1
+         CALL ZGEBD2( -1, 0, A, 1, D, E, TQ, TP, W, INFO )
+         CALL CHKXER( 'ZGEBD2', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZGEBD2( 0, -1, A, 1, D, E, TQ, TP, W, INFO )
+         CALL CHKXER( 'ZGEBD2', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZGEBD2( 2, 1, A, 1, D, E, TQ, TP, W, INFO )
+         CALL CHKXER( 'ZGEBD2', INFOT, NOUT, LERR, OK )
+         NT = NT + 3
 *
 *        ZUNGBR
 *
@@ -260,6 +280,29 @@
      $                INFO )
          CALL CHKXER( 'ZBDSQR', INFOT, NOUT, LERR, OK )
          NT = NT + 8
+*
+*        ZBDSQR without singular vectors must return when D contains a
+*        NaN, which the dqds path would otherwise pass to DLASCL as a
+*        scaling factor, instead of stopping in XERBLA.
+*
+         RONE = ONE
+         RNAN = SQRT( -RONE )
+         DO 30 J = 1, NMAX
+            D( J ) = DBLE( J )
+            E( J ) = ONE / DBLE( J+1 )
+   30    CONTINUE
+         D( NMAX ) = RNAN
+         E( NMAX ) = ZERO
+         SRNAMT = 'ZBDSQR'
+         INFOT = 0
+         LERR = .FALSE.
+         CALL ZBDSQR( 'U', NMAX, 0, 0, 0, D, E, V, 1, U, 1, A, 1, RW,
+     $                INFO )
+         IF( LERR ) THEN
+            WRITE( NOUT, FMT = 9997 )'ZBDSQR'
+            OK = .FALSE.
+         END IF
+         NT = NT + 1
       END IF
 *
 *     Print a summary line.
@@ -274,6 +317,8 @@
      $        I3, ' tests done)' )
  9998 FORMAT( ' *** ', A3, ' routines failed the tests of the error ',
      $        'exits ***' )
+ 9997 FORMAT( ' *** ', A6, ' called XERBLA for a matrix with a NaN',
+     $      ' ***' )
 *
       RETURN
 *

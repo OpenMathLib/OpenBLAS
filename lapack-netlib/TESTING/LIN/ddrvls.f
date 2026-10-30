@@ -189,6 +189,7 @@
       SUBROUTINE DDRVLS( DOTYPE, NM, MVAL, NN, NVAL, NNS, NSVAL, NNB,
      $                   NBVAL, NXVAL, THRESH, TSTERR, A, COPYA, B,
      $                   COPYB, C, S, COPYS, NOUT )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -198,6 +199,7 @@
       LOGICAL            TSTERR
       INTEGER            NM, NN, NNB, NNS, NOUT
       DOUBLE PRECISION   THRESH
+      DOUBLE PRECISION   SMLX
 *     ..
 *     .. Array Arguments ..
       LOGICAL            DOTYPE( * )
@@ -275,6 +277,7 @@
          ISEED( I ) = ISEEDY( I )
    10 CONTINUE
       EPS = DLAMCH( 'Epsilon' )
+      SMLX = 256*DLAMCH( 'Safe minimum' )
 *
 *     Threshold for rank estimation
 *
@@ -455,6 +458,14 @@
                                  CALL DSCAL( NCOLS*NRHS,
      $                                       ONE / DBLE( NCOLS ), WORK,
      $                                       1 )
+*
+*                             Make the last solution column small
+*                             enough that undoing the scaling of
+*                             the solution in two steps flushes it.
+*
+                                 IF( ISCALE.EQ.2 .AND. NRHS.GT.1 )
+     $               CALL DSCAL( NCOLS, SMLX,
+     $                          WORK( ( NRHS-1 )*LDWORK+1 ), 1 )
                               END IF
                               CALL DGEMM( TRANS, 'No transpose', NROWS,
      $                                    NRHS, NCOLS, ONE, COPYA, LDA,
@@ -572,6 +583,14 @@
                                  CALL DSCAL( NCOLS*NRHS,
      $                                       ONE / DBLE( NCOLS ), WORK,
      $                                       1 )
+*
+*                             Make the last solution column small
+*                             enough that undoing the scaling of
+*                             the solution in two steps flushes it.
+*
+                                 IF( ISCALE.EQ.2 .AND. NRHS.GT.1 )
+     $               CALL DSCAL( NCOLS, SMLX,
+     $                          WORK( ( NRHS-1 )*LDWORK+1 ), 1 )
                               END IF
                               CALL DGEMM( TRANS, 'No transpose', NROWS,
      $                                    NRHS, NCOLS, ONE, COPYA, LDA,
@@ -696,6 +715,14 @@
                                     CALL DSCAL( NCOLS*NRHS,
      $                                          ONE / DBLE( NCOLS ),
      $                                          WORK, 1 )
+*
+*                             Make the last solution column small
+*                             enough that undoing the scaling of
+*                             the solution in two steps flushes it.
+*
+                                    IF( ISCALE.EQ.2 .AND. NRHS.GT.1 )
+     $               CALL DSCAL( NCOLS, SMLX,
+     $                          WORK( ( NRHS-1 )*LDWORK+1 ), 1 )
                                  END IF
                                  CALL DGEMM( TRANS, 'No transpose',
      $                                       NROWS, NRHS, NCOLS, ONE,

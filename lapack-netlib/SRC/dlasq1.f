@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download DLASQ1 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlasq1.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlasq1.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -83,7 +81,8 @@
 *>        = 0: successful exit
 *>        < 0: if INFO = -i, the i-th argument had an illegal value
 *>        > 0: the algorithm failed
-*>             = 1, a split was marked by a positive value in E
+*>             = 1, a split was marked by a positive value in E, or
+*>                  the input contains a NaN
 *>             = 2, current block of Z not diagonalized after 100*N
 *>                  iterations (in inner while loop)  On exit D and E
 *>                  represent a matrix with the same singular values
@@ -101,10 +100,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup auxOTHERcomputational
+*> \ingroup lasq1
 *
 *  =====================================================================
       SUBROUTINE DLASQ1( N, D, E, WORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -128,11 +128,13 @@
       DOUBLE PRECISION   EPS, SCALE, SAFMIN, SIGMN, SIGMX
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DLAS2, DLASCL, DLASQ2, DLASRT, XERBLA
+      EXTERNAL           DCOPY, DLAS2, DLASCL, DLASQ2, DLASRT,
+     $                   XERBLA
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DLAMCH
-      EXTERNAL           DLAMCH
+      LOGICAL            DISNAN
+      EXTERNAL           DISNAN, DLAMCH
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, SQRT
@@ -175,6 +177,14 @@
       DO 20 I = 1, N
          SIGMX = MAX( SIGMX, D( I ) )
    20 CONTINUE
+*
+*     A NaN in D or E can make SIGMX a NaN, which DLASCL would reject
+*     by stopping in XERBLA; report it through INFO instead.
+*
+      IF( DISNAN( SIGMX ) ) THEN
+         INFO = 1
+         RETURN
+      END IF
 *
 *     Copy D and E into WORK (in the Z format) and scale (squaring the
 *     input data makes scaling by a power of the radix pointless).

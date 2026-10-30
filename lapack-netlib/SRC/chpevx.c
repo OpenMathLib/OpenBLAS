@@ -174,33 +174,15 @@ typedef struct Namelist Namelist;
 #define bit_set(a,b)	((a) |  ((uinteger)1 << (b)))
 
 #define abort_() { sig_die("Fortran abort routine called", 1); }
-#define c_abs(z) (cabsf(Cf(z)))
-#define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
-#ifdef _MSC_VER
-#define c_div(c, a, b) {float nenn=crealf(_FCmulcc(Cf(b),conjf(Cf(b)))); _Fcomplex zaehl=_FCmulcc(Cf(a),conjf(Cf(b))); pCf(c)=_FCbuild(crealf(zaehl)/nenn,cimagf(zaehl)/nenn);}
-#define z_div(c, a, b) {double nenn=creal(_Cmulcc(Cd(b),conj(Cd(b)))); _Dcomplex zaehl=_Cmulcc(Cd(a),conj(Cd(b))); pCd(c)=_Cbuild(creal(zaehl)/nenn,cimag(zaehl)/nenn);}
-#else
-#define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
-#define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
-#endif
-#define c_exp(R, Z) {pCf(R) = cexpf(Cf(Z));}
-#define c_log(R, Z) {pCf(R) = clogf(Cf(Z));}
-#define c_sin(R, Z) {pCf(R) = csinf(Cf(Z));}
-//#define c_sqrt(R, Z) {*(R) = csqrtf(Cf(Z));}
-#define c_sqrt(R, Z) {pCf(R) = csqrtf(Cf(Z));}
 #define d_abs(x) (fabs(*(x)))
 #define d_acos(x) (acos(*(x)))
 #define d_asin(x) (asin(*(x)))
 #define d_atan(x) (atan(*(x)))
 #define d_atn2(x, y) (atan2(*(x),*(y)))
-#define d_cnjg(R, Z) { pCd(R) = conj(Cd(Z)); }
-#define r_cnjg(R, Z) { pCf(R) = conjf(Cf(Z)); }
 #define d_cos(x) (cos(*(x)))
 #define d_cosh(x) (cosh(*(x)))
 #define d_dim(__a, __b) ( *(__a) > *(__b) ? *(__a) - *(__b) : 0.0 )
 #define d_exp(x) (exp(*(x)))
-#define d_imag(z) (cimag(Cd(z)))
-#define r_imag(z) (cimagf(Cf(z)))
 #define d_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define r_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define d_lg10(x) ( 0.43429448190325182765 * log(*(x)) )
@@ -226,9 +208,6 @@ typedef struct Namelist Namelist;
 #define pow_si(B,E) spow_ui(*(B),*(E))
 #define pow_ri(B,E) spow_ui(*(B),*(E))
 #define pow_di(B,E) dpow_ui(*(B),*(E))
-#define pow_zi(p, a, b) {pCd(p) = zpow_ui(Cd(a), *(b));}
-#define pow_ci(p, a, b) {pCf(p) = cpow_ui(Cf(a), *(b));}
-#define pow_zz(R,A,B) {pCd(R) = cpow(Cd(A),*(B));}
 #define s_cat(lpp, rpp, rnp, np, llp) { 	ftnlen i, nc, ll; char *f__rp, *lp; 	ll = (llp); lp = (lpp); 	for(i=0; i < (int)*(np); ++i) {         	nc = ll; 	        if((rnp)[i] < nc) nc = (rnp)[i]; 	        ll -= nc;         	f__rp = (rpp)[i]; 	        while(--nc >= 0) *lp++ = *(f__rp)++;         } 	while(--ll >= 0) *lp++ = ' '; }
 #define s_cmp(a,b,c,d) ((integer)strncmp((a),(b),f2cmin((c),(d))))
 #define s_copy(A,B,C,D) { int __i,__m; for (__i=0, __m=f2cmin((C),(D)); __i<__m && (B)[__i] != 0; ++__i) (A)[__i] = (B)[__i]; }
@@ -247,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
@@ -261,7 +238,6 @@ matrices</b> */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download CHPEVX + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chpevx.
 f"> */
@@ -272,7 +248,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chpevx.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -474,8 +449,11 @@ f"> */
 /* >          INFO is INTEGER */
 /* >          = 0:  successful exit */
 /* >          < 0:  if INFO = -i, the i-th argument had an illegal value */
-/* >          > 0:  if INFO = i, then i eigenvectors failed to converge. */
-/* >                Their indices are stored in array IFAIL. */
+/* >          > 0:  if INFO = i, and i is: */
+/* >                <= N: then i eigenvectors failed to converge in */
+/* >                     CSTEIN; their indices are stored in IFAIL. */
+/* >                > N: SSTEBZ returned INFO = INFO - N; */
+/* >                     see SSTEBZ for details. */
 /* > \endverbatim */
 
 /*  Authors: */
@@ -486,9 +464,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date June 2016 */
-
-/* > \ingroup complexOTHEReigen */
+/* > \ingroup hpevx */
 
 /*  ===================================================================== */
 /* Subroutine */ void chpevx_(char *jobz, char *range, char *uplo, integer *n, 
@@ -501,12 +477,12 @@ f"> */
     real r__1, r__2;
 
     /* Local variables */
+    integer iscale, i__, j, jj;
+    real eps, vll, vuu, tmp1;
     integer indd, inde;
-    real anrm;
-    integer imax;
-    real rmin, rmax;
+    real anrm, rmin, rmax;
     logical test;
-    integer itmp1, i__, j, indee;
+    integer itmp1, indee;
     real sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
@@ -515,10 +491,7 @@ f"> */
     extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *), scopy_(integer *, real *, integer *, real *
 	    , integer *);
-    logical wantz;
-    integer jj;
-    logical alleig, indeig;
-    integer iscale, indibl;
+    logical wantz, alleig, indeig;
     extern real clanhp_(char *, char *, integer *, complex *, real *);
     logical valeig;
     extern real slamch_(char *);
@@ -546,13 +519,11 @@ f"> */
 	    real *, integer *, integer *, real *, real *, real *, integer *, 
 	    integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *);
-    real eps, vll, vuu, tmp1;
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     June 2016 */
 
 
 /*  ===================================================================== */
@@ -564,7 +535,7 @@ f"> */
     --ap;
     --w;
     z_dim1 = *ldz;
-    z_offset = 1 + z_dim1 * 1;
+    z_offset = 1 + z_dim1;
     z__ -= z_offset;
     --work;
     --rwork;
@@ -663,8 +634,12 @@ f"> */
 	iscale = 1;
 	sigma = rmin / anrm;
     } else if (anrm > rmax) {
-	iscale = 1;
+/*        An infinite norm gives SIGMA = 0; leave such a matrix */
+/*        unscaled so that VL and VU remain a valid interval. */
 	sigma = rmax / anrm;
+	if (sigma > 0.f) {
+	    iscale = 1;
+	}
     }
     if (iscale == 1) {
 	i__1 = *n * (*n + 1) / 2;
@@ -734,17 +709,25 @@ f"> */
     } else {
 	*(unsigned char *)order = 'E';
     }
-    indibl = 1;
-    indisp = indibl + *n;
+    indisp = *n + 1;
     indiwk = indisp + *n;
     sstebz_(range, order, n, &vll, &vuu, il, iu, &abstll, &rwork[indd], &
-	    rwork[inde], m, &nsplit, &w[1], &iwork[indibl], &iwork[indisp], &
-	    rwork[indrwk], &iwork[indiwk], info);
+	    rwork[inde], m, &nsplit, &w[1], &iwork[1], &iwork[indisp], &rwork[
+	    indrwk], &iwork[indiwk], &iinfo);
+    if (iinfo != 0) {
+	*info = *n + iinfo;
+	if (iinfo != 1) {
+	    goto L20;
+	}
+    }
 
     if (wantz) {
-	cstein_(n, &rwork[indd], &rwork[inde], m, &w[1], &iwork[indibl], &
-		iwork[indisp], &z__[z_offset], ldz, &rwork[indrwk], &iwork[
-		indiwk], &ifail[1], info);
+	cstein_(n, &rwork[indd], &rwork[inde], m, &w[1], &iwork[1], &iwork[
+		indisp], &z__[z_offset], ldz, &rwork[indrwk], &iwork[indiwk], 
+		&ifail[1], &iinfo);
+	if (iinfo != 0 && *info == 0) {
+	    *info = iinfo;
+	}
 
 /*        Apply unitary matrix used in reduction to tridiagonal */
 /*        form to eigenvectors returned by CSTEIN. */
@@ -758,13 +741,8 @@ f"> */
 
 L20:
     if (iscale == 1) {
-	if (*info == 0) {
-	    imax = *m;
-	} else {
-	    imax = *info - 1;
-	}
 	r__1 = 1.f / sigma;
-	sscal_(&imax, &r__1, &w[1], &c__1);
+	sscal_(m, &r__1, &w[1], &c__1);
     }
 
 /*     If eigenvalues are not in order, then sort them, along with */
@@ -785,11 +763,11 @@ L20:
 	    }
 
 	    if (i__ != 0) {
-		itmp1 = iwork[indibl + i__ - 1];
+		itmp1 = iwork[i__];
 		w[i__] = w[j];
-		iwork[indibl + i__ - 1] = iwork[indibl + j - 1];
+		iwork[i__] = iwork[j];
 		w[j] = tmp1;
-		iwork[indibl + j - 1] = itmp1;
+		iwork[j] = itmp1;
 		cswap_(n, &z__[i__ * z_dim1 + 1], &c__1, &z__[j * z_dim1 + 1],
 			 &c__1);
 		if (*info != 0) {

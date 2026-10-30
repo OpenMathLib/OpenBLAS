@@ -167,6 +167,7 @@
       SUBROUTINE SCHKSY( DOTYPE, NN, NVAL, NNB, NBVAL, NNS, NSVAL,
      $                   THRESH, TSTERR, NMAX, A, AFAC, AINV, B, X,
      $                   XACT, WORK, RWORK, IWORK, NOUT )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -176,6 +177,7 @@
       LOGICAL            TSTERR
       INTEGER            NMAX, NN, NNB, NNS, NOUT
       REAL               THRESH
+      REAL               SUBNRM
 *     ..
 *     .. Array Arguments ..
       LOGICAL            DOTYPE( * )
@@ -189,8 +191,10 @@
 *     .. Parameters ..
       REAL               ZERO
       PARAMETER          ( ZERO = 0.0E+0 )
+      REAL               FOUR
+      PARAMETER          ( FOUR = 4.0E+0 )
       INTEGER            NTYPES
-      PARAMETER          ( NTYPES = 10 )
+      PARAMETER          ( NTYPES = 11 )
       INTEGER            NTESTS
       PARAMETER          ( NTESTS = 9 )
 *     ..
@@ -209,13 +213,16 @@
       REAL               RESULT( NTESTS )
 *     ..
 *     .. External Functions ..
+      LOGICAL            SISNAN
+      REAL               SLAMCH
       REAL               SGET06, SLANSY
       EXTERNAL           SGET06, SLANSY
+      EXTERNAL           SISNAN, SLAMCH
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAERH, ALAHD, ALASUM, SERRSY, SGET04, SLACPY,
      $                   SLARHS, SLATB4, SLATMS, SPOT02, SPOT03, SPOT05,
-     $                   SSYCON, SSYCONV, SSYRFS, SSYT01, SSYTRF,
+     $                   SSCAL, SSYCON, SSYRFS, SSYT01, SSYTRF,
      $                   SSYTRI2, SSYTRS, SSYTRS2, XLAENV
 *     ..
 *     .. Intrinsic Functions ..
@@ -385,6 +392,32 @@
                   IZERO = 0
                END IF
 *
+*              Type 11:  scale two adjacent rows and columns into the
+*              subnormal range and give them a 2 by 2 pivot block whose
+*              off-diagonal entry is four times its diagonal, at the
+*              end the factorization starts from.  Inverting that pivot
+*              through the reciprocal of the off-diagonal entry
+*              overflows.
+*
+               IF( IMAT.EQ.11 .AND. N.GE.2 ) THEN
+                  SUBNRM = SLAMCH( 'Safe minimum' ) / 512
+                  IF( IUPLO.EQ.1 ) THEN
+                     I1 = N - 1
+                  ELSE
+                     I1 = 1
+                  END IF
+                  I2 = I1 + 1
+                  CALL SSCAL( N, SUBNRM, A( I1 ), LDA )
+                  CALL SSCAL( N, SUBNRM, A( I2 ), LDA )
+                  CALL SSCAL( N, SUBNRM, A( ( I1-1 )*LDA+1 ), 1 )
+                  CALL SSCAL( N, SUBNRM, A( ( I2-1 )*LDA+1 ), 1 )
+                  A( ( I1-1 )*LDA+I1 ) = SUBNRM
+                  A( ( I2-1 )*LDA+I2 ) = SUBNRM
+                  A( ( I2-1 )*LDA+I1 ) = FOUR*SUBNRM
+                  A( ( I1-1 )*LDA+I2 ) = FOUR*SUBNRM
+                  IZERO = 0
+               END IF
+*
 *              End generate the test matrix A.
 *
 *
@@ -439,7 +472,7 @@
 *
 *                 Set the condition estimate flag if the INFO is not 0.
 *
-                  IF( INFO.NE.0 ) THEN
+                  IF( INFO.NE.0 .OR. IMAT.EQ.11 ) THEN
                      TRFCON = .TRUE.
                   ELSE
                      TRFCON = .FALSE.
@@ -484,7 +517,8 @@
 *                 the threshold.
 *
                   DO 110 K = 1, NT
-                     IF( RESULT( K ).GE.THRESH ) THEN
+                     IF( RESULT( K ).GE.THRESH .OR.
+     $              SISNAN( RESULT( K ) ) ) THEN
                         IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
      $                     CALL ALAHD( NOUT, PATH )
                         WRITE( NOUT, FMT = 9999 )UPLO, N, NB, IMAT, K,
@@ -622,6 +656,8 @@
 *                 Get an estimate of RCOND = 1/CNDNUM.
 *
   140             CONTINUE
+                  IF( IMAT.EQ.11 )
+     $               GO TO 150
                   ANORM = SLANSY( '1', UPLO, N, A, LDA, RWORK )
                   SRNAMT = 'SSYCON'
                   CALL SSYCON( UPLO, N, AFAC, LDA, IWORK, ANORM, RCOND,
@@ -654,10 +690,69 @@
   170    CONTINUE
   180 CONTINUE
 *
+*
+*     Check an exact zero pivot created by updating a rank-one block
+*     when the singular matrix tests are requested.
+*     Unlike a row that is zero on input, its original diagonal must
+*     be replaced by the updated zero before returning the factors.
+*
+      IF( .NOT.DOTYPE( 3 ) ) GO TO 260
+      DO 250 IN = 1, NN
+         N = NVAL( IN )
+         IF( N.LT.3 ) GO TO 250
+         LDA = N
+         DO 240 IUPLO = 1, 2
+            UPLO = UPLOS( IUPLO )
+            I1 = 1
+            IF( IUPLO.EQ.1 ) I1 = N - 1
+            I2 = I1 + 1
+            IZERO = I2
+            IF( IUPLO.EQ.1 ) IZERO = I1
+            DO 230 MODE = 1, 1
+               DO 200 J = 1, N
+                  DO 190 I = 1, N
+                     A( I+( J-1 )*LDA ) = ZERO
+  190             CONTINUE
+                  A( J+( J-1 )*LDA ) = 1.0E+0
+  200          CONTINUE
+               A( I1+( I1-1 )*LDA ) = 0.0625E+0
+               A( I2+( I2-1 )*LDA ) = 0.0625E+0
+               A( I1+( I2-1 )*LDA ) = 0.0625E+0
+               A( I2+( I1-1 )*LDA ) = 0.0625E+0
+               DO 220 INB = 1, NNB
+                  NB = NBVAL( INB )
+                  CALL XLAENV( 1, NB )
+                  CALL SLACPY( UPLO, N, N, A, LDA, AFAC, LDA )
+                  LWORK = MAX( 2, NB )*LDA
+                  SRNAMT = 'SSYTRF'
+                  CALL SSYTRF( UPLO, N, AFAC, LDA, IWORK, AINV,
+     $                         LWORK, INFO )
+                  IF( INFO.NE.IZERO )
+     $               CALL ALAERH( PATH, 'SSYTRF', INFO, IZERO,
+     $                            UPLO, N, N, -1, -1, NB, 3, NFAIL,
+     $                            NERRS, NOUT )
+                  CALL SSYT01( UPLO, N, A, LDA, AFAC, LDA, IWORK,
+     $                         AINV, LDA, RWORK, RESULT( 1 ) )
+                  IF( RESULT( 1 ).GE.THRESH ) THEN
+                     IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
+     $                  CALL ALAHD( NOUT, PATH )
+                     WRITE( NOUT, FMT = 9996 )UPLO, N, NB, MODE,
+     $                  RESULT( 1 )
+                     NFAIL = NFAIL + 1
+                  END IF
+                  NRUN = NRUN + 1
+  220          CONTINUE
+  230       CONTINUE
+  240    CONTINUE
+  250 CONTINUE
+  260 CONTINUE
+*
 *     Print a summary of the results.
 *
       CALL ALASUM( PATH, NOUT, NFAIL, NRUN, NERRS )
 *
+ 9996 FORMAT( ' Zero pivot: UPLO = ''', A1, ''', N =', I5,
+     $      ', NB =', I4, ', mode =', I2, ', ratio =', G12.5 )
  9999 FORMAT( ' UPLO = ''', A1, ''', N =', I5, ', NB =', I4, ', type ',
      $      I2, ', test ', I2, ', ratio =', G12.5 )
  9998 FORMAT( ' UPLO = ''', A1, ''', N =', I5, ', NRHS=', I3, ', type ',
