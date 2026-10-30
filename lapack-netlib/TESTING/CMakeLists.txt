@@ -1,599 +1,140 @@
-enable_language(Fortran)
+########################################################################
+#  This is the makefile for the eigenvalue test program from LAPACK.
+#  The test files are organized as follows:
+#
+#     AEIGTST -- Auxiliary test routines used in all precisions
+#     SCIGTST -- Auxiliary test routines used in single precision
+#     DZIGTST -- Auxiliary test routines used in double precision
+#     SEIGTST -- Single precision real test routines
+#     CEIGTST -- Single precision complex test routines
+#     DEIGTST -- Double precision real test routines
+#     ZEIGTST -- Double precision complex test routines
+#
+########################################################################
 
-enable_testing()
+set(AEIGTST
+  alahdg.f alasum.f alasvm.f alareq.f
+  ilaenv.f xerbla.f xlaenv.f chkxer.f)
 
-if(MSVC_VERSION)
-#  string(REPLACE "/STACK:10000000" "/STACK:900000000000000000"
-#    CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
-  string(REGEX REPLACE "(.*)/STACK:(.*) (.*)" "\\1/STACK:900000000000000000 \\3"
-    CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
-endif()
-add_subdirectory(LIN)
-add_subdirectory(EIG)
-macro(add_lapack_test output input target)
-  set(TEST_INPUT "${LAPACK_SOURCE_DIR}/TESTING/${input}")
-  set(TEST_OUTPUT "${LAPACK_BINARY_DIR}/TESTING/${output}")
-  string(REPLACE "." "_" input_name ${input})
-  set(testName "${target}_${input_name}")
-  if(EXISTS "${TEST_INPUT}")
-    add_test(NAME LAPACK-${testName} COMMAND "${CMAKE_COMMAND}"
-      -DTEST=$<TARGET_FILE:${target}>
-      -DINPUT=${TEST_INPUT}
-      -DOUTPUT=${TEST_OUTPUT}
-      -DINTDIR=${CMAKE_CFG_INTDIR}
-      -P "${LAPACK_SOURCE_DIR}/TESTING/runtest.cmake")
-  endif()
+set(SCIGTST
+  slafts.f slahd2.f slasum.f slatb9.f sstech.f sstect.f
+  ssvdch.f ssvdct.f ssxt1.f)
+
+set(SEIGTST
+  schkee.F
+  sbdt01.f sbdt02.f sbdt03.f sbdt04.f sbdt05.f
+  schkbb.f schkbd.f schkbk.f schkbl.f schkec.f
+  schkgg.f schkgk.f schkgl.f schkhs.f schksb.f schkst.f schkst2stg.f schksb2stg.f
+  sckcsd.f sckglm.f sckgqr.f sckgsv.f scklse.f scsdts.f
+  sdrges.f sdrgev.f sdrges3.f sdrgev3.f sdrgsx.f sdrgvx.f
+  sdrvbd.f sdrvmr3.f sdrves.f sdrvev.f sdrvsg.f sdrvsg2stg.f
+  sdrvst.f sdrvst2stg.f sdrvsx.f sdrvvx.f
+  serrbd.f serrec.f serred.f serrgg.f serrhs.f serrst.f
+  sget02.f sget10.f sget22.f sget23.f sget24.f sget31.f
+  sget32.f sget33.f sget34.f sget35.f sget36.f
+  sget37.f sget38.f sget39.f sget40.f sget51.f sget52.f sget53.f
+  sget54.f sglmts.f sgqrts.f sgrqts.f sgsvts3.f
+  shst01.f slarfy.f slarhs.f slatm4.f slctes.f slctsx.f slsets.f sort01.f
+  sort03.f ssbt21.f ssgt01.f sslect.f sspt21.f sstt21.f
+  sstt22.f ssyl01.f ssyt21.f ssyt22.f)
+
+set(SDMDEIGTST schkdmd.f90)
+
+set(CEIGTST
+  cchkee.F
+  cbdt01.f cbdt02.f cbdt03.f cbdt05.f
+  cchkbb.f cchkbd.f cchkbk.f cchkbl.f cchkec.f
+  cchkgg.f cchkgk.f cchkgl.f cchkhb.f cchkhs.f cchkst.f cchkst2stg.f cchkhb2stg.f
+  cckcsd.f cckglm.f cckgqr.f cckgsv.f ccklse.f ccsdts.f
+  cdrges.f cdrgev.f cdrges3.f cdrgev3.f cdrgsx.f cdrgvx.f
+  cdrvbd.f cdrvmr3.f cdrves.f cdrvev.f cdrvsg.f cdrvsg2stg.f
+  cdrvst.f cdrvst2stg.f cdrvsx.f cdrvvx.f
+  cerrbd.f cerrec.f cerred.f cerrgg.f cerrhs.f cerrst.f
+  cget02.f cget10.f cget22.f cget23.f cget24.f
+  cget35.f cget36.f cget37.f cget38.f cget51.f cget52.f
+  cget54.f cglmts.f cgqrts.f cgrqts.f cgsvts3.f
+  chbt21.f chet21.f chet22.f chpt21.f chst01.f
+  clarfy.f clarhs.f clatm4.f clctes.f clctsx.f clsets.f csbmv.f
+  csgt01.f cslect.f csyl01.f
+  cstt21.f cstt22.f cunt01.f cunt03.f)
+
+set(CDMDEIGTST cchkdmd.f90)
+
+set(DZIGTST
+  dlafts.f dlahd2.f dlasum.f dlatb9.f dstech.f dstect.f
+  dsvdch.f dsvdct.f dsxt1.f)
+
+set(DEIGTST
+  dchkee.F
+  dbdt01.f dbdt02.f dbdt03.f dbdt04.f dbdt05.f
+  dchkbb.f dchkbd.f dchkbk.f dchkbl.f dchkec.f
+  dchkgg.f dchkgk.f dchkgl.f dchkhs.f dchksb.f dchkst.f dchkst2stg.f dchksb2stg.f
+  dckcsd.f dckglm.f dckgqr.f dckgsv.f dcklse.f dcsdts.f
+  ddrges.f ddrgev.f ddrges3.f ddrgev3.f ddrgsx.f ddrgvx.f
+  ddrvbd.f ddrvmr3.f ddrves.f ddrvev.f ddrvsg.f ddrvsg2stg.f
+  ddrvst.f ddrvst2stg.f ddrvsx.f ddrvvx.f
+  derrbd.f derrec.f derred.f derrgg.f derrhs.f derrst.f
+  dget02.f dget10.f dget22.f dget23.f dget24.f dget31.f
+  dget32.f dget33.f dget34.f dget35.f dget36.f
+  dget37.f dget38.f dget39.f dget40.f dget51.f dget52.f dget53.f
+  dget54.f dglmts.f dgqrts.f dgrqts.f dgsvts3.f
+  dhst01.f dlarfy.f dlarhs.f dlatm4.f dlctes.f dlctsx.f dlsets.f dort01.f
+  dort03.f dsbt21.f dsgt01.f dslect.f dspt21.f dstt21.f
+  dstt22.f dsyl01.f dsyt21.f dsyt22.f)
+
+set(DDMDEIGTST dchkdmd.f90)
+
+set(ZEIGTST
+  zchkee.F
+  zbdt01.f zbdt02.f zbdt03.f zbdt05.f
+  zchkbb.f zchkbd.f zchkbk.f zchkbl.f zchkec.f
+  zchkgg.f zchkgk.f zchkgl.f zchkhb.f zchkhs.f zchkst.f zchkst2stg.f zchkhb2stg.f
+  zckcsd.f zckglm.f zckgqr.f zckgsv.f zcklse.f zcsdts.f
+  zdrges.f zdrgev.f zdrges3.f zdrgev3.f zdrgsx.f zdrgvx.f
+  zdrvbd.f zdrvmr3.f zdrves.f zdrvev.f zdrvsg.f zdrvsg2stg.f
+  zdrvst.f zdrvst2stg.f zdrvsx.f zdrvvx.f
+  zerrbd.f zerrec.f zerred.f zerrgg.f zerrhs.f zerrst.f
+  zget02.f zget10.f zget22.f zget23.f zget24.f
+  zget35.f zget36.f zget37.f zget38.f zget51.f zget52.f
+  zget54.f zglmts.f zgqrts.f zgrqts.f zgsvts3.f
+  zhbt21.f zhet21.f zhet22.f zhpt21.f zhst01.f
+  zlarfy.f zlarhs.f zlatm4.f zlctes.f zlctsx.f zlsets.f zsbmv.f
+  zsgt01.f zslect.f zsyl01.f
+  zstt21.f zstt22.f zunt01.f zunt03.f)
+
+set(ZDMDEIGTST zchkdmd.f90)
+
+macro(add_eig_executable name)
+  add_executable(${name} ${ARGN})
+  target_link_libraries(${name} ${LIBNAMEPREFIX}openblas${LIBNAMESUFFIX}${SUFFIX64_UNDERSCORE})
 endmacro()
 
 if(BUILD_SINGLE)
-add_lapack_test(stest.out stest.in xlintsts)
-#
-# ======== SINGLE RFP LIN TESTS ========================
-add_lapack_test(stest_rfp.out stest_rfp.in xlintstrfs)
-#
-#
-# ======== SINGLE EIG TESTS ===========================
-#
-add_lapack_test(snep.out nep.in xeigtsts)
-add_lapack_test(ssep.out sep.in xeigtsts)
-add_lapack_test(sse2.out se2.in xeigtsts)
-add_lapack_test(ssvd.out svd.in xeigtsts)
-add_lapack_test(sec.out sec.in xeigtsts)
-add_lapack_test(sed.out sed.in xeigtsts)
-add_lapack_test(sgg.out sgg.in xeigtsts)
-add_lapack_test(sgd.out sgd.in xeigtsts)
-add_lapack_test(ssb.out ssb.in xeigtsts)
-add_lapack_test(ssg.out ssg.in xeigtsts)
-add_lapack_test(sbal.out sbal.in xeigtsts)
-add_lapack_test(sbak.out sbak.in xeigtsts)
-add_lapack_test(sgbal.out sgbal.in xeigtsts)
-add_lapack_test(sgbak.out sgbak.in xeigtsts)
-add_lapack_test(sbb.out sbb.in xeigtsts)
-add_lapack_test(sglm.out glm.in xeigtsts)
-add_lapack_test(sgqr.out gqr.in xeigtsts)
-add_lapack_test(sgsv.out gsv.in xeigtsts)
-add_lapack_test(scsd.out csd.in xeigtsts)
-add_lapack_test(slse.out lse.in xeigtsts)
-#
-# ======== SINGLE DMD EIG TESTS ===========================
-add_lapack_test(sdmd.out sdmd.in xdmdeigtsts)
-add_test(NAME LAPACK-test_sgges3_scaling COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_sgges3_scaling)
-add_test(NAME LAPACK-test_sgesvj_emptsw COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_sgesvj_emptsw)
-endif()
-
-if(BUILD_DOUBLE)
-#
-# ======== DOUBLE LIN TESTS ===========================
-add_lapack_test(dtest.out dtest.in xlintstd)
-#
-# ======== DOUBLE RFP LIN TESTS ========================
-add_lapack_test(dtest_rfp.out dtest_rfp.in xlintstrfd)
-#
-# ======== DOUBLE EIG TESTS ===========================
-add_lapack_test(dnep.out nep.in xeigtstd)
-add_lapack_test(dsep.out sep.in xeigtstd)
-add_lapack_test(dse2.out se2.in xeigtstd)
-add_lapack_test(dsvd.out svd.in xeigtstd)
-add_lapack_test(dec.out dec.in xeigtstd)
-add_lapack_test(ded.out ded.in xeigtstd)
-add_lapack_test(dgg.out dgg.in xeigtstd)
-add_lapack_test(dgd.out dgd.in xeigtstd)
-add_lapack_test(dsb.out dsb.in xeigtstd)
-add_lapack_test(dsg.out dsg.in xeigtstd)
-add_lapack_test(dbal.out dbal.in xeigtstd)
-add_lapack_test(dbak.out dbak.in xeigtstd)
-add_lapack_test(dgbal.out dgbal.in xeigtstd)
-add_lapack_test(dgbak.out dgbak.in xeigtstd)
-add_lapack_test(dbb.out dbb.in xeigtstd)
-add_lapack_test(dglm.out glm.in xeigtstd)
-add_lapack_test(dgqr.out gqr.in xeigtstd)
-add_lapack_test(dgsv.out gsv.in xeigtstd)
-add_lapack_test(dcsd.out csd.in xeigtstd)
-add_lapack_test(dlse.out lse.in xeigtstd)
-#
-# ======== DOUBLE DMD EIG TESTS ===========================
-add_lapack_test(ddmd.out ddmd.in xdmdeigtstd)
-add_test(NAME LAPACK-test_dgges3_scaling COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_dgges3_scaling)
-add_test(NAME LAPACK-test_dgesvj_emptsw COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_dgesvj_emptsw)
+add_eig_executable(xeigtsts ${SEIGTST} ${SCIGTST} ${AEIGTST})
+add_eig_executable(xdmdeigtsts ${SDMDEIGTST} ${AEIGTST})
+add_eig_executable(test_sgges3_scaling test_sgges3_scaling.f90)
+add_eig_executable(test_sgesvj_emptsw test_sgesvj_emptsw.f90)
 endif()
 
 if(BUILD_COMPLEX)
-add_lapack_test(ctest.out ctest.in xlintstc)
-#
-# ======== COMPLEX RFP LIN TESTS ========================
-add_lapack_test(ctest_rfp.out ctest_rfp.in xlintstrfc)
-#
-# ======== COMPLEX EIG TESTS ===========================
-add_lapack_test(cnep.out nep.in xeigtstc)
-add_lapack_test(csep.out sep.in xeigtstc)
-add_lapack_test(cse2.out se2.in xeigtstc)
-add_lapack_test(csvd.out svd.in xeigtstc)
-add_lapack_test(cec.out cec.in xeigtstc)
-add_lapack_test(ced.out ced.in xeigtstc)
-add_lapack_test(cgg.out cgg.in xeigtstc)
-add_lapack_test(cgd.out cgd.in xeigtstc)
-add_lapack_test(csb.out csb.in xeigtstc)
-add_lapack_test(csg.out csg.in xeigtstc)
-add_lapack_test(cbal.out cbal.in xeigtstc)
-add_lapack_test(cbak.out cbak.in xeigtstc)
-add_lapack_test(cgbal.out cgbal.in xeigtstc)
-add_lapack_test(cgbak.out cgbak.in xeigtstc)
-add_lapack_test(cbb.out cbb.in xeigtstc)
-add_lapack_test(cglm.out glm.in xeigtstc)
-add_lapack_test(cgqr.out gqr.in xeigtstc)
-add_lapack_test(cgsv.out gsv.in xeigtstc)
-add_lapack_test(ccsd.out csd.in xeigtstc)
-add_lapack_test(clse.out lse.in xeigtstc)
-#
-# ======== COMPLEX DMD EIG TESTS ===========================
-add_lapack_test(cdmd.out cdmd.in xdmdeigtstc)
-add_test(NAME LAPACK-test_cgges3_scaling COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_cgges3_scaling)
-add_test(NAME LAPACK-test_cgesvj_emptsw COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_cgesvj_emptsw)
+add_eig_executable(xeigtstc ${CEIGTST} ${SCIGTST} ${AEIGTST})
+add_eig_executable(xdmdeigtstc ${CDMDEIGTST} ${AEIGTST})
+add_eig_executable(test_cgges3_scaling test_cgges3_scaling.f90)
+add_eig_executable(test_cgesvj_emptsw test_sgesvj_emptsw.f90)
+endif()
+
+
+if(BUILD_DOUBLE)
+add_eig_executable(xeigtstd ${DEIGTST} ${DZIGTST} ${AEIGTST})
+add_eig_executable(xdmdeigtstd ${DDMDEIGTST} ${AEIGTST})
+add_eig_executable(test_dgges3_scaling test_dgges3_scaling.f90)
+add_eig_executable(test_dgesvj_emptsw test_sgesvj_emptsw.f90)
 endif()
 
 if(BUILD_COMPLEX16)
-#
-# ======== COMPLEX16 LIN TESTS ========================
-add_lapack_test(ztest.out ztest.in xlintstz)
-#
-# ======== COMPLEX16 RFP LIN TESTS ========================
-add_lapack_test(ztest_rfp.out ztest_rfp.in xlintstrfz)
-#
-# ======== COMPLEX16 EIG TESTS ===========================
-add_lapack_test(znep.out nep.in xeigtstz)
-add_lapack_test(zsep.out sep.in xeigtstz)
-add_lapack_test(zse2.out se2.in xeigtstz)
-add_lapack_test(zsvd.out svd.in xeigtstz)
-add_lapack_test(zec.out zec.in xeigtstz)
-add_lapack_test(zed.out zed.in xeigtstz)
-add_lapack_test(zgg.out zgg.in xeigtstz)
-add_lapack_test(zgd.out zgd.in xeigtstz)
-add_lapack_test(zsb.out zsb.in xeigtstz)
-add_lapack_test(zsg.out zsg.in xeigtstz)
-add_lapack_test(zbal.out zbal.in xeigtstz)
-add_lapack_test(zbak.out zbak.in xeigtstz)
-add_lapack_test(zgbal.out zgbal.in xeigtstz)
-add_lapack_test(zgbak.out zgbak.in xeigtstz)
-add_lapack_test(zbb.out zbb.in xeigtstz)
-add_lapack_test(zglm.out glm.in xeigtstz)
-add_lapack_test(zgqr.out gqr.in xeigtstz)
-add_lapack_test(zgsv.out gsv.in xeigtstz)
-add_lapack_test(zcsd.out csd.in xeigtstz)
-add_lapack_test(zlse.out lse.in xeigtstz)
-#
-# ======== COMPLEX16 DMD EIG TESTS ===========================
-add_lapack_test(zdmd.out zdmd.in xdmdeigtstz)
-add_test(NAME LAPACK-test_zgges3_scaling COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_zgges3_scaling)
-add_test(NAME LAPACK-test_zgesvj_emptsw COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_zgesvj_emptsw)
+add_eig_executable(xeigtstz ${ZEIGTST} ${DZIGTST} ${AEIGTST})
+add_eig_executable(xdmdeigtstz ${ZDMDEIGTST} ${AEIGTST})
+#add_eig_executable(test_wq_zrwork test_wq_rwork.f)
+add_eig_executable(test_zgges3_scaling test_zgges3_scaling.f90)
+add_eig_executable(test_zgesvj_emptsw test_sgesvj_emptsw.f90)
 endif()
-
-
-if(BUILD_SINGLE AND BUILD_DOUBLE)
-#
-# ======== SINGLE-DOUBLE PROTO LIN TESTS ==============
-  add_lapack_test(dstest.out dstest.in xlintstds)
-endif()
-
-
-if(BUILD_COMPLEX AND BUILD_COMPLEX16)
-#
-# ======== COMPLEX-COMPLEX16 LIN TESTS ========================
-  add_lapack_test(zctest.out zctest.in xlintstzc)
-endif()
-
-# ==============================================================================
-# Only run this test if python 2.7 or greater is found
-if(PYTHONINTERP_FOUND)
-  message(STATUS "Running Summary")
-  file(COPY ${LAPACK_SOURCE_DIR}/lapack_testing.py DESTINATION ${LAPACK_BINARY_DIR})
-  add_test(
-    NAME LAPACK_Test_Summary
-    WORKING_DIRECTORY ${LAPACK_BINARY_DIR}
-    COMMAND ${PYTHON_EXECUTABLE} "lapack_testing.py"
-    )
-endif()
-
-
-if(WIN32)
-FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_helper.ps1
-"if (Test-Path $args[2]) { Remove-Item -Force $args[2] } \n"
-"$ErrorActionPreference = \"Stop\"\n"
-"Get-Content $args[1] | & \"$($args[0]).exe\" | Out-File $args[2]\n"
-"If ((Get-Content $args[2] | %{$_ -match \"FATAL\"}) -contains $true) {\n"
-"echo Error\n"
-"exit 1\n"
-"} else {\n"
-"exit 0\n"
-"}\n"
-)
-set(helper_prefix powershell -ExecutionPolicy Bypass "${CMAKE_CURRENT_BINARY_DIR}/test_helper.ps1")
-else()
-# $1 exec, $2 input, $3 output_result
-FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_helper.sh
-"rm -f $3\n"
-"$1 < $2\n"
-"grep -q FATAL $3\n"
-"if [ $? -eq 0 ]; then\n"
-"echo Error\n"
-"exit 1\n"
-"else\n"
-"exit 0\n"
-"fi\n"
-)
-set(helper_prefix sh "${CMAKE_CURRENT_BINARY_DIR}/test_helper.sh")
-endif()
-
-add_test(NAME "REAL_LAPACK_linear_equation_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/LIN/xlintsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/stest.in" "${CMAKE_CURRENT_BINARY_DIR}/stest.out"
-)
-add_test(NAME "COMPLEX_LAPACK_linear_equation_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/LIN/xlintstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/ctest.in" "${CMAKE_CURRENT_BINARY_DIR}/ctest.out"
-)
-add_test(NAME "DOUBLE_PRECISION_LAPACK_linear_equation_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/LIN//xlintstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/dtest.in" "${CMAKE_CURRENT_BINARY_DIR}/dtest.out"
-)
-add_test(NAME "COMPLEX16_LAPACK_linear_equation_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/LIN//xlintstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/ztest.in" "${CMAKE_CURRENT_BINARY_DIR}/ztest.out"
-)
-
-add_test(NAME "SINGLE-DOUBLE_PRECISION_LAPACK_prototype_linear_equation_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/LIN/xlintstds" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/dstest.in" " ${CMAKE_CURRENT_BINARY_DIR}/dstest.out"
-)
-# ======== COMPLEX-COMPLEX16 LIN TESTS ========================
-
-add_test(NAME "Testing_COMPLEX-COMPLEX16_LAPACK_prototype_linear_equation_routines"
-	 COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/LIN/xlintstzc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/zctest.in" " ${CMAKE_CURRENT_BINARY_DIR}/zctest.out"
-)
-
-# ======== SINGLE RFP LIN TESTS ========================
-
-add_test(NAME "Testing_REAL_LAPACK_RFP_prototype_linear_equation_routines"
-	 COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/LIN/xlintstrfs" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/stest_rfp.in" "${CMAKE_CURRENT_BINARY_DIR}/stest_rfp.out"
-)
-
-# ======== COMPLEX16 RFP LIN TESTS ========================
-
-add_test(NAME "Testing_DOUBLE_PRECISION_LAPACK_RFP_prototype_linear_equation_routines"
-	 COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/LIN/xlintstrfd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/dtest_rfp.in" " ${CMAKE_CURRENT_BINARY_DIR}/dtest_rfp.out"
-)
-# ======== COMPLEX16 RFP LIN TESTS ========================
-
-add_test(NAME "Testing_COMPLEX_LAPACK_RFP_prototype_linear_equation_routines"
-	 COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/LIN/xlintstrfc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/ctest_rfp.in" " ${CMAKE_CURRENT_BINARY_DIR}/ctest_rfp.out"
-)
-
-# ======== COMPLEX16 RFP LIN TESTS ========================
-
-add_test(NAME "Testing_COMPLEX16_LAPACK_RFP_prototype_linear_equation_routines"
-	 COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/LIN/xlintstrfz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/ztest_rfp.in" " ${CMAKE_CURRENT_BINARY_DIR}/ztest_rfp.out"
-)
-#
-#
-# ======== SINGLE EIG TESTS ===========================
-#
-
-add_test(NAME "SNEP:_Testing_Nonsymmetric_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/nep.in" " ${CMAKE_CURRENT_BINARY_DIR}/snep.out"
-)
-
-add_test(NAME "SSEP:_Testing_Symmetric_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/sep.in" " ${CMAKE_CURRENT_BINARY_DIR}/ssep.out"
-)
-
-add_test(NAME "SSE2:_Testing_Symmetric_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/se2.in" " ${CMAKE_CURRENT_BINARY_DIR}/sse2.out"
-)
-
-add_test(NAME "SSVD:_Testing_Singular_Value_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/svd.in" " ${CMAKE_CURRENT_BINARY_DIR}/ssvd.out"
-)
-
-add_test(NAME "SSEC:_Testing_REAL_Eigen_Condition_Routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/sec.in" " ${CMAKE_CURRENT_BINARY_DIR}/sec.out"
-)
-
-add_test(NAME "SSEV:_Testing_REAL_Nonsymmetric_Eigenvalue_Driver"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/sed.in" " ${CMAKE_CURRENT_BINARY_DIR}/sed.out"
-)
-
-add_test(NAME "SGG:_Testing_REAL_Nonsymmetric_Generalized_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/sgg.in" " ${CMAKE_CURRENT_BINARY_DIR}/sgg.out"
-)
-
-add_test(NAME "SGD:_Testing_REAL_Nonsymmetric_Generalized_Eigenvalue_Problem_driver_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/sgd.in" " ${CMAKE_CURRENT_BINARY_DIR}/sgd.out"
-)
-
-add_test(NAME "SSB:_Testing_REAL_Symmetric_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/ssb.in" " ${CMAKE_CURRENT_BINARY_DIR}/ssb.out"
-)
-
-add_test(NAME "SSG:_Testing_REAL_Symmetric_Generalized_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/ssg.in" " ${CMAKE_CURRENT_BINARY_DIR}/ssg.out"
-)
-
-add_test(NAME "SGEBAL:_Testing_the_balancing_of_a_REAL_general_matrix"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/sbal.in" " ${CMAKE_CURRENT_BINARY_DIR}/sbal.out"
-)
-
-add_test(NAME "SGEBAK:_Testing_the_back_transformation_of_a_REAL_balanced_matrix"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/sbak.in" " ${CMAKE_CURRENT_BINARY_DIR}/sbak.out"
-)
-
-add_test(NAME "SGGBAL:_Testing_the_balancing_of_a_pair_of_REAL_general_matrices"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/sgbal.in" " ${CMAKE_CURRENT_BINARY_DIR}/sgbal.out"
-)
-
-add_test(NAME "SGGBAK:_Testing_the_back_transformation_of_a_pair_of_REAL_balanced_matrices"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/sgbak.in" " ${CMAKE_CURRENT_BINARY_DIR}/sgbak.out"
-)
-
-add_test(NAME "SBB:_Testing_banded_Singular_Value_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/sbb.in" " ${CMAKE_CURRENT_BINARY_DIR}/sbb.out"
-)
-
-add_test(NAME "SGLM:_Testing_Generalized_Linear_Regression_Model_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/glm.in" " ${CMAKE_CURRENT_BINARY_DIR}/sglm.out"
-)
-
-add_test(NAME "SGQR:_Testing_Generalized_QR_and_RQ_factorization_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/gqr.in" " ${CMAKE_CURRENT_BINARY_DIR}/sgqr.out"
-)
-
-add_test(NAME "SGSV:_Testing_Generalized_Singular_Value_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/gsv.in" "${CMAKE_CURRENT_BINARY_DIR}/sgsv.out"
-)
-
-add_test(NAME "SCSD:_Testing_CS_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/csd.in" " ${CMAKE_CURRENT_BINARY_DIR}/scsd.out"
-)
-
-add_test(NAME "SLSE:_Testing_Constrained_Linear_Least_Squares_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtsts" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/lse.in" " ${CMAKE_CURRENT_BINARY_DIR}/slse.out"
-)
-
-# ======== COMPLEX EIG TESTS ===========================
-
-add_test(NAME "CNEP:_Testing_Nonsymmetric_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/nep.in" " ${CMAKE_CURRENT_BINARY_DIR}/cnep.out"
-)
-
-add_test(NAME "CSEP:_Testing_Symmetric_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/sep.in" " ${CMAKE_CURRENT_BINARY_DIR}/csep.out"
-)
-
-add_test(NAME "CSE2:_Testing_Symmetric_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/se2.in" " ${CMAKE_CURRENT_BINARY_DIR}/cse2.out"
-)
-
-add_test(NAME "CSVD:_Testing_Singular_Value_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/svd.in" " ${CMAKE_CURRENT_BINARY_DIR}/csvd.out"
-)
-
-add_test(NAME "CEC:_Testing_COMPLEX_Eigen_Condition_Routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/cec.in" " ${CMAKE_CURRENT_BINARY_DIR}/cec.out"
-)
-
-add_test(NAME "CES:_Testing_COMPLEX_Nonsymmetric_Schur_Form_Driver"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/ced.in" " ${CMAKE_CURRENT_BINARY_DIR}/ced.out"
-)
-
-add_test(NAME "CGG:_Testing_COMPLEX_Nonsymmetric_Generalized_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/cgg.in" " ${CMAKE_CURRENT_BINARY_DIR}/cgg.out"
-)
-
-add_test(NAME "CGD:_Testing_COMPLEX_Nonsymmetric_Generalized_Eigenvalue_Problem_driver_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/cgd.in" " ${CMAKE_CURRENT_BINARY_DIR}/cgd.out"
-)
-
-add_test(NAME "CHB:_Testing_Hermitian_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/csb.in" " ${CMAKE_CURRENT_BINARY_DIR}/csb.out"
-)
-
-add_test(NAME "CSG:_Testing_Symmetric_Generalized_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/csg.in" " ${CMAKE_CURRENT_BINARY_DIR}/csg.out"
-)
-
-add_test(NAME "CGEBAL:_Testing_the_balancing_of_a_COMPLEX_general_matrix"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/cbal.in" " ${CMAKE_CURRENT_BINARY_DIR}/cbal.out"
-)
-
-add_test(NAME "CGEBAK:_Testing_the_back_transformation_of_a_COMPLEX_balanced_matrix"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/cbak.in" " ${CMAKE_CURRENT_BINARY_DIR}/cbak.out"
-)
-
-add_test(NAME "CGGBAL:_Testing_the_balancing_of_a_pair_of_COMPLEX_general_matrices"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/cgbal.in" " ${CMAKE_CURRENT_BINARY_DIR}/cgbal.out"
-)
-
-add_test(NAME "CGGBAK:_Testing_the_back_transformation_of_a_pair_of_COMPLEX_balanced_matrices"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/cgbak.in" " ${CMAKE_CURRENT_BINARY_DIR}/cgbak.out"
-)
-
-add_test(NAME "CBB:_Testing_banded_Singular_Value_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/cbb.in" " ${CMAKE_CURRENT_BINARY_DIR}/cbb.out"
-)
-
-add_test(NAME "CGLM:_Testing_Generalized_Linear_Regression_Model_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/glm.in" " ${CMAKE_CURRENT_BINARY_DIR}/cglm.out"
-)
-
-add_test(NAME "CGQR:_Testing_Generalized_QR_and_RQ_factorization_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/gqr.in" " ${CMAKE_CURRENT_BINARY_DIR}/cgqr.out"
-)
-
-add_test(NAME "CGSV:_Testing_Generalized_Singular_Value_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/gsv.in" " ${CMAKE_CURRENT_BINARY_DIR}/cgsv.out"
-)
-
-add_test(NAME "CCSD:_Testing_CS_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/csd.in" " ${CMAKE_CURRENT_BINARY_DIR}/ccsd.out"
-)
-
-add_test(NAME "CLSE:_Testing_Constrained_Linear_Least_Squares_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstc" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/lse.in" " ${CMAKE_CURRENT_BINARY_DIR}/clse.out"
-)
-
-# ======== DOUBLE EIG TESTS ===========================
-
-add_test(NAME "DNEP:_Testing_Nonsymmetric_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/nep.in" " ${CMAKE_CURRENT_BINARY_DIR}/dnep.out"
-)
-
-add_test(NAME "DSEP:_Testing_Symmetric_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/sep.in" " ${CMAKE_CURRENT_BINARY_DIR}/dsep.out"
-)
-
-add_test(NAME "DSE2:_Testing_Symmetric_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/se2.in" " ${CMAKE_CURRENT_BINARY_DIR}/dse2.out"
-)
-
-add_test(NAME "DSVD:_Testing_Singular_Value_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/svd.in" " ${CMAKE_CURRENT_BINARY_DIR}/dsvd.out"
-)
-
-add_test(NAME "DEC:_Testing_DOUBLE_PRECISION_Eigen_Condition_Routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/dec.in" " ${CMAKE_CURRENT_BINARY_DIR}/dec.out"
-)
-
-add_test(NAME "DEV:_Testing_DOUBLE_PRECISION_Nonsymmetric_Eigenvalue_Driver"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/ded.in" " ${CMAKE_CURRENT_BINARY_DIR}/ded.out"
-)
-
-add_test(NAME "DGG:_Testing_DOUBLE_PRECISION_Nonsymmetric_Generalized_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/dgg.in" " ${CMAKE_CURRENT_BINARY_DIR}/dgg.out"
-)
-
-add_test(NAME "DGD:_Testing_DOUBLE_PRECISION_Nonsymmetric_Generalized_Eigenvalue_Problem_driver_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/dgd.in" " ${CMAKE_CURRENT_BINARY_DIR}/dgd.out"
-)
-
-add_test(NAME "DSB:_Testing_DOUBLE_PRECISION_Symmetric_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/dsb.in" " ${CMAKE_CURRENT_BINARY_DIR}/dsb.out"
-)
-
-add_test(NAME "DSG:_Testing_DOUBLE_PRECISION_Symmetric_Generalized_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/dsg.in" " ${CMAKE_CURRENT_BINARY_DIR}/dsg.out"
-)
-
-add_test(NAME "DGEBAL:_Testing_the_balancing_of_a_DOUBLE_PRECISION_general_matrix"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/dbal.in" " ${CMAKE_CURRENT_BINARY_DIR}/dbal.out"
-)
-
-add_test(NAME "DGEBAK:_Testing_the_back_transformation_of_a_DOUBLE_PRECISION_balanced_matrix"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/dbak.in" " ${CMAKE_CURRENT_BINARY_DIR}/dbak.out"
-)
-
-add_test(NAME "DGGBAL:_Testing_the_balancing_of_a_pair_of_DOUBLE_PRECISION_general_matrices"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/dgbal.in" " ${CMAKE_CURRENT_BINARY_DIR}/dgbal.out"
-)
-
-add_test(NAME "DGGBAK:_Testing_the_back_transformation_of_a_pair_of_DOUBLE_PRECISION_balanced_matrices"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/dgbak.in" " ${CMAKE_CURRENT_BINARY_DIR}/dgbak.out"
-)
-
-add_test(NAME "DBB:_Testing_banded_Singular_Value_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/dbb.in" " ${CMAKE_CURRENT_BINARY_DIR}/dbb.out"
-)
-
-add_test(NAME "DGLM:_Testing_Generalized_Linear_Regression_Model_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/glm.in" " ${CMAKE_CURRENT_BINARY_DIR}/dglm.out"
-)
-
-add_test(NAME "DGQR:_Testing_Generalized_QR_and_RQ_factorization_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/gqr.in" " ${CMAKE_CURRENT_BINARY_DIR}/dgqr.out"
-)
-
-add_test(NAME "DGSV:_Testing_Generalized_Singular_Value_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/gsv.in" " ${CMAKE_CURRENT_BINARY_DIR}/dgsv.out"
-)
-
-add_test(NAME "DCSD:_Testing_CS_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/csd.in" " ${CMAKE_CURRENT_BINARY_DIR}/dcsd.out"
-)
-
-add_test(NAME "DLSE:_Testing_Constrained_Linear_Least_Squares_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstd" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/lse.in" " ${CMAKE_CURRENT_BINARY_DIR}/dlse.out"
-)
-
-# ======== COMPLEX16 EIG TESTS ===========================
-
-add_test(NAME "ZNEP:_Testing_Nonsymmetric_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/nep.in" " ${CMAKE_CURRENT_BINARY_DIR}/znep.out"
-)
-
-add_test(NAME "ZSEP:_Testing_Symmetric_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/sep.in" " ${CMAKE_CURRENT_BINARY_DIR}/zsep.out"
-)
-
-add_test(NAME "ZSE2:_Testing_Symmetric_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/se2.in" " ${CMAKE_CURRENT_BINARY_DIR}/zse2.out"
-)
-
-add_test(NAME "ZSVD:_Testing_Singular_Value_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/svd.in" " ${CMAKE_CURRENT_BINARY_DIR}/zsvd.out"
-)
-
-add_test(NAME "ZEC:_Testing_COMPLEX16_Eigen_Condition_Routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/zec.in" " ${CMAKE_CURRENT_BINARY_DIR}/zec.out"
-)
-
-add_test(NAME "ZES:_Testing_COMPLEX16_Nonsymmetric_Schur_Form_Driver"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/zed.in" " ${CMAKE_CURRENT_BINARY_DIR}/zed.out"
-)
-
-add_test(NAME "ZGG:_Testing_COMPLEX16_Nonsymmetric_Generalized_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/zgg.in" " ${CMAKE_CURRENT_BINARY_DIR}/zgg.out"
-)
-
-add_test(NAME "ZGD:_Testing_COMPLEX16_Nonsymmetric_Generalized_Eigenvalue_Problem_driver_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/zgd.in" " ${CMAKE_CURRENT_BINARY_DIR}/zgd.out"
-)
-
-add_test(NAME "ZHB:_Testing_Hermitian_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/zsb.in" " ${CMAKE_CURRENT_BINARY_DIR}/zsb.out"
-)
-
-add_test(NAME "ZSG:_Testing_Symmetric_Generalized_Eigenvalue_Problem_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/zsg.in" " ${CMAKE_CURRENT_BINARY_DIR}/zsg.out"
-)
-
-add_test(NAME "ZGEBAL:_Testing_the_balancing_of_a_COMPLEX16_general_matrix"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/zbal.in" " ${CMAKE_CURRENT_BINARY_DIR}/zbal.out"
-)
-
-add_test(NAME "ZGEBAK:_Testing_the_back_transformation_of_a_COMPLEX16_balanced_matrix"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/zbak.in" " ${CMAKE_CURRENT_BINARY_DIR}/zbak.out"
-)
-
-add_test(NAME "ZGGBAL:_Testing_the_balancing_of_a_pair_of_COMPLEX_general_matrices"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/zgbal.in" " ${CMAKE_CURRENT_BINARY_DIR}/zgbal.out"
-)
-
-add_test(NAME "ZGGBAK:_Testing_the_back_transformation_of_a_pair_of_COMPLEX16_balanced_matrices"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/zgbak.in" " ${CMAKE_CURRENT_BINARY_DIR}/zgbak.out"
-)
-
-add_test(NAME "ZBB:_Testing_banded_Singular_Value_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/zbb.in" " ${CMAKE_CURRENT_BINARY_DIR}/zbb.out"
-)
-
-add_test(NAME "ZGLM:_Testing_Generalized_Linear_Regression_Model_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/glm.in" " ${CMAKE_CURRENT_BINARY_DIR}/zglm.out"
-)
-
-add_test(NAME "ZGQR:_Testing_Generalized_QR_and_RQ_factorization_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/gqr.in" " ${CMAKE_CURRENT_BINARY_DIR}/zgqr.out"
-)
-
-add_test(NAME "ZGSV:_Testing_Generalized_Singular_Value_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/gsv.in" " ${CMAKE_CURRENT_BINARY_DIR}/zgsv.out"
-)
-
-add_test(NAME "ZCSD:_Testing_CS_Decomposition_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/csd.in" " ${CMAKE_CURRENT_BINARY_DIR}/zcsd.out"
-)
-
-add_test(NAME "Constrained_Linear_Least_Squares_routines"
-	COMMAND ${helper_prefix} "${CMAKE_CURRENT_BINARY_DIR}/EIG/xeigtstz" "${PROJECT_SOURCE_DIR}/lapack-netlib/TESTING/lse.in" " ${CMAKE_CURRENT_BINARY_DIR}/zlse.out"
-)
