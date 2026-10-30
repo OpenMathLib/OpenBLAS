@@ -110,17 +110,145 @@ macro(add_eig_executable name)
 endmacro()
 
 if(BUILD_SINGLE)
-add_eig_executable(xeigtsts ${SEIGTST} ${SCIGTST} ${AEIGTST})
-add_eig_executable(xdmdeigtsts ${SDMDEIGTST} ${AEIGTST})
-add_eig_executable(test_sgges3_scaling test_sgges3_scaling.f90)
-add_eig_executable(test_sgesvj_emptsw test_sgesvj_emptsw.f90)
+add_lapack_test(stest.out stest.in xlintsts)
+#
+# ======== SINGLE RFP LIN TESTS ========================
+add_lapack_test(stest_rfp.out stest_rfp.in xlintstrfs)
+#
+#
+# ======== SINGLE EIG TESTS ===========================
+#
+add_lapack_test(snep.out nep.in xeigtsts)
+add_lapack_test(ssep.out sep.in xeigtsts)
+add_lapack_test(sse2.out se2.in xeigtsts)
+add_lapack_test(ssvd.out svd.in xeigtsts)
+add_lapack_test(sec.out sec.in xeigtsts)
+add_lapack_test(sed.out sed.in xeigtsts)
+add_lapack_test(sgg.out sgg.in xeigtsts)
+add_lapack_test(sgd.out sgd.in xeigtsts)
+add_lapack_test(ssb.out ssb.in xeigtsts)
+add_lapack_test(ssg.out ssg.in xeigtsts)
+add_lapack_test(sbal.out sbal.in xeigtsts)
+add_lapack_test(sbak.out sbak.in xeigtsts)
+add_lapack_test(sgbal.out sgbal.in xeigtsts)
+add_lapack_test(sgbak.out sgbak.in xeigtsts)
+add_lapack_test(sbb.out sbb.in xeigtsts)
+add_lapack_test(sglm.out glm.in xeigtsts)
+add_lapack_test(sgqr.out gqr.in xeigtsts)
+add_lapack_test(sgsv.out gsv.in xeigtsts)
+add_lapack_test(scsd.out csd.in xeigtsts)
+add_lapack_test(slse.out lse.in xeigtsts)
+#
+# ======== SINGLE DMD EIG TESTS ===========================
+add_lapack_test(sdmd.out sdmd.in xdmdeigtsts)
+add_test(NAME LAPACK-test_sgges3_scaling COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_sgges3_scaling)
+add_test(NAME LAPACK-test_sgesvj_emptsw COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_sgesvj_emptsw)
+endif()
+
+if(BUILD_DOUBLE)
+#
+# ======== DOUBLE LIN TESTS ===========================
+add_lapack_test(dtest.out dtest.in xlintstd)
+#
+# ======== DOUBLE RFP LIN TESTS ========================
+add_lapack_test(dtest_rfp.out dtest_rfp.in xlintstrfd)
+#
+# ======== DOUBLE EIG TESTS ===========================
+add_lapack_test(dnep.out nep.in xeigtstd)
+add_lapack_test(dsep.out sep.in xeigtstd)
+add_lapack_test(dse2.out se2.in xeigtstd)
+add_lapack_test(dsvd.out svd.in xeigtstd)
+add_lapack_test(dec.out dec.in xeigtstd)
+add_lapack_test(ded.out ded.in xeigtstd)
+add_lapack_test(dgg.out dgg.in xeigtstd)
+add_lapack_test(dgd.out dgd.in xeigtstd)
+add_lapack_test(dsb.out dsb.in xeigtstd)
+add_lapack_test(dsg.out dsg.in xeigtstd)
+add_lapack_test(dbal.out dbal.in xeigtstd)
+add_lapack_test(dbak.out dbak.in xeigtstd)
+add_lapack_test(dgbal.out dgbal.in xeigtstd)
+add_lapack_test(dgbak.out dgbak.in xeigtstd)
+add_lapack_test(dbb.out dbb.in xeigtstd)
+add_lapack_test(dglm.out glm.in xeigtstd)
+add_lapack_test(dgqr.out gqr.in xeigtstd)
+add_lapack_test(dgsv.out gsv.in xeigtstd)
+add_lapack_test(dcsd.out csd.in xeigtstd)
+add_lapack_test(dlse.out lse.in xeigtstd)
+#
+# ======== DOUBLE DMD EIG TESTS ===========================
+add_lapack_test(ddmd.out ddmd.in xdmdeigtstd)
+add_test(NAME LAPACK-test_dgges3_scaling COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_dgges3_scaling)
+add_test(NAME LAPACK-test_dgesvj_emptsw COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_dgesvj_emptsw)
 endif()
 
 if(BUILD_COMPLEX)
-add_eig_executable(xeigtstc ${CEIGTST} ${SCIGTST} ${AEIGTST})
-add_eig_executable(xdmdeigtstc ${CDMDEIGTST} ${AEIGTST})
-add_eig_executable(test_cgges3_scaling test_cgges3_scaling.f90)
-add_eig_executable(test_cgesvj_emptsw test_sgesvj_emptsw.f90)
+add_lapack_test(ctest.out ctest.in xlintstc)
+#
+# ======== COMPLEX RFP LIN TESTS ========================
+add_lapack_test(ctest_rfp.out ctest_rfp.in xlintstrfc)
+#
+# ======== COMPLEX EIG TESTS ===========================
+add_lapack_test(cnep.out nep.in xeigtstc)
+add_lapack_test(csep.out sep.in xeigtstc)
+add_lapack_test(cse2.out se2.in xeigtstc)
+add_lapack_test(csvd.out svd.in xeigtstc)
+add_lapack_test(cec.out cec.in xeigtstc)
+add_lapack_test(ced.out ced.in xeigtstc)
+add_lapack_test(cgg.out cgg.in xeigtstc)
+add_lapack_test(cgd.out cgd.in xeigtstc)
+add_lapack_test(csb.out csb.in xeigtstc)
+add_lapack_test(csg.out csg.in xeigtstc)
+add_lapack_test(cbal.out cbal.in xeigtstc)
+add_lapack_test(cbak.out cbak.in xeigtstc)
+add_lapack_test(cgbal.out cgbal.in xeigtstc)
+add_lapack_test(cgbak.out cgbak.in xeigtstc)
+add_lapack_test(cbb.out cbb.in xeigtstc)
+add_lapack_test(cglm.out glm.in xeigtstc)
+add_lapack_test(cgqr.out gqr.in xeigtstc)
+add_lapack_test(cgsv.out gsv.in xeigtstc)
+add_lapack_test(ccsd.out csd.in xeigtstc)
+add_lapack_test(clse.out lse.in xeigtstc)
+#
+# ======== COMPLEX DMD EIG TESTS ===========================
+add_lapack_test(cdmd.out cdmd.in xdmdeigtstc)
+add_test(NAME LAPACK-test_cgges3_scaling COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_cgges3_scaling)
+add_test(NAME LAPACK-test_cgesvj_emptsw COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_cgesvj_emptsw)
+endif()
+
+if(BUILD_COMPLEX16)
+#
+# ======== COMPLEX16 LIN TESTS ========================
+add_lapack_test(ztest.out ztest.in xlintstz)
+#
+# ======== COMPLEX16 RFP LIN TESTS ========================
+add_lapack_test(ztest_rfp.out ztest_rfp.in xlintstrfz)
+#
+# ======== COMPLEX16 EIG TESTS ===========================
+add_lapack_test(znep.out nep.in xeigtstz)
+add_lapack_test(zsep.out sep.in xeigtstz)
+add_lapack_test(zse2.out se2.in xeigtstz)
+add_lapack_test(zsvd.out svd.in xeigtstz)
+add_lapack_test(zec.out zec.in xeigtstz)
+add_lapack_test(zed.out zed.in xeigtstz)
+add_lapack_test(zgg.out zgg.in xeigtstz)
+add_lapack_test(zgd.out zgd.in xeigtstz)
+add_lapack_test(zsb.out zsb.in xeigtstz)
+add_lapack_test(zsg.out zsg.in xeigtstz)
+add_lapack_test(zbal.out zbal.in xeigtstz)
+add_lapack_test(zbak.out zbak.in xeigtstz)
+add_lapack_test(zgbal.out zgbal.in xeigtstz)
+add_lapack_test(zgbak.out zgbak.in xeigtstz)
+add_lapack_test(zbb.out zbb.in xeigtstz)
+add_lapack_test(zglm.out glm.in xeigtstz)
+add_lapack_test(zgqr.out gqr.in xeigtstz)
+add_lapack_test(zgsv.out gsv.in xeigtstz)
+add_lapack_test(zcsd.out csd.in xeigtstz)
+add_lapack_test(zlse.out lse.in xeigtstz)
+#
+# ======== COMPLEX16 DMD EIG TESTS ===========================
+add_lapack_test(zdmd.out zdmd.in xdmdeigtstz)
+add_test(NAME LAPACK-test_zgges3_scaling COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_zgges3_scaling)
+add_test(NAME LAPACK-test_zgesvj_emptsw COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_zgesvj_emptsw)
 endif()
 
 
