@@ -81,7 +81,7 @@ EXTRALIB += -lxlf90
 endif
 
 ifeq ($(C_COMPILER), PGI)
-EXTRALIB += -pgf90libs
+EXTRALIB += -fortranlibs
 endif
 
 ifneq (,$(filter 1 2,$(NOFORTRAN)))

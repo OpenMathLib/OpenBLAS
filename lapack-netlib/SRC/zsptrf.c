@@ -246,18 +246,16 @@ typedef struct Namelist Namelist;
 #define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
 #define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
 #define myexit_() break;
-#define mycycle_() continue;
-#define myceiling_(w) {ceil(w)}
-#define myhuge_(w) {HUGE_VAL}
+#define mycycle() continue;
+#define myceiling(w) {ceil(w)}
+#define myhuge(w) {HUGE_VAL}
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
-#define mymaxloc_(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
+#define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
 
 /*  -- translated by f2c (version 20000121).
    You must link the resulting object file with the libraries:
 	-lf2c -lm   (in that order)
 */
-
-
 
 
 /* Table of constant values */
@@ -272,7 +270,6 @@ static integer c__1 = 1;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download ZSPTRF + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zsptrf.
 f"> */
@@ -283,7 +280,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zsptrf.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -374,9 +370,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup complex16OTHERcomputational */
+/* > \ingroup hptrf */
 
 /* > \par Further Details: */
 /*  ===================== */
@@ -431,37 +425,34 @@ f"> */
     doublecomplex z__1, z__2, z__3, z__4;
 
     /* Local variables */
+    integer i__, j, k;
+    doublecomplex t, r1, d11, d12, d21, d22;
+    integer kc, kk, kp;
+    doublecomplex wk;
+    integer kx, knc, kpc, npp;
+    doublecomplex wkm1, wkp1;
     integer imax, jmax;
     extern /* Subroutine */ void zspr_(char *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *);
-    integer i__, j, k;
-    doublecomplex t;
     doublereal alpha;
     extern logical lsame_(char *, char *);
     extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     integer kstep;
     logical upper;
-    doublecomplex r1;
     extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
-    doublecomplex d11, d12, d21, d22;
-    integer kc, kk, kp;
     doublereal absakk;
-    doublecomplex wk;
-    integer kx;
+    extern logical disnan_(doublereal *);
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     doublereal colmax;
     extern integer izamax_(integer *, doublecomplex *, integer *);
     doublereal rowmax;
-    integer knc, kpc, npp;
-    doublecomplex wkm1, wkp1;
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -530,9 +521,10 @@ L10:
 	    colmax = 0.;
 	}
 
-	if (f2cmax(absakk,colmax) == 0.) {
+	if (f2cmax(absakk,colmax) == 0. || disnan_(&absakk)) {
 
-/*           Column K is zero: set INFO and continue */
+/*           Column K is zero or underflow, or contains a NaN: */
+/*           set INFO and continue */
 
 	    if (*info == 0) {
 		*info = k;
@@ -688,32 +680,32 @@ L10:
 		    d11.r = z__1.r, d11.i = z__1.i;
 		    z__3.r = d11.r * d22.r - d11.i * d22.i, z__3.i = d11.r * 
 			    d22.i + d11.i * d22.r;
-		    z__2.r = z__3.r - 1., z__2.i = z__3.i + 0.;
+		    z__2.r = z__3.r - 1., z__2.i = z__3.i - 0.;
 		    z_div(&z__1, &c_b1, &z__2);
 		    t.r = z__1.r, t.i = z__1.i;
-		    z_div(&z__1, &t, &d12);
-		    d12.r = z__1.r, d12.i = z__1.i;
 
 		    for (j = k - 2; j >= 1; --j) {
 			i__1 = j + (k - 2) * (k - 1) / 2;
-			z__3.r = d11.r * ap[i__1].r - d11.i * ap[i__1].i, 
-				z__3.i = d11.r * ap[i__1].i + d11.i * ap[i__1]
+			z__4.r = d11.r * ap[i__1].r - d11.i * ap[i__1].i, 
+				z__4.i = d11.r * ap[i__1].i + d11.i * ap[i__1]
 				.r;
 			i__2 = j + (k - 1) * k / 2;
-			z__2.r = z__3.r - ap[i__2].r, z__2.i = z__3.i - ap[
+			z__3.r = z__4.r - ap[i__2].r, z__3.i = z__4.i - ap[
 				i__2].i;
-			z__1.r = d12.r * z__2.r - d12.i * z__2.i, z__1.i = 
-				d12.r * z__2.i + d12.i * z__2.r;
+			z_div(&z__2, &z__3, &d12);
+			z__1.r = t.r * z__2.r - t.i * z__2.i, z__1.i = t.r * 
+				z__2.i + t.i * z__2.r;
 			wkm1.r = z__1.r, wkm1.i = z__1.i;
 			i__1 = j + (k - 1) * k / 2;
-			z__3.r = d22.r * ap[i__1].r - d22.i * ap[i__1].i, 
-				z__3.i = d22.r * ap[i__1].i + d22.i * ap[i__1]
+			z__4.r = d22.r * ap[i__1].r - d22.i * ap[i__1].i, 
+				z__4.i = d22.r * ap[i__1].i + d22.i * ap[i__1]
 				.r;
 			i__2 = j + (k - 2) * (k - 1) / 2;
-			z__2.r = z__3.r - ap[i__2].r, z__2.i = z__3.i - ap[
+			z__3.r = z__4.r - ap[i__2].r, z__3.i = z__4.i - ap[
 				i__2].i;
-			z__1.r = d12.r * z__2.r - d12.i * z__2.i, z__1.i = 
-				d12.r * z__2.i + d12.i * z__2.r;
+			z_div(&z__2, &z__3, &d12);
+			z__1.r = t.r * z__2.r - t.i * z__2.i, z__1.i = t.r * 
+				z__2.i + t.i * z__2.r;
 			wk.r = z__1.r, wk.i = z__1.i;
 			for (i__ = j; i__ >= 1; --i__) {
 			    i__1 = i__ + (j - 1) * j / 2;
@@ -799,9 +791,10 @@ L60:
 	    colmax = 0.;
 	}
 
-	if (f2cmax(absakk,colmax) == 0.) {
+	if (f2cmax(absakk,colmax) == 0. || disnan_(&absakk)) {
 
-/*           Column K is zero: set INFO and continue */
+/*           Column K is zero or underflow, or contains a NaN: */
+/*           set INFO and continue */
 
 	    if (*info == 0) {
 		*info = k;
@@ -971,33 +964,33 @@ L60:
 		    d22.r = z__1.r, d22.i = z__1.i;
 		    z__3.r = d11.r * d22.r - d11.i * d22.i, z__3.i = d11.r * 
 			    d22.i + d11.i * d22.r;
-		    z__2.r = z__3.r - 1., z__2.i = z__3.i + 0.;
+		    z__2.r = z__3.r - 1., z__2.i = z__3.i - 0.;
 		    z_div(&z__1, &c_b1, &z__2);
 		    t.r = z__1.r, t.i = z__1.i;
-		    z_div(&z__1, &t, &d21);
-		    d21.r = z__1.r, d21.i = z__1.i;
 
 		    i__1 = *n;
 		    for (j = k + 2; j <= i__1; ++j) {
 			i__2 = j + (k - 1) * ((*n << 1) - k) / 2;
-			z__3.r = d11.r * ap[i__2].r - d11.i * ap[i__2].i, 
-				z__3.i = d11.r * ap[i__2].i + d11.i * ap[i__2]
+			z__4.r = d11.r * ap[i__2].r - d11.i * ap[i__2].i, 
+				z__4.i = d11.r * ap[i__2].i + d11.i * ap[i__2]
 				.r;
 			i__3 = j + k * ((*n << 1) - k - 1) / 2;
-			z__2.r = z__3.r - ap[i__3].r, z__2.i = z__3.i - ap[
+			z__3.r = z__4.r - ap[i__3].r, z__3.i = z__4.i - ap[
 				i__3].i;
-			z__1.r = d21.r * z__2.r - d21.i * z__2.i, z__1.i = 
-				d21.r * z__2.i + d21.i * z__2.r;
+			z_div(&z__2, &z__3, &d21);
+			z__1.r = t.r * z__2.r - t.i * z__2.i, z__1.i = t.r * 
+				z__2.i + t.i * z__2.r;
 			wk.r = z__1.r, wk.i = z__1.i;
 			i__2 = j + k * ((*n << 1) - k - 1) / 2;
-			z__3.r = d22.r * ap[i__2].r - d22.i * ap[i__2].i, 
-				z__3.i = d22.r * ap[i__2].i + d22.i * ap[i__2]
+			z__4.r = d22.r * ap[i__2].r - d22.i * ap[i__2].i, 
+				z__4.i = d22.r * ap[i__2].i + d22.i * ap[i__2]
 				.r;
 			i__3 = j + (k - 1) * ((*n << 1) - k) / 2;
-			z__2.r = z__3.r - ap[i__3].r, z__2.i = z__3.i - ap[
+			z__3.r = z__4.r - ap[i__3].r, z__3.i = z__4.i - ap[
 				i__3].i;
-			z__1.r = d21.r * z__2.r - d21.i * z__2.i, z__1.i = 
-				d21.r * z__2.i + d21.i * z__2.r;
+			z_div(&z__2, &z__3, &d21);
+			z__1.r = t.r * z__2.r - t.i * z__2.i, z__1.i = t.r * 
+				z__2.i + t.i * z__2.r;
 			wkp1.r = z__1.r, wkp1.i = z__1.i;
 			i__2 = *n;
 			for (i__ = j; i__ <= i__2; ++i__) {

@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CGELSD + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgelsd.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgelsd.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -216,6 +214,7 @@
 *  =====================================================================
       SUBROUTINE CGELSD( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
      $                   WORK, LWORK, RWORK, IWORK, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -255,7 +254,8 @@
 *     .. External Functions ..
       INTEGER            ILAENV
       REAL               CLANGE, SLAMCH, SROUNDUP_LWORK
-      EXTERNAL           CLANGE, SLAMCH, ILAENV, SROUNDUP_LWORK
+      EXTERNAL           CLANGE, SLAMCH, ILAENV,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          INT, LOG, MAX, MIN, REAL
@@ -305,9 +305,11 @@
 *                        columns.
 *
                MM = N
-               MAXWRK = MAX( MAXWRK, N*ILAENV( 1, 'CGEQRF', ' ', M, N,
+               MAXWRK = MAX( MAXWRK, N*ILAENV( 1, 'CGEQRF', ' ', M,
+     $                       N,
      $                       -1, -1 ) )
-               MAXWRK = MAX( MAXWRK, NRHS*ILAENV( 1, 'CUNMQR', 'LC', M,
+               MAXWRK = MAX( MAXWRK, NRHS*ILAENV( 1, 'CUNMQR', 'LC',
+     $                       M,
      $                       NRHS, N, -1 ) )
             END IF
             IF( M.GE.N ) THEN
@@ -339,7 +341,8 @@
      $                          'CGEBRD', ' ', M, M, -1, -1 ) )
                   MAXWRK = MAX( MAXWRK, M*M + 4*M + NRHS*ILAENV( 1,
      $                          'CUNMBR', 'QLC', M, NRHS, M, -1 ) )
-                  MAXWRK = MAX( MAXWRK, M*M + 4*M + ( M - 1 )*ILAENV( 1,
+                  MAXWRK = MAX( MAXWRK,
+     $                          M*M + 4*M + ( M - 1 )*ILAENV( 1,
      $                          'CUNMLQ', 'LC', N, NRHS, M, -1 ) )
                   IF( NRHS.GT.1 ) THEN
                      MAXWRK = MAX( MAXWRK, M*M + M + M*NRHS )
@@ -355,9 +358,11 @@
 *
 *                 Path 2 - underdetermined.
 *
-                  MAXWRK = 2*M + ( N + M )*ILAENV( 1, 'CGEBRD', ' ', M,
+                  MAXWRK = 2*M + ( N + M )*ILAENV( 1, 'CGEBRD', ' ',
+     $                             M,
      $                     N, -1, -1 )
-                  MAXWRK = MAX( MAXWRK, 2*M + NRHS*ILAENV( 1, 'CUNMBR',
+                  MAXWRK = MAX( MAXWRK, 2*M + NRHS*ILAENV( 1,
+     $                          'CUNMBR',
      $                          'QLC', M, NRHS, M, -1 ) )
                   MAXWRK = MAX( MAXWRK, 2*M + M*ILAENV( 1, 'CUNMBR',
      $                          'PLN', N, NRHS, M, -1 ) )
@@ -369,7 +374,7 @@
          MINWRK = MIN( MINWRK, MAXWRK )
          WORK( 1 ) = SROUNDUP_LWORK(MAXWRK)
          IWORK( 1 ) = LIWORK
-         RWORK( 1 ) = LRWORK
+         RWORK( 1 ) = REAL( LRWORK )
 *
          IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY ) THEN
             INFO = -12
@@ -431,20 +436,23 @@
 *
 *        Scale matrix norm up to SMLNUM.
 *
-         CALL CLASCL( 'G', 0, 0, BNRM, SMLNUM, M, NRHS, B, LDB, INFO )
+         CALL CLASCL( 'G', 0, 0, BNRM, SMLNUM, M, NRHS, B, LDB,
+     $                INFO )
          IBSCL = 1
       ELSE IF( BNRM.GT.BIGNUM ) THEN
 *
 *        Scale matrix norm down to BIGNUM.
 *
-         CALL CLASCL( 'G', 0, 0, BNRM, BIGNUM, M, NRHS, B, LDB, INFO )
+         CALL CLASCL( 'G', 0, 0, BNRM, BIGNUM, M, NRHS, B, LDB,
+     $                INFO )
          IBSCL = 2
       END IF
 *
 *     If M < N make sure B(M+1:N,:) = 0
 *
       IF( M.LT.N )
-     $   CALL CLASET( 'F', N-M, NRHS, CZERO, CZERO, B( M+1, 1 ), LDB )
+     $   CALL CLASET( 'F', N-M, NRHS, CZERO, CZERO, B( M+1, 1 ),
+     $                LDB )
 *
 *     Overdetermined case.
 *
@@ -472,7 +480,8 @@
 *           (RWorkspace: need N)
 *           (CWorkspace: need NRHS, prefer NRHS*NB)
 *
-            CALL CUNMQR( 'L', 'C', M, NRHS, N, A, LDA, WORK( ITAU ), B,
+            CALL CUNMQR( 'L', 'C', M, NRHS, N, A, LDA, WORK( ITAU ),
+     $                   B,
      $                   LDB, WORK( NWORK ), LWORK-NWORK+1, INFO )
 *
 *           Zero out below R.
@@ -500,7 +509,8 @@
 *        Multiply B by transpose of left bidiagonalizing vectors of R.
 *        (CWorkspace: need 2*N+NRHS, prefer 2*N+NRHS*NB)
 *
-         CALL CUNMBR( 'Q', 'L', 'C', MM, NRHS, N, A, LDA, WORK( ITAUQ ),
+         CALL CUNMBR( 'Q', 'L', 'C', MM, NRHS, N, A, LDA,
+     $                WORK( ITAUQ ),
      $                B, LDB, WORK( NWORK ), LWORK-NWORK+1, INFO )
 *
 *        Solve the bidiagonal least squares problem.
@@ -514,7 +524,8 @@
 *
 *        Multiply B by right bidiagonalizing vectors of R.
 *
-         CALL CUNMBR( 'P', 'L', 'N', N, NRHS, N, A, LDA, WORK( ITAUP ),
+         CALL CUNMBR( 'P', 'L', 'N', N, NRHS, N, A, LDA,
+     $                WORK( ITAUP ),
      $                B, LDB, WORK( NWORK ), LWORK-NWORK+1, INFO )
 *
       ELSE IF( N.GE.MNTHR .AND. LWORK.GE.4*M+M*M+
@@ -579,7 +590,8 @@
 *
 *        Zero out below first M rows of B.
 *
-         CALL CLASET( 'F', N-M, NRHS, CZERO, CZERO, B( M+1, 1 ), LDB )
+         CALL CLASET( 'F', N-M, NRHS, CZERO, CZERO, B( M+1, 1 ),
+     $                LDB )
          NWORK = ITAU + M
 *
 *        Multiply transpose(Q) by B.
@@ -609,7 +621,8 @@
 *        Multiply B by transpose of left bidiagonalizing vectors.
 *        (CWorkspace: need 2*M+NRHS, prefer 2*M+NRHS*NB)
 *
-         CALL CUNMBR( 'Q', 'L', 'C', M, NRHS, N, A, LDA, WORK( ITAUQ ),
+         CALL CUNMBR( 'Q', 'L', 'C', M, NRHS, N, A, LDA,
+     $                WORK( ITAUQ ),
      $                B, LDB, WORK( NWORK ), LWORK-NWORK+1, INFO )
 *
 *        Solve the bidiagonal least squares problem.
@@ -623,32 +636,49 @@
 *
 *        Multiply B by right bidiagonalizing vectors of A.
 *
-         CALL CUNMBR( 'P', 'L', 'N', N, NRHS, M, A, LDA, WORK( ITAUP ),
+         CALL CUNMBR( 'P', 'L', 'N', N, NRHS, M, A, LDA,
+     $                WORK( ITAUP ),
      $                B, LDB, WORK( NWORK ), LWORK-NWORK+1, INFO )
 *
       END IF
 *
-*     Undo scaling.
+*     Undo scaling.  The solution carries the factor of B divided by
+*     the factor of A.  When both were scaled to the same end of the
+*     range the constants cancel and BNRM/ANRM is applied in one step:
+*     applied in two, the first step could flush or overflow an entry
+*     that the second would have brought back into range.
 *
+      IF( IASCL.EQ.IBSCL .AND. IASCL.NE.0 ) THEN
+         CALL CLASCL( 'G', 0, 0, ANRM, BNRM, N, NRHS, B, LDB,
+     $                INFO )
+      ELSE
+         IF( IASCL.EQ.1 ) THEN
+            CALL CLASCL( 'G', 0, 0, ANRM, SMLNUM, N, NRHS, B, LDB,
+     $                   INFO )
+         ELSE IF( IASCL.EQ.2 ) THEN
+            CALL CLASCL( 'G', 0, 0, ANRM, BIGNUM, N, NRHS, B, LDB,
+     $                   INFO )
+         END IF
+         IF( IBSCL.EQ.1 ) THEN
+            CALL CLASCL( 'G', 0, 0, SMLNUM, BNRM, N, NRHS, B, LDB,
+     $                   INFO )
+         ELSE IF( IBSCL.EQ.2 ) THEN
+            CALL CLASCL( 'G', 0, 0, BIGNUM, BNRM, N, NRHS, B, LDB,
+     $                   INFO )
+         END IF
+      END IF
       IF( IASCL.EQ.1 ) THEN
-         CALL CLASCL( 'G', 0, 0, ANRM, SMLNUM, N, NRHS, B, LDB, INFO )
          CALL SLASCL( 'G', 0, 0, SMLNUM, ANRM, MINMN, 1, S, MINMN,
      $                INFO )
       ELSE IF( IASCL.EQ.2 ) THEN
-         CALL CLASCL( 'G', 0, 0, ANRM, BIGNUM, N, NRHS, B, LDB, INFO )
          CALL SLASCL( 'G', 0, 0, BIGNUM, ANRM, MINMN, 1, S, MINMN,
      $                INFO )
-      END IF
-      IF( IBSCL.EQ.1 ) THEN
-         CALL CLASCL( 'G', 0, 0, SMLNUM, BNRM, N, NRHS, B, LDB, INFO )
-      ELSE IF( IBSCL.EQ.2 ) THEN
-         CALL CLASCL( 'G', 0, 0, BIGNUM, BNRM, N, NRHS, B, LDB, INFO )
       END IF
 *
    10 CONTINUE
       WORK( 1 ) = SROUNDUP_LWORK(MAXWRK)
       IWORK( 1 ) = LIWORK
-      RWORK( 1 ) = LRWORK
+      RWORK( 1 ) = REAL( LRWORK )
       RETURN
 *
 *     End of CGELSD

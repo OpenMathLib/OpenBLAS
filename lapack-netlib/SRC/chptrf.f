@@ -389,13 +389,12 @@
                   D11 = REAL( AP( K+( K-1 )*K / 2 ) ) / D
                   TT = ONE / ( D11*D22-ONE )
                   D12 = AP( K-1+( K-1 )*K / 2 ) / D
-                  D = TT / D
 *
                   DO 50 J = K - 2, 1, -1
-                     WKM1 = D*( D11*AP( J+( K-2 )*( K-1 ) / 2 )-
-     $                      CONJG( D12 )*AP( J+( K-1 )*K / 2 ) )
-                     WK = D*( D22*AP( J+( K-1 )*K / 2 )-D12*
-     $                    AP( J+( K-2 )*( K-1 ) / 2 ) )
+                     WKM1 = TT*( ( D11*AP( J+( K-2 )*( K-1 ) / 2 )-
+     $                      CONJG( D12 )*AP( J+( K-1 )*K / 2 ) ) / D )
+                     WK = TT*( ( D22*AP( J+( K-1 )*K / 2 )-D12*
+     $                    AP( J+( K-2 )*( K-1 ) / 2 ) ) / D )
                      DO 40 I = J, 1, -1
                         AP( I+( J-1 )*J / 2 ) = AP( I+( J-1 )*J / 2 ) -
      $                     AP( I+( K-1 )*K / 2 )*CONJG( WK ) -
@@ -603,13 +602,13 @@
                   D22 = REAL( AP( K+( K-1 )*( 2*N-K ) / 2 ) ) / D
                   TT = ONE / ( D11*D22-ONE )
                   D21 = AP( K+1+( K-1 )*( 2*N-K ) / 2 ) / D
-                  D = TT / D
 *
                   DO 100 J = K + 2, N
-                     WK = D*( D11*AP( J+( K-1 )*( 2*N-K ) / 2 )-D21*
-     $                    AP( J+K*( 2*N-K-1 ) / 2 ) )
-                     WKP1 = D*( D22*AP( J+K*( 2*N-K-1 ) / 2 )-
-     $                      CONJG( D21 )*AP( J+( K-1 )*( 2*N-K ) / 2 ) )
+                     WK = TT*( ( D11*AP( J+( K-1 )*( 2*N-K ) / 2 )-D21*
+     $                    AP( J+K*( 2*N-K-1 ) / 2 ) ) / D )
+                     WKP1 = TT*( ( D22*AP( J+K*( 2*N-K-1 ) / 2 )-
+     $                      CONJG( D21 )*AP( J+( K-1 )*( 2*N-K ) / 2 )
+     $                      ) / D )
                      DO 90 I = J, N
                         AP( I+( J-1 )*( 2*N-J ) / 2 ) = AP( I+( J-1 )*
      $                     ( 2*N-J ) / 2 ) - AP( I+( K-1 )*( 2*N-K ) /
