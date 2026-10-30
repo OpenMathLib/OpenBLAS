@@ -56,8 +56,8 @@ CDOTKERNEL   = zdot_vector.c
 ZDOTKERNEL   = zdot_vector.c
 DSDOTKERNEL  = ../generic/dot.c
 
-SNRM2KERNEL  = nrm2_vector.c
-DNRM2KERNEL  = nrm2_vector.c
+SNRM2KERNEL  = nrm2_rvv.c
+DNRM2KERNEL  = nrm2_rvv.c
 CNRM2KERNEL  = znrm2_vector.c
 ZNRM2KERNEL  = znrm2_vector.c
 
