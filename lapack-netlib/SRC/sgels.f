@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download SGELS + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgels.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgels.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -37,7 +35,17 @@
 *>
 *> SGELS solves overdetermined or underdetermined real linear systems
 *> involving an M-by-N matrix A, or its transpose, using a QR or LQ
-*> factorization of A.  It is assumed that A has full rank.
+*> factorization of A.
+*>
+*> It is assumed that A has full rank, and only a rudimentary protection
+*> against rank-deficient matrices is provided. This subroutine only detects
+*> exact rank-deficiency, where a diagonal element of the triangular factor
+*> of A is exactly zero.
+*>
+*> It is conceivable for one (or more) of the diagonal elements of the triangular
+*> factor of A to be subnormally tiny numbers without this subroutine signalling
+*> an error. The solutions computed for such almost-rank-deficient matrices may
+*> be less accurate due to a loss of numerical precision.
 *>
 *> The following options are provided:
 *>
@@ -162,7 +170,7 @@
 *>          = 0:  successful exit
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value
 *>          > 0:  if INFO =  i, the i-th diagonal element of the
-*>                triangular factor of A is zero, so that A does not have
+*>                triangular factor of A is exactly zero, so that A does not have
 *>                full rank; the least squares solution could not be
 *>                computed.
 *> \endverbatim
@@ -178,8 +186,10 @@
 *> \ingroup gels
 *
 *  =====================================================================
-      SUBROUTINE SGELS( TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK,
+      SUBROUTINE SGELS( TRANS, M, N, NRHS, A, LDA, B, LDB, WORK,
+     $                  LWORK,
      $                  INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -211,10 +221,12 @@
       LOGICAL            LSAME
       INTEGER            ILAENV
       REAL               SLAMCH, SLANGE, SROUNDUP_LWORK
-      EXTERNAL           LSAME, ILAENV, SLAMCH, SLANGE, SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SLAMCH, SLANGE,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SGELQF, SGEQRF, SLASCL, SLASET, SORMLQ,
+      EXTERNAL           SGELQF, SGEQRF, SLASCL, SLASET,
+     $                   SORMLQ,
      $                   SORMQR, STRTRS, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -227,7 +239,8 @@
       INFO = 0
       MN = MIN( M, N )
       LQUERY = ( LWORK.EQ.-1 )
-      IF( .NOT.( LSAME( TRANS, 'N' ) .OR. LSAME( TRANS, 'T' ) ) ) THEN
+      IF( .NOT.( LSAME( TRANS, 'N' ) .OR.
+     $    LSAME( TRANS, 'T' ) ) ) THEN
          INFO = -1
       ELSE IF( M.LT.0 ) THEN
          INFO = -2
@@ -345,7 +358,8 @@
 *
 *        compute QR factorization of A
 *
-         CALL SGEQRF( M, N, A, LDA, WORK( 1 ), WORK( MN+1 ), LWORK-MN,
+         CALL SGEQRF( M, N, A, LDA, WORK( 1 ), WORK( MN+1 ),
+     $                LWORK-MN,
      $                INFO )
 *
 *        workspace at least N, optimally N*NB
@@ -364,7 +378,8 @@
 *
 *           B(1:N,1:NRHS) := inv(R) * B(1:N,1:NRHS)
 *
-            CALL STRTRS( 'Upper', 'No transpose', 'Non-unit', N, NRHS,
+            CALL STRTRS( 'Upper', 'No transpose', 'Non-unit', N,
+     $                   NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
             IF( INFO.GT.0 ) THEN
@@ -410,7 +425,8 @@
 *
 *        Compute LQ factorization of A
 *
-         CALL SGELQF( M, N, A, LDA, WORK( 1 ), WORK( MN+1 ), LWORK-MN,
+         CALL SGELQF( M, N, A, LDA, WORK( 1 ), WORK( MN+1 ),
+     $                LWORK-MN,
      $                INFO )
 *
 *        workspace at least M, optimally M*NB.
@@ -421,7 +437,8 @@
 *
 *           B(1:M,1:NRHS) := inv(L) * B(1:M,1:NRHS)
 *
-            CALL STRTRS( 'Lower', 'No transpose', 'Non-unit', M, NRHS,
+            CALL STRTRS( 'Lower', 'No transpose', 'Non-unit', M,
+     $                   NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
             IF( INFO.GT.0 ) THEN
@@ -473,21 +490,30 @@
 *
       END IF
 *
-*     Undo scaling
+*     Undo scaling.  The solution carries the factor of B divided by
+*     the factor of A.  When both were scaled to the same end of the
+*     range the constants cancel and BNRM/ANRM is applied in one step:
+*     applied in two, the first step could flush or overflow an entry
+*     that the second would have brought back into range.
 *
-      IF( IASCL.EQ.1 ) THEN
-         CALL SLASCL( 'G', 0, 0, ANRM, SMLNUM, SCLLEN, NRHS, B, LDB,
+      IF( IASCL.EQ.IBSCL .AND. IASCL.NE.0 ) THEN
+         CALL SLASCL( 'G', 0, 0, ANRM, BNRM, SCLLEN, NRHS, B, LDB,
      $                INFO )
-      ELSE IF( IASCL.EQ.2 ) THEN
-         CALL SLASCL( 'G', 0, 0, ANRM, BIGNUM, SCLLEN, NRHS, B, LDB,
-     $                INFO )
-      END IF
-      IF( IBSCL.EQ.1 ) THEN
-         CALL SLASCL( 'G', 0, 0, SMLNUM, BNRM, SCLLEN, NRHS, B, LDB,
-     $                INFO )
-      ELSE IF( IBSCL.EQ.2 ) THEN
-         CALL SLASCL( 'G', 0, 0, BIGNUM, BNRM, SCLLEN, NRHS, B, LDB,
-     $                INFO )
+      ELSE
+         IF( IASCL.EQ.1 ) THEN
+            CALL SLASCL( 'G', 0, 0, ANRM, SMLNUM, SCLLEN, NRHS, B, LDB,
+     $                   INFO )
+         ELSE IF( IASCL.EQ.2 ) THEN
+            CALL SLASCL( 'G', 0, 0, ANRM, BIGNUM, SCLLEN, NRHS, B, LDB,
+     $                   INFO )
+         END IF
+         IF( IBSCL.EQ.1 ) THEN
+            CALL SLASCL( 'G', 0, 0, SMLNUM, BNRM, SCLLEN, NRHS, B, LDB,
+     $                   INFO )
+         ELSE IF( IBSCL.EQ.2 ) THEN
+            CALL SLASCL( 'G', 0, 0, BIGNUM, BNRM, SCLLEN, NRHS, B, LDB,
+     $                   INFO )
+         END IF
       END IF
 *
    50 CONTINUE

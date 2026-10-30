@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__6 = 6;
@@ -244,7 +242,6 @@ static doublereal c_b79 = 1.;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DGELSS + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgelss.
 f"> */
@@ -255,7 +252,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgelss.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -402,9 +398,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup doubleGEsolve */
+/* > \ingroup gelss */
 
 /*  ===================================================================== */
 /* Subroutine */ void dgelss_(integer *m, integer *n, integer *nrhs, 
@@ -417,10 +411,10 @@ f"> */
     doublereal d__1;
 
     /* Local variables */
-    doublereal anrm, bnrm;
+    integer i__, bl, ie, il, mm;
+    doublereal dum[1], eps, thr, anrm, bnrm;
     integer itau, lwork_dgebrd__, lwork_dgelqf__, lwork_dgeqrf__, 
-	    lwork_dorgbr__, lwork_dormbr__, i__, lwork_dormlq__, 
-	    lwork_dormqr__;
+	    lwork_dorgbr__, lwork_dormbr__, lwork_dormlq__, lwork_dormqr__;
     extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
@@ -435,15 +429,11 @@ f"> */
     extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer maxmn, itaup, itauq, mnthr, iwork;
-    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
-    integer bl, ie, il;
     extern /* Subroutine */ void dgebrd_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *);
-    extern doublereal dlamch_(char *);
-    integer mm;
-    extern doublereal dlange_(char *, integer *, integer *, doublereal *, 
-	    integer *, doublereal *);
+    extern doublereal dlamch_(char *), dlange_(char *, integer *, 
+	    integer *, doublereal *, integer *, doublereal *);
     integer bdspac;
     extern /* Subroutine */ void dgelqf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *), 
@@ -453,9 +443,8 @@ f"> */
 	    doublereal *, doublereal *, integer *, integer *), dlacpy_(char *,
 	     integer *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *), dlaset_(char *, integer *, integer *, 
-	    doublereal *, doublereal *, doublereal *, integer *); 
-    extern void xerbla_(char *, integer *, ftnlen);
-    extern void dbdsqr_(char *, integer *, 
+	    doublereal *, doublereal *, doublereal *, integer *), 
+	    xerbla_(char *, integer *, ftnlen), dbdsqr_(char *, integer *, 
 	    integer *, integer *, integer *, doublereal *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *), dorgbr_(char *, 
@@ -476,13 +465,11 @@ f"> */
     integer minwrk, maxwrk;
     doublereal smlnum;
     logical lquery;
-    doublereal dum[1], eps, thr;
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -492,10 +479,10 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --s;
     --work;
@@ -696,7 +683,7 @@ f"> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DGELSS", &i__1, (ftnlen)6);
+	xerbla_("DGELSS", &i__1, (ftnlen)7);
 	return;
     } else if (lquery) {
 	return;
@@ -715,7 +702,6 @@ f"> */
     sfmin = dlamch_("S");
     smlnum = sfmin / eps;
     bignum = 1. / smlnum;
-    dlabad_(&smlnum, &bignum);
 
 /*     Scale A if f2cmax element outside range [SMLNUM,BIGNUM] */
 
@@ -887,7 +873,7 @@ f"> */
 		dlacpy_("G", n, &bl, &work[1], n, &b[i__ * b_dim1 + 1], ldb);
 /* L20: */
 	    }
-	} else {
+	} else if (*nrhs == 1) {
 	    dgemv_("T", n, n, &c_b79, &a[a_offset], lda, &b[b_offset], &c__1, 
 		    &c_b46, &work[1], &c__1);
 	    dcopy_(n, &work[1], &c__1, &b[b_offset], &c__1);
@@ -1015,7 +1001,7 @@ f"> */
 			    , ldb);
 /* L40: */
 		}
-	    } else {
+	    } else if (*nrhs == 1) {
 		dgemv_("T", m, m, &c_b79, &work[il], &ldwork, &b[b_dim1 + 1], 
 			&c__1, &c_b46, &work[iwork], &c__1);
 		dcopy_(m, &work[iwork], &c__1, &b[b_dim1 + 1], &c__1);
@@ -1122,7 +1108,7 @@ f"> */
 			    ldb);
 /* L60: */
 		}
-	    } else {
+	    } else if (*nrhs == 1) {
 		dgemv_("T", m, n, &c_b79, &a[a_offset], lda, &b[b_offset], &
 			c__1, &c_b46, &work[1], &c__1);
 		dcopy_(n, &work[1], &c__1, &b[b_offset], &c__1);
@@ -1130,25 +1116,37 @@ f"> */
 	}
     }
 
-/*     Undo scaling */
+/*     Undo scaling.  The solution carries the factor of B divided by */
+/*     the factor of A.  When both were scaled to the same end of the */
+/*     range the constants cancel and BNRM/ANRM is applied in one step: */
+/*     applied in two, the first step could flush or overflow an entry */
+/*     that the second would have brought back into range. */
 
+    if (iascl == ibscl && iascl != 0) {
+	dlascl_("G", &c__0, &c__0, &anrm, &bnrm, n, nrhs, &b[b_offset], ldb, 
+		info);
+    } else {
+	if (iascl == 1) {
+	    dlascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (iascl == 2) {
+	    dlascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+	if (ibscl == 1) {
+	    dlascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (ibscl == 2) {
+	    dlascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+    }
     if (iascl == 1) {
-	dlascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	dlascl_("G", &c__0, &c__0, &smlnum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
     } else if (iascl == 2) {
-	dlascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	dlascl_("G", &c__0, &c__0, &bignum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
-    }
-    if (ibscl == 1) {
-	dlascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
-    } else if (ibscl == 2) {
-	dlascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
     }
 
 L70:

@@ -192,6 +192,11 @@
 *     ..
 *     .. Executable Statements ..
 *
+*     Quick return if C is empty
+*
+      IF( M.LE.0 .OR. N.LE.0 )
+     $   RETURN
+*
       APPLYLEFT = LSAME( SIDE, 'L' )
       LASTV = 1
       LASTC = 0
@@ -222,6 +227,11 @@
 !     Scan for the last non-zero row in C(:,1:lastv).
             LASTC = ILAZLR(M, LASTV, C, LDC)
          END IF
+!     Set index for V. If INCV < 0, then I points to the end of V. 
+!     For INCV > 0, set I to point to V(2)
+         IF( INCV.GT.0 ) THEN
+            I = 1 + INCV
+         END IF
       END IF
       IF( LASTC.EQ.0 ) THEN
          RETURN
@@ -244,13 +254,13 @@
                ! w = C_1**H + C_2**Hv_2
                ! w = C_2**Hv_2
                CALL ZGEMV( 'Conjugate transpose', LASTV - 1,
-     $               LASTC, ONE, C( 1+1, 1 ), LDC, V( 1 + INCV ),
+     $               LASTC, ONE, C( 1+1, 1 ), LDC, V( I ),
      $               INCV, ZERO, WORK, 1 )
 *
 *              w(1:lastc,1) += v(1,1) * C(1,1:lastc)**H
 *
-               DO I = 1, LASTC
-                  WORK( I ) = WORK( I ) + DCONJG( C( 1, I ) )
+               DO J = 1, LASTC
+                  WORK( J ) = WORK( J ) + DCONJG( C( 1, J ) )
                END DO
 *
 *           C(1:lastv,1:lastc) := C(...) - tau * v(1:lastv,1) * w(1:lastc,1)**H
@@ -258,13 +268,13 @@
             ! C(1, 1:lastc)   := C(...) - tau * v(1,1) * w(1:lastc,1)**H
             !                  = C(...) - tau * Conj(w(1:lastc,1))
             ! This is essentially a zaxpyc
-               DO I = 1, LASTC
-                  C( 1, I ) = C( 1, I ) - TAU * DCONJG( WORK( I ) )
+               DO J = 1, LASTC
+                  C( 1, J ) = C( 1, J ) - TAU * DCONJG( WORK( J ) )
                END DO
 *
 *        C(2:lastv,1:lastc) += - tau * v(2:lastv,1) * w(1:lastc,1)**H
 *
-               CALL ZGERC( LASTV - 1, LASTC, -TAU, V( 1 + INCV ),
+               CALL ZGERC( LASTV - 1, LASTC, -TAU, V( I ),
      $               INCV, WORK, 1, C( 1+1, 1 ), LDC )
             END IF
       ELSE
@@ -281,7 +291,7 @@
 *
                ! w(1:lastc,1) := C(1:lastc,2:lastv) * v(2:lastv,1)
                CALL ZGEMV( 'No transpose', LASTC, LASTV-1, ONE, 
-     $            C(1,1+1), LDC, V(1+INCV), INCV, ZERO, WORK, 1 )
+     $            C(1,1+1), LDC, V(I), INCV, ZERO, WORK, 1 )
                ! w(1:lastc,1) += C(1:lastc,1) v(1,1) = C(1:lastc,1)
                CALL ZAXPY(LASTC, ONE, C, 1, WORK, 1)
 *
@@ -291,7 +301,7 @@
                !                   = C(...) - tau * w(1:lastc,1)
                CALL ZAXPY(LASTC, -TAU, WORK, 1, C, 1)
                ! C(1:lastc,2:lastv) := C(...) - tau * w(1:lastc,1) * v(2:lastv)**T
-               CALL ZGERC( LASTC, LASTV-1, -TAU, WORK, 1, V(1+INCV),
+               CALL ZGERC( LASTC, LASTV-1, -TAU, WORK, 1, V(I),
      $                     INCV, C(1,1+1), LDC )
             END IF
       END IF

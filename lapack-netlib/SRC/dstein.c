@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__2 = 2;
@@ -241,7 +239,6 @@ static integer c_n1 = -1;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DSTEIN + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dstein.
 f"> */
@@ -252,7 +249,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dstein.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -325,6 +321,8 @@ f"> */
 /* >          the first submatrix from the top, =2 if W(i) belongs to */
 /* >          the second submatrix, etc.  ( The output array IBLOCK */
 /* >          from DSTEBZ is expected here. ) */
+/* >          A negative entry, with which DSTEBZ flags an eigenvalue that */
+/* >          did not converge, is treated as its absolute value. */
 /* > \endverbatim */
 /* > */
 /* > \param[in] ISPLIT */
@@ -401,9 +399,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup doubleOTHERcomputational */
+/* > \ingroup stein */
 
 /*  ===================================================================== */
 /* Subroutine */ void dstein_(integer *n, doublereal *d__, doublereal *e, 
@@ -416,46 +412,41 @@ f"> */
     doublereal d__1, d__2, d__3, d__4, d__5;
 
     /* Local variables */
+    integer i__, j, b1, j1, bn;
+    doublereal xj, scl, eps, sep, nrm, tol;
+    integer its;
+    doublereal xjm, ztr, eps1;
     integer jblk, nblk;
     extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     integer jmax;
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
-    integer i__, j;
     extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     integer iseed[4], gpind, iinfo;
     extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
-	    doublereal *, integer *);
-    integer b1;
-    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
-	    integer *, doublereal *, integer *);
-    integer j1;
+	    doublereal *, integer *), daxpy_(integer *, doublereal *, 
+	    doublereal *, integer *, doublereal *, integer *);
     doublereal ortol;
-    integer indrv1, indrv2, indrv3, indrv4, indrv5, bn;
+    integer indrv1, indrv2, indrv3, indrv4, indrv5;
     extern doublereal dlamch_(char *);
     extern /* Subroutine */ void dlagtf_(integer *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, doublereal *, doublereal *, integer *
 	    , integer *);
-    doublereal xj;
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
-    extern void dlagts_(
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen), dlagts_(
 	    integer *, integer *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *);
     integer nrmchk;
     extern /* Subroutine */ void dlarnv_(integer *, integer *, integer *, 
 	    doublereal *);
     integer blksiz;
-    doublereal onenrm, dtpcrt, pertol, scl, eps, sep, nrm, tol;
-    integer its;
-    doublereal xjm, ztr, eps1;
+    doublereal dtpcrt, onenrm, pertol;
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -470,7 +461,7 @@ f"> */
     --iblock;
     --isplit;
     z_dim1 = *ldz;
-    z_offset = 1 + z_dim1 * 1;
+    z_offset = 1 + z_dim1;
     z__ -= z_offset;
     --work;
     --iwork;
@@ -493,11 +484,13 @@ f"> */
     } else {
 	i__1 = *m;
 	for (j = 2; j <= i__1; ++j) {
-	    if (iblock[j] < iblock[j - 1]) {
+	    if ((i__2 = iblock[j], abs(i__2)) < (i__3 = iblock[j - 1], abs(
+		    i__3))) {
 		*info = -6;
 		goto L30;
 	    }
-	    if (iblock[j] == iblock[j - 1] && w[j] < w[j - 1]) {
+	    if ((i__2 = iblock[j], abs(i__2)) == (i__3 = iblock[j - 1], abs(
+		    i__3)) && w[j] < w[j - 1]) {
 		*info = -5;
 		goto L30;
 	    }
@@ -544,8 +537,8 @@ L30:
 /*     Compute eigenvectors of matrix blocks. */
 
     j1 = 1;
-    i__1 = iblock[*m];
-    for (nblk = 1; nblk <= i__1; ++nblk) {
+    i__2 = (i__1 = iblock[*m], abs(i__1));
+    for (nblk = 1; nblk <= i__2; ++nblk) {
 
 /*        Find starting and ending indices of block nblk. */
 
@@ -568,8 +561,8 @@ L30:
 	d__3 = onenrm, d__4 = (d__1 = d__[bn], abs(d__1)) + (d__2 = e[bn - 1],
 		 abs(d__2));
 	onenrm = f2cmax(d__3,d__4);
-	i__2 = bn - 1;
-	for (i__ = b1 + 1; i__ <= i__2; ++i__) {
+	i__1 = bn - 1;
+	for (i__ = b1 + 1; i__ <= i__1; ++i__) {
 /* Computing MAX */
 	    d__4 = onenrm, d__5 = (d__1 = d__[i__], abs(d__1)) + (d__2 = e[
 		    i__ - 1], abs(d__2)) + (d__3 = e[i__], abs(d__3));
@@ -584,9 +577,9 @@ L30:
 
 L60:
 	jblk = 0;
-	i__2 = *m;
-	for (j = j1; j <= i__2; ++j) {
-	    if (iblock[j] != nblk) {
+	i__1 = *m;
+	for (j = j1; j <= i__1; ++j) {
+	    if ((i__3 = iblock[j], abs(i__3)) != nblk) {
 		j1 = j;
 		goto L160;
 	    }

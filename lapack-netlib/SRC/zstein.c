@@ -39,14 +39,6 @@ typedef float real;
 typedef double doublereal;
 typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
-#ifdef _MSC_VER
-static inline _Dcomplex Cd(doublecomplex *z) {_Dcomplex zz={z->r , z->i};return zz;}
-static inline _Dcomplex * _pCd(doublecomplex *z) {return (_Dcomplex*)z;}
-#else
-static inline _Complex double Cd(doublecomplex *z) {return z->r + z->i*_Complex_I;}
-static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*)z;}
-#endif
-#define pCd(z) (*_pCd(z))
 typedef blasint logical;
 
 typedef char logical1;
@@ -246,18 +238,16 @@ typedef struct Namelist Namelist;
 #define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
 #define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
 #define myexit_() break;
-#define mycycle_() continue;
-#define myceiling_(w) {ceil(w)}
-#define myhuge_(w) {HUGE_VAL}
+#define mycycle() continue;
+#define myceiling(w) {ceil(w)}
+#define myhuge(w) {HUGE_VAL}
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
-#define mymaxloc_(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
+#define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
 
 /*  -- translated by f2c (version 20000121).
    You must link the resulting object file with the libraries:
 	-lf2c -lm   (in that order)
 */
-
-
 
 
 /* Table of constant values */
@@ -273,7 +263,6 @@ static integer c_n1 = -1;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download ZSTEIN + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zstein.
 f"> */
@@ -284,7 +273,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zstein.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -364,6 +352,8 @@ f"> */
 /* >          the first submatrix from the top, =2 if W(i) belongs to */
 /* >          the second submatrix, etc.  ( The output array IBLOCK */
 /* >          from DSTEBZ is expected here. ) */
+/* >          A negative entry, with which DSTEBZ flags an eigenvalue that */
+/* >          did not converge, is treated as its absolute value. */
 /* > \endverbatim */
 /* > */
 /* > \param[in] ISPLIT */
@@ -441,9 +431,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup complex16OTHERcomputational */
+/* > \ingroup stein */
 
 /*  ===================================================================== */
 /* Subroutine */ void zstein_(integer *n, doublereal *d__, doublereal *e, 
@@ -457,41 +445,37 @@ f"> */
     doublecomplex z__1;
 
     /* Local variables */
+    integer i__, j, b1, j1, bn, jr;
+    doublereal xj, scl, eps, sep, nrm, tol;
+    integer its;
+    doublereal xjm, ztr, eps1;
     integer jblk, nblk, jmax;
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
-    integer i__, j;
     extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     integer iseed[4], gpind, iinfo;
     extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
-    integer b1, j1;
     doublereal ortol;
-    integer indrv1, indrv2, indrv3, indrv4, indrv5, bn;
+    integer indrv1, indrv2, indrv3, indrv4, indrv5;
     extern doublereal dlamch_(char *);
-    integer jr;
     extern /* Subroutine */ void dlagtf_(integer *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, doublereal *, doublereal *, integer *
 	    , integer *);
-    doublereal xj;
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
-    extern void dlagts_(
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen), dlagts_(
 	    integer *, integer *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *);
     integer nrmchk;
     extern /* Subroutine */ void dlarnv_(integer *, integer *, integer *, 
 	    doublereal *);
     integer blksiz;
-    doublereal onenrm, dtpcrt, pertol, scl, eps, sep, nrm, tol;
-    integer its;
-    doublereal xjm, ztr, eps1;
+    doublereal dtpcrt, onenrm, pertol;
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /* ===================================================================== */
@@ -506,7 +490,7 @@ f"> */
     --iblock;
     --isplit;
     z_dim1 = *ldz;
-    z_offset = 1 + z_dim1 * 1;
+    z_offset = 1 + z_dim1;
     z__ -= z_offset;
     --work;
     --iwork;
@@ -529,11 +513,13 @@ f"> */
     } else {
 	i__1 = *m;
 	for (j = 2; j <= i__1; ++j) {
-	    if (iblock[j] < iblock[j - 1]) {
+	    if ((i__2 = iblock[j], abs(i__2)) < (i__3 = iblock[j - 1], abs(
+		    i__3))) {
 		*info = -6;
 		goto L30;
 	    }
-	    if (iblock[j] == iblock[j - 1] && w[j] < w[j - 1]) {
+	    if ((i__2 = iblock[j], abs(i__2)) == (i__3 = iblock[j - 1], abs(
+		    i__3)) && w[j] < w[j - 1]) {
 		*info = -5;
 		goto L30;
 	    }
@@ -581,8 +567,8 @@ L30:
 /*     Compute eigenvectors of matrix blocks. */
 
     j1 = 1;
-    i__1 = iblock[*m];
-    for (nblk = 1; nblk <= i__1; ++nblk) {
+    i__2 = (i__1 = iblock[*m], abs(i__1));
+    for (nblk = 1; nblk <= i__2; ++nblk) {
 
 /*        Find starting and ending indices of block nblk. */
 
@@ -605,8 +591,8 @@ L30:
 	d__3 = onenrm, d__4 = (d__1 = d__[bn], abs(d__1)) + (d__2 = e[bn - 1],
 		 abs(d__2));
 	onenrm = f2cmax(d__3,d__4);
-	i__2 = bn - 1;
-	for (i__ = b1 + 1; i__ <= i__2; ++i__) {
+	i__1 = bn - 1;
+	for (i__ = b1 + 1; i__ <= i__1; ++i__) {
 /* Computing MAX */
 	    d__4 = onenrm, d__5 = (d__1 = d__[i__], abs(d__1)) + (d__2 = e[
 		    i__ - 1], abs(d__2)) + (d__3 = e[i__], abs(d__3));
@@ -621,9 +607,9 @@ L30:
 
 L60:
 	jblk = 0;
-	i__2 = *m;
-	for (j = j1; j <= i__2; ++j) {
-	    if (iblock[j] != nblk) {
+	i__1 = *m;
+	for (j = j1; j <= i__1; ++j) {
+	    if ((i__3 = iblock[j], abs(i__3)) != nblk) {
 		j1 = j;
 		goto L180;
 	    }

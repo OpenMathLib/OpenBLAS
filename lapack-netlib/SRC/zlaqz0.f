@@ -1,280 +1,3 @@
-*> \brief \b ZLAQZ0
-*
-*  =========== DOCUMENTATION ===========
-*
-* Online html documentation available at
-*            http://www.netlib.org/lapack/explore-html/
-*
-*> Download ZLAQZ0 + dependencies
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlaqz0.f">
-*> [TGZ]</a>
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zlaqz0.f">
-*> [ZIP]</a>
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlaqz0.f">
-*> [TXT]</a>
-*
-*  Definition:
-*  ===========
-*
-*      SUBROUTINE ZLAQZ0( WANTS, WANTQ, WANTZ, N, ILO, IHI, A, LDA, B,
-*     $    LDB, ALPHA, BETA, Q, LDQ, Z, LDZ, WORK, LWORK, RWORK, REC,
-*     $    INFO )
-*      IMPLICIT NONE
-*
-*      Arguments
-*      CHARACTER, INTENT( IN ) :: WANTS, WANTQ, WANTZ
-*      INTEGER, INTENT( IN ) :: N, ILO, IHI, LDA, LDB, LDQ, LDZ, LWORK,
-*     $    REC
-*      INTEGER, INTENT( OUT ) :: INFO
-*      COMPLEX*16, INTENT( INOUT ) :: A( LDA, * ), B( LDB, * ), Q( LDQ,
-*     $    * ), Z( LDZ, * ), ALPHA( * ), BETA( * ), WORK( * )
-*      DOUBLE PRECISION, INTENT( OUT ) :: RWORK( * )
-*       ..
-*
-*
-*> \par Purpose:
-*  =============
-*>
-*> \verbatim
-*>
-*> ZLAQZ0 computes the eigenvalues of a real matrix pair (H,T),
-*> where H is an upper Hessenberg matrix and T is upper triangular,
-*> using the double-shift QZ method.
-*> Matrix pairs of this type are produced by the reduction to
-*> generalized upper Hessenberg form of a real matrix pair (A,B):
-*>
-*>    A = Q1*H*Z1**H,  B = Q1*T*Z1**H,
-*>
-*> as computed by ZGGHRD.
-*>
-*> If JOB='S', then the Hessenberg-triangular pair (H,T) is
-*> also reduced to generalized Schur form,
-*>
-*>    H = Q*S*Z**H,  T = Q*P*Z**H,
-*>
-*> where Q and Z are unitary matrices, P and S are an upper triangular
-*> matrices.
-*>
-*> Optionally, the unitary matrix Q from the generalized Schur
-*> factorization may be postmultiplied into an input matrix Q1, and the
-*> unitary matrix Z may be postmultiplied into an input matrix Z1.
-*> If Q1 and Z1 are the unitary matrices from ZGGHRD that reduced
-*> the matrix pair (A,B) to generalized upper Hessenberg form, then the
-*> output matrices Q1*Q and Z1*Z are the unitary factors from the
-*> generalized Schur factorization of (A,B):
-*>
-*>    A = (Q1*Q)*S*(Z1*Z)**H,  B = (Q1*Q)*P*(Z1*Z)**H.
-*>
-*> To avoid overflow, eigenvalues of the matrix pair (H,T) (equivalently,
-*> of (A,B)) are computed as a pair of values (alpha,beta), where alpha is
-*> complex and beta real.
-*> If beta is nonzero, lambda = alpha / beta is an eigenvalue of the
-*> generalized nonsymmetric eigenvalue problem (GNEP)
-*>    A*x = lambda*B*x
-*> and if alpha is nonzero, mu = beta / alpha is an eigenvalue of the
-*> alternate form of the GNEP
-*>    mu*A*y = B*y.
-*> Eigenvalues can be read directly from the generalized Schur
-*> form:
-*>   alpha = S(i,i), beta = P(i,i).
-*>
-*> Ref: C.B. Moler & G.W. Stewart, "An Algorithm for Generalized Matrix
-*>      Eigenvalue Problems", SIAM J. Numer. Anal., 10(1973),
-*>      pp. 241--256.
-*>
-*> Ref: B. Kagstrom, D. Kressner, "Multishift Variants of the QZ
-*>      Algorithm with Aggressive Early Deflation", SIAM J. Numer.
-*>      Anal., 29(2006), pp. 199--227.
-*>
-*> Ref: T. Steel, D. Camps, K. Meerbergen, R. Vandebril "A multishift,
-*>      multipole rational QZ method with aggressive early deflation"
-*> \endverbatim
-*
-*  Arguments:
-*  ==========
-*
-*> \param[in] WANTS
-*> \verbatim
-*>          WANTS is CHARACTER*1
-*>          = 'E': Compute eigenvalues only;
-*>          = 'S': Compute eigenvalues and the Schur form.
-*> \endverbatim
-*>
-*> \param[in] WANTQ
-*> \verbatim
-*>          WANTQ is CHARACTER*1
-*>          = 'N': Left Schur vectors (Q) are not computed;
-*>          = 'I': Q is initialized to the unit matrix and the matrix Q
-*>                 of left Schur vectors of (A,B) is returned;
-*>          = 'V': Q must contain an unitary matrix Q1 on entry and
-*>                 the product Q1*Q is returned.
-*> \endverbatim
-*>
-*> \param[in] WANTZ
-*> \verbatim
-*>          WANTZ is CHARACTER*1
-*>          = 'N': Right Schur vectors (Z) are not computed;
-*>          = 'I': Z is initialized to the unit matrix and the matrix Z
-*>                 of right Schur vectors of (A,B) is returned;
-*>          = 'V': Z must contain an unitary matrix Z1 on entry and
-*>                 the product Z1*Z is returned.
-*> \endverbatim
-*>
-*> \param[in] N
-*> \verbatim
-*>          N is INTEGER
-*>          The order of the matrices A, B, Q, and Z.  N >= 0.
-*> \endverbatim
-*>
-*> \param[in] ILO
-*> \verbatim
-*>          ILO is INTEGER
-*> \endverbatim
-*>
-*> \param[in] IHI
-*> \verbatim
-*>          IHI is INTEGER
-*>          ILO and IHI mark the rows and columns of A which are in
-*>          Hessenberg form.  It is assumed that A is already upper
-*>          triangular in rows and columns 1:ILO-1 and IHI+1:N.
-*>          If N > 0, 1 <= ILO <= IHI <= N; if N = 0, ILO=1 and IHI=0.
-*> \endverbatim
-*>
-*> \param[in,out] A
-*> \verbatim
-*>          A is COMPLEX*16 array, dimension (LDA, N)
-*>          On entry, the N-by-N upper Hessenberg matrix A.
-*>          On exit, if JOB = 'S', A contains the upper triangular
-*>          matrix S from the generalized Schur factorization.
-*>          If JOB = 'E', the diagonal blocks of A match those of S, but
-*>          the rest of A is unspecified.
-*> \endverbatim
-*>
-*> \param[in] LDA
-*> \verbatim
-*>          LDA is INTEGER
-*>          The leading dimension of the array A.  LDA >= max( 1, N ).
-*> \endverbatim
-*>
-*> \param[in,out] B
-*> \verbatim
-*>          B is COMPLEX*16 array, dimension (LDB, N)
-*>          On entry, the N-by-N upper triangular matrix B.
-*>          On exit, if JOB = 'S', B contains the upper triangular
-*>          matrix P from the generalized Schur factorization;
-*>          If JOB = 'E', the diagonal blocks of B match those of P, but
-*>          the rest of B is unspecified.
-*> \endverbatim
-*>
-*> \param[in] LDB
-*> \verbatim
-*>          LDB is INTEGER
-*>          The leading dimension of the array B.  LDB >= max( 1, N ).
-*> \endverbatim
-*>
-*> \param[out] ALPHA
-*> \verbatim
-*>          ALPHA is COMPLEX*16 array, dimension (N)
-*>          Each scalar alpha defining an eigenvalue
-*>          of GNEP.
-*> \endverbatim
-*>
-*> \param[out] BETA
-*> \verbatim
-*>          BETA is COMPLEX*16 array, dimension (N)
-*>          The scalars beta that define the eigenvalues of GNEP.
-*>          Together, the quantities alpha = ALPHA(j) and
-*>          beta = BETA(j) represent the j-th eigenvalue of the matrix
-*>          pair (A,B), in one of the forms lambda = alpha/beta or
-*>          mu = beta/alpha.  Since either lambda or mu may overflow,
-*>          they should not, in general, be computed.
-*> \endverbatim
-*>
-*> \param[in,out] Q
-*> \verbatim
-*>          Q is COMPLEX*16 array, dimension (LDQ, N)
-*>          On entry, if COMPQ = 'V', the unitary matrix Q1 used in
-*>          the reduction of (A,B) to generalized Hessenberg form.
-*>          On exit, if COMPQ = 'I', the unitary matrix of left Schur
-*>          vectors of (A,B), and if COMPQ = 'V', the unitary matrix
-*>          of left Schur vectors of (A,B).
-*>          Not referenced if COMPQ = 'N'.
-*> \endverbatim
-*>
-*> \param[in] LDQ
-*> \verbatim
-*>          LDQ is INTEGER
-*>          The leading dimension of the array Q.  LDQ >= 1.
-*>          If COMPQ='V' or 'I', then LDQ >= N.
-*> \endverbatim
-*>
-*> \param[in,out] Z
-*> \verbatim
-*>          Z is COMPLEX*16 array, dimension (LDZ, N)
-*>          On entry, if COMPZ = 'V', the unitary matrix Z1 used in
-*>          the reduction of (A,B) to generalized Hessenberg form.
-*>          On exit, if COMPZ = 'I', the unitary matrix of
-*>          right Schur vectors of (H,T), and if COMPZ = 'V', the
-*>          unitary matrix of right Schur vectors of (A,B).
-*>          Not referenced if COMPZ = 'N'.
-*> \endverbatim
-*>
-*> \param[in] LDZ
-*> \verbatim
-*>          LDZ is INTEGER
-*>          The leading dimension of the array Z.  LDZ >= 1.
-*>          If COMPZ='V' or 'I', then LDZ >= N.
-*> \endverbatim
-*>
-*> \param[out] WORK
-*> \verbatim
-*>          WORK is COMPLEX*16 array, dimension (MAX(1,LWORK))
-*>          On exit, if INFO >= 0, WORK(1) returns the optimal LWORK.
-*> \endverbatim
-*>
-*> \param[out] RWORK
-*> \verbatim
-*>          RWORK is DOUBLE PRECISION array, dimension (N)
-*> \endverbatim
-*>
-*> \param[in] LWORK
-*> \verbatim
-*>          LWORK is INTEGER
-*>          The dimension of the array WORK.  LWORK >= max(1,N).
-*>
-*>          If LWORK = -1, then a workspace query is assumed; the routine
-*>          only calculates the optimal size of the WORK array, returns
-*>          this value as the first entry of the WORK array, and no error
-*>          message related to LWORK is issued by XERBLA.
-*> \endverbatim
-*>
-*> \param[in] REC
-*> \verbatim
-*>          REC is INTEGER
-*>             REC indicates the current recursion level. Should be set
-*>             to 0 on first call.
-*> \endverbatim
-*>
-*> \param[out] INFO
-*> \verbatim
-*>          INFO is INTEGER
-*>          = 0: successful exit
-*>          < 0: if INFO = -i, the i-th argument had an illegal value
-*>          = 1,...,N: the QZ iteration did not converge.  (A,B) is not
-*>                     in Schur form, but ALPHA(i) and
-*>                     BETA(i), i=INFO+1,...,N should be correct.
-*> \endverbatim
-*
-*  Authors:
-*  ========
-*
-*> \author Thijs Steel, KU Leuven
-*
-*> \date May 2020
-*
-*> \ingroup laqz0
-*>
-*  =====================================================================
       RECURSIVE SUBROUTINE ZLAQZ0( WANTS, WANTQ, WANTZ, N, ILO, IHI,
      $                             A,
      $                             LDA, B, LDB, ALPHA, BETA, Q, LDQ, Z,
@@ -283,39 +6,42 @@
       IMPLICIT NONE
 
 *     Arguments
-      CHARACTER, INTENT( IN ) :: WANTS, WANTQ, WANTZ
-      INTEGER, INTENT( IN ) :: N, ILO, IHI, LDA, LDB, LDQ, LDZ, LWORK,
+      CHARACTER WANTS, WANTQ, WANTZ
+      INTEGER N, ILO, IHI, LDA, LDB, LDQ, LDZ, LWORK,
      $         REC
-      INTEGER, INTENT( OUT ) :: INFO
-      COMPLEX*16, INTENT( INOUT ) :: A( LDA, * ), B( LDB, * ), Q( LDQ,
+      INTEGER INFO
+      COMPLEX*16 A( LDA, * ), B( LDB, * ), Q( LDQ,
      $   * ), Z( LDZ, * ), ALPHA( * ), BETA( * ), WORK( * )
-      DOUBLE PRECISION, INTENT( OUT ) :: RWORK( * )
+      DOUBLE PRECISION RWORK( * )
 
 *     Parameters
       COMPLEX*16         CZERO, CONE
       PARAMETER          ( CZERO = ( 0.0D+0, 0.0D+0 ), CONE = ( 1.0D+0,
      $                     0.0D+0 ) )
-      DOUBLE PRECISION :: ZERO, ONE, HALF
+      DOUBLE PRECISION  ZERO, ONE, HALF
       PARAMETER( ZERO = 0.0D0, ONE = 1.0D0, HALF = 0.5D0 )
 
 *     Local scalars
-      DOUBLE PRECISION :: SMLNUM, ULP, SAFMIN, SAFMAX, C1, TEMPR,
+      DOUBLE PRECISION  SMLNUM, ULP, SAFMIN, SAFMAX, C1, TEMPR,
      $                    BNORM, BTOL
-      COMPLEX*16 :: ESHIFT, S1, TEMP
-      INTEGER :: ISTART, ISTOP, IITER, MAXIT, ISTART2, K, LD, NSHIFTS,
+      COMPLEX*16  ESHIFT, S1, TEMP
+      INTEGER  ISTART, ISTOP, IITER, MAXIT, ISTART2, K, LD, NSHIFTS,
      $           NBLOCK, NW, NMIN, NIBBLE, N_UNDEFLATED, N_DEFLATED,
      $           NS, SWEEP_INFO, SHIFTPOS, LWORKREQ, K2, ISTARTM,
      $           ISTOPM, IWANTS, IWANTQ, IWANTZ, NORM_INFO, AED_INFO,
      $           NWR, NBR, NSR, ITEMP1, ITEMP2, RCOST
-      LOGICAL :: ILSCHUR, ILQ, ILZ
-      CHARACTER :: JBCMPZ*3
+      LOGICAL  ILSCHUR, ILQ, ILZ
+      CHARACTER  JBCMPZ*3
 
 *     External Functions
-      EXTERNAL :: XERBLA, ZHGEQZ, ZLAQZ2, ZLAQZ3, ZLASET,
+      EXTERNAL  XERBLA, ZHGEQZ, ZLAQZ2, ZLAQZ3, ZLASET,
      $            ZLARTG, ZROT
-      DOUBLE PRECISION, EXTERNAL :: DLAMCH, ZLANHS
-      LOGICAL, EXTERNAL :: LSAME
-      INTEGER, EXTERNAL :: ILAENV
+      DOUBLE PRECISION DLAMCH, ZLANHS
+      EXTERNAL  DLAMCH, ZLANHS
+      LOGICAL LSAME
+      EXTERNAL  LSAME
+      INTEGER ILAENV
+      EXTERNAL  ILAENV
 
 *
 *     Decode wantS,wantQ,wantZ
@@ -535,6 +261,7 @@
          DO WHILE ( K.GE.ISTART2 )
 
             IF( ABS( B( K, K ) ) .LT. BTOL ) THEN
+               B( K, K ) = CZERO
 *              A diagonal element of B is negligible, move it
 *              to the top and deflate it
                
@@ -570,7 +297,7 @@
      $                          K2 ), LDB, C1, S1 )
                      IF( ILQ ) THEN
                         CALL ZROT( N, Q( 1, K2 ), 1, Q( 1, K2+1 ), 1,
-     $                             C1, DCONJG( S1 ) )
+     $                             C1, CONJG( S1 ) )
                      END IF
                   END IF
 
@@ -590,7 +317,7 @@
      $                       ISTART2+1 ), LDB, C1, S1 )
                   IF( ILQ ) THEN
                      CALL ZROT( N, Q( 1, ISTART2 ), 1, Q( 1,
-     $                          ISTART2+1 ), 1, C1, DCONJG( S1 ) )
+     $                          ISTART2+1 ), 1, C1, CONJG( S1 ) )
                   END IF
                END IF
 

@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static complex c_b1 = {0.f,0.f};
@@ -246,7 +244,6 @@ static real c_b80 = 0.f;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download CGELSD + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cgelsd.
 f"> */
@@ -257,7 +254,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cgelsd.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -300,12 +296,6 @@ f"> */
 /* > singular values which are less than RCOND times the largest singular */
 /* > value. */
 /* > */
-/* > The divide and conquer algorithm makes very mild assumptions about */
-/* > floating point arithmetic. It will work on machines with a guard */
-/* > digit in add/subtract, or on those binary machines without guard */
-/* > digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or */
-/* > Cray-2. It could conceivably fail on hexadecimal or decimal machines */
-/* > without guard digits, but we know of none. */
 /* > \endverbatim */
 
 /*  Arguments: */
@@ -450,9 +440,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup complexGEsolve */
+/* > \ingroup gelsd */
 
 /* > \par Contributors: */
 /*  ================== */
@@ -469,18 +457,19 @@ f"> */
 {
     /* System generated locals */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1, i__2, i__3, i__4;
+    real r__1;
 
     /* Local variables */
-    real anrm, bnrm;
+    integer ie, il, mm;
+    real eps, anrm, bnrm;
     integer itau, nlvl, iascl, ibscl;
     real sfmin;
-    integer minmn, maxmn, itaup, itauq, mnthr, nwork, ie, il;
+    integer minmn, maxmn, itaup, itauq, mnthr, nwork;
     extern /* Subroutine */ void cgebrd_(integer *, integer *, complex *, 
 	    integer *, real *, real *, complex *, complex *, complex *, 
-	    integer *, integer *), slabad_(real *, real *);
+	    integer *, integer *);
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
-    integer mm;
     extern /* Subroutine */ void cgelqf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *), clalsd_(
 	    char *, integer *, integer *, integer *, real *, real *, complex *
@@ -491,8 +480,7 @@ f"> */
     extern real slamch_(char *);
     extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *), claset_(char *, 
-	    integer *, integer *, complex *, complex *, complex *, integer *);
-    extern void xerbla_(char *, integer *, ftnlen);
+	    integer *, integer *, complex *, complex *, complex *, integer *), xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
@@ -512,13 +500,12 @@ f"> */
     integer lrwork;
     logical lquery;
     integer nrwork, smlsiz;
-    real eps;
+    extern real sroundup_lwork__(integer *);
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -528,10 +515,10 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --s;
     --work;
@@ -701,7 +688,8 @@ f"> */
 	    }
 	}
 	minwrk = f2cmin(minwrk,maxwrk);
-	work[1].r = (real) maxwrk, work[1].i = 0.f;
+	r__1 = sroundup_lwork__(&maxwrk);
+	work[1].r = r__1, work[1].i = 0.f;
 	iwork[1] = liwork;
 	rwork[1] = (real) lrwork;
 
@@ -731,7 +719,6 @@ f"> */
     sfmin = slamch_("S");
     smlnum = sfmin / eps;
     bignum = 1.f / smlnum;
-    slabad_(&smlnum, &bignum);
 
 /*     Scale A if f2cmax entry outside range [SMLNUM,BIGNUM]. */
 
@@ -993,29 +980,42 @@ f"> */
 	}
     }
 
-/*     Undo scaling. */
+/*     Undo scaling.  The solution carries the factor of B divided by */
+/*     the factor of A.  When both were scaled to the same end of the */
+/*     range the constants cancel and BNRM/ANRM is applied in one step: */
+/*     applied in two, the first step could flush or overflow an entry */
+/*     that the second would have brought back into range. */
 
+    if (iascl == ibscl && iascl != 0) {
+	clascl_("G", &c__0, &c__0, &anrm, &bnrm, n, nrhs, &b[b_offset], ldb, 
+		info);
+    } else {
+	if (iascl == 1) {
+	    clascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (iascl == 2) {
+	    clascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+	if (ibscl == 1) {
+	    clascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (ibscl == 2) {
+	    clascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+    }
     if (iascl == 1) {
-	clascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	slascl_("G", &c__0, &c__0, &smlnum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
     } else if (iascl == 2) {
-	clascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	slascl_("G", &c__0, &c__0, &bignum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
     }
-    if (ibscl == 1) {
-	clascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
-    } else if (ibscl == 2) {
-	clascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
-    }
 
 L10:
-    work[1].r = (real) maxwrk, work[1].i = 0.f;
+    r__1 = sroundup_lwork__(&maxwrk);
+    work[1].r = r__1, work[1].i = 0.f;
     iwork[1] = liwork;
     rwork[1] = (real) lrwork;
     return;

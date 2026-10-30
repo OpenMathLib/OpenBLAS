@@ -142,7 +142,7 @@ jobs:
       $env:CPATH = "C:\Miniconda\Library\include;$env:CPATH"
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
-      conda install --yes --quiet ninja flang flang-rt_win-64
+      conda install --yes --quiet ninja flang=22.1.8 flang-rt_win-64=22.1.8
       $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
       & "$vs\Common7\Tools\Launch-VsDevShell.ps1" -Arch amd64 -HostArch amd64 -SkipAutomaticLocation
       mkdir build
@@ -164,7 +164,7 @@ jobs:
       $env:CPATH = "C:\Miniconda\Library\include;$env:CPATH"
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
-      conda install --yes --quiet ninja flang flang-rt_win-64
+      conda install --yes --quiet ninja flang=22.1.8 flang-rt_win-64=22.1.8
       $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
       & "$vs\Common7\Tools\Launch-VsDevShell.ps1" -Arch amd64 -HostArch amd64 -SkipAutomaticLocation
       mkdir build

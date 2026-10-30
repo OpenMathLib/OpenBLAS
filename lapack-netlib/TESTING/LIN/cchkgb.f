@@ -188,6 +188,7 @@
       SUBROUTINE CCHKGB( DOTYPE, NM, MVAL, NN, NVAL, NNB, NBVAL, NNS,
      $                   NSVAL, THRESH, TSTERR, A, LA, AFAC, LAFAC, B,
      $                   X, XACT, WORK, RWORK, IWORK, NOUT )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -213,7 +214,7 @@
       REAL               ONE, ZERO
       PARAMETER          ( ONE = 1.0E+0, ZERO = 0.0E+0 )
       INTEGER            NTYPES, NTESTS
-      PARAMETER          ( NTYPES = 8, NTESTS = 7 )
+      PARAMETER          ( NTYPES = 9, NTESTS = 7 )
       INTEGER            NBW, NTRAN
       PARAMETER          ( NBW = 4, NTRAN = 3 )
 *     ..
@@ -227,6 +228,7 @@
      $                   NIMAT, NKL, NKU, NRHS, NRUN
       REAL               AINVNM, ANORM, ANORMI, ANORMO, CNDNUM, RCOND,
      $                   RCONDC, RCONDI, RCONDO
+      REAL               ANRMF, SUBNRM
 *     ..
 *     .. Local Arrays ..
       CHARACTER          TRANSS( NTRAN )
@@ -235,14 +237,17 @@
       REAL               RESULT( NTESTS )
 *     ..
 *     .. External Functions ..
+      LOGICAL            SISNAN
+      REAL               SLAMCH
       REAL               CLANGB, CLANGE, SGET06
       EXTERNAL           CLANGB, CLANGE, SGET06
+      EXTERNAL           SISNAN, SLAMCH
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAERH, ALAHD, ALASUM, CCOPY, CERRGE, CGBCON,
      $                   CGBRFS, CGBT01, CGBT02, CGBT05, CGBTRF, CGBTRS,
      $                   CGET04, CLACPY, CLARHS, CLASET, CLATB4, CLATMS,
-     $                   XLAENV
+     $                   CSSCAL, XLAENV
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          CMPLX, MAX, MIN
@@ -400,6 +405,17 @@
      $                                  NERRS, NOUT )
                            GO TO 120
                         END IF
+*
+*                       Type 9:  scale the matrix into the subnormal
+*                       range, where the reciprocal of a pivot
+*                       overflows.  CLATMS cannot generate such a
+*                       matrix, because it scales its output by the
+*                       requested norm.
+*
+                        IF( IMAT.EQ.9 ) THEN
+                           SUBNRM = SLAMCH( 'Safe minimum' ) / 8
+                           CALL CSSCAL( LDA*N, SUBNRM, A, 1 )
+                        END IF
                      ELSE IF( IZERO.GT.0 ) THEN
 *
 *                       Use the same matrix for types 3 and 4 as for
@@ -477,13 +493,31 @@
 *                       Reconstruct matrix from factors and compute
 *                       residual.
 *
-                        CALL CGBT01( M, N, KL, KU, A, LDA, AFAC, LDAFAC,
-     $                               IWORK, WORK, RESULT( 1 ) )
+                        IF( IMAT.EQ.9 ) THEN
+*
+*                          The subnormal matrix carries no accuracy to
+*                          reconstruct, so test what the guarded pivot
+*                          division promises: a finite factor.
+*
+                           ANRMF = CLANGB( 'M', N, KL, KL+KU, AFAC,
+     $                              LDAFAC, RWORK )
+                           IF( SISNAN( ANRMF ) .OR.
+     $                         ANRMF.GT.SLAMCH( 'Overflow' ) ) THEN
+                              RESULT( 1 ) = ONE / SLAMCH( 'Epsilon' )
+                           ELSE
+                              RESULT( 1 ) = ZERO
+                           END IF
+                        ELSE
+                           CALL CGBT01( M, N, KL, KU, A, LDA, AFAC,
+     $                                 LDAFAC, IWORK, WORK,
+     $                                 RESULT( 1 ) )
+                        END IF
 *
 *                       Print information about the tests so far that
 *                       did not pass the threshold.
 *
-                        IF( RESULT( 1 ).GE.THRESH ) THEN
+                        IF( RESULT( 1 ).GE.THRESH .OR.
+     $                      SISNAN( RESULT( 1 ) ) ) THEN
                            IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
      $                        CALL ALAHD( NOUT, PATH )
                            WRITE( NOUT, FMT = 9997 )M, N, KL, KU, NB,
@@ -495,7 +529,7 @@
 *                       Skip the remaining tests if this is not the
 *                       first block size or if M .ne. N.
 *
-                        IF( INB.GT.1 .OR. M.NE.N )
+                        IF( INB.GT.1 .OR. M.NE.N .OR. IMAT.EQ.9 )
      $                     GO TO 110
 *
                         ANORMO = CLANGB( 'O', N, KL, KU, A, LDA, RWORK )
