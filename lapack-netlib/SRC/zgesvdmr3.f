@@ -213,11 +213,12 @@
 *> \verbatim
 *>          LWORK is INTEGER
 *>          The dimension of the array WORK.
-*>          LWORK >= MAX(1,MIN(M,N)*(MIN(M,N)+4)) for the paths (see
+*>          LWORK >= 1 if MIN(M,N) = 0; otherwise
+*>          LWORK >= MIN(M,N)*(MIN(M,N)+5) for the paths (see
 *>          comments inside the code):
 *>             - PATH 1  (M much larger than N)
 *>             - PATH 1t (N much larger than M)
-*>          LWORK >= MAX(1,MIN(M,N)*2+MAX(M,N)) for the other paths.
+*>          LWORK >= 3*MIN(M,N) + MAX(M,N) for the other paths.
 *>          For good performance, LWORK should generally be larger.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
@@ -290,6 +291,8 @@
 *  =====================================================================
 *
 *     .. Parameters ..
+      INTEGER            DP
+      PARAMETER          ( DP = KIND( 0.0D0 ) )
       COMPLEX*16         CZERO, CONE
       PARAMETER          ( CZERO = ( 0.0D0, 0.0D0 ),
      $                   CONE = ( 1.0D0, 0.0D0 ) )
@@ -460,7 +463,7 @@
             END IF
          END IF
          MAXWRK = MAX( MAXWRK, MINWRK )
-         WORK( 1 ) = DCMPLX( DBLE( MAXWRK ), ZERO )
+         WORK( 1 ) = CMPLX( DBLE( MAXWRK ), ZERO, KIND=DP )
 *
          IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY ) THEN
             INFO = -19
@@ -568,7 +571,7 @@
                K = ITGKZ
                DO I = 1, NS
                   DO J = 1, N
-                     U( J, I ) = DCMPLX( RWORK( K ), ZERO )
+                     U( J, I ) = CMPLX( RWORK( K ), ZERO, KIND=DP )
                      K = K + 1
                   END DO
                   K = K + N
@@ -597,7 +600,7 @@
                K = ITGKZ + N
                DO I = 1, NS
                   DO J = 1, N
-                     VT( I, J ) = DCMPLX( RWORK( K ), ZERO )
+                     VT( I, J ) = CMPLX( RWORK( K ), ZERO, KIND=DP )
                      K = K + 1
                   END DO
                   K = K + N
@@ -646,7 +649,7 @@
                K = ITGKZ
                DO I = 1, NS
                   DO J = 1, N
-                     U( J, I ) = DCMPLX( RWORK( K ), ZERO )
+                     U( J, I ) = CMPLX( RWORK( K ), ZERO, KIND=DP )
                      K = K + 1
                   END DO
                   K = K + N
@@ -668,7 +671,7 @@
                K = ITGKZ + N
                DO I = 1, NS
                   DO J = 1, N
-                     VT( I, J ) = DCMPLX( RWORK( K ), ZERO )
+                     VT( I, J ) = CMPLX( RWORK( K ), ZERO, KIND=DP )
                      K = K + 1
                   END DO
                   K = K + N
@@ -735,7 +738,7 @@
                K = ITGKZ
                DO I = 1, NS
                   DO J = 1, M
-                     U( J, I ) = DCMPLX( RWORK( K ), ZERO )
+                     U( J, I ) = CMPLX( RWORK( K ), ZERO, KIND=DP )
                      K = K + 1
                   END DO
                   K = K + M
@@ -755,7 +758,7 @@
                K = ITGKZ + M
                DO I = 1, NS
                   DO J = 1, M
-                     VT( I, J ) = DCMPLX( RWORK( K ), ZERO )
+                     VT( I, J ) = CMPLX( RWORK( K ), ZERO, KIND=DP )
                      K = K + 1
                   END DO
                   K = K + M
@@ -813,7 +816,7 @@
                K = ITGKZ
                DO I = 1, NS
                   DO J = 1, M
-                     U( J, I ) = DCMPLX( RWORK( K ), ZERO )
+                     U( J, I ) = CMPLX( RWORK( K ), ZERO, KIND=DP )
                      K = K + 1
                   END DO
                   K = K + M
@@ -833,7 +836,7 @@
                K = ITGKZ + M
                DO I = 1, NS
                   DO J = 1, M
-                     VT( I, J ) = DCMPLX( RWORK( K ), ZERO )
+                     VT( I, J ) = CMPLX( RWORK( K ), ZERO, KIND=DP )
                      K = K + 1
                   END DO
                   K = K + M
@@ -865,7 +868,7 @@
 *
 *     Return optimal workspace in WORK(1)
 *
-      WORK( 1 ) = DCMPLX( DBLE( MAXWRK ), ZERO )
+      WORK( 1 ) = CMPLX( DBLE( MAXWRK ), ZERO, KIND=DP )
 *
       RETURN
 *

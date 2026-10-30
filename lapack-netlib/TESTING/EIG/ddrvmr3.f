@@ -401,7 +401,7 @@
       CHARACTER*3        PATH
       INTEGER            I, IINFO, IJQ, IJU, IJVT, IL,IU, IWS, IWTMP,
      $                   ITEMP, J, JSIZE, JTYPE, LSWORK, M, MINWRK,
-     $                   MMAX, MNMAX, MNMIN, MTYPES, N, NFAIL,
+     $                   MMAX, MNMAX, MNMIN, MNTHR, MTYPES, N, NFAIL,
      $                   NMAX, NS, NSI, NSV, NTEST
       DOUBLE PRECISION   ANORM, DIF, DIV, OVFL, RTUNFL, ULP,
      $                   ULPINV, UNFL, VL, VU
@@ -418,8 +418,9 @@
       DOUBLE PRECISION   RESULT( 13 )
 *     ..
 *     .. External Functions ..
+      INTEGER            ILAENV
       DOUBLE PRECISION   DLAMCH, DLARND, DLANGE
-      EXTERNAL           DLAMCH, DLARND, DLANGE
+      EXTERNAL           ILAENV, DLAMCH, DLARND, DLANGE
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALASVM, DBDT01, DGEJSV, DGESDD, DGESVD,
@@ -512,6 +513,19 @@
          N = NN( JSIZE )
          MNMIN = MIN( M, N )
 *
+*        Minimal workspace for DGESVDMR3, see LWORK there
+*
+         IWTMP = 1
+         IF( MNMIN.GT.0 ) THEN
+            MNTHR = ILAENV( 6, 'DGESVD', 'VV', M, N, 0, 0 )
+            IF( MAX( M, N ).GE.MNTHR ) THEN
+               IWTMP = 8*MNMIN*MNMIN + 43*MNMIN
+            ELSE
+               IWTMP = MAX( 7*MNMIN*MNMIN + 42*MNMIN,
+     $                 5*MNMIN*MNMIN + 27*MNMIN + MAX( M, N ) )
+            END IF
+         END IF
+*
          IF( NSIZES.NE.1 ) THEN
             MTYPES = MIN( MAXTYP, NTYPES )
          ELSE
@@ -582,6 +596,12 @@
 *
             DO 220 IWS = 1, 4
 *
+               LSWORK = IWTMP + ( IWS-1 )*( LWORK-IWTMP ) / 3
+               LSWORK = MIN( LSWORK, LWORK )
+               LSWORK = MAX( LSWORK, 1 )
+               IF( IWS.EQ.4 )
+     $            LSWORK = LWORK
+*
                DO 40 J = 1, 13
                   RESULT( J ) = -ONE
    40          CONTINUE
@@ -591,7 +611,7 @@
                CALL DLACPY( 'F', M, N, ASAV, LDA, A, LDA )
                CALL DGESVDMR3( 'V', 'V', 'A', M, N, A, LDA,
      $                       VL, VU, IL, IU, NS, SSAV, USAV, LDU,
-     $                       VTSAV, LDVT, WORK, LWORK, IWORK,
+     $                       VTSAV, LDVT, WORK, LSWORK, IWORK,
      $                       IINFO )
                IF( IINFO.NE.0 ) THEN
                   WRITE( NOUT, FMT = 9995 )'GESVDMR3', IINFO, M, N,
@@ -642,7 +662,7 @@
                      CALL DLACPY( 'F', M, N, ASAV, LDA, A, LDA )
                      CALL DGESVDMR3( JOBU, JOBVT, RANGE, M, N, A, LDA,
      $                             VL, VU, IL, IU, NS, S, U, LDU,
-     $                             VT, LDVT, WORK, LWORK, IWORK,
+     $                             VT, LDVT, WORK, LSWORK, IWORK,
      $                             IINFO )
 *
 *                    Compare U
@@ -704,7 +724,7 @@
                CALL DLACPY( 'F', M, N, ASAV, LDA, A, LDA )
                CALL DGESVDMR3( 'V', 'V', 'I', M, N, A, LDA,
      $                       VL, VU, IL, IU, NSI, S, U, LDU,
-     $                       VT, LDVT, WORK, LWORK, IWORK,
+     $                       VT, LDVT, WORK, LSWORK, IWORK,
      $                       IINFO )
                IF( IINFO.NE.0 ) THEN
                   WRITE( NOUT, FMT = 9995 )'GESVDMR3', IINFO, M, N,
@@ -761,7 +781,7 @@
                CALL DLACPY( 'F', M, N, ASAV, LDA, A, LDA )
                CALL DGESVDMR3( 'V', 'V', 'V', M, N, A, LDA,
      $                       VL, VU, IL, IU, NSV, S, U, LDU,
-     $                       VT, LDVT, WORK, LWORK, IWORK,
+     $                       VT, LDVT, WORK, LSWORK, IWORK,
      $                       IINFO )
                IF( IINFO.NE.0 ) THEN
                   WRITE( NOUT, FMT = 9995 )'GESVDMR3', IINFO, M, N,

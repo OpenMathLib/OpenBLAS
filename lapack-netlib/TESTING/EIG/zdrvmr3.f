@@ -439,7 +439,7 @@
       CHARACTER          JOBQ, JOBU, JOBVT, RANGE
       INTEGER            I, IINFO, IJQ, IJU, IJVT, IL, IU, ITEMP,
      $                   IWSPC, IWTMP, J, JSIZE, JTYPE, LSWORK, M,
-     $                   MINWRK, MMAX, MNMAX, MNMIN, MTYPES, N,
+     $                   MINWRK, MMAX, MNMAX, MNMIN, MNTHR, MTYPES, N,
      $                   NERRS, NFAIL, NMAX, NS, NSI, NSV, NTEST,
      $                   NTESTF, NTESTT, LRWORK
       DOUBLE PRECISION   ANORM, DIF, DIV, OVFL, RTUNFL, ULP, ULPINV,
@@ -454,8 +454,9 @@
       DOUBLE PRECISION   RESULT( 13 )
 *     ..
 *     .. External Functions ..
+      INTEGER            ILAENV
       DOUBLE PRECISION   DLAMCH, DLARND, ZLANGE
-      EXTERNAL           DLAMCH, DLARND, ZLANGE
+      EXTERNAL           ILAENV, DLAMCH, DLARND, ZLANGE
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALASVM, XERBLA, ZBDT01, ZBDT05, ZGESDD,
@@ -553,6 +554,18 @@
          N = NN( JSIZE )
          MNMIN = MIN( M, N )
 *
+*        Minimal workspace for ZGESVDMR3, see LWORK there
+*
+         IWTMP = 1
+         IF( MNMIN.GT.0 ) THEN
+            MNTHR = ILAENV( 6, 'ZGESVD', 'VV', M, N, 0, 0 )
+            IF( MAX( M, N ).GE.MNTHR ) THEN
+               IWTMP = MNMIN*( MNMIN+5 )
+            ELSE
+               IWTMP = 3*MNMIN + MAX( M, N )
+            END IF
+         END IF
+*
          IF( NSIZES.NE.1 ) THEN
             MTYPES = MIN( MAXTYP, NTYPES )
          ELSE
@@ -624,9 +637,6 @@
 *
             DO 210 IWSPC = 1, 4
 *
-*              Test for ZGESVD
-*
-               IWTMP = 2*MIN( M, N )+MAX( M, N )
                LSWORK = IWTMP + ( IWSPC-1 )*( LWORK-IWTMP ) / 3
                LSWORK = MIN( LSWORK, LWORK )
                LSWORK = MAX( LSWORK, 1 )
@@ -645,7 +655,7 @@
                SRNAMT = 'ZGESVDMR3'
                CALL ZGESVDMR3( 'V', 'V', 'A', M, N, A, LDA,
      $                       VL, VU, IL, IU, NS, SSAV, USAV, LDU,
-     $                       VTSAV, LDVT, WORK, LWORK, RWORK,
+     $                       VTSAV, LDVT, WORK, LSWORK, RWORK,
      $                       IWORK, IINFO )
                IF( IINFO.NE.0 ) THEN
                   WRITE( NOUNIT, FMT = 9995 )'GESVDMR3', IINFO, M, N,
@@ -695,7 +705,7 @@
                      SRNAMT = 'ZGESVDMR3'
                      CALL ZGESVDMR3( JOBU, JOBVT, 'A', M, N, A, LDA,
      $                            VL, VU, IL, IU, NS, S, U, LDU,
-     $                            VT, LDVT, WORK, LWORK, RWORK,
+     $                            VT, LDVT, WORK, LSWORK, RWORK,
      $                            IWORK, IINFO )
 *
 *                    Compare U
@@ -759,7 +769,7 @@
                SRNAMT = 'ZGESVDMR3'
                CALL ZGESVDMR3( 'V', 'V', 'I', M, N, A, LDA,
      $                       VL, VU, IL, IU, NSI, S, U, LDU,
-     $                       VT, LDVT, WORK, LWORK, RWORK,
+     $                       VT, LDVT, WORK, LSWORK, RWORK,
      $                       IWORK, IINFO )
                IF( IINFO.NE.0 ) THEN
                   WRITE( NOUNIT, FMT = 9995 )'GESVDMR3', IINFO, M, N,
@@ -819,7 +829,7 @@
                SRNAMT = 'ZGESVDMR3'
                CALL ZGESVDMR3( 'V', 'V', 'V', M, N, A, LDA,
      $                       VL, VU, IL, IU, NSV, S, U, LDU,
-     $                       VT, LDVT, WORK, LWORK, RWORK,
+     $                       VT, LDVT, WORK, LSWORK, RWORK,
      $                       IWORK, IINFO )
                IF( IINFO.NE.0 ) THEN
                   WRITE( NOUNIT, FMT = 9995 )'GESVDMR3', IINFO, M, N,

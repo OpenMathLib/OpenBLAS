@@ -212,11 +212,14 @@
 *> \verbatim
 *>          LWORK is INTEGER
 *>          The dimension of the array WORK.
-*>          LWORK >= MAX(1,MIN(M,N)*(MIN(M,N)+4)) for the paths (see
+*>          LWORK >= 1 if MIN(M,N) = 0; otherwise
+*>          LWORK >= 8*MIN(M,N)**2 + 43*MIN(M,N) for the paths (see
 *>          comments inside the code):
 *>             - PATH 1  (M much larger than N)
 *>             - PATH 1t (N much larger than M)
-*>          LWORK >= MAX(1,MIN(M,N)*2+MAX(M,N)) for the other paths.
+*>          LWORK >= MAX(7*MIN(M,N)**2 + 42*MIN(M,N),
+*>                       5*MIN(M,N)**2 + 27*MIN(M,N) + MAX(M,N))
+*>          for the other paths.
 *>          For good performance, LWORK should generally be larger.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
