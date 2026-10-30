@@ -664,7 +664,7 @@ static integer c__1 = 1;
 	*maxc2nrmk = 0.f;
 	*relmaxc2nrmk = 0.f;
 	*fnrmk = 0.f;
-	return 0;
+	return;
     }
 
 /*     ================================================================== */
