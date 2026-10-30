@@ -672,7 +672,7 @@
      $                   CLASET, CLATMR, CLATMS, CPTEQR, CSTEDC, CSTEMR,
      $                   CSTEIN, CSTEQR, CSTT21, CSTT22, CUNGTR, CUPGTR,
      $                   SCOPY, SLASUM, SSTEBZ, SSTECH, SSTERF,
-     $                   XER_REPLACE
+     $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, CONJG, INT, LOG, MAX, MIN, REAL, SQRT
@@ -726,7 +726,7 @@
       END IF
 *
       IF( INFO.NE.0 ) THEN
-         CALL XER_REPLACE( 'CCHKST', -INFO )
+         CALL XERBLA( 'CCHKST', -INFO )
          RETURN
       END IF
 *
