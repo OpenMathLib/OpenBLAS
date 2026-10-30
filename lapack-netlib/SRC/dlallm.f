@@ -34,7 +34,7 @@
 *> If UPLO = 'L' or 'l' then the lower triangle of the result is stored,
 *> overwriting the factor L in A, and the strictly upper triangular part
 *> of A is not referenced.
-*> This is the driver that idpatches to either blocked or recursive
+*> This is the driver that dispatches to either blocked or recursive
 *> \endverbatim
 *
 *  Arguments:
