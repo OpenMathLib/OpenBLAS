@@ -39,14 +39,6 @@ typedef float real;
 typedef double doublereal;
 typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
-#ifdef _MSC_VER
-static inline _Dcomplex Cd(doublecomplex *z) {_Dcomplex zz={z->r , z->i};return zz;}
-static inline _Dcomplex * _pCd(doublecomplex *z) {return (_Dcomplex*)z;}
-#else
-static inline _Complex double Cd(doublecomplex *z) {return z->r + z->i*_Complex_I;}
-static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*)z;}
-#endif
-#define pCd(z) (*_pCd(z))
 typedef blasint logical;
 
 typedef char logical1;
@@ -258,8 +250,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static doublecomplex c_b1 = {0.,0.};
@@ -287,8 +277,17 @@ static integer c__0 = 0;
 /* > */
 /* > ZGETSLS solves overdetermined or underdetermined complex linear systems */
 /* > involving an M-by-N matrix A, using a tall skinny QR or short wide LQ */
-/* > factorization of A.  It is assumed that A has full rank. */
+/* > factorization of A. */
 /* > */
+/* > It is assumed that A has full rank, and only a rudimentary protection */
+/* > against rank-deficient matrices is provided. This subroutine only detects */
+/* > exact rank-deficiency, where a diagonal element of the triangular factor */
+/* > of A is exactly zero. */
+/* > */
+/* > It is conceivable for one (or more) of the diagonal elements of the triangular */
+/* > factor of A to be subnormally tiny numbers without this subroutine signalling */
+/* > an error. The solutions computed for such almost-rank-deficient matrices may */
+/* > be less accurate due to a loss of numerical precision. */
 /* > */
 /* > */
 /* > The following options are provided: */
@@ -392,7 +391,7 @@ static integer c__0 = 0;
 /* > \param[in] LWORK */
 /* > \verbatim */
 /* >          LWORK is INTEGER */
-/* >          The dimension of the array WORK. */
+/* >          The dimension of the array WORK. LWORK >= 1. */
 /* >          If LWORK = -1 or -2, then a workspace query is assumed. */
 /* >          If LWORK = -1, the routine calculates optimal size of WORK for the */
 /* >          optimal performance and returns this value in WORK(1). */
@@ -406,7 +405,7 @@ static integer c__0 = 0;
 /* >          = 0:  successful exit */
 /* >          < 0:  if INFO = -i, the i-th argument had an illegal value */
 /* >          > 0:  if INFO =  i, the i-th diagonal element of the */
-/* >                triangular factor of A is zero, so that A does not have */
+/* >                triangular factor of A is exactly zero, so that A does not have */
 /* >                full rank; the least squares solution could not be */
 /* >                computed. */
 /* > \endverbatim */
@@ -419,9 +418,7 @@ static integer c__0 = 0;
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date June 2017 */
-
-/* > \ingroup complex16GEsolve */
+/* > \ingroup getsls */
 
 /*  ===================================================================== */
 /* Subroutine */ void zgetsls_(char *trans, integer *m, integer *n, integer *
@@ -430,24 +427,26 @@ static integer c__0 = 0;
 {
     /* System generated locals */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1, i__2, i__3;
-    real r__1;
     doublereal d__1;
 
     /* Local variables */
+    integer i__, j;
+    doublecomplex tq[5];
+    integer lw1, lw2;
+    doublereal dum[1];
+    integer lwm, lwo;
     doublereal anrm, bnrm;
     logical tran;
-    integer brow, tszm, tszo, info2, i__, j, iascl, ibscl;
+    integer brow, tszm, tszo, info2, iascl, ibscl;
     extern logical lsame_(char *, char *);
-    integer minmn, maxmn;
+    integer maxmn;
     extern /* Subroutine */ void zgelq_(integer *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     integer *), zgeqr_(integer *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     integer *);
     doublecomplex workq[1];
-    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     extern doublereal dlamch_(char *);
-    doublecomplex tq[5];
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     integer scllen;
     doublereal bignum;
@@ -465,19 +464,14 @@ static integer c__0 = 0;
     doublereal smlnum;
     integer wsizem, wsizeo;
     logical lquery;
-    integer lw1, lw2;
     extern /* Subroutine */ void ztrtrs_(char *, char *, char *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     integer *);
-    integer mnk;
-    doublereal dum[1];
-    integer lwm, lwo;
 
 
-/*  -- LAPACK driver routine (version 3.7.1) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     June 2017 */
 
 
 
@@ -488,18 +482,16 @@ static integer c__0 = 0;
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --work;
 
     /* Function Body */
     *info = 0;
-    minmn = f2cmin(*m,*n);
     maxmn = f2cmax(*m,*n);
-    mnk = f2cmax(minmn,*nrhs);
     tran = lsame_(trans, "C");
 
     lquery = *lwork == -1 || *lwork == -2;
@@ -523,9 +515,14 @@ static integer c__0 = 0;
 
     if (*info == 0) {
 
-/*     Determine the block size and minimum LWORK */
+/*     Determine the optimum and minimum LWORK */
 
-	if (*m >= *n) {
+/* Computing MIN */
+	i__1 = f2cmin(*m,*n);
+	if (f2cmin(i__1,*nrhs) == 0) {
+	    wsizeo = 1;
+	    wsizem = 1;
+	} else if (*m >= *n) {
 	    zgeqr_(m, n, &a[a_offset], lda, tq, &c_n1, workq, &c_n1, &info2);
 	    tszo = (integer) tq[0].r;
 	    lwo = (integer) workq[0].r;
@@ -569,23 +566,20 @@ static integer c__0 = 0;
 	    *info = -10;
 	}
 
+	d__1 = (doublereal) wsizeo;
+	work[1].r = d__1, work[1].i = 0.;
+
     }
 
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGETSLS", &i__1, (ftnlen)7);
-	d__1 = (doublereal) wsizeo;
-	work[1].r = d__1, work[1].i = 0.;
 	return;
     }
     if (lquery) {
-	if (*lwork == -1) {
-	    r__1 = (real) wsizeo;
-	    work[1].r = r__1, work[1].i = 0.f;
-	}
 	if (*lwork == -2) {
-	    r__1 = (real) wsizem;
-	    work[1].r = r__1, work[1].i = 0.f;
+	    d__1 = (doublereal) wsizem;
+	    work[1].r = d__1, work[1].i = 0.;
 	}
 	return;
     }
@@ -611,7 +605,6 @@ static integer c__0 = 0;
 
     smlnum = dlamch_("S") / dlamch_("P");
     bignum = 1. / smlnum;
-    dlabad_(&smlnum, &bignum);
 
 /*     Scale A, B if f2cmax element outside range [SMLNUM,BIGNUM] */
 
@@ -790,21 +783,30 @@ static integer c__0 = 0;
 
     }
 
-/*     Undo scaling */
+/*     Undo scaling.  The solution carries the factor of B divided by */
+/*     the factor of A.  When both were scaled to the same end of the */
+/*     range the constants cancel and BNRM/ANRM is applied in one step: */
+/*     applied in two, the first step could flush or overflow an entry */
+/*     that the second would have brought back into range. */
 
-    if (iascl == 1) {
-	zlascl_("G", &c__0, &c__0, &anrm, &smlnum, &scllen, nrhs, &b[b_offset]
-		, ldb, info);
-    } else if (iascl == 2) {
-	zlascl_("G", &c__0, &c__0, &anrm, &bignum, &scllen, nrhs, &b[b_offset]
-		, ldb, info);
-    }
-    if (ibscl == 1) {
-	zlascl_("G", &c__0, &c__0, &smlnum, &bnrm, &scllen, nrhs, &b[b_offset]
-		, ldb, info);
-    } else if (ibscl == 2) {
-	zlascl_("G", &c__0, &c__0, &bignum, &bnrm, &scllen, nrhs, &b[b_offset]
-		, ldb, info);
+    if (iascl == ibscl && iascl != 0) {
+	zlascl_("G", &c__0, &c__0, &anrm, &bnrm, &scllen, nrhs, &b[b_offset], 
+		ldb, info);
+    } else {
+	if (iascl == 1) {
+	    zlascl_("G", &c__0, &c__0, &anrm, &smlnum, &scllen, nrhs, &b[
+		    b_offset], ldb, info);
+	} else if (iascl == 2) {
+	    zlascl_("G", &c__0, &c__0, &anrm, &bignum, &scllen, nrhs, &b[
+		    b_offset], ldb, info);
+	}
+	if (ibscl == 1) {
+	    zlascl_("G", &c__0, &c__0, &smlnum, &bnrm, &scllen, nrhs, &b[
+		    b_offset], ldb, info);
+	} else if (ibscl == 2) {
+	    zlascl_("G", &c__0, &c__0, &bignum, &bnrm, &scllen, nrhs, &b[
+		    b_offset], ldb, info);
+	}
     }
 
 L50:

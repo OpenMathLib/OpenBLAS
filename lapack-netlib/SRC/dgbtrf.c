@@ -226,14 +226,12 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
 static integer c__65 = 65;
-static doublereal c_b18 = -1.;
-static doublereal c_b31 = 1.;
+static doublereal c_b20 = -1.;
+static doublereal c_b33 = 1.;
 
 /* > \brief \b DGBTRF */
 
@@ -242,7 +240,6 @@ static doublereal c_b31 = 1.;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DGBTRF + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgbtrf.
 f"> */
@@ -253,7 +250,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgbtrf.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -351,9 +347,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup doubleGBcomputational */
+/* > \ingroup gbtrf */
 
 /* > \par Further Details: */
 /*  ===================== */
@@ -386,29 +380,29 @@ f"> */
     doublereal d__1;
 
     /* Local variables */
+    integer i__, j, i2, i3, j2, j3, k2, jb, nb, ii, jj, jm, ip, jp, km, ju, 
+	    kv, nw;
     extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     doublereal temp;
-    integer i__, j;
     extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dgemm_(char *, char *, integer *, integer *, integer *
 	    , doublereal *, doublereal *, integer *, doublereal *, integer *, 
-	    doublereal *, doublereal *, integer *), dcopy_(
-	    integer *, doublereal *, integer *, doublereal *, integer *), 
-	    dswap_(integer *, doublereal *, integer *, doublereal *, integer *
-	    );
+	    doublereal *, doublereal *, integer *);
+    doublereal sfmin;
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
+	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
+	    *, doublereal *, integer *);
     doublereal work13[4160]	/* was [65][64] */, work31[4160]	/* 
 	    was [65][64] */;
     extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
-	    doublereal *, integer *);
-    integer i2, i3, j2, j3, k2;
-    extern /* Subroutine */ void dgbtf2_(integer *, integer *, integer *, 
-	    integer *, doublereal *, integer *, integer *, integer *);
-    integer jb, nb, ii, jj, jm, ip, jp, km, ju, kv;
+	    doublereal *, integer *), dgbtf2_(
+	    integer *, integer *, integer *, integer *, doublereal *, integer 
+	    *, integer *, integer *);
+    extern doublereal dlamch_(char *);
     extern integer idamax_(integer *, doublereal *, integer *);
-    integer nw;
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
@@ -416,10 +410,9 @@ f"> */
 	    integer *, integer *, integer *, integer *);
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -430,7 +423,7 @@ f"> */
 
     /* Parameter adjustments */
     ab_dim1 = *ldab;
-    ab_offset = 1 + ab_dim1 * 1;
+    ab_offset = 1 + ab_dim1;
     ab -= ab_offset;
     --ipiv;
 
@@ -462,6 +455,10 @@ f"> */
     if (*m == 0 || *n == 0) {
 	return;
     }
+
+/*     Compute machine safe minimum */
+
+    sfmin = dlamch_("S");
 
 /*     Determine the block size for this environment */
 
@@ -613,8 +610,18 @@ f"> */
 
 /*                 Compute multipliers */
 
-		    d__1 = 1. / ab[kv + 1 + jj * ab_dim1];
-		    dscal_(&km, &d__1, &ab[kv + 2 + jj * ab_dim1], &c__1);
+		    if ((d__1 = ab[kv + 1 + jj * ab_dim1], abs(d__1)) >= 
+			    sfmin) {
+			d__1 = 1. / ab[kv + 1 + jj * ab_dim1];
+			dscal_(&km, &d__1, &ab[kv + 2 + jj * ab_dim1], &c__1);
+		    } else {
+			i__4 = km;
+			for (i__ = 1; i__ <= i__4; ++i__) {
+			    ab[kv + 1 + i__ + jj * ab_dim1] /= ab[kv + 1 + jj 
+				    * ab_dim1];
+/* L75: */
+			}
+		    }
 
 /*                 Update trailing submatrix within the band and within */
 /*                 the current block. JM is the index of the last column */
@@ -627,7 +634,7 @@ f"> */
 			i__4 = jm - jj;
 			i__5 = *ldab - 1;
 			i__6 = *ldab - 1;
-			dger_(&km, &i__4, &c_b18, &ab[kv + 2 + jj * ab_dim1], 
+			dger_(&km, &i__4, &c_b20, &ab[kv + 2 + jj * ab_dim1], 
 				&c__1, &ab[kv + (jj + 1) * ab_dim1], &i__5, &
 				ab[kv + 1 + (jj + 1) * ab_dim1], &i__6);
 		    }
@@ -708,7 +715,7 @@ f"> */
 		    i__3 = *ldab - 1;
 		    i__4 = *ldab - 1;
 		    dtrsm_("Left", "Lower", "No transpose", "Unit", &jb, &j2, 
-			    &c_b31, &ab[kv + 1 + j * ab_dim1], &i__3, &ab[kv 
+			    &c_b33, &ab[kv + 1 + j * ab_dim1], &i__3, &ab[kv 
 			    + 1 - jb + (j + jb) * ab_dim1], &i__4);
 
 		    if (i2 > 0) {
@@ -719,9 +726,9 @@ f"> */
 			i__4 = *ldab - 1;
 			i__5 = *ldab - 1;
 			dgemm_("No transpose", "No transpose", &i2, &j2, &jb, 
-				&c_b18, &ab[kv + 1 + jb + j * ab_dim1], &i__3,
+				&c_b20, &ab[kv + 1 + jb + j * ab_dim1], &i__3,
 				 &ab[kv + 1 - jb + (j + jb) * ab_dim1], &i__4,
-				 &c_b31, &ab[kv + 1 + (j + jb) * ab_dim1], &
+				 &c_b33, &ab[kv + 1 + (j + jb) * ab_dim1], &
 				i__5);
 		    }
 
@@ -732,8 +739,8 @@ f"> */
 			i__3 = *ldab - 1;
 			i__4 = *ldab - 1;
 			dgemm_("No transpose", "No transpose", &i3, &j2, &jb, 
-				&c_b18, work31, &c__65, &ab[kv + 1 - jb + (j 
-				+ jb) * ab_dim1], &i__3, &c_b31, &ab[kv + *kl 
+				&c_b20, work31, &c__65, &ab[kv + 1 - jb + (j 
+				+ jb) * ab_dim1], &i__3, &c_b33, &ab[kv + *kl 
 				+ 1 - jb + (j + jb) * ab_dim1], &i__4);
 		    }
 		}
@@ -758,7 +765,7 @@ f"> */
 
 		    i__3 = *ldab - 1;
 		    dtrsm_("Left", "Lower", "No transpose", "Unit", &jb, &j3, 
-			    &c_b31, &ab[kv + 1 + j * ab_dim1], &i__3, work13, 
+			    &c_b33, &ab[kv + 1 + j * ab_dim1], &i__3, work13, 
 			    &c__65);
 
 		    if (i2 > 0) {
@@ -768,8 +775,8 @@ f"> */
 			i__3 = *ldab - 1;
 			i__4 = *ldab - 1;
 			dgemm_("No transpose", "No transpose", &i2, &j3, &jb, 
-				&c_b18, &ab[kv + 1 + jb + j * ab_dim1], &i__3,
-				 work13, &c__65, &c_b31, &ab[jb + 1 + (j + kv)
+				&c_b20, &ab[kv + 1 + jb + j * ab_dim1], &i__3,
+				 work13, &c__65, &c_b33, &ab[jb + 1 + (j + kv)
 				 * ab_dim1], &i__4);
 		    }
 
@@ -779,8 +786,8 @@ f"> */
 
 			i__3 = *ldab - 1;
 			dgemm_("No transpose", "No transpose", &i3, &j3, &jb, 
-				&c_b18, work31, &c__65, work13, &c__65, &
-				c_b31, &ab[*kl + 1 + (j + kv) * ab_dim1], &
+				&c_b20, work31, &c__65, work13, &c__65, &
+				c_b33, &ab[*kl + 1 + (j + kv) * ab_dim1], &
 				i__3);
 		    }
 

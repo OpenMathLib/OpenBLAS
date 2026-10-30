@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download ZHETF2 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhetf2.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhetf2.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -127,7 +125,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16HEcomputational
+*> \ingroup hetf2
 *
 *> \par Further Details:
 *  =====================
@@ -188,6 +186,7 @@
 *
 *  =====================================================================
       SUBROUTINE ZHETF2( UPLO, N, A, LDA, IPIV, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -289,7 +288,8 @@
             COLMAX = ZERO
          END IF
 *
-         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. DISNAN(ABSAKK) ) THEN
+         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR.
+     $       DISNAN(ABSAKK) ) THEN
 *
 *           Column K is zero or underflow, or contains a NaN:
 *           set INFO and continue
@@ -418,12 +418,11 @@
                   D11 = DBLE( A( K, K ) ) / D
                   TT = ONE / ( D11*D22-ONE )
                   D12 = A( K-1, K ) / D
-                  D = TT / D
 *
                   DO 40 J = K - 2, 1, -1
-                     WKM1 = D*( D11*A( J, K-1 )-DCONJG( D12 )*
-     $                      A( J, K ) )
-                     WK = D*( D22*A( J, K )-D12*A( J, K-1 ) )
+                     WKM1 = TT*( ( D11*A( J, K-1 )-DCONJG( D12 )*
+     $                      A( J, K ) ) / D )
+                     WK = TT*( ( D22*A( J, K )-D12*A( J, K-1 ) ) / D )
                      DO 30 I = J, 1, -1
                         A( I, J ) = A( I, J ) - A( I, K )*DCONJG( WK ) -
      $                              A( I, K-1 )*DCONJG( WKM1 )
@@ -484,7 +483,8 @@
             COLMAX = ZERO
          END IF
 *
-         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR. DISNAN(ABSAKK) ) THEN
+         IF( (MAX( ABSAKK, COLMAX ).EQ.ZERO) .OR.
+     $       DISNAN(ABSAKK) ) THEN
 *
 *           Column K is zero or underflow, or contains a NaN:
 *           set INFO and continue
@@ -513,7 +513,8 @@
                JMAX = K - 1 + IZAMAX( IMAX-K, A( IMAX, K ), LDA )
                ROWMAX = CABS1( A( IMAX, JMAX ) )
                IF( IMAX.LT.N ) THEN
-                  JMAX = IMAX + IZAMAX( N-IMAX, A( IMAX+1, IMAX ), 1 )
+                  JMAX = IMAX + IZAMAX( N-IMAX, A( IMAX+1, IMAX ),
+     $                                  1 )
                   ROWMAX = MAX( ROWMAX, CABS1( A( JMAX, IMAX ) ) )
                END IF
 *
@@ -550,7 +551,8 @@
 *              submatrix A(k:n,k:n)
 *
                IF( KP.LT.N )
-     $            CALL ZSWAP( N-KP, A( KP+1, KK ), 1, A( KP+1, KP ), 1 )
+     $            CALL ZSWAP( N-KP, A( KP+1, KK ), 1, A( KP+1, KP ),
+     $                        1 )
                DO 60 J = KK + 1, KP - 1
                   T = DCONJG( A( J, KK ) )
                   A( J, KK ) = DCONJG( A( KP, J ) )
@@ -616,12 +618,11 @@
                   D22 = DBLE( A( K, K ) ) / D
                   TT = ONE / ( D11*D22-ONE )
                   D21 = A( K+1, K ) / D
-                  D = TT / D
 *
                   DO 80 J = K + 2, N
-                     WK = D*( D11*A( J, K )-D21*A( J, K+1 ) )
-                     WKP1 = D*( D22*A( J, K+1 )-DCONJG( D21 )*
-     $                      A( J, K ) )
+                     WK = TT*( ( D11*A( J, K )-D21*A( J, K+1 ) ) / D )
+                     WKP1 = TT*( ( D22*A( J, K+1 )-DCONJG( D21 )*
+     $                      A( J, K ) ) / D )
                      DO 70 I = J, N
                         A( I, J ) = A( I, J ) - A( I, K )*DCONJG( WK ) -
      $                              A( I, K+1 )*DCONJG( WKP1 )

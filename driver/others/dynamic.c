@@ -805,6 +805,26 @@ static gotoblas_t *get_coretype(void){
 	  }
         }      
 	return NULL;
+
+	  case 12:
+	if (model == 15){          // Emerald Rapids
+	   if(support_amx_bf16())
+	     return &gotoblas_SAPPHIRERAPIDS;
+	   if(support_avx512_bf16())
+             return &gotoblas_COOPERLAKE;
+          if (support_avx512()) 
+	    return &gotoblas_SKYLAKEX;
+	  if(support_avx2())
+	    return &gotoblas_HASWELL;
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM;
+	  }
+        }
+	return NULL;
       }
       break;
     case 0xf:
@@ -1157,11 +1177,12 @@ void gotoblas_dynamic_init(void) {
   if (gotoblas == NULL) gotoblas = &gotoblas_KATMAI;
 #else
   if (gotoblas == NULL) {
-   if (support_avx512_bf16()) gotoblas = &gotoblas_COOPERLAKE;
-   else if (support_avx512()) gotoblas = &gotoblas_SKYLAKEX;
-   else if   (support_avx2()) gotoblas = &gotoblas_HASWELL;
-   else if    (support_avx()) gotoblas = &gotoblas_SANDYBRIDGE;
-   else                       gotoblas = &gotoblas_PRESCOTT;
+   if (support_amx_bf16())	  		gotoblas = &gotoblas_SAPPHIRERAPIDS;
+   else if (support_avx512_bf16()) 	gotoblas = &gotoblas_COOPERLAKE;
+   else if (support_avx512()) 		gotoblas = &gotoblas_SKYLAKEX;
+   else if   (support_avx2()) 		gotoblas = &gotoblas_HASWELL;
+   else if    (support_avx()) 		gotoblas = &gotoblas_SANDYBRIDGE;
+   else                       		gotoblas = &gotoblas_PRESCOTT;
   }
   /* sanity check, if 64bit pointer we can't have a 32 bit cpu */
   if (sizeof(void*) == 8) {

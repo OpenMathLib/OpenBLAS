@@ -7,7 +7,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download SSYEVR_2STAGE + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/ssyevr_2stage.f">
 *> [TGZ]</a>
@@ -15,7 +14,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/ssyevr_2stage.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -407,7 +405,7 @@
       LOGICAL            ALLEIG, INDEIG, LOWER, LQUERY, VALEIG, WANTZ,
      $                   TRYRAC, TEST
       CHARACTER          ORDER
-      INTEGER            I, IEEEOK, IINFO, IMAX, INDD, INDDD, INDE,
+      INTEGER            I, IEEEOK, IINFO, INDD, INDDD, INDE,
      $                   INDEE, INDIBL, INDIFL, INDISP, INDIWO, INDTAU,
      $                   INDWK, INDWKN, ISCALE, J, JJ, LIWMIN,
      $                   LLWORK, LLWRKN, LWMIN, NSPLIT,
@@ -419,11 +417,13 @@
       LOGICAL            LSAME
       INTEGER            ILAENV, ILAENV2STAGE
       REAL               SLAMCH, SLANSY, SROUNDUP_LWORK
-      EXTERNAL           LSAME, SLAMCH, SLANSY, SROUNDUP_LWORK, ILAENV,
+      EXTERNAL           LSAME, SLAMCH, SLANSY,
+     $                   SROUNDUP_LWORK, ILAENV,
      $                   ILAENV2STAGE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SORMTR, SSCAL, SSTEBZ, SSTEMR, SSTEIN,
+      EXTERNAL           SCOPY, SORMTR, SSCAL, SSTEBZ, SSTEMR,
+     $                   SSTEIN,
      $                   SSTERF, SSWAP, SSYTRD_2STAGE, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -443,10 +443,14 @@
 *
       LQUERY = ( ( LWORK.EQ.-1 ) .OR. ( LIWORK.EQ.-1 ) )
 *
-      KD     = ILAENV2STAGE( 1, 'SSYTRD_2STAGE', JOBZ, N, -1, -1, -1 )
-      IB     = ILAENV2STAGE( 2, 'SSYTRD_2STAGE', JOBZ, N, KD, -1, -1 )
-      LHTRD  = ILAENV2STAGE( 3, 'SSYTRD_2STAGE', JOBZ, N, KD, IB, -1 )
-      LWTRD  = ILAENV2STAGE( 4, 'SSYTRD_2STAGE', JOBZ, N, KD, IB, -1 )
+      KD     = ILAENV2STAGE( 1, 'SSYTRD_2STAGE', JOBZ, N, -1, -1,
+     $                      -1 )
+      IB     = ILAENV2STAGE( 2, 'SSYTRD_2STAGE', JOBZ, N, KD, -1,
+     $                      -1 )
+      LHTRD  = ILAENV2STAGE( 3, 'SSYTRD_2STAGE', JOBZ, N, KD, IB,
+     $                      -1 )
+      LWTRD  = ILAENV2STAGE( 4, 'SSYTRD_2STAGE', JOBZ, N, KD, IB,
+     $                      -1 )
 *
       IF( N.LE.1 ) THEN
          LWMIN  = 1
@@ -553,8 +557,11 @@
          ISCALE = 1
          SIGMA = RMIN / ANRM
       ELSE IF( ANRM.GT.RMAX ) THEN
-         ISCALE = 1
+*        An infinite norm gives SIGMA = 0; leave such a matrix
+*        unscaled so that VL and VU remain a valid interval.
          SIGMA = RMAX / ANRM
+         IF( SIGMA.GT.ZERO )
+     $      ISCALE = 1
       END IF
       IF( ISCALE.EQ.1 ) THEN
          IF( LOWER ) THEN
@@ -639,7 +646,7 @@
             CALL SCOPY( N-1, WORK( INDE ), 1, WORK( INDEE ), 1 )
             CALL SCOPY( N, WORK( INDD ), 1, WORK( INDDD ), 1 )
 *
-            IF (ABSTOL .LE. TWO*N*EPS) THEN
+            IF (ABSTOL .LE. TWO*REAL( N )*EPS) THEN
                TRYRAC = .TRUE.
             ELSE
                TRYRAC = .FALSE.
@@ -698,7 +705,8 @@
 *
          INDWKN = INDE
          LLWRKN = LWORK - INDWKN + 1
-         CALL SORMTR( 'L', UPLO, 'N', N, M, A, LDA, WORK( INDTAU ), Z,
+         CALL SORMTR( 'L', UPLO, 'N', N, M, A, LDA, WORK( INDTAU ),
+     $                Z,
      $                LDZ, WORK( INDWKN ), LLWRKN, IINFO )
       END IF
 *
@@ -706,14 +714,8 @@
 *
 *  Jump here if SSTEMR/SSTEIN succeeded.
    30 CONTINUE
-      IF( ISCALE.EQ.1 ) THEN
-         IF( INFO.EQ.0 ) THEN
-            IMAX = M
-         ELSE
-            IMAX = INFO - 1
-         END IF
-         CALL SSCAL( IMAX, ONE / SIGMA, W, 1 )
-      END IF
+      IF( ISCALE.EQ.1 )
+     $   CALL SSCAL( M, ONE / SIGMA, W, 1 )
 *
 *     If eigenvalues are not in order, then sort them, along with
 *     eigenvectors.  Note: We do not sort the IFAIL portion of IWORK.
