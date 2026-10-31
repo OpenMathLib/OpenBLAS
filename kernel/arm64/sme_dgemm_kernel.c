@@ -1190,8 +1190,7 @@ void CNAME(const char *transa, const char *transb, const BLASLONG m, const BLASL
     bool trans_a = (*transa == 'T' || *transa == 't' || *transa == 'C' || *transa == 'c');
     bool trans_b = (*transb == 'T' || *transb == 't' || *transb == 'C' || *transb == 'c');
 #if defined(HAVE_SME2_GEMM)
-    /* below 5000 multiply-adds the existing kernel is faster when it needs no edge tiles (M and N multiples of 16) */
-    if (s2_usable() && S2_FITS(m, n, k) && !((double)m * (double)n * (double)k < 5000. && m % 16 == 0 && n % 16 == 0)) {
+    if (s2_usable() && S2_FITS(m, n, k)) {
         s2_gemm(trans_a, trans_b, m, n, k, *alpha, a, lda, b, ldb, *beta, c, ldc);
         return;
     }
