@@ -581,10 +581,11 @@ else if (order == CblasRowMajor && k==lda && n==ldb && n==ldc && TransA == Cblas
 #endif //defined CBLAS
 
 #if !defined(BFLOAT16)  && !defined(HFLOAT16)
-#if defined(ARCH_ARM64) && (defined(USE_SGEMM_KERNEL_DIRECT)||defined(DYNAMIC_ARCH))
+/* complex GEMM on VORTEXM4 takes the level-3 driver with its SME2 kernels */
+#if defined(ARCH_ARM64) && (defined(USE_SGEMM_KERNEL_DIRECT)||defined(DYNAMIC_ARCH)) && !(defined(COMPLEX) && defined(VORTEXM4))
 #if defined(DYNAMIC_ARCH)
 if (strcmp(gotoblas_corename(), "armv9sme") == 0
-#if defined(__clang__)
+#if defined(__clang__) && !defined(COMPLEX)
  || strcmp(gotoblas_corename(), "vortexm4") == 0
 #endif
 )

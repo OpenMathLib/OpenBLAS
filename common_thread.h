@@ -157,12 +157,12 @@ extern int blas_omp_threads_local;
 extern int blas_is_num_threads_set_explicitly;
 
 #if defined(ARCH_ARM64) && defined(OS_DARWIN) && defined(__clang__) && (defined(VORTEXM4) || defined(DYNAMIC_ARCH)) && \
-    !defined(COMPLEX) && !defined(BFLOAT16) && !defined(HFLOAT16)
+    !defined(BFLOAT16) && !defined(HFLOAT16)
 #include <sys/sysctl.h>
 #ifdef DYNAMIC_ARCH
 extern char *gotoblas_corename(void);
 #endif
-/* Apple M4: real level-3 BLAS and LAPACK run on one SME unit per P-cluster; measured on M4 Pro only, not on M5+. */
+/* Apple M4: level-3 BLAS and LAPACK run on one SME unit per P-cluster; measured on M4 Pro only, not on M5+. */
 static __inline int sme_level3_threads(int nthreads) {
   static int units = 0;
 #ifdef DYNAMIC_ARCH
