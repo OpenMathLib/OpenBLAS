@@ -171,6 +171,18 @@ test_cgges3_scaling: test_cgges3_scaling.f90 ../$(LAPACKLIB)
 test_zgges3_scaling: test_zgges3_scaling.f90 ../$(LAPACKLIB)
 	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
+test_sgesvj_emptsw: test_sgesvj_emptsw.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+
+test_dgesvj_emptsw: test_dgesvj_emptsw.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+
+test_cgesvj_emptsw: test_cgesvj_emptsw.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+
+test_zgesvj_emptsw: test_zgesvj_emptsw.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+
 $(SDMDEIGTST): $(FRC)
 $(CDMDEIGTST): $(FRC)
 $(DDMDEIGTST): $(FRC)
@@ -191,7 +203,7 @@ clean: cleanobj cleanexe
 cleanobj:
 	rm -f *.o
 cleanexe:
-	rm -f xeigtst* xdmdeigtst*
+	rm -f xeigtst* xdmdeigtst* test_?gges3_scaling test_?gesvj_emptsw
 
 schkee.o: schkee.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<

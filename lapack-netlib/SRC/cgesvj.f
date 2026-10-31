@@ -714,7 +714,7 @@
 *
 *     Row-cyclic Jacobi SVD algorithm with column pivoting
 *
-      EMPTSW = ( N*( N-1 ) ) / 2
+      EMPTSW = ( N / 2 )*( N-1 + MOD( N, 2 ) )
       NOTROT = 0
 
       DO 1868 q = 1, N
