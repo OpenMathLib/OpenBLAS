@@ -255,7 +255,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
 /* Table of constant values */
 
 static integer c_n1 = -1;
@@ -298,7 +297,7 @@ static integer c__1 = 1;
 	    complex *, integer *), cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     extern real scnrm2_(integer *, complex *, integer *), clange_(char *, 
-	    integer *, integer *, complex *, integer *, complex *);
+	    integer *, integer *, complex *, integer *, real *);
     extern integer icamax_(integer *, complex *, integer *);
     integer jdesel;
     extern /* Subroutine */ void cgeqrf_(integer *, integer *, complex *, 
@@ -627,11 +626,11 @@ static integer c__1 = 1;
 
 	}
 
-	if (*lwork < lwkmin && ! lquery) {
+	if ((*lwork < lwkmin) && ! lquery) {
 	    *info = -26;
-	} else if (*lrwork < lrwkmin && ! lquery) {
+	} else if ((*lrwork < lrwkmin) && ! lquery) {
 	    *info = -28;
-	} else if (*liwork < liwkmin && ! lquery) {
+	} else if ((*liwork < liwkmin) && ! lquery) {
 	    *info = -30;
 	}
     }
@@ -1031,7 +1030,7 @@ static integer c__1 = 1;
 
     if (f2cmin(mresid,nresid) != 0) {
 	*fnrmk = clange_("F", &mresid, &nresid, &a[*k + 1 + (*k + 1) * a_dim1]
-		, lda, &work[1]);
+		, lda, &rwork[1]);
     } else {
 	*fnrmk = 0.f;
     }

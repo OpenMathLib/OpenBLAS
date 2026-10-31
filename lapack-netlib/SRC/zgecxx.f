@@ -962,6 +962,8 @@
 *  =====================================================================
 *
 *     .. Parameters ..
+      INTEGER            DP
+      PARAMETER          ( DP = KIND( 0.0D0 ) )
       DOUBLE PRECISION   ZERO, TWO, MINUSONE
       PARAMETER          ( ZERO = 0.0D+0, TWO = 2.0D+0,
      $                   MINUSONE = -1.0D+0 )
@@ -989,7 +991,7 @@
      $                   ILAENV, LSAME
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DBLE, DCMPLX, MAX, MIN
+      INTRINSIC          CMPLX, DBLE, MAX, MIN
 *     ..
 *     .. Executable Statements ..
 *
@@ -1248,7 +1250,7 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         WORK( 1 ) = DCMPLX( LWKOPT )
+         WORK( 1 ) = CMPLX( LWKOPT, KIND=DP )
          RWORK( 1 ) = DBLE( LRWKOPT )
          IWORK( 1 ) = LIWKOPT
       END IF
@@ -1627,7 +1629,7 @@
 *
       IF( MIN( MRESID, NRESID ).NE.0 ) THEN
          FNRMK = ZLANGE( 'F',  MRESID, NRESID, A( K+1, K+1 ),
-     $                   LDA, WORK )
+     $                   LDA, RWORK )
       ELSE
          FNRMK = ZERO
       END IF
@@ -1767,7 +1769,7 @@
 *
       END IF
 *
-      WORK( 1 ) = DCMPLX( LWKOPT )
+      WORK( 1 ) = CMPLX( LWKOPT, KIND=DP )
       RWORK( 1 ) = DBLE( LRWKOPT )
       IWORK( 1 ) = LIWKOPT
 *
