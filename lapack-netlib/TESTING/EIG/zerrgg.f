@@ -24,7 +24,7 @@
 *> ZERRGG tests the error exits for ZGGES, ZGGESX, ZGGEV, ZGGEVX,
 *> ZGGES3, ZGGEV3, ZGGGLM, ZGGHRD, ZGGLSE, ZGGQRF, ZGGRQF,
 *> ZGGSVD3, ZGGSVP3, ZHGEQZ, ZTGEVC, ZTGEXC, ZTGSEN, ZTGSJA,
-*> ZTGSNA, ZTGSYL, and ZUNCSD.
+*> ZTGSNA, ZTGSYL, ZUNBDB, and ZUNCSD.
 *> \endverbatim
 *
 *  Arguments:
@@ -54,6 +54,7 @@
 *
 *  =====================================================================
       SUBROUTINE ZERRGG( PATH, NUNIT )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -69,8 +70,8 @@
 *     .. Parameters ..
       INTEGER            NMAX, LW
       PARAMETER          ( NMAX = 3, LW = 6*NMAX )
-      DOUBLE PRECISION   ONE, ZERO
-      PARAMETER          ( ONE = 1.0D+0, ZERO = 0.0D+0 )
+      DOUBLE PRECISION   ZERO, ONE
+      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
 *     ..
 *     .. Local Scalars ..
       CHARACTER*2        C2
@@ -96,7 +97,7 @@
       EXTERNAL           CHKXER, ZGGES,  ZGGESX, ZGGEV,  ZGGEVX, ZGGGLM,
      $                   ZGGHRD, ZGGLSE, ZGGQRF, ZGGRQF,
      $                   ZHGEQZ, ZTGEVC, ZTGEXC, ZTGSEN, ZTGSJA, ZTGSNA,
-     $                   ZTGSYL, ZUNCSD, ZGGES3, ZGGEV3, ZGGHD3,
+     $                   ZTGSYL, ZUNBDB, ZUNCSD, ZGGES3, ZGGEV3, ZGGHD3,
      $                   ZGGSVD3, ZGGSVP3, XLAENV
 *     ..
 *     .. Scalars in Common ..
@@ -128,8 +129,8 @@
          B( I, I ) = ONE
    30 CONTINUE
       OK = .TRUE.
-      TOLA = 1.0D0
-      TOLB = 1.0D0
+      TOLA = ONE
+      TOLB = ONE
       IFST = 1
       ILST = 1
       NT = 0
@@ -632,6 +633,23 @@
      $                 -1, W, LW, RW, LW, IW, INFO )
          CALL CHKXER( 'ZUNCSD', INFOT, NOUT, LERR, OK )
          NT = NT + 8
+*
+*        ZUNBDB
+*
+         SRNAMT = 'ZUNBDB'
+         INFOT = 3
+         CALL ZUNBDB( 'N', 'N', -1, 0, 0, A, 1, A, 1, A, 1, A, 1,
+     $                R1, R1, A, A, A, A, W, LW, INFO )
+         CALL CHKXER( 'ZUNBDB', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZUNBDB( 'N', 'N', 1, -1, 0, A, 1, A, 1, A, 1, A, 1,
+     $                R1, R1, A, A, A, A, W, LW, INFO )
+         CALL CHKXER( 'ZUNBDB', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZUNBDB( 'N', 'N', 1, 1, -1, A, 1, A, 1, A, 1, A, 1,
+     $                R1, R1, A, A, A, A, W, LW, INFO )
+         CALL CHKXER( 'ZUNBDB', INFOT, NOUT, LERR, OK )
+         NT = NT + 3
 *
 *     Test error exits for the GQR path.
 *
