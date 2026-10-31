@@ -73,7 +73,7 @@ jobs:
       RUN mkdir /tmp/SDE && cd /tmp/SDE && \\
           INTEL_SDE_URL=$(curl -s https://www.intel.com/content/www/us/en/download/684897/intel-software-development-emulator.html | grep -Po 'https://downloadmirror.intel.com/.*lin.tar.xz(?=")') && \
           mkdir sde-external && \\
-          wget --quiet -O sde-external-lin.tar.xz $INTEL_SDE_URL && \\
+          wget --quiet -O sde-external-lin.tar.xz ${INTEL_SDE_URL} && \\
           tar -xJvf sde-external-lin.tar.xz -C /tmp/SDE/sde-external --strip-components=1
       RUN cd /tmp/openblas && CC=gcc make QUIET_MAKE=1 DYNAMIC_ARCH=1 NUM_THREADS=32 BINARY=64
       CMD cd /tmp/openblas && echo 0 > /proc/sys/kernel/yama/ptrace_scope && CC=gcc OPENBLAS_VERBOSE=2 /tmp/SDE/sde-external/sde64 -cpuid_in /tmp/SDE/sde-external/misc/cpuid/skx/cpuid.def -- make -C utest DYNAMIC_ARCH=1 NUM_THREADS=32 BINARY=64" > Dockerfile
