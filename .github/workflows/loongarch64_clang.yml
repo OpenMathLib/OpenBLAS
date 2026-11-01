@@ -49,7 +49,7 @@ jobs:
       - name: Install APT deps
         run: |
           sudo apt-get update
-          sudo apt-get install autoconf automake autotools-dev ninja-build make ccache libglib2.0-dev
+          sudo apt-get install autoconf automake autotools-dev ninja-build make ccache libglib2.0-dev libxml2
 
       - name: Download and install loongarch64-toolchain
         run: |
