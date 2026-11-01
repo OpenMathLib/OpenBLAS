@@ -70,6 +70,7 @@ jobs:
           cmake \\
           gfortran \\
           make \\
+          xz-utils \\
           wget
       RUN mkdir /tmp/SDE && cd /tmp/SDE && \\
           INTEL_SDE_URL=$(curl -s https://www.intel.com/content/www/us/en/download/684897/intel-software-development-emulator.html | grep -Po 'https://downloadmirror.intel.com/.*lin.tar.xz(?=")') && \
