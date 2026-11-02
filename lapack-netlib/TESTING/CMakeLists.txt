@@ -58,6 +58,7 @@ add_lapack_test(slse.out lse.in xeigtsts)
 # ======== SINGLE DMD EIG TESTS ===========================
 add_lapack_test(sdmd.out sdmd.in xdmdeigtsts)
 add_test(NAME LAPACK-test_sgges3_scaling COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_sgges3_scaling)
+add_test(NAME LAPACK-test_sgesvj_emptsw COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_sgesvj_emptsw)
 endif()
 
 if(BUILD_DOUBLE)
@@ -93,6 +94,7 @@ add_lapack_test(dlse.out lse.in xeigtstd)
 # ======== DOUBLE DMD EIG TESTS ===========================
 add_lapack_test(ddmd.out ddmd.in xdmdeigtstd)
 add_test(NAME LAPACK-test_dgges3_scaling COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_dgges3_scaling)
+add_test(NAME LAPACK-test_dgesvj_emptsw COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_dgesvj_emptsw)
 endif()
 
 if(BUILD_COMPLEX)
@@ -126,6 +128,7 @@ add_lapack_test(clse.out lse.in xeigtstc)
 # ======== COMPLEX DMD EIG TESTS ===========================
 add_lapack_test(cdmd.out cdmd.in xdmdeigtstc)
 add_test(NAME LAPACK-test_cgges3_scaling COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_cgges3_scaling)
+add_test(NAME LAPACK-test_cgesvj_emptsw COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_cgesvj_emptsw)
 endif()
 
 if(BUILD_COMPLEX16)
@@ -161,6 +164,7 @@ add_lapack_test(zlse.out lse.in xeigtstz)
 # ======== COMPLEX16 DMD EIG TESTS ===========================
 add_lapack_test(zdmd.out zdmd.in xdmdeigtstz)
 add_test(NAME LAPACK-test_zgges3_scaling COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_zgges3_scaling)
+add_test(NAME LAPACK-test_zgesvj_emptsw COMMAND ${CMAKE_CURRENT_BINARY_DIR}/EIG/test_zgesvj_emptsw)
 endif()
 
 

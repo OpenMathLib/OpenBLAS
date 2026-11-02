@@ -1,639 +1,223 @@
-#######################################################################
-#  This makefile runs the test programs for the linear equation routines
-#  and the eigenvalue routines in LAPACK.  The test output files
-#  are grouped as follows:
+########################################################################
+#  This is the makefile for the eigenvalue test program from LAPACK.
+#  The test files are organized as follows:
 #
-#       SLINTST,SEIGTST  -- Single precision real test routines
-#       CLINTST,CEIGTST  -- Single precision complex test routines
-#       DLINTST,DEIGTST  -- Double precision real test routines
-#       ZLINTST,ZEIGTST  -- Double precision complex test routines
+#     AEIGTST -- Auxiliary test routines used in all precisions
+#     SCIGTST -- Auxiliary test routines used in single precision
+#     DZIGTST -- Auxiliary test routines used in double precision
+#     SEIGTST -- Single precision real test routines
+#     CEIGTST -- Single precision complex test routines
+#     DEIGTST -- Double precision real test routines
+#     ZEIGTST -- Double precision complex test routines
 #
-#  Test programs can be executed for all or some of the four different
-#  precisions.  Enter 'make' followed by one or more of the data types
-#  desired.
-#  Some examples:
+#  Test programs can be generated for all or some of the four different
+#  precisions.  Enter make followed by one or more of the data types
+#  desired.  Some examples:
 #       make single
 #       make single complex
 #       make single double complex complex16
 #  Alternatively, the command
 #       make
-#  without any arguments runs all eight test programs.
-#  The executable files are called:
-#       xlintsts, xlintstd, xlintstc, and xlintstz for LIN
-#       xeigtsts, xeigtstd, xeigtstc, and xeigtstz for EIG
+#  without any arguments creates all four test programs.
+#  The executable files are called
+#       xeigtsts, xeigtstd, xeigtstc, and xeigtstz
 #
-#  To remove the output files after the tests have been run, enter
-#       make cleantest
+#  To remove the object files after the executable files have been
+#  created, enter
+#       make cleanobj
+#  On some systems, you can force the source files to be recompiled by
+#  entering (for example)
+#       make single FRC=FRC
 #
-#  To re-run specific tests after a make, enter (for example):
-#       'rm ssvd.out; make'  or:
-#       'make ssvd.out' or:
-#       'touch svd.in; make' (to re-run the single precision SVD tests.)
-#
-#       'rm *svd.out; make'  (to re-run all the SVD tests.)
-#
-#######################################################################
+########################################################################
 
-TOPSRCDIR = ..
+TOPSRCDIR = ../..
 include $(TOPSRCDIR)/make.inc
 
+AEIGTST = \
+   alahdg.o \
+   alasum.o \
+   alasvm.o \
+   alareq.o \
+   ilaenv.o \
+   xerbla.o \
+   xlaenv.o \
+   chkxer.o
+
+SCIGTST = slafts.o slahd2.o slasum.o slatb9.o sstech.o sstect.o \
+   ssvdch.o ssvdct.o ssxt1.o
+
+SEIGTST = schkee.o \
+   sbdt01.o sbdt02.o sbdt03.o sbdt04.o sbdt05.o \
+   schkbb.o schkbd.o schkbk.o schkbl.o schkec.o \
+   schkgg.o schkgk.o schkgl.o schkhs.o schksb.o schkst.o schkst2stg.o schksb2stg.o \
+   sckcsd.o sckglm.o sckgqr.o sckgsv.o scklse.o scsdts.o \
+   sdrges.o sdrgev.o sdrges3.o sdrgev3.o sdrgsx.o sdrgvx.o \
+   sdrvbd.o sdrvmr3.o sdrves.o sdrvev.o sdrvsg.o sdrvsg2stg.o \
+   sdrvst.o sdrvst2stg.o sdrvsx.o sdrvvx.o \
+   serrbd.o serrec.o serred.o serrgg.o serrhs.o serrst.o \
+   sget02.o sget10.o sget22.o sget23.o sget24.o sget31.o \
+   sget32.o sget33.o sget34.o sget35.o sget36.o \
+   sget37.o sget38.o sget39.o sget40.o sget51.o sget52.o sget53.o \
+   sget54.o sglmts.o sgqrts.o sgrqts.o sgsvts3.o \
+   shst01.o slarfy.o slarhs.o slatm4.o slctes.o slctsx.o slsets.o sort01.o \
+   sort03.o ssbt21.o ssgt01.o sslect.o sspt21.o sstt21.o \
+   sstt22.o ssyl01.o ssyt21.o ssyt22.o
+
+SDMDEIGTST = schkdmd.o
+
+CEIGTST = cchkee.o \
+   cbdt01.o cbdt02.o cbdt03.o cbdt05.o \
+   cchkbb.o cchkbd.o cchkbk.o cchkbl.o cchkec.o \
+   cchkgg.o cchkgk.o cchkgl.o cchkhb.o cchkhs.o cchkst.o cchkst2stg.o cchkhb2stg.o \
+   cckcsd.o cckglm.o cckgqr.o cckgsv.o ccklse.o ccsdts.o \
+   cdrges.o cdrgev.o cdrges3.o cdrgev3.o cdrgsx.o cdrgvx.o \
+   cdrvbd.o cdrvmr3.o cdrves.o cdrvev.o cdrvsg.o cdrvsg2stg.o \
+   cdrvst.o cdrvst2stg.o cdrvsx.o cdrvvx.o \
+   cerrbd.o cerrec.o cerred.o cerrgg.o cerrhs.o cerrst.o \
+   cget02.o cget10.o cget22.o cget23.o cget24.o \
+   cget35.o cget36.o cget37.o cget38.o cget51.o cget52.o \
+   cget54.o cglmts.o cgqrts.o cgrqts.o cgsvts3.o \
+   chbt21.o chet21.o chet22.o chpt21.o chst01.o \
+   clarfy.o clarhs.o clatm4.o clctes.o clctsx.o clsets.o csbmv.o \
+   csgt01.o cslect.o csyl01.o\
+   cstt21.o cstt22.o cunt01.o cunt03.o
+
+CDMDEIGTST = cchkdmd.o
+
+DZIGTST = dlafts.o dlahd2.o dlasum.o dlatb9.o dstech.o dstect.o \
+   dsvdch.o dsvdct.o dsxt1.o
+
+DEIGTST = dchkee.o \
+   dbdt01.o dbdt02.o dbdt03.o dbdt04.o dbdt05.o \
+   dchkbb.o dchkbd.o dchkbk.o dchkbl.o dchkec.o \
+   dchkgg.o dchkgk.o dchkgl.o dchkhs.o dchksb.o dchkst.o dchkst2stg.o dchksb2stg.o \
+   dckcsd.o dckglm.o dckgqr.o dckgsv.o dcklse.o dcsdts.o \
+   ddrges.o ddrgev.o ddrges3.o ddrgev3.o ddrgsx.o ddrgvx.o \
+   ddrvbd.o ddrvmr3.o ddrves.o ddrvev.o ddrvsg.o ddrvsg2stg.o \
+   ddrvst.o ddrvst2stg.o ddrvsx.o ddrvvx.o \
+   derrbd.o derrec.o derred.o derrgg.o derrhs.o derrst.o \
+   dget02.o dget10.o dget22.o dget23.o dget24.o dget31.o \
+   dget32.o dget33.o dget34.o dget35.o dget36.o \
+   dget37.o dget38.o dget39.o dget40.o dget51.o dget52.o dget53.o \
+   dget54.o dglmts.o dgqrts.o dgrqts.o dgsvts3.o \
+   dhst01.o dlarfy.o dlarhs.o dlatm4.o dlctes.o dlctsx.o dlsets.o dort01.o \
+   dort03.o dsbt21.o dsgt01.o dslect.o dspt21.o dstt21.o \
+   dstt22.o dsyl01.o dsyt21.o dsyt22.o
+
+DDMDEIGTST = dchkdmd.o
+
+ZEIGTST = zchkee.o \
+   zbdt01.o zbdt02.o zbdt03.o zbdt05.o \
+   zchkbb.o zchkbd.o zchkbk.o zchkbl.o zchkec.o \
+   zchkgg.o zchkgk.o zchkgl.o zchkhb.o zchkhs.o zchkst.o zchkst2stg.o zchkhb2stg.o \
+   zckcsd.o zckglm.o zckgqr.o zckgsv.o zcklse.o zcsdts.o \
+   zdrges.o zdrgev.o zdrges3.o zdrgev3.o zdrgsx.o zdrgvx.o \
+   zdrvbd.o zdrvmr3.o zdrves.o zdrvev.o zdrvsg.o zdrvsg2stg.o \
+   zdrvst.o zdrvst2stg.o zdrvsx.o zdrvvx.o \
+   zerrbd.o zerrec.o zerred.o zerrgg.o zerrhs.o zerrst.o \
+   zget02.o zget10.o zget22.o zget23.o zget24.o \
+   zget35.o zget36.o zget37.o zget38.o zget51.o zget52.o \
+   zget54.o zglmts.o zgqrts.o zgrqts.o zgsvts3.o \
+   zhbt21.o zhet21.o zhet22.o zhpt21.o zhst01.o \
+   zlarfy.o zlarhs.o zlatm4.o zlctes.o zlctsx.o zlsets.o zsbmv.o \
+   zsgt01.o zslect.o zsyl01.o\
+   zstt21.o zstt22.o zunt01.o zunt03.o
+
+ZDMDEIGTST = zchkdmd.o
+
 .PHONY: all
-all: single complex double complex16 singleproto doubleproto complexproto complex16proto
-
-SEIGTST= snep.out \
-         ssep.out \
-         sse2.out \
-         ssvd.out \
-         sec.out \
-         sed.out \
-         sgg.out \
-         sgd.out \
-         ssb.out \
-         ssg.out \
-         sbal.out \
-         sbak.out \
-         sgbal.out \
-         sgbak.out \
-         sbb.out \
-         sglm.out \
-         sgqr.out \
-         sgsv.out \
-         scsd.out \
-         slse.out
-
-SDMDEIGTST= sdmd.out
-
-CEIGTST= cnep.out \
-         csep.out \
-         cse2.out \
-         csvd.out \
-         cec.out \
-         ced.out \
-         cgg.out \
-         cgd.out \
-         csb.out \
-         csg.out \
-         cbal.out \
-         cbak.out \
-         cgbal.out \
-         cgbak.out \
-         cbb.out \
-         cglm.out \
-         cgqr.out \
-         cgsv.out \
-         ccsd.out \
-         clse.out
-
-CDMDEIGTST= cdmd.out
-
-DEIGTST= dnep.out \
-         dsep.out \
-         dse2.out \
-         dsvd.out \
-         dec.out \
-         ded.out \
-         dgg.out \
-         dgd.out \
-         dsb.out \
-         dsg.out \
-         dbal.out \
-         dbak.out \
-         dgbal.out \
-         dgbak.out \
-         dbb.out \
-         dglm.out \
-         dgqr.out \
-         dgsv.out \
-         dcsd.out \
-         dlse.out
-
-DDMDEIGTST= ddmd.out
-
-ZEIGTST= znep.out \
-         zsep.out \
-         zse2.out \
-         zsvd.out \
-         zec.out \
-         zed.out \
-         zgg.out \
-         zgd.out \
-         zsb.out \
-         zsg.out \
-         zbal.out \
-         zbak.out \
-         zgbal.out \
-         zgbak.out \
-         zbb.out \
-         zglm.out \
-         zgqr.out \
-         zgsv.out \
-         zcsd.out \
-         zlse.out
-
-ZDMDEIGTST= zdmd.out
-
-SLINTST= stest.out
-
-SLINTSTPROTO= stest_rfp.out
-
-CLINTST= ctest.out
-
-CLINTSTPROTO= ctest_rfp.out
-
-DLINTST= dtest.out
-
-DLINTSTPROTO= dstest.out dtest_rfp.out
-
-ZLINTST= ztest.out
-
-ZLINTSTPROTO= zctest.out ztest_rfp.out
+all: single complex double complex16
 
 .PHONY: single complex double complex16
-single:         $(SLINTST) $(SEIGTST) $(SDMDEIGTST)
-complex:        $(CLINTST) $(CEIGTST) $(CDMDEIGTST)
-double:         $(DLINTST) $(DEIGTST) $(DDMDEIGTST)
-complex16:      $(ZLINTST) $(ZEIGTST) $(ZDMDEIGTST)
-
-.PHONY: singleproto complexproto doubleproto complex16proto
-singleproto:    $(SLINTSTPROTO)
-complexproto:   $(CLINTSTPROTO)
-doubleproto:    $(DLINTSTPROTO)
-complex16proto: $(ZLINTSTPROTO)
-
-#
-# ======== SINGLE LIN TESTS ===========================
-
-stest.out: stest.in LIN/xlintsts
-	@echo Testing REAL LAPACK linear equation routines
-	./LIN/xlintsts < stest.in > $@ 2>&1
-#
-# ======== COMPLEX LIN TESTS ==========================
-
-ctest.out: ctest.in LIN/xlintstc
-	@echo Testing COMPLEX LAPACK linear equation routines
-	./LIN/xlintstc < ctest.in > $@ 2>&1
-#
-# ======== DOUBLE LIN TESTS ===========================
-
-dtest.out: dtest.in LIN/xlintstd
-	@echo Testing DOUBLE PRECISION LAPACK linear equation routines
-	./LIN/xlintstd < dtest.in > $@ 2>&1
-#
-# ======== COMPLEX16 LIN TESTS ========================
-
-ztest.out: ztest.in LIN/xlintstz
-	@echo Testing COMPLEX16 LAPACK linear equation routines
-	./LIN/xlintstz < ztest.in > $@ 2>&1
-#
-# ======== SINGLE-DOUBLE PROTO LIN TESTS ==============
-
-dstest.out: dstest.in LIN/xlintstds
-	@echo Testing SINGLE-DOUBLE PRECISION LAPACK prototype linear equation routines
-	./LIN/xlintstds < dstest.in > $@ 2>&1
-#
-# ======== COMPLEX-COMPLEX16 LIN TESTS ========================
-
-zctest.out: zctest.in LIN/xlintstzc
-	@echo Testing COMPLEX-COMPLEX16 LAPACK prototype linear equation routines
-	./LIN/xlintstzc < zctest.in > $@ 2>&1
-#
-# ======== SINGLE RFP LIN TESTS ========================
-
-stest_rfp.out: stest_rfp.in LIN/xlintstrfs
-	@echo Testing REAL LAPACK RFP prototype linear equation routines
-	./LIN/xlintstrfs < stest_rfp.in > $@ 2>&1
-#
-# ======== COMPLEX16 RFP LIN TESTS ========================
-
-dtest_rfp.out: dtest_rfp.in LIN/xlintstrfd
-	@echo Testing DOUBLE PRECISION LAPACK RFP prototype linear equation routines
-	./LIN/xlintstrfd < dtest_rfp.in > $@ 2>&1
-#
-# ======== COMPLEX16 RFP LIN TESTS ========================
-
-ctest_rfp.out: ctest_rfp.in LIN/xlintstrfc
-	@echo Testing COMPLEX LAPACK RFP prototype linear equation routines
-	./LIN/xlintstrfc < ctest_rfp.in > $@ 2>&1
-#
-# ======== COMPLEX16 RFP LIN TESTS ========================
-
-ztest_rfp.out: ztest_rfp.in LIN/xlintstrfz
-	@echo Testing COMPLEX16 LAPACK RFP prototype linear equation routines
-	./LIN/xlintstrfz < ztest_rfp.in > $@ 2>&1
-#
-#
-# ======== SINGLE EIG TESTS ===========================
-#
-
-snep.out: nep.in EIG/xeigtsts
-	@echo NEP: Testing Nonsymmetric Eigenvalue Problem routines
-	./EIG/xeigtsts < nep.in > $@ 2>&1
-
-ssep.out: sep.in EIG/xeigtsts
-	@echo SEP: Testing Symmetric Eigenvalue Problem routines
-	./EIG/xeigtsts < sep.in > $@ 2>&1
-
-sse2.out: se2.in EIG/xeigtsts
-	@echo SEP: Testing Symmetric Eigenvalue Problem routines
-	./EIG/xeigtsts < se2.in > $@ 2>&1
-
-ssvd.out: svd.in EIG/xeigtsts
-	@echo SVD: Testing Singular Value Decomposition routines
-	./EIG/xeigtsts < svd.in > $@ 2>&1
-
-sec.out: sec.in EIG/xeigtsts
-	@echo SEC: Testing REAL Eigen Condition Routines
-	./EIG/xeigtsts < sec.in > $@ 2>&1
-
-sed.out: sed.in EIG/xeigtsts
-	@echo SEV: Testing REAL Nonsymmetric Eigenvalue Driver
-	./EIG/xeigtsts < sed.in > $@ 2>&1
-
-sgg.out: sgg.in EIG/xeigtsts
-	@echo SGG: Testing REAL Nonsymmetric Generalized Eigenvalue Problem routines
-	./EIG/xeigtsts < sgg.in > $@ 2>&1
-
-sgd.out: sgd.in EIG/xeigtsts
-	@echo SGD: Testing REAL Nonsymmetric Generalized Eigenvalue Problem driver routines
-	./EIG/xeigtsts < sgd.in > $@ 2>&1
-
-ssb.out: ssb.in EIG/xeigtsts
-	@echo SSB: Testing REAL Symmetric Eigenvalue Problem routines
-	./EIG/xeigtsts < ssb.in > $@ 2>&1
-
-ssg.out: ssg.in EIG/xeigtsts
-	@echo SSG: Testing REAL Symmetric Generalized Eigenvalue Problem routines
-	./EIG/xeigtsts < ssg.in > $@ 2>&1
-
-sbal.out: sbal.in EIG/xeigtsts
-	@echo SGEBAL: Testing the balancing of a REAL general matrix
-	./EIG/xeigtsts < sbal.in > $@ 2>&1
-
-sbak.out: sbak.in EIG/xeigtsts
-	@echo SGEBAK: Testing the back transformation of a REAL balanced matrix
-	./EIG/xeigtsts < sbak.in > $@ 2>&1
-
-sgbal.out: sgbal.in EIG/xeigtsts
-	@echo SGGBAL: Testing the balancing of a pair of REAL general matrices
-	./EIG/xeigtsts < sgbal.in > $@ 2>&1
-
-sgbak.out: sgbak.in EIG/xeigtsts
-	@echo SGGBAK: Testing the back transformation of a pair of REAL balanced matrices
-	./EIG/xeigtsts < sgbak.in > $@ 2>&1
-
-sbb.out: sbb.in EIG/xeigtsts
-	@echo SBB: Testing banded Singular Value Decomposition routines
-	./EIG/xeigtsts < sbb.in > $@ 2>&1
-
-sglm.out: glm.in EIG/xeigtsts
-	@echo GLM: Testing Generalized Linear Regression Model routines
-	./EIG/xeigtsts < glm.in > $@ 2>&1
-
-sgqr.out: gqr.in EIG/xeigtsts
-	@echo GQR: Testing Generalized QR and RQ factorization routines
-	./EIG/xeigtsts < gqr.in > $@ 2>&1
-
-sgsv.out: gsv.in EIG/xeigtsts
-	@echo GSV: Testing Generalized Singular Value Decomposition routines
-	./EIG/xeigtsts < gsv.in > $@ 2>&1
-
-scsd.out: csd.in EIG/xeigtsts
-	@echo CSD: Testing CS Decomposition routines
-	./EIG/xeigtsts < csd.in > $@ 2>&1
-
-slse.out: lse.in EIG/xeigtsts
-	@echo LSE: Testing Constrained Linear Least Squares routines
-	./EIG/xeigtsts < lse.in > $@ 2>&1
-
-sdmd.out: sdmd.in EIG/xdmdeigtsts
-	@echo DMD: Testing Dynamic Mode Decomposition routines
-	./EIG/xdmdeigtsts < sdmd.in > $@ 2>&1
-#
-# ======== COMPLEX EIG TESTS ===========================
-
-cnep.out: nep.in EIG/xeigtstc
-	@echo NEP: Testing Nonsymmetric Eigenvalue Problem routines
-	./EIG/xeigtstc < nep.in > $@ 2>&1
-
-csep.out: sep.in EIG/xeigtstc
-	@echo SEP: Testing Symmetric Eigenvalue Problem routines
-	./EIG/xeigtstc < sep.in > $@ 2>&1
-
-cse2.out: se2.in EIG/xeigtstc
-	@echo SEP: Testing Symmetric Eigenvalue Problem routines
-	./EIG/xeigtstc < se2.in > $@ 2>&1
-
-csvd.out: svd.in EIG/xeigtstc
-	@echo SVD: Testing Singular Value Decomposition routines
-	./EIG/xeigtstc < svd.in > $@ 2>&1
-
-cec.out: cec.in EIG/xeigtstc
-	@echo CEC: Testing COMPLEX Eigen Condition Routines
-	./EIG/xeigtstc < cec.in > $@ 2>&1
-
-ced.out: ced.in EIG/xeigtstc
-	@echo CES: Testing COMPLEX Nonsymmetric Schur Form Driver
-	./EIG/xeigtstc < ced.in > $@ 2>&1
-
-cgg.out: cgg.in EIG/xeigtstc
-	@echo CGG: Testing COMPLEX Nonsymmetric Generalized Eigenvalue Problem routines
-	./EIG/xeigtstc < cgg.in > $@ 2>&1
-
-cgd.out: cgd.in EIG/xeigtstc
-	@echo CGD: Testing COMPLEX Nonsymmetric Generalized Eigenvalue Problem driver routines
-	./EIG/xeigtstc < cgd.in > $@ 2>&1
-
-csb.out: csb.in EIG/xeigtstc
-	@echo CHB: Testing Hermitian Eigenvalue Problem routines
-	./EIG/xeigtstc < csb.in > $@ 2>&1
-
-csg.out: csg.in EIG/xeigtstc
-	@echo CSG: Testing Symmetric Generalized Eigenvalue Problem routines
-	./EIG/xeigtstc < csg.in > $@ 2>&1
-
-cbal.out: cbal.in EIG/xeigtstc
-	@echo CGEBAL: Testing the balancing of a COMPLEX general matrix
-	./EIG/xeigtstc < cbal.in > $@ 2>&1
-
-cbak.out: cbak.in EIG/xeigtstc
-	@echo CGEBAK: Testing the back transformation of a COMPLEX balanced matrix
-	./EIG/xeigtstc < cbak.in > $@ 2>&1
-
-cgbal.out: cgbal.in EIG/xeigtstc
-	@echo CGGBAL: Testing the balancing of a pair of COMPLEX general matrices
-	./EIG/xeigtstc < cgbal.in > $@ 2>&1
-
-cgbak.out: cgbak.in EIG/xeigtstc
-	@echo CGGBAK: Testing the back transformation of a pair of COMPLEX balanced matrices
-	./EIG/xeigtstc < cgbak.in > $@ 2>&1
-
-cbb.out: cbb.in EIG/xeigtstc
-	@echo CBB: Testing banded Singular Value Decomposition routines
-	./EIG/xeigtstc < cbb.in > $@ 2>&1
-
-cglm.out: glm.in EIG/xeigtstc
-	@echo GLM: Testing Generalized Linear Regression Model routines
-	./EIG/xeigtstc < glm.in > $@ 2>&1
-
-cgqr.out: gqr.in EIG/xeigtstc
-	@echo GQR: Testing Generalized QR and RQ factorization routines
-	./EIG/xeigtstc < gqr.in > $@ 2>&1
-
-cgsv.out: gsv.in EIG/xeigtstc
-	@echo GSV: Testing Generalized Singular Value Decomposition routines
-	./EIG/xeigtstc < gsv.in > $@ 2>&1
-
-ccsd.out: csd.in EIG/xeigtstc
-	@echo CSD: Testing CS Decomposition routines
-	./EIG/xeigtstc < csd.in > $@ 2>&1
-
-clse.out: lse.in EIG/xeigtstc
-	@echo LSE: Testing Constrained Linear Least Squares routines
-	./EIG/xeigtstc < lse.in > $@ 2>&1
-
-cdmd.out: cdmd.in EIG/xdmdeigtstc
-	@echo DMD: Testing Dynamic Mode Decomposition routines
-	./EIG/xdmdeigtstc < cdmd.in > $@ 2>&1
-#
-# ======== DOUBLE EIG TESTS ===========================
-
-dnep.out: nep.in EIG/xeigtstd
-	@echo NEP: Testing Nonsymmetric Eigenvalue Problem routines
-	./EIG/xeigtstd < nep.in > $@ 2>&1
-
-dsep.out: sep.in EIG/xeigtstd
-	@echo SEP: Testing Symmetric Eigenvalue Problem routines
-	./EIG/xeigtstd < sep.in > $@ 2>&1
-
-dse2.out: se2.in EIG/xeigtstd
-	@echo SEP: Testing Symmetric Eigenvalue Problem routines
-	./EIG/xeigtstd < se2.in > $@ 2>&1
-
-dsvd.out: svd.in EIG/xeigtstd
-	@echo SVD: Testing Singular Value Decomposition routines
-	./EIG/xeigtstd < svd.in > $@ 2>&1
-
-dec.out: dec.in EIG/xeigtstd
-	@echo DEC: Testing DOUBLE PRECISION Eigen Condition Routines
-	./EIG/xeigtstd < dec.in > $@ 2>&1
-
-ded.out: ded.in EIG/xeigtstd
-	@echo DEV: Testing DOUBLE PRECISION Nonsymmetric Eigenvalue Driver
-	./EIG/xeigtstd < ded.in > $@ 2>&1
-
-dgg.out: dgg.in EIG/xeigtstd
-	@echo DGG: Testing DOUBLE PRECISION Nonsymmetric Generalized Eigenvalue Problem routines
-	./EIG/xeigtstd < dgg.in > $@ 2>&1
-
-dgd.out: dgd.in EIG/xeigtstd
-	@echo DGD: Testing DOUBLE PRECISION Nonsymmetric Generalized Eigenvalue Problem driver routines
-	./EIG/xeigtstd < dgd.in > $@ 2>&1
-
-dsb.out: dsb.in EIG/xeigtstd
-	@echo DSB: Testing DOUBLE PRECISION Symmetric Eigenvalue Problem routines
-	./EIG/xeigtstd < dsb.in > $@ 2>&1
-
-dsg.out: dsg.in EIG/xeigtstd
-	@echo DSG: Testing DOUBLE PRECISION Symmetric Generalized Eigenvalue Problem routines
-	./EIG/xeigtstd < dsg.in > $@ 2>&1
-
-dbal.out: dbal.in EIG/xeigtstd
-	@echo DGEBAL: Testing the balancing of a DOUBLE PRECISION general matrix
-	./EIG/xeigtstd < dbal.in > $@ 2>&1
-
-dbak.out: dbak.in EIG/xeigtstd
-	@echo DGEBAK: Testing the back transformation of a DOUBLE PRECISION balanced matrix
-	./EIG/xeigtstd < dbak.in > $@ 2>&1
-
-dgbal.out: dgbal.in EIG/xeigtstd
-	@echo DGGBAL: Testing the balancing of a pair of DOUBLE PRECISION general matrices
-	./EIG/xeigtstd < dgbal.in > $@ 2>&1
-
-dgbak.out: dgbak.in EIG/xeigtstd
-	@echo DGGBAK: Testing the back transformation of a pair of DOUBLE PRECISION balanced matrices
-	./EIG/xeigtstd < dgbak.in > $@ 2>&1
-
-dbb.out: dbb.in EIG/xeigtstd
-	@echo DBB: Testing banded Singular Value Decomposition routines
-	./EIG/xeigtstd < dbb.in > $@ 2>&1
-
-dglm.out: glm.in EIG/xeigtstd
-	@echo GLM: Testing Generalized Linear Regression Model routines
-	./EIG/xeigtstd < glm.in > $@ 2>&1
-
-dgqr.out: gqr.in EIG/xeigtstd
-	@echo GQR: Testing Generalized QR and RQ factorization routines
-	./EIG/xeigtstd < gqr.in > $@ 2>&1
-
-dgsv.out: gsv.in EIG/xeigtstd
-	@echo GSV: Testing Generalized Singular Value Decomposition routines
-	./EIG/xeigtstd < gsv.in > $@ 2>&1
-
-dcsd.out: csd.in EIG/xeigtstd
-	@echo CSD: Testing CS Decomposition routines
-	./EIG/xeigtstd < csd.in > $@ 2>&1
-
-dlse.out: lse.in EIG/xeigtstd
-	@echo LSE: Testing Constrained Linear Least Squares routines
-	./EIG/xeigtstd < lse.in > $@ 2>&1
-
-ddmd.out: ddmd.in EIG/xdmdeigtstd
-	@echo DMD: Testing Dynamic Mode Decomposition routines
-	./EIG/xdmdeigtstd < ddmd.in > $@ 2>&1
-#
-# ======== COMPLEX16 EIG TESTS ===========================
-
-znep.out: nep.in EIG/xeigtstz
-	@echo NEP: Testing Nonsymmetric Eigenvalue Problem routines
-	./EIG/xeigtstz < nep.in > $@ 2>&1
-
-zsep.out: sep.in EIG/xeigtstz
-	@echo SEP: Testing Symmetric Eigenvalue Problem routines
-	./EIG/xeigtstz < sep.in > $@ 2>&1
-
-zse2.out: se2.in EIG/xeigtstz
-	@echo SEP: Testing Symmetric Eigenvalue Problem routines
-	./EIG/xeigtstz < se2.in > $@ 2>&1
-
-zsvd.out: svd.in EIG/xeigtstz
-	@echo SVD: Testing Singular Value Decomposition routines
-	./EIG/xeigtstz < svd.in > $@ 2>&1
+single: xeigtsts xdmdeigtsts test_sgges3_scaling
+complex: xeigtstc xdmdeigtstc test_cgges3_scaling
+double: xeigtstd xdmdeigtstd test_dgges3_scaling
+complex16: xeigtstz xdmdeigtstz test_zgges3_scaling
 
-zec.out: zec.in EIG/xeigtstz
-	@echo ZEC: Testing COMPLEX16 Eigen Condition Routines
-	./EIG/xeigtstz < zec.in > $@ 2>&1
+xdmdeigtsts: $(SDMDEIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zed.out: zed.in EIG/xeigtstz
-	@echo ZES: Testing COMPLEX16 Nonsymmetric Schur Form Driver
-	./EIG/xeigtstz < zed.in > $@ 2>&1
+xdmdeigtstc: $(CDMDEIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zgg.out: zgg.in EIG/xeigtstz
-	@echo ZGG: Testing COMPLEX16 Nonsymmetric Generalized Eigenvalue Problem routines
-	./EIG/xeigtstz < zgg.in > $@ 2>&1
+xdmdeigtstd: $(DDMDEIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zgd.out: zgd.in EIG/xeigtstz
-	@echo ZGD: Testing COMPLEX16 Nonsymmetric Generalized Eigenvalue Problem driver routines
-	./EIG/xeigtstz < zgd.in > $@ 2>&1
+xdmdeigtstz: $(ZDMDEIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zsb.out: zsb.in EIG/xeigtstz
-	@echo ZHB: Testing Hermitian Eigenvalue Problem routines
-	./EIG/xeigtstz < zsb.in > $@ 2>&1
+xeigtsts: $(SEIGTST) $(SCIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zsg.out: zsg.in EIG/xeigtstz
-	@echo ZSG: Testing Symmetric Generalized Eigenvalue Problem routines
-	./EIG/xeigtstz < zsg.in > $@ 2>&1
+xeigtstc: $(CEIGTST) $(SCIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zbal.out: zbal.in EIG/xeigtstz
-	@echo ZGEBAL: Testing the balancing of a COMPLEX16 general matrix
-	./EIG/xeigtstz < zbal.in > $@ 2>&1
+xeigtstd: $(DEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zbak.out: zbak.in EIG/xeigtstz
-	@echo ZGEBAK: Testing the back transformation of a COMPLEX16 balanced matrix
-	./EIG/xeigtstz < zbak.in > $@ 2>&1
+xeigtstz: $(ZEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zgbal.out: zgbal.in EIG/xeigtstz
-	@echo ZGGBAL: Testing the balancing of a pair of COMPLEX general matrices
-	./EIG/xeigtstz < zgbal.in > $@ 2>&1
+test_sgges3_scaling: test_sgges3_scaling.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zgbak.out: zgbak.in EIG/xeigtstz
-	@echo ZGGBAK: Testing the back transformation of a pair of COMPLEX16 balanced matrices
-	./EIG/xeigtstz < zgbak.in > $@ 2>&1
+test_dgges3_scaling: test_dgges3_scaling.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zbb.out: zbb.in EIG/xeigtstz
-	@echo ZBB: Testing banded Singular Value Decomposition routines
-	./EIG/xeigtstz < zbb.in > $@ 2>&1
+test_cgges3_scaling: test_cgges3_scaling.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zglm.out: glm.in EIG/xeigtstz
-	@echo GLM: Testing Generalized Linear Regression Model routines
-	./EIG/xeigtstz < glm.in > $@ 2>&1
+test_zgges3_scaling: test_zgges3_scaling.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zgqr.out: gqr.in EIG/xeigtstz
-	@echo GQR: Testing Generalized QR and RQ factorization routines
-	./EIG/xeigtstz < gqr.in > $@ 2>&1
+test_sgesvj_emptsw: test_sgesvj_emptsw.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zgsv.out: gsv.in EIG/xeigtstz
-	@echo GSV: Testing Generalized Singular Value Decomposition routines
-	./EIG/xeigtstz < gsv.in > $@ 2>&1
+test_dgesvj_emptsw: test_dgesvj_emptsw.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zcsd.out: csd.in EIG/xeigtstz
-	@echo CSD: Testing CS Decomposition routines
-	./EIG/xeigtstz < csd.in > $@ 2>&1
+test_cgesvj_emptsw: test_cgesvj_emptsw.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zlse.out: lse.in EIG/xeigtstz
-	@echo LSE: Testing Constrained Linear Least Squares routines
-	./EIG/xeigtstz < lse.in > $@ 2>&1
+test_zgesvj_emptsw: test_zgesvj_emptsw.f90 ../$(LAPACKLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-zdmd.out: zdmd.in EIG/xdmdeigtstz
-	@echo DMD: Testing Dynamic Mode Decomposition routines
-	./EIG/xdmdeigtstz < zdmd.in > $@ 2>&1
-# ==============================================================================
-
-LIN/xlintsts: $(FRCLIN) $(FRC)
-	$(MAKE) -C LIN xlintsts
-
-LIN/xlintstc: $(FRCLIN) $(FRC)
-	$(MAKE) -C LIN xlintstc
-
-LIN/xlintstd: $(FRCLIN) $(FRC)
-	$(MAKE) -C LIN xlintstd
-
-LIN/xlintstz: $(FRCLIN) $(FRC)
-	$(MAKE) -C LIN xlintstz
-
-LIN/xlintstrfs: $(FRCLIN) $(FRC)
-	$(MAKE) -C LIN xlintstrfs
-
-LIN/xlintstrfc: $(FRCLIN) $(FRC)
-	$(MAKE) -C LIN xlintstrfc
-
-LIN/xlintstrfd: $(FRCLIN) $(FRC)
-	$(MAKE) -C LIN xlintstrfd
-
-LIN/xlintstrfz: $(FRCLIN) $(FRC)
-	$(MAKE) -C LIN xlintstrfz
-
-LIN/xlintstds: $(FRCLIN) $(FRC)
-	$(MAKE) -C LIN xlintstds
-
-LIN/xlintstzc: $(FRCLIN) $(FRC)
-	$(MAKE) -C LIN xlintstzc
-
-EIG/xeigtsts: $(FRCEIG) $(FRC)
-	$(MAKE) -C EIG xeigtsts
-
-EIG/xdmdeigtsts: $(FRCEIG) $(FRC)
-	$(MAKE) -C EIG xdmdeigtsts
-
-EIG/xeigtstc: $(FRCEIG) $(FRC)
-	$(MAKE) -C EIG xeigtstc
-
-EIG/xdmdeigtstc: $(FRCEIG) $(FRC)
-	$(MAKE) -C EIG xdmdeigtstc
-
-EIG/xeigtstd: $(FRCEIG) $(FRC)
-	$(MAKE) -C EIG xeigtstd
-
-EIG/xdmdeigtstd: $(FRCEIG) $(FRC)
-	$(MAKE) -C EIG xdmdeigtstd
-
-EIG/xeigtstz: $(FRCEIG) $(FRC)
-	$(MAKE) -C EIG xeigtstz
-
-EIG/xdmdeigtstz: $(FRCEIG) $(FRC)
-	$(MAKE) -C EIG xdmdeigtstz
-
-.PHONY: clean cleantest
-clean: cleantest
-cleantest:
-	rm -f *.out core
-
-FRCLIN:
-	@FRCLIN=$(FRCLIN)
-
-FRCEIG:
-	@FRCEIG=$(FRCEIG)
+$(SDMDEIGTST): $(FRC)
+$(CDMDEIGTST): $(FRC)
+$(DDMDEIGTST): $(FRC)
+$(ZDMDEIGTST): $(FRC)
+$(AEIGTST): $(FRC)
+$(SCIGTST): $(FRC)
+$(DZIGTST): $(FRC)
+$(SEIGTST): $(FRC)
+$(CEIGTST): $(FRC)
+$(DEIGTST): $(FRC)
+$(ZEIGTST): $(FRC)
 
 FRC:
 	@FRC=$(FRC)
 
-.NOTPARALLEL:
+.PHONY: clean cleanobj cleanexe
+clean: cleanobj cleanexe
+cleanobj:
+	rm -f *.o
+cleanexe:
+	rm -f xeigtst* xdmdeigtst*
+
+schkee.o: schkee.F
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
+dchkee.o: dchkee.F
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
+cchkee.o: cchkee.F
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
+zchkee.o: zchkee.F
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
+schkdmd.o: schkdmd.f90
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
+cchkdmd.o: cchkdmd.f90
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
+dchkdmd.o: dchkdmd.f90
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
+zchkdmd.o: zchkdmd.f90
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<

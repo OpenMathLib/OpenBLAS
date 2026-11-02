@@ -574,7 +574,7 @@ f"> */
 
 /*     -#- Row-cyclic Jacobi SVD algorithm with column pivoting -#- */
 
-    emptsw = *n * (*n - 1) / 2;
+    emptsw = (*n / 2) * (*n - 1 + *n % 2);
     notrot = 0;
     fastr[0] = 0.;
 
