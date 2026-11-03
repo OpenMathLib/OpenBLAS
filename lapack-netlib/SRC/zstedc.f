@@ -232,8 +232,9 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      DOUBLE PRECISION   DLAMCH, DLANST
-      EXTERNAL           LSAME, ILAENV, DLAMCH, DLANST
+      DOUBLE PRECISION   DLAMCH, DLANST, DROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, DLAMCH, DLANST,
+     $                   DROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DLASCL, DLASET, DSTEDC, DSTEQR, DSTERF,
@@ -295,7 +296,7 @@
             LRWMIN = 1 + 4*N + 2*N**2
             LIWMIN = 3 + 5*N
          END IF
-         WORK( 1 ) = LWMIN
+         WORK( 1 ) = DROUNDUP_LWORK(LWMIN)
          RWORK( 1 ) = DBLE( LRWMIN )
          IWORK( 1 ) = LIWMIN
 *
@@ -471,7 +472,7 @@
       END IF
 *
    70 CONTINUE
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) = DROUNDUP_LWORK(LWMIN)
       RWORK( 1 ) = DBLE( LRWMIN )
       IWORK( 1 ) = LIWMIN
 *
