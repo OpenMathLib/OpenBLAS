@@ -226,12 +226,10 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
-static doublereal c_b9 = -1.;
+static doublereal c_b11 = -1.;
 
 /* > \brief \b DGBTF2 computes the LU factorization of a general band matrix using the unblocked version of th
 e algorithm. */
@@ -241,7 +239,6 @@ e algorithm. */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DGBTF2 + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgbtf2.
 f"> */
@@ -252,7 +249,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgbtf2.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -350,9 +346,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup doubleGBcomputational */
+/* > \ingroup gbtf2 */
 
 /* > \par Further Details: */
 /*  ===================== */
@@ -386,22 +380,22 @@ f"> */
     doublereal d__1;
 
     /* Local variables */
+    integer i__, j, km, jp, ju, kv;
     extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
-	    integer *);
-    integer i__, j;
-    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
-	    integer *), dswap_(integer *, doublereal *, integer *, doublereal 
-	    *, integer *);
-    integer km, jp, ju, kv;
+	    integer *), dscal_(integer *, doublereal *, doublereal *, integer 
+	    *);
+    doublereal sfmin;
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
+	    doublereal *, integer *);
+    extern doublereal dlamch_(char *);
     extern integer idamax_(integer *, doublereal *, integer *);
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -412,7 +406,7 @@ f"> */
 
     /* Parameter adjustments */
     ab_dim1 = *ldab;
-    ab_offset = 1 + ab_dim1 * 1;
+    ab_offset = 1 + ab_dim1;
     ab -= ab_offset;
     --ipiv;
 
@@ -444,6 +438,10 @@ f"> */
     if (*m == 0 || *n == 0) {
 	return;
     }
+
+/*     Compute machine safe minimum */
+
+    sfmin = dlamch_("S");
 
 /*     Gaussian elimination with partial pivoting */
 
@@ -507,8 +505,17 @@ f"> */
 
 /*              Compute multipliers. */
 
-		d__1 = 1. / ab[kv + 1 + j * ab_dim1];
-		dscal_(&km, &d__1, &ab[kv + 2 + j * ab_dim1], &c__1);
+		if ((d__1 = ab[kv + 1 + j * ab_dim1], abs(d__1)) >= sfmin) {
+		    d__1 = 1. / ab[kv + 1 + j * ab_dim1];
+		    dscal_(&km, &d__1, &ab[kv + 2 + j * ab_dim1], &c__1);
+		} else {
+		    i__2 = km;
+		    for (i__ = 1; i__ <= i__2; ++i__) {
+			ab[kv + 1 + i__ + j * ab_dim1] /= ab[kv + 1 + j * 
+				ab_dim1];
+/* L35: */
+		    }
+		}
 
 /*              Update trailing submatrix within the band. */
 
@@ -516,9 +523,9 @@ f"> */
 		    i__2 = ju - j;
 		    i__3 = *ldab - 1;
 		    i__4 = *ldab - 1;
-		    dger_(&km, &i__2, &c_b9, &ab[kv + 2 + j * ab_dim1], &c__1,
-			     &ab[kv + (j + 1) * ab_dim1], &i__3, &ab[kv + 1 + 
-			    (j + 1) * ab_dim1], &i__4);
+		    dger_(&km, &i__2, &c_b11, &ab[kv + 2 + j * ab_dim1], &
+			    c__1, &ab[kv + (j + 1) * ab_dim1], &i__3, &ab[kv 
+			    + 1 + (j + 1) * ab_dim1], &i__4);
 		}
 	    }
 	} else {

@@ -174,33 +174,15 @@ typedef struct Namelist Namelist;
 #define bit_set(a,b)	((a) |  ((uinteger)1 << (b)))
 
 #define abort_() { sig_die("Fortran abort routine called", 1); }
-#define c_abs(z) (cabsf(Cf(z)))
-#define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
-#ifdef _MSC_VER
-#define c_div(c, a, b) {float nenn=crealf(_FCmulcc(Cf(b),conjf(Cf(b)))); _Fcomplex zaehl=_FCmulcc(Cf(a),conjf(Cf(b))); pCf(c)=_FCbuild(crealf(zaehl)/nenn,cimagf(zaehl)/nenn);}
-#define z_div(c, a, b) {double nenn=creal(_Cmulcc(Cd(b),conj(Cd(b)))); _Dcomplex zaehl=_Cmulcc(Cd(a),conj(Cd(b))); pCd(c)=_Cbuild(creal(zaehl)/nenn,cimag(zaehl)/nenn);}
-#else
-#define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
-#define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
-#endif
-#define c_exp(R, Z) {pCf(R) = cexpf(Cf(Z));}
-#define c_log(R, Z) {pCf(R) = clogf(Cf(Z));}
-#define c_sin(R, Z) {pCf(R) = csinf(Cf(Z));}
-//#define c_sqrt(R, Z) {*(R) = csqrtf(Cf(Z));}
-#define c_sqrt(R, Z) {pCf(R) = csqrtf(Cf(Z));}
 #define d_abs(x) (fabs(*(x)))
 #define d_acos(x) (acos(*(x)))
 #define d_asin(x) (asin(*(x)))
 #define d_atan(x) (atan(*(x)))
 #define d_atn2(x, y) (atan2(*(x),*(y)))
-#define d_cnjg(R, Z) { pCd(R) = conj(Cd(Z)); }
-#define r_cnjg(R, Z) { pCf(R) = conjf(Cf(Z)); }
 #define d_cos(x) (cos(*(x)))
 #define d_cosh(x) (cosh(*(x)))
 #define d_dim(__a, __b) ( *(__a) > *(__b) ? *(__a) - *(__b) : 0.0 )
 #define d_exp(x) (exp(*(x)))
-#define d_imag(z) (cimag(Cd(z)))
-#define r_imag(z) (cimagf(Cf(z)))
 #define d_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define r_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define d_lg10(x) ( 0.43429448190325182765 * log(*(x)) )
@@ -226,9 +208,6 @@ typedef struct Namelist Namelist;
 #define pow_si(B,E) spow_ui(*(B),*(E))
 #define pow_ri(B,E) spow_ui(*(B),*(E))
 #define pow_di(B,E) dpow_ui(*(B),*(E))
-#define pow_zi(p, a, b) {pCd(p) = zpow_ui(Cd(a), *(b));}
-#define pow_ci(p, a, b) {pCf(p) = cpow_ui(Cf(a), *(b));}
-#define pow_zz(R,A,B) {pCd(R) = cpow(Cd(A),*(B));}
 #define s_cat(lpp, rpp, rnp, np, llp) { 	ftnlen i, nc, ll; char *f__rp, *lp; 	ll = (llp); lp = (lpp); 	for(i=0; i < (int)*(np); ++i) {         	nc = ll; 	        if((rnp)[i] < nc) nc = (rnp)[i]; 	        ll -= nc;         	f__rp = (rpp)[i]; 	        while(--nc >= 0) *lp++ = *(f__rp)++;         } 	while(--ll >= 0) *lp++ = ' '; }
 #define s_cmp(a,b,c,d) ((integer)strncmp((a),(b),f2cmin((c),(d))))
 #define s_copy(A,B,C,D) { int __i,__m; for (__i=0, __m=f2cmin((C),(D)); __i<__m && (B)[__i] != 0; ++__i) (A)[__i] = (B)[__i]; }
@@ -247,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__2 = 2;
@@ -262,7 +239,6 @@ static integer c_n1 = -1;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download CSTEIN + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cstein.
 f"> */
@@ -273,7 +249,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cstein.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -353,6 +328,8 @@ f"> */
 /* >          the first submatrix from the top, =2 if W(i) belongs to */
 /* >          the second submatrix, etc.  ( The output array IBLOCK */
 /* >          from SSTEBZ is expected here. ) */
+/* >          A negative entry, with which SSTEBZ flags an eigenvalue that */
+/* >          did not converge, is treated as its absolute value. */
 /* > \endverbatim */
 /* > */
 /* > \param[in] ISPLIT */
@@ -430,9 +407,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup complexOTHERcomputational */
+/* > \ingroup stein */
 
 /*  ===================================================================== */
 /* Subroutine */ void cstein_(integer *n, real *d__, real *e, integer *m, real 
@@ -441,23 +416,23 @@ f"> */
 {
     /* System generated locals */
     integer z_dim1, z_offset, i__1, i__2, i__3, i__4, i__5;
-    real r__1=0., r__2=0., r__3=0., r__4=0., r__5=0.;
-    complex q__1={0.,0.};
+    real r__1, r__2, r__3, r__4, r__5;
+    complex q__1;
 
     /* Local variables */
+    integer i__, j, b1, j1, bn, jr;
+    real xj, scl, eps, ctr, sep, nrm, tol;
+    integer its;
+    real xjm, eps1;
     integer jblk, nblk, jmax;
     extern real snrm2_(integer *, real *, integer *);
-    integer i__, j, iseed[4], gpind, iinfo;
-    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
-    integer b1, j1;
-    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
-	    integer *);
+    integer iseed[4], gpind, iinfo;
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
+	    scopy_(integer *, real *, integer *, real *, integer *);
     real ortol;
-    integer indrv1, indrv2, indrv3, indrv4, indrv5, bn, jr;
-    real xj;
+    integer indrv1, indrv2, indrv3, indrv4, indrv5;
     extern real slamch_(char *);
-    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
-    extern void slagtf_(
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen), slagtf_(
 	    integer *, real *, real *, real *, real *, real *, real *, 
 	    integer *, integer *);
     integer nrmchk;
@@ -468,15 +443,12 @@ f"> */
     real onenrm, pertol;
     extern /* Subroutine */ void slarnv_(integer *, integer *, integer *, real 
 	    *);
-    real stpcrt, scl, eps, ctr, sep, nrm, tol;
-    integer its;
-    real xjm, eps1;
+    real stpcrt;
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /* ===================================================================== */
@@ -491,7 +463,7 @@ f"> */
     --iblock;
     --isplit;
     z_dim1 = *ldz;
-    z_offset = 1 + z_dim1 * 1;
+    z_offset = 1 + z_dim1;
     z__ -= z_offset;
     --work;
     --iwork;
@@ -514,11 +486,13 @@ f"> */
     } else {
 	i__1 = *m;
 	for (j = 2; j <= i__1; ++j) {
-	    if (iblock[j] < iblock[j - 1]) {
+	    if ((i__2 = iblock[j], abs(i__2)) < (i__3 = iblock[j - 1], abs(
+		    i__3))) {
 		*info = -6;
 		goto L30;
 	    }
-	    if (iblock[j] == iblock[j - 1] && w[j] < w[j - 1]) {
+	    if ((i__2 = iblock[j], abs(i__2)) == (i__3 = iblock[j - 1], abs(
+		    i__3)) && w[j] < w[j - 1]) {
 		*info = -5;
 		goto L30;
 	    }
@@ -566,8 +540,8 @@ L30:
 /*     Compute eigenvectors of matrix blocks. */
 
     j1 = 1;
-    i__1 = iblock[*m];
-    for (nblk = 1; nblk <= i__1; ++nblk) {
+    i__2 = (i__1 = iblock[*m], abs(i__1));
+    for (nblk = 1; nblk <= i__2; ++nblk) {
 
 /*        Find starting and ending indices of block nblk. */
 
@@ -590,8 +564,8 @@ L30:
 	r__3 = onenrm, r__4 = (r__1 = d__[bn], abs(r__1)) + (r__2 = e[bn - 1],
 		 abs(r__2));
 	onenrm = f2cmax(r__3,r__4);
-	i__2 = bn - 1;
-	for (i__ = b1 + 1; i__ <= i__2; ++i__) {
+	i__1 = bn - 1;
+	for (i__ = b1 + 1; i__ <= i__1; ++i__) {
 /* Computing MAX */
 	    r__4 = onenrm, r__5 = (r__1 = d__[i__], abs(r__1)) + (r__2 = e[
 		    i__ - 1], abs(r__2)) + (r__3 = e[i__], abs(r__3));
@@ -600,15 +574,15 @@ L30:
 	}
 	ortol = onenrm * .001f;
 
-	stpcrt = sqrt(.1f / blksiz);
+	stpcrt = sqrt(.1f / (real) blksiz);
 
 /*        Loop through eigenvalues of block nblk. */
 
 L60:
 	jblk = 0;
-	i__2 = *m;
-	for (j = j1; j <= i__2; ++j) {
-	    if (iblock[j] != nblk) {
+	i__1 = *m;
+	for (j = j1; j <= i__1; ++j) {
+	    if ((i__3 = iblock[j], abs(i__3)) != nblk) {
 		j1 = j;
 		goto L180;
 	    }
@@ -668,8 +642,8 @@ L70:
 	    jmax = isamax_(&blksiz, &work[indrv1 + 1], &c__1);
 /* Computing MAX */
 	    r__3 = eps, r__4 = (r__1 = work[indrv4 + blksiz], abs(r__1));
-	    scl = blksiz * onenrm * f2cmax(r__3,r__4) / (r__2 = work[indrv1 + 
-		    jmax], abs(r__2));
+	    scl = (real) blksiz * onenrm * f2cmax(r__3,r__4) / (r__2 = work[
+		    indrv1 + jmax], abs(r__2));
 	    sscal_(&blksiz, &scl, &work[indrv1 + 1], &c__1);
 
 /*           Solve the system LU = Pb. */

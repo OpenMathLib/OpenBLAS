@@ -119,6 +119,14 @@ typedef struct blas_queue {
   struct blas_queue *next;
 
 #if defined( __WIN32__) || defined(__CYGWIN32__) || defined(_WIN32) || defined(__CYGWIN__)
+  /*
+   * Link used exclusively by the Windows thread pool to chain the jobs that
+   * are waiting to be picked up.  It is deliberately kept separate from
+   * "next" above, which is owned (and rebuilt on every call) by whoever
+   * submitted the job: appending to the pool must never write into the
+   * queue nodes of another caller.
+   */
+  struct blas_queue *pool_next;
    CRITICAL_SECTION lock;
    HANDLE finish;
   volatile int finished;

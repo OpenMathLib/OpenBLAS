@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
@@ -243,7 +241,6 @@ static integer c__0 = 0;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DSTEBZ + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dstebz.
 f"> */
@@ -254,7 +251,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dstebz.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -502,9 +498,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date June 2016 */
-
-/* > \ingroup auxOTHERcomputational */
+/* > \ingroup stebz */
 
 /*  ===================================================================== */
 /* Subroutine */ void dstebz_(char *range, char *order, integer *n, doublereal 
@@ -518,7 +512,17 @@ f"> */
     doublereal d__1, d__2, d__3, d__4, d__5;
 
     /* Local variables */
-    integer iend, ioff, iout, itmp1, j, jdisc;
+    integer j, ib, jb, ie, je, nb;
+    doublereal gl;
+    integer im, in;
+    doublereal gu;
+    integer iw;
+    doublereal wl, wu;
+    integer nwl;
+    doublereal ulp, wlu, wul;
+    integer nwu;
+    doublereal tmp1, tmp2;
+    integer iend, ioff, iout, itmp1, jdisc;
     extern logical lsame_(char *, char *);
     integer iinfo;
     doublereal atoli;
@@ -526,39 +530,28 @@ f"> */
     doublereal bnorm;
     integer itmax;
     doublereal wkill, rtoli, tnorm;
-    integer ib, jb, ie, je, nb;
-    doublereal gl;
-    integer im, in;
     extern doublereal dlamch_(char *);
     integer ibegin;
-    doublereal gu;
-    integer iw;
     extern /* Subroutine */ void dlaebz_(integer *, integer *, integer *, 
 	    integer *, integer *, integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
-    doublereal wl;
     integer irange, idiscl;
-    doublereal safemn, wu;
+    doublereal safemn;
     integer idumma[1];
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     integer idiscu, iorder;
     logical ncnvrg;
     doublereal pivmin;
     logical toofew;
-    integer nwl;
-    doublereal ulp, wlu, wul;
-    integer nwu;
-    doublereal tmp1, tmp2;
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     June 2016 */
 
 
 /*  ===================================================================== */
@@ -680,10 +673,17 @@ f"> */
 /* Computing 2nd power */
 	d__1 = e[j - 1];
 	tmp1 = d__1 * d__1;
-/* Computing 2nd power */
-	d__2 = ulp;
-	if ((d__1 = d__[j] * d__[j - 1], abs(d__1)) * (d__2 * d__2) + safemn 
-		> tmp1) {
+/*        Split where e(j)**2 < ulp**2 |d(j) d(j+1)| (Kahan's relative */
+/*        criterion, as in xLARRA) or e(j) = 0.  No absolute floor: the */
+/*        drivers scale small matrices to sqrt(SAFEMN/ULP), where a floor */
+/*        of SAFEMN on e(j)**2 would discard off-diagonals as large as */
+/*        sqrt(ULP) relative to the matrix.  The threshold is formed as */
+/*        a product of scaled factors so that it cannot overflow before */
+/*        e(j)**2 does. */
+
+	tmp2 = (d__1 = d__[j], abs(d__1)) * ulp * ((d__2 = d__[j - 1], abs(
+		d__2)) * ulp);
+	if (tmp1 < tmp2 || tmp1 == 0.) {
 	    isplit[*nsplit] = j - 1;
 	    ++(*nsplit);
 	    work[j - 1] = 0.;
@@ -841,8 +841,8 @@ f"> */
 	    if (irange == 1 || wu >= d__[ibegin] - pivmin) {
 		++nwu;
 	    }
-	    if (irange == 1 || (wl < d__[ibegin] - pivmin && wu >= d__[ibegin] 
-		    - pivmin)) {
+	    if (irange == 1 || wl < d__[ibegin] - pivmin && wu >= d__[ibegin] 
+		    - pivmin) {
 		++(*m);
 		w[*m] = d__[ibegin];
 		iblock[*m] = jb;
@@ -894,7 +894,7 @@ f"> */
 	    }
 
 	    if (irange > 1) {
-		if (gu < wl) {
+		if (gu <= wl) {
 		    nwl += in;
 		    nwu += in;
 		    goto L70;
@@ -1007,7 +1007,9 @@ L70:
 			}
 /* L90: */
 		    }
-		    iblock[iw] = 0;
+		    if (iw != 0) {
+			iblock[iw] = 0;
+		    }
 /* L100: */
 		}
 	    }
@@ -1025,7 +1027,9 @@ L70:
 			}
 /* L110: */
 		    }
-		    iblock[iw] = 0;
+		    if (iw != 0) {
+			iblock[iw] = 0;
+		    }
 /* L120: */
 		}
 	    }

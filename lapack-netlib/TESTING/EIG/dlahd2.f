@@ -62,6 +62,7 @@
 *
 *  =====================================================================
       SUBROUTINE DLAHD2( IOUNIT, PATH )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -508,6 +509,33 @@
      $      / '  33: Test ordering of S  (0 if nondecreasing, 1/ulp ',
      $        ' otherwise)',
      $      / '  34: norm( S - S1 )      / ( norm(S) ulp ),',
+     $        ' where S1 is computed', / 44X,
+     $        ' without computing U and V''',
+     $      / '  35: norm( B - U S V'' )  / ( norm(B) min(m,n) ulp )',
+     $        '  DBDSVDMR3(V,A)',
+     $      / '  36: norm( I - U'' U )    / ( min(m,n) ulp )',
+     $      / '  37: norm( I - V'' V )    / ( min(m,n) ulp )',
+     $      / '  38: Test ordering of S  (0 if nondecreasing, 1/ulp ',
+     $        ' otherwise)',
+     $      / '  39: norm( S - S1 )      / ( norm(S) ulp ),',
+     $        ' where S1 is computed', / 44X,
+     $        ' without computing U and V''',
+     $      / '  40: norm( S - U'' B V ) / ( norm(B) n ulp )',
+     $        '  DBDSVDMR3(V,I)',
+     $      / '  41: norm( I - U'' U )    / ( min(m,n) ulp )',
+     $      / '  42: norm( I - V'' V )    / ( min(m,n) ulp )',
+     $      / '  43: Test ordering of S  (0 if nondecreasing, 1/ulp ',
+     $        ' otherwise)',
+     $      / '  44: norm( S - S1 )      / ( norm(S) ulp ),',
+     $        ' where S1 is computed', / 44X,
+     $        ' without computing U and V''',
+     $      / '  45: norm( S - U'' B V ) / ( norm(B) n ulp )',
+     $        '  DBDSVDMR3(V,V)',
+     $      / '  46: norm( I - U'' U )    / ( min(m,n) ulp )',
+     $      / '  47: norm( I - V'' V )    / ( min(m,n) ulp )',
+     $      / '  48: Test ordering of S  (0 if nondecreasing, 1/ulp ',
+     $        ' otherwise)',
+     $      / '  49: norm( S - S1 )      / ( norm(S) ulp ),',
      $        ' where S1 is computed', / 44X,
      $        ' without computing U and V''' )
 *

@@ -220,258 +220,6 @@ typedef struct Namelist Namelist;
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
 #define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
 
-/* procedure parameter types for -A and -C++ */
-
-
-#ifdef __cplusplus
-typedef logical (*L_fp)(...);
-#else
-typedef logical (*L_fp)();
-#endif
-#if 0
-static float spow_ui(float x, integer n) {
-	float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static double dpow_ui(double x, integer n) {
-	double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#ifdef _MSC_VER
-static _Fcomplex cpow_ui(complex x, integer n) {
-	complex pow={1.0,0.0}; unsigned long int u;
-		if(n != 0) {
-		if(n < 0) n = -n, x.r = 1/x.r, x.i=1/x.i;
-		for(u = n; ; ) {
-			if(u & 01) pow.r *= x.r, pow.i *= x.i;
-			if(u >>= 1) x.r *= x.r, x.i *= x.i;
-			else break;
-		}
-	}
-	_Fcomplex p={pow.r, pow.i};
-	return p;
-}
-#else
-static _Complex float cpow_ui(_Complex float x, integer n) {
-	_Complex float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-#ifdef _MSC_VER
-static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
-	_Dcomplex pow={1.0,0.0}; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x._Val[0] = 1/x._Val[0], x._Val[1] =1/x._Val[1];
-		for(u = n; ; ) {
-			if(u & 01) pow._Val[0] *= x._Val[0], pow._Val[1] *= x._Val[1];
-			if(u >>= 1) x._Val[0] *= x._Val[0], x._Val[1] *= x._Val[1];
-			else break;
-		}
-	}
-	_Dcomplex p = {pow._Val[0], pow._Val[1]};
-	return p;
-}
-#else
-static _Complex double zpow_ui(_Complex double x, integer n) {
-	_Complex double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-static integer pow_ii(integer x, integer n) {
-	integer pow; unsigned long int u;
-	if (n <= 0) {
-		if (n == 0 || x == 1) pow = 1;
-		else if (x != -1) pow = x == 0 ? 1/x : 0;
-		else n = -n;
-	}
-	if ((n > 0) || !(n == 0 || x == 1 || x != -1)) {
-		u = n;
-		for(pow = 1; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static integer dmaxloc_(double *w, integer s, integer e, integer *n)
-{
-	double m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-static integer smaxloc_(float *w, integer s, integer e, integer *n)
-{
-	float m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Fcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conjf(Cf(&x[i]))._Val[0] * Cf(&y[i])._Val[0];
-			zdotc._Val[1] += conjf(Cf(&x[i]))._Val[1] * Cf(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conjf(Cf(&x[i*incx]))._Val[0] * Cf(&y[i*incy])._Val[0];
-			zdotc._Val[1] += conjf(Cf(&x[i*incx]))._Val[1] * Cf(&y[i*incy])._Val[1];
-		}
-	}
-	pCf(z) = zdotc;
-}
-#else
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i])) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i*incx])) * Cf(&y[i*incy]);
-		}
-	}
-	pCf(z) = zdotc;
-}
-#endif
-static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Dcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i]))._Val[0] * Cd(&y[i])._Val[0];
-			zdotc._Val[1] += conj(Cd(&x[i]))._Val[1] * Cd(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i*incx]))._Val[0] * Cd(&y[i*incy])._Val[0];
-			zdotc._Val[1] += conj(Cd(&x[i*incx]))._Val[1] * Cd(&y[i*incy])._Val[1];
-		}
-	}
-	pCd(z) = zdotc;
-}
-#else
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i])) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i*incx])) * Cd(&y[i*incy]);
-		}
-	}
-	pCd(z) = zdotc;
-}
-#endif	
-static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Fcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0];
-			zdotc._Val[1] += Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0];
-			zdotc._Val[1] += Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
-		}
-	}
-	pCf(z) = zdotc;
-}
-#else
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i]) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i*incx]) * Cf(&y[i*incy]);
-		}
-	}
-	pCf(z) = zdotc;
-}
-#endif
-static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Dcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0];
-			zdotc._Val[1] += Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0];
-			zdotc._Val[1] += Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
-		}
-	}
-	pCd(z) = zdotc;
-}
-#else
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i]) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i*incx]) * Cd(&y[i*incy]);
-		}
-	}
-	pCd(z) = zdotc;
-}
-#endif
-#endif
-/*  -- translated by f2c (version 20000121).
-   You must link the resulting object file with the libraries:
-	-lf2c -lm   (in that order)
-*/
-
-
-
 
 /* Table of constant values */
 
@@ -484,7 +232,6 @@ static integer c__1 = 1;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download SORBDB + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sorbdb.
 f"> */
@@ -495,7 +242,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sorbdb.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -733,9 +479,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup realOTHERcomputational */
+/* > \ingroup unbdb */
 
 /* > \par Further Details: */
 /*  ===================== */
@@ -774,25 +518,22 @@ f"> */
 
     /* Local variables */
     logical colmajor;
-    integer lworkmin, lworkopt;
+    integer lworkmin, lworkopt, i__;
+    real z1, z2, z3, z4;
     extern real snrm2_(integer *, real *, integer *);
-    integer i__;
     extern logical lsame_(char *, char *);
     extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
-	    slarf_(char *, integer *, integer *, real *, integer *, real *, 
-	    real *, integer *, real *), saxpy_(integer *, real *, 
-	    real *, integer *, real *, integer *);
-    real z1, z2, z3, z4;
-    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
+	    saxpy_(integer *, real *, real *, integer *, real *, integer *), 
+	    xerbla_(char *, integer *, ftnlen);
     logical lquery;
-    extern /* Subroutine */ void slarfgp_(integer *, real *, real *, integer *,
-	     real *);
+    extern /* Subroutine */ void slarf1f_(char *, integer *, integer *, real *,
+	     integer *, real *, real *, integer *, real *), slarfgp_(
+	    integer *, real *, real *, integer *, real *);
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ==================================================================== */
@@ -802,16 +543,16 @@ f"> */
 
     /* Parameter adjustments */
     x11_dim1 = *ldx11;
-    x11_offset = 1 + x11_dim1 * 1;
+    x11_offset = 1 + x11_dim1;
     x11 -= x11_offset;
     x12_dim1 = *ldx12;
-    x12_offset = 1 + x12_dim1 * 1;
+    x12_offset = 1 + x12_dim1;
     x12 -= x12_offset;
     x21_dim1 = *ldx21;
-    x21_offset = 1 + x21_dim1 * 1;
+    x21_offset = 1 + x21_dim1;
     x21 -= x21_offset;
     x22_dim1 = *ldx22;
-    x22_offset = 1 + x22_dim1 * 1;
+    x22_offset = 1 + x22_dim1;
     x22 -= x22_offset;
     --theta;
     --phi;
@@ -889,7 +630,7 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("xORBDB", &i__1, (ftnlen)6);
+	xerbla_("SORBDB", &i__1, (ftnlen)6);
 	return;
     } else if (lquery) {
 	return;
@@ -943,7 +684,6 @@ f"> */
 		slarfgp_(&i__2, &x11[i__ + i__ * x11_dim1], &x11[i__ + i__ * 
 			x11_dim1], &c__1, &taup1[i__]);
 	    }
-	    x11[i__ + i__ * x11_dim1] = 1.f;
 	    if (*m - *p > i__) {
 		i__2 = *m - *p - i__ + 1;
 		slarfgp_(&i__2, &x21[i__ + i__ * x21_dim1], &x21[i__ + 1 + 
@@ -953,35 +693,34 @@ f"> */
 		slarfgp_(&i__2, &x21[i__ + i__ * x21_dim1], &x21[i__ + i__ * 
 			x21_dim1], &c__1, &taup2[i__]);
 	    }
-	    x21[i__ + i__ * x21_dim1] = 1.f;
 
 	    if (*q > i__) {
 		i__2 = *p - i__ + 1;
 		i__3 = *q - i__;
-		slarf_("L", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], &c__1, &
-			taup1[i__], &x11[i__ + (i__ + 1) * x11_dim1], ldx11, &
-			work[1]);
+		slarf1f_("L", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], &c__1,
+			 &taup1[i__], &x11[i__ + (i__ + 1) * x11_dim1], ldx11,
+			 &work[1]);
 	    }
 	    if (*m - *q + 1 > i__) {
 		i__2 = *p - i__ + 1;
 		i__3 = *m - *q - i__ + 1;
-		slarf_("L", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], &c__1, &
-			taup1[i__], &x12[i__ + i__ * x12_dim1], ldx12, &work[
-			1]);
+		slarf1f_("L", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], &c__1,
+			 &taup1[i__], &x12[i__ + i__ * x12_dim1], ldx12, &
+			work[1]);
 	    }
 	    if (*q > i__) {
 		i__2 = *m - *p - i__ + 1;
 		i__3 = *q - i__;
-		slarf_("L", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], &c__1, &
-			taup2[i__], &x21[i__ + (i__ + 1) * x21_dim1], ldx21, &
-			work[1]);
+		slarf1f_("L", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], &c__1,
+			 &taup2[i__], &x21[i__ + (i__ + 1) * x21_dim1], ldx21,
+			 &work[1]);
 	    }
 	    if (*m - *q + 1 > i__) {
 		i__2 = *m - *p - i__ + 1;
 		i__3 = *m - *q - i__ + 1;
-		slarf_("L", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], &c__1, &
-			taup2[i__], &x22[i__ + i__ * x22_dim1], ldx22, &work[
-			1]);
+		slarf1f_("L", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], &c__1,
+			 &taup2[i__], &x22[i__ + i__ * x22_dim1], ldx22, &
+			work[1]);
 	    }
 
 	    if (i__ < *q) {
@@ -1019,7 +758,6 @@ f"> */
 		    slarfgp_(&i__2, &x11[i__ + (i__ + 1) * x11_dim1], &x11[
 			    i__ + (i__ + 2) * x11_dim1], ldx11, &tauq1[i__]);
 		}
-		x11[i__ + (i__ + 1) * x11_dim1] = 1.f;
 	    }
 	    if (*q + i__ - 1 < *m) {
 		if (*m - *q == i__) {
@@ -1032,32 +770,31 @@ f"> */
 			    i__ + 1) * x12_dim1], ldx12, &tauq2[i__]);
 		}
 	    }
-	    x12[i__ + i__ * x12_dim1] = 1.f;
 
 	    if (i__ < *q) {
 		i__2 = *p - i__;
 		i__3 = *q - i__;
-		slarf_("R", &i__2, &i__3, &x11[i__ + (i__ + 1) * x11_dim1], 
+		slarf1f_("R", &i__2, &i__3, &x11[i__ + (i__ + 1) * x11_dim1], 
 			ldx11, &tauq1[i__], &x11[i__ + 1 + (i__ + 1) * 
 			x11_dim1], ldx11, &work[1]);
 		i__2 = *m - *p - i__;
 		i__3 = *q - i__;
-		slarf_("R", &i__2, &i__3, &x11[i__ + (i__ + 1) * x11_dim1], 
+		slarf1f_("R", &i__2, &i__3, &x11[i__ + (i__ + 1) * x11_dim1], 
 			ldx11, &tauq1[i__], &x21[i__ + 1 + (i__ + 1) * 
 			x21_dim1], ldx21, &work[1]);
 	    }
 	    if (*p > i__) {
 		i__2 = *p - i__;
 		i__3 = *m - *q - i__ + 1;
-		slarf_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12, &
-			tauq2[i__], &x12[i__ + 1 + i__ * x12_dim1], ldx12, &
+		slarf1f_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12,
+			 &tauq2[i__], &x12[i__ + 1 + i__ * x12_dim1], ldx12, &
 			work[1]);
 	    }
 	    if (*m - *p > i__) {
 		i__2 = *m - *p - i__;
 		i__3 = *m - *q - i__ + 1;
-		slarf_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12, &
-			tauq2[i__], &x22[i__ + 1 + i__ * x22_dim1], ldx22, &
+		slarf1f_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12,
+			 &tauq2[i__], &x22[i__ + 1 + i__ * x22_dim1], ldx22, &
 			work[1]);
 	    }
 
@@ -1080,20 +817,19 @@ f"> */
 		slarfgp_(&i__2, &x12[i__ + i__ * x12_dim1], &x12[i__ + (i__ + 
 			1) * x12_dim1], ldx12, &tauq2[i__]);
 	    }
-	    x12[i__ + i__ * x12_dim1] = 1.f;
 
 	    if (*p > i__) {
 		i__2 = *p - i__;
 		i__3 = *m - *q - i__ + 1;
-		slarf_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12, &
-			tauq2[i__], &x12[i__ + 1 + i__ * x12_dim1], ldx12, &
+		slarf1f_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12,
+			 &tauq2[i__], &x12[i__ + 1 + i__ * x12_dim1], ldx12, &
 			work[1]);
 	    }
 	    if (*m - *p - *q >= 1) {
 		i__2 = *m - *p - *q;
 		i__3 = *m - *q - i__ + 1;
-		slarf_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12, &
-			tauq2[i__], &x22[*q + 1 + i__ * x22_dim1], ldx22, &
+		slarf1f_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12,
+			 &tauq2[i__], &x22[*q + 1 + i__ * x22_dim1], ldx22, &
 			work[1]);
 	    }
 
@@ -1119,11 +855,10 @@ f"> */
 			q + i__ + (*p + i__ + 1) * x22_dim1], ldx22, &tauq2[*
 			p + i__]);
 	    }
-	    x22[*q + i__ + (*p + i__) * x22_dim1] = 1.f;
 	    if (i__ < *m - *p - *q) {
 		i__2 = *m - *p - *q - i__;
 		i__3 = *m - *p - *q - i__ + 1;
-		slarf_("R", &i__2, &i__3, &x22[*q + i__ + (*p + i__) * 
+		slarf1f_("R", &i__2, &i__3, &x22[*q + i__ + (*p + i__) * 
 			x22_dim1], ldx22, &tauq2[*p + i__], &x22[*q + i__ + 1 
 			+ (*p + i__) * x22_dim1], ldx22, &work[1]);
 	    }
@@ -1170,7 +905,6 @@ f"> */
 	    i__2 = *p - i__ + 1;
 	    slarfgp_(&i__2, &x11[i__ + i__ * x11_dim1], &x11[i__ + (i__ + 1) *
 		     x11_dim1], ldx11, &taup1[i__]);
-	    x11[i__ + i__ * x11_dim1] = 1.f;
 	    if (i__ == *m - *p) {
 		i__2 = *m - *p - i__ + 1;
 		slarfgp_(&i__2, &x21[i__ + i__ * x21_dim1], &x21[i__ + i__ * 
@@ -1180,35 +914,34 @@ f"> */
 		slarfgp_(&i__2, &x21[i__ + i__ * x21_dim1], &x21[i__ + (i__ + 
 			1) * x21_dim1], ldx21, &taup2[i__]);
 	    }
-	    x21[i__ + i__ * x21_dim1] = 1.f;
 
 	    if (*q > i__) {
 		i__2 = *q - i__;
 		i__3 = *p - i__ + 1;
-		slarf_("R", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], ldx11, &
-			taup1[i__], &x11[i__ + 1 + i__ * x11_dim1], ldx11, &
+		slarf1f_("R", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], ldx11,
+			 &taup1[i__], &x11[i__ + 1 + i__ * x11_dim1], ldx11, &
 			work[1]);
 	    }
 	    if (*m - *q + 1 > i__) {
 		i__2 = *m - *q - i__ + 1;
 		i__3 = *p - i__ + 1;
-		slarf_("R", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], ldx11, &
-			taup1[i__], &x12[i__ + i__ * x12_dim1], ldx12, &work[
-			1]);
+		slarf1f_("R", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], ldx11,
+			 &taup1[i__], &x12[i__ + i__ * x12_dim1], ldx12, &
+			work[1]);
 	    }
 	    if (*q > i__) {
 		i__2 = *q - i__;
 		i__3 = *m - *p - i__ + 1;
-		slarf_("R", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], ldx21, &
-			taup2[i__], &x21[i__ + 1 + i__ * x21_dim1], ldx21, &
+		slarf1f_("R", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], ldx21,
+			 &taup2[i__], &x21[i__ + 1 + i__ * x21_dim1], ldx21, &
 			work[1]);
 	    }
 	    if (*m - *q + 1 > i__) {
 		i__2 = *m - *q - i__ + 1;
 		i__3 = *m - *p - i__ + 1;
-		slarf_("R", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], ldx21, &
-			taup2[i__], &x22[i__ + i__ * x22_dim1], ldx22, &work[
-			1]);
+		slarf1f_("R", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], ldx21,
+			 &taup2[i__], &x22[i__ + i__ * x22_dim1], ldx22, &
+			work[1]);
 	    }
 
 	    if (i__ < *q) {
@@ -1246,7 +979,6 @@ f"> */
 		    slarfgp_(&i__2, &x11[i__ + 1 + i__ * x11_dim1], &x11[i__ 
 			    + 2 + i__ * x11_dim1], &c__1, &tauq1[i__]);
 		}
-		x11[i__ + 1 + i__ * x11_dim1] = 1.f;
 	    }
 	    if (*m - *q > i__) {
 		i__2 = *m - *q - i__ + 1;
@@ -1257,31 +989,30 @@ f"> */
 		slarfgp_(&i__2, &x12[i__ + i__ * x12_dim1], &x12[i__ + i__ * 
 			x12_dim1], &c__1, &tauq2[i__]);
 	    }
-	    x12[i__ + i__ * x12_dim1] = 1.f;
 
 	    if (i__ < *q) {
 		i__2 = *q - i__;
 		i__3 = *p - i__;
-		slarf_("L", &i__2, &i__3, &x11[i__ + 1 + i__ * x11_dim1], &
+		slarf1f_("L", &i__2, &i__3, &x11[i__ + 1 + i__ * x11_dim1], &
 			c__1, &tauq1[i__], &x11[i__ + 1 + (i__ + 1) * 
 			x11_dim1], ldx11, &work[1]);
 		i__2 = *q - i__;
 		i__3 = *m - *p - i__;
-		slarf_("L", &i__2, &i__3, &x11[i__ + 1 + i__ * x11_dim1], &
+		slarf1f_("L", &i__2, &i__3, &x11[i__ + 1 + i__ * x11_dim1], &
 			c__1, &tauq1[i__], &x21[i__ + 1 + (i__ + 1) * 
 			x21_dim1], ldx21, &work[1]);
 	    }
 	    i__2 = *m - *q - i__ + 1;
 	    i__3 = *p - i__;
-	    slarf_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1, &
+	    slarf1f_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1, &
 		    tauq2[i__], &x12[i__ + (i__ + 1) * x12_dim1], ldx12, &
 		    work[1]);
 	    if (*m - *p - i__ > 0) {
 		i__2 = *m - *q - i__ + 1;
 		i__3 = *m - *p - i__;
-		slarf_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1, &
-			tauq2[i__], &x22[i__ + (i__ + 1) * x22_dim1], ldx22, &
-			work[1]);
+		slarf1f_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1,
+			 &tauq2[i__], &x22[i__ + (i__ + 1) * x22_dim1], ldx22,
+			 &work[1]);
 	    }
 
 	}
@@ -1297,21 +1028,20 @@ f"> */
 	    i__2 = *m - *q - i__ + 1;
 	    slarfgp_(&i__2, &x12[i__ + i__ * x12_dim1], &x12[i__ + 1 + i__ * 
 		    x12_dim1], &c__1, &tauq2[i__]);
-	    x12[i__ + i__ * x12_dim1] = 1.f;
 
 	    if (*p > i__) {
 		i__2 = *m - *q - i__ + 1;
 		i__3 = *p - i__;
-		slarf_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1, &
-			tauq2[i__], &x12[i__ + (i__ + 1) * x12_dim1], ldx12, &
-			work[1]);
+		slarf1f_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1,
+			 &tauq2[i__], &x12[i__ + (i__ + 1) * x12_dim1], ldx12,
+			 &work[1]);
 	    }
 	    if (*m - *p - *q >= 1) {
 		i__2 = *m - *q - i__ + 1;
 		i__3 = *m - *p - *q;
-		slarf_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1, &
-			tauq2[i__], &x22[i__ + (*q + 1) * x22_dim1], ldx22, &
-			work[1]);
+		slarf1f_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1,
+			 &tauq2[i__], &x22[i__ + (*q + 1) * x22_dim1], ldx22, 
+			&work[1]);
 	    }
 
 	}
@@ -1330,16 +1060,14 @@ f"> */
 		slarfgp_(&i__2, &x22[*p + i__ + (*q + i__) * x22_dim1], &x22[*
 			p + i__ + (*q + i__) * x22_dim1], &c__1, &tauq2[*p + 
 			i__]);
-		x22[*p + i__ + (*q + i__) * x22_dim1] = 1.f;
 	    } else {
 		i__2 = *m - *p - *q - i__ + 1;
 		slarfgp_(&i__2, &x22[*p + i__ + (*q + i__) * x22_dim1], &x22[*
 			p + i__ + 1 + (*q + i__) * x22_dim1], &c__1, &tauq2[*
 			p + i__]);
-		x22[*p + i__ + (*q + i__) * x22_dim1] = 1.f;
 		i__2 = *m - *p - *q - i__ + 1;
 		i__3 = *m - *p - *q - i__;
-		slarf_("L", &i__2, &i__3, &x22[*p + i__ + (*q + i__) * 
+		slarf1f_("L", &i__2, &i__3, &x22[*p + i__ + (*q + i__) * 
 			x22_dim1], &c__1, &tauq2[*p + i__], &x22[*p + i__ + (*
 			q + i__ + 1) * x22_dim1], ldx22, &work[1]);
 	    }

@@ -250,6 +250,9 @@ int detect(void)
 					}
 
 				}
+				if (cpu_implementer == NULL || cpu_part == NULL) {
+					break;
+				}
 				if (strstr(cpu_implementer, "0x41")) {
 					if (cpucores[ii] >= 0xd4b) cpuhiperf++;
 				else

@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download DGBTRF + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgbtrf.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgbtrf.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -115,7 +113,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleGBcomputational
+*> \ingroup gbtrf
 *
 *> \par Further Details:
 *  =====================
@@ -141,6 +139,7 @@
 *>
 *  =====================================================================
       SUBROUTINE DGBTRF( M, N, KL, KU, AB, LDAB, IPIV, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -165,18 +164,20 @@
 *     .. Local Scalars ..
       INTEGER            I, I2, I3, II, IP, J, J2, J3, JB, JJ, JM, JP,
      $                   JU, K2, KM, KV, NB, NW
-      DOUBLE PRECISION   TEMP
+      DOUBLE PRECISION   SFMIN, TEMP
 *     ..
 *     .. Local Arrays ..
       DOUBLE PRECISION   WORK13( LDWORK, NBMAX ),
      $                   WORK31( LDWORK, NBMAX )
 *     ..
 *     .. External Functions ..
+      DOUBLE PRECISION   DLAMCH
       INTEGER            IDAMAX, ILAENV
-      EXTERNAL           IDAMAX, ILAENV
+      EXTERNAL           DLAMCH, IDAMAX, ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DGBTF2, DGEMM, DGER, DLASWP, DSCAL,
+      EXTERNAL           DCOPY, DGBTF2, DGEMM, DGER, DLASWP,
+     $                   DSCAL,
      $                   DSWAP, DTRSM, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -212,6 +213,10 @@
 *
       IF( M.EQ.0 .OR. N.EQ.0 )
      $   RETURN
+*
+*     Compute machine safe minimum
+*
+      SFMIN = DLAMCH('S')
 *
 *     Determine the block size for this environment
 *
@@ -324,8 +329,15 @@
 *
 *                 Compute multipliers
 *
-                  CALL DSCAL( KM, ONE / AB( KV+1, JJ ), AB( KV+2, JJ ),
-     $                        1 )
+                  IF( ABS( AB( KV+1, JJ ) ).GE.SFMIN ) THEN
+                     CALL DSCAL( KM, ONE / AB( KV+1, JJ ),
+     $                           AB( KV+2, JJ ), 1 )
+                  ELSE
+                     DO 75 I = 1, KM
+                        AB( KV+1+I, JJ ) = AB( KV+1+I, JJ ) /
+     $                                     AB( KV+1, JJ )
+   75                CONTINUE
+                  END IF
 *
 *                 Update trailing submatrix within the band and within
 *                 the current block. JM is the index of the last column
@@ -393,7 +405,8 @@
 *
 *                 Update A12
 *
-                  CALL DTRSM( 'Left', 'Lower', 'No transpose', 'Unit',
+                  CALL DTRSM( 'Left', 'Lower', 'No transpose',
+     $                        'Unit',
      $                        JB, J2, ONE, AB( KV+1, J ), LDAB-1,
      $                        AB( KV+1-JB, J+JB ), LDAB-1 )
 *
@@ -401,7 +414,8 @@
 *
 *                    Update A22
 *
-                     CALL DGEMM( 'No transpose', 'No transpose', I2, J2,
+                     CALL DGEMM( 'No transpose', 'No transpose', I2,
+     $                           J2,
      $                           JB, -ONE, AB( KV+1+JB, J ), LDAB-1,
      $                           AB( KV+1-JB, J+JB ), LDAB-1, ONE,
      $                           AB( KV+1, J+JB ), LDAB-1 )
@@ -411,7 +425,8 @@
 *
 *                    Update A32
 *
-                     CALL DGEMM( 'No transpose', 'No transpose', I3, J2,
+                     CALL DGEMM( 'No transpose', 'No transpose', I3,
+     $                           J2,
      $                           JB, -ONE, WORK31, LDWORK,
      $                           AB( KV+1-JB, J+JB ), LDAB-1, ONE,
      $                           AB( KV+KL+1-JB, J+JB ), LDAB-1 )
@@ -431,7 +446,8 @@
 *
 *                 Update A13 in the work array
 *
-                  CALL DTRSM( 'Left', 'Lower', 'No transpose', 'Unit',
+                  CALL DTRSM( 'Left', 'Lower', 'No transpose',
+     $                        'Unit',
      $                        JB, J3, ONE, AB( KV+1, J ), LDAB-1,
      $                        WORK13, LDWORK )
 *
@@ -439,7 +455,8 @@
 *
 *                    Update A23
 *
-                     CALL DGEMM( 'No transpose', 'No transpose', I2, J3,
+                     CALL DGEMM( 'No transpose', 'No transpose', I2,
+     $                           J3,
      $                           JB, -ONE, AB( KV+1+JB, J ), LDAB-1,
      $                           WORK13, LDWORK, ONE, AB( 1+JB, J+KV ),
      $                           LDAB-1 )
@@ -449,7 +466,8 @@
 *
 *                    Update A33
 *
-                     CALL DGEMM( 'No transpose', 'No transpose', I3, J3,
+                     CALL DGEMM( 'No transpose', 'No transpose', I3,
+     $                           J3,
      $                           JB, -ONE, WORK31, LDWORK, WORK13,
      $                           LDWORK, ONE, AB( 1+KL, J+KV ), LDAB-1 )
                   END IF

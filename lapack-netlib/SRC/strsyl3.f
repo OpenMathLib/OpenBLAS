@@ -283,10 +283,6 @@
          INFO = -9
       ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
          INFO = -11
-      ELSE IF( .NOT.LQUERY .AND. LIWORK.LT.IWORK(1) ) THEN
-         INFO = -14
-      ELSE IF( .NOT.LQUERY .AND. LDSWORK.LT.MAX( NBA, NBB ) ) THEN
-         INFO = -16
       END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'STRSYL3', -INFO )

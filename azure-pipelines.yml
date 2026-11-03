@@ -64,22 +64,25 @@ jobs:
       # at the time of writing the available Azure Ubuntu vm image
       # does not support AVX512VL, so use more recent LTS version
       echo "FROM ubuntu:bionic
+      ENV INTEL_SDE_URL=""
       COPY . /tmp/openblas
       RUN apt-get -y update && apt-get -y install \\
           cmake \\
           gfortran \\
           make \\
+          xz-utils \\
           wget
       RUN mkdir /tmp/SDE && cd /tmp/SDE && \\
-          mkdir sde-external-8.35.0-2019-03-11-lin && \\
-          wget --quiet -O sde-external-8.35.0-2019-03-11-lin.tar.bz2 https://www.dropbox.com/s/fopsnzj67572sj5/sde-external-8.35.0-2019-03-11-lin.tar.bz2?dl=0 && \\
-          tar -xjvf sde-external-8.35.0-2019-03-11-lin.tar.bz2 -C /tmp/SDE/sde-external-8.35.0-2019-03-11-lin --strip-components=1
+          INTEL_SDE_URL=$(curl -s https://www.intel.com/content/www/us/en/download/684897/intel-software-development-emulator.html | grep -Po 'https://downloadmirror.intel.com/.*lin.tar.xz(?=")') && \
+          mkdir sde-external && \\
+          wget --quiet -O sde-external-lin.tar.xz $(curl -s https://www.intel.com/content/www/us/en/download/684897/intel-software-development-emulator.html | grep -Po 'https://downloadmirror.intel.com/.*lin.tar.xz(?=")') && \\
+          tar -xJvf sde-external-lin.tar.xz -C /tmp/SDE/sde-external --strip-components=1
       RUN cd /tmp/openblas && CC=gcc make QUIET_MAKE=1 DYNAMIC_ARCH=1 NUM_THREADS=32 BINARY=64
-      CMD cd /tmp/openblas && echo 0 > /proc/sys/kernel/yama/ptrace_scope && CC=gcc OPENBLAS_VERBOSE=2 /tmp/SDE/sde-external-8.35.0-2019-03-11-lin/sde64 -cpuid_in /tmp/SDE/sde-external-8.35.0-2019-03-11-lin/misc/cpuid/skx/cpuid.def -- make -C utest DYNAMIC_ARCH=1 NUM_THREADS=32 BINARY=64" > Dockerfile
+      CMD cd /tmp/openblas && echo 0 > /proc/sys/kernel/yama/ptrace_scope && CC=gcc OPENBLAS_VERBOSE=2 /tmp/SDE/sde-external/sde64 -cpuid_in /tmp/SDE/sde-external/misc/cpuid/gnr/cpuid.def -- make -C utest DYNAMIC_ARCH=1 NUM_THREADS=32 BINARY=64" > Dockerfile
       docker build -t intel_sde .
       # we need a privileged docker run for sde process attachment
       docker run --privileged intel_sde
-    displayName: 'Run AVX512 SkylakeX docker build / test'
+    displayName: 'Run AVX512 GraniteRapids docker build / test'
 
 - job: Windows_cl
   pool:
@@ -142,7 +145,7 @@ jobs:
       $env:CPATH = "C:\Miniconda\Library\include;$env:CPATH"
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
-      conda install --yes --quiet ninja flang flang-rt_win-64
+      conda install --yes --quiet ninja flang=22.1.8 flang-rt_win-64=22.1.8
       $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
       & "$vs\Common7\Tools\Launch-VsDevShell.ps1" -Arch amd64 -HostArch amd64 -SkipAutomaticLocation
       mkdir build
@@ -164,7 +167,7 @@ jobs:
       $env:CPATH = "C:\Miniconda\Library\include;$env:CPATH"
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
-      conda install --yes --quiet ninja flang flang-rt_win-64
+      conda install --yes --quiet ninja flang=22.1.8 flang-rt_win-64=22.1.8
       $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
       & "$vs\Common7\Tools\Launch-VsDevShell.ps1" -Arch amd64 -HostArch amd64 -SkipAutomaticLocation
       mkdir build

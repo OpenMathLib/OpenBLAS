@@ -223,31 +223,20 @@ typedef struct Namelist Namelist;
 /* Table of constant values */
 
 static integer c__1 = 1;
-static doublereal c_b6 = 1.;
+static doublereal c_b11 = 1.;
 
-/* > \brief \b DLARFT_LVL2: Level 2 BLAS version for terminating case of DLARFT. */
+/* > \brief \b DLARFT_LVL2 forms the triangular factor T of a block reflector H = I - vtvH */
 
 /*  =========== DOCUMENTATION =========== */
 
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > Download DLARFT_LVL2 + dependencies */
-/* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlarft.
-f"> */
-/* > [TGZ]</a> */
-/* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dlarft.
-f"> */
-/* > [ZIP]</a> */
-/* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlarft.
-f"> */
-/* > [TXT]</a> */
-
 /*  Definition: */
 /*  =========== */
 
 /*       SUBROUTINE DLARFT_LVL2( DIRECT, STOREV, N, K, V, LDV, TAU, */
-/*                    T, LDT ) */
+/*    $            T, LDT ) */
 
 /*       CHARACTER          DIRECT, STOREV */
 /*       INTEGER            K, LDT, LDV, N */
@@ -275,6 +264,9 @@ f"> */
 /* > H(i) is stored in the i-th row of the array V, and */
 /* > */
 /* >    H  =  I - V**T * T * V */
+/* > */
+/* > If DIRECT or STOREV = 'T', see Further Details for the shape of T */
+/* > */
 /* > \endverbatim */
 
 /*  Arguments: */
@@ -287,6 +279,8 @@ f"> */
 /* >          multiplied to form the block reflector: */
 /* >          = 'F': H = H(1) H(2) . . . H(k) (Forward) */
 /* >          = 'B': H = H(k) . . . H(2) H(1) (Backward) */
+/* >          = 'T' (with STOREV='R'): H = H(k) . . . H(2) H(1) (backward) */
+/* >                but we return the T matrix that is already (conjugate) transposed */
 /* > \endverbatim */
 /* > */
 /* > \param[in] STOREV */
@@ -294,8 +288,10 @@ f"> */
 /* >          STOREV is CHARACTER*1 */
 /* >          Specifies how the vectors which define the elementary */
 /* >          reflectors are stored (see also Further Details): */
-/* >          = 'C': columnwise */
-/* >          = 'R': rowwise */
+/* >          = 'C': column-wise */
+/* >          = 'R': row-wise */
+/* >          = 'T': (With DIRECT='F') Row-wise, but we return the T */
+/* >                matrix that is already (conjugate) transposed. */
 /* > \endverbatim */
 /* > */
 /* > \param[in] N */
@@ -381,6 +377,29 @@ f"> */
 /* >                   (  1 v2 v3 )                     ( v3 v3 v3 v3  1 ) */
 /* >                   (     1 v3 ) */
 /* >                   (        1 ) */
+/* > */
+/* >  In addition, the shape of T is determined by these same flags as */
+/* >   in the below table. */
+/* >    'U' denotes upper triangular */
+/* >    'L' denotes lower triangular */
+/* >    'X' denotes no current implementation */
+/* >    We also provide the logical variable that represents the case */
+/* >    in the code if it is implemented */
+/* > */
+/* >    |-----------------------------------------------------------| */
+/* >    |              | DIRECT = 'F' | DIRECT = 'B' | DIRECT = 'T' | */
+/* >    |--------------+--------------+--------------+--------------| */
+/* >    | STOREV = 'C' | U (QR)       | L (QL)       | X            | */
+/* >    | STOREV = 'R' | U (LQ)       | L (RQ)       | U (RQT)      | */
+/* >    | STOREV = 'T' | L (LQT)      | X            | X            | */
+/* >    |-----------------------------------------------------------| */
+/* > */
+/* >    Finally, the relationship between the (conjugate) transposed T matrices */
+/* >    are as follows: (Note that T_{FC} denotes the T associated with calling */
+/* >    this routine with DIRECT = 'F' and STOREV = 'C') */
+/* > */
+/* >    T_{TR} = (T_{BR})**H */
+/* >    T_{FT} = (T_{FR})**H */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
@@ -393,14 +412,19 @@ f"> */
     doublereal d__1;
 
     /* Local variables */
-    integer i__, j, prevlastv;
+    integer i__, j;
+    logical lq, ql, qr, rq;
+    integer kmi, nmi;
+    logical lqt, rqt, dirb, dirf;
+    integer info;
+    logical dirt;
     extern logical lsame_(char *, char *);
     extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
-	    doublereal *, doublereal *, integer *);
-    integer lastv;
-    extern /* Subroutine */ void dtrmv_(char *, char *, char *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), mecago_();
+	    doublereal *, doublereal *, integer *), dtrmv_(char *, 
+	    char *, char *, integer *, doublereal *, integer *, doublereal *, 
+	    integer *), xerbla_(char *, integer *, ftnlen);
+    logical storec, storer, storet;
 
 
 /*  -- LAPACK auxiliary routine -- */
@@ -408,10 +432,16 @@ f"> */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
 
 
-/*  ===================================================================== */
 
 
-/*     Quick return if possible */
+
+
+
+
+
+
+
+/*     Convert our character flags to logical flags for later */
 
     /* Parameter adjustments */
     v_dim1 = *ldv;
@@ -423,171 +453,565 @@ f"> */
     t -= t_offset;
 
     /* Function Body */
-    if (*n == 0) {
+    dirf = lsame_(direct, "F");
+    dirb = lsame_(direct, "B");
+    dirt = lsame_(direct, "T");
+    storec = lsame_(storev, "C");
+    storer = lsame_(storev, "R");
+    storet = lsame_(storev, "T");
+
+/*     Error handling for our character flags */
+
+    info = 0;
+    if (! (dirf || dirb || dirt)) {
+
+/*        DIRECT holds an illegal value */
+
+	info = 1;
+    } else if (! (storec || storer || storet)) {
+
+/*        STOREV holds an illegal value */
+
+	info = 2;
+    } else if (dirb && storet) {
+
+/*        This case is purposefully not implemented, but any other value for */
+/*        STOREV is valid, so we report STOREV as the invalid input */
+
+	info = 2;
+    } else if (dirt && storec) {
+
+/*        This case is purposefully not implemented, but any other value for */
+/*        DIRECT is valid, so we report DIRECT as the invalid input */
+
+	info = 1;
+    } else if (dirt && storet) {
+
+/*        This case is purposefully not implemented, and is ambiguous what */
+/*        the user wants to do, so we arbitrarily say DIRECT is the incorrect */
+/*        character flag. */
+
+	info = 1;
+    }
+    if (info != 0) {
+	xerbla_("DLARFT_LVL2", &info, (ftnlen)11);
 	return;
     }
 
-    if (lsame_(direct, "F")) {
-	prevlastv = *n;
+/*     Quick return if possible */
+
+    if (*n == 0 || *k == 0) {
+	return;
+    }
+
+/*     Now we determine what factorization our flags are associated with */
+
+/*     QR happens when we have forward direction in column storage */
+
+    qr = dirf && storec;
+
+/*     LQT happens when we have forward direction in row storage and want to compute the transpose of */
+/*     the T we would normally compute */
+
+    lqt = dirf && storet;
+
+/*     LQ happens when we have forward direction in row storage and want to compute the T we would */
+/*     normally compute */
+
+    lq = dirf && storer;
+
+/*     QL happens when we have backward direction in column storage */
+
+    ql = dirb && storec;
+
+/*     RQT happens when we have backward direction in row storage and want to compute the transpose */
+/*     of the T we would normally compute */
+
+    rqt = dirt && storer;
+
+/*     RQ happens when we have backward direction in row storage and want to compute the T that we */
+/*     would normally compute */
+
+    rq = dirb && storer;
+    if (*n == 1 || *k == 1) {
+	t[t_dim1 + 1] = tau[1];
+	return;
+    }
+    if (qr) {
+
+/*        Break V into 9 components */
+
+/*        V = |-----------------------| */
+/*            |V_{1,1} 0       0      | i-1 */
+/*            |V_{2,1} V_{2,2} 0      | 1 */
+/*            |V_{3,1} V_{3,2} V_{3,3}| n-i */
+/*            |-----------------------| */
+/*             i-1     1       k-i */
+
+/*        V_{1,1}, V_{2,2} and V_{3,3} are unit lower triangular */
+
+/*        This is how we are going to view the matrix V at each step */
+/*        i=2,\dots,k, then we grow into V_{3,3} and repeat until we */
+/*        reach the end. On each iteration V_{3,3} is not referenced */
+
+/*        We will construct T one column at a time from left to right */
+/*        after initializing T(1,1) = TAU(1) */
+
+/*        T = |-------------------------| */
+/*            | T_{1,1} T_{1,2} T_{1,3} | i-1 */
+/*            | 0       T_{2,2} T_{2,3} | 1 */
+/*            | 0       0       T_{3,3} | k-i */
+/*            |-------------------------| */
+/*              i-1     1       k-i */
+
+/*        T_{1,1}, T_{2,2}, and T_{3,3} are non-unit lower triangular */
+
+/*        Similarly as above, we will construct T_{1,2} and T_{2,2} at */
+/*        each iteration i = 2, \dots k, and then grow into T_{1:3,3}. On */
+/*        each iteration, T_{1:3,3} are not referenced. See dlarft.f */
+/*        for details on how these formulae were constructed. */
+
+/*        We now get */
+
+/*        T_{1,2} = -T_{1,1}[V_{1,1}\\V_{2,1}\\V_{3,1}]' */
+/*                       [0\\V_{2,2}\\V_{3,2}]T_{2,2} */
+
+/*        T_{1,2} = -T_{1,1}(V_{2,1}' + V_{3,1}'V_{3,2})T_{2,2} */
+
+/*        This means we will do the following */
+
+/*        T_{1,2} = -V_{2,1}'T_{2,2} = -\tau_{i}V_{2,1}' */
+/*        T_{1,2} = -\tau_{i}V_{3,2}' V_{3,1} + T_{1,2} */
+/*        T_{1,2} = T_{1,1}T_{1,2} */
+/*        T_{2,2} = \tau{i} */
+
+	t[t_dim1 + 1] = tau[1];
 	i__1 = *k;
-	for (i__ = 1; i__ <= i__1; ++i__) {
-	    prevlastv = f2cmax(i__,prevlastv);
-	    if (tau[i__] == 0.) {
+	for (i__ = 2; i__ <= i__1; ++i__) {
 
-/*              H(i)  =  I */
+/*           T_{1,2} = -V_{2,1}'V_{2,2}T_{2,2} = -\tau_i V_{2,1}' */
+/*           We must do this at copy time as otherwise gemv will do nothing */
+/*           on the last column when n=k, but we neet to make sure we are */
+/*           scaled by this value */
 
-		i__2 = i__;
-		for (j = 1; j <= i__2; ++j) {
-		    t[j + i__ * t_dim1] = 0.;
-		}
-	    } else {
-
-/*              general case */
-
-		if (lsame_(storev, "C")) {
-/*                 Skip any trailing zeros. */
-		    i__2 = i__ + 1;
-		    for (lastv = *n; lastv >= i__2; --lastv) {
-			if (v[lastv + i__ * v_dim1] != 0.) {
-			    myexit_();
-			}
-		    }
-		    i__2 = i__ - 1;
-		    for (j = 1; j <= i__2; ++j) {
-			t[j + i__ * t_dim1] = -tau[i__] * v[i__ + j * v_dim1];
-		    }
-		    j = f2cmin(lastv,prevlastv);
-
-/*                 T(1:i-1,i) := - tau(i) * V(i:j,1:i-1)**T * V(i:j,i) */
-
-		    i__2 = j - i__;
-		    i__3 = i__ - 1;
-		    d__1 = -tau[i__];
-		    dgemv_("Transpose", &i__2, &i__3, &d__1, &v[i__ + 1 + 
-			    v_dim1], ldv, &v[i__ + 1 + i__ * v_dim1], &c__1, &
-			    c_b6, &t[i__ * t_dim1 + 1], &c__1);
-		} else {
-/*                 Skip any trailing zeros. */
-		    i__2 = i__ + 1;
-		    for (lastv = *n; lastv >= i__2; --lastv) {
-			if (v[i__ + lastv * v_dim1] != 0.) {
-			    myexit_();
-			}
-		    }
-		    i__2 = i__ - 1;
-		    for (j = 1; j <= i__2; ++j) {
-			t[j + i__ * t_dim1] = -tau[i__] * v[j + i__ * v_dim1];
-		    }
-		    j = f2cmin(lastv,prevlastv);
-
-/*                 T(1:i-1,i) := - tau(i) * V(1:i-1,i:j) * V(i,i:j)**T */
-
-		    i__2 = i__ - 1;
-		    i__3 = j - i__;
-		    d__1 = -tau[i__];
-		    dgemv_("No transpose", &i__2, &i__3, &d__1, &v[(i__ + 1) *
-			     v_dim1 + 1], ldv, &v[i__ + (i__ + 1) * v_dim1], 
-			    ldv, &c_b6, &t[i__ * t_dim1 + 1], &c__1);
-		}
-
-/*              T(1:i-1,i) := T(1:i-1,1:i-1) * T(1:i-1,i) */
-
-		i__2 = i__ - 1;
-		dtrmv_("Upper", "No transpose", "Non-unit", &i__2, &t[
-			t_offset], ldt, &t[i__ * t_dim1 + 1], &c__1);
-		t[i__ + i__ * t_dim1] = tau[i__];
-		if (i__ > 1) {
-		    prevlastv = f2cmax(prevlastv,lastv);
-		} else {
-		    prevlastv = lastv;
-		}
+	    i__2 = i__ - 1;
+	    for (j = 1; j <= i__2; ++j) {
+		t[j + i__ * t_dim1] = -v[i__ + j * v_dim1] * tau[i__];
 	    }
+
+/*           T_{1,2} = -V_{3,1}'V_{3,2}T_{2,2} + T_{1,2} */
+/*                   = -\tau{i} V_{3,2}'V_{3,1} + T_{1,2} */
+
+	    i__2 = *n - i__;
+	    i__3 = i__ - 1;
+	    d__1 = -tau[i__];
+	    dgemv_("Transpose", &i__2, &i__3, &d__1, &v[i__ + 1 + v_dim1], 
+		    ldv, &v[i__ + 1 + i__ * v_dim1], &c__1, &c_b11, &t[i__ * 
+		    t_dim1 + 1], &c__1);
+
+/*           T_{1,2} = T_{1,1}T_{1,2} */
+
+	    i__2 = i__ - 1;
+	    dtrmv_("Upper", "No Transpose", "Non-unit", &i__2, &t[t_offset], 
+		    ldt, &t[i__ * t_dim1 + 1], &c__1);
+
+/*           T_{2,2} = \tau{i} */
+
+	    t[i__ + i__ * t_dim1] = tau[i__];
 	}
-    } else {
-	prevlastv = 1;
-	for (i__ = *k; i__ >= 1; --i__) {
-	    if (tau[i__] == 0.) {
+    } else if (lq) {
 
-/*              H(i)  =  I */
+/*        Break V into 9 components */
 
-		i__1 = *k;
-		for (j = i__; j <= i__1; ++j) {
-		    t[j + i__ * t_dim1] = 0.;
-		}
-	    } else {
+/*        V = |-------------------------| */
+/*            | V_{1,1} V_{1,2} V_{1,3} | i-1 */
+/*            | 0       V_{2,2} V_{2,3} | 1 */
+/*            | 0       0       V_{3,3} | k-i */
+/*            |-------------------------| */
+/*              i-1     1       n-i */
 
-/*              general case */
+/*        V_{1,1}, V_{2,2} and V_{3,3} are unit upper triangular */
 
-		if (i__ < *k) {
-		    if (lsame_(storev, "C")) {
-/*                    Skip any leading zeros. */
-			i__1 = i__ - 1;
-			for (lastv = 1; lastv <= i__1; ++lastv) {
-			    if (v[lastv + i__ * v_dim1] != 0.) {
-				myexit_();
-			    }
-			}
-			i__1 = *k;
-			for (j = i__ + 1; j <= i__1; ++j) {
-			    t[j + i__ * t_dim1] = -tau[i__] * v[*n - *k + i__ 
-				    + j * v_dim1];
-			}
-			j = f2cmax(lastv,prevlastv);
+/*        This is how we are going to view the matrix V at each step */
+/*        i=2,\dots,k, then we grow into V_{3,3} and repeat until we */
+/*        reach the end. On each iteration V_{3,3} is not referenced */
 
-/*                    T(i+1:k,i) = -tau(i) * V(j:n-k+i,i+1:k)**T * V(j:n-k+i,i) */
+/*        We will construct T one column at a time from left to right */
+/*        after initializing T(1,1) = TAU(1) */
 
-			i__1 = *n - *k + i__ - j;
-			i__2 = *k - i__;
-			d__1 = -tau[i__];
-			dgemv_("Transpose", &i__1, &i__2, &d__1, &v[j + (i__ 
-				+ 1) * v_dim1], ldv, &v[j + i__ * v_dim1], &
-				c__1, &c_b6, &t[i__ + 1 + i__ * t_dim1], &
-				c__1);
-		    } else {
-/*                    Skip any leading zeros. */
-			i__1 = i__ - 1;
-			for (lastv = 1; lastv <= i__1; ++lastv) {
-			    if (v[i__ + lastv * v_dim1] != 0.) {
-				myexit_();
-			    }
-			}
-			i__1 = *k;
-			for (j = i__ + 1; j <= i__1; ++j) {
-			    t[j + i__ * t_dim1] = -tau[i__] * v[j + (*n - *k 
-				    + i__) * v_dim1];
-			}
-			j = f2cmax(lastv,prevlastv);
+/*        T = |-------------------------| */
+/*            | T_{1,1} T_{1,2} T_{1,3} | i-1 */
+/*            | 0       T_{2,2} T_{2,3} | 1 */
+/*            | 0       0       T_{3,3} | k-i */
+/*            |-------------------------| */
+/*              i-1     1       k-i */
 
-/*                    T(i+1:k,i) = -tau(i) * V(i+1:k,j:n-k+i) * V(i,j:n-k+i)**T */
+/*        Similarly as above, we will construct T_{1,2} and T_{2,2} at */
+/*        each iteration i = 2, \dots k, and then grow into T_{1:3,3}. On */
+/*        each iteration, T_{1:3,3} are not referenced. See dlarft.f */
+/*        for details on how these formulae were constructed. */
 
-			i__1 = *k - i__;
-			i__2 = *n - *k + i__ - j;
-			d__1 = -tau[i__];
-			dgemv_("No transpose", &i__1, &i__2, &d__1, &v[i__ + 
-				1 + j * v_dim1], ldv, &v[i__ + j * v_dim1], 
-				ldv, &c_b6, &t[i__ + 1 + i__ * t_dim1], &c__1);
-		    }
+/*        We now get */
 
-/*                 T(i+1:k,i) := T(i+1:k,i+1:k) * T(i+1:k,i) */
+/*        T_{1,2} = -T_{1,1}[V_{1,1} V_{1,2} V_{1,3}][ 0 V_{2,2} V_{2,3} ]'T_{2,2} */
 
-		    i__1 = *k - i__;
-		    dtrmv_("Lower", "No transpose", "Non-unit", &i__1, &t[i__ 
-			    + 1 + (i__ + 1) * t_dim1], ldt, &t[i__ + 1 + i__ *
-			     t_dim1], &c__1)
-			    ;
-		    if (i__ > 1) {
-			prevlastv = f2cmin(prevlastv,lastv);
-		    } else {
-			prevlastv = lastv;
-		    }
-		}
-		t[i__ + i__ * t_dim1] = tau[i__];
+/*        T_{1,2} = -T_{1,1}(V_{1,2} + V_{1,3}V_{2,3}')T_{2,2} */
+
+/*        This means we will do the following */
+
+/*        T_{1,2} = -V_{1,2}T_{2,2} = -\tau_{i}V_{1,2} */
+/*        T_{1,2} = -\tau_{i}V_{1,3}V_{2,3}' + T_{1,2} */
+/*        T_{1,2} = T_{1,1}T_{1,2} */
+/*        T_{2,2} = \tau{i} */
+
+	t[t_dim1 + 1] = tau[1];
+	i__1 = *k;
+	for (i__ = 2; i__ <= i__1; ++i__) {
+
+/*           T_{1,2} = -\tau_{i}V_{1,2} */
+
+	    i__2 = i__ - 1;
+	    for (j = 1; j <= i__2; ++j) {
+		t[j + i__ * t_dim1] = -tau[i__] * v[j + i__ * v_dim1];
 	    }
+
+/*           T_{1,2} = -\tau_{i}V_{1,3}V_{2,3}' + T_{1,2} */
+
+	    i__2 = i__ - 1;
+	    i__3 = *n - i__;
+	    d__1 = -tau[i__];
+	    dgemv_("No Transpose", &i__2, &i__3, &d__1, &v[(i__ + 1) * v_dim1 
+		    + 1], ldv, &v[i__ + (i__ + 1) * v_dim1], ldv, &c_b11, &t[
+		    i__ * t_dim1 + 1], &c__1);
+
+/*           T_{1,2} = T_{1,1}T_{1,2} */
+
+	    i__2 = i__ - 1;
+	    dtrmv_("Upper", "No Transpose", "Non-unit", &i__2, &t[t_offset], 
+		    ldt, &t[i__ * t_dim1 + 1], &c__1);
+
+/*           T_{2,2} = \tau{i} */
+
+	    t[i__ + i__ * t_dim1] = tau[i__];
+	}
+    } else if (lqt) {
+
+/*        Break V into 9 components */
+
+/*        V = |-------------------------| */
+/*            | V_{1,1} V_{1,2} V_{1,3} | i-1 */
+/*            | 0       V_{2,2} V_{2,3} | 1 */
+/*            | 0       0       V_{3,3} | k-i */
+/*            |-------------------------| */
+/*              i-1     1       n-i */
+
+/*        V_{1,1}, V_{2,2} and V_{3,3} are unit upper triangular */
+
+/*        This is how we are going to view the matrix V at each step */
+/*        i=2,\dots,k, then we grow into V_{3,3} and repeat until we */
+/*        reach the end. On each iteration V_{3,3} is not referenced */
+
+/*        We will construct T one column at a time from left to right */
+/*        after initializing T(1,1) = TAU(1) */
+
+/*        T = |-------------------------| */
+/*            | T_{1,1} 0       0       | i-1 */
+/*            | T_{2,1} T_{2,2} 0       | 1 */
+/*            | T_{3,1} T_{3,2} T_{3,3} | k-i */
+/*            |-------------------------| */
+/*              i-1     1       k-i */
+
+/*        Similarly as above, we will construct T_{2,1} and T_{2,2} at */
+/*        each iteration i = 2, \dots k, and then grow into T_{3,1:3}. On */
+/*        each iteration, T_{3,1:3} are not referenced. See dlarft.f */
+/*        for details on how these formulae were constructed. */
+
+/*        We now get */
+
+/*        T_{2,1} = -T_{2,2}[0 V_{2,2} V_{2,3}][V_{1,1} V_{1,2} V_{1,3}]'T_{1,1} */
+
+/*        T_{2,1} = -T_{2,2}(V_{1,2}' + V_{2,3}V_{1,3}')T_{1,1} */
+
+/*        This means we will do the following */
+
+/*        T_{2,1} = -T_{2,2}V_{1,2}' = -\tau_{i}V_{1,2}' */
+/*        T_{2,1} = -\tau_{i}V_{1,3}V_{2,3}' + T_{2,1} */
+/*        T_{2,1} = T_{1,1}'T_{2,1} */
+/*        T_{2,2} = \tau{i} */
+
+	t[t_dim1 + 1] = tau[1];
+	i__1 = *k;
+	for (i__ = 2; i__ <= i__1; ++i__) {
+
+/*           T_{2,1} = -\tau_{i}V_{1,2}' */
+
+	    i__2 = i__ - 1;
+	    for (j = 1; j <= i__2; ++j) {
+		t[i__ + j * t_dim1] = -tau[i__] * v[j + i__ * v_dim1];
+	    }
+
+/*           T_{2,1} = -\tau_{i}V_{1,3}V_{2,3}' + T_{2,1} */
+
+	    i__2 = i__ - 1;
+	    i__3 = *n - i__;
+	    d__1 = -tau[i__];
+	    dgemv_("No transpose", &i__2, &i__3, &d__1, &v[(i__ + 1) * v_dim1 
+		    + 1], ldv, &v[i__ + (i__ + 1) * v_dim1], ldv, &c_b11, &t[
+		    i__ + t_dim1], ldt);
+
+/*           T_{2,1} = T_{1,1}'T_{2,1}' */
+
+	    i__2 = i__ - 1;
+	    dtrmv_("Lower", "Transpose", "Non-unit", &i__2, &t[t_offset], ldt,
+		     &t[i__ + t_dim1], ldt);
+	    t[i__ + i__ * t_dim1] = tau[i__];
+	}
+    } else if (ql) {
+
+/*     Break V into 9 components */
+
+/*     V = |-------------------------| */
+/*         | V_{1,1} V_{1,2} V_{1,3} | n-i */
+/*         | 0       V_{2,2} V_{2,3} | 1 */
+/*         | 0       0       V_{3,3} | i-1 */
+/*         |-------------------------| */
+/*           k-i     1       i-1 */
+
+/*        V_{1,1}, V_{2,2} and V_{3,3} are unit upper triangular */
+
+/*        This is how we are going to view the matrix V at each step */
+/*        i=2,\dots,k, then we grow into V_{1,1} and repeat until we */
+/*        reach the end. On each iteration V_{1,1} is not referenced */
+
+/*        We will construct T one column at a time from right to left */
+/*        after initializing T(K,K) = TAU(K) */
+
+/*     T = |-------------------------| */
+/*         | T_{1,1} 0       0       | k-i */
+/*         | T_{2,1} T_{2,2} 0       | 1 */
+/*         | T_{3,1} T_{3,2} T_{3,3} | i-1 */
+/*         |-------------------------| */
+/*           k-i     1       i-1 */
+
+/*        T_{1,1}, T_{2,2}, and T_{3,3} are non-unit lower triangular */
+
+/*        Similarly as above, we will construct T_{2,2} and T_{3,2} at */
+/*        each iteration i = 2, \dots k, and then grow into T_{1:3,1}. On */
+/*        each iteration, T_{1:3,1} are not referenced. See dlarft.f */
+/*        for details on how these formulae were constructed. */
+
+/*        We get that */
+
+/*        T_{3,2} = -T_{3,3}[V_{1,3}\\V_{2,3}\\V_{3,3}]' */
+/*        [V_{1,2}\\V_{2,2}\\0]T_{2,2} */
+
+/*        T_{3,2} = -T_{3,3}(V_{1,3}'V_{1,2} + V_{2,3}')T_{2,2} */
+
+/*        Thus, we will compute */
+
+/*        T_{2,2} = \tau_{k-i+1} */
+/*        T_{3,2} = -T_{3,3}V_{3,2}' = -\tau_{k-i+1}V_{3,2}' */
+/*        T_{3,2} = -\tau_{k-i+1}V_{1,3}'V_{1,2} + T_{3,2} */
+/*        T_{3,2} = T_{3,3}T_{3,2} */
+
+	t[*k + *k * t_dim1] = tau[*k];
+	i__1 = *k;
+	for (i__ = 2; i__ <= i__1; ++i__) {
+	    kmi = *k - i__ + 1;
+	    nmi = *n - i__ + 1;
+
+/*             T_{2,2} = \tau(k-i+1) */
+
+	    t[kmi + kmi * t_dim1] = tau[kmi];
+
+/*             T_{3,2} = -\tau(k-i+1)V_{2,3}' */
+
+	    i__2 = i__ - 1;
+	    for (j = 1; j <= i__2; ++j) {
+		t[kmi + j + kmi * t_dim1] = -tau[kmi] * v[nmi + (kmi + j) * 
+			v_dim1];
+	    }
+
+/*             T_{3,2} = -\tau(k-i+1)V_{1,3}'V_{1,2} + T_{3,2} */
+
+	    i__2 = *n - i__;
+	    i__3 = i__ - 1;
+	    d__1 = -tau[kmi];
+	    dgemv_("Transpose", &i__2, &i__3, &d__1, &v[(kmi + 1) * v_dim1 + 
+		    1], ldv, &v[kmi * v_dim1 + 1], &c__1, &c_b11, &t[kmi + 1 
+		    + kmi * t_dim1], &c__1);
+
+/*             T_{3,2} = T_{3,3}T_{3,2} */
+
+	    i__2 = i__ - 1;
+	    dtrmv_("Lower", "No Transpose", "Non-unit", &i__2, &t[kmi + 1 + (
+		    kmi + 1) * t_dim1], ldt, &t[kmi + 1 + kmi * t_dim1], &
+		    c__1);
+	}
+    } else if (rq) {
+
+/*     Break V into 9 components */
+
+/*     V = |-------------------------| */
+/*         | V_{1,1} 0       0       | k-i */
+/*         | V_{2,1} V_{2,2} 0       | 1 */
+/*         | V_{3,1} V_{3,2} V_{3,3} | i-1 */
+/*         |-------------------------| */
+/*           n-i     1       i-1 */
+
+/*        V_{1,1}, V_{2,2} and V_{3,3} are unit lower triangular */
+
+/*        This is how we are going to view the matrix V at each step */
+/*        i=2,\dots,k, then we grow into V_{1,1} and repeat until we */
+/*        reach the end. On each iteration V_{1,1} is not referenced */
+
+/*        We will construct T one column at a time from right to left */
+/*        after initializing T(K,K) = TAU(K) */
+
+/*     T = |-------------------------| */
+/*         | T_{1,1} 0       0       | k-i */
+/*         | T_{2,1} T_{2,2} 0       | 1 */
+/*         | T_{3,1} T_{3,2} T_{3,3} | i-1 */
+/*         |-------------------------| */
+/*           k-i     1       i-1 */
+
+/*        T_{1,1}, T_{2,2}, and T_{3,3} are non-unit lower triangular */
+
+/*        Similarly as above, we will construct T_{2,2} and T_{3,2} at */
+/*        each iteration i = 2, \dots k, and then grow into T_{1:3,1}. On */
+/*        each iteration, T_{1:3,1} are not referenced. See dlarft.f */
+/*        for details on how these formulae were constructed. */
+
+/*        We get that */
+
+/*        T_{3,2} = -T_{3,3}[V_{3,1} V_{3,2} V_{3,3}][V_{2,1} V_{2,2} 0]'T_{2,2} */
+
+/*        T_{3,2} = -T_{3,3}(V_{3,1}V_{2,1}' + V_{3,2})T_{2,2} */
+
+/*        Thus, we will compute */
+
+/*        T_{2,2} = \tau_{k-i+1} */
+/*        T_{3,2} = -\tau_{k-i+1}V_{3,2} */
+/*        T_{3,2} = -\tau_{k-i+1}V_{3,1}V_{2,1}' + T_{3,2} */
+/*        T_{3,2} = T_{3,3}T_{3,2} */
+
+	t[*k + *k * t_dim1] = tau[*k];
+	i__1 = *k;
+	for (i__ = 2; i__ <= i__1; ++i__) {
+	    kmi = *k - i__ + 1;
+	    nmi = *n - i__ + 1;
+
+/*           T_{2,2} = \tau_{k-i+1} */
+
+	    t[kmi + kmi * t_dim1] = tau[kmi];
+
+/*           T_{3,2} = -\tau_{k-i+1}V_{3,2} */
+
+	    i__2 = i__ - 1;
+	    for (j = 1; j <= i__2; ++j) {
+		t[kmi + j + kmi * t_dim1] = -tau[kmi] * v[kmi + j + nmi * 
+			v_dim1];
+	    }
+
+/*           T_{3,2} = -\tau_{k-i+1}V_{3,1}V_{2,1}' + T_{3,2} */
+
+	    i__2 = i__ - 1;
+	    i__3 = *n - i__;
+	    d__1 = -tau[kmi];
+	    dgemv_("No Transpose", &i__2, &i__3, &d__1, &v[kmi + 1 + v_dim1], 
+		    ldv, &v[kmi + v_dim1], ldv, &c_b11, &t[kmi + 1 + kmi * 
+		    t_dim1], &c__1);
+
+/*           T_{3,2} = T_{3,3}T_{3,2} */
+
+	    i__2 = i__ - 1;
+	    dtrmv_("Lower", "No Transpose", "Non-unit", &i__2, &t[kmi + 1 + (
+		    kmi + 1) * t_dim1], ldt, &t[kmi + 1 + kmi * t_dim1], &
+		    c__1);
+	}
+    } else if (rqt) {
+
+/*     Break V into 9 components */
+
+/*     V = |-------------------------| */
+/*         | V_{1,1} 0       0       | k-i */
+/*         | V_{2,1} V_{2,2} 0       | 1 */
+/*         | V_{3,1} V_{3,2} V_{3,3} | i-1 */
+/*         |-------------------------| */
+/*           n-i     1       i-1 */
+
+/*        V_{1,1}, V_{2,2} and V_{3,3} are unit lower triangular */
+
+/*        This is how we are going to view the matrix V at each step */
+/*        i=2,\dots,k, then we grow into V_{1,1} and repeat until we */
+/*        reach the end. On each iteration V_{1,1} is not referenced */
+
+/*        We will construct T one column at a time from right to left */
+/*        after initializing T(K,K) = TAU(K) */
+
+/*     T = |-------------------------| */
+/*         | T_{1,1} T_{1,2} T_{1,3} | k-i */
+/*         | 0       T_{2,2} T_{2,3} | 1 */
+/*         | 0       0       T_{3,3} | i-1 */
+/*         |-------------------------| */
+/*           k-i     1       i-1 */
+
+/*        T_{1,1}, T_{2,2}, and T_{3,3} are non-unit lower triangular */
+
+/*        Similarly as above, we will construct T_{2,2} and T_{2,3} at */
+/*        each iteration i = 2, \dots k, and then grow into T_{1,1:3}. On */
+/*        each iteration, T_{1,1:3} are not referenced. See dlarft.f */
+/*        for details on how these formulae were constructed. */
+
+/*        We get that */
+
+/*        T_{2,3} = -T_{2,2}[V_{2,1} V_{2,2} 0][V_{3,1} V_{3,2} V_{3,3}]'T_{3,3} */
+
+/*        After transposing when necessary to fit our blas routines' interface, */
+/*           we get */
+/*        T_{3,2} = -T_{2,2}(V_{3,1}V_{2,1} + V_{3,2})T_{3,3} */
+
+/*        Thus, we will compute */
+
+/*        T_{2,2} = \tau_{k-i+1} */
+/*        T_{2,3} = -\tau_{k-i+1}V_{3,2}' */
+/*        T_{2,3} = -\tau_{k-i+1}V_{3,1}V_{2,1} + T_{2,3} */
+/*        T_{2,3} = T_{3,3}'T_{2,3} */
+
+	t[*k + *k * t_dim1] = tau[*k];
+	i__1 = *k;
+	for (i__ = 2; i__ <= i__1; ++i__) {
+	    kmi = *k - i__ + 1;
+	    nmi = *n - i__ + 1;
+
+/*           T_{2,2} = \tau_{k-i+1} */
+
+	    t[kmi + kmi * t_dim1] = tau[kmi];
+
+/*           T_{2,3} = -\tau_{k-i+1}V_{3,2}' */
+
+	    i__2 = i__ - 1;
+	    for (j = 1; j <= i__2; ++j) {
+		t[kmi + (kmi + j) * t_dim1] = -tau[kmi] * v[kmi + j + nmi * 
+			v_dim1];
+	    }
+
+/*           T_{2,3} = -\tau_{k-i+1}V_{3,1}V_{2,1} + T_{2,3} */
+
+	    i__2 = i__ - 1;
+	    i__3 = *n - i__;
+	    d__1 = -tau[kmi];
+	    dgemv_("No Transpose", &i__2, &i__3, &d__1, &v[kmi + 1 + v_dim1], 
+		    ldv, &v[kmi + v_dim1], ldv, &c_b11, &t[kmi + (kmi + 1) * 
+		    t_dim1], ldt);
+
+/*           T_{2,3} = T_{3,3}'T_{2,3} */
+
+	    i__2 = i__ - 1;
+	    dtrmv_("Upper", "Transpose", "Non-unit", &i__2, &t[kmi + 1 + (kmi 
+		    + 1) * t_dim1], ldt, &t[kmi + (kmi + 1) * t_dim1], ldt);
 	}
     }
     return;
-
-/*     End of DLARFT_LVL2 */
-
 } /* dlarft_lvl2__ */
 

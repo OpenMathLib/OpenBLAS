@@ -174,31 +174,15 @@ typedef struct Namelist Namelist;
 #define bit_set(a,b)	((a) |  ((uinteger)1 << (b)))
 
 #define abort_() { sig_die("Fortran abort routine called", 1); }
-#define c_abs(z) (cabsf(Cf(z)))
-#define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
-#ifdef _MSC_VER
-#define c_div(c, a, b) {float nenn=crealf(_FCmulcc(Cf(b),conjf(Cf(b)))); _Fcomplex zaehl=_FCmulcc(Cf(a),conjf(Cf(b))); pCf(c)=_FCbuild(crealf(zaehl)/nenn,cimagf(zaehl)/nenn);}
-#else
-#define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
-#endif
-#define c_exp(R, Z) {pCf(R) = cexpf(Cf(Z));}
-#define c_log(R, Z) {pCf(R) = clogf(Cf(Z));}
-#define c_sin(R, Z) {pCf(R) = csinf(Cf(Z));}
-//#define c_sqrt(R, Z) {*(R) = csqrtf(Cf(Z));}
-#define c_sqrt(R, Z) {pCf(R) = csqrtf(Cf(Z));}
 #define d_abs(x) (fabs(*(x)))
 #define d_acos(x) (acos(*(x)))
 #define d_asin(x) (asin(*(x)))
 #define d_atan(x) (atan(*(x)))
 #define d_atn2(x, y) (atan2(*(x),*(y)))
-#define d_cnjg(R, Z) { pCd(R) = conj(Cd(Z)); }
-#define r_cnjg(R, Z) { pCf(R) = conjf(Cf(Z)); }
 #define d_cos(x) (cos(*(x)))
 #define d_cosh(x) (cosh(*(x)))
 #define d_dim(__a, __b) ( *(__a) > *(__b) ? *(__a) - *(__b) : 0.0 )
 #define d_exp(x) (exp(*(x)))
-#define d_imag(z) (cimag(Cd(z)))
-#define r_imag(z) (cimagf(Cf(z)))
 #define d_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define r_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define d_lg10(x) ( 0.43429448190325182765 * log(*(x)) )
@@ -242,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__10 = 10;
@@ -261,7 +243,6 @@ rices</b> */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download CHEEVR + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cheevr.
 f"> */
@@ -272,7 +253,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cheevr.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -296,9 +276,16 @@ f"> */
 /* > \verbatim */
 /* > */
 /* > CHEEVR computes selected eigenvalues and, optionally, eigenvectors */
-/* > of a complex Hermitian matrix A.  Eigenvalues and eigenvectors can */
-/* > be selected by specifying either a range of values or a range of */
-/* > indices for the desired eigenvalues. */
+/* > of a complex Hermitian matrix A. Eigenvalues and eigenvectors can be */
+/* > selected by specifying either a range of values or a range of indices */
+/* > for the desired eigenvalues. Invocations with different choices for */
+/* > these parameters may result in the computation of slightly different */
+/* > eigenvalues and/or eigenvectors for the same matrix. The reason for */
+/* > this behavior is that there exists a variety of algorithms (each */
+/* > performing best for a particular set of options) with CHEEVR */
+/* > attempting to select the best based on the various parameters. In all */
+/* > cases, the computed values are accurate within the limits of finite */
+/* > precision arithmetic. */
 /* > */
 /* > CHEEVR first reduces the matrix A to tridiagonal form T with a call */
 /* > to CHETRD.  Then, whenever possible, CHEEVR calls CSTEMR to compute */
@@ -330,7 +317,7 @@ f"> */
 /* > The desired accuracy of the output can be specified by the input */
 /* > parameter ABSTOL. */
 /* > */
-/* > For more details, see DSTEMR's documentation and: */
+/* > For more details, see CSTEMR's documentation and: */
 /* > - Inderjit S. Dhillon and Beresford N. Parlett: "Multiple representations */
 /* >   to compute orthogonal eigenvectors of symmetric tridiagonal matrices," */
 /* >   Linear Algebra and its Applications, 387(1), pp. 1-28, August 2004. */
@@ -362,6 +349,9 @@ f"> */
 /* >          JOBZ is CHARACTER*1 */
 /* >          = 'N':  Compute eigenvalues only; */
 /* >          = 'V':  Compute eigenvalues and eigenvectors. */
+/* > */
+/* >          This parameter influences the choice of the algorithm and */
+/* >          may alter the computed values. */
 /* > \endverbatim */
 /* > */
 /* > \param[in] RANGE */
@@ -373,6 +363,9 @@ f"> */
 /* >          = 'I': the IL-th through IU-th eigenvalues will be found. */
 /* >          For RANGE = 'V' or 'I' and IU - IL < N - 1, SSTEBZ and */
 /* >          CSTEIN are called */
+/* > */
+/* >          This parameter influences the choice of the algorithm and */
+/* >          may alter the computed values. */
 /* > \endverbatim */
 /* > */
 /* > \param[in] UPLO */
@@ -497,6 +490,7 @@ f"> */
 /* >          Note: the user must ensure that at least f2cmax(1,M) columns are */
 /* >          supplied in the array Z; if RANGE = 'V', the exact value of M */
 /* >          is not known in advance and an upper bound must be used. */
+/* >          Supplying N columns is always safe. */
 /* > \endverbatim */
 /* > */
 /* > \param[in] LDZ */
@@ -527,7 +521,8 @@ f"> */
 /* > \param[in] LWORK */
 /* > \verbatim */
 /* >          LWORK is INTEGER */
-/* >          The length of the array WORK.  LWORK >= f2cmax(1,2*N). */
+/* >          The length of the array WORK. */
+/* >          If N <= 1, LWORK >= 1, else LWORK >= 2*N. */
 /* >          For optimal efficiency, LWORK >= (NB+1)*N, */
 /* >          where NB is the f2cmax of the blocksize for CHETRD and for */
 /* >          CUNMTR as returned by ILAENV. */
@@ -549,7 +544,8 @@ f"> */
 /* > \param[in] LRWORK */
 /* > \verbatim */
 /* >          LRWORK is INTEGER */
-/* >          The length of the array RWORK.  LRWORK >= f2cmax(1,24*N). */
+/* >          The length of the array RWORK. */
+/* >          If N <= 1, LRWORK >= 1, else LRWORK >= 24*N. */
 /* > */
 /* >          If LRWORK = -1, then a workspace query is assumed; the */
 /* >          routine only calculates the optimal sizes of the WORK, RWORK */
@@ -568,7 +564,8 @@ f"> */
 /* > \param[in] LIWORK */
 /* > \verbatim */
 /* >          LIWORK is INTEGER */
-/* >          The dimension of the array IWORK.  LIWORK >= f2cmax(1,10*N). */
+/* >          The dimension of the array IWORK. */
+/* >          If N <= 1, LIWORK >= 1, else LIWORK >= 10*N. */
 /* > */
 /* >          If LIWORK = -1, then a workspace query is assumed; the */
 /* >          routine only calculates the optimal sizes of the WORK, RWORK */
@@ -593,9 +590,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date June 2016 */
-
-/* > \ingroup complexHEeigen */
+/* > \ingroup heevr */
 
 /* > \par Contributors: */
 /*  ================== */
@@ -619,11 +614,10 @@ f"> */
     real r__1, r__2;
 
     /* Local variables */
-    real anrm;
-    integer imax;
-    real rmin, rmax;
+    integer imyscale, i__, j, nb, jj;
+    real eps, vll, vuu, tmp1, anrm, rmin, rmax;
     logical test;
-    integer itmp1, i__, j, indrd, indre;
+    integer itmp1, indrd, indre;
     real sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
@@ -636,10 +630,8 @@ f"> */
     logical lower;
     extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
-    logical wantz;
-    integer nb, jj;
-    logical alleig, indeig;
-    integer iscale, ieeeok, indibl, indrdd, indifl, indree;
+    logical wantz, alleig, indeig;
+    integer ieeeok, indibl, indrdd, indifl, indree;
     logical valeig;
     extern real slamch_(char *);
     extern /* Subroutine */ void chetrd_(char *, integer *, complex *, integer 
@@ -673,15 +665,13 @@ f"> */
 	    integer *, real *, integer *, integer *);
     logical lquery;
     integer lwkopt;
-    real eps, vll, vuu;
+    extern real sroundup_lwork__(integer *);
     integer llrwork;
-    real tmp1;
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     June 2016 */
 
 
 /* ===================================================================== */
@@ -691,11 +681,11 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     --w;
     z_dim1 = *ldz;
-    z_offset = 1 + z_dim1 * 1;
+    z_offset = 1 + z_dim1;
     z__ -= z_offset;
     --isuppz;
     --work;
@@ -714,15 +704,15 @@ f"> */
 
     lquery = *lwork == -1 || *lrwork == -1 || *liwork == -1;
 
-/* Computing MAX */
-    i__1 = 1, i__2 = *n * 24;
-    lrwmin = f2cmax(i__1,i__2);
-/* Computing MAX */
-    i__1 = 1, i__2 = *n * 10;
-    liwmin = f2cmax(i__1,i__2);
-/* Computing MAX */
-    i__1 = 1, i__2 = *n << 1;
-    lwmin = f2cmax(i__1,i__2);
+    if (*n <= 1) {
+	lwmin = 1;
+	lrwmin = 1;
+	liwmin = 1;
+    } else {
+	lwmin = *n << 1;
+	lrwmin = *n * 24;
+	liwmin = *n * 10;
+    }
 
     *info = 0;
     if (! (wantz || lsame_(jobz, "N"))) {
@@ -764,8 +754,9 @@ f"> */
 /* Computing MAX */
 	i__1 = (nb + 1) * *n;
 	lwkopt = f2cmax(i__1,lwmin);
-	work[1].r = (real) lwkopt, work[1].i = 0.f;
-	rwork[1] = (real) lrwmin;
+	r__1 = sroundup_lwork__(&lwkopt);
+	work[1].r = r__1, work[1].i = 0.f;
+	rwork[1] = sroundup_lwork__(&lrwmin);
 	iwork[1] = liwmin;
 
 	if (*lwork < lwmin && ! lquery) {
@@ -794,7 +785,7 @@ f"> */
     }
 
     if (*n == 1) {
-	work[1].r = 2.f, work[1].i = 0.f;
+	work[1].r = 1.f, work[1].i = 0.f;
 	if (alleig || indeig) {
 	    *m = 1;
 	    i__1 = a_dim1 + 1;
@@ -830,7 +821,7 @@ f"> */
 
 /*     Scale matrix to allowable range, if necessary. */
 
-    iscale = 0;
+    imyscale = 0;
     abstll = *abstol;
     if (valeig) {
 	vll = *vl;
@@ -838,13 +829,17 @@ f"> */
     }
     anrm = clansy_("M", uplo, n, &a[a_offset], lda, &rwork[1]);
     if (anrm > 0.f && anrm < rmin) {
-	iscale = 1;
+	imyscale = 1;
 	sigma = rmin / anrm;
     } else if (anrm > rmax) {
-	iscale = 1;
+/*        An infinite norm gives SIGMA = 0; leave such a matrix */
+/*        unscaled so that VL and VU remain a valid interval. */
 	sigma = rmax / anrm;
+	if (sigma > 0.f) {
+	    imyscale = 1;
+	}
     }
-    if (iscale == 1) {
+    if (imyscale == 1) {
 	if (lower) {
 	    i__1 = *n;
 	    for (j = 1; j <= i__1; ++j) {
@@ -931,7 +926,7 @@ f"> */
 	    scopy_(&i__1, &rwork[indre], &c__1, &rwork[indree], &c__1);
 	    scopy_(n, &rwork[indrd], &c__1, &rwork[indrdd], &c__1);
 
-	    if (*abstol <= *n * 2.f * eps) {
+	    if (*abstol <= (real) (*n) * 2.f * eps) {
 		tryrac = TRUE_;
 	    } else {
 		tryrac = FALSE_;
@@ -988,14 +983,9 @@ f"> */
 /*     If matrix was scaled, then rescale eigenvalues appropriately. */
 
 L30:
-    if (iscale == 1) {
-	if (*info == 0) {
-	    imax = *m;
-	} else {
-	    imax = *info - 1;
-	}
+    if (imyscale == 1) {
 	r__1 = 1.f / sigma;
-	sscal_(&imax, &r__1, &w[1], &c__1);
+	sscal_(m, &r__1, &w[1], &c__1);
     }
 
 /*     If eigenvalues are not in order, then sort them, along with */
@@ -1030,8 +1020,9 @@ L30:
 
 /*     Set WORK(1) to optimal workspace size. */
 
-    work[1].r = (real) lwkopt, work[1].i = 0.f;
-    rwork[1] = (real) lrwmin;
+    r__1 = sroundup_lwork__(&lwkopt);
+    work[1].r = r__1, work[1].i = 0.f;
+    rwork[1] = sroundup_lwork__(&lrwmin);
     iwork[1] = liwmin;
 
     return;

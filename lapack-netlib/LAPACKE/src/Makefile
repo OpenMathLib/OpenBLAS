@@ -148,6 +148,8 @@ lapacke_cgesv.o \
 lapacke_cgesv_work.o \
 lapacke_cgesvd.o \
 lapacke_cgesvd_work.o \
+lapacke_cgesvdmr3.o \
+lapacke_cgesvdmr3_work.o \
 lapacke_cgesvdq.o \
 lapacke_cgesvdq_work.o \
 lapacke_cgesvdx.o \
@@ -680,6 +682,8 @@ lapacke_dbdsdc.o \
 lapacke_dbdsdc_work.o \
 lapacke_dbdsqr.o \
 lapacke_dbdsqr_work.o \
+lapacke_dbdsvdmr3.o \
+lapacke_dbdsvdmr3_work.o \
 lapacke_dbdsvdx.o \
 lapacke_dbdsvdx_work.o \
 lapacke_ddisna.o \
@@ -780,6 +784,8 @@ lapacke_dgesv.o \
 lapacke_dgesv_work.o \
 lapacke_dgesvd.o \
 lapacke_dgesvd_work.o \
+lapacke_dgesvdmr3.o \
+lapacke_dgesvdmr3_work.o \
 lapacke_dgesvdq.o \
 lapacke_dgesvdq_work.o \
 lapacke_dgesvdx.o \
@@ -1078,6 +1084,8 @@ lapacke_dsptri.o \
 lapacke_dsptri_work.o \
 lapacke_dsptrs.o \
 lapacke_dsptrs_work.o \
+lapacke_dstebr.o \
+lapacke_dstebr_work.o \
 lapacke_dstebz.o \
 lapacke_dstebz_work.o \
 lapacke_dstedc.o \
@@ -1266,6 +1274,8 @@ lapacke_sbdsdc.o \
 lapacke_sbdsdc_work.o \
 lapacke_sbdsqr.o \
 lapacke_sbdsqr_work.o \
+lapacke_sbdsvdmr3.o \
+lapacke_sbdsvdmr3_work.o \
 lapacke_sbdsvdx.o \
 lapacke_sbdsvdx_work.o \
 lapacke_sdisna.o \
@@ -1366,6 +1376,8 @@ lapacke_sgesv.o \
 lapacke_sgesv_work.o \
 lapacke_sgesvd.o \
 lapacke_sgesvd_work.o \
+lapacke_sgesvdmr3.o \
+lapacke_sgesvdmr3_work.o \
 lapacke_sgesvdq.o \
 lapacke_sgesvdq_work.o \
 lapacke_sgesvdx.o \
@@ -1658,6 +1670,8 @@ lapacke_ssptri.o \
 lapacke_ssptri_work.o \
 lapacke_ssptrs.o \
 lapacke_ssptrs_work.o \
+lapacke_sstebr.o \
+lapacke_sstebr_work.o \
 lapacke_sstebz.o \
 lapacke_sstebz_work.o \
 lapacke_sstedc.o \
@@ -1942,6 +1956,8 @@ lapacke_zgesv.o \
 lapacke_zgesv_work.o \
 lapacke_zgesvd.o \
 lapacke_zgesvd_work.o \
+lapacke_zgesvdmr3.o \
+lapacke_zgesvdmr3_work.o \
 lapacke_zgesvdq.o \
 lapacke_zgesvdq_work.o \
 lapacke_zgesvdx.o \

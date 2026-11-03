@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download ZLAUU2 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlauu2.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlauu2.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -71,7 +69,9 @@
 *>          On exit, if UPLO = 'U', the upper triangle of A is
 *>          overwritten with the upper triangle of the product U * U**H;
 *>          if UPLO = 'L', the lower triangle of A is overwritten with
-*>          the lower triangle of the product L**H * L.
+*>          the lower triangle of the product L**H * L. Regardless,
+*>          the diagonal elements are explicitly set to be real by casting
+*.          to DBLE before exit.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -95,10 +95,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERauxiliary
+*> \ingroup lauu2
 *
 *  =====================================================================
       SUBROUTINE ZLAUU2( UPLO, N, A, LDA, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -120,19 +121,18 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            UPPER
-      INTEGER            I
-      DOUBLE PRECISION   AII
+      INTEGER            I, J
+      COMPLEX*16         AII, AJJ
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      COMPLEX*16         ZDOTC
-      EXTERNAL           LSAME, ZDOTC
+      EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZDSCAL, ZGEMV, ZLACGV
+      EXTERNAL           XERBLA, ZSCAL, ZGEMM
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DBLE, DCMPLX, MAX
+      INTRINSIC          DBLE, DCONJG, MAX
 *     ..
 *     .. Executable Statements ..
 *
@@ -161,39 +161,51 @@
 *
 *        Compute the product U * U**H.
 *
-         DO 10 I = 1, N
-            AII = DBLE( A( I, I ) )
-            IF( I.LT.N ) THEN
-               A( I, I ) = AII*AII + DBLE( ZDOTC( N-I, A( I, I+1 ), LDA,
-     $                     A( I, I+1 ), LDA ) )
-               CALL ZLACGV( N-I, A( I, I+1 ), LDA )
-               CALL ZGEMV( 'No transpose', I-1, N-I, ONE, A( 1, I+1 ),
-     $                     LDA, A( I, I+1 ), LDA, DCMPLX( AII ),
-     $                     A( 1, I ), 1 )
-               CALL ZLACGV( N-I, A( I, I+1 ), LDA )
+         DO J = 1, N
+            AJJ = DCONJG(A(J,J))
+            IF( J.EQ.N ) THEN
+*
+*              We have this case separate just to ensure we never
+*              access A out of bounds when we do A(J,J+1) = A(N,N+1)
+*
+               CALL ZSCAL( N, AJJ, A(1,N), 1 )
             ELSE
-               CALL ZDSCAL( I, AII, A( 1, I ), 1 )
+               CALL ZGEMM('No Transpose', 'Conjugate Transpose',
+     $            J, 1, N-J, ONE, A(1,J+1), LDA, A(J,J+1), LDA,
+     $            AJJ, A(1,J), LDA)
             END IF
-   10    CONTINUE
+*
+*           Since in exact arithmetic the diagonal will be real on output
+*           we explicitly cast the diagonal to real (zero out the
+*           imaginary component)
+*
+            A(J,J) = DBLE(A(J,J))
+         END DO
 *
       ELSE
 *
 *        Compute the product L**H * L.
 *
-         DO 20 I = 1, N
-            AII = DBLE( A( I, I ) )
-            IF( I.LT.N ) THEN
-               A( I, I ) = AII*AII + DBLE( ZDOTC( N-I, A( I+1, I ), 1,
-     $                     A( I+1, I ), 1 ) )
-               CALL ZLACGV( I-1, A( I, 1 ), LDA )
-               CALL ZGEMV( 'Conjugate transpose', N-I, I-1, ONE,
-     $                     A( I+1, 1 ), LDA, A( I+1, I ), 1,
-     $                     DCMPLX( AII ), A( I, 1 ), LDA )
-               CALL ZLACGV( I-1, A( I, 1 ), LDA )
+         DO I = 1, N
+            AII = DCONJG(A(I,I))
+            IF( I.EQ.N ) THEN
+*
+*              We have this case separate just to ensure we never
+*              access A out of bounds when we do A(I+1,I) = A(N+1,N)
+*
+               CALL ZSCAL(N, AII, A(N,1), LDA)
             ELSE
-               CALL ZDSCAL( I, AII, A( I, 1 ), LDA )
+               CALL ZGEMM('Conjugate Transpose', 'No Transpose',
+     $            1, I, N-I, ONE, A(I+1,I), LDA, A(I+1,1), LDA,
+     $            AII, A(I,1), LDA)
             END IF
-   20    CONTINUE
+*
+*           Since in exact arithmetic the diagonal will be real on output
+*           we explicitly cast the diagonal to real (zero out the
+*           imaginary component)
+*
+            A(I,I) = DBLE(A(I,I))
+         END DO
       END IF
 *
       RETURN

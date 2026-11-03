@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download ZSYTF2_RK + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zsytf2_rk.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zsytf2_rk.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -208,7 +206,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16SYcomputational
+*> \ingroup hetf2_rk
 *
 *> \par Further Details:
 *  =====================
@@ -238,6 +236,7 @@
 *
 *  =====================================================================
       SUBROUTINE ZSYTF2_RK( UPLO, N, A, LDA, E, IPIV, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -469,7 +468,8 @@
 *              the interchanges in columns k+1:N.
 *
                IF( K.LT.N )
-     $            CALL ZSWAP( N-K, A( K, K+1 ), LDA, A( P, K+1 ), LDA )
+     $            CALL ZSWAP( N-K, A( K, K+1 ), LDA, A( P, K+1 ),
+     $                        LDA )
 *
             END IF
 *
@@ -484,7 +484,8 @@
                IF( KP.GT.1 )
      $            CALL ZSWAP( KP-1, A( 1, KK ), 1, A( 1, KP ), 1 )
                IF( ( KK.GT.1 ) .AND. ( KP.LT.(KK-1) ) )
-     $            CALL ZSWAP( KK-KP-1, A( KP+1, KK ), 1, A( KP, KP+1 ),
+     $            CALL ZSWAP( KK-KP-1, A( KP+1, KK ), 1, A( KP,
+     $                        KP+1 ),
      $                     LDA )
                T = A( KK, KK )
                A( KK, KK ) = A( KP, KP )
@@ -526,7 +527,8 @@
 *                       = A - W(k)*1/D(k)*W(k)**T
 *
                      D11 = CONE / A( K, K )
-                     CALL ZSYR( UPLO, K-1, -D11, A( 1, K ), 1, A, LDA )
+                     CALL ZSYR( UPLO, K-1, -D11, A( 1, K ), 1, A,
+     $                          LDA )
 *
 *                    Store U(k) in column k
 *
@@ -545,7 +547,8 @@
 *                       = A - W(k)*(1/D(k))*W(k)**T
 *                       = A - (W(k)/D(k))*(D(k))*(W(k)/D(K))**T
 *
-                     CALL ZSYR( UPLO, K-1, -D11, A( 1, K ), 1, A, LDA )
+                     CALL ZSYR( UPLO, K-1, -D11, A( 1, K ), 1, A,
+     $                          LDA )
                   END IF
 *
 *                 Store the superdiagonal element of D in array E
@@ -579,18 +582,18 @@
 *
                   DO 30 J = K - 2, 1, -1
 *
-                     WKM1 = T*( D11*A( J, K-1 )-A( J, K ) )
-                     WK = T*( D22*A( J, K )-A( J, K-1 ) )
+                     WKM1 = T*( ( D11*A( J, K-1 )-A( J, K ) ) / D12 )
+                     WK = T*( ( D22*A( J, K )-A( J, K-1 ) ) / D12 )
 *
                      DO 20 I = J, 1, -1
-                        A( I, J ) = A( I, J ) - (A( I, K ) / D12 )*WK -
-     $                              ( A( I, K-1 ) / D12 )*WKM1
+                        A( I, J ) = A( I, J ) - A( I, K )*WK -
+     $                              A( I, K-1 )*WKM1
    20                CONTINUE
 *
 *                    Store U(k) and U(k-1) in cols k and k-1 for row J
 *
-                     A( J, K ) = WK / D12
-                     A( J, K-1 ) = WKM1 / D12
+                     A( J, K ) = WK
+                     A( J, K-1 ) = WKM1
 *
    30             CONTINUE
 *
@@ -703,14 +706,16 @@
 *                 Determine both ROWMAX and JMAX.
 *
                   IF( IMAX.NE.K ) THEN
-                     JMAX = K - 1 + IZAMAX( IMAX-K, A( IMAX, K ), LDA )
+                     JMAX = K - 1 + IZAMAX( IMAX-K, A( IMAX, K ),
+     $                                      LDA )
                      ROWMAX = CABS1( A( IMAX, JMAX ) )
                   ELSE
                      ROWMAX = ZERO
                   END IF
 *
                   IF( IMAX.LT.N ) THEN
-                     ITEMP = IMAX + IZAMAX( N-IMAX, A( IMAX+1, IMAX ),
+                     ITEMP = IMAX + IZAMAX( N-IMAX, A( IMAX+1,
+     $                                      IMAX ),
      $                                     1 )
                      DTEMP = CABS1( A( ITEMP, IMAX ) )
                      IF( DTEMP.GT.ROWMAX ) THEN
@@ -769,7 +774,8 @@
                IF( P.LT.N )
      $            CALL ZSWAP( N-P, A( P+1, K ), 1, A( P+1, P ), 1 )
                IF( P.GT.(K+1) )
-     $            CALL ZSWAP( P-K-1, A( K+1, K ), 1, A( P, K+1 ), LDA )
+     $            CALL ZSWAP( P-K-1, A( K+1, K ), 1, A( P, K+1 ),
+     $                        LDA )
                T = A( K, K )
                A( K, K ) = A( P, P )
                A( P, P ) = T
@@ -791,9 +797,11 @@
 *              submatrix A(k:n,k:n)
 *
                IF( KP.LT.N )
-     $            CALL ZSWAP( N-KP, A( KP+1, KK ), 1, A( KP+1, KP ), 1 )
+     $            CALL ZSWAP( N-KP, A( KP+1, KK ), 1, A( KP+1, KP ),
+     $                        1 )
                IF( ( KK.LT.N ) .AND. ( KP.GT.(KK+1) ) )
-     $            CALL ZSWAP( KP-KK-1, A( KK+1, KK ), 1, A( KP, KK+1 ),
+     $            CALL ZSWAP( KP-KK-1, A( KK+1, KK ), 1, A( KP,
+     $                        KK+1 ),
      $                     LDA )
                T = A( KK, KK )
                A( KK, KK ) = A( KP, KP )
@@ -890,22 +898,22 @@
 *
                   DO 60 J = K + 2, N
 *
-*                    Compute  D21 * ( W(k)W(k+1) ) * inv(D(k)) for row J
+*                    Compute  ( W(k)W(k+1) ) * inv(D(k)) for row J
 *
-                     WK = T*( D11*A( J, K )-A( J, K+1 ) )
-                     WKP1 = T*( D22*A( J, K+1 )-A( J, K ) )
+                     WK = T*( ( D11*A( J, K )-A( J, K+1 ) ) / D21 )
+                     WKP1 = T*( ( D22*A( J, K+1 )-A( J, K ) ) / D21 )
 *
 *                    Perform a rank-2 update of A(k+2:n,k+2:n)
 *
                      DO 50 I = J, N
-                        A( I, J ) = A( I, J ) - ( A( I, K ) / D21 )*WK -
-     $                              ( A( I, K+1 ) / D21 )*WKP1
+                        A( I, J ) = A( I, J ) - A( I, K )*WK -
+     $                              A( I, K+1 )*WKP1
    50                CONTINUE
 *
 *                    Store L(k) and L(k+1) in cols k and k+1 for row J
 *
-                     A( J, K ) = WK / D21
-                     A( J, K+1 ) = WKP1 / D21
+                     A( J, K ) = WK
+                     A( J, K+1 ) = WKP1
 *
    60             CONTINUE
 *

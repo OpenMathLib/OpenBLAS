@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download ZLASYF + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlasyf.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlasyf.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -160,7 +158,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16SYcomputational
+*> \ingroup lahef
 *
 *> \par Contributors:
 *  ==================
@@ -173,7 +171,9 @@
 *> \endverbatim
 *
 *  =====================================================================
-      SUBROUTINE ZLASYF( UPLO, N, NB, KB, A, LDA, IPIV, W, LDW, INFO )
+      SUBROUTINE ZLASYF( UPLO, N, NB, KB, A, LDA, IPIV, W, LDW,
+     $                   INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -199,7 +199,7 @@
       PARAMETER          ( CONE = ( 1.0D+0, 0.0D+0 ) )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            IMAX, J, JB, JJ, JMAX, JP, K, KK, KKW, KP,
+      INTEGER            IMAX, J, JJ, JMAX, JP, K, KK, KKW, KP,
      $                   KSTEP, KW
       DOUBLE PRECISION   ABSAKK, ALPHA, COLMAX, ROWMAX
       COMPLEX*16         D11, D21, D22, R1, T, Z
@@ -210,7 +210,7 @@
       EXTERNAL           LSAME, IZAMAX
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZCOPY, ZGEMM, ZGEMV, ZSCAL, ZSWAP
+      EXTERNAL           ZCOPY, ZGEMMTR, ZGEMV, ZSCAL, ZSWAP
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DIMAG, MAX, MIN, SQRT
@@ -252,7 +252,8 @@
 *
          CALL ZCOPY( K, A( 1, K ), 1, W( 1, KW ), 1 )
          IF( K.LT.N )
-     $      CALL ZGEMV( 'No transpose', K, N-K, -CONE, A( 1, K+1 ), LDA,
+     $      CALL ZGEMV( 'No transpose', K, N-K, -CONE, A( 1, K+1 ),
+     $                  LDA,
      $                  W( K, KW+1 ), LDW, CONE, W( 1, KW ), 1 )
 *
          KSTEP = 1
@@ -279,6 +280,7 @@
             IF( INFO.EQ.0 )
      $         INFO = K
             KP = K
+            CALL ZCOPY( K, W( 1, KW ), 1, A( 1, K ), 1 )
          ELSE
             IF( ABSAKK.GE.ALPHA*COLMAX ) THEN
 *
@@ -430,22 +432,24 @@
 *                 = 1/d21 * T * ( ( D11 ) (  -1 ) )
 *                               ( (  -1 ) ( D22 ) )
 *
-*                 = D21 * ( ( D11 ) (  -1 ) )
-*                         ( (  -1 ) ( D22 ) )
+*                 T/d21 is not formed, since it overflows when d21 is
+*                 subnormal: each entry of the product is divided by
+*                 d21 and then scaled by T.
 *
                   D21 = W( K-1, KW )
                   D11 = W( K, KW ) / D21
                   D22 = W( K-1, KW-1 ) / D21
                   T = CONE / ( D11*D22-CONE )
-                  D21 = T / D21
 *
 *                 Update elements in columns A(k-1) and A(k) as
 *                 dot products of rows of ( W(kw-1) W(kw) ) and columns
 *                 of D**(-1)
 *
                   DO 20 J = 1, K - 2
-                     A( J, K-1 ) = D21*( D11*W( J, KW-1 )-W( J, KW ) )
-                     A( J, K ) = D21*( D22*W( J, KW )-W( J, KW-1 ) )
+                     A( J, K-1 ) = T*( (D11*W( J, KW-1 )-W( J, KW ) ) /
+     $                             D21 )
+                     A( J, K ) = T*( ( D22*W( J, KW )-W( J, KW-1 ) ) /
+     $                           D21 )
    20             CONTINUE
                END IF
 *
@@ -479,25 +483,9 @@
 *
 *        A11 := A11 - U12*D*U12**T = A11 - U12*W**T
 *
-*        computing blocks of NB columns at a time
-*
-         DO 50 J = ( ( K-1 ) / NB )*NB + 1, 1, -NB
-            JB = MIN( NB, K-J+1 )
-*
-*           Update the upper triangle of the diagonal block
-*
-            DO 40 JJ = J, J + JB - 1
-               CALL ZGEMV( 'No transpose', JJ-J+1, N-K, -CONE,
-     $                     A( J, K+1 ), LDA, W( JJ, KW+1 ), LDW, CONE,
-     $                     A( J, JJ ), 1 )
-   40       CONTINUE
-*
-*           Update the rectangular superdiagonal block
-*
-            CALL ZGEMM( 'No transpose', 'Transpose', J-1, JB, N-K,
-     $                  -CONE, A( 1, K+1 ), LDA, W( J, KW+1 ), LDW,
-     $                  CONE, A( 1, J ), LDA )
-   50    CONTINUE
+         CALL ZGEMMTR( 'Upper', 'No transpose', 'Transpose', K, N-K,
+     $                 -CONE, A( 1, K+1 ), LDA, W( 1, KW+1 ), LDW,
+     $                 CONE, A( 1, 1 ), LDA )
 *
 *        Put U12 in standard form by partially undoing the interchanges
 *        in columns k+1:n looping backwards from k+1 to n
@@ -547,7 +535,8 @@
 *        Copy column K of A to column K of W and update it
 *
          CALL ZCOPY( N-K+1, A( K, K ), 1, W( K, K ), 1 )
-         CALL ZGEMV( 'No transpose', N-K+1, K-1, -CONE, A( K, 1 ), LDA,
+         CALL ZGEMV( 'No transpose', N-K+1, K-1, -CONE, A( K, 1 ),
+     $               LDA,
      $               W( K, 1 ), LDW, CONE, W( K, K ), 1 )
 *
          KSTEP = 1
@@ -574,6 +563,7 @@
             IF( INFO.EQ.0 )
      $         INFO = K
             KP = K
+            CALL ZCOPY( N-K+1, W( K, K ), 1, A( K, K ), 1 )
          ELSE
             IF( ABSAKK.GE.ALPHA*COLMAX ) THEN
 *
@@ -584,10 +574,13 @@
 *
 *              Copy column IMAX to column K+1 of W and update it
 *
-               CALL ZCOPY( IMAX-K, A( IMAX, K ), LDA, W( K, K+1 ), 1 )
-               CALL ZCOPY( N-IMAX+1, A( IMAX, IMAX ), 1, W( IMAX, K+1 ),
+               CALL ZCOPY( IMAX-K, A( IMAX, K ), LDA, W( K, K+1 ),
      $                     1 )
-               CALL ZGEMV( 'No transpose', N-K+1, K-1, -CONE, A( K, 1 ),
+               CALL ZCOPY( N-IMAX+1, A( IMAX, IMAX ), 1, W( IMAX,
+     $                     K+1 ),
+     $                     1 )
+               CALL ZGEMV( 'No transpose', N-K+1, K-1, -CONE, A( K,
+     $                     1 ),
      $                     LDA, W( IMAX, 1 ), LDW, CONE, W( K, K+1 ),
      $                     1 )
 *
@@ -646,7 +639,8 @@
                CALL ZCOPY( KP-KK-1, A( KK+1, KK ), 1, A( KP, KK+1 ),
      $                     LDA )
                IF( KP.LT.N )
-     $            CALL ZCOPY( N-KP, A( KP+1, KK ), 1, A( KP+1, KP ), 1 )
+     $            CALL ZCOPY( N-KP, A( KP+1, KK ), 1, A( KP+1, KP ),
+     $                        1 )
 *
 *              Interchange rows KK and KP in first K-1 columns of A
 *              (columns K (or K and K+1 for 2-by-2 pivot) of A will be
@@ -720,22 +714,24 @@
 *                 = 1/d21 * T * ( ( D11 ) (  -1 ) )
 *                               ( (  -1 ) ( D22 ) )
 *
-*                 = D21 * ( ( D11 ) (  -1 ) )
-*                         ( (  -1 ) ( D22 ) )
+*                 T/d21 is not formed, since it overflows when d21 is
+*                 subnormal: each entry of the product is divided by
+*                 d21 and then scaled by T.
 *
                   D21 = W( K+1, K )
                   D11 = W( K+1, K+1 ) / D21
                   D22 = W( K, K ) / D21
                   T = CONE / ( D11*D22-CONE )
-                  D21 = T / D21
 *
 *                 Update elements in columns A(k) and A(k+1) as
 *                 dot products of rows of ( W(k) W(k+1) ) and columns
 *                 of D**(-1)
 *
                   DO 80 J = K + 2, N
-                     A( J, K ) = D21*( D11*W( J, K )-W( J, K+1 ) )
-                     A( J, K+1 ) = D21*( D22*W( J, K+1 )-W( J, K ) )
+                     A( J, K ) = T*( ( D11*W( J, K )-W( J, K+1 ) ) /
+     $                           D21 )
+                     A( J, K+1 ) = T*( ( D22*W( J, K+1 )-W( J, K ) ) /
+     $                             D21 )
    80             CONTINUE
                END IF
 *
@@ -769,26 +765,9 @@
 *
 *        A22 := A22 - L21*D*L21**T = A22 - L21*W**T
 *
-*        computing blocks of NB columns at a time
-*
-         DO 110 J = K, N, NB
-            JB = MIN( NB, N-J+1 )
-*
-*           Update the lower triangle of the diagonal block
-*
-            DO 100 JJ = J, J + JB - 1
-               CALL ZGEMV( 'No transpose', J+JB-JJ, K-1, -CONE,
-     $                     A( JJ, 1 ), LDA, W( JJ, 1 ), LDW, CONE,
-     $                     A( JJ, JJ ), 1 )
-  100       CONTINUE
-*
-*           Update the rectangular subdiagonal block
-*
-            IF( J+JB.LE.N )
-     $         CALL ZGEMM( 'No transpose', 'Transpose', N-J-JB+1, JB,
-     $                     K-1, -CONE, A( J+JB, 1 ), LDA, W( J, 1 ),
-     $                     LDW, CONE, A( J+JB, J ), LDA )
-  110    CONTINUE
+         CALL ZGEMMTR( 'Lower', 'No transpose', 'Transpose', N-K+1,
+     $                 K-1, -CONE, A( K, 1 ), LDA, W( K, 1 ), LDW,
+     $                 CONE, A( K, K ), LDA )
 *
 *        Put L21 in standard form by partially undoing the interchanges
 *        of rows in columns 1:k-1 looping backwards from k-1 to 1

@@ -157,6 +157,11 @@
 *     ..
 *     .. Executable Statements ..
 *
+*     Quick return if C is empty
+*
+      IF( M.LE.0 .OR. N.LE.0 )
+     $   RETURN
+*
       APPLYLEFT = LSAME( SIDE, 'L' )
       FIRSTV = 1
       LASTC = 0
@@ -168,7 +173,11 @@
          ELSE
             LASTV = N
          END IF
-         I = 1
+         IF( INCV.GT.0 ) THEN
+            I = 1
+         ELSE
+            I = 1 - (LASTV-1) * INCV
+         END IF
 !     Look for the last non-zero row in V.
          DO WHILE( LASTV.GT.FIRSTV .AND. V( I ).EQ.ZERO )
             FIRSTV = FIRSTV + 1
@@ -180,6 +189,11 @@
          ELSE
 !     Scan for the last non-zero row in C(:,1:lastv).
             LASTC = ILASLR(M, LASTV, C, LDC)
+         END IF
+!     Set index for V. If INCV > 0, then I points to the start of V.
+!     For INCV < 0, set I to point to V(M-1)
+         IF( INCV.LT.0 ) THEN
+            I = 1 - INCV
          END IF
       END IF
       IF( LASTC.EQ.0 ) THEN
