@@ -236,88 +236,84 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alphar, FLOAT alphai, FLOAT*
 
             BLASLONG ci=n_top*ldc+m_top;
 
-            vfloat64m1_t C0r = __riscv_vlse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, gvl );
-            vfloat64m1_t C0i = __riscv_vlse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, gvl );
-             ci += gvl;
-            vfloat64m1_t C1r = __riscv_vlse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, gvl );
-            vfloat64m1_t C1i = __riscv_vlse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, gvl );
-            ci += ldc-gvl*1;
-            vfloat64m1_t C2r = __riscv_vlse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, gvl );
-            vfloat64m1_t C2i = __riscv_vlse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, gvl );
-             ci += gvl;
-            vfloat64m1_t C3r = __riscv_vlse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, gvl );
-            vfloat64m1_t C3i = __riscv_vlse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, gvl );
-            ci += ldc-gvl*1;
-            vfloat64m1_t C4r = __riscv_vlse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, gvl );
-            vfloat64m1_t C4i = __riscv_vlse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, gvl );
-             ci += gvl;
-            vfloat64m1_t C5r = __riscv_vlse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, gvl );
-            vfloat64m1_t C5i = __riscv_vlse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, gvl );
-            ci += ldc-gvl*1;
-            vfloat64m1_t C6r = __riscv_vlse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, gvl );
-            vfloat64m1_t C6i = __riscv_vlse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, gvl );
-             ci += gvl;
-            vfloat64m1_t C7r = __riscv_vlse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, gvl );
-            vfloat64m1_t C7i = __riscv_vlse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, gvl );
-            
+            // C is interleaved complex: a 2-field segment load/store moves
+            // gvl contiguous (re,im) pairs at once and splits them into the
+            // real and imaginary vectors, instead of two stride-2 passes.
+            // Each segment is loaded, updated and stored before the next one
+            // so that only one C tuple is live next to the accumulators; the
+            // segments are disjoint (ldc >= M) and every element gets the
+            // same alpha FMAs in the same order as before.
+            vfloat64m1x2_t Cseg0 = __riscv_vlseg2e64_v_f64m1x2( &C[ci*2], gvl );
+            vfloat64m1_t C0r = __riscv_vget_v_f64m1x2_f64m1( Cseg0, 0 );
+            vfloat64m1_t C0i = __riscv_vget_v_f64m1x2_f64m1( Cseg0, 1 );
             C0r = __riscv_vfmacc( C0r, alphar, ACC0r, gvl );
             C0i = __riscv_vfmacc( C0i, alphar, ACC0i, gvl );
-            C1r = __riscv_vfmacc( C1r, alphar, ACC1r, gvl );
-            C1i = __riscv_vfmacc( C1i, alphar, ACC1i, gvl );
-            C2r = __riscv_vfmacc( C2r, alphar, ACC2r, gvl );
-            C2i = __riscv_vfmacc( C2i, alphar, ACC2i, gvl );
-            C3r = __riscv_vfmacc( C3r, alphar, ACC3r, gvl );
-            C3i = __riscv_vfmacc( C3i, alphar, ACC3i, gvl );
-            C4r = __riscv_vfmacc( C4r, alphar, ACC4r, gvl );
-            C4i = __riscv_vfmacc( C4i, alphar, ACC4i, gvl );
-            C5r = __riscv_vfmacc( C5r, alphar, ACC5r, gvl );
-            C5i = __riscv_vfmacc( C5i, alphar, ACC5i, gvl );
-            C6r = __riscv_vfmacc( C6r, alphar, ACC6r, gvl );
-            C6i = __riscv_vfmacc( C6i, alphar, ACC6i, gvl );
-            C7r = __riscv_vfmacc( C7r, alphar, ACC7r, gvl );
-            C7i = __riscv_vfmacc( C7i, alphar, ACC7i, gvl );
             C0r = __riscv_vfnmsac( C0r, alphai, ACC0i, gvl );
             C0i = __riscv_vfmacc ( C0i, alphai, ACC0r, gvl );
+            __riscv_vsseg2e64_v_f64m1x2( &C[ci*2], __riscv_vcreate_v_f64m1x2( C0r, C0i ), gvl );
+             ci += gvl;
+            vfloat64m1x2_t Cseg1 = __riscv_vlseg2e64_v_f64m1x2( &C[ci*2], gvl );
+            vfloat64m1_t C1r = __riscv_vget_v_f64m1x2_f64m1( Cseg1, 0 );
+            vfloat64m1_t C1i = __riscv_vget_v_f64m1x2_f64m1( Cseg1, 1 );
+            C1r = __riscv_vfmacc( C1r, alphar, ACC1r, gvl );
+            C1i = __riscv_vfmacc( C1i, alphar, ACC1i, gvl );
             C1r = __riscv_vfnmsac( C1r, alphai, ACC1i, gvl );
             C1i = __riscv_vfmacc ( C1i, alphai, ACC1r, gvl );
+            __riscv_vsseg2e64_v_f64m1x2( &C[ci*2], __riscv_vcreate_v_f64m1x2( C1r, C1i ), gvl );
+            ci += ldc-gvl*1;
+            vfloat64m1x2_t Cseg2 = __riscv_vlseg2e64_v_f64m1x2( &C[ci*2], gvl );
+            vfloat64m1_t C2r = __riscv_vget_v_f64m1x2_f64m1( Cseg2, 0 );
+            vfloat64m1_t C2i = __riscv_vget_v_f64m1x2_f64m1( Cseg2, 1 );
+            C2r = __riscv_vfmacc( C2r, alphar, ACC2r, gvl );
+            C2i = __riscv_vfmacc( C2i, alphar, ACC2i, gvl );
             C2r = __riscv_vfnmsac( C2r, alphai, ACC2i, gvl );
             C2i = __riscv_vfmacc ( C2i, alphai, ACC2r, gvl );
+            __riscv_vsseg2e64_v_f64m1x2( &C[ci*2], __riscv_vcreate_v_f64m1x2( C2r, C2i ), gvl );
+             ci += gvl;
+            vfloat64m1x2_t Cseg3 = __riscv_vlseg2e64_v_f64m1x2( &C[ci*2], gvl );
+            vfloat64m1_t C3r = __riscv_vget_v_f64m1x2_f64m1( Cseg3, 0 );
+            vfloat64m1_t C3i = __riscv_vget_v_f64m1x2_f64m1( Cseg3, 1 );
+            C3r = __riscv_vfmacc( C3r, alphar, ACC3r, gvl );
+            C3i = __riscv_vfmacc( C3i, alphar, ACC3i, gvl );
             C3r = __riscv_vfnmsac( C3r, alphai, ACC3i, gvl );
             C3i = __riscv_vfmacc ( C3i, alphai, ACC3r, gvl );
+            __riscv_vsseg2e64_v_f64m1x2( &C[ci*2], __riscv_vcreate_v_f64m1x2( C3r, C3i ), gvl );
+            ci += ldc-gvl*1;
+            vfloat64m1x2_t Cseg4 = __riscv_vlseg2e64_v_f64m1x2( &C[ci*2], gvl );
+            vfloat64m1_t C4r = __riscv_vget_v_f64m1x2_f64m1( Cseg4, 0 );
+            vfloat64m1_t C4i = __riscv_vget_v_f64m1x2_f64m1( Cseg4, 1 );
+            C4r = __riscv_vfmacc( C4r, alphar, ACC4r, gvl );
+            C4i = __riscv_vfmacc( C4i, alphar, ACC4i, gvl );
             C4r = __riscv_vfnmsac( C4r, alphai, ACC4i, gvl );
             C4i = __riscv_vfmacc ( C4i, alphai, ACC4r, gvl );
+            __riscv_vsseg2e64_v_f64m1x2( &C[ci*2], __riscv_vcreate_v_f64m1x2( C4r, C4i ), gvl );
+             ci += gvl;
+            vfloat64m1x2_t Cseg5 = __riscv_vlseg2e64_v_f64m1x2( &C[ci*2], gvl );
+            vfloat64m1_t C5r = __riscv_vget_v_f64m1x2_f64m1( Cseg5, 0 );
+            vfloat64m1_t C5i = __riscv_vget_v_f64m1x2_f64m1( Cseg5, 1 );
+            C5r = __riscv_vfmacc( C5r, alphar, ACC5r, gvl );
+            C5i = __riscv_vfmacc( C5i, alphar, ACC5i, gvl );
             C5r = __riscv_vfnmsac( C5r, alphai, ACC5i, gvl );
             C5i = __riscv_vfmacc ( C5i, alphai, ACC5r, gvl );
+            __riscv_vsseg2e64_v_f64m1x2( &C[ci*2], __riscv_vcreate_v_f64m1x2( C5r, C5i ), gvl );
+            ci += ldc-gvl*1;
+            vfloat64m1x2_t Cseg6 = __riscv_vlseg2e64_v_f64m1x2( &C[ci*2], gvl );
+            vfloat64m1_t C6r = __riscv_vget_v_f64m1x2_f64m1( Cseg6, 0 );
+            vfloat64m1_t C6i = __riscv_vget_v_f64m1x2_f64m1( Cseg6, 1 );
+            C6r = __riscv_vfmacc( C6r, alphar, ACC6r, gvl );
+            C6i = __riscv_vfmacc( C6i, alphar, ACC6i, gvl );
             C6r = __riscv_vfnmsac( C6r, alphai, ACC6i, gvl );
             C6i = __riscv_vfmacc ( C6i, alphai, ACC6r, gvl );
+            __riscv_vsseg2e64_v_f64m1x2( &C[ci*2], __riscv_vcreate_v_f64m1x2( C6r, C6i ), gvl );
+             ci += gvl;
+            vfloat64m1x2_t Cseg7 = __riscv_vlseg2e64_v_f64m1x2( &C[ci*2], gvl );
+            vfloat64m1_t C7r = __riscv_vget_v_f64m1x2_f64m1( Cseg7, 0 );
+            vfloat64m1_t C7i = __riscv_vget_v_f64m1x2_f64m1( Cseg7, 1 );
+            C7r = __riscv_vfmacc( C7r, alphar, ACC7r, gvl );
+            C7i = __riscv_vfmacc( C7i, alphar, ACC7i, gvl );
             C7r = __riscv_vfnmsac( C7r, alphai, ACC7i, gvl );
             C7i = __riscv_vfmacc ( C7i, alphai, ACC7r, gvl );
-
-            ci=n_top*ldc+m_top;
-
-            __riscv_vsse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, C0r, gvl);
-            __riscv_vsse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, C0i, gvl);
-             ci += gvl;
-            __riscv_vsse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, C1r, gvl);
-            __riscv_vsse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, C1i, gvl);
-            ci += ldc-gvl*1;
-            __riscv_vsse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, C2r, gvl);
-            __riscv_vsse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, C2i, gvl);
-             ci += gvl;
-            __riscv_vsse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, C3r, gvl);
-            __riscv_vsse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, C3i, gvl);
-            ci += ldc-gvl*1;
-            __riscv_vsse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, C4r, gvl);
-            __riscv_vsse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, C4i, gvl);
-             ci += gvl;
-            __riscv_vsse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, C5r, gvl);
-            __riscv_vsse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, C5i, gvl);
-            ci += ldc-gvl*1;
-            __riscv_vsse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, C6r, gvl);
-            __riscv_vsse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, C6i, gvl);
-             ci += gvl;
-            __riscv_vsse64_v_f64m1( &C[ci*2+0], sizeof(FLOAT)*2, C7r, gvl);
-            __riscv_vsse64_v_f64m1( &C[ci*2+1], sizeof(FLOAT)*2, C7i, gvl);
+            __riscv_vsseg2e64_v_f64m1x2( &C[ci*2], __riscv_vcreate_v_f64m1x2( C7r, C7i ), gvl );
             
             m_top += 8;
         }
