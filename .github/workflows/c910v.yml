@@ -20,7 +20,7 @@ permissions:
 jobs:
   TEST:
     if: "github.repository == 'OpenMathLib/OpenBLAS'"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       xuetie_toolchain: https://occ-oss-prod.oss-cn-hangzhou.aliyuncs.com/resource//1698113812618
       toolchain_file_name: Xuantie-900-gcc-linux-5.10.4-glibc-x86_64-V2.8.0-20231018.tar.gz
@@ -60,9 +60,12 @@ jobs:
           wget https://github.com/revyos/qemu/commit/222729c7455784dd855216d7a2bec4bd8f2a6800.patch
           # Backport the upstream linux-user clone_lock fix
           wget -O qemu-clone-lock.patch https://gitlab.com/qemu-project/qemu/-/commit/d22e9aec572396836782e993cb18d598e6012688.patch
+          # Backport the upstream linux-user fix for building against glibc-2.41+ that already defines sched_attr
+          wget -O qemu-sched-attr.patch https://gitlab.com/qemu-project/qemu/-/commit/27a8d899c7a100fd5aa040a8b993bb257687c393.patch
           cd qemu
           patch -p1 < ../222729c7455784dd855216d7a2bec4bd8f2a6800.patch
           patch -p1 < ../qemu-clone-lock.patch
+          patch -p1 < ../qemu-sched-attr.patch
           export CXXFLAGS="-Wno-error"; export CFLAGS="-Wno-error"
           ./configure --prefix=$GITHUB_WORKSPACE/qemu-install --target-list=riscv64-linux-user --disable-system
           make -j$(nproc)
