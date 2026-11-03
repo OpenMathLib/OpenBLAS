@@ -3564,7 +3564,7 @@ zpotri,
     LAPACKE_ztz_nancheck,
     LAPACKE_ztz_trans,
     LAPACKE_zgesvdmr3,
-    LAPACKE_zgesvdmr3_work
+    LAPACKE_zgesvdmr3_work,
 
     ## @(SRCX_OBJ) from `lapack-3.4.1/lapacke/src/Makefile`
     ## Not exported: requires LAPACKE_EXTENDED to be set and depends on the
