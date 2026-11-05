@@ -30,6 +30,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
+#include <float.h>
 #include <math.h>
 #include "openblas_utest.h"
 #if defined(BUILD_DOUBLE)
@@ -97,7 +98,7 @@ static void check_cnrm2_stride(int c_api, blasint increment) {
     else
 #endif
     result = BLASFUNC(scnrm2)(&n, x, &increment);
-    ASSERT_TRUE(isfinite(result));
+    ASSERT_TRUE(result >= -FLT_MAX && result <= FLT_MAX);
     ASSERT_DBL_NEAR_TOL(5.0, result, SINGLE_EPS);
 }
 CTEST(cnrm2, negative_unit_fortran) { check_cnrm2_stride(0, -1); }
@@ -122,7 +123,7 @@ static void check_znrm2_stride(int c_api, blasint increment) {
     else
 #endif
     result = BLASFUNC(dznrm2)(&n, x, &increment);
-    ASSERT_TRUE(isfinite(result));
+    ASSERT_TRUE(result >= -DBL_MAX && result <= DBL_MAX);
     ASSERT_DBL_NEAR_TOL(5.0, result, DOUBLE_EPS);
 }
 CTEST(znrm2, negative_unit_fortran) { check_znrm2_stride(0, -1); }
