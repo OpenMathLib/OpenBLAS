@@ -215,8 +215,8 @@ jobs:
       sudo installer -pkg MacPorts-2.12.6-15-Sequoia.pkg -target /
       export PATH=/opt/local/bin:$PATH
       hash -r
-      sudo port install llvm-22 clang-22 flang-22 gcc16
-      make TARGET=CORE2 CC=gcc-mp-16 FC=gfortran-mp-16 NO_SHARED=1
+      sudo port install llvm-22 clang-22 flang-22 gcc15
+      make TARGET=CORE2 CC=gcc-mp-15 FC=gfortran-mp-15 NO_SHARED=1
       
 - job: OSX_LLVM_flangnew
   timeoutInMinutes: 100
