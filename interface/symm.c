@@ -235,6 +235,26 @@ void NAME(char *SIDE, char *UPLO,
     return;
   }
 
+#if defined(OPENBLAS_USE_HIP) && !defined(COMPLEX) && !defined(DOUBLE) && !defined(XDOUBLE) && !defined(BFLOAT16) && !defined(HFLOAT16) && !defined(GEMM3M) && !defined(HEMM)
+  {
+    /* The symmetric factor is args.a for side=left and args.b for side=right;
+     * the m x n operand is the other one. Returns 0 for layouts the bridge does
+     * not handle, in which case the generic path below still runs. */
+    extern int rdna2_oblas_ssymm_cm(BLASLONG, BLASLONG, double, const float *,
+                                    BLASLONG, const float *, BLASLONG, double,
+                                    float *, BLASLONG, int, int);
+
+    if (rdna2_oblas_ssymm_cm(args.m, args.n, (double)*(const FLOAT *)args.alpha,
+                             (const float *)(side ? args.b : args.a),
+                             side ? args.ldb : args.lda,
+                             (const float *)(side ? args.a : args.b),
+                             side ? args.lda : args.ldb,
+                             (double)*(const FLOAT *)args.beta,
+                             (float *)args.c, args.ldc, side, uplo))
+      return;
+  }
+#endif
+
 #else
 
 void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
@@ -377,6 +397,25 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
   }
 
    if (args.m == 0 || args.n == 0) return;
+#if defined(OPENBLAS_USE_HIP) && !defined(COMPLEX) && !defined(DOUBLE) && !defined(XDOUBLE) && !defined(BFLOAT16) && !defined(HFLOAT16) && !defined(GEMM3M) && !defined(HEMM)
+  {
+    /* The symmetric factor is args.a for side=left and args.b for side=right;
+     * the m x n operand is the other one. Returns 0 for layouts the bridge does
+     * not handle, in which case the generic path below still runs. */
+    extern int rdna2_oblas_ssymm_cm(BLASLONG, BLASLONG, double, const float *,
+                                    BLASLONG, const float *, BLASLONG, double,
+                                    float *, BLASLONG, int, int);
+
+    if (rdna2_oblas_ssymm_cm(args.m, args.n, (double)*(const FLOAT *)args.alpha,
+                             (const float *)(side ? args.b : args.a),
+                             side ? args.ldb : args.lda,
+                             (const float *)(side ? args.a : args.b),
+                             side ? args.lda : args.ldb,
+                             (double)*(const FLOAT *)args.beta,
+                             (float *)args.c, args.ldc, side, uplo))
+      return;
+  }
+#endif
 #if !defined(COMPLEX) && !defined(DOUBLE) && !defined(BFLOAT16)  && !defined(HFLOAT16)
 #if defined(ARCH_ARM64) && (defined(USE_SSYMM_KERNEL_DIRECT)||defined(DYNAMIC_ARCH))
 #if defined(DYNAMIC_ARCH)

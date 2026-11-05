@@ -214,6 +214,28 @@ void NAME(char *SIDE, char *UPLO, char *TRANS, char *DIAG,
     return;
   }
 
+#if defined(OPENBLAS_USE_HIP) && !defined(COMPLEX) && !defined(DOUBLE) && !defined(XDOUBLE) && !defined(BFLOAT16) && !defined(HFLOAT16)
+  {
+    extern int rdna2_oblas_strmm_cm(BLASLONG, BLASLONG, double, const float *,
+                                    BLASLONG, float *, BLASLONG, int, int, int, int);
+    extern int rdna2_oblas_strsm_cm(BLASLONG, BLASLONG, double, const float *,
+                                    BLASLONG, float *, BLASLONG, int, int, int, int);
+    const double r_alpha = (double)*(const FLOAT *)args.beta;
+
+    /* OpenBLAS' trsm.c serves both TRMM and TRSM, and both work in place on
+     * args.b. unit == 0 means an implicit unit diagonal. */
+#if defined(TRMM)
+    if (rdna2_oblas_strmm_cm(args.m, args.n, r_alpha, (const float *)args.a, args.lda,
+                             (float *)args.b, args.ldb, side, uplo, trans, unit == 0))
+      return;
+#else
+    if (rdna2_oblas_strsm_cm(args.m, args.n, r_alpha, (const float *)args.a, args.lda,
+                             (float *)args.b, args.ldb, side, uplo, trans, unit == 0))
+      return;
+#endif
+  }
+#endif
+
 #else
 
 void CNAME(enum CBLAS_ORDER order,
@@ -362,6 +384,28 @@ void CNAME(enum CBLAS_ORDER order,
   }
 
   if (args.m == 0 || args.n == 0) return;
+
+#if defined(OPENBLAS_USE_HIP) && !defined(COMPLEX) && !defined(DOUBLE) && !defined(XDOUBLE) && !defined(BFLOAT16) && !defined(HFLOAT16)
+  {
+    extern int rdna2_oblas_strmm_cm(BLASLONG, BLASLONG, double, const float *,
+                                    BLASLONG, float *, BLASLONG, int, int, int, int);
+    extern int rdna2_oblas_strsm_cm(BLASLONG, BLASLONG, double, const float *,
+                                    BLASLONG, float *, BLASLONG, int, int, int, int);
+    const double r_alpha = (double)*(const FLOAT *)args.beta;
+
+    /* OpenBLAS' trsm.c serves both TRMM and TRSM, and both work in place on
+     * args.b. unit == 0 means an implicit unit diagonal. */
+#if defined(TRMM)
+    if (rdna2_oblas_strmm_cm(args.m, args.n, r_alpha, (const float *)args.a, args.lda,
+                             (float *)args.b, args.ldb, side, uplo, trans, unit == 0))
+      return;
+#else
+    if (rdna2_oblas_strsm_cm(args.m, args.n, r_alpha, (const float *)args.a, args.lda,
+                             (float *)args.b, args.ldb, side, uplo, trans, unit == 0))
+      return;
+#endif
+  }
+#endif
 
 #if defined(TRMM)
 #if !defined(COMPLEX) && !defined(DOUBLE) && !defined(BFLOAT16)  && !defined(HFLOAT16)

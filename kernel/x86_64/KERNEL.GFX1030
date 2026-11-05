@@ -1,0 +1,115 @@
+# RDNA2 / RDNA4 (gfx1030, gfx1031, gfx1200, gfx1201) host-side kernels.
+#
+# The GPU does the GEMM math in kernel/rdna2; these definitions only cover the
+# host packing/copy routines OpenBLAS still builds. They are the generic C
+# kernels on purpose: the x86 assembly L3 kernels assume their own tile shapes
+# and offsets, so pairing them with a GPU core name produces packing that does
+# not match them. Unroll sizes here must stay in step with the FORCE_GFX blocks
+# in getarch.c and the RDNA2 block in param.h.
+#
+# S/D: 4x4 generic register-tiled GEMM, width-4 packing.
+# C/Z: 2x2 generic complex GEMM, width-2 packing.
+
+SSCALKERNEL = sscal.c
+DSCALKERNEL = dscal.c
+CSCALKERNEL = cscal.c
+ZSCALKERNEL = zscal.c
+
+SGEMVNKERNEL = sgemv_n_4.c
+SGEMVTKERNEL = sgemv_t_4.c
+
+DGEMVNKERNEL = dgemv_n_4.c
+DGEMVTKERNEL = dgemv_t_4.c
+
+ZGEMVNKERNEL = zgemv_n_4.c
+ZGEMVTKERNEL = zgemv_t_4.c
+
+CGEMVNKERNEL = cgemv_n_4.c
+CGEMVTKERNEL = cgemv_t_4.c
+
+SSYMV_L_KERNEL = ssymv_L.c
+SSYMV_U_KERNEL = ssymv_U.c
+DSYMV_L_KERNEL = dsymv_L.c
+DSYMV_U_KERNEL = dsymv_U.c
+
+SDOTKERNEL = sdot.c
+DSDOTKERNEL = sdot.c
+DDOTKERNEL = ddot.c
+CDOTKERNEL = cdot.c
+ZDOTKERNEL = zdot.c
+
+SAXPYKERNEL = saxpy.c
+DAXPYKERNEL = daxpy.c
+CAXPYKERNEL = caxpy.c
+ZAXPYKERNEL = zaxpy.c
+
+STRMMKERNEL    =  ../generic/trmmkernel_4x4.c
+SGEMMKERNEL    =  ../generic/gemmkernel_4x4.c
+SGEMMINCOPY    =  ../generic/gemm_ncopy_4.c
+SGEMMITCOPY    =  ../generic/gemm_tcopy_4.c
+SGEMMONCOPY    =  ../generic/gemm_ncopy_4.c
+SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
+SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
+SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
+SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+DTRMMKERNEL    =  ../generic/trmmkernel_4x4.c
+DGEMMKERNEL    =  ../generic/gemmkernel_4x4.c
+DGEMMINCOPY    =  ../generic/gemm_ncopy_4.c
+DGEMMITCOPY    =  ../generic/gemm_tcopy_4.c
+DGEMMONCOPY    =  ../generic/gemm_ncopy_4.c
+DGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
+DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
+DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
+DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
+DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+CTRMMKERNEL    =  ../generic/ztrmmkernel_2x2.c
+CGEMMKERNEL    =  ../generic/zgemmkernel_2x2.c
+CGEMMINCOPY    =  ../generic/zgemm_ncopy_2.c
+CGEMMITCOPY    =  ../generic/zgemm_tcopy_2.c
+CGEMMONCOPY    =  ../generic/zgemm_ncopy_2.c
+CGEMMOTCOPY    =  ../generic/zgemm_tcopy_2.c
+CGEMMINCOPYOBJ =  cgemm_incopy$(TSUFFIX).$(SUFFIX)
+CGEMMITCOPYOBJ =  cgemm_itcopy$(TSUFFIX).$(SUFFIX)
+CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
+CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+ZTRMMKERNEL    =  ../generic/ztrmmkernel_2x2.c
+ZGEMMKERNEL    =  ../generic/zgemmkernel_2x2.c
+ZGEMMINCOPY    =  ../generic/zgemm_ncopy_2.c
+ZGEMMITCOPY    =  ../generic/zgemm_tcopy_2.c
+ZGEMMONCOPY    =  ../generic/zgemm_ncopy_2.c
+ZGEMMOTCOPY    =  ../generic/zgemm_tcopy_2.c
+ZGEMMINCOPYOBJ =  zgemm_incopy$(TSUFFIX).$(SUFFIX)
+ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
+ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
+ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
+STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
+STRSMKERNEL_RN	=  ../generic/trsm_kernel_RN.c
+STRSMKERNEL_RT	=  ../generic/trsm_kernel_RT.c
+
+DTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
+DTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
+DTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
+DTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+
+CTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
+CTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
+CTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
+CTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+
+ZTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
+ZTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
+ZTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
+ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+
+CGEMM3MKERNEL    =  ../generic/zgemmkernel_2x2.c
+ZGEMM3MKERNEL    =  ../generic/zgemmkernel_2x2.c
+SROTKERNEL = srot.c
+DROTKERNEL = drot.c
+
+include $(KERNELDIR)/KERNEL.RDNA2_SQUARE

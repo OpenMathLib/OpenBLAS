@@ -45,6 +45,8 @@
 #include "functable.h"
 #endif
 
+
+
 #ifndef COMPLEX
 #define SMP_THRESHOLD_MIN 65536.0
 #ifdef XDOUBLE
@@ -653,6 +655,21 @@ double _Complex c_be={be[0],be[1]};
 #endif  // defined(__linux__) && defined(__x86_64__) && defined(BFLOAT16)
 
   if ((args.m == 0) || (args.n == 0)) return;
+
+#if defined(OPENBLAS_USE_HIP) && !defined(COMPLEX) && !defined(DOUBLE) && !defined(XDOUBLE) && !defined(BFLOAT16) && !defined(HFLOAT16) && !defined(GEMM3M)
+  /* RDNA2/RDNA4 HIP kernels; returns 0 when the layout is not one of ours.
+   * SYMM, TRMM and TRSM are dispatched from their own entry points in symm.c
+   * and trsm.c, so this translation unit only has to handle SGEMM. */
+  {
+    const double r_alpha = *(const FLOAT *)args.alpha;
+    const double r_beta  = *(const FLOAT *)args.beta;
+
+    if (rdna2_oblas_sgemm_cm(args.m, args.n, args.k, r_alpha, (const float *)args.a, args.lda,
+                             (const float *)args.b, args.ldb, r_beta, (float *)args.c, args.ldc,
+                             transa, transb))
+      return;
+  }
+#endif
 
 #if 0
   fprintf(stderr, "m = %4d  n = %d  k = %d  lda = %4d  ldb = %4d  ldc = %4d\n",
