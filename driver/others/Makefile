@@ -59,7 +59,7 @@ endif
 endif
 
 ifeq ($(USE_CUDA), 1)
-COMMONOBJS	+= cuda_init.$(SUFFIX)
+$(error USE_CUDA=1 is not supported: driver/others/cuda_init.c is not part of this tree)
 endif
 
 ifdef FUNCTION_PROFILE

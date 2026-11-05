@@ -2014,3 +2014,19 @@ SUNPATH		= /opt/sunstudio12.1
 else
 SUNPATH		= /opt/SUNWspro
 endif
+
+# HIP/ROCm support for RDNA2/RDNA4
+ifdef USE_HIP
+HIPCC ?= hipcc
+HIPFLAGS ?= -O2 -std=c++17
+ifeq ($(HIP_PLATFORM),)
+HIP_PLATFORM := amd
+endif
+export HIP_PLATFORM
+CXX ?= $(HIPCC)
+CCOMMON_OPT += -DOPENBLAS_USE_HIP
+endif
+
+ifdef USE_HIP
+EXTRALIB += -L/opt/rocm/lib -lamdhip64 -lhiprtc -lhipblas
+endif

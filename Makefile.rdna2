@@ -1,0 +1,6 @@
+ifeq ($(C_COMPILER), GCC)
+CCOMMON_OPT += -O2
+endif
+ifeq ($(C_COMPILER), CLANG)
+CCOMMON_OPT += -O2
+endif

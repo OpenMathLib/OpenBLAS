@@ -229,3 +229,35 @@ clean ::
 #endif
 
 include $(TOPDIR)/Makefile.tail
+
+# RDNA2/RDNA4 HIP kernels
+ifdef USE_HIP
+ifeq ($(TARGET_CORE), RDNA2)
+USE_RDNA2 = 1
+endif
+ifeq ($(TARGET_CORE), GFX1030)
+USE_RDNA2 = 1
+endif
+ifeq ($(TARGET_CORE), GFX1031)
+USE_RDNA2 = 1
+endif
+ifeq ($(TARGET_CORE), GFX1200)
+USE_RDNA2 = 1
+endif
+ifeq ($(TARGET_CORE), GFX1201)
+USE_RDNA2 = 1
+endif
+endif
+
+ifdef USE_RDNA2
+HIPCC ?= hipcc
+RDNA2_OBJS = rdna2/rdna2_kernels.o rdna2/rdna2_oblas.o
+rdna2/rdna2_kernels.o: rdna2/rdna2_kernels.hip
+	$(HIPCC) $(HIPFLAGS) --offload-arch=$(TARGET_CORE) -x hip -c $< -o $@
+rdna2/rdna2_oblas.o: rdna2/rdna2_oblas.c
+	$(CC) $(CFLAGS) -c $< -o $@
+endif
+
+ifdef USE_RDNA2
+SKERNELOBJS += $(RDNA2_OBJS)
+endif

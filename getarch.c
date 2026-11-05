@@ -1903,6 +1903,50 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME  "CK860FV"
 #endif
 
+
+
+#ifdef FORCE_GFX1031
+#define FORCE
+#define ARCHITECTURE    "X86_64"
+#define SUBARCHITECTURE "GFX1031"
+#define SUBDIRNAME      "rdna2"
+#define ARCHCONFIG   "-DRDNA2 -DGFX1031 "
+#define LIBNAME   "rdna2"
+#define CORENAME  "GFX1031"
+#endif
+
+#ifdef FORCE_GFX1030
+#define FORCE
+#define ARCHITECTURE    "X86_64"
+#define SUBARCHITECTURE "GFX1030"
+#define SUBDIRNAME      "rdna2"
+#define ARCHCONFIG   "-DRDNA2 -DGFX1030 "
+#define LIBNAME   "rdna2"
+#define CORENAME  "GFX1030"
+#endif
+
+#ifdef FORCE_GFX1201
+#define FORCE
+#warning "FORCE_GFX1201 triggered"
+#define ARCHITECTURE    "X86_64"
+#define SUBARCHITECTURE "GFX1201"
+#define SUBDIRNAME      "rdna2"
+#define ARCHCONFIG   "-DRDNA2 -DGFX1201 "
+#define LIBNAME   "rdna2"
+#define CORENAME  "GFX1201"
+#endif
+
+#ifdef FORCE_GFX1200
+#define FORCE
+#define ARCHITECTURE    "X86_64"
+#define SUBARCHITECTURE "GFX1200"
+#define SUBDIRNAME      "rdna2"
+#define ARCHCONFIG   "-DRDNA2 -DGFX1200 "
+#define LIBNAME   "rdna2"
+#define CORENAME  "GFX1200"
+#endif
+
+
 #ifndef FORCE
 
 #ifdef USER_TARGET
