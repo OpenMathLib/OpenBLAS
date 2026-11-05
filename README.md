@@ -387,3 +387,7 @@ Please see Changelog.txt.
 ## Donation
 
 Please see [the donations section](http://www.openmathlib.org/OpenBLAS/docs/about/#donations) in the docs.
+
+## AMD RDNA2/RDNA4 GPU Support (HIP)
+
+Full GPU support for AMD RDNA2 (gfx1030/gfx1031) and RDNA4 (gfx1200/gfx1201) via HIP kernels. Build with `USE_HIP=1 TARGET=gfx1201` (or appropriate target). Kernels are in `gpu/rdna2/` and `kernel/rdna2/`. Quantized weights are kept byte-exact (no f32 dequantization of stored weights). Tested on RX 9070 XT (gfx1201).
