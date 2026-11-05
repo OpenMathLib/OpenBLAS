@@ -107,3 +107,55 @@ CTEST(max, smax_zero){
 }
 #endif
 
+
+#include <float.h>
+
+#ifdef BUILD_DOUBLE
+CTEST(max, dmax_full_double_range) {
+    blasint n = 65, inc = 3;
+    double x[193];
+    for (int i = 0; i < 193; ++i) x[i] = 0.0;
+    for (int i = 0; i < 65; ++i) x[3*i] = -0x1p901;
+    x[192] = -0x1p900;
+    double result = BLASFUNC(dmax)(&n, x, &inc);
+    ASSERT_TRUE(isfinite(result));
+    ASSERT_TRUE(result == -0x1p900);
+}
+
+CTEST(min, dmin_full_double_range) {
+    blasint n = 65, inc = 3;
+    double x[193];
+    for (int i = 0; i < 193; ++i) x[i] = 0.0;
+    for (int i = 0; i < 65; ++i) x[3*i] = 0x1p901;
+    x[192] = nextafter((double)FLT_MAX, INFINITY);
+    double result = BLASFUNC(dmin)(&n, x, &inc);
+    ASSERT_TRUE(isfinite(result));
+    ASSERT_TRUE(result == x[192]);
+}
+#endif
+
+#ifdef BUILD_SINGLE
+CTEST(max, smax_negative_infinity) {
+    blasint n = 1, inc = 1;
+    float x = -INFINITY;
+    ASSERT_TRUE(BLASFUNC(smax)(&n, &x, &inc) == -INFINITY);
+}
+CTEST(min, smin_positive_infinity) {
+    blasint n = 1, inc = 1;
+    float x = INFINITY;
+    ASSERT_TRUE(BLASFUNC(smin)(&n, &x, &inc) == INFINITY);
+}
+#endif
+
+#ifdef BUILD_DOUBLE
+CTEST(max, dmax_negative_infinity) {
+    blasint n = 1, inc = 1;
+    double x = -INFINITY;
+    ASSERT_TRUE(BLASFUNC(dmax)(&n, &x, &inc) == -INFINITY);
+}
+CTEST(min, dmin_positive_infinity) {
+    blasint n = 1, inc = 1;
+    double x = INFINITY;
+    ASSERT_TRUE(BLASFUNC(dmin)(&n, &x, &inc) == INFINITY);
+}
+#endif

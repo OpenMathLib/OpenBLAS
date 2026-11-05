@@ -26,6 +26,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 #include "common.h"
+
+#ifdef DOUBLE
+#define ABS fabs
+#else
+#define ABS fabsf
+#endif
 #include <math.h>
 #include <float.h>
 
@@ -77,15 +83,15 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	BLASLONG i=0, j=0;
 	BLASLONG ix=0;
 	if (n <= 0 || inc_x <= 0) return(0.0);
-	FLOAT minf=FLT_MAX;
+	FLOAT minf=ABS(x[0]) + ABS(x[1]);
         unsigned int gvl = 0;
         FLOAT_V_T v0, v1, v_min;
         FLOAT_V_T_M1 v_res;
-        v_res = VFMVVF_FLOAT_M1(FLT_MAX, 1);
+        v_res = VFMVVF_FLOAT_M1(minf, 1);
 
         BLASLONG stride_x = inc_x * sizeof(FLOAT) * 2;
         gvl = VSETVL(n);
-        v_min = VFMVVF_FLOAT(FLT_MAX, gvl);
+        v_min = VFMVVF_FLOAT(minf, gvl);
         BLASLONG inc_xv = inc_x * gvl * 2;
         for(; i<n/gvl; i++){
                 v0 = VLSEV_FLOAT(&x[ix], stride_x, gvl);

@@ -87,3 +87,78 @@ CTEST(amin, dzamin){
   ASSERT_DBL_NEAR_TOL((double)(tr_min), (double)(te_min), DOUBLE_EPS);
 }
 #endif
+
+#include <float.h>
+
+#ifndef NO_CBLAS
+#include <cblas.h>
+#endif
+
+#ifdef BUILD_DOUBLE
+CTEST(amin, damin_full_double_range) {
+    blasint n = 65, inc = 3;
+    double x[193];
+    for (int i = 0; i < 193; ++i) x[i] = 0.0;
+    for (int i = 0; i < 65; ++i) x[3*i] = -DBL_MAX;
+    x[192] = -0x1p900;
+    ASSERT_TRUE(BLASFUNC(damin)(&n, x, &inc) == 0x1p900);
+#ifndef NO_CBLAS
+    ASSERT_TRUE(cblas_damin(n, x, inc) == 0x1p900);
+#endif
+}
+#endif
+
+#ifdef BUILD_COMPLEX16
+CTEST(amin, dzamin_full_double_range) {
+    blasint n = 33, inc = 2;
+    double x[130];
+    for (int i = 0; i < 130; ++i) x[i] = 0.0;
+    for (int i = 0; i < 33; ++i) { x[4*i] = -0x1p902; x[4*i+1] = 0x1p902; }
+    x[128] = -0x1p900; x[129] = 0x1p899;
+    ASSERT_TRUE(BLASFUNC(dzamin)(&n, x, &inc) == 0x1.8p900);
+#ifndef NO_CBLAS
+    ASSERT_TRUE(cblas_dzamin(n, x, inc) == 0x1.8p900);
+#endif
+}
+#endif
+
+#ifdef BUILD_SINGLE
+CTEST(amin, samin_positive_infinity) {
+    blasint n = 1, inc = 1;
+    float x = INFINITY;
+    ASSERT_TRUE(BLASFUNC(samin)(&n, &x, &inc) == INFINITY);
+#ifndef NO_CBLAS
+    ASSERT_TRUE(cblas_samin(n, &x, inc) == INFINITY);
+#endif
+}
+#endif
+#ifdef BUILD_DOUBLE
+CTEST(amin, damin_positive_infinity) {
+    blasint n = 1, inc = 1;
+    double x = INFINITY;
+    ASSERT_TRUE(BLASFUNC(damin)(&n, &x, &inc) == INFINITY);
+#ifndef NO_CBLAS
+    ASSERT_TRUE(cblas_damin(n, &x, inc) == INFINITY);
+#endif
+}
+#endif
+#ifdef BUILD_COMPLEX
+CTEST(amin, scamin_positive_infinity) {
+    blasint n = 1, inc = 1;
+    float x[2] = {INFINITY, 0.0f};
+    ASSERT_TRUE(BLASFUNC(scamin)(&n, x, &inc) == INFINITY);
+#ifndef NO_CBLAS
+    ASSERT_TRUE(cblas_scamin(n, x, inc) == INFINITY);
+#endif
+}
+#endif
+#ifdef BUILD_COMPLEX16
+CTEST(amin, dzamin_positive_infinity) {
+    blasint n = 1, inc = 1;
+    double x[2] = {INFINITY, 0.0};
+    ASSERT_TRUE(BLASFUNC(dzamin)(&n, x, &inc) == INFINITY);
+#ifndef NO_CBLAS
+    ASSERT_TRUE(cblas_dzamin(n, x, inc) == INFINITY);
+#endif
+}
+#endif

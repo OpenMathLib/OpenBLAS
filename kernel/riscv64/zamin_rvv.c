@@ -26,6 +26,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 #include "common.h"
+
+#ifdef DOUBLE
+#define ABS fabs
+#else
+#define ABS fabsf
+#endif
 #include <float.h>
 
 #if !defined(DOUBLE)
@@ -70,13 +76,15 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
     if (n <= 0 || inc_x <= 0) return(minf);
 
+    const FLOAT seed = ABS(x[0]) + ABS(x[1]);
+
     FLOAT_V_T v0, v1, vmin;
     FLOAT_V_T_M1 v_res;
     FLOAT_VX2_T vx2;
 
-    v_res = VFMVVF_FLOAT_M1(FLT_MAX, VSETVL_MAX_M1);
+    v_res = VFMVVF_FLOAT_M1(seed, VSETVL_MAX_M1);
     size_t vlmax = VSETVL_MAX;
-    vmin = VFMVVF_FLOAT(FLT_MAX, vlmax);
+    vmin = VFMVVF_FLOAT(seed, vlmax);
 
     if(inc_x == 1) {
 
