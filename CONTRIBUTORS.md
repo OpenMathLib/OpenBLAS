@@ -296,6 +296,3 @@ hheei <hheei@users.noreply.github.com>
 
 * Arthur031221 <levi74108520963@gmail.com>
   * [2026-10-02] Fix complex scaling in strided batched GEMM.
-
-* XuhuiNiu <https://github.com/SmaCow666>
-  * Fix RVV extrema reduction seeds and add regression tests.
