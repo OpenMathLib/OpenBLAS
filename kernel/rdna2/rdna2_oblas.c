@@ -199,30 +199,83 @@ static int rdna2_gemm_cm_core(BLASLONG m, BLASLONG n, BLASLONG k,
 }
 
 /* Returns 1 when the product was computed on the GPU, 0 when the caller should
- * carry on with the generic CPU path. */
+ * carry on with the generic CPU path.
+ *
+ * transa/transb follow the OpenBLAS interface convention for real GEMM:
+ *   0 = NoTrans, nonzero = Trans (conjugate codes 2/3 do not apply to sgemm).
+ * op(A) is m x k (lda >= m when not transposed, lda >= k when transposed).
+ * op(B) is k x n (ldb >= k when not transposed, ldb >= n when transposed).
+ *
+ * The HIP core takes untransposed column-major operands. A transposed operand
+ * is materialised once into a contiguous column-major temporary with the
+ * transposed shape, so the gather/tiling path in rdna2_gemm_cm_core stays
+ * unchanged and every layout reaches the GPU instead of falling back. */
 int rdna2_oblas_sgemm_cm(BLASLONG m, BLASLONG n, BLASLONG k, double alpha,
                          const float *a, BLASLONG lda, const float *b,
                          BLASLONG ldb, double beta, float *c, BLASLONG ldc,
                          int transa, int transb) {
+  const float *pa = a;
+  const float *pb = b;
+  BLASLONG lpa = lda;
+  BLASLONG lpb = ldb;
+  float *ta = NULL;
+  float *tb = NULL;
   int handled;
   clock_t t0;
 
   if (!rdna2_gpu_enabled()) return 0;
-  /* Only the untransposed layouts are wired up; the core handles any leading
-   * dimension, so lda/ldb/ldc are not constrained here. Transposed operands
-   * need a different gather and stay on the CPU path. */
-  if (transa != 0 || transb != 0) return 0;
   if (m <= 0 || n <= 0 || k <= 0) return 0;
   if (m > RDNA2_MAX_DIM || n > RDNA2_MAX_DIM || k > RDNA2_MAX_DIM) return 0;
   if ((double)m * (double)n * (double)k < rdna2_min_mnk()) return 0;
 
+  if (transa) {
+    BLASLONG i, p;
+
+    if (lda < k) return 0; /* stored as k x m */
+    ta = (float *)malloc((size_t)m * (size_t)k * sizeof(float));
+    if (ta == NULL) return 0;
+    /* op(A)(i,p) = A(p,i) = a[p + i*lda] -> contiguous m x k, ld = m */
+    for (p = 0; p < k; ++p)
+      for (i = 0; i < m; ++i)
+        ta[i + p * m] = a[p + i * lda];
+    pa = ta;
+    lpa = m;
+  } else {
+    if (lda < m) return 0;
+  }
+
+  if (transb) {
+    BLASLONG p, j;
+
+    if (ldb < n) return 0; /* stored as n x k */
+    tb = (float *)malloc((size_t)k * (size_t)n * sizeof(float));
+    if (tb == NULL) {
+      free(ta);
+      return 0;
+    }
+    /* op(B)(p,j) = B(j,p) = b[j + p*ldb] -> contiguous k x n, ld = k */
+    for (p = 0; p < k; ++p)
+      for (j = 0; j < n; ++j)
+        tb[p + j * k] = b[j + p * ldb];
+    pb = tb;
+    lpb = k;
+  } else {
+    if (ldb < k) {
+      free(ta);
+      return 0;
+    }
+  }
+
   t0 = clock();
-  handled = rdna2_gemm_cm_core(m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
+  handled = rdna2_gemm_cm_core(m, n, k, alpha, pa, lpa, pb, lpb, beta, c, ldc);
 
   if (rdna2_debug())
-    fprintf(stderr, "[rdna2] sgemm %ldx%ldx%ld handled=%d %ldms\n",
-            (long)m, (long)n, (long)k, handled, rdna2_ms(t0));
+    fprintf(stderr, "[rdna2] sgemm %ldx%ldx%ld trans=%d%d handled=%d %ldms\n",
+            (long)m, (long)n, (long)k, transa ? 1 : 0, transb ? 1 : 0, handled,
+            rdna2_ms(t0));
 
+  free(ta);
+  free(tb);
   return handled;
 }
 
