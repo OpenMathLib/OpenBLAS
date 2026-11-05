@@ -296,3 +296,6 @@ hheei <hheei@users.noreply.github.com>
 
 * Arthur031221 <levi74108520963@gmail.com>
   * [2026-10-02] Fix complex scaling in strided batched GEMM.
+
+* XuhuiNiu <https://github.com/SmaCow666>
+  * Preserve signed RVV complex NRM2 byte strides and add regression tests.

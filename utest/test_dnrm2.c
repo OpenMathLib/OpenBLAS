@@ -78,3 +78,59 @@ CTEST(dnrm2,dnrm2_neg_incx)
 	ASSERT_DBL_NEAR_TOL(res2, res1, DOUBLE_EPS);
 }
 #endif
+
+/* Negative increments are supported by the public NRM2 interfaces. Keep
+   complex RVV byte strides signed when the wrapper starts at the last item. */
+#if !defined(NO_CBLAS) && (defined(BUILD_COMPLEX) || defined(BUILD_COMPLEX16))
+#include "cblas.h"
+#endif
+
+#if defined(BUILD_COMPLEX)
+static void check_cnrm2_stride(int c_api, blasint increment) {
+    blasint n = 3;
+    float x[10] = {3.0f, 4.0f, 0.0f, 0.0f, 0.0f,
+                   0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    float result;
+    (void)c_api;
+#ifndef NO_CBLAS
+    if (c_api) result = cblas_scnrm2(n, x, increment);
+    else
+#endif
+    result = BLASFUNC(scnrm2)(&n, x, &increment);
+    ASSERT_TRUE(isfinite(result));
+    ASSERT_DBL_NEAR_TOL(5.0, result, SINGLE_EPS);
+}
+CTEST(cnrm2, negative_unit_fortran) { check_cnrm2_stride(0, -1); }
+CTEST(cnrm2, negative_nonunit_fortran) { check_cnrm2_stride(0, -2); }
+CTEST(cnrm2, positive_nonunit_fortran) { check_cnrm2_stride(0, 2); }
+#ifndef NO_CBLAS
+CTEST(cnrm2, negative_unit_cblas) { check_cnrm2_stride(1, -1); }
+CTEST(cnrm2, negative_nonunit_cblas) { check_cnrm2_stride(1, -2); }
+CTEST(cnrm2, positive_nonunit_cblas) { check_cnrm2_stride(1, 2); }
+#endif
+#endif
+
+#if defined(BUILD_COMPLEX16)
+static void check_znrm2_stride(int c_api, blasint increment) {
+    blasint n = 3;
+    double x[10] = {3.0, 4.0, 0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0, 0.0, 0.0};
+    double result;
+    (void)c_api;
+#ifndef NO_CBLAS
+    if (c_api) result = cblas_dznrm2(n, x, increment);
+    else
+#endif
+    result = BLASFUNC(dznrm2)(&n, x, &increment);
+    ASSERT_TRUE(isfinite(result));
+    ASSERT_DBL_NEAR_TOL(5.0, result, DOUBLE_EPS);
+}
+CTEST(znrm2, negative_unit_fortran) { check_znrm2_stride(0, -1); }
+CTEST(znrm2, negative_nonunit_fortran) { check_znrm2_stride(0, -2); }
+CTEST(znrm2, positive_nonunit_fortran) { check_znrm2_stride(0, 2); }
+#ifndef NO_CBLAS
+CTEST(znrm2, negative_unit_cblas) { check_znrm2_stride(1, -1); }
+CTEST(znrm2, negative_nonunit_cblas) { check_znrm2_stride(1, -2); }
+CTEST(znrm2, positive_nonunit_cblas) { check_znrm2_stride(1, 2); }
+#endif
+#endif
