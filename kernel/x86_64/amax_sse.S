@@ -61,7 +61,7 @@
 	leaq	(, INCX, SIZE), INCX
 
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 
 #ifdef USE_ABS
 	pcmpeqb	%xmm15, %xmm15
@@ -78,18 +78,18 @@
 	movaps	%xmm0, %xmm3
 	addq	INCX, X
 	decq	M
-	jle	.L999
+	jle	L(999)
 
 	cmpq	$SIZE, INCX
-	jne	.L40
+	jne	L(40)
 
 	subq	$-32 * SIZE, X
 
 	cmpq	$3, M
-	jle	.L17
+	jle	L(17)
 
 	testq	$SIZE, X
-	je	.L05
+	je	L(05)
 
 	movss	-32 * SIZE(X), %xmm1
 	shufps	$0, %xmm1, %xmm1
@@ -100,9 +100,9 @@
 	addq	$SIZE, X
 	ALIGN_3
 
-.L05:
+L(05):
 	testq	$2 * SIZE, X
-	je	.L06
+	je	L(06)
 
 	movsd	-32 * SIZE(X), %xmm2
 	unpcklps  %xmm2, %xmm2
@@ -113,10 +113,10 @@
 	addq	$2 * SIZE, X
 	ALIGN_3
 
-.L06:
+L(06):
 	movq	M,  I
 	sarq	$5, I
-	jle	.L15
+	jle	L(15)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-28 * SIZE(X), %xmm5
@@ -124,10 +124,10 @@
 	movaps	-20 * SIZE(X), %xmm7
 
 	decq	I
-	jle	.L12
+	jle	L(12)
 	ALIGN_4
 
-.L11:
+L(11):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -186,10 +186,10 @@
 
 	subq	$-32 * SIZE, X
 	decq	I
-	jg	.L11
+	jg	L(11)
 	ALIGN_4
 
-.L12:
+L(12):
 #ifdef USE_ABS
 	andps	%xmm15, %xmm4
 #endif
@@ -238,9 +238,9 @@
 	ALIGN_3
 
 
-.L15:
+L(15):
 	testq	$16, M
-	je	.L16
+	je	L(16)
 
 	movaps	-32 * SIZE(X), %xmm4
 #ifdef USE_ABS
@@ -269,9 +269,9 @@
 	addq	$16 * SIZE, X
 	ALIGN_3
 
-.L16:
+L(16):
 	testq	$8, M
-	je	.L17
+	je	L(17)
 
 	movaps	-32 * SIZE(X), %xmm4
 #ifdef USE_ABS
@@ -287,9 +287,9 @@
 	addq	$8 * SIZE, X
 	ALIGN_3
 
-.L17:
+L(17):
 	testq	$4, M
-	je	.L18
+	je	L(18)
 
 	movaps	-32 * SIZE(X), %xmm4
 #ifdef USE_ABS
@@ -299,9 +299,9 @@
 	addq	$4 * SIZE, X
 	ALIGN_3
 
-.L18:
+L(18):
 	testq	$2, M
-	je	.L19
+	je	L(19)
 
 	movsd	-32 * SIZE(X), %xmm4
 	unpcklps %xmm4, %xmm4
@@ -312,25 +312,25 @@
 	addq	$2 * SIZE, X
 	ALIGN_3
 
-.L19:
+L(19):
 	testq	$1, M
-	je	.L998
+	je	L(998)
 
 	movss	-32 * SIZE(X), %xmm4
 #ifdef USE_ABS
 	andps	%xmm15, %xmm4
 #endif
 	maxss	%xmm4, %xmm0
-	jmp	.L998
+	jmp	L(998)
 	ALIGN_3
 
-.L40:
+L(40):
 	movq	M,  I
 	sarq	$3, I
-	jle	.L45
+	jle	L(45)
 	ALIGN_4
 
-.L41:
+L(41):
 	movss	(X), %xmm4
 	addq	INCX, X
 #ifdef USE_ABS
@@ -388,12 +388,12 @@
 	maxss	%xmm7, %xmm3
 
 	decq	I
-	jg	.L41
+	jg	L(41)
 	ALIGN_4
 
-.L45:
+L(45):
 	testq	$4, M
-	je	.L46
+	je	L(46)
 
 	movss	(X), %xmm4
 	addq	INCX, X
@@ -424,9 +424,9 @@
 	maxss	%xmm7, %xmm3
 	ALIGN_3
 
-.L46:
+L(46):
 	testq	$2, M
-	je	.L47
+	je	L(47)
 
 	movss	(X), %xmm4
 	addq	INCX, X
@@ -443,9 +443,9 @@
 	maxss	%xmm5, %xmm1
 	ALIGN_3
 
-.L47:
+L(47):
 	testq	$1, M
-	je	.L998
+	je	L(998)
 
 	movss	(X), %xmm4
 	addq	INCX, X
@@ -455,7 +455,7 @@
 	maxss	%xmm4, %xmm2
 	ALIGN_4
 
-.L998:
+L(998):
 	maxps	%xmm1, %xmm0
 	maxps	%xmm3, %xmm2
 	maxps	%xmm2, %xmm0
@@ -467,7 +467,7 @@
 	maxss	%xmm1, %xmm0
 	ALIGN_4
 
-.L999:
+L(999):
 	RESTOREREGISTERS
 
 	ret

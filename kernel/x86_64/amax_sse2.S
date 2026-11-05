@@ -61,7 +61,7 @@
 	leaq	(, INCX, SIZE), INCX
 
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 
 #ifdef USE_ABS
 	pcmpeqb	%xmm15, %xmm15
@@ -78,15 +78,15 @@
 	movaps	 %xmm0, %xmm2
 	movaps	 %xmm0, %xmm3
 	decq	M
-	jle	.L999
+	jle	L(999)
 
 	cmpq	$SIZE, INCX
-	jne	.L40
+	jne	L(40)
 
 	subq	$-16 * SIZE, X
 
 	testq	$SIZE, X
-	je	.L05
+	je	L(05)
 
 	movsd	-16 * SIZE(X), %xmm4
 #ifdef USE_ABS
@@ -96,13 +96,13 @@
 	maxpd	  %xmm4, %xmm3
 	addq	$SIZE, X
 	decq	M
-	jle	.L998
+	jle	L(998)
 	ALIGN_3
 
-.L05:
+L(05):
 	movq	M,  I
 	sarq	$4, I
-	jle	.L15
+	jle	L(15)
 
 	movaps	-16 * SIZE(X), %xmm4
 	movaps	-14 * SIZE(X), %xmm5
@@ -110,10 +110,10 @@
 	movaps	-10 * SIZE(X), %xmm7
 
 	decq	I
-	jle	.L12
+	jle	L(12)
 	ALIGN_4
 
-.L11:
+L(11):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -172,10 +172,10 @@
 
 	subq	$-16 * SIZE, X
 	decq	I
-	jg	.L11
+	jg	L(11)
 	ALIGN_4
 
-.L12:
+L(12):
 #ifdef USE_ABS
 	andps	 %xmm15, %xmm4
 #endif
@@ -223,9 +223,9 @@
 	subq	$-16 * SIZE, X
 	ALIGN_4
 
-.L15:
+L(15):
 	testq	$8, M
-	jle	.L16
+	jle	L(16)
 
 	movaps	-16 * SIZE(X), %xmm4
 #ifdef USE_ABS
@@ -253,9 +253,9 @@
 	addq	$8 * SIZE, X
 	ALIGN_3
 
-.L16:
+L(16):
 	testq	$4, M
-	jle	.L17
+	jle	L(17)
 
 	movaps	-16 * SIZE(X), %xmm4
 #ifdef USE_ABS
@@ -272,9 +272,9 @@
 	addq	$4 * SIZE, X
 	ALIGN_3
 
-.L17:
+L(17):
 	testq	$2, M
-	jle	.L18
+	jle	L(18)
 
 	movaps	-16 * SIZE(X), %xmm4
 #ifdef USE_ABS
@@ -284,9 +284,9 @@
 	addq	$2 * SIZE, X
 	ALIGN_3
 
-.L18:
+L(18):
 	testq	$1, M
-	jle	.L998
+	jle	L(998)
 
 	movsd	-16 * SIZE(X), %xmm4
 	unpcklpd  %xmm4, %xmm4
@@ -294,16 +294,16 @@
 	andps	 %xmm15, %xmm4
 #endif
 	maxpd	%xmm4, %xmm3
-	jmp	.L998
+	jmp	L(998)
 	ALIGN_3
 
-.L40:
+L(40):
 	movq	M,  I
 	sarq	$4, I
-	jle	.L45
+	jle	L(45)
 	ALIGN_4
 
-.L41:
+L(41):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -385,15 +385,15 @@
 	maxpd	%xmm7, %xmm3
 
 	decq	I
-	jg	.L41
+	jg	L(41)
 	ALIGN_4
 
-.L45:
+L(45):
 	andq	$15,  M
-	jle	.L998
+	jle	L(998)
 
 	testq	$8, M
-	je	.L46
+	je	L(46)
 
 	movsd	(X), %xmm4
 	addq	INCX, X
@@ -432,9 +432,9 @@
 	maxpd	%xmm7, %xmm3
 	ALIGN_3
 
-.L46:
+L(46):
 	testq	$4, M
-	je	.L47
+	je	L(47)
 
 	movsd	(X), %xmm4
 	addq	INCX, X
@@ -455,9 +455,9 @@
 	maxpd	%xmm5, %xmm1
 	ALIGN_3
 
-.L47:
+L(47):
 	testq	$2, M
-	je	.L48
+	je	L(48)
 
 	movsd	(X), %xmm6
 	addq	INCX, X
@@ -469,9 +469,9 @@
 	maxpd	%xmm6, %xmm2
 	ALIGN_3
 
-.L48:
+L(48):
 	testq	$1, M
-	je	.L998
+	je	L(998)
 
 	movsd	(X), %xmm7
 	unpcklpd  %xmm7, %xmm7
@@ -481,7 +481,7 @@
 	maxpd	%xmm7, %xmm3
 	ALIGN_4
 
-.L998:
+L(998):
 	maxpd	%xmm1, %xmm0
 	maxpd	%xmm3, %xmm2
 	maxpd	%xmm2, %xmm0
@@ -490,7 +490,7 @@
 	maxsd	%xmm1, %xmm0
 	ALIGN_4
 
-.L999:
+L(999):
 	RESTOREREGISTERS
 
 	ret

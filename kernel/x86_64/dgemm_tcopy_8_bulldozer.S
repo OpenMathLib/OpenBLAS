@@ -122,10 +122,10 @@
 	leaq	(, N, SIZE), M8
 
 	cmpq	$8, N
-	jl	.L20
+	jl	L(20)
 	ALIGN_4
 
-.L11:
+L(11):
 	subq	$8, N
 
 	movq	A, AO1
@@ -137,10 +137,10 @@
 
 	movq	M, I
 	sarq	$3, I
-	jle	.L14
+	jle	L(14)
 	ALIGN_4
 
-.L13:
+L(13):
 
 	prefetchnta	A_PRE(AO1)
 	VMOVUPS_A1(0 * SIZE, AO1, %xmm0)
@@ -239,12 +239,12 @@
 	leaq	(B0, M8, 8), B0
 
 	decq	I
-	jg	.L13
+	jg	L(13)
 	ALIGN_4
 
-.L14:
+L(14):
 	testq	$4, M
-	jle	.L16
+	jle	L(16)
 
 	VMOVUPS_A1(0 * SIZE, AO1, %xmm0)
 	VMOVUPS_A1(2 * SIZE, AO1, %xmm1)
@@ -291,9 +291,9 @@
 	subq	$-32 * SIZE, B1
 	ALIGN_4
 
-.L16:
+L(16):
 	testq	$2, M
-	jle	.L18
+	jle	L(18)
 
 	VMOVUPS_A1(0 * SIZE, AO1, %xmm0)
 	VMOVUPS_A2(0 * SIZE, AO1, LDA,  1, %xmm1)
@@ -320,9 +320,9 @@
 	subq	$-16 * SIZE, B2
 	ALIGN_4
 
-.L18:
+L(18):
 	testq	$1, M
-	jle	.L19
+	jle	L(19)
 
 	vmovsd	0 * SIZE(AO1),         %xmm0
 	vmovsd	0 * SIZE(AO1, LDA),    %xmm1
@@ -349,14 +349,14 @@
 	subq	$-8 * SIZE, B3
 	ALIGN_4
 
-.L19:
+L(19):
 	cmpq	$8, N
-	jge	.L11
+	jge	L(11)
 	ALIGN_4
 
-.L20:
+L(20):
 	cmpq	$4, N
-	jl	.L30
+	jl	L(30)
 
 	subq	$4, N
 
@@ -369,10 +369,10 @@
 
 	movq	M, I
 	sarq	$3, I
-	jle	.L24
+	jle	L(24)
 	ALIGN_4
 
-.L23:
+L(23):
 
 	VMOVUPS_A1(0 * SIZE, AO1, %xmm0)
 	VMOVUPS_A1(2 * SIZE, AO1, %xmm1)
@@ -420,12 +420,12 @@
 	leaq	(B0, M8, 8), B0
 
 	decq	I
-	jg	.L23
+	jg	L(23)
 	ALIGN_4
 
-.L24:
+L(24):
 	testq	$4, M
-	jle	.L26
+	jle	L(26)
 
 	VMOVUPS_A1(0 * SIZE, AO1, %xmm0)
 	VMOVUPS_A1(2 * SIZE, AO1, %xmm1)
@@ -452,9 +452,9 @@
 	subq	$-16 * SIZE, B1
 	ALIGN_4
 
-.L26:
+L(26):
 	testq	$2, M
-	jle	.L28
+	jle	L(28)
 
 	VMOVUPS_A1(0 * SIZE, AO1, %xmm0)
 	VMOVUPS_A2(0 * SIZE, AO1, LDA,  1, %xmm1)
@@ -471,9 +471,9 @@
 	subq	$-8 * SIZE, B2
 	ALIGN_4
 
-.L28:
+L(28):
 	testq	$1, M
-	jle	.L30
+	jle	L(30)
 
 	vmovsd	0 * SIZE(AO1),      %xmm0
 	vmovsd	0 * SIZE(AO1, LDA), %xmm1
@@ -488,9 +488,9 @@
 	subq	$-4 * SIZE, B3
 	ALIGN_4
 
-.L30:
+L(30):
 	cmpq	$2, N
-	jl	.L40
+	jl	L(40)
 
 	subq	$2, N
 
@@ -503,10 +503,10 @@
 
 	movq	M, I
 	sarq	$3, I
-	jle	.L34
+	jle	L(34)
 	ALIGN_4
 
-.L33:
+L(33):
 
 	VMOVUPS_A1(0 * SIZE, AO1, %xmm0)
 	VMOVUPS_A1(2 * SIZE, AO1, %xmm1)
@@ -533,12 +533,12 @@
 	leaq	(B0, M8, 8), B0
 
 	decq	I
-	jg	.L33
+	jg	L(33)
 	ALIGN_4
 
-.L34:
+L(34):
 	testq	$4, M
-	jle	.L36
+	jle	L(36)
 
 	VMOVUPS_A1(0 * SIZE, AO1, %xmm0)
 	VMOVUPS_A1(2 * SIZE, AO1, %xmm1)
@@ -555,9 +555,9 @@
 	subq	$-8 * SIZE, B1
 	ALIGN_4
 
-.L36:
+L(36):
 	testq	$2, M
-	jle	.L38
+	jle	L(38)
 
 	VMOVUPS_A1(0 * SIZE, AO1, %xmm0)
 	VMOVUPS_A1(0 * SIZE, AO2, %xmm1)
@@ -570,9 +570,9 @@
 	subq	$-4 * SIZE, B2
 	ALIGN_4
 
-.L38:
+L(38):
 	testq	$1, M
-	jle	.L40
+	jle	L(40)
 
 	vmovsd	0 * SIZE(AO1),      %xmm0
 	vmovsd	0 * SIZE(AO2),      %xmm1
@@ -583,9 +583,9 @@
 	subq	$-2 * SIZE, B3
 	ALIGN_4
 
-.L40:
+L(40):
 	cmpq	$1, N
-	jl	.L999
+	jl	L(999)
 
 	movq	A, AO1
 
@@ -593,10 +593,10 @@
 
 	movq	M, I
 	sarq	$3, I
-	jle	.L44
+	jle	L(44)
 	ALIGN_4
 
-.L43:
+L(43):
 
 	VMOVUPS_A1(0 * SIZE, AO1, %xmm0)
 	VMOVUPS_A1(2 * SIZE, AO1, %xmm1)
@@ -612,12 +612,12 @@
 	leaq	(B0, M8, 8), B0
 
 	decq	I
-	jg	.L43
+	jg	L(43)
 	ALIGN_4
 
-.L44:
+L(44):
 	testq	$4, M
-	jle	.L45
+	jle	L(45)
 
 	VMOVUPS_A1(0 * SIZE, AO1, %xmm0)
 	VMOVUPS_A1(2 * SIZE, AO1, %xmm1)
@@ -629,9 +629,9 @@
 	subq	$-4 * SIZE, B1
 	ALIGN_4
 
-.L45:
+L(45):
 	testq	$2, M
-	jle	.L46
+	jle	L(46)
 
 	VMOVUPS_A1(0 * SIZE, AO1, %xmm0)
 
@@ -641,17 +641,17 @@
 	subq	$-2 * SIZE, B2
 	ALIGN_4
 
-.L46:
+L(46):
 	testq	$1, M
-	jle	.L999
+	jle	L(999)
 
 	vmovsd	0 * SIZE(AO1),      %xmm0
 
 	vmovsd	%xmm0,  -16 * SIZE(B3)
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
-.L999:
+L(999):
 	popq	%rbp
 	popq	%r12
 	popq	%r13

@@ -55,10 +55,10 @@
 
 	pxor	%xmm0, %xmm0
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 	pxor	%xmm1, %xmm1
 	testq	INCX, INCX
-	je	.L999
+	je	L(999)
 
 	xorq	FLAG, FLAG
 
@@ -66,10 +66,10 @@
 	leaq	(, INCX, 2 * SIZE), INCX
 	pxor	%xmm3, %xmm3
 	cmpq	$2 * SIZE, INCX
-	jne	.L40
+	jne	L(40)
 
 	testq	$SIZE, X
-	je	.L05
+	je	L(05)
 
 	movss	(X), %xmm4
 	cvtss2sd %xmm4, %xmm6
@@ -78,13 +78,13 @@
 	addq	$SIZE, X
 	movq	$1, FLAG
 	decq	M
-	jle	.L19
+	jle	L(19)
 	ALIGN_3
 
-.L05:
+L(05):
 	movq	M,  I
 	sarq	$3, I
-	jle	.L14
+	jle	L(14)
 
 	movsd	 0 * SIZE(X), %xmm4
 	movsd	 2 * SIZE(X), %xmm5
@@ -97,10 +97,10 @@
 
 	addq	$16 * SIZE, X
 	decq	I
-	jle	.L12
+	jle	L(12)
 	ALIGN_3
 
-.L10:
+L(10):
 #if defined(PREFETCH)
 	PREFETCH (PREFETCHSIZE +   0) - PREOFFSET(X)
 #endif
@@ -147,10 +147,10 @@
 
 	subq	$-16 * SIZE, X
 	decq	I
-	jg	.L10
+	jg	L(10)
 	ALIGN_3
 
-.L12:
+L(12):
 	cvtps2pd %xmm4,  %xmm12
 	cvtps2pd %xmm5,  %xmm13
 	cvtps2pd %xmm6,  %xmm14
@@ -183,9 +183,9 @@
 	ALIGN_3
 
 
-.L14:
+L(14):
 	testq	$4,  M
-	je	.L15
+	je	L(15)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	2 * SIZE(X), %xmm5
@@ -210,9 +210,9 @@
 	addq	$8 * SIZE, X
 	ALIGN_3
 
-.L15:
+L(15):
 	testq	$2,  M
-	je	.L16
+	je	L(16)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	2 * SIZE(X), %xmm5
@@ -225,9 +225,9 @@
 	addq	$4 * SIZE, X
 	ALIGN_3
 
-.L16:
+L(16):
 	testq	$1,  M
-	je	.L19
+	je	L(19)
 
 	movsd	(X), %xmm4
 	cvtps2pd %xmm4, %xmm6
@@ -236,24 +236,24 @@
 	addq	$2 * SIZE, X
 	ALIGN_3
 
-.L19:
+L(19):
 	testq	FLAG, FLAG
-	je	.L998
+	je	L(998)
 
 	movss	(X), %xmm4
 	cvtss2sd %xmm4, %xmm6
 	mulsd	 %xmm6, %xmm6
 	addsd	 %xmm6, %xmm3
-	jmp	.L998
+	jmp	L(998)
 	ALIGN_4
 
-.L40:
+L(40):
 	movq	M,  I
 	sarq	$3, I
-	jle	.L44
+	jle	L(44)
 	ALIGN_4
 
-.L41:
+L(41):
 	movsd	(X), %xmm4
 	addq	INCX, X
 	movsd	(X), %xmm5
@@ -302,12 +302,12 @@
 	addpd	 %xmm11, %xmm3
 
 	decq	I
-	jg	.L41
+	jg	L(41)
 	ALIGN_3
 
-.L44:
+L(44):
 	testq	$4,  M
-	je	.L45
+	je	L(45)
 
 	movsd	(X), %xmm4
 	addq	INCX, X
@@ -334,9 +334,9 @@
 	addpd	 %xmm11, %xmm3
 	ALIGN_3
 
-.L45:
+L(45):
 	testq	$2,  M
-	je	.L46
+	je	L(46)
 
 	movsd	(X), %xmm4
 	addq	INCX, X
@@ -351,9 +351,9 @@
 	addpd	 %xmm7, %xmm1
 	ALIGN_3
 
-.L46:
+L(46):
 	testq	$1,  M
-	je	.L998
+	je	L(998)
 
 	movsd	(X), %xmm4
 	cvtps2pd %xmm4, %xmm6
@@ -361,7 +361,7 @@
 	addpd	 %xmm6, %xmm3
 	ALIGN_4
 
-.L998:
+L(998):
 	addpd	%xmm1, %xmm0
 	addpd	%xmm3, %xmm2
 	addpd	%xmm2, %xmm0
@@ -375,7 +375,7 @@
 #endif
 	ALIGN_4
 
-.L999:
+L(999):
 	sqrtsd	%xmm0,  %xmm0
 	cvtsd2ss %xmm0, %xmm0
 

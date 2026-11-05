@@ -83,16 +83,16 @@
 	leaq	(, INCY, SIZE), INCY
 
 	testq	M, M
-	jle	.L29
+	jle	L(29)
 
 	cmpq	$SIZE, INCX
-	jne	.L20
+	jne	L(20)
 	cmpq	$SIZE, INCY
-	jne	.L20
+	jne	L(20)
 
 	movq	M,  %rax
 	sarq	$3, %rax
-	jle	.L13
+	jle	L(13)
 
 	movsd	0 * SIZE(X), %xmm0
 	movsd	1 * SIZE(X), %xmm1
@@ -114,10 +114,10 @@
 	mulsd	ALPHA, %xmm3
 
 	decq	%rax
-	jle .L12
+	jle L(12)
 	ALIGN_3
 
-.L11:
+L(11):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -179,10 +179,10 @@
 	addq	$8 * SIZE, Y
 	addq	$8 * SIZE, X
 	decq	%rax
-	jg	.L11
+	jg	L(11)
 	ALIGN_3
 
-.L12:
+L(12):
 	addsd	%xmm4, %xmm0
 	movsd	4 * SIZE(Y), %xmm4
 	addsd	%xmm5, %xmm1
@@ -215,10 +215,10 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L13:
+L(13):
 	movq	M,  %rax
 	andq	$4, %rax
-	jle	.L15
+	jle	L(15)
 	ALIGN_3
 
 	movsd	0 * SIZE(X), %xmm0
@@ -249,10 +249,10 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L15:
+L(15):
 	movq	M,  %rax
 	andq	$2, %rax
-	jle	.L16
+	jle	L(16)
 	ALIGN_3
 
 	movsd	0 * SIZE(X), %xmm0
@@ -272,10 +272,10 @@
 	addq	$2 * SIZE, Y
 	ALIGN_3
 
-.L16:
+L(16):
 	movq	M,  %rax
 	andq	$1, %rax
-	jle	.L19
+	jle	L(19)
 	ALIGN_3
 
 	movsd	0 * SIZE(X), %xmm0
@@ -286,7 +286,7 @@
 	addq	$SIZE, Y
 	ALIGN_3
 
-.L19:
+L(19):
 	xorq	%rax,%rax
 
 	RESTOREREGISTERS
@@ -294,12 +294,12 @@
 	ret
 	ALIGN_3
 
-.L20:
+L(20):
 	movq	Y, YY
 
 	movq	M,  %rax
 	sarq	$3, %rax
-	jle	.L23
+	jle	L(23)
 
 	movsd	(X), %xmm0
 	addq	INCX, X
@@ -333,10 +333,10 @@
 	mulsd	ALPHA, %xmm3
 
 	decq	%rax
-	jle .L22
+	jle L(22)
 	ALIGN_3
 
-.L21:
+L(21):
 	addsd	%xmm4, %xmm0
 	movsd	(Y), %xmm4
 	addq	INCY, Y
@@ -414,10 +414,10 @@
 	mulsd	ALPHA, %xmm3
 
 	decq	%rax
-	jg	.L21
+	jg	L(21)
 	ALIGN_3
 
-.L22:
+L(22):
 	addsd	%xmm4, %xmm0
 	movsd	(Y), %xmm4
 	addq	INCY, Y
@@ -462,10 +462,10 @@
 	addq	INCY, YY
 	ALIGN_3
 
-.L23:
+L(23):
 	movq	M,  %rax
 	andq	$4, %rax
-	jle	.L25
+	jle	L(25)
 	ALIGN_3
 
 	movsd	(X), %xmm0
@@ -505,10 +505,10 @@
 	addq	INCY, YY
 	ALIGN_3
 
-.L25:
+L(25):
 	movq	M,  %rax
 	andq	$2, %rax
-	jle	.L26
+	jle	L(26)
 	ALIGN_3
 
 	movsd	(X), %xmm0
@@ -531,10 +531,10 @@
 	addq	INCY, YY
 	ALIGN_3
 
-.L26:
+L(26):
 	movq	M,  %rax
 	andq	$1, %rax
-	jle	.L29
+	jle	L(29)
 	ALIGN_3
 
 	movsd	(X), %xmm0
@@ -545,7 +545,7 @@
 	addq	$SIZE, Y
 	ALIGN_3
 
-.L29:
+L(29):
 	xorq	%rax, %rax
 
 	RESTOREREGISTERS

@@ -922,13 +922,13 @@
         STACK_TOUCH
 
 	cmpq	$0, OLD_M
-	je	.L999
+	je	L(999)
 
 	cmpq	$0, OLD_N
-	je	.L999
+	je	L(999)
 
 	cmpq	$0, OLD_K
-	je	.L999
+	je	L(999)
 
 	movq	OLD_M, M
 	movq	OLD_N, N
@@ -950,10 +950,10 @@
 
 	movq	Ndiv6,  J
 	cmpq	$0, J
-	je	.L2_0
+	je	L(2_0)
 	ALIGN_4
 
-.L6_01:
+L(6_01):
         // copy to sub buffer
         movq    K, %rax
         salq    $1,%rax                 // K * 2
@@ -962,10 +962,10 @@
         leaq    BUFFER1, BO             // first buffer to BO
         movq    K, %rax
         sarq    $2, %rax                // K / 4
-        jz      .L6_02a
+        jz      L(6_02a)
         ALIGN_4
 
-.L6_02:
+L(6_02):
 	prefetcht0 512(BO1)
 	prefetcht0 512(BO2)
 	prefetchw  512(BO)
@@ -989,16 +989,16 @@
 	addq	$8*SIZE,BO2
 	addq	$12*SIZE,BO
 	decq	%rax
-	jnz	.L6_02
+	jnz	L(6_02)
 
-.L6_02a:
+L(6_02a):
 
 	movq	K, %rax
 	andq	$3, %rax		// K % 4
-	jz	.L6_02c
+	jz	L(6_02c)
 	ALIGN_4
 
-.L6_02b:
+L(6_02b):
 
 	vmovups	(BO1), %xmm0
 	vmovsd  (BO2), %xmm1
@@ -1008,9 +1008,9 @@
 	addq	$2*SIZE,BO2
 	addq	$3*SIZE,BO
 	decq	%rax
-	jnz	.L6_02b
+	jnz	L(6_02b)
 
-.L6_02c:
+L(6_02c):
 
 	movq	K, %rax
 	salq	$1,%rax			// K * 2
@@ -1019,11 +1019,11 @@
 	leaq    BUFFER2, BO		// second buffer to BO
 	movq	K, %rax
 	sarq	$2, %rax		// k / 4
-	jz	.L6_03a
+	jz	L(6_03a)
 	ALIGN_4
 
 
-.L6_03:
+L(6_03):
 
 	prefetcht0 512(BO2)
 	prefetchw  512(BO)
@@ -1047,17 +1047,17 @@
 	addq	$8*SIZE,BO2
 	addq	$12*SIZE,BO
 	decq	%rax
-	jnz	.L6_03
+	jnz	L(6_03)
 
-.L6_03a:
+L(6_03a):
 
         movq    K, %rax
         andq    $3, %rax                // K % 4
-        jz      .L6_03c
+        jz      L(6_03c)
         ALIGN_4
 
 
-.L6_03b:
+L(6_03b):
 
 	vmovsd	  1*SIZE(BO1), %xmm0
 	vmovups  	(BO2), %xmm1
@@ -1067,14 +1067,14 @@
 	addq	$2*SIZE,BO2
 	addq	$3*SIZE,BO
 	decq	%rax
-	jnz	.L6_03b
+	jnz	L(6_03b)
 
 
-.L6_03c:
+L(6_03c):
 
 	movq	BO2, B			// next offset of B
 
-.L6_10:
+L(6_10):
 	movq	C, CO1
 	leaq	(C, LDC, 2), C		 
 	leaq	(C, LDC, 1), C		// c += 3 * ldc
@@ -1085,11 +1085,11 @@
 
 	movq	M,  I
 	sarq	$3, I			// i = (m >> 3)
-	je	.L6_20
+	je	L(6_20)
 
 	ALIGN_4
 
-.L6_11:
+L(6_11):
         leaq    BUFFER1, BO             // first buffer to BO
         addq    $6 * SIZE, BO
 
@@ -1098,7 +1098,7 @@
         movq    K, %rax
 
 	andq	$-8, %rax			//  K = K - ( K % 8 )
-	je	.L6_16
+	je	L(6_16)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
 
@@ -1109,7 +1109,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L6_12:
+L(6_12):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x3_1(xxx)
@@ -1124,7 +1124,7 @@
 	KERNEL8x3_3(xxx)
 	KERNEL8x3_4(xxx)
 
-	je	.L6_16
+	je	L(6_16)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x3_1(xxx)
@@ -1139,16 +1139,16 @@
 	KERNEL8x3_3(xxx)
 	KERNEL8x3_4(xxx)
 
-	je	.L6_16
+	je	L(6_16)
 
-	jmp	.L6_12
+	jmp	L(6_12)
 	ALIGN_4
 
-.L6_16:
+L(6_16):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L6_19
+	je L(6_19)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
@@ -1160,16 +1160,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L6_17:
+L(6_17):
 
 	KERNEL8x3_SUB(xxx)
 	addq	$3, BI
 	addq	$8, %rax
-	jl	.L6_17
+	jl	L(6_17)
 	ALIGN_4
 
 
-.L6_19:
+L(6_19):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -1207,24 +1207,24 @@
 
 	addq	$8 * SIZE, CO1		# coffset += 8
 	decq	I			# i --
-	jg	.L6_11
+	jg	L(6_11)
 	ALIGN_4	
 
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
-.L6_20:
+L(6_20):
 	// Test rest of M
 
 	testq	$7, M
-	jz	.L7_10		// to next 3 lines of N
+	jz	L(7_10)		// to next 3 lines of N
 
 	testq	$4, M		
-	jz	.L6_30
+	jz	L(6_30)
 
 	ALIGN_4
 
-.L6_21:
+L(6_21):
         leaq    BUFFER1, BO             // first buffer to BO
         addq    $6 * SIZE, BO
 
@@ -1233,7 +1233,7 @@
         movq    K, %rax
 
 	andq	$-8, %rax
-	je	.L6_26
+	je	L(6_26)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
 
@@ -1244,7 +1244,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L6_22:
+L(6_22):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x3_1(xxx)
@@ -1259,7 +1259,7 @@
 	KERNEL4x3_3(xxx)
 	KERNEL4x3_4(xxx)
 
-	je	.L6_26
+	je	L(6_26)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x3_1(xxx)
@@ -1274,16 +1274,16 @@
 	KERNEL4x3_3(xxx)
 	KERNEL4x3_4(xxx)
 
-	je	.L6_26
+	je	L(6_26)
 
-	jmp	.L6_22
+	jmp	L(6_22)
 	ALIGN_4
 
-.L6_26:
+L(6_26):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L6_29
+	je L(6_29)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
@@ -1295,16 +1295,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L6_27:
+L(6_27):
 
 	KERNEL4x3_SUB(xxx)
 	addq	$3, BI
 	addq	$4, %rax
-	jl	.L6_27
+	jl	L(6_27)
 	ALIGN_4
 
 
-.L6_29:
+L(6_29):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -1333,13 +1333,13 @@
 	ALIGN_4
 	
 
-.L6_30:
+L(6_30):
 	testq	$2, M		
-	jz	.L6_40
+	jz	L(6_40)
 
 	ALIGN_4
 
-.L6_31:
+L(6_31):
         leaq    BUFFER1, BO             // first buffer to BO
         addq    $6 * SIZE, BO
 
@@ -1349,7 +1349,7 @@
         movq    K, %rax
 
 	andq	$-8, %rax
-	je	.L6_36
+	je	L(6_36)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
 
@@ -1360,7 +1360,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L6_32:
+L(6_32):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x3_1(xxx)
@@ -1375,7 +1375,7 @@
 	KERNEL2x3_3(xxx)
 	KERNEL2x3_4(xxx)
 
-	je	.L6_36
+	je	L(6_36)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x3_1(xxx)
@@ -1390,16 +1390,16 @@
 	KERNEL2x3_3(xxx)
 	KERNEL2x3_4(xxx)
 
-	je	.L6_36
+	je	L(6_36)
 
-	jmp	.L6_32
+	jmp	L(6_32)
 	ALIGN_4
 
-.L6_36:
+L(6_36):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L6_39
+	je L(6_39)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
@@ -1411,16 +1411,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L6_37:
+L(6_37):
 
 	KERNEL2x3_SUB(xxx)
 	addq	$3, BI
 	addq	$2, %rax
-	jl	.L6_37
+	jl	L(6_37)
 	ALIGN_4
 
 
-.L6_39:
+L(6_39):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -1438,13 +1438,13 @@
 	addq	$2 * SIZE, CO1		# coffset += 2
 	ALIGN_4
 
-.L6_40:
+L(6_40):
 	testq	$1, M		
-	jz	.L7_10		// to next 3 lines of N
+	jz	L(7_10)		// to next 3 lines of N
 
 	ALIGN_4
 
-.L6_41:
+L(6_41):
         leaq    BUFFER1, BO             // first buffer to BO
         addq    $6 * SIZE, BO
 
@@ -1453,7 +1453,7 @@
         movq    K, %rax
 
 	andq	$-8, %rax
-	je	.L6_46
+	je	L(6_46)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
 
@@ -1463,7 +1463,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L6_42:
+L(6_42):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x3_1(xxx)
@@ -1478,7 +1478,7 @@
 	KERNEL1x3_3(xxx)
 	KERNEL1x3_4(xxx)
 
-	je	.L6_46
+	je	L(6_46)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x3_1(xxx)
@@ -1493,16 +1493,16 @@
 	KERNEL1x3_3(xxx)
 	KERNEL1x3_4(xxx)
 
-	je	.L6_46
+	je	L(6_46)
 
-	jmp	.L6_42
+	jmp	L(6_42)
 	ALIGN_4
 
-.L6_46:
+L(6_46):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L6_49
+	je L(6_49)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
@@ -1513,16 +1513,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L6_47:
+L(6_47):
 
 	KERNEL1x3_SUB(xxx)
 	addq	$3, BI
 	addq	$1, %rax
-	jl	.L6_47
+	jl	L(6_47)
 	ALIGN_4
 
 
-.L6_49:
+L(6_49):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -1544,7 +1544,7 @@
 
 /***************************************************************************************************************/
 
-.L7_10:
+L(7_10):
 	movq	C, CO1
 	leaq	(C, LDC, 2), C		 
 	leaq	(C, LDC, 1), C		// c += 3 * ldc
@@ -1555,10 +1555,10 @@
 
 	movq	M,  I
 	sarq	$3, I			// i = (m >> 3)
-	je	.L7_20
+	je	L(7_20)
 	ALIGN_4
 
-.L7_11:
+L(7_11):
         leaq    BUFFER2, BO             // second buffer to BO
         addq    $6 * SIZE, BO
 
@@ -1569,7 +1569,7 @@
 
 
 	andq	$-8, %rax
-	je	.L7_16
+	je	L(7_16)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
 
@@ -1581,7 +1581,7 @@
 
 	ALIGN_4
 
-.L7_12:
+L(7_12):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x3_1(xxx)
@@ -1596,7 +1596,7 @@
 	KERNEL8x3_3(xxx)
 	KERNEL8x3_4(xxx)
 
-	je	.L7_16
+	je	L(7_16)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x3_1(xxx)
@@ -1611,16 +1611,16 @@
 	KERNEL8x3_3(xxx)
 	KERNEL8x3_4(xxx)
 
-	je	.L7_16
+	je	L(7_16)
 
-	jmp	.L7_12
+	jmp	L(7_12)
 	ALIGN_4
 
-.L7_16:
+L(7_16):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L7_19
+	je L(7_19)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
@@ -1632,16 +1632,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L7_17:
+L(7_17):
 
 	KERNEL8x3_SUB(xxx)
 	addq	$3, BI
 	addq	$8, %rax
-	jl	.L7_17
+	jl	L(7_17)
 	ALIGN_4
 
 
-.L7_19:
+L(7_19):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -1681,21 +1681,21 @@
 
 	addq	$8 * SIZE, CO1		# coffset += 8
 	decq	I			# i --
-	jg	.L7_11
+	jg	L(7_11)
 	ALIGN_4	
 
-.L7_20:
+L(7_20):
 	// Test rest of M
 
 	testq	$7, M
-	jz	.L7_60		// to next 6 lines of N
+	jz	L(7_60)		// to next 6 lines of N
 
 	testq	$4, M		
-	jz	.L7_30
+	jz	L(7_30)
 
 	ALIGN_4
 
-.L7_21:
+L(7_21):
         leaq    BUFFER2, BO             // second buffer to BO
         addq    $6 * SIZE, BO
 
@@ -1705,7 +1705,7 @@
         movq    K, %rax
 
 	andq	$-8, %rax
-	je	.L7_26
+	je	L(7_26)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
 
@@ -1716,7 +1716,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L7_22:
+L(7_22):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x3_1(xxx)
@@ -1731,7 +1731,7 @@
 	KERNEL4x3_3(xxx)
 	KERNEL4x3_4(xxx)
 
-	je	.L7_26
+	je	L(7_26)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x3_1(xxx)
@@ -1746,16 +1746,16 @@
 	KERNEL4x3_3(xxx)
 	KERNEL4x3_4(xxx)
 
-	je	.L7_26
+	je	L(7_26)
 
-	jmp	.L7_22
+	jmp	L(7_22)
 	ALIGN_4
 
-.L7_26:
+L(7_26):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L7_29
+	je L(7_29)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
@@ -1767,16 +1767,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L7_27:
+L(7_27):
 
 	KERNEL4x3_SUB(xxx)
 	addq	$3, BI
 	addq	$4, %rax
-	jl	.L7_27
+	jl	L(7_27)
 	ALIGN_4
 
 
-.L7_29:
+L(7_29):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -1805,13 +1805,13 @@
 	ALIGN_4
 	
 
-.L7_30:
+L(7_30):
 	testq	$2, M		
-	jz	.L7_40
+	jz	L(7_40)
 
 	ALIGN_4
 
-.L7_31:
+L(7_31):
         leaq    BUFFER2, BO             // second buffer to BO
         addq    $6 * SIZE, BO
 
@@ -1820,7 +1820,7 @@
         movq    K, %rax
 
 	andq	$-8, %rax
-	je	.L7_36
+	je	L(7_36)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
 
@@ -1831,7 +1831,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L7_32:
+L(7_32):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x3_1(xxx)
@@ -1846,7 +1846,7 @@
 	KERNEL2x3_3(xxx)
 	KERNEL2x3_4(xxx)
 
-	je	.L7_36
+	je	L(7_36)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x3_1(xxx)
@@ -1861,16 +1861,16 @@
 	KERNEL2x3_3(xxx)
 	KERNEL2x3_4(xxx)
 
-	je	.L7_36
+	je	L(7_36)
 
-	jmp	.L7_32
+	jmp	L(7_32)
 	ALIGN_4
 
-.L7_36:
+L(7_36):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L7_39
+	je L(7_39)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
@@ -1882,16 +1882,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L7_37:
+L(7_37):
 
 	KERNEL2x3_SUB(xxx)
 	addq	$3, BI
 	addq	$2, %rax
-	jl	.L7_37
+	jl	L(7_37)
 	ALIGN_4
 
 
-.L7_39:
+L(7_39):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -1913,13 +1913,13 @@
 
 
 
-.L7_40:
+L(7_40):
 	testq	$1, M		
-	jz	.L7_60		// to next 6 lines of N
+	jz	L(7_60)		// to next 6 lines of N
 
 	ALIGN_4
 
-.L7_41:
+L(7_41):
         leaq    BUFFER2, BO             // second buffer to BO
         addq    $6 * SIZE, BO
 
@@ -1929,7 +1929,7 @@
 
 
 	andq	$-8, %rax
-	je	.L7_46
+	je	L(7_46)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
 
@@ -1939,7 +1939,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L7_42:
+L(7_42):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x3_1(xxx)
@@ -1954,7 +1954,7 @@
 	KERNEL1x3_3(xxx)
 	KERNEL1x3_4(xxx)
 
-	je	.L7_46
+	je	L(7_46)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x3_1(xxx)
@@ -1969,16 +1969,16 @@
 	KERNEL1x3_3(xxx)
 	KERNEL1x3_4(xxx)
 
-	je	.L7_46
+	je	L(7_46)
 
-	jmp	.L7_42
+	jmp	L(7_42)
 	ALIGN_4
 
-.L7_46:
+L(7_46):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L7_49
+	je L(7_49)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,2), BI                   //  BI = BI * 3 ; number of values
@@ -1989,16 +1989,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L7_47:
+L(7_47):
 
 	KERNEL1x3_SUB(xxx)
 	addq	$3, BI
 	addq	$1, %rax
-	jl	.L7_47
+	jl	L(7_47)
 	ALIGN_4
 
 
-.L7_49:
+L(7_49):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -2015,15 +2015,15 @@
 
 	addq	$1 * SIZE, CO1		# coffset += 1
 
-.L7_60:
+L(7_60):
 
 	decq	J			// j --
-	jg	.L6_01
+	jg	L(6_01)
 
 
-.L2_0:
+L(2_0):
 	cmpq	$0, Nmod6		// N % 6 == 0
-	je	.L999
+	je	L(999)
 
 /************************************************************************************************
 * Loop for Nmod6 / 2 > 0
@@ -2031,30 +2031,30 @@
 
 	movq	Nmod6, J		
 	sarq	$1, J			// j = j / 2
-	je	.L1_0
+	je	L(1_0)
 	ALIGN_4
 
-.L2_01:
+L(2_01):
 	// copy to sub buffer
 	movq	B, BO1
 	leaq    BUFFER1, BO		// first buffer to BO
 	movq	K, %rax
 	ALIGN_4
 
-.L2_02b:
+L(2_02b):
 
 	vmovups	(BO1), %xmm0
 	vmovups	%xmm0,       (BO)
 	addq	$2*SIZE,BO1
 	addq	$2*SIZE,BO
 	decq	%rax
-	jnz	.L2_02b
+	jnz	L(2_02b)
 
-.L2_02c:
+L(2_02c):
 
 	movq	BO1, B			// next offset of B
 
-.L2_10:
+L(2_10):
 	movq	C, CO1
 	leaq	(C, LDC, 2), C		// c += 2 * ldc
 
@@ -2064,11 +2064,11 @@
 
 	movq	M,  I
 	sarq	$3, I			// i = (m >> 3)
-	je	.L2_20
+	je	L(2_20)
 
 	ALIGN_4
 
-.L2_11:
+L(2_11):
 
 	leaq	BUFFER1, BO		// first buffer to BO
 	addq	$4 * SIZE, BO
@@ -2078,7 +2078,7 @@
         movq    K, %rax
 
 	andq	$-8, %rax			//  K = K - ( K % 8 )
-	je	.L2_16
+	je	L(2_16)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
 
@@ -2089,7 +2089,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_12:
+L(2_12):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x2_1(xxx)
@@ -2103,7 +2103,7 @@
 	KERNEL8x2_3(xxx)
 	KERNEL8x2_4(xxx)
 
-	je	.L2_16
+	je	L(2_16)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x2_1(xxx)
@@ -2117,16 +2117,16 @@
 	KERNEL8x2_3(xxx)
 	KERNEL8x2_4(xxx)
 
-	je	.L2_16
+	je	L(2_16)
 
-	jmp	.L2_12
+	jmp	L(2_12)
 	ALIGN_4
 
-.L2_16:
+L(2_16):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L2_19
+	je L(2_19)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
@@ -2138,16 +2138,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_17:
+L(2_17):
 
 	KERNEL8x2_SUB(xxx)
 	addq	$2, BI
 	addq	$8, %rax
-	jl	.L2_17
+	jl	L(2_17)
 	ALIGN_4
 
 
-.L2_19:
+L(2_19):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -2174,24 +2174,24 @@
 
 	addq	$8 * SIZE, CO1		# coffset += 8
 	decq	I			# i --
-	jg	.L2_11
+	jg	L(2_11)
 	ALIGN_4	
 
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
-.L2_20:
+L(2_20):
 	// Test rest of M
 
 	testq	$7, M
-	jz	.L2_60		// to next 2 lines of N
+	jz	L(2_60)		// to next 2 lines of N
 
 	testq	$4, M		
-	jz	.L2_30
+	jz	L(2_30)
 
 	ALIGN_4
 
-.L2_21:
+L(2_21):
         leaq    BUFFER1, BO             // first buffer to BO
         addq    $4 * SIZE, BO
 
@@ -2200,7 +2200,7 @@
         movq    K, %rax
 
 	andq	$-8, %rax
-	je	.L2_26
+	je	L(2_26)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
 
@@ -2211,7 +2211,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_22:
+L(2_22):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x2_1(xxx)
@@ -2225,7 +2225,7 @@
 	KERNEL4x2_3(xxx)
 	KERNEL4x2_4(xxx)
 
-	je	.L2_26
+	je	L(2_26)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x2_1(xxx)
@@ -2239,16 +2239,16 @@
 	KERNEL4x2_3(xxx)
 	KERNEL4x2_4(xxx)
 
-	je	.L2_26
+	je	L(2_26)
 
-	jmp	.L2_22
+	jmp	L(2_22)
 	ALIGN_4
 
-.L2_26:
+L(2_26):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L2_29
+	je L(2_29)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
@@ -2260,16 +2260,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_27:
+L(2_27):
 
 	KERNEL4x2_SUB(xxx)
 	addq	$2, BI
 	addq	$4, %rax
-	jl	.L2_27
+	jl	L(2_27)
 	ALIGN_4
 
 
-.L2_29:
+L(2_29):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -2289,13 +2289,13 @@
 	ALIGN_4
 	
 
-.L2_30:
+L(2_30):
 	testq	$2, M		
-	jz	.L2_40
+	jz	L(2_40)
 
 	ALIGN_4
 
-.L2_31:
+L(2_31):
         leaq    BUFFER1, BO             // first buffer to BO
         addq    $4 * SIZE, BO
 
@@ -2304,7 +2304,7 @@
         movq    K, %rax
 
 	andq	$-8, %rax
-	je	.L2_36
+	je	L(2_36)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
 
@@ -2315,7 +2315,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_32:
+L(2_32):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x2_1(xxx)
@@ -2329,7 +2329,7 @@
 	KERNEL2x2_3(xxx)
 	KERNEL2x2_4(xxx)
 
-	je	.L2_36
+	je	L(2_36)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x2_1(xxx)
@@ -2343,16 +2343,16 @@
 	KERNEL2x2_3(xxx)
 	KERNEL2x2_4(xxx)
 
-	je	.L2_36
+	je	L(2_36)
 
-	jmp	.L2_32
+	jmp	L(2_32)
 	ALIGN_4
 
-.L2_36:
+L(2_36):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L2_39
+	je L(2_39)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
@@ -2364,16 +2364,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_37:
+L(2_37):
 
 	KERNEL2x2_SUB(xxx)
 	addq	$2, BI
 	addq	$2, %rax
-	jl	.L2_37
+	jl	L(2_37)
 	ALIGN_4
 
 
-.L2_39:
+L(2_39):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -2387,13 +2387,13 @@
 	ALIGN_4
 	
 
-.L2_40:
+L(2_40):
 	testq	$1, M		
-	jz	.L2_60		// to next 2 lines of N
+	jz	L(2_60)		// to next 2 lines of N
 
 	ALIGN_4
 
-.L2_41:
+L(2_41):
         leaq    BUFFER1, BO             // first buffer to BO
         addq    $4 * SIZE, BO
 
@@ -2402,7 +2402,7 @@
         movq    K, %rax
 
 	andq	$-8, %rax
-	je	.L2_46
+	je	L(2_46)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
 
@@ -2412,7 +2412,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_42:
+L(2_42):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x2_1(xxx)
@@ -2426,7 +2426,7 @@
 	KERNEL1x2_3(xxx)
 	KERNEL1x2_4(xxx)
 
-	je	.L2_46
+	je	L(2_46)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x2_1(xxx)
@@ -2440,16 +2440,16 @@
 	KERNEL1x2_3(xxx)
 	KERNEL1x2_4(xxx)
 
-	je	.L2_46
+	je	L(2_46)
 
-	jmp	.L2_42
+	jmp	L(2_42)
 	ALIGN_4
 
-.L2_46:
+L(2_46):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L2_49
+	je L(2_49)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
@@ -2460,16 +2460,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_47:
+L(2_47):
 
 	KERNEL1x2_SUB(xxx)
 	addq	$2, BI
 	addq	$1, %rax
-	jl	.L2_47
+	jl	L(2_47)
 	ALIGN_4
 
 
-.L2_49:
+L(2_49):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -2485,14 +2485,14 @@
 	
 
 	
-.L2_60:
+L(2_60):
 
 	decq	J			// j --
-	jg	.L2_01			// next 2 lines of N
+	jg	L(2_01)			// next 2 lines of N
 
 
 
-.L1_0:
+L(1_0):
 
 /************************************************************************************************
 * Loop for Nmod6 % 2 > 0
@@ -2500,30 +2500,30 @@
 
 	movq	Nmod6, J		
 	andq	$1, J			// j % 2
-	je	.L999
+	je	L(999)
 	ALIGN_4
 
-.L1_01:
+L(1_01):
 	// copy to sub buffer
 	movq	B, BO1
 	leaq    BUFFER1, BO		// first buffer to BO
 	movq	K, %rax
 	ALIGN_4
 
-.L1_02b:
+L(1_02b):
 
 	vmovsd	(BO1), %xmm0
 	vmovsd	%xmm0,       (BO)
 	addq	$1*SIZE,BO1
 	addq	$1*SIZE,BO
 	decq	%rax
-	jnz	.L1_02b
+	jnz	L(1_02b)
 
-.L1_02c:
+L(1_02c):
 
 	movq	BO1, B			// next offset of B
 
-.L1_10:
+L(1_10):
 	movq	C, CO1
 	leaq	(C, LDC, 1), C		// c += 1 * ldc
 
@@ -2532,11 +2532,11 @@
 
 	movq	M,  I
 	sarq	$3, I			// i = (m >> 3)
-	je	.L1_20
+	je	L(1_20)
 
 	ALIGN_4
 
-.L1_11:
+L(1_11):
         leaq    BUFFER1, BO             // first buffer to BO
         addq    $2 * SIZE, BO
 
@@ -2545,7 +2545,7 @@
         movq    K, %rax
 
 	andq	$-8, %rax			//  K = K - ( K % 8 )
-	je	.L1_16
+	je	L(1_16)
 	movq    %rax, BI                        //  Index for BO
 
 	salq	$3, %rax			// rax = rax * 8 ; number of values
@@ -2555,7 +2555,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_12:
+L(1_12):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x1_1(xxx)
@@ -2568,7 +2568,7 @@
 	KERNEL8x1_3(xxx)
 	KERNEL8x1_4(xxx)
 
-	je	.L1_16
+	je	L(1_16)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x1_1(xxx)
@@ -2581,16 +2581,16 @@
 	KERNEL8x1_3(xxx)
 	KERNEL8x1_4(xxx)
 
-	je	.L1_16
+	je	L(1_16)
 
-	jmp	.L1_12
+	jmp	L(1_12)
 	ALIGN_4
 
-.L1_16:
+L(1_16):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L1_19
+	je L(1_19)
 
 	movq    %rax, BI                        //  Index for BO
 
@@ -2601,16 +2601,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_17:
+L(1_17):
 
 	KERNEL8x1_SUB(xxx)
 	addq	$1, BI
 	addq	$8, %rax
-	jl	.L1_17
+	jl	L(1_17)
 	ALIGN_4
 
 
-.L1_19:
+L(1_19):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -2626,24 +2626,24 @@
 
 	addq	$8 * SIZE, CO1		# coffset += 8
 	decq	I			# i --
-	jg	.L1_11
+	jg	L(1_11)
 	ALIGN_4	
 
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
-.L1_20:
+L(1_20):
 	// Test rest of M
 
 	testq	$7, M
-	jz	.L999
+	jz	L(999)
 
 	testq	$4, M		
-	jz	.L1_30
+	jz	L(1_30)
 
 	ALIGN_4
 
-.L1_21:
+L(1_21):
         leaq    BUFFER1, BO             // first buffer to BO
         addq    $2 * SIZE, BO
 
@@ -2653,7 +2653,7 @@
         movq    K, %rax
 
 	andq	$-8, %rax
-	je	.L1_26
+	je	L(1_26)
 	movq    %rax, BI                        //  Index for BO
 
 	salq	$2, %rax			// rax = rax * 4 ; number of values
@@ -2663,7 +2663,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_22:
+L(1_22):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x1_1(xxx)
@@ -2676,7 +2676,7 @@
 	KERNEL4x1_3(xxx)
 	KERNEL4x1_4(xxx)
 
-	je	.L1_26
+	je	L(1_26)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x1_1(xxx)
@@ -2689,16 +2689,16 @@
 	KERNEL4x1_3(xxx)
 	KERNEL4x1_4(xxx)
 
-	je	.L1_26
+	je	L(1_26)
 
-	jmp	.L1_22
+	jmp	L(1_22)
 	ALIGN_4
 
-.L1_26:
+L(1_26):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L1_29
+	je L(1_29)
 
 	movq    %rax, BI                        //  Index for BO
 
@@ -2709,16 +2709,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_27:
+L(1_27):
 
 	KERNEL4x1_SUB(xxx)
 	addq	$1, BI
 	addq	$4, %rax
-	jl	.L1_27
+	jl	L(1_27)
 	ALIGN_4
 
 
-.L1_29:
+L(1_29):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -2732,13 +2732,13 @@
 	ALIGN_4
 	
 
-.L1_30:
+L(1_30):
 	testq	$2, M		
-	jz	.L1_40
+	jz	L(1_40)
 
 	ALIGN_4
 
-.L1_31:
+L(1_31):
         leaq    BUFFER1, BO             // first buffer to BO
         addq    $2 * SIZE, BO
 
@@ -2748,7 +2748,7 @@
         movq    K, %rax
 
 	andq	$-8, %rax
-	je	.L1_36
+	je	L(1_36)
 	movq    %rax, BI                        //  Index for BO
 
 	salq	$1, %rax			// rax = rax *2 ; number of values
@@ -2758,7 +2758,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_32:
+L(1_32):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x1_1(xxx)
@@ -2771,7 +2771,7 @@
 	KERNEL2x1_3(xxx)
 	KERNEL2x1_4(xxx)
 
-	je	.L1_36
+	je	L(1_36)
 
 	KERNEL2x1_1(xxx)
 	KERNEL2x1_2(xxx)
@@ -2783,16 +2783,16 @@
 	KERNEL2x1_3(xxx)
 	KERNEL2x1_4(xxx)
 
-	je	.L1_36
+	je	L(1_36)
 
-	jmp	.L1_32
+	jmp	L(1_32)
 	ALIGN_4
 
-.L1_36:
+L(1_36):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L1_39
+	je L(1_39)
 
 	movq    %rax, BI                        //  Index for BO
 	
@@ -2803,16 +2803,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_37:
+L(1_37):
 
 	KERNEL2x1_SUB(xxx)
 	addq	$1, BI
 	addq	$2, %rax
-	jl	.L1_37
+	jl	L(1_37)
 	ALIGN_4
 
 
-.L1_39:
+L(1_39):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -2824,13 +2824,13 @@
 	ALIGN_4
 	
 
-.L1_40:
+L(1_40):
 	testq	$1, M		
-	jz	.L999
+	jz	L(999)
 
 	ALIGN_4
 
-.L1_41:
+L(1_41):
         leaq    BUFFER1, BO             // first buffer to BO
         addq    $2 * SIZE, BO
 
@@ -2839,7 +2839,7 @@
         movq    K, %rax
 
 	andq	$-8, %rax
-	je	.L1_46
+	je	L(1_46)
 	movq    %rax, BI                        //  Index for BO
 
 	leaq	(AO, %rax, 8), AO
@@ -2848,7 +2848,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_42:
+L(1_42):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x1_1(xxx)
@@ -2861,7 +2861,7 @@
 	KERNEL1x1_3(xxx)
 	KERNEL1x1_4(xxx)
 
-	je	.L1_46
+	je	L(1_46)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x1_1(xxx)
@@ -2874,16 +2874,16 @@
 	KERNEL1x1_3(xxx)
 	KERNEL1x1_4(xxx)
 
-	je	.L1_46
+	je	L(1_46)
 
-	jmp	.L1_42
+	jmp	L(1_42)
 	ALIGN_4
 
-.L1_46:
+L(1_46):
         movq    K, %rax
 
 	andq	$7, %rax		# if (k & 1)
-	je .L1_49
+	je L(1_49)
 
 	movq    %rax, BI                        //  Index for BO
 
@@ -2893,16 +2893,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_47:
+L(1_47):
 
 	KERNEL1x1_SUB(xxx)
 	addq	$1, BI
 	addq	$1, %rax
-	jl	.L1_47
+	jl	L(1_47)
 	ALIGN_4
 
 
-.L1_49:
+L(1_49):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -2914,7 +2914,7 @@
 	ALIGN_4
 	
 
-.L999:
+L(999):
 	movq   		SP, %rsp
 	movq	   (%rsp), %rbx
 	movq	  8(%rsp), %rbp
@@ -3002,13 +3002,13 @@
         STACK_TOUCH
 
 	cmpq	$0, OLD_M
-	je	.L999
+	je	L(999)
 
 	cmpq	$0, OLD_N
-	je	.L999
+	je	L(999)
 
 	cmpq	$0, OLD_K
-	je	.L999
+	je	L(999)
 
 	movq	OLD_M, M
 	movq	OLD_N, N
@@ -3037,32 +3037,32 @@
 
 	movq	Ndiv6,  J
 	cmpq	$0, J
-	je	.L1_0
+	je	L(1_0)
 	ALIGN_4
 
-.L2_0:
+L(2_0):
 
-.L2_01:
+L(2_01):
 	// copy to sub buffer
 	movq	B, BO1
 	leaq    BUFFER1, BO		// first buffer to BO
 	movq	K, %rax
 	ALIGN_4
 
-.L2_02b:
+L(2_02b):
 
 	vmovups	(BO1), %xmm0
 	vmovups	%xmm0,       (BO)
 	addq	$2*SIZE,BO1
 	addq	$2*SIZE,BO
 	decq	%rax
-	jnz	.L2_02b
+	jnz	L(2_02b)
 
-.L2_02c:
+L(2_02c):
 
 	movq	BO1, B			// next offset of B
 
-.L2_10:
+L(2_10):
 	movq	C, CO1
 	leaq	(C, LDC, 2), C		// c += 2 * ldc
 
@@ -3076,11 +3076,11 @@
 
 	movq	M,  I
 	sarq	$3, I			// i = (m >> 3)
-	je	.L2_20
+	je	L(2_20)
 
 	ALIGN_4
 
-.L2_11:
+L(2_11):
 
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
@@ -3118,7 +3118,7 @@
 
 
 	andq	$-8, %rax			//  K = K - ( K % 8 )
-	je	.L2_16
+	je	L(2_16)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
 
@@ -3129,7 +3129,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_12:
+L(2_12):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x2_1(xxx)
@@ -3143,7 +3143,7 @@
 	KERNEL8x2_3(xxx)
 	KERNEL8x2_4(xxx)
 
-	je	.L2_16
+	je	L(2_16)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x2_1(xxx)
@@ -3157,12 +3157,12 @@
 	KERNEL8x2_3(xxx)
 	KERNEL8x2_4(xxx)
 
-	je	.L2_16
+	je	L(2_16)
 
-	jmp	.L2_12
+	jmp	L(2_12)
 	ALIGN_4
 
-.L2_16:
+L(2_16):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -3170,7 +3170,7 @@
 #endif
 
 	andq	$7, %rax		# if (k & 1)
-	je .L2_19
+	je L(2_19)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
@@ -3182,16 +3182,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_17:
+L(2_17):
 
 	KERNEL8x2_SUB(xxx)
 	addq	$2, BI
 	addq	$8, %rax
-	jl	.L2_17
+	jl	L(2_17)
 	ALIGN_4
 
 
-.L2_19:
+L(2_19):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -3249,24 +3249,24 @@
 
 	addq	$8 * SIZE, CO1		# coffset += 8
 	decq	I			# i --
-	jg	.L2_11
+	jg	L(2_11)
 	ALIGN_4	
 
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
-.L2_20:
+L(2_20):
 	// Test rest of M
 
 	testq	$7, M
-	jz	.L2_60		// to next 2 lines of N
+	jz	L(2_60)		// to next 2 lines of N
 
 	testq	$4, M		
-	jz	.L2_30
+	jz	L(2_30)
 
 	ALIGN_4
 
-.L2_21:
+L(2_21):
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
         (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -3303,7 +3303,7 @@
 
 
 	andq	$-8, %rax
-	je	.L2_26
+	je	L(2_26)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
 
@@ -3314,7 +3314,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_22:
+L(2_22):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x2_1(xxx)
@@ -3328,7 +3328,7 @@
 	KERNEL4x2_3(xxx)
 	KERNEL4x2_4(xxx)
 
-	je	.L2_26
+	je	L(2_26)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x2_1(xxx)
@@ -3342,12 +3342,12 @@
 	KERNEL4x2_3(xxx)
 	KERNEL4x2_4(xxx)
 
-	je	.L2_26
+	je	L(2_26)
 
-	jmp	.L2_22
+	jmp	L(2_22)
 	ALIGN_4
 
-.L2_26:
+L(2_26):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -3355,7 +3355,7 @@
 #endif
 
 	andq	$7, %rax		# if (k & 1)
-	je .L2_29
+	je L(2_29)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
@@ -3367,16 +3367,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_27:
+L(2_27):
 
 	KERNEL4x2_SUB(xxx)
 	addq	$2, BI
 	addq	$4, %rax
-	jl	.L2_27
+	jl	L(2_27)
 	ALIGN_4
 
 
-.L2_29:
+L(2_29):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -3424,13 +3424,13 @@
 	ALIGN_4
 	
 
-.L2_30:
+L(2_30):
 	testq	$2, M		
-	jz	.L2_40
+	jz	L(2_40)
 
 	ALIGN_4
 
-.L2_31:
+L(2_31):
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
         (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -3468,7 +3468,7 @@
 
 
 	andq	$-8, %rax
-	je	.L2_36
+	je	L(2_36)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
 
@@ -3479,7 +3479,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_32:
+L(2_32):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x2_1(xxx)
@@ -3493,7 +3493,7 @@
 	KERNEL2x2_3(xxx)
 	KERNEL2x2_4(xxx)
 
-	je	.L2_36
+	je	L(2_36)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x2_1(xxx)
@@ -3507,12 +3507,12 @@
 	KERNEL2x2_3(xxx)
 	KERNEL2x2_4(xxx)
 
-	je	.L2_36
+	je	L(2_36)
 
-	jmp	.L2_32
+	jmp	L(2_32)
 	ALIGN_4
 
-.L2_36:
+L(2_36):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -3520,7 +3520,7 @@
 #endif
 
 	andq	$7, %rax		# if (k & 1)
-	je .L2_39
+	je L(2_39)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
@@ -3532,16 +3532,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_37:
+L(2_37):
 
 	KERNEL2x2_SUB(xxx)
 	addq	$2, BI
 	addq	$2, %rax
-	jl	.L2_37
+	jl	L(2_37)
 	ALIGN_4
 
 
-.L2_39:
+L(2_39):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -3579,13 +3579,13 @@
 	ALIGN_4
 	
 
-.L2_40:
+L(2_40):
 	testq	$1, M		
-	jz	.L2_60		// to next 2 lines of N
+	jz	L(2_60)		// to next 2 lines of N
 
 	ALIGN_4
 
-.L2_41:
+L(2_41):
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
         (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -3620,7 +3620,7 @@
 #endif
 
 	andq	$-8, %rax
-	je	.L2_46
+	je	L(2_46)
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
 
@@ -3630,7 +3630,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_42:
+L(2_42):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x2_1(xxx)
@@ -3644,7 +3644,7 @@
 	KERNEL1x2_3(xxx)
 	KERNEL1x2_4(xxx)
 
-	je	.L2_46
+	je	L(2_46)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x2_1(xxx)
@@ -3658,12 +3658,12 @@
 	KERNEL1x2_3(xxx)
 	KERNEL1x2_4(xxx)
 
-	je	.L2_46
+	je	L(2_46)
 
-	jmp	.L2_42
+	jmp	L(2_42)
 	ALIGN_4
 
-.L2_46:
+L(2_46):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -3671,7 +3671,7 @@
 #endif
 
 	andq	$7, %rax		# if (k & 1)
-	je .L2_49
+	je L(2_49)
 
 	movq    %rax, BI                        //  Index for BO
         leaq    (BI,BI,1), BI                   //  BI = BI * 2 ; number of values
@@ -3682,16 +3682,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L2_47:
+L(2_47):
 
 	KERNEL1x2_SUB(xxx)
 	addq	$2, BI
 	addq	$1, %rax
-	jl	.L2_47
+	jl	L(2_47)
 	ALIGN_4
 
 
-.L2_49:
+L(2_49):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -3730,17 +3730,17 @@
 	
 
 	
-.L2_60:
+L(2_60):
 #if defined(TRMMKERNEL) && !defined(LEFT)
         addq    $2, KK
 #endif
 
 	decq	J			// j --
-	jg	.L2_01			// next 2 lines of N
+	jg	L(2_01)			// next 2 lines of N
 
 
 
-.L1_0:
+L(1_0):
 
 /************************************************************************************************
 * Loop for Nmod6 % 2 > 0
@@ -3748,30 +3748,30 @@
 
 	movq	Nmod6, J		
 	andq	$1, J			// j % 2
-	je	.L999
+	je	L(999)
 	ALIGN_4
 
-.L1_01:
+L(1_01):
 	// copy to sub buffer
 	movq	B, BO1
 	leaq    BUFFER1, BO		// first buffer to BO
 	movq	K, %rax
 	ALIGN_4
 
-.L1_02b:
+L(1_02b):
 
 	vmovsd	(BO1), %xmm0
 	vmovsd	%xmm0,       (BO)
 	addq	$1*SIZE,BO1
 	addq	$1*SIZE,BO
 	decq	%rax
-	jnz	.L1_02b
+	jnz	L(1_02b)
 
-.L1_02c:
+L(1_02c):
 
 	movq	BO1, B			// next offset of B
 
-.L1_10:
+L(1_10):
 	movq	C, CO1
 	leaq	(C, LDC, 1), C		// c += 1 * ldc
 
@@ -3785,11 +3785,11 @@
 
 	movq	M,  I
 	sarq	$3, I			// i = (m >> 3)
-	je	.L1_20
+	je	L(1_20)
 
 	ALIGN_4
 
-.L1_11:
+L(1_11):
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
         (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -3825,7 +3825,7 @@
 #endif
 
 	andq	$-8, %rax			//  K = K - ( K % 8 )
-	je	.L1_16
+	je	L(1_16)
 	movq    %rax, BI                        //  Index for BO
 
 	salq	$3, %rax			// rax = rax * 8 ; number of values
@@ -3835,7 +3835,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_12:
+L(1_12):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x1_1(xxx)
@@ -3848,7 +3848,7 @@
 	KERNEL8x1_3(xxx)
 	KERNEL8x1_4(xxx)
 
-	je	.L1_16
+	je	L(1_16)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL8x1_1(xxx)
@@ -3861,12 +3861,12 @@
 	KERNEL8x1_3(xxx)
 	KERNEL8x1_4(xxx)
 
-	je	.L1_16
+	je	L(1_16)
 
-	jmp	.L1_12
+	jmp	L(1_12)
 	ALIGN_4
 
-.L1_16:
+L(1_16):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -3874,7 +3874,7 @@
 #endif
 
 	andq	$7, %rax		# if (k & 1)
-	je .L1_19
+	je L(1_19)
 
 	movq    %rax, BI                        //  Index for BO
 
@@ -3885,16 +3885,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_17:
+L(1_17):
 
 	KERNEL8x1_SUB(xxx)
 	addq	$1, BI
 	addq	$8, %rax
-	jl	.L1_17
+	jl	L(1_17)
 	ALIGN_4
 
 
-.L1_19:
+L(1_19):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -3934,24 +3934,24 @@
 #endif
 	addq	$8 * SIZE, CO1		# coffset += 8
 	decq	I			# i --
-	jg	.L1_11
+	jg	L(1_11)
 	ALIGN_4	
 
 /**************************************************************************
 * Rest of M 
 ***************************************************************************/
-.L1_20:
+L(1_20):
 	// Test rest of M
 
 	testq	$7, M
-	jz	.L999
+	jz	L(999)
 
 	testq	$4, M		
-	jz	.L1_30
+	jz	L(1_30)
 
 	ALIGN_4
 
-.L1_21:
+L(1_21):
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
         (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -3988,7 +3988,7 @@
 
 
 	andq	$-8, %rax
-	je	.L1_26
+	je	L(1_26)
 	movq    %rax, BI                        //  Index for BO
 
 	salq	$2, %rax			// rax = rax * 4 ; number of values
@@ -3998,7 +3998,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_22:
+L(1_22):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x1_1(xxx)
@@ -4011,7 +4011,7 @@
 	KERNEL4x1_3(xxx)
 	KERNEL4x1_4(xxx)
 
-	je	.L1_26
+	je	L(1_26)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL4x1_1(xxx)
@@ -4024,12 +4024,12 @@
 	KERNEL4x1_3(xxx)
 	KERNEL4x1_4(xxx)
 
-	je	.L1_26
+	je	L(1_26)
 
-	jmp	.L1_22
+	jmp	L(1_22)
 	ALIGN_4
 
-.L1_26:
+L(1_26):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -4037,7 +4037,7 @@
 #endif
 
 	andq	$7, %rax		# if (k & 1)
-	je .L1_29
+	je L(1_29)
 
 	movq    %rax, BI                        //  Index for BO
 
@@ -4048,16 +4048,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_27:
+L(1_27):
 
 	KERNEL4x1_SUB(xxx)
 	addq	$1, BI
 	addq	$4, %rax
-	jl	.L1_27
+	jl	L(1_27)
 	ALIGN_4
 
 
-.L1_29:
+L(1_29):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -4094,13 +4094,13 @@
 	ALIGN_4
 	
 
-.L1_30:
+L(1_30):
 	testq	$2, M		
-	jz	.L1_40
+	jz	L(1_40)
 
 	ALIGN_4
 
-.L1_31:
+L(1_31):
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
         (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -4137,7 +4137,7 @@
 
 
 	andq	$-8, %rax
-	je	.L1_36
+	je	L(1_36)
 	movq    %rax, BI                        //  Index for BO
 
 	salq	$1, %rax			// rax = rax *2 ; number of values
@@ -4147,7 +4147,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_32:
+L(1_32):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL2x1_1(xxx)
@@ -4160,7 +4160,7 @@
 	KERNEL2x1_3(xxx)
 	KERNEL2x1_4(xxx)
 
-	je	.L1_36
+	je	L(1_36)
 
 	KERNEL2x1_1(xxx)
 	KERNEL2x1_2(xxx)
@@ -4172,12 +4172,12 @@
 	KERNEL2x1_3(xxx)
 	KERNEL2x1_4(xxx)
 
-	je	.L1_36
+	je	L(1_36)
 
-	jmp	.L1_32
+	jmp	L(1_32)
 	ALIGN_4
 
-.L1_36:
+L(1_36):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -4185,7 +4185,7 @@
 #endif
 
 	andq	$7, %rax		# if (k & 1)
-	je .L1_39
+	je L(1_39)
 
 	movq    %rax, BI                        //  Index for BO
 	
@@ -4196,16 +4196,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_37:
+L(1_37):
 
 	KERNEL2x1_SUB(xxx)
 	addq	$1, BI
 	addq	$2, %rax
-	jl	.L1_37
+	jl	L(1_37)
 	ALIGN_4
 
 
-.L1_39:
+L(1_39):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -4238,13 +4238,13 @@
 	ALIGN_4
 	
 
-.L1_40:
+L(1_40):
 	testq	$1, M		
-	jz	.L999
+	jz	L(999)
 
 	ALIGN_4
 
-.L1_41:
+L(1_41):
 #if !defined(TRMMKERNEL) || \
         (defined(TRMMKERNEL) &&  defined(LEFT) &&  defined(TRANSA)) || \
         (defined(TRMMKERNEL) && !defined(LEFT) && !defined(TRANSA))
@@ -4279,7 +4279,7 @@
 #endif
 
 	andq	$-8, %rax
-	je	.L1_46
+	je	L(1_46)
 	movq    %rax, BI                        //  Index for BO
 
 	leaq	(AO, %rax, 8), AO
@@ -4288,7 +4288,7 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_42:
+L(1_42):
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x1_1(xxx)
@@ -4301,7 +4301,7 @@
 	KERNEL1x1_3(xxx)
 	KERNEL1x1_4(xxx)
 
-	je	.L1_46
+	je	L(1_46)
 
 	prefetcht0	B_PR1(BO,BI,8)
 	KERNEL1x1_1(xxx)
@@ -4314,12 +4314,12 @@
 	KERNEL1x1_3(xxx)
 	KERNEL1x1_4(xxx)
 
-	je	.L1_46
+	je	L(1_46)
 
-	jmp	.L1_42
+	jmp	L(1_42)
 	ALIGN_4
 
-.L1_46:
+L(1_46):
 #ifndef TRMMKERNEL
         movq    K, %rax
 #else
@@ -4327,7 +4327,7 @@
 #endif
 
 	andq	$7, %rax		# if (k & 1)
-	je .L1_49
+	je L(1_49)
 
 	movq    %rax, BI                        //  Index for BO
 
@@ -4337,16 +4337,16 @@
 	negq	%rax
 	ALIGN_4
 
-.L1_47:
+L(1_47):
 
 	KERNEL1x1_SUB(xxx)
 	addq	$1, BI
 	addq	$1, %rax
-	jl	.L1_47
+	jl	L(1_47)
 	ALIGN_4
 
 
-.L1_49:
+L(1_49):
 
 	vmovddup	ALPHA, %xmm0
 
@@ -4379,7 +4379,7 @@
 	ALIGN_4
 	
 
-.L999:
+L(999):
 	movq   		SP, %rsp
 	movq	   (%rsp), %rbx
 	movq	  8(%rsp), %rbp

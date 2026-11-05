@@ -64,9 +64,9 @@
 	fldz
 
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 	testq	INCX, INCX
-	jle	.L999
+	jle	L(999)
 
 	ffreep	%st
 
@@ -76,17 +76,17 @@
 #endif
 	addq	INCX, X
 	decq	M
-	jle	.L999
+	jle	L(999)
 
 	cmpq	$SIZE, INCX
-	jne	.L40
+	jne	L(40)
 
 	movq	M, I
 	sarq	$3,   I
-	jle	.L20
+	jle	L(20)
 	ALIGN_4
 
-.L10:
+L(10):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -166,17 +166,17 @@
 	addq	$8 * SIZE, X
 
 	decq	I
-	jg	.L10
+	jg	L(10)
 	ALIGN_4
 
-.L20:
+L(20):
 	movq	M,  I
 	andq	$7, I
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
 
-.L21:
+L(21):
 	FLD	0 * SIZE(X)
 #ifdef USE_ABS
 	fabs
@@ -188,17 +188,17 @@
 
 	addq	$1 * SIZE, X
 	decq	I
-	jg	.L21
-	jmp	.L999
+	jg	L(21)
+	jmp	L(999)
 	ALIGN_4
 
-.L40:
+L(40):
 	movq	M, I
 	sarq	$3,   I
-	jle	.L60
+	jle	L(60)
 	ALIGN_4
 
-.L50:
+L(50):
 	FLD	0 * SIZE(X)
 	addq	INCX, X
 #ifdef USE_ABS
@@ -280,17 +280,17 @@
 	ffreep	%st
 
 	decq	I
-	jg	.L50
+	jg	L(50)
 	ALIGN_4
 
-.L60:
+L(60):
 	movq	M,  I
 	andq	$7, I
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
 
-.L61:
+L(61):
 	FLD	0 * SIZE(X)
 #ifdef USE_ABS
 	fabs
@@ -302,10 +302,10 @@
 
 	addq	INCX, X
 	decq	I
-	jg	.L61
+	jg	L(61)
 	ALIGN_4
 
-.L999:
+L(999):
 	ret
 
 	EPILOGUE

@@ -82,16 +82,16 @@
 	salq	$BASE_SHIFT, INCY
 
 	cmpq	$SIZE, INCX
-	jne	.L14
+	jne	L(14)
 	cmpq	$SIZE, INCY
-	jne	.L14
+	jne	L(14)
 
 	movq	N,  %rax
 	sarq	$3, %rax
-	jle	.L15
+	jle	L(15)
 	ALIGN_3
 
-.L16:
+L(16):
 #ifdef XDOUBLE
 	movq	  0(X), %mm0
 	movq	  8(X), %mm1
@@ -250,16 +250,16 @@
 	addq	$8 * SIZE, X
 	addq	$8 * SIZE, Y
 	decq	%rax
-	jg	.L16
+	jg	L(16)
 	ALIGN_3
 
-.L15:
+L(15):
 	movq	N, %rax
 	andq	$7,   %rax
-	jle	.L27
+	jle	L(27)
 	ALIGN_3
 
-.L22:
+L(22):
 
 #ifdef XDOUBLE
 	movq	  0(X), %mm0
@@ -281,21 +281,21 @@
 	addq	$SIZE, X
 	addq	$SIZE, Y
 	decq	%rax
-	jg	.L22
-	jmp	.L27
+	jg	L(22)
+	jmp	L(27)
 	ALIGN_3
 
 /* INCX != 1 or INCY != 1 */
 
-.L14:
+L(14):
 	movq	N, %rax
 	movq	X, XX
 	movq	Y, YY
 	sarq	$2,   %rax
-	jle	.L28
+	jle	L(28)
 	ALIGN_2
 
-.L29:
+L(29):
 #ifdef XDOUBLE
 	movq	  0(X), %mm0
 	movq	  8(X), %mm1
@@ -391,16 +391,16 @@
 #endif
 
 	decq	%rax
-	jg	.L29
+	jg	L(29)
 	ALIGN_3
 
-.L28:
+L(28):
 	movq	N, %rax
 	andq	$3,   %rax
-	jle	.L27
+	jle	L(27)
 	ALIGN_3
 
-.L35:
+L(35):
 #ifdef XDOUBLE
 	movq	  0(X), %mm0
 	movq	  8(X), %mm1
@@ -422,10 +422,10 @@
 	addq	INCY, Y
 
 	decq	%rax
-	jg	.L35
+	jg	L(35)
 	ALIGN_3
 
-.L27:
+L(27):
 	EMMS
 	xorq	%rax,%rax
 

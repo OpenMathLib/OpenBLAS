@@ -715,9 +715,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	counterJ, origN
 	asr	counterJ, counterJ, #3
-	cbz	counterJ, .Ldtrmm6x8_L4_BEGIN
+	cbz	counterJ, L(dtrmm6x8_L4_BEGIN)
 
-.Ldtrmm6x8_L8_BEGIN:
+L(dtrmm6x8_L8_BEGIN):
 	mov	pCRow0, pC
 	add	pC, pC, LDC, lsl #3
 #if defined(LEFT)
@@ -727,9 +727,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	temp, #6
 	udiv	counterI, origM, temp
-	cbz	counterI, .Ldtrmm6x8_L8_Mrem
+	cbz	counterI, L(dtrmm6x8_L8_Mrem)
 
-.Ldtrmm6x8_L8_M6:
+L(dtrmm6x8_L8_M6):
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -751,12 +751,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT6x8
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L8_M6s
-.Ldtrmm6x8_L8_M6l:
+	cbz	counterL, L(dtrmm6x8_L8_M6s)
+L(dtrmm6x8_L8_M6l):
 	KERNEL6x8_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L8_M6l
-.Ldtrmm6x8_L8_M6s:
+	bgt	L(dtrmm6x8_L8_M6l)
+L(dtrmm6x8_L8_M6s):
 	SAVE6x8
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -777,14 +777,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#endif
 
 	subs	counterI, counterI, #1
-	bgt	.Ldtrmm6x8_L8_M6
+	bgt	L(dtrmm6x8_L8_M6)
 
-.Ldtrmm6x8_L8_Mrem:
+L(dtrmm6x8_L8_Mrem):
 	mov	temp, #6
 	udiv	counterI, origM, temp
 	msub	counterI, counterI, temp, origM
 	cmp	counterI, #4
-	blt	.Ldtrmm6x8_L8_M2c
+	blt	L(dtrmm6x8_L8_M2c)
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -806,12 +806,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT4x8
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L8_M4s
-.Ldtrmm6x8_L8_M4l:
+	cbz	counterL, L(dtrmm6x8_L8_M4s)
+L(dtrmm6x8_L8_M4l):
 	KERNEL4x8_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L8_M4l
-.Ldtrmm6x8_L8_M4s:
+	bgt	L(dtrmm6x8_L8_M4l)
+L(dtrmm6x8_L8_M4s):
 	SAVE4x8
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -832,9 +832,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#endif
 
 	sub	counterI, counterI, #4
-.Ldtrmm6x8_L8_M2c:
+L(dtrmm6x8_L8_M2c):
 	cmp	counterI, #2
-	blt	.Ldtrmm6x8_L8_M1c
+	blt	L(dtrmm6x8_L8_M1c)
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -856,12 +856,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT2x8
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L8_M2s
-.Ldtrmm6x8_L8_M2l:
+	cbz	counterL, L(dtrmm6x8_L8_M2s)
+L(dtrmm6x8_L8_M2l):
 	KERNEL2x8_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L8_M2l
-.Ldtrmm6x8_L8_M2s:
+	bgt	L(dtrmm6x8_L8_M2l)
+L(dtrmm6x8_L8_M2s):
 	SAVE2x8
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -882,8 +882,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#endif
 
 	sub	counterI, counterI, #2
-.Ldtrmm6x8_L8_M1c:
-	cbz	counterI, .Ldtrmm6x8_L8_END
+L(dtrmm6x8_L8_M1c):
+	cbz	counterI, L(dtrmm6x8_L8_END)
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -905,12 +905,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT1x8
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L8_M1s
-.Ldtrmm6x8_L8_M1l:
+	cbz	counterL, L(dtrmm6x8_L8_M1s)
+L(dtrmm6x8_L8_M1l):
 	KERNEL1x8_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L8_M1l
-.Ldtrmm6x8_L8_M1s:
+	bgt	L(dtrmm6x8_L8_M1l)
+L(dtrmm6x8_L8_M1s):
 	SAVE1x8
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -930,20 +930,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, #1
 	#endif
 
-.Ldtrmm6x8_L8_END:
+L(dtrmm6x8_L8_END):
 	lsl	temp, origK, #6
 	add	origPB, origPB, temp
 #if !defined(LEFT)
 	add	tempOffset, tempOffset, #8
 #endif
 	subs	counterJ, counterJ, #1
-	bgt	.Ldtrmm6x8_L8_BEGIN
+	bgt	L(dtrmm6x8_L8_BEGIN)
 
-.Ldtrmm6x8_L4_BEGIN:
+L(dtrmm6x8_L4_BEGIN):
 	tst	origN, #7
-	beq	.Ldtrmm6x8_L999
+	beq	L(dtrmm6x8_L999)
 	tst	origN, #4
-	beq	.Ldtrmm6x8_L2_BEGIN
+	beq	L(dtrmm6x8_L2_BEGIN)
 
 	mov	pCRow0, pC
 	add	pC, pC, LDC, lsl #2
@@ -954,8 +954,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	temp, #6
 	udiv	counterI, origM, temp
-	cbz	counterI, .Ldtrmm6x8_L4_Mrem
-.Ldtrmm6x8_L4_M6:
+	cbz	counterI, L(dtrmm6x8_L4_Mrem)
+L(dtrmm6x8_L4_M6):
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -977,12 +977,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT6x4
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L4_M6s
-.Ldtrmm6x8_L4_M6l:
+	cbz	counterL, L(dtrmm6x8_L4_M6s)
+L(dtrmm6x8_L4_M6l):
 	KERNEL6x4_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L4_M6l
-.Ldtrmm6x8_L4_M6s:
+	bgt	L(dtrmm6x8_L4_M6l)
+L(dtrmm6x8_L4_M6s):
 	SAVE6x4
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -1003,13 +1003,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#endif
 
 	subs	counterI, counterI, #1
-	bgt	.Ldtrmm6x8_L4_M6
-.Ldtrmm6x8_L4_Mrem:
+	bgt	L(dtrmm6x8_L4_M6)
+L(dtrmm6x8_L4_Mrem):
 	mov	temp, #6
 	udiv	counterI, origM, temp
 	msub	counterI, counterI, temp, origM
 	cmp	counterI, #4
-	blt	.Ldtrmm6x8_L4_M2c
+	blt	L(dtrmm6x8_L4_M2c)
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -1031,12 +1031,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT4x4
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L4_M4s
-.Ldtrmm6x8_L4_M4l:
+	cbz	counterL, L(dtrmm6x8_L4_M4s)
+L(dtrmm6x8_L4_M4l):
 	KERNEL4x4_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L4_M4l
-.Ldtrmm6x8_L4_M4s:
+	bgt	L(dtrmm6x8_L4_M4l)
+L(dtrmm6x8_L4_M4s):
 	SAVE4x4
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -1057,9 +1057,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#endif
 
 	sub	counterI, counterI, #4
-.Ldtrmm6x8_L4_M2c:
+L(dtrmm6x8_L4_M2c):
 	cmp	counterI, #2
-	blt	.Ldtrmm6x8_L4_M1c
+	blt	L(dtrmm6x8_L4_M1c)
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -1081,12 +1081,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT2x4
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L4_M2s
-.Ldtrmm6x8_L4_M2l:
+	cbz	counterL, L(dtrmm6x8_L4_M2s)
+L(dtrmm6x8_L4_M2l):
 	KERNEL2x4_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L4_M2l
-.Ldtrmm6x8_L4_M2s:
+	bgt	L(dtrmm6x8_L4_M2l)
+L(dtrmm6x8_L4_M2s):
 	SAVE2x4
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -1107,8 +1107,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#endif
 
 	sub	counterI, counterI, #2
-.Ldtrmm6x8_L4_M1c:
-	cbz	counterI, .Ldtrmm6x8_L4_END
+L(dtrmm6x8_L4_M1c):
+	cbz	counterI, L(dtrmm6x8_L4_END)
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -1130,12 +1130,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT1x4
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L4_M1s
-.Ldtrmm6x8_L4_M1l:
+	cbz	counterL, L(dtrmm6x8_L4_M1s)
+L(dtrmm6x8_L4_M1l):
 	KERNEL1x4_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L4_M1l
-.Ldtrmm6x8_L4_M1s:
+	bgt	L(dtrmm6x8_L4_M1l)
+L(dtrmm6x8_L4_M1s):
 	SAVE1x4
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -1155,15 +1155,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, #1
 	#endif
 
-.Ldtrmm6x8_L4_END:
+L(dtrmm6x8_L4_END):
 	add	origPB, origPB, origK, lsl #5
 #if !defined(LEFT)
 	add	tempOffset, tempOffset, #4
 #endif
 
-.Ldtrmm6x8_L2_BEGIN:
+L(dtrmm6x8_L2_BEGIN):
 	tst	origN, #2
-	beq	.Ldtrmm6x8_L1_BEGIN
+	beq	L(dtrmm6x8_L1_BEGIN)
 	mov	pCRow0, pC
 	add	pC, pC, LDC, lsl #1
 #if defined(LEFT)
@@ -1172,8 +1172,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mov	pA, origPA
 	mov	temp, #6
 	udiv	counterI, origM, temp
-	cbz	counterI, .Ldtrmm6x8_L2_Mrem
-.Ldtrmm6x8_L2_M6:
+	cbz	counterI, L(dtrmm6x8_L2_Mrem)
+L(dtrmm6x8_L2_M6):
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -1195,12 +1195,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT6x2
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L2_M6s
-.Ldtrmm6x8_L2_M6l:
+	cbz	counterL, L(dtrmm6x8_L2_M6s)
+L(dtrmm6x8_L2_M6l):
 	KERNEL6x2_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L2_M6l
-.Ldtrmm6x8_L2_M6s:
+	bgt	L(dtrmm6x8_L2_M6l)
+L(dtrmm6x8_L2_M6s):
 	SAVE6x2
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -1221,13 +1221,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#endif
 
 	subs	counterI, counterI, #1
-	bgt	.Ldtrmm6x8_L2_M6
-.Ldtrmm6x8_L2_Mrem:
+	bgt	L(dtrmm6x8_L2_M6)
+L(dtrmm6x8_L2_Mrem):
 	mov	temp, #6
 	udiv	counterI, origM, temp
 	msub	counterI, counterI, temp, origM
 	cmp	counterI, #4
-	blt	.Ldtrmm6x8_L2_M2c
+	blt	L(dtrmm6x8_L2_M2c)
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -1249,12 +1249,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT4x2
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L2_M4s
-.Ldtrmm6x8_L2_M4l:
+	cbz	counterL, L(dtrmm6x8_L2_M4s)
+L(dtrmm6x8_L2_M4l):
 	KERNEL4x2_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L2_M4l
-.Ldtrmm6x8_L2_M4s:
+	bgt	L(dtrmm6x8_L2_M4l)
+L(dtrmm6x8_L2_M4s):
 	SAVE4x2
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -1275,9 +1275,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#endif
 
 	sub	counterI, counterI, #4
-.Ldtrmm6x8_L2_M2c:
+L(dtrmm6x8_L2_M2c):
 	cmp	counterI, #2
-	blt	.Ldtrmm6x8_L2_M1c
+	blt	L(dtrmm6x8_L2_M1c)
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -1299,12 +1299,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT2x2
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L2_M2s
-.Ldtrmm6x8_L2_M2l:
+	cbz	counterL, L(dtrmm6x8_L2_M2s)
+L(dtrmm6x8_L2_M2l):
 	KERNEL2x2_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L2_M2l
-.Ldtrmm6x8_L2_M2s:
+	bgt	L(dtrmm6x8_L2_M2l)
+L(dtrmm6x8_L2_M2s):
 	SAVE2x2
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -1325,8 +1325,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#endif
 
 	sub	counterI, counterI, #2
-.Ldtrmm6x8_L2_M1c:
-	cbz	counterI, .Ldtrmm6x8_L2_END
+L(dtrmm6x8_L2_M1c):
+	cbz	counterI, L(dtrmm6x8_L2_END)
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -1348,12 +1348,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT1x2
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L2_M1s
-.Ldtrmm6x8_L2_M1l:
+	cbz	counterL, L(dtrmm6x8_L2_M1s)
+L(dtrmm6x8_L2_M1l):
 	KERNEL1x2_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L2_M1l
-.Ldtrmm6x8_L2_M1s:
+	bgt	L(dtrmm6x8_L2_M1l)
+L(dtrmm6x8_L2_M1s):
 	SAVE1x2
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -1373,15 +1373,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, #1
 	#endif
 
-.Ldtrmm6x8_L2_END:
+L(dtrmm6x8_L2_END):
 	add	origPB, origPB, origK, lsl #4
 #if !defined(LEFT)
 	add	tempOffset, tempOffset, #2
 #endif
 
-.Ldtrmm6x8_L1_BEGIN:
+L(dtrmm6x8_L1_BEGIN):
 	tst	origN, #1
-	beq	.Ldtrmm6x8_L999
+	beq	L(dtrmm6x8_L999)
 	mov	pCRow0, pC
 #if defined(LEFT)
 	mov	tempOffset, offset
@@ -1389,8 +1389,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mov	pA, origPA
 	mov	temp, #6
 	udiv	counterI, origM, temp
-	cbz	counterI, .Ldtrmm6x8_L1_Mrem
-.Ldtrmm6x8_L1_M6:
+	cbz	counterI, L(dtrmm6x8_L1_Mrem)
+L(dtrmm6x8_L1_M6):
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -1412,12 +1412,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT6x1
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L1_M6s
-.Ldtrmm6x8_L1_M6l:
+	cbz	counterL, L(dtrmm6x8_L1_M6s)
+L(dtrmm6x8_L1_M6l):
 	KERNEL6x1_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L1_M6l
-.Ldtrmm6x8_L1_M6s:
+	bgt	L(dtrmm6x8_L1_M6l)
+L(dtrmm6x8_L1_M6s):
 	SAVE6x1
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -1438,13 +1438,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#endif
 
 	subs	counterI, counterI, #1
-	bgt	.Ldtrmm6x8_L1_M6
-.Ldtrmm6x8_L1_Mrem:
+	bgt	L(dtrmm6x8_L1_M6)
+L(dtrmm6x8_L1_Mrem):
 	mov	temp, #6
 	udiv	counterI, origM, temp
 	msub	counterI, counterI, temp, origM
 	cmp	counterI, #4
-	blt	.Ldtrmm6x8_L1_M2c
+	blt	L(dtrmm6x8_L1_M2c)
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -1466,12 +1466,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT4x1
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L1_M4s
-.Ldtrmm6x8_L1_M4l:
+	cbz	counterL, L(dtrmm6x8_L1_M4s)
+L(dtrmm6x8_L1_M4l):
 	KERNEL4x1_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L1_M4l
-.Ldtrmm6x8_L1_M4s:
+	bgt	L(dtrmm6x8_L1_M4l)
+L(dtrmm6x8_L1_M4s):
 	SAVE4x1
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -1492,9 +1492,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#endif
 
 	sub	counterI, counterI, #4
-.Ldtrmm6x8_L1_M2c:
+L(dtrmm6x8_L1_M2c):
 	cmp	counterI, #2
-	blt	.Ldtrmm6x8_L1_M1c
+	blt	L(dtrmm6x8_L1_M1c)
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -1516,12 +1516,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT2x1
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L1_M2s
-.Ldtrmm6x8_L1_M2l:
+	cbz	counterL, L(dtrmm6x8_L1_M2s)
+L(dtrmm6x8_L1_M2l):
 	KERNEL2x1_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L1_M2l
-.Ldtrmm6x8_L1_M2s:
+	bgt	L(dtrmm6x8_L1_M2l)
+L(dtrmm6x8_L1_M2s):
 	SAVE2x1
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -1542,8 +1542,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	#endif
 
 	sub	counterI, counterI, #2
-.Ldtrmm6x8_L1_M1c:
-	cbz	counterI, .Ldtrmm6x8_L999
+L(dtrmm6x8_L1_M1c):
+	cbz	counterI, L(dtrmm6x8_L999)
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
 	#else
@@ -1565,12 +1565,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	INIT1x1
 	mov	counterL, tempK
-	cbz	counterL, .Ldtrmm6x8_L1_M1s
-.Ldtrmm6x8_L1_M1l:
+	cbz	counterL, L(dtrmm6x8_L1_M1s)
+L(dtrmm6x8_L1_M1l):
 	KERNEL1x1_SUB
 	subs	counterL, counterL, #1
-	bgt	.Ldtrmm6x8_L1_M1l
-.Ldtrmm6x8_L1_M1s:
+	bgt	L(dtrmm6x8_L1_M1l)
+L(dtrmm6x8_L1_M1s):
 	SAVE1x1
 	#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	sub	tempK, origK, tempOffset
@@ -1590,7 +1590,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempOffset, tempOffset, #1
 	#endif
 
-.Ldtrmm6x8_L999:
+L(dtrmm6x8_L999):
 	mov	x0, #0
 	ldp	d8, d9, [sp, #(0 * 16)]
 	ldp	d10, d11, [sp, #(1 * 16)]

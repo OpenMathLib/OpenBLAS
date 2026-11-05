@@ -3,6 +3,9 @@
  SPDX-License-Identifier: BSD-3-Clause-Clear
 */
 
+#define ASSEMBLER
+#include "common.h"
+
 /*----------------------------------------------------------------------------
  * This function is used to re-arrange the elements of input matrix to
  * make it suitable for matrix outer product computation using SME for matrix
@@ -60,18 +63,18 @@
     //Predicate for stores
     ptrue   p9.s
 
-.M_Loop:
+L(M_Loop):
     mov     mat_ptr0, mat                       //Load base address of mat
     mov     mat_mod_ptr, mat_mod                //a_mod store base address
     add     inner_loop_exit,  mat, ncol, lsl #2 //Exit condition for inner loop
     whilelt p8.b, mat_ptr0, inner_loop_exit     //Tile predicate (K dimension)
 
-.Loop_process:
+L(Loop_process):
     mov     mat_ptr1, mat_ptr0
     //Load_to_tile loop counter
     mov     w12, #0
 
-.Load_to_tile:
+L(Load_to_tile):
     psel    p2, p8, p0.s[w12, 0]
     psel    p3, p8, p0.s[w12, 1]
     psel    p4, p8, p0.s[w12, 2]
@@ -89,11 +92,11 @@
     //Increment counter
     add     w12, w12, #4
     cmp     w12, w9
-    b.mi    .Load_to_tile
+    b.mi    L(Load_to_tile)
     // Store_from_tile loop counter
     mov     w12, #0
 
-.Store_from_tile:
+L(Store_from_tile):
     psel    p2, p9, p8.s[w12, 0]
     psel    p3, p9, p8.s[w12, 1]
     psel    p4, p9, p8.s[w12, 2]
@@ -110,18 +113,18 @@
     addvl   mat_mod_ptr, mat_mod_ptr, #4    //mat_mod_ptr += 4*SVLb
     add     w12, w12, #4                    //Increment counter
     cmp     w12, w9
-    b.mi    .Store_from_tile
+    b.mi    L(Store_from_tile)
 
     addvl   mat_ptr0, mat_ptr0, #1          //mat_ptr0 += SVLb
     whilelt p8.b, mat_ptr0, inner_loop_exit
-    b.mi .Loop_process
+    b.mi L(Loop_process)
 
     add     mat_mod, mat_mod, C3, lsl #2    //mat_mod+=SVLs*nbc FP32 elements
     add     mat, mat, C3, lsl #2            //mat+=SVLs*nbc FP32 elements
     incw    outer_loop_cntr
 
     whilelt p0.s, outer_loop_cntr, nrow
-    b.mi .M_Loop
+    b.mi L(M_Loop)
 
     smstop
 
@@ -131,3 +134,4 @@
 
     ret
 
+    EPILOGUE

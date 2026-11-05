@@ -79,20 +79,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ldr	d4, [X]
 #endif
 	fcmp	d4, REGZERO
-	beq	KERNEL_S1_NEXT
+	beq	L(KERNEL_S1_NEXT)
 	fabs	d4, d4
 	fcmp	SCALE, d4
-	bge	KERNEL_S1_SCALE_GE_X
+	bge	L(KERNEL_S1_SCALE_GE_X)
 	fdiv	d2, SCALE, d4
 	fmul	d2, d2, d2
 	fmul	d3, SSQ, d2
 	fadd	SSQ, REGONE, d3
 	fmov	SCALE, d4
-	b	KERNEL_S1_NEXT
-KERNEL_S1_SCALE_GE_X:
+	b	L(KERNEL_S1_NEXT)
+L(KERNEL_S1_SCALE_GE_X):
 	fdiv	d2, d4, SCALE
 	fmla	SSQ, d2, v2.d[0]
-KERNEL_S1_NEXT:
+L(KERNEL_S1_NEXT):
 	add	X, X, INC_X
 .endm
 
@@ -133,44 +133,44 @@ KERNEL_S1_NEXT:
 	INIT
 
 	cmp	N, #0
-	ble	.Lnrm2_kernel_L999
+	ble	L(nrm2_kernel_L999)
 
 	cmp	INC_X, #0
-	beq	.Lnrm2_kernel_L999
+	beq	L(nrm2_kernel_L999)
 
 
 	cmp	INC_X, #1
-	bne	.Lnrm2_kernel_S_BEGIN
+	bne	L(nrm2_kernel_S_BEGIN)
 
-.Lnrm2_kernel_F_BEGIN:
+L(nrm2_kernel_F_BEGIN):
 
 	asr	I, N, #3				// I = N / 8
 	cmp	I, xzr
-	ble	.Lnrm2_kernel_F1
+	ble	L(nrm2_kernel_F1)
 
-.Lnrm2_kernel_F8:
+L(nrm2_kernel_F8):
 
 	KERNEL_F8
 
 	subs	I, I, #1
-	bne	.Lnrm2_kernel_F8
+	bne	L(nrm2_kernel_F8)
 
-.Lnrm2_kernel_F1:
+L(nrm2_kernel_F1):
 
 	ands	I, N, #7
-	ble	.Lnrm2_kernel_L999
+	ble	L(nrm2_kernel_L999)
 
 
-.Lnrm2_kernel_F10:
+L(nrm2_kernel_F10):
 
 	KERNEL_F1
 
 	subs	I, I, #1
-	bne	.Lnrm2_kernel_F10
+	bne	L(nrm2_kernel_F10)
 
-	b	.Lnrm2_kernel_L999
+	b	L(nrm2_kernel_L999)
 
-.Lnrm2_kernel_S_BEGIN:
+L(nrm2_kernel_S_BEGIN):
 
 	INIT_S
 
@@ -178,15 +178,15 @@ KERNEL_S1_NEXT:
 
 	.align 5
 
-.Lnrm2_kernel_S10:
+L(nrm2_kernel_S10):
 
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Lnrm2_kernel_S10
+	bne	L(nrm2_kernel_S10)
 
 
-.Lnrm2_kernel_L999:
+L(nrm2_kernel_L999):
 	fsqrt	SSQ, SSQ
 	fmul	SSQ, SCALE, SSQ
 #if !defined(DOUBLE)

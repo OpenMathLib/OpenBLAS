@@ -141,15 +141,15 @@
 #endif
 
 	cmpq	$0, M
-	jle	.L999
+	jle	L(999)
 
 	movq	N,   %rax
 	movq	%rax, J
 	testq	%rax, %rax
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L01:
+L(01):
 #if defined(LT) || defined(RN)
 	movq	A, AO
 #else
@@ -183,7 +183,7 @@
 	movq	M,  I
 	ALIGN_4
 
-.L11:
+L(11):
 #ifdef LN
        movq	K, %rax
        salq	$ZBASE_SHIFT, %rax
@@ -218,10 +218,10 @@
 	subq	KK, %rax
 #endif
 	sarq	$2, %rax
- 	je	.L15
+ 	je	L(15)
 	ALIGN_4
 
-.L12:
+L(12):
 	PREFETCH	(PREFETCHSIZE + 0) * SIZE(AO)
 
 	FLD	 -8 * SIZE(AO)
@@ -302,10 +302,10 @@
 	addq	$8 * SIZE,BO
 
 	decq	%rax
-	jne	.L12
+	jne	L(12)
 	ALIGN_4
 
-.L15:
+L(15):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -313,10 +313,10 @@
 	subq	KK, %rax
 #endif
 	and	$3,  %rax
-	je	.L18
+	je	L(18)
 	ALIGN_4
 
-.L16:
+L(16):
 	FLD	 -8 * SIZE(AO)
 
 	FLD	 -8 * SIZE(BO)
@@ -339,10 +339,10 @@
 	addq	$2 * SIZE,BO
 
 	decq	%rax
-	jne	 .L16
+	jne	 L(16)
 	ALIGN_4
 
-.L18:
+L(18):
 	faddp	%st, %st(3)
 	faddp	%st, %st(1)
 
@@ -453,7 +453,7 @@
 #endif
 
 	decq	I
-	jne	.L11
+	jne	L(11)
 
 #ifdef LN
        movq	K, %rax
@@ -474,10 +474,10 @@
 #endif
 
 	decq	J
-	jne	.L01
+	jne	L(01)
 	ALIGN_4
 
-.L999:
+L(999):
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12

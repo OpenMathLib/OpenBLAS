@@ -667,10 +667,10 @@
 
 	movq	N,  J
 	sarq	$1, J		# j = (n >> 1)
-	jle	.L80
+	jle	L(80)
 	ALIGN_4
 
-.L01:
+L(01):
 
 	movq	A, AO
 
@@ -683,10 +683,10 @@
 
 	movq	M,  I
 	sarq	$3, I	# i = (m >> 3)
-	jle	.L50_A
+	jle	L(50_A)
 	ALIGN_4
 /*********************************************************************************/
-.L51:
+L(51):
 
 	movq	B, BO
 
@@ -707,10 +707,10 @@
 	leaq	(BO, %rax, 2), BO
 	negq	%rax
 
-	je	.L56
+	je	L(56)
 	ALIGN_4
 
-.L52:
+L(52):
 	prefetcht0      A_PR1(AO,%rax,8)
 	prefetcht0      B_PR1(BO,%rax,2)
 	KERNEL8x2_SUB
@@ -721,13 +721,13 @@
 	prefetcht0      A_PR1(AO,%rax,8)
 	KERNEL8x2_SUB
 
-	jl	.L52
+	jl	L(52)
 	ALIGN_4
 
-.L56:
+L(56):
 	movq	KK, %rax
 	andq	$3, %rax		# if (k & 1)
-	je .L59
+	je L(59)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 8), AO
@@ -735,13 +735,13 @@
 	negq	%rax
 	ALIGN_4
 
-.L57:
+L(57):
 	KERNEL8x2_SUB
 
-	jl	.L57
+	jl	L(57)
 	ALIGN_4
 
-.L59:
+L(59):
 
 	SOLVE_8x2
 
@@ -757,16 +757,16 @@
 	addq	$8, KK
 
 	decq	I			# i --
-	jg	.L51
+	jg	L(51)
 	ALIGN_4
 
 /*********************************************************************************/
 
-.L50_A:
+L(50_A):
 	testq	$4, M
-	je	.L60
+	je	L(60)
 
-.L51_A:
+L(51_A):
 
 	movq	B, BO
 
@@ -782,23 +782,23 @@
 	leaq	(BO, %rax, 2), BO
 	negq	%rax
 
-	je	.L56_A
+	je	L(56_A)
 	ALIGN_4
 
-.L52_A:
+L(52_A):
 
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 	KERNEL4x2_SUB
 
-	jl	.L52_A
+	jl	L(52_A)
 	ALIGN_4
 
-.L56_A:
+L(56_A):
 	movq	KK, %rax
 	andq	$3, %rax		# if (k & 1)
-	je .L59_A
+	je L(59_A)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 4), AO
@@ -806,14 +806,14 @@
 	negq	%rax
 	ALIGN_4
 
-.L57_A:
+L(57_A):
 
 	KERNEL4x2_SUB
 
-	jl	.L57_A
+	jl	L(57_A)
 	ALIGN_4
 
-.L59_A:
+L(59_A):
 
 	SOLVE_4x2
 
@@ -833,11 +833,11 @@
 /*********************************************************************************/
 
 
-.L60:
+L(60):
 	testq	$2, M
-	je	.L70
+	je	L(70)
 
-.L61:
+L(61):
 	movq	B, BO
 
 	vxorpd	%xmm8, %xmm8 , %xmm8
@@ -850,23 +850,23 @@
 	leaq	(BO, %rax, 2), BO
 	negq	%rax
 
-	je	.L66
+	je	L(66)
 	ALIGN_4
 
-.L62:
+L(62):
 
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
 	KERNEL2x2_SUB
 
-	jl	.L62
+	jl	L(62)
 	ALIGN_4
 
-.L66:
+L(66):
 	movq	KK, %rax
 	andq	$3, %rax		# if (k & 1)
-	je .L69
+	je L(69)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 2), AO
@@ -874,14 +874,14 @@
 	negq	%rax
 	ALIGN_4
 
-.L67:
+L(67):
 
 	KERNEL2x2_SUB
 
-	jl	.L67
+	jl	L(67)
 	ALIGN_4
 
-.L69:
+L(69):
 
 	SOLVE_2x2
 
@@ -898,12 +898,12 @@
 
 	ALIGN_4
 /********************************************************************************/
-.L70:
+L(70):
 	testq	$1, M
-	je	.L79
+	je	L(79)
 	ALIGN_4
 
-.L71:
+L(71):
 	movq	B, BO
 
 	vxorpd	%xmm8, %xmm8 , %xmm8
@@ -915,23 +915,23 @@
 	leaq	(BO, %rax, 2), BO
 	negq	%rax
 
-	je	.L76
+	je	L(76)
 	ALIGN_4
 
-.L72:
+L(72):
 
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 	KERNEL1x2_SUB
 
-	jl	.L72
+	jl	L(72)
 	ALIGN_4
 
-.L76:
+L(76):
 	movq	KK, %rax
 	andq	$3, %rax		# if (k & 1)
-	je .L78
+	je L(78)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 1), AO
@@ -939,14 +939,14 @@
 	negq	%rax
 	ALIGN_4
 
-.L77:
+L(77):
 
 	KERNEL1x2_SUB
 
-	jl	.L77
+	jl	L(77)
 	ALIGN_4
 
-.L78:
+L(78):
 
 	SOLVE_1x2
 
@@ -963,17 +963,17 @@
 
 	ALIGN_4
 
-.L79:
+L(79):
 
 	movq	BO, B
 
 	decq	J			# j --
-	jg	.L01
+	jg	L(01)
 	ALIGN_4
 /***************************************************************************************/
-.L80:
+L(80):
 	testq	$1, N
-	je	.L999
+	je	L(999)
 
 	movq	A, AO
 	movq	C, CO1			# coffset1 = c
@@ -983,10 +983,10 @@
 
 	movq	M,  I
 	sarq	$3, I	# i = (m >> 3)
-	jle	.L90_A
+	jle	L(90_A)
 	ALIGN_4
 /*************************************************************************************/
-.L91:
+L(91):
 
 	movq	B, BO
 
@@ -1003,22 +1003,22 @@
 	leaq	(BO, %rax, 1), BO
 	negq	%rax
 
-	je	.L96
+	je	L(96)
 	ALIGN_4
 
-.L92:
+L(92):
 	KERNEL8x1_SUB
 	KERNEL8x1_SUB
 	KERNEL8x1_SUB
 	KERNEL8x1_SUB
 
-	jl	.L92
+	jl	L(92)
 	ALIGN_4
 
-.L96:
+L(96):
 	movq	KK, %rax
 	andq	$3, %rax		# if (k & 1)
-	je .L99
+	je L(99)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 8), AO
@@ -1026,12 +1026,12 @@
 	negq	%rax
 	ALIGN_4
 
-.L97:
+L(97):
 	KERNEL8x1_SUB
 
-	jl	.L97
+	jl	L(97)
 	ALIGN_4
-.L99:
+L(99):
 
 	SOLVE_8x1
 
@@ -1047,15 +1047,15 @@
 
 
 	decq	I			# i --
-	jg	.L91
+	jg	L(91)
 	ALIGN_4
 
 /*****************************************************************************/
-.L90_A:
+L(90_A):
 	testq	$4, M
-	je	.L100
+	je	L(100)
 
-.L91_A:
+L(91_A):
 	movq	B, BO
 
 	vxorpd	%xmm8, %xmm8 , %xmm8
@@ -1068,23 +1068,23 @@
 	leaq	(BO, %rax, 1), BO
 	negq	%rax
 
-	je	.L96_A
+	je	L(96_A)
 	ALIGN_4
 
-.L92_A:
+L(92_A):
 
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
 	KERNEL4x1_SUB
 
-	jl	.L92_A
+	jl	L(92_A)
 	ALIGN_4
 
-.L96_A:
+L(96_A):
 	movq	KK, %rax
 	andq	$3, %rax		# if (k & 1)
-	je .L99_A
+	je L(99_A)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 4), AO
@@ -1092,13 +1092,13 @@
 	negq	%rax
 	ALIGN_4
 
-.L97_A:
+L(97_A):
 
 	KERNEL4x1_SUB
 
-	jl	.L97_A
+	jl	L(97_A)
 	ALIGN_4
-.L99_A:
+L(99_A):
 
 	SOLVE_4x1
 
@@ -1116,9 +1116,9 @@
 	ALIGN_4
 
 /*************************************************************************************/
-.L100:
+L(100):
 	testq	$2, M
-	je	.L110
+	je	L(110)
 
 
 
@@ -1133,23 +1133,23 @@
 	leaq	(BO, %rax, 1), BO
 	negq	%rax
 
-	je	.L106
+	je	L(106)
 	ALIGN_4
 
-.L102:
+L(102):
 
 	KERNEL2x1_SUB
 	KERNEL2x1_SUB
 	KERNEL2x1_SUB
 	KERNEL2x1_SUB
 
-	jl	.L102
+	jl	L(102)
 	ALIGN_4
 
-.L106:
+L(106):
 	movq	KK, %rax
 	andq	$3, %rax		# if (k & 1)
-	je .L109
+	je L(109)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 2), AO
@@ -1157,14 +1157,14 @@
 	negq	%rax
 	ALIGN_4
 
-.L107:
+L(107):
 
 	KERNEL2x1_SUB
 
-	jl	.L107
+	jl	L(107)
 	ALIGN_4
 
-.L109:
+L(109):
 
 	SOLVE_2x1
 
@@ -1180,12 +1180,12 @@
 
 	ALIGN_4
 
-.L110:
+L(110):
 	testq	$1, M
-	je	.L119
+	je	L(119)
 	ALIGN_4
 
-.L111:
+L(111):
 	movq	B, BO
 
 	vxorpd	%xmm8, %xmm8 , %xmm8
@@ -1197,23 +1197,23 @@
 	leaq	(BO, %rax, 1), BO
 	negq	%rax
 
-	je	.L116
+	je	L(116)
 	ALIGN_4
 
-.L112:
+L(112):
 
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
 	KERNEL1x1_SUB
 
-	jl	.L112
+	jl	L(112)
 	ALIGN_4
 
-.L116:
+L(116):
 	movq	KK, %rax
 	andq	$3, %rax		# if (k & 1)
-	je .L118
+	je L(118)
 
 	leaq	(, %rax, SIZE), %rax
 	leaq	(AO, %rax, 1), AO
@@ -1221,14 +1221,14 @@
 	negq	%rax
 	ALIGN_4
 
-.L117:
+L(117):
 
 	KERNEL1x1_SUB
 
-	jl	.L117
+	jl	L(117)
 	ALIGN_4
 
-.L118:
+L(118):
 
 	SOLVE_1x1
 
@@ -1244,7 +1244,7 @@
 
 	ALIGN_4
 
-.L119:
+L(119):
 
 	movq	BO, B
 
@@ -1252,7 +1252,7 @@
 	ALIGN_4
 
 
-.L999:
+L(999):
 	movq	   (%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12

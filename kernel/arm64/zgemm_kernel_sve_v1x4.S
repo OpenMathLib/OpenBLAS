@@ -533,10 +533,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mov	counterJ, origN
 	asr 	counterJ, counterJ, #2		// J = J / 4
 	cmp 	counterJ, #0
-	ble	.Lzgemm_kernel_L2_BEGIN
+	ble	L(zgemm_kernel_L2_BEGIN)
 
 /******************************************************************************/
-.Lzgemm_kernel_L4_BEGIN:
+L(zgemm_kernel_L4_BEGIN):
 	mov	pCRow0, pC
 	add	pCRow1, pCRow0, LDC
 	add	pCRow2, pCRow1, LDC
@@ -546,7 +546,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pA, origPA			// pA = start of A array
 
-.Lzgemm_kernel_L4_Mv1_BEGIN:
+L(zgemm_kernel_L4_Mv1_BEGIN):
 
 /* Loop over M is done in an SVE fashion. This has the benefit of the last M%SVE_LEN iterations being done in a single sweep */
     mov counterI, #0
@@ -554,14 +554,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     cntp lanes, p0, p1.d                        // lanes contain number of active SVE lanes in M dimension
 
 	.align 5
-.Lzgemm_kernel_L4_Mv1_20:
+L(zgemm_kernel_L4_Mv1_20):
 
 	mov	pB, origPB
     INITv1x4                     // fill with zeros
 
 	asr 	counterL , origK, #3
 	cmp	counterL , #2
-	blt	.Lzgemm_kernel_L4_Mv1_32
+	blt	L(zgemm_kernel_L4_Mv1_32)
 
 	KERNELv1x4_I
 	KERNELv1x4_M2
@@ -573,10 +573,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x4_M2
 
 	subs	counterL, counterL, #2		// subtract 2
-	ble	.Lzgemm_kernel_L4_Mv1_22a
+	ble	L(zgemm_kernel_L4_Mv1_22a)
 
 	.align 5
-.Lzgemm_kernel_L4_Mv1_22:
+L(zgemm_kernel_L4_Mv1_22):
 
 	KERNELv1x4_M1
 	KERNELv1x4_M2
@@ -588,10 +588,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x4_M2
 
 	subs	counterL, counterL, #1
-	bgt	.Lzgemm_kernel_L4_Mv1_22
+	bgt	L(zgemm_kernel_L4_Mv1_22)
 
 	.align 5
-.Lzgemm_kernel_L4_Mv1_22a:
+L(zgemm_kernel_L4_Mv1_22a):
 
 	KERNELv1x4_M1
 	KERNELv1x4_M2
@@ -602,13 +602,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x4_M1
 	KERNELv1x4_E
 
-	b	 .Lzgemm_kernel_L4_Mv1_44
+	b	 L(zgemm_kernel_L4_Mv1_44)
 
 	.align 5
-.Lzgemm_kernel_L4_Mv1_32:
+L(zgemm_kernel_L4_Mv1_32):
 
 	tst	counterL, #1
-	ble	.Lzgemm_kernel_L4_Mv1_40
+	ble	L(zgemm_kernel_L4_Mv1_40)
 
 	KERNELv1x4_I
 	KERNELv1x4_M2
@@ -619,56 +619,56 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x4_M1
 	KERNELv1x4_E
 
-	b	.Lzgemm_kernel_L4_Mv1_44
+	b	L(zgemm_kernel_L4_Mv1_44)
 
 
-.Lzgemm_kernel_L4_Mv1_40:
+L(zgemm_kernel_L4_Mv1_40):
 
 	INITv1x4
 
-.Lzgemm_kernel_L4_Mv1_44:
+L(zgemm_kernel_L4_Mv1_44):
 
 	ands	counterL , origK, #7
-	ble	.Lzgemm_kernel_L4_Mv1_100
+	ble	L(zgemm_kernel_L4_Mv1_100)
 
 	.align 5
-.Lzgemm_kernel_L4_Mv1_46:
+L(zgemm_kernel_L4_Mv1_46):
 	KERNELv1x4_SUB
 
 	subs	counterL, counterL, #1
-	bne	.Lzgemm_kernel_L4_Mv1_46
+	bne	L(zgemm_kernel_L4_Mv1_46)
 
-.Lzgemm_kernel_L4_Mv1_100:
+L(zgemm_kernel_L4_Mv1_100):
 	SAVEv1x4
 
-.Lzgemm_kernel_L4_Mv1_END:
+L(zgemm_kernel_L4_Mv1_END):
 
     incd    counterI
     whilelt p1.d, counterI, origM             //SVE instruction
     cntp lanes, p0, p1.d                        // lanes contain number of active SVE lanes in M dimension
-    b.any   .Lzgemm_kernel_L4_Mv1_20   
+    b.any   L(zgemm_kernel_L4_Mv1_20)   
 
 
 
-.Lzgemm_kernel_L4_END:
+L(zgemm_kernel_L4_END):
 
 	lsl	temp, origK, #6
 	add	origPB, origPB, temp		// B = B + K * 4 * 8 * 2
 
 	subs	counterJ, counterJ , #1		// j--
-	bgt	.Lzgemm_kernel_L4_BEGIN
+	bgt	L(zgemm_kernel_L4_BEGIN)
 
 
 /******************************************************************************/
 
-.Lzgemm_kernel_L2_BEGIN:   // less than 2 left in N direction
+L(zgemm_kernel_L2_BEGIN):   // less than 2 left in N direction
 
 	mov	counterJ , origN
 	tst	counterJ , #3
-	ble	.Lzgemm_kernel_L999
+	ble	L(zgemm_kernel_L999)
 
 	tst	counterJ , #2
-	ble	.Lzgemm_kernel_L1_BEGIN
+	ble	L(zgemm_kernel_L1_BEGIN)
 
 	mov	pCRow0, pC			// pCRow0 = pC
 	add	pCRow1, pCRow0, LDC
@@ -679,24 +679,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-.Lzgemm_kernel_L2_Mv1_BEGIN:
+L(zgemm_kernel_L2_Mv1_BEGIN):
 
     mov counterI, #0
     whilelt p1.d, counterI, origM               //SVE instruction
     cntp lanes, p0, p1.d
 
 
-.Lzgemm_kernel_L2_Mv1_20:
+L(zgemm_kernel_L2_Mv1_20):
 
 	INITv1x2
 
 	mov	pB, origPB
 	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL,#0
-	ble	.Lzgemm_kernel_L2_Mv1_40
+	ble	L(zgemm_kernel_L2_Mv1_40)
 	.align 5
 
-.Lzgemm_kernel_L2_Mv1_22:
+L(zgemm_kernel_L2_Mv1_22):
 	KERNELv1x2_SUB
 	KERNELv1x2_SUB
 	KERNELv1x2_SUB
@@ -708,45 +708,45 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lzgemm_kernel_L2_Mv1_22
+	bgt	L(zgemm_kernel_L2_Mv1_22)
 
 
-.Lzgemm_kernel_L2_Mv1_40:
+L(zgemm_kernel_L2_Mv1_40):
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	.Lzgemm_kernel_L2_Mv1_100
+	ble	L(zgemm_kernel_L2_Mv1_100)
 
-.Lzgemm_kernel_L2_Mv1_42:
+L(zgemm_kernel_L2_Mv1_42):
 
 	KERNELv1x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lzgemm_kernel_L2_Mv1_42
+	bgt	L(zgemm_kernel_L2_Mv1_42)
 
-.Lzgemm_kernel_L2_Mv1_100:
+L(zgemm_kernel_L2_Mv1_100):
 
 	SAVEv1x2
 
-.Lzgemm_kernel_L2_Mv1_END:
+L(zgemm_kernel_L2_Mv1_END):
 
 
     incd    counterI
     whilelt p1.d, counterI, origM             //SVE instruction
     cntp lanes, p0, p1.d
-    b.any   .Lzgemm_kernel_L2_Mv1_20   
+    b.any   L(zgemm_kernel_L2_Mv1_20)   
 
 
-.Lzgemm_kernel_L2_END:
+L(zgemm_kernel_L2_END):
 	lsl	temp, origK, #5
 	add	origPB, origPB, temp // B = B + K * 2 * 8 * 2
 
 /******************************************************************************/
 
-.Lzgemm_kernel_L1_BEGIN:
+L(zgemm_kernel_L1_BEGIN):
 
 	mov	counterJ , origN
 	tst	counterJ , #1
-	ble	.Lzgemm_kernel_L999 // done
+	ble	L(zgemm_kernel_L999) // done
 
 
 	mov	pCRow0, pC			// pCRow0 = C
@@ -754,24 +754,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pA, origPA			// pA = A
 
-.Lzgemm_kernel_L1_Mv1_BEGIN:
+L(zgemm_kernel_L1_Mv1_BEGIN):
 
     mov counterI, #0
     whilelt p1.d, counterI, origM               //SVE instruction
     cntp lanes, p0, p1.d
 
 
-.Lzgemm_kernel_L1_Mv1_20:
+L(zgemm_kernel_L1_Mv1_20):
 
 	INITv1x1
 
 	mov	pB, origPB
 	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
-	ble	.Lzgemm_kernel_L1_Mv1_40
+	ble	L(zgemm_kernel_L1_Mv1_40)
 	.align 5
 
-.Lzgemm_kernel_L1_Mv1_22:
+L(zgemm_kernel_L1_Mv1_22):
 	KERNELv1x1_SUB
 	KERNELv1x1_SUB
 	KERNELv1x1_SUB
@@ -783,37 +783,37 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lzgemm_kernel_L1_Mv1_22
+	bgt	L(zgemm_kernel_L1_Mv1_22)
 
 
-.Lzgemm_kernel_L1_Mv1_40:
+L(zgemm_kernel_L1_Mv1_40):
 
 	ands	counterL , origK, #7		// counterL = counterL % 8
-	ble	.Lzgemm_kernel_L1_Mv1_100
+	ble	L(zgemm_kernel_L1_Mv1_100)
 
-.Lzgemm_kernel_L1_Mv1_42:
+L(zgemm_kernel_L1_Mv1_42):
 
 	KERNELv1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Lzgemm_kernel_L1_Mv1_42
+	bgt	L(zgemm_kernel_L1_Mv1_42)
 
-.Lzgemm_kernel_L1_Mv1_100:
+L(zgemm_kernel_L1_Mv1_100):
 
 	SAVEv1x1
 
-.Lzgemm_kernel_L1_Mv1_END:
+L(zgemm_kernel_L1_Mv1_END):
 
     incd    counterI
     whilelt p1.d, counterI, origM             //SVE instruction
     cntp lanes, p0, p1.d
-    b.any   .Lzgemm_kernel_L1_Mv1_20   
+    b.any   L(zgemm_kernel_L1_Mv1_20)   
 
-.Lzgemm_kernel_L1_END:
+L(zgemm_kernel_L1_END):
 
 /******************************************************************************/
 
-.Lzgemm_kernel_L999:
+L(zgemm_kernel_L999):
 	mov	x0, #0				// set return value
 	ldp	d8, d9, [sp, #(0 * 16)]
 	ldp	d10, d11, [sp, #(1 * 16)]
