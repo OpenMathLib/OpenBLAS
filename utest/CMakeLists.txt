@@ -22,6 +22,7 @@ else ()
     test_trmv.c
     test_gemm.c
     test_matrix_packing.c
+    test_syrk_thread.c
   )
 endif ()
 
