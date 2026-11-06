@@ -203,6 +203,22 @@ jobs:
       brew update
       make CC=gcc-15 FC=gfortran-15
 
+- job: OSX_MacPorts_GCC
+  timeoutInMinutes: 100
+  pool:
+     vmImage: 'macOS-latest'
+  variables:
+     RANLIB: touch
+  steps:
+  - script: |
+      wget https://github.com/macports/macports-base/releases/download/v2.12.6/MacPorts-2.12.6-15-Sequoia.pkg
+      sudo installer -pkg MacPorts-2.12.6-15-Sequoia.pkg -target /
+      export PATH=/opt/local/bin:$PATH
+      hash -r
+      sudo port selfupdate
+      sudo port install llvm-22 clang-22 flang-22 gcc16
+      make TARGET=CORE2 CC=gcc-mp-16 FC=gfortran-mp-16 NO_SHARED=1
+      
 - job: OSX_LLVM_flangnew
   timeoutInMinutes: 100
   pool:
