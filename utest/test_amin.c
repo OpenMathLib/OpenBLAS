@@ -87,3 +87,80 @@ CTEST(amin, dzamin){
   ASSERT_DBL_NEAR_TOL((double)(tr_min), (double)(te_min), DOUBLE_EPS);
 }
 #endif
+
+#include <float.h>
+
+#ifndef NO_CBLAS
+#include <cblas.h>
+#endif
+
+#ifdef BUILD_DOUBLE
+CTEST(amin, damin_full_double_range) {
+    blasint n = 65, inc = 3;
+    double x[193];
+    int i;
+    for (i = 0; i < 193; ++i) x[i] = 0.0;
+    for (i = 0; i < 65; ++i) x[3*i] = -DBL_MAX;
+    x[192] = -ldexp(1.0, 900);
+    ASSERT_TRUE(BLASFUNC(damin)(&n, x, &inc) == ldexp(1.0, 900));
+#ifndef NO_CBLAS
+    ASSERT_TRUE(cblas_damin(n, x, inc) == ldexp(1.0, 900));
+#endif
+}
+#endif
+
+#ifdef BUILD_COMPLEX16
+CTEST(amin, dzamin_full_double_range) {
+    blasint n = 33, inc = 2;
+    double x[130];
+    int i;
+    for (i = 0; i < 130; ++i) x[i] = 0.0;
+    for (i = 0; i < 33; ++i) { x[4*i] = -ldexp(1.0, 902); x[4*i+1] = ldexp(1.0, 902); }
+    x[128] = -ldexp(1.0, 900); x[129] = ldexp(1.0, 899);
+    ASSERT_TRUE(BLASFUNC(dzamin)(&n, x, &inc) == ldexp(1.5, 900));
+#ifndef NO_CBLAS
+    ASSERT_TRUE(cblas_dzamin(n, x, inc) == ldexp(1.5, 900));
+#endif
+}
+#endif
+
+#ifdef BUILD_SINGLE
+CTEST(amin, samin_positive_infinity) {
+    blasint n = 1, inc = 1;
+    float x = HUGE_VAL;
+    ASSERT_TRUE(BLASFUNC(samin)(&n, &x, &inc) == HUGE_VAL);
+#ifndef NO_CBLAS
+    ASSERT_TRUE(cblas_samin(n, &x, inc) == HUGE_VAL);
+#endif
+}
+#endif
+#ifdef BUILD_DOUBLE
+CTEST(amin, damin_positive_infinity) {
+    blasint n = 1, inc = 1;
+    double x = HUGE_VAL;
+    ASSERT_TRUE(BLASFUNC(damin)(&n, &x, &inc) == HUGE_VAL);
+#ifndef NO_CBLAS
+    ASSERT_TRUE(cblas_damin(n, &x, inc) == HUGE_VAL);
+#endif
+}
+#endif
+#ifdef BUILD_COMPLEX
+CTEST(amin, scamin_positive_infinity) {
+    blasint n = 1, inc = 1;
+    float x[2] = {HUGE_VAL, 0.0f};
+    ASSERT_TRUE(BLASFUNC(scamin)(&n, x, &inc) == HUGE_VAL);
+#ifndef NO_CBLAS
+    ASSERT_TRUE(cblas_scamin(n, x, inc) == HUGE_VAL);
+#endif
+}
+#endif
+#ifdef BUILD_COMPLEX16
+CTEST(amin, dzamin_positive_infinity) {
+    blasint n = 1, inc = 1;
+    double x[2] = {HUGE_VAL, 0.0};
+    ASSERT_TRUE(BLASFUNC(dzamin)(&n, x, &inc) == HUGE_VAL);
+#ifndef NO_CBLAS
+    ASSERT_TRUE(cblas_dzamin(n, x, inc) == HUGE_VAL);
+#endif
+}
+#endif

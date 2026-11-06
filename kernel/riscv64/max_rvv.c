@@ -62,12 +62,14 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
     if (n <= 0 || inc_x <= 0) return(maxf);
 
+    const FLOAT seed = x[0];
+
     FLOAT_V_T vx, vmax;
     FLOAT_V_T_M1 v_res;
 
-    v_res = VFMVVF_FLOAT_M1(-FLT_MAX, VSETVL_MAX_M1);
+    v_res = VFMVVF_FLOAT_M1(seed, VSETVL_MAX_M1);
     size_t vlmax = VSETVL_MAX;
-    vmax = VFMVVF_FLOAT(-FLT_MAX, vlmax);
+    vmax = VFMVVF_FLOAT(seed, vlmax);
 
     if(inc_x == 1) {
 
