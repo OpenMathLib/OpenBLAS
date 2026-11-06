@@ -1,12 +1,26 @@
 name: rdna2 level-3 bridge test
 
 # Builds the library and runs gpu/rdna2/test_oblas_gpu.c, which checks the CBLAS
-# level-3 entry points (SGEMM and SYRK/SYR2K) against its own double-precision
-# reference. The test needs no GPU: on a CPU-only build it still verifies values
-# and the SYRK contract that the unstored triangle and the ldc padding are left
-# untouched. The GPU dispatch itself is only exercised on a build made with
+# level-3 entry points the rdna2 bridges serve -- SGEMM, SYMM, SYRK, SYR2K, TRMM
+# and TRSM -- against double-precision references the test computes itself. It
+# covers every order/side/uplo/trans/diag combination, alpha and beta including
+# zero, negative and large values, and the contracts the bridges owe the caller:
+# the triangle they were not asked to store, the stored diagonal of a
+# unit-diagonal factor and the ldb/ldc padding have to come back untouched.
+# The per-op comparisons treat a non-finite result as a failure instead of
+# letting it past a tolerance test that is always false for NaN. Nothing here
+# needs a GPU: on a CPU-only build the same cases still check the values and
+# those contracts. The dispatch itself is only exercised by a build made with
 # USE_HIP=1 on a machine with an AMD card, which hosted runners do not have --
 # the "gpu" job at the bottom is the place to add that on a self-hosted runner.
+#
+# Two gaps are written down here rather than left implicit. No case feeds a NaN
+# or an infinity into an input yet, so the non-finite handling above guards a
+# result that arithmetic produced; it is not a tested scenario, and the SGEMM
+# block still judges by max |diff| alone, where a NaN result passes silently.
+# The path filters below also omit interface/symm.c, interface/trsm.c (TRMM and
+# TRSM) and interface/gemm.c, so an edit to one of those bridge files does not
+# start this workflow on its own.
 
 on:
   push:
