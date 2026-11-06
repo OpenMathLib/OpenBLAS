@@ -8,6 +8,7 @@
 *.wasm
 *.out
 *.tmp
+*.stamp
 lapack-3.1.1
 lapack-3.1.1.tgz
 lapack-3.4.1

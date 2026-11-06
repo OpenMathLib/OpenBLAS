@@ -2024,9 +2024,26 @@ HIP_PLATFORM := amd
 endif
 export HIP_PLATFORM
 CXX ?= $(HIPCC)
+# Device architecture(s) for the RDNA2/RDNA4 kernels, independent of the CPU
+# core, so an ordinary CPU build can carry the GPU side too. Unset means "take
+# it from a GFX* TARGET, else gfx1201".
+export GPU_ARCH
 CCOMMON_OPT += -DOPENBLAS_USE_HIP
+# Locate the ROCm install instead of hardcoding /opt/rocm, the way the CUDA
+# support uses CUDADIR: HIP_PATH from the environment (ROCm sets it) wins, then
+# whatever hipcc reports about itself, then the usual install prefix.
+HIP_PATH ?= $(patsubst %/,%,$(shell $(HIPCC) --path 2>/dev/null))
+ifeq ($(strip $(HIP_PATH)),)
+HIP_PATH := /opt/rocm
 endif
-
-ifdef USE_HIP
-EXTRALIB += -L/opt/rocm/lib -lamdhip64 -lhiprtc -lhipblas
+# Backslashes in a Windows HIP_PATH would be eaten by the shell in the link
+# line, so normalise them here.
+# HIP_PATH and HIP_LIB_PATH can also arrive from the environment (ROCm sets
+# them), so normalise whatever ends up in them, not just the default.
+HIP_LIB_PATH ?= $(HIP_PATH)/lib
+HIP_LIB_PATH := $(subst \,/,$(HIP_LIB_PATH))
+export HIP_LIB_PATH
+# Only the HIP runtime is needed; hiprtc/hipblas are not used by the kernels.
+# The kernels are C++ via hipcc, so the C++ runtime must be linked in as well.
+EXTRALIB += -L$(HIP_LIB_PATH) -lamdhip64 -lstdc++
 endif

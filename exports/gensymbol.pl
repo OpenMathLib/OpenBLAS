@@ -126,7 +126,7 @@
     cblas_izamax, cblas_izamin, cblas_dzsum,cblas_zimatcopy,cblas_zomatcopy,
     cblas_zaxpyc, cblas_zdrot, cblas_zrotg, cblas_dzamax, cblas_dzamin, cblas_zgemm_batch, cblas_zgemm_batch_strided);
 
-@cblasobjs = (  cblas_xerbla );
+@cblasobjs = (  cblas_xerbla, cblas_gemm_i8, cblas_gemm_i8_scale );
 
 @bfcblasobjs = (cblas_bgemm, cblas_bgemv, cblas_bscal, cblas_sbgemm, cblas_sbgemmt, cblas_sbgemmtr, cblas_sbgemv, cblas_sbdot, cblas_sbstobf16, cblas_sbdtobf16, cblas_sbf16tos, cblas_dbf16tod, cblas_sbgemm_batch, cblas_sbgemm_batch_strided);
 @hfcblasobjs = (cblas_shgemm);

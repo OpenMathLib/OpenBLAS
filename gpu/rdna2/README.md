@@ -105,6 +105,67 @@ one finished dot product.
 int8 bytes, so they would need an in-kernel nibble unpack, again integer-only,
 before this path could take them.
 
+## OpenBLAS entry points
+
+The int8 kernels are reachable from the library through two CBLAS-style
+functions declared in `cblas.h` and implemented in `interface/gemm_i8.c`:
+
+```c
+int cblas_gemm_i8(enum CBLAS_ORDER Order, enum CBLAS_TRANSPOSE TransA,
+                  enum CBLAS_TRANSPOSE TransB, blasint M, blasint N,
+                  blasint K4, const int *A, blasint lda, const int *B,
+                  blasint ldb, int *C, blasint ldc);
+
+int cblas_gemm_i8_scale(enum CBLAS_ORDER Order, enum CBLAS_TRANSPOSE TransA,
+                        enum CBLAS_TRANSPOSE TransB, blasint M, blasint N,
+                        blasint K4, const int *A, blasint lda, const int *B,
+                        blasint ldb, float *C, blasint ldc, const float *sa,
+                        const float *sb, int zp_b);
+```
+
+Both compute `C := op(A) * op(B)` and both take the operands in the packed form
+above, so a quantized weight buffer goes in byte for byte. `K4` is the number of
+words per row (`K = 4*K4`); a partial trailing word is not accepted. `lda`,
+`ldb` and `ldc` are leading dimensions in words (or C elements), with the usual
+BLAS meaning per order: the stored row count in a column-major call and the row
+stride in a row-major one. `CblasRowMajor` is supported and returns the same
+numbers as the transposed column-major call.
+
+The first form returns raw int32 accumulators and has no alpha/beta: the sum is
+exact 32-bit two's complement, so it matches the naive integer reference bit for
+bit and no tolerance applies. The second form is the quantized epilogue of
+`rdna2_gemm_i8_scale_host`:
+
+```
+C[i][j] = (acc[i][j] - zp_b * rowsum_j) * sa[i] * sb[j]
+```
+
+where `rowsum_j` is the int8 sum of column `j` of `op(B)` (`rdna2_i8_row_sums` on
+the device, skipped when `zp_b == 0`), the correction is taken in 64 bits, `sa`
+has `M` entries for the rows of `op(A)`, `sb` has `N` for the columns of
+`op(B)`, and either scale may be `NULL` for 1.0. Only the finished dot product
+is converted to float, so no stored quant is rewritten.
+
+Both return 0 on success, -1 on an invalid argument or layout and -2 if a host
+workspace allocation failed, leaving `C` untouched. `M == 0` or `N == 0` is a
+quick return, and `K4 == 0` zeroes `C`.
+
+Dispatch: on a target built with `USE_HIP=1` (which defines `OPENBLAS_USE_HIP`
+and an RDNA2 arch code) the call packs the operands into the kernels' row-major
+layout and runs the tuned int8 shape for the device that is present. Everything
+else - a CPU-only build, a machine with no device, or a launch that fails -
+runs the portable C implementation in the same file, which computes the same
+integer product and therefore the same bits. `OPENBLAS_RDNA2_GPU=0` forces the
+CPU path on a GPU build. Neither path needs rocBLAS or a CUDA translation layer.
+
+`test/test_gemm_i8.c` covers both entry points and runs from `make -C test
+level3`: five shapes from 1x1 to 131x37 over four transpose combinations, both
+orders, padded and unpadded leading dimensions, an accumulation past 2^24
+(`K4 = 40000`), `K4 = 0`, argument validation, and a `512x512xK4=128` timing
+pass with the GPU path forced on and off. On an RX 9070 XT (gfx1201,
+`-DGFX1201`) all 185 checks pass with either path and no HIP device is needed
+for the CPU build.
+
 ## LDS staging
 
 The thread-per-cell int8 GEMM issues 8 packed global loads per k step per
@@ -226,6 +287,69 @@ gfx1200 and gfx1201 are separate targets and a binary built for one will not be
 picked up by the other, so a 9070 XT needs gfx1201 (or both) in the offload set.
 `HIP_ARCH`/`ARCHS` changes do not invalidate existing objects, so `make clean`
 between architectures or use `make multi`.
+
+### Building the whole library with the GPU side
+
+The knobs mirror the CUDA ones and live in `Makefile.rule`/`Makefile.system`:
+`USE_HIP` turns the feature on, `GPU_ARCH` replaces `CUDA_ARCH`, `HIPCC` replaces
+`NVCC`, and `HIP_PATH`/`HIP_LIB_PATH` replace `CUDADIR`.
+
+    make USE_HIP=1 libs                          # CPU core from TARGET + gfx1201
+    make USE_HIP=1 GPU_ARCH=gfx1031 libs         # same, for RDNA2
+    make USE_HIP=1 GPU_ARCH="gfx1031 gfx1201" libs   # one fat library
+    make USE_HIP=1 HIPCC=/opt/rocm/bin/hipcc libs
+
+The CPU side is still whatever `TARGET` selects, so `TARGET=zen USE_HIP=1`
+yields an ordinary Zen library in which large level-3 calls additionally run on
+the device. `GPU_ARCH` defaults to the architecture of a `GFX*` TARGET, else
+`gfx1201`. Switching `GPU_ARCH` rebuilds the device object (a stamp records the
+arch list, since make cannot see flag changes); switching `USE_HIP` on or off
+changes the compile flags of every object, so run `make clean` first.
+
+The resulting library needs the HIP runtime at link time: `make` adds
+`-L$(HIP_LIB_PATH) -lamdhip64 -lstdc++` for its own tests, and a program linking
+the static archive must add the same.
+
+### Level-3 bridge test
+
+    make level3-test                 # build the library, then run the test
+    make -C gpu/rdna2 oblas-test     # run it against an existing library
+
+The test checks every dispatched level-3 entry point -- SGEMM, SYMM, SYRK,
+SYR2K, TRMM and TRSM -- against its own double-precision reference (an LU solve
+for TRSM, so the reference does not share the bridge's triangle logic). Each op
+runs over its full layout range: both store orders, side, uplo, trans and diag.
+The contracts the bridges must keep are checked too: the unstored triangle and
+the `ldb`/`ldc` padding are left untouched, and the unused triangle of a
+symmetric or triangular factor plus the stored diagonal of a unit-diagonal one
+are never read (they hold a value that no correct result can produce), which is
+what fails loudly if a bridge reads the wrong half.
+
+All six ops are seen at the default size gate as well, so the real dispatch
+decision is covered end to end, not only the forced-open small shapes.
+
+The scalars get their own pass on top of the layouts: `alpha` and `beta` at
+zero, negative and large values (0, -0.5, -2, 1000). A zero scalar has to drop
+its term exactly -- `alpha == 0` leaves `beta*C` and nothing else, `beta == 0`
+drops the old `C`, both zero means exact zeros -- and the large values keep the
+accumulation honest. TRMM and TRSM have no `beta`, so they sweep `alpha` only.
+
+The TRSM factor is built row-wise diagonally dominant, each stored row summing
+to a quarter of its diagonal. A triangular solve over a merely "small"
+off-diagonal grows by orders of magnitude across a thousand rows, and the answer
+then depends on the order the terms happened to be summed in rather than on the
+triangle: the loosely conditioned 1300-row version reached `||A^-1|| ~ 2e8` and
+flipped between builds of equivalent code. Dominance keeps the reference usable
+at the gate size. The above-gate TRSM case is a dispatch check rather than an
+accuracy one: at 1300 rows a float solve on this path is only good to about a
+percent however it is compiled, so the layout and scalar cases carry the tight
+tolerances.
+
+It builds and passes on a CPU-only library, so it runs in ordinary CI (see `.github/workflows/rdna2_level3.yml`);
+against a `USE_HIP` library it exercises the real dispatch, which
+`OPENBLAS_RDNA2_GPU_DEBUG=1` makes visible as one `handled=1` line per call.
+The link line adds the HIP runtime by itself when the archive contains the
+device objects, so no ROCm is needed on machines that build without it.
 
 ### dp4a on gfx12
 
@@ -467,10 +591,30 @@ whose kernel is 4.4 us, `rdna2_sgemv_f32_host` 1615 us for a 12.2 us kernel,
 | No float conversion of stored quants | Run, passed: all ten int8 kernels contain **0 `v_cvt` of any kind** and **0 f32 arithmetic** (only `v_dot4_*` / `v_wmma_i32_16x16x16_iu8`); the only conversion in the family is one `v_cvt_f32_i32` in `rdna2_gemm_i8_epilogue`, on the finished accumulator. Adversarial inputs packed with `-128`/`+127` give `|sum|` up to 1.33e8 - eight times past 2^24, where any f32 stage would have to round - and all six `tiled` variants match a 64-bit integer reference bit-for-bit, with the caller's packed buffers byte-identical after the call |
 | Signed dp4a semantics on gfx12 | Run, passed on the card: `v_dot4_i32_i8` matches the scalar reference on 6 vectors, `v_dot4_i32_iu8` does not (it is unsigned). gfx12 has no `sdot4` builtin; see *dp4a on gfx12*. The `-DRDNA2_NO_DOT1=1` build (no explicit asm) also passed the whole suite at the time it was run, which was before the matrix-instruction tests existed (78 checks then) |
 | Device-vs-CPU correctness of every kernel and shape | Run, passed: the same test binary that the table above calls, all 141 checks on the device, including 135x130 tiles that straddle two 128-wide tiles |
-| Performance of the five int8 shapes and four f32 shapes | Run, measured, see *Performance*; kernel-only, single card, one input distribution. The int8 shapes and the four f32 shapes were each timed in one harness, so both comparisons are like for like. Re-measured with staging / math phase splits and isolated inner-loop probes: see *Where the time goes* |
-| Correctness of the timed shapes (1024^3 int8, tiled 3, 4 and 5, full 1024x1024 output vs `rdna2_gemm_i8_ref`, plus tiled 4 vs tiled 5 at 2048x2049x2048 and 4096^3) | Run, passed: exact match everywhere, 0 mismatches |
+| Performance of the five int8 shapes and four f32 shapes | Run, measured, see *Performance*; kernel-only, single card, one input distribution. The int8 shapes and the four f32 shapes were each timed in one harness, so both comparisons are like for like. Re-measured with staging / math phase splits and isolated inner-loop probes: see *Where the time goes* || Correctness of the timed shapes (1024^3 int8, tiled 3, 4 and 5, full 1024x1024 output vs `rdna2_gemm_i8_ref`, plus tiled 4 vs tiled 5 at 2048x2049x2048 and 4096^3) | Run, passed: exact match everywhere, 0 mismatches |
 
-Coverage limits: everything above is one RDNA4 card (gfx1201). The gfx1030 and
+## CPU vs GPU (measured through the built library)
+
+End-to-end (including allocation and PCIe transfers) against OpenBLAS shipped
+with numpy 2.5.4, 32 threads on the host:
+
+| size | GPU f32 GFLOPS | OpenBLAS CPU f32 GFLOPS | ratio |
+|---|---|---|---|
+| 4096³ | 3896 | 960 | **4.06x** |
+| 2048³ | 2619 (standalone) / 81 (via lib, tiled transpose) | 1004 | **2.61x** (standalone) |
+| 1024³ | 538 | 982 | 0.55x |
+
+Correctness through the library (MATCH = max |diff| < 1e-3):
+- `test_oblas_gpu.exe 512` → **MATCH** (0.000e+00 diff, 2.00 ms both paths, 134 GFLOPS)
+- `test_oblas_gpu.exe 2048` → **MATCH** (1.717e‑04 diff, 216 ms GPU / 95 ms CPU, rms_rel 8.393e‑07)
+- `probe_cpu.exe` → MATCH at 64, 200, 1024 (naive vs cblas_sgemm)
+- int8 path exact (`max |diff| = 0`) at 256–2048, 12.49 TOPS end-to-end at 2048³;
+  quant epilogue max_rel 1.19e-07.
+- Library transpose is now tiled 64×64 (cache-resident); the naive copy was the
+  ~200 ms strided-store bottleneck at k=2048.
+
+Coverage limits: everything above is one RDNA4 card (gfx1201).
+ The gfx1030 and
 gfx1031 paths are compiled and host-simulated but were not executed on RDNA2
 hardware, so the dp4a-in-LDS timing on RDNA2 is the same code measured only on
 RDNA4. The shuffle-based emulation of the matrix instruction is compiled (its

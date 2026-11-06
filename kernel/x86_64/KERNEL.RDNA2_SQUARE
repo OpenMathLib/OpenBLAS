@@ -1,0 +1,30 @@
+# Rules for the in-direction copies of square-tiled real/complex kernels.
+#
+# kernel/Makefile.L3 only defines $(KDIR)<type>gemm_incopy/itcopy when the
+# UNROLL_M and UNROLL_N of that type differ, on the assumption that a square
+# tile can reuse the on/ot copies. The symbols themselves are still called
+# directly by the level 3 code (syr2k, her2k, symm, trmm), so the objects have to
+# exist. For a square tile the in-copy is the same operation as the on-copy, so
+# these compile the same sources under the in-copy names.
+#
+# Included by KERNEL.GFX1030/GFX1031/GFX1200/GFX1201, whose tiles are square.
+
+$(KDIR)sgemm_incopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMONCOPY)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
+$(KDIR)sgemm_itcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMOTCOPY)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)dgemm_incopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMMONCOPY)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
+$(KDIR)dgemm_itcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMMOTCOPY)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)cgemm_incopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMMONCOPY)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX $< -o $@
+$(KDIR)cgemm_itcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMMOTCOPY)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX $< -o $@
+
+$(KDIR)zgemm_incopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMONCOPY)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX $< -o $@
+$(KDIR)zgemm_itcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMOTCOPY)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX $< -o $@

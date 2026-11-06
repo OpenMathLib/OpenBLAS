@@ -247,6 +247,11 @@ endif
 ifeq ($(BUILD_HFLOAT16),1)
 H3 = test_shgemm$(EXE)
 endif
+# The int8 extension entry points are part of the C interface and are built for
+# every precision, so their test depends only on CBLAS being enabled.
+ifneq ($(NO_CBLAS), 1)
+I83 = test_gemm_i8$(EXE)
+endif
 ifeq ($(BUILD_SINGLE),1)
 S3=sblat3$(EXE)
 endif
@@ -274,9 +279,9 @@ endif
 
 
 ifeq ($(SUPPORT_GEMM3M),1)
-level3: $(BF3) $(B3) $(H3) $(S3) $(D3) $(C3) $(Z3) level3_3m
+level3: $(BF3) $(B3) $(H3) $(I83) $(S3) $(D3) $(C3) $(Z3) level3_3m
 else
-level3: $(BF3) $(B3) $(H3) $(S3) $(D3) $(C3) $(Z3)
+level3: $(BF3) $(B3) $(H3) $(I83) $(S3) $(D3) $(C3) $(Z3)
 endif
 
 ifneq ($(CROSS), 1)
@@ -290,6 +295,10 @@ endif
 ifeq ($(BUILD_HFLOAT16),1)
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_shgemm > SHBLAT3.SUMM
 	$(call CHECK_TEST_SUMMARY,SHBLAT3.SUMM)
+endif
+ifneq ($(NO_CBLAS), 1)
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_gemm_i8$(EXE) > I8GEMM.SUMM
+	$(call CHECK_TEST_SUMMARY,I8GEMM.SUMM)
 endif
 ifeq ($(BUILD_SINGLE),1)
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./sblat3$(EXE) < ./sblat3.dat
@@ -506,6 +515,10 @@ test_shgemv$(EXE) : compare_sgemv_shgemv.c ../$(LIBNAME)
 	$(CC) $(CLDFLAGS) -o test_shgemv compare_sgemv_shgemv.c ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB) $(CEXTRALIB)
 endif
 
+ifneq ($(NO_CBLAS), 1)
+test_gemm_i8$(EXE) : test_gemm_i8.c ../$(LIBNAME)
+	$(CC) $(CLDFLAGS) -I$(TOPDIR) -o test_gemm_i8 test_gemm_i8.c ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB) $(CEXTRALIB)
+endif
 
 ifeq ($(BUILD_COMPLEX),1)
 cblat3_3m$(EXE) : cblat3_3m.$(SUFFIX) $(XERBLA_TEST) ../$(LIBNAME)
@@ -523,7 +536,7 @@ clean:
 	@rm -f *.$(SUFFIX) *.$(PSUFFIX) gmon.$(SUFFIX)ut *.SUMM *.cxml *.exe *.pdb *.dwf \
 	sblat1$(EXE) dblat1$(EXE) cblat1$(EXE) zblat1$(EXE) \
 	sblat2$(EXE) dblat2$(EXE) cblat2$(EXE) zblat2$(EXE) \
-	test_bgemm$(EXE) test_bgemv$(EXE) test_sbgemm$(EXE) test_sbgemv$(EXE) test_shgemm$(EXE) test_shgemv$(EXE) sblat3$(EXE) dblat3$(EXE) cblat3$(EXE) zblat3$(EXE) \
+	test_bgemm$(EXE) test_bgemv$(EXE) test_sbgemm$(EXE) test_sbgemv$(EXE) test_shgemm$(EXE) test_shgemv$(EXE) test_gemm_i8$(EXE) sblat3$(EXE) dblat3$(EXE) cblat3$(EXE) zblat3$(EXE) \
 	sblat1p$(EXE) dblat1p$(EXE) cblat1p$(EXE) zblat1p$(EXE) \
 	sblat2p$(EXE) dblat2p$(EXE) cblat2p$(EXE) zblat2p$(EXE) \
 	sblat3p$(EXE) dblat3p$(EXE) cblat3p$(EXE) zblat3p$(EXE) \

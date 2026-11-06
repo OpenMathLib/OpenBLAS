@@ -17,27 +17,27 @@
 #include "rdna2_kernels_math.h"
 
 // Launchers from rdna2_kernels.hip.
-int rdna2_gemv_i8_host(int* y, const int* A, const int* x, int rows, int k4);
-int rdna2_gemv_i8_host_variant(int* y, const int* A, const int* x, int rows, int k4, int variant);
-int rdna2_gemm_i8_host(int* C, const int* A, const int* Bt, int M, int N, int K4, int tiled);
-int rdna2_gemm_i8_scale_host(float* C, const int* A, const int* Bt, int M, int N, int K4,
+extern "C" int rdna2_gemv_i8_host(int* y, const int* A, const int* x, int rows, int k4);
+extern "C" int rdna2_gemv_i8_host_variant(int* y, const int* A, const int* x, int rows, int k4, int variant);
+extern "C" int rdna2_gemm_i8_host(int* C, const int* A, const int* Bt, int M, int N, int K4, int tiled);
+extern "C" int rdna2_gemm_i8_scale_host(float* C, const int* A, const int* Bt, int M, int N, int K4,
                              int tiled, const float* sa, const float* sb, int zp_b);
-int rdna2_gemm_i8_scale_host_tuned(float* C, const int* A, const int* Bt, int M, int N, int K4,
+extern "C" int rdna2_gemm_i8_scale_host_tuned(float* C, const int* A, const int* Bt, int M, int N, int K4,
                                    const float* sa, const float* sb, int zp_b);
-int rdna2_sgemm_f32_host(float* C, const float* A, const float* Bt, int M, int N, int K);
-int rdna2_sgemm_f32_host_v(float* C, const float* A, const float* Bt, int M, int N, int K,
+extern "C" int rdna2_sgemm_f32_host(float* C, const float* A, const float* Bt, int M, int N, int K);
+extern "C" int rdna2_sgemm_f32_host_v(float* C, const float* A, const float* Bt, int M, int N, int K,
                            int variant);
-int rdna2_sgemv_f32_host(float* y, const float* A, const float* x, int rows, int K);
-int rdna2_sgemv_f32_host_variant(float* y, const float* A, const float* x, int rows, int K,
+extern "C" int rdna2_sgemv_f32_host(float* y, const float* A, const float* x, int rows, int K);
+extern "C" int rdna2_sgemv_f32_host_variant(float* y, const float* A, const float* x, int rows, int K,
                                  int variant);
-int rdna2_dot_u8_host(unsigned* out, const unsigned* a, const unsigned* b, int n);
-int rdna2_dot_f16_host(float* out, const unsigned* a, const unsigned* b, int n);
-int rdna2_prefix_host(int* out, const int* in, int n);
-int rdna2_device_info(char* name, size_t len, int* warp_size, int* arch_ok);
-int rdna2_gemm_i8_host_tuned(int* C, const int* A, const int* Bt, int M, int N, int K4);
-int rdna2_sgemm_f32_host_tuned(float* C, const float* A, const float* Bt, int M, int N, int K);
-int rdna2_tiled_for_arch(int arch);
-int rdna2_sgemm_variant_for_arch(int arch);
+extern "C" int rdna2_dot_u8_host(unsigned* out, const unsigned* a, const unsigned* b, int n);
+extern "C" int rdna2_dot_f16_host(float* out, const unsigned* a, const unsigned* b, int n);
+extern "C" int rdna2_prefix_host(int* out, const int* in, int n);
+extern "C" int rdna2_device_info(char* name, size_t len, int* warp_size, int* arch_ok);
+extern "C" int rdna2_gemm_i8_host_tuned(int* C, const int* A, const int* Bt, int M, int N, int K4);
+extern "C" int rdna2_sgemm_f32_host_tuned(float* C, const float* A, const float* Bt, int M, int N, int K);
+extern "C" int rdna2_tiled_for_arch(int arch);
+extern "C" int rdna2_sgemm_variant_for_arch(int arch);
 
 static int failures = 0;
 static int checks = 0;

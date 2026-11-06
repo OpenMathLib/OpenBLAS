@@ -19,6 +19,20 @@ VERSION = 0.3.34.dev
 # automatically detected.
 # TARGET = PENRYN
 
+# Build the RDNA2/RDNA4 GPU kernels (HIP) alongside the CPU ones. TARGET still
+# selects the CPU kernels exactly as it does without USE_HIP, so USE_HIP=1 on an
+# ordinary target yields one library that is complete on both: large level-3
+# calls go to the device, everything else (small calls, complex, double, the
+# level 1/2 routines and all of LAPACK) stays on the CPU. Set
+# OPENBLAS_RDNA2_GPU=0 in the environment to force the CPU path at run time.
+# USE_HIP = 1
+
+# Device architecture(s) for the HIP kernels, independent of TARGET. Defaults to
+# the architecture of a GFX* TARGET, otherwise gfx1201. A space separated list
+# builds one fat object covering several cards, so a single library serves both
+# RDNA2 and RDNA4, e.g. GPU_ARCH = gfx1031 gfx1201
+# GPU_ARCH = gfx1201
+
 # If you want to support multiple architecture in one binary
 # DYNAMIC_ARCH = 1
 
