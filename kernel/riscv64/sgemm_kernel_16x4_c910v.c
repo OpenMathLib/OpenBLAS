@@ -1,5 +1,5 @@
 #include "common.h"
-#include <riscv_vector.h>
+#include "c910v_asm.h"
 
 #define KERNEL16x4_I \
 	"addi       t1,    %[PB], 1*4  \n\t"\
@@ -408,6 +408,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		   //v16-v31 for temp C
 		   
 		   asm volatile(
+				C910V_ASM_ENTER
 				"vsetvli    zero, zero, e32,m1 \n\t"
 				"fmv.w.x    ft11, zero         \n\t"
 				"mv         t0,   %[BK]        \n\t"
@@ -608,6 +609,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 				"vse.v      v7,   (t3)         \n\t"
 				"M16x4_END:                     \n\t"
 				
+				C910V_ASM_LEAVE
 				:[C0]"+r"(C0),[C1]"+r"(C1),[C2]"+r"(C2),[C3]"+r"(C3),
 				 [PA]"+r"(ptrba), [PB]"+r"(ptrbb)
 				:[ALPHA]"f"(alpha), [BK]"r"(bk)
@@ -626,6 +628,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		   //v16-v31 for temp C
 		   
 		   asm volatile(
+				C910V_ASM_ENTER
 				"vsetvli    zero, zero, e32,m1 \n\t"
 				"fmv.w.x    ft11, zero         \n\t"
 				"mv         t0,   %[BK]        \n\t"
@@ -763,6 +766,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 				"vse.v      v7,   (t3)         \n\t"
 				"M8x4_END:                     \n\t"
 				
+				C910V_ASM_LEAVE
 				:[C0]"+r"(C0),[C1]"+r"(C1),[C2]"+r"(C2),[C3]"+r"(C3),
 				 [PA]"+r"(ptrba), [PB]"+r"(ptrbb)
 				:[ALPHA]"f"(alpha), [BK]"r"(bk)
@@ -954,6 +958,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		   //v0-v4 for A, v8-v11 for B
 		   //v16-v19 for C
 		   asm volatile(
+				C910V_ASM_ENTER
 				"vsetvli    zero, zero, e32,m1 \n\t"
 				"fmv.w.x    ft11, zero         \n\t"
 				
@@ -1025,6 +1030,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 				"vfmul.vv   v16,   v8,   v16    \n\t"
 				"vse.v      v16,   (%[TMP_C])   \n\t"
 				"M1x4_END:                     \n\t"
+				C910V_ASM_LEAVE
 				:[TMP_C]"+r"(tmpc),
 				 [PA]"+r"(ptrba), [PB]"+r"(ptrbb)
 				:[ALPHA]"f"(alpha), [BK]"r"(bk)
@@ -1062,6 +1068,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 	   for(i=0; i<bm/16; i+=1){
 		   ptrbb = bb;
    		   asm volatile(
+				C910V_ASM_ENTER
 				"vsetvli    zero, zero, e32,m1 \n\t"
 				"fmv.w.x    ft11, zero         \n\t"
 				"mv         t0,   %[BK]        \n\t"
@@ -1195,6 +1202,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 				"vse.v      v5,   (t5)         \n\t"
 				"M16x2_END:                     \n\t"
 				
+				C910V_ASM_LEAVE
 				:[C0]"+r"(C0),[C1]"+r"(C1),
 				 [PA]"+r"(ptrba), [PB]"+r"(ptrbb)
 				:[ALPHA]"f"(alpha), [BK]"r"(bk)
