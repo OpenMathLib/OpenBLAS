@@ -39,46 +39,53 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ALIGN64_FREE(ptr) \
     free(ptr)
 
-#ifndef HAVE_SBGEMV_N_ACCL_KERNEL
-static void sbgemv_kernel_n(BLASLONG m, BLASLONG n, float alpha, bfloat16 *a, BLASLONG lda, bfloat16 *x, float beta, float *y)
+/* bfloat16 -> float exactly as SBF16TOS_K (kernel/x86_64/bf16to.c) converts it:
+ * denormals become signed zero, NaNs are made quiet */
+static inline float sbgemv_bf16tos(bfloat16 v)
 {
-	BLASLONG offset_lda, offset_m;
-    float accum = 0.0;
-    float tmp_x = 0.0;
+    uint32_t u = ((uint32_t)v) << 16;
+    float f;
 
-    bfloat16 * a_bf16 = malloc(sizeof(bfloat16)*m*n);
-    float *    a_fp32 = malloc(sizeof(float)*m*n);
-    float *    x_fp32 = malloc(sizeof(float)*n);
+    if ((u & 0x7f800000u) == 0)
+        u &= 0x80000000u;
+    else if (((u & 0x7f800000u) == 0x7f800000u) && (u & 0x007f0000u))
+        u |= 0x00400000u;
+    memcpy(&f, &u, sizeof(f));
+    return f;
+}
 
-    for (BLASLONG j=0; j<n; j++) {
-        offset_lda = lda * j;
-        offset_m = m * j;
-        for (BLASLONG i=0; i<m; i++) {
-            a_bf16[offset_m + i] = a[offset_lda + i];
+#define SBGEMV_N_BLOCK 64
+
+/* Computes directly from the bfloat16 data and the strided x/y, without allocating copies of A, x
+ * or y.  Every y[i] is accumulated over the columns in increasing order, as before. */
+static void sbgemv_kernel_n_generic(BLASLONG m, BLASLONG n, float alpha, bfloat16 *a, BLASLONG lda, bfloat16 *x, BLASLONG incx, float beta, float *y, BLASLONG incy)
+{
+    float accum[SBGEMV_N_BLOCK];
+
+    for (BLASLONG i0 = 0; i0 < m; i0 += SBGEMV_N_BLOCK) {
+        BLASLONG mb = MIN(m - i0, SBGEMV_N_BLOCK);
+
+        for (BLASLONG i = 0; i < mb; i++) accum[i] = 0.0;
+
+        for (BLASLONG j = 0; j < n; j++) {
+            float tmp_x = sbgemv_bf16tos(x[j * incx]);
+            bfloat16 *a_j = a + j * lda + i0;
+            for (BLASLONG i = 0; i < mb; i++) {
+                accum[i] += sbgemv_bf16tos(a_j[i]) * tmp_x;
+            }
+        }
+
+        for (BLASLONG i = 0; i < mb; i++) {
+            if (beta == ZERO) {
+                y[(i0 + i) * incy] = alpha * accum[i];
+            } else {
+                y[(i0 + i) * incy] = alpha * accum[i] + beta * y[(i0 + i) * incy];
+            }
         }
     }
-
-    SBF16TOS_K(n, x, 1, x_fp32, 1);
-    SBF16TOS_K(m*n, a_bf16, 1, a_fp32, 1);
-
-    for (BLASLONG i=0; i<m; i++) {
-        accum = 0.0;
-		for (BLASLONG j=0; j<n; j++) {
-		    accum += a_fp32[j*m + i] * x_fp32[j];
-		}
-        if (beta == ZERO) {
-		    y[i] = alpha * accum;
-        } else {
-            y[i] = alpha * accum + beta * y[i];
-        }
-	}
-
-    free(a_bf16);
-    free(a_fp32);
-    free(x_fp32);
 }
-#endif
 
+#ifdef HAVE_SBGEMV_N_ACCL_KERNEL
 static void bf16_compress_vector(BLASLONG n, bfloat16 * src, bfloat16 * target, BLASLONG inc)
 {
     for(BLASLONG i=0; i<n; i++) {
@@ -99,11 +106,13 @@ static void fp32_expand_vector(BLASLONG n, float * src, float * target, BLASLONG
         target[i*inc] = src[i];
     }
 }
+#endif
 
 int CNAME(BLASLONG m, BLASLONG n, float alpha, bfloat16 *a, BLASLONG lda, bfloat16 *x, BLASLONG incx, float beta, float * y, BLASLONG incy)
 {
     if ( m < 1 || n < 1) return(0);
 
+#ifdef HAVE_SBGEMV_N_ACCL_KERNEL
     bfloat16 * xbuffer_align = x;
     float    * ybuffer_align = y;
 
@@ -112,11 +121,25 @@ int CNAME(BLASLONG m, BLASLONG n, float alpha, bfloat16 *a, BLASLONG lda, bfloat
 
     if (incx != 1) {
         ALIGN64_ALLOC(n, bfloat16, xbuffer_align, xbuffer);
-        bf16_compress_vector(n, x, xbuffer_align, incx);
     }
 
     if (incy != 1) {
         ALIGN64_ALLOC(m, float, ybuffer_align, ybuffer);
+    }
+
+    if ((incx != 1 && xbuffer == NULL) || (incy != 1 && ybuffer == NULL)) {
+        /* out of memory for the contiguous copies of x/y: use the strided C code */
+        ALIGN64_FREE(xbuffer);
+        ALIGN64_FREE(ybuffer);
+        sbgemv_kernel_n_generic(m, n, alpha, a, lda, x, incx, beta, y, incy);
+        return(0);
+    }
+
+    if (incx != 1) {
+        bf16_compress_vector(n, x, xbuffer_align, incx);
+    }
+
+    if (incy != 1) {
         if (beta != ZERO) {
             fp32_compress_vector(m, y, ybuffer_align, incy);
         }
@@ -132,6 +155,9 @@ int CNAME(BLASLONG m, BLASLONG n, float alpha, bfloat16 *a, BLASLONG lda, bfloat
     if (incx != 1) {
         ALIGN64_FREE(xbuffer);
     }
+#else
+    sbgemv_kernel_n_generic(m, n, alpha, a, lda, x, incx, beta, y, incy);
+#endif
 
 	return(0);
 }
