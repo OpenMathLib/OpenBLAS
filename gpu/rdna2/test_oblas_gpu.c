@@ -107,6 +107,53 @@ static void mat_put(float *x, int ld, int order, int i, int j, float v) {
     x[(size_t)i * ld + (size_t)j] = v;
 }
 
+/* ------------------------------------------------------------------------- */
+/* Non-finite inputs                                                         */
+/* ------------------------------------------------------------------------- */
+
+/* NaN and the two infinities are the three ways a float stops being an ordinary
+ * number, and a BLAS must carry each of them through: a NaN that arrives as 0.0,
+ * or an infinity folded into a finite result, is a silently wrong answer, which
+ * is the worst failure a library like this can have. The values are planted in
+ * an operand the routine has to read, so the result either says NaN/inf where
+ * the arithmetic says it must, or the case fails. */
+enum { PLANT_NONE = 0, PLANT_NAN, PLANT_POS_INF, PLANT_NEG_INF };
+
+static float plant_value(int kind) {
+  switch (kind) {
+    case PLANT_NAN:
+      return (float)NAN;
+    case PLANT_POS_INF:
+      return (float)INFINITY;
+    case PLANT_NEG_INF:
+      return -(float)INFINITY;
+    default:
+      return 0.0f;
+  }
+}
+
+/* Plants one value at (i,j) of an operand. The position is always on the
+ * diagonal of the operand: every uplo stores it, and it means the same element
+ * under transpose, so one position serves every layout. */
+static void plant(float *x, int ld, int order, int i, int j, int kind) {
+  if (kind != PLANT_NONE) mat_put(x, ld, order, i, j, plant_value(kind));
+}
+
+/* Plants one value in a stored off-diagonal of a triangular factor, which is
+ * read whatever the diag flag says (the diagonal is not, when unit is set). */
+static void plant_tri(float *a, int ld, int order, int uplo, int kind) {
+  if (kind == PLANT_NONE) return;
+  if (uplo == 0)
+    mat_put(a, ld, order, 0, 1, plant_value(kind));
+  else
+    mat_put(a, ld, order, 1, 0, plant_value(kind));
+}
+
+/* Defined with the SYMM/TRMM/TRSM helpers below, used by the SYRK reference
+ * above them as well. */
+static void check_el(const char *tag, int i, int j, double got, double want,
+                     double tol, long *nviol, int *bad);
+
 /* Bytes to allocate for an m x n matrix with row or column stride ld. */
 static size_t mat_size(int ld, int order, int m, int n) {
   return (order == CblasColMajor) ? (size_t)ld * (size_t)n
@@ -135,7 +182,7 @@ static double tri_el(const float *a, int ld, int order, int uplo, int tr,
 /* Runs one SYRK (two == 0) or SYR2K (two == 1) case and compares it against a
  * double precision reference. Returns 0 when the case passed. */
 static int sym_case(int two, int order, int uplo, int trans, int n, int k,
-                    double alpha, double beta) {
+                    double alpha, double beta, int plant_a, int plant_b) {
   const int ta = trans ? CblasTrans : CblasNoTrans;
   const CBLAS_UPLO up = uplo ? CblasLower : CblasUpper;
   const int ldc = n + 5;
@@ -171,6 +218,8 @@ static int sym_case(int two, int order, int uplo, int trans, int n, int k,
     A[i] = (float)((double)((i * 7) % 23) - 11.0) / 9.0f;
     B[i] = (float)((double)((i * 11) % 19) - 9.0) / 7.0f;
   }
+  plant(A, lda, order, 1, 1, plant_a);
+  plant(B, ldb, order, 1, 1, plant_b);
   /* C starts at a value that no result can produce, so an element the routine
    * never writes is detectable. */
   for (i = 0; i < csz; ++i) C0[i] = C[i] = (float)(i % 17) * 0.5f + sentinel;
@@ -205,7 +254,7 @@ static int sym_case(int two, int order, int uplo, int trans, int n, int k,
       continue;
     }
     {
-      double ref = 0.0, got, err, scale, mag = 0.0, tol;
+      double ref = 0.0, mag = 0.0, tol;
       int p;
 
       for (p = 0; p < k; ++p) {
@@ -224,14 +273,9 @@ static int sym_case(int two, int order, int uplo, int trans, int n, int k,
         }
       }
       ref = alpha * ref + beta * (double)C0[idx];
-      got = (double)C[idx];
-      err = fabs(got - ref);
-      scale = fabs(ref) > 1.0 ? fabs(ref) : 1.0;
-      tol = tol_for(scale, fabs(alpha) * mag + fabs(beta) * fabs((double)C0[idx]));
-      if (err / scale > tol) {
-        violation(&nviol, "syrk/syr2k", row, col, NULL, got, ref, err / scale);
-        bad = 1;
-      }
+      tol = tol_for(fabs(ref) > 1.0 ? fabs(ref) : 1.0,
+                    fabs(alpha) * mag + fabs(beta) * fabs((double)C0[idx]));
+      check_el("syrk/syr2k", row, col, (double)C[idx], ref, tol, &nviol, &bad);
     }
   }
 
@@ -287,11 +331,42 @@ static int pad_intact(const char *tag, const float *x, const float *x0, int ld,
   return bad;
 }
 
-/* Compares one result element against the reference and reports a mismatch. */
+/* Compares one result element against the reference and reports a mismatch.
+ *
+ * The non-finite cases have to be spelled out rather than left to the
+ * tolerance: every comparison against NaN is false, so `fabs(got - want) > tol`
+ * quietly passes when the reference is NaN and also when the result is, and a
+ * result of 0.0 where the arithmetic says NaN would look perfect. So a NaN
+ * reference demands a NaN result, an infinity demands an infinity of the same
+ * sign, and a finite reference demands a finite result before the tolerance is
+ * allowed to judge it. */
 static void check_el(const char *tag, int i, int j, double got, double want,
                      double tol, long *nviol, int *bad) {
-  const double err = fabs(got - want);
-  const double scale = fabs(want) > 1.0 ? fabs(want) : 1.0;
+  double err, scale;
+
+  if (isnan(want) || isinf(want) || !isfinite(got)) {
+    const int ok = isnan(want) ? isnan(got)
+                   : isinf(want) ? (isinf(got) && ((got > 0.0) == (want > 0.0)))
+                                 : 0;
+
+    if (!ok) {
+      if ((*nviol)++ < SYM_REPORT_MAX) {
+        if (isnan(want))
+          printf("%s: (%d,%d) got %g, expected NaN\n", tag, i, j, got);
+        else if (isinf(want))
+          printf("%s: (%d,%d) got %g, expected %s infinity\n", tag, i, j, got,
+                 want > 0.0 ? "+" : "-");
+        else
+          printf("%s: (%d,%d) got %g, expected a finite value\n", tag, i, j,
+                 got);
+      }
+      *bad = 1;
+    }
+    return;
+  }
+
+  err = fabs(got - want);
+  scale = fabs(want) > 1.0 ? fabs(want) : 1.0;
 
   if (err / scale > tol) {
     violation(nviol, tag, i, j, NULL, got, want, err / scale);
@@ -303,7 +378,7 @@ static void check_el(const char *tag, int i, int j, double got, double want,
  * symmetric with only its uplo triangle stored. Checks every element of C, the
  * ldc padding, and that A's other triangle is never read. */
 static int symm_case(int order, int side, int uplo, int m, int n, double alpha,
-                     double beta) {
+                     double beta, int plant_a, int plant_b) {
   const int kdim = side ? n : m;
   const int lda = kdim + 3;
   const int ldb = (m > n ? m : n) + 4;
@@ -345,6 +420,8 @@ static int symm_case(int order, int side, int uplo, int m, int n, double alpha,
       mat_put(B, ldb, order, i, j, v);
       mat_put(C0, ldc, order, i, j, v * 0.5f + 0.25f);
     }
+  plant(A, lda, order, 1, 1, plant_a);
+  plant(B, ldb, order, 1, 1, plant_b);
   memcpy(C, C0, csz * sizeof(float));
 
   cblas_ssymm(order, side ? CblasRight : CblasLeft,
@@ -392,7 +469,7 @@ static int symm_case(int order, int side, int uplo, int m, int n, double alpha,
  * stored diagonal of a unit-diagonal factor carry UNUSED_FILL, so reading
  * either one shows up as a large error. */
 static int trmm_case(int order, int side, int uplo, int trans, int unit, int m,
-                     int n, double alpha) {
+                     int n, double alpha, int plant_a, int plant_b) {
   const int kdim = side ? n : m;
   const int lda = kdim + 3;
   const int ldb = (m > n ? m : n) + 4;
@@ -425,6 +502,8 @@ static int trmm_case(int order, int side, int uplo, int trans, int unit, int m,
     for (i = 0; i < m; ++i)
       mat_put(B0, ldb, order, i, j,
               (float)((double)((i * 7 + j * 11) % 23) - 11.0) / 11.0f);
+  plant_tri(A, lda, order, uplo, plant_a);
+  plant(B, ldb, order, 1, 1, plant_b);
   memcpy(B, B0, bsz * sizeof(float));
 
   cblas_strmm(order, side ? CblasRight : CblasLeft,
@@ -528,7 +607,7 @@ static double tri_diag(int i) { return 1.0 + 0.5 * ((i % 3) + 1) / 4.0; }
  * place on B, A triangular. The reference solves a dense copy of op(A) with a
  * pivoting LU, so it does not share the triangle logic under test. */
 static int trsm_case(int order, int side, int uplo, int trans, int unit, int m,
-                     int n, double alpha, double floor_tol) {
+                     int n, double alpha, double floor_tol, int plant_b) {
   const int kdim = side ? n : m;
   const int lda = kdim + 3;
   const int ldb = (m > n ? m : n) + 4;
@@ -589,6 +668,12 @@ static int trsm_case(int order, int side, int uplo, int trans, int unit, int m,
     for (i = 0; i < m; ++i)
       mat_put(B0, ldb, order, i, j,
               (float)((double)((i * 7 + j * 11) % 23) - 11.0) / 11.0f);
+  /* Only the right hand side is poisoned here: a NaN in B stays in its own
+   * column, which the reference reproduces exactly. A NaN in the factor would
+   * be the more natural target, but the LU reference cannot tell a NaN pivot
+   * from a good one, so it would answer a question of its own rather than the
+   * bridge's -- TRMM and SYMM cover a poisoned factor instead. */
+  plant(B, ldb, order, 1, 1, plant_b);
   memcpy(B, B0, bsz * sizeof(float));
 
   cblas_strsm(order, side ? CblasRight : CblasLeft,
@@ -724,9 +809,9 @@ int main(int argc, char **argv) {
 
     SETENV("OPENBLAS_RDNA2_GPU", "1");
     printf("\nsyrk/syr2k above the default size gate (n=k=%d)\n", gate_n);
-    sym_failures += sym_case(0, CblasColMajor, 0, 0, gate_n, gate_n, 1.0, 0.0);
+    sym_failures += sym_case(0, CblasColMajor, 0, 0, gate_n, gate_n, 1.0, 0.0, 0, 0);
     cases++;
-    sym_failures += sym_case(1, CblasColMajor, 0, 0, gate_n, gate_n, 1.0, 0.0);
+    sym_failures += sym_case(1, CblasColMajor, 0, 0, gate_n, gate_n, 1.0, 0.0, 0, 0);
     cases++;
 
     /* The gate is not restored afterwards: the remaining cases are small on
@@ -740,14 +825,14 @@ int main(int argc, char **argv) {
         for (trans = 0; trans <= 1; ++trans) {
           const int ord = order ? CblasRowMajor : CblasColMajor;
 
-          sym_failures += sym_case(0, ord, uplo, trans, 97, 61, 1.0, 0.0);
+          sym_failures += sym_case(0, ord, uplo, trans, 97, 61, 1.0, 0.0, 0, 0);
           cases++;
-          sym_failures += sym_case(1, ord, uplo, trans, 97, 61, 1.0, 0.0);
+          sym_failures += sym_case(1, ord, uplo, trans, 97, 61, 1.0, 0.0, 0, 0);
           cases++;
           /* alpha/beta not 1/0: the triangle merge on the host path. */
-          sym_failures += sym_case(0, ord, uplo, trans, 53, 130, 0.5, -0.25);
+          sym_failures += sym_case(0, ord, uplo, trans, 53, 130, 0.5, -0.25, 0, 0);
           cases++;
-          sym_failures += sym_case(1, ord, uplo, trans, 53, 130, 0.5, -0.25);
+          sym_failures += sym_case(1, ord, uplo, trans, 53, 130, 0.5, -0.25, 0, 0);
           cases++;
         }
 
@@ -763,19 +848,19 @@ int main(int argc, char **argv) {
           int two;
 
           for (two = 0; two <= 1; ++two) {
-            sym_failures += sym_case(two, ord, uplo, trans, 97, 61, 0.0, 1.0);
+            sym_failures += sym_case(two, ord, uplo, trans, 97, 61, 0.0, 1.0, 0, 0);
             cases++;
-            sym_failures += sym_case(two, ord, uplo, trans, 97, 61, 0.0, -0.5);
+            sym_failures += sym_case(two, ord, uplo, trans, 97, 61, 0.0, -0.5, 0, 0);
             cases++;
-            sym_failures += sym_case(two, ord, uplo, trans, 97, 61, 0.0, 0.0);
+            sym_failures += sym_case(two, ord, uplo, trans, 97, 61, 0.0, 0.0, 0, 0);
             cases++;
-            sym_failures += sym_case(two, ord, uplo, trans, 53, 130, -2.0, 1.0);
-            cases++;
-            sym_failures +=
-                sym_case(two, ord, uplo, trans, 53, 130, 1000.0, 0.0);
+            sym_failures += sym_case(two, ord, uplo, trans, 53, 130, -2.0, 1.0, 0, 0);
             cases++;
             sym_failures +=
-                sym_case(two, ord, uplo, trans, 53, 130, 1.0, 1000.0);
+                sym_case(two, ord, uplo, trans, 53, 130, 1000.0, 0.0, 0, 0);
+            cases++;
+            sym_failures +=
+                sym_case(two, ord, uplo, trans, 53, 130, 1.0, 1000.0, 0, 0);
             cases++;
           }
         }
@@ -798,9 +883,9 @@ int main(int argc, char **argv) {
     SETENV("OPENBLAS_RDNA2_GPU_MIN_MNK", "2000000000");
     printf("\nsymm/trmm/trsm at the default size gate (m=n=%d)\n", gate_mn);
     cases = sec_failures = 0;
-    sec_failures += symm_case(CblasColMajor, 0, 0, gate_mn, gate_mn, 1.0, 0.0);
+    sec_failures += symm_case(CblasColMajor, 0, 0, gate_mn, gate_mn, 1.0, 0.0, 0, 0);
     cases++;
-    sec_failures += trmm_case(CblasColMajor, 0, 0, 0, 0, gate_mn, gate_mn, 1.0);
+    sec_failures += trmm_case(CblasColMajor, 0, 0, 0, 0, gate_mn, gate_mn, 1.0, 0, 0);
     cases++;
     /* The gate case is here for the dispatch decision, not for accuracy: at
      * 1300 rows the device solve is only good to about a percent whatever the
@@ -808,7 +893,7 @@ int main(int argc, char **argv) {
      * this path cannot avoid. The triangle, layout and scalar checks all live
      * in the small cases below, where a float solve is accurate to ~1e-5. */
     sec_failures +=
-        trsm_case(CblasColMajor, 0, 0, 0, 0, gate_mn, gate_mn, 1.0, 5e-2);
+        trsm_case(CblasColMajor, 0, 0, 0, 0, gate_mn, gate_mn, 1.0, 5e-2, 0);
     cases++;
     printf("gate cases: %d cases, %d failure(s)\n", cases, sec_failures);
     failures += sec_failures;
@@ -825,9 +910,9 @@ int main(int argc, char **argv) {
         for (uplo = 0; uplo <= 1; ++uplo) {
           const int ord = order ? CblasRowMajor : CblasColMajor;
 
-          sec_failures += symm_case(ord, side, uplo, 97, 61, 1.0, 0.0);
+          sec_failures += symm_case(ord, side, uplo, 97, 61, 1.0, 0.0, 0, 0);
           cases++;
-          sec_failures += symm_case(ord, side, uplo, 53, 130, 0.5, -0.25);
+          sec_failures += symm_case(ord, side, uplo, 53, 130, 0.5, -0.25, 0, 0);
           cases++;
         }
 
@@ -840,17 +925,17 @@ int main(int argc, char **argv) {
         for (uplo = 0; uplo <= 1; ++uplo) {
           const int ord = order ? CblasRowMajor : CblasColMajor;
 
-          sec_failures += symm_case(ord, side, uplo, 97, 61, 0.0, 1.0);
+          sec_failures += symm_case(ord, side, uplo, 97, 61, 0.0, 1.0, 0, 0);
           cases++;
-          sec_failures += symm_case(ord, side, uplo, 97, 61, 0.0, -0.5);
+          sec_failures += symm_case(ord, side, uplo, 97, 61, 0.0, -0.5, 0, 0);
           cases++;
-          sec_failures += symm_case(ord, side, uplo, 97, 61, 0.0, 0.0);
+          sec_failures += symm_case(ord, side, uplo, 97, 61, 0.0, 0.0, 0, 0);
           cases++;
-          sec_failures += symm_case(ord, side, uplo, 53, 130, -2.0, 1.0);
+          sec_failures += symm_case(ord, side, uplo, 53, 130, -2.0, 1.0, 0, 0);
           cases++;
-          sec_failures += symm_case(ord, side, uplo, 53, 130, 1000.0, 0.0);
+          sec_failures += symm_case(ord, side, uplo, 53, 130, 1000.0, 0.0, 0, 0);
           cases++;
-          sec_failures += symm_case(ord, side, uplo, 53, 130, 1.0, 1000.0);
+          sec_failures += symm_case(ord, side, uplo, 53, 130, 1.0, 1000.0, 0, 0);
           cases++;
         }
     printf("symm: %d cases, %d failure(s)\n", cases, sec_failures);
@@ -865,10 +950,10 @@ int main(int argc, char **argv) {
             for (diag = 0; diag <= 1; ++diag) {
               const int ord = order ? CblasRowMajor : CblasColMajor;
 
-              sec_failures += trmm_case(ord, side, uplo, trans, diag, 97, 61, 1.0);
+              sec_failures += trmm_case(ord, side, uplo, trans, diag, 97, 61, 1.0, 0, 0);
               cases++;
               sec_failures +=
-                  trmm_case(ord, side, uplo, trans, diag, 53, 130, -0.75);
+                  trmm_case(ord, side, uplo, trans, diag, 53, 130, -0.75, 0, 0);
               cases++;
             }
 
@@ -884,13 +969,13 @@ int main(int argc, char **argv) {
               const int ord = order ? CblasRowMajor : CblasColMajor;
 
               sec_failures +=
-                  trmm_case(ord, side, uplo, trans, diag, 97, 61, 0.0);
+                  trmm_case(ord, side, uplo, trans, diag, 97, 61, 0.0, 0, 0);
               cases++;
               sec_failures +=
-                  trmm_case(ord, side, uplo, trans, diag, 97, 61, -2.0);
+                  trmm_case(ord, side, uplo, trans, diag, 97, 61, -2.0, 0, 0);
               cases++;
               sec_failures +=
-                  trmm_case(ord, side, uplo, trans, diag, 53, 130, 1000.0);
+                  trmm_case(ord, side, uplo, trans, diag, 53, 130, 1000.0, 0, 0);
               cases++;
             }
     printf("trmm: %d cases, %d failure(s)\n", cases, sec_failures);
@@ -906,10 +991,10 @@ int main(int argc, char **argv) {
               const int ord = order ? CblasRowMajor : CblasColMajor;
 
               sec_failures +=
-                  trsm_case(ord, side, uplo, trans, diag, 97, 61, 1.0, 1e-3);
+                  trsm_case(ord, side, uplo, trans, diag, 97, 61, 1.0, 1e-3, 0);
               cases++;
               sec_failures +=
-                  trsm_case(ord, side, uplo, trans, diag, 53, 130, 0.75, 1e-3);
+                  trsm_case(ord, side, uplo, trans, diag, 53, 130, 0.75, 1e-3, 0);
               cases++;
             }
 
@@ -925,13 +1010,13 @@ int main(int argc, char **argv) {
               const int ord = order ? CblasRowMajor : CblasColMajor;
 
               sec_failures +=
-                  trsm_case(ord, side, uplo, trans, diag, 97, 61, 0.0, 1e-3);
+                  trsm_case(ord, side, uplo, trans, diag, 97, 61, 0.0, 1e-3, 0);
               cases++;
               sec_failures +=
-                  trsm_case(ord, side, uplo, trans, diag, 97, 61, -2.0, 1e-3);
+                  trsm_case(ord, side, uplo, trans, diag, 97, 61, -2.0, 1e-3, 0);
               cases++;
               sec_failures +=
-                  trsm_case(ord, side, uplo, trans, diag, 53, 130, 1000.0, 1e-3);
+                  trsm_case(ord, side, uplo, trans, diag, 53, 130, 1000.0, 1e-3, 0);
               cases++;
             }
     printf("trsm: %d cases, %d failure(s)\n", cases, sec_failures);
