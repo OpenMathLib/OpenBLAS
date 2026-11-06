@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download ZGBTF2 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgbtf2.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgbtf2.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -115,7 +113,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16GBcomputational
+*> \ingroup gbtf2
 *
 *> \par Further Details:
 *  =====================
@@ -142,6 +140,7 @@
 *>
 *  =====================================================================
       SUBROUTINE ZGBTF2( M, N, KL, KU, AB, LDAB, IPIV, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -163,11 +162,13 @@
      $                   ZERO = ( 0.0D+0, 0.0D+0 ) )
 *     ..
 *     .. Local Scalars ..
+      DOUBLE PRECISION   SFMIN
       INTEGER            I, J, JP, JU, KM, KV
 *     ..
 *     .. External Functions ..
+      DOUBLE PRECISION   DLAMCH
       INTEGER            IZAMAX
-      EXTERNAL           IZAMAX
+      EXTERNAL           DLAMCH, IZAMAX
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, ZGERU, ZSCAL, ZSWAP
@@ -205,6 +206,10 @@
 *
       IF( M.EQ.0 .OR. N.EQ.0 )
      $   RETURN
+*
+*     Compute machine safe minimum
+*
+      SFMIN = DLAMCH('S')
 *
 *     Gaussian elimination with partial pivoting
 *
@@ -249,7 +254,14 @@
 *
 *              Compute multipliers.
 *
-               CALL ZSCAL( KM, ONE / AB( KV+1, J ), AB( KV+2, J ), 1 )
+               IF( ABS( AB( KV+1, J ) ).GE.SFMIN ) THEN
+                  CALL ZSCAL( KM, ONE / AB( KV+1, J ), AB( KV+2, J ),
+     $                        1 )
+               ELSE
+                  DO 35 I = 1, KM
+                     AB( KV+1+I, J ) = AB( KV+1+I, J ) / AB( KV+1, J )
+   35             CONTINUE
+               END IF
 *
 *              Update trailing submatrix within the band.
 *

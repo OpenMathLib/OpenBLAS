@@ -3564,6 +3564,36 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 2048
 
+#elif defined(VORTEXM4) && defined(__clang__)
+
+/* SME2 kernels (kernel/arm64/gemm_kernel_sme2.c): 64 rows of C per ZA row of tiles, one streaming vector of columns */
+#define SGEMM_DEFAULT_UNROLL_M  64
+#define SGEMM_DEFAULT_UNROLL_N  16
+
+#define DGEMM_DEFAULT_UNROLL_M  64
+#define DGEMM_DEFAULT_UNROLL_N  8
+
+#define CGEMM_DEFAULT_UNROLL_M  8
+#define CGEMM_DEFAULT_UNROLL_N  4
+
+#define ZGEMM_DEFAULT_UNROLL_M  4
+#define ZGEMM_DEFAULT_UNROLL_N  4
+
+#define SGEMM_DEFAULT_P 1024
+#define DGEMM_DEFAULT_P 512
+#define CGEMM_DEFAULT_P 256
+#define ZGEMM_DEFAULT_P 128
+
+#define SGEMM_DEFAULT_Q 1024
+#define DGEMM_DEFAULT_Q 512
+#define CGEMM_DEFAULT_Q 512
+#define ZGEMM_DEFAULT_Q 512
+
+#define SGEMM_DEFAULT_R 4096
+#define DGEMM_DEFAULT_R 4096
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 2048
+
 #elif defined(CORTEXA57) || defined(CORTEXX1) || \
     defined(CORTEXA73) || \
     defined(FALKOR)    || defined(TSV110) || defined(EMAG8180) || defined(VORTEX) || defined(FT2000) || defined(VORTEXM4)

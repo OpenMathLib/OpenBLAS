@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__6 = 6;
@@ -245,7 +243,6 @@ static doublereal c_b82 = 0.;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DGELSD + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgelsd.
 f"> */
@@ -256,7 +253,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgelsd.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -298,12 +294,6 @@ f"> */
 /* > singular values which are less than RCOND times the largest singular */
 /* > value. */
 /* > */
-/* > The divide and conquer algorithm makes very mild assumptions about */
-/* > floating point arithmetic. It will work on machines with a guard */
-/* > digit in add/subtract, or on those binary machines without guard */
-/* > digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or */
-/* > Cray-2. It could conceivably fail on hexadecimal or decimal machines */
-/* > without guard digits, but we know of none. */
 /* > \endverbatim */
 
 /*  Arguments: */
@@ -433,9 +423,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date June 2017 */
-
-/* > \ingroup doubleGEsolve */
+/* > \ingroup gelsd */
 
 /* > \par Contributors: */
 /*  ================== */
@@ -454,19 +442,16 @@ f"> */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1, i__2, i__3, i__4;
 
     /* Local variables */
-    doublereal anrm, bnrm;
+    integer ie, il, mm;
+    doublereal eps, anrm, bnrm;
     integer itau, nlvl, iascl, ibscl;
     doublereal sfmin;
     integer minmn, maxmn, itaup, itauq, mnthr, nwork;
-    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
-    integer ie, il;
     extern /* Subroutine */ void dgebrd_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *);
-    extern doublereal dlamch_(char *);
-    integer mm;
-    extern doublereal dlange_(char *, integer *, integer *, doublereal *, 
-	    integer *, doublereal *);
+    extern doublereal dlamch_(char *), dlange_(char *, integer *, 
+	    integer *, doublereal *, integer *, doublereal *);
     extern /* Subroutine */ void dgelqf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *), 
 	    dlalsd_(char *, integer *, integer *, integer *, doublereal *, 
@@ -477,8 +462,8 @@ f"> */
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *), dlacpy_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *), dlaset_(char *, integer *, integer *, doublereal *, 
-	    doublereal *, doublereal *, integer *);
-    extern void xerbla_(char *, integer *, ftnlen);
+	    doublereal *, doublereal *, integer *), xerbla_(char *, 
+	    integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     doublereal bignum;
@@ -497,13 +482,11 @@ f"> */
     doublereal smlnum;
     logical lquery;
     integer smlsiz;
-    doublereal eps;
 
 
-/*  -- LAPACK driver routine (version 3.7.1) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     June 2017 */
 
 
 /*  ===================================================================== */
@@ -513,10 +496,10 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --s;
     --work;
@@ -560,7 +543,7 @@ f"> */
     nlvl = f2cmax(i__1,0);
 
     if (*info == 0) {
-	maxwrk = 0;
+	maxwrk = 1;
 	liwork = minmn * 3 * nlvl + minmn * 11;
 	mm = *m;
 	if (*m >= *n && *m >= mnthr) {
@@ -689,7 +672,7 @@ f"> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DGELSD", &i__1, (ftnlen)6);
+	xerbla_("DGELSD", &i__1, (ftnlen)7);
 	return;
     } else if (lquery) {
 	goto L10;
@@ -708,7 +691,6 @@ f"> */
     sfmin = dlamch_("S");
     smlnum = sfmin / eps;
     bignum = 1. / smlnum;
-    dlabad_(&smlnum, &bignum);
 
 /*     Scale A if f2cmax entry outside range [SMLNUM,BIGNUM]. */
 
@@ -963,25 +945,37 @@ f"> */
 	}
     }
 
-/*     Undo scaling. */
+/*     Undo scaling.  The solution carries the factor of B divided by */
+/*     the factor of A.  When both were scaled to the same end of the */
+/*     range the constants cancel and BNRM/ANRM is applied in one step: */
+/*     applied in two, the first step could flush or overflow an entry */
+/*     that the second would have brought back into range. */
 
+    if (iascl == ibscl && iascl != 0) {
+	dlascl_("G", &c__0, &c__0, &anrm, &bnrm, n, nrhs, &b[b_offset], ldb, 
+		info);
+    } else {
+	if (iascl == 1) {
+	    dlascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (iascl == 2) {
+	    dlascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+	if (ibscl == 1) {
+	    dlascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (ibscl == 2) {
+	    dlascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+    }
     if (iascl == 1) {
-	dlascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	dlascl_("G", &c__0, &c__0, &smlnum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
     } else if (iascl == 2) {
-	dlascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	dlascl_("G", &c__0, &c__0, &bignum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
-    }
-    if (ibscl == 1) {
-	dlascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
-    } else if (ibscl == 2) {
-	dlascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
     }
 
 L10:

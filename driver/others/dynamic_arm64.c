@@ -48,6 +48,7 @@
 #if (defined OS_LINUX || defined OS_ANDROID)
 #include <asm/hwcap.h>
 #include <sys/auxv.h>
+#include <sys/prctl.h>
 #endif
 
 #ifdef __APPLE__
@@ -231,7 +232,7 @@ extern gotoblas_t  gotoblas_VORTEXM4;
 extern void openblas_warning(int verbose, const char * msg);
 #define FALLBACK_VERBOSE 1
 #define NEOVERSEN1_FALLBACK "OpenBLAS : Your OS does not support SVE instructions. OpenBLAS is using Neoverse N1 kernels as a fallback, which may give poorer performance.\n"
-
+#define VECLEN_FALLBACK "OpenBLAS : None of the supported targets matches the SVE vector length of your system. Falling back to plain ARMV8 which may give poorer performance.\n" 
 #define NUM_CORETYPES   21
 
 /*
@@ -550,7 +551,29 @@ static gotoblas_t *get_coretype(void) {
 
 #ifndef NO_SVE
   if ((getauxval(AT_HWCAP) & HWCAP_SVE)) {
-    return &gotoblas_ARMV8SVE;
+	int veclen;
+#ifdef __ARM_FEATURE_SVE
+	asm("cntw %[SIZE_]" : [SIZE_] "=r" (veclen) : : );
+#elif defined(OS_LINUX)
+	veclen = prctl(PR_SVE_GET_VL);
+	if (veclen > -1) veclen = (veclen & PR_SVE_VL_LEN_MASK) / 4;
+    else veclen = 4;
+#else
+    veclen = 4;
+#endif
+    switch(veclen) {
+	case 4:
+	    return &gotoblas_ARMV8SVE;
+	    break;
+	case 8:
+	    return &gotoblas_NEOVERSEV1;
+	    break;
+	case 16:
+	    return &gotoblas_A64FX;
+	default:
+		openblas_warning(FALLBACK_VERBOSE, VECLEN_FALLBACK);
+		return &gotoblas_ARMV8;
+    }
   }
 #endif
 

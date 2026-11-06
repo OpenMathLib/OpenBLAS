@@ -57,6 +57,7 @@ typedef struct{
   HANDLE killed;
 
   blas_queue_t	*queue;    /* Parameter Pointer */
+  blas_queue_t	*tail;     /* Last job waiting in "queue", for O(1) append */
   int		shutdown;  /* server shutdown flag */
 
 } blas_pool_t;
@@ -242,7 +243,10 @@ static DWORD WINAPI blas_thread_server(void *arg){
     EnterCriticalSection(&pool.lock);
 
     queue = pool.queue;
-    if (queue) pool.queue = queue->next;
+    if (queue) {
+      pool.queue = queue->pool_next;
+      if (pool.queue == NULL) pool.tail = NULL;
+    }
 
     LeaveCriticalSection(&pool.lock);
 
@@ -380,6 +384,7 @@ int blas_thread_init(void){
 
     pool.shutdown = 0;
     pool.queue    = NULL;
+    pool.tail     = NULL;
 
     for(i = 0; i < blas_cpu_number - 1; i++){
       blas_threads[i] = CreateThread(NULL, 0,
@@ -411,7 +416,7 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
   if (unlikely(blas_server_avail == 0)) blas_thread_init();
 #endif
 
-  blas_queue_t *current;
+  blas_queue_t *current, *last = NULL;
 
   current = queue;
 
@@ -425,19 +430,22 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
     __asm__ __volatile__ ("stmxcsr %0" : "=m" (current -> sse_mode));
 #endif
 
+    /* Build the pool's own chain over this caller's jobs */
+    current -> pool_next = current -> next;
+    last = current;
+
     current = current -> next;
     pos ++;
   }
 
   EnterCriticalSection(&pool.lock);
 
-  if (pool.queue) {
-    current = pool.queue;
-    while (current -> next) current = current -> next;
-    current -> next = queue;
+  if (pool.tail) {
+    pool.tail -> pool_next = queue;
   } else {
     pool.queue = queue;
   }
+  pool.tail = last;
 
   LeaveCriticalSection(&pool.lock);
 
@@ -574,6 +582,7 @@ void goto_set_num_threads(int num_threads)
 
 			pool.shutdown = 0;
 			pool.queue    = NULL;
+			pool.tail     = NULL;
 			blas_server_avail = 1;
 		}
 

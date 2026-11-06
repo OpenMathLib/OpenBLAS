@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
@@ -244,7 +242,6 @@ static doublereal c_b54 = 1.;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DGELSY + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgelsy.
 f"> */
@@ -255,7 +252,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgelsy.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -353,6 +349,7 @@ f"> */
 /* >          B is DOUBLE PRECISION array, dimension (LDB,NRHS) */
 /* >          On entry, the M-by-NRHS right hand side matrix B. */
 /* >          On exit, the N-by-NRHS solution matrix X. */
+/* >          If M = 0 or N = 0, B is not referenced. */
 /* > \endverbatim */
 /* > */
 /* > \param[in] LDB */
@@ -385,6 +382,7 @@ f"> */
 /* >          The effective rank of A, i.e., the order of the submatrix */
 /* >          R11.  This is the same as the order of the submatrix T11 */
 /* >          in the complete orthogonal factorization of A. */
+/* >          If NRHS = 0, RANK = 0 on output. */
 /* > \endverbatim */
 /* > */
 /* > \param[out] WORK */
@@ -427,9 +425,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup doubleGEsolve */
+/* > \ingroup gelsy */
 
 /* > \par Contributors: */
 /*  ================== */
@@ -449,34 +445,34 @@ f"> */
     doublereal d__1, d__2;
 
     /* Local variables */
+    integer i__, j;
+    doublereal c1, c2, s1, s2;
+    integer nb, mn, nb1, nb2, nb3, nb4;
     doublereal anrm, bnrm, smin, smax;
-    integer i__, j, iascl, ibscl;
+    integer iascl, ibscl;
     extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer ismin, ismax;
-    doublereal c1, c2;
     extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *), dlaic1_(
 	    integer *, integer *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *);
-    doublereal wsize, s1, s2;
+    doublereal wsize;
     extern /* Subroutine */ void dgeqp3_(integer *, integer *, doublereal *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
-	    integer *), dlabad_(doublereal *, doublereal *);
-    integer nb;
+	    integer *);
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
-    integer mn;
     extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), dlaset_(char *, integer *, integer 
-	    *, doublereal *, doublereal *, doublereal *, integer *); 
-    extern void xerbla_(char *, integer *, ftnlen);
+	    *, doublereal *, doublereal *, doublereal *, integer *), 
+	    xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     doublereal bignum;
-    integer lwkmin, nb1, nb2, nb3, nb4;
+    integer lwkmin;
     extern /* Subroutine */ void dormqr_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *);
@@ -490,10 +486,9 @@ f"> */
 	    integer *, doublereal *, doublereal *, integer *, integer *);
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -501,10 +496,10 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --jpvt;
     --work;
@@ -543,11 +538,11 @@ f"> */
 	} else {
 	    nb1 = ilaenv_(&c__1, "DGEQRF", " ", m, n, &c_n1, &c_n1, (ftnlen)6,
 		     (ftnlen)1);
-	    nb2 = ilaenv_(&c__1, "DGERQF", " ", m, n, &c_n1, &c_n1, (ftnlen)6,
+	    nb2 = ilaenv_(&c__1, "DTZRZF", " ", m, n, &c_n1, &c_n1, (ftnlen)6,
 		     (ftnlen)1);
 	    nb3 = ilaenv_(&c__1, "DORMQR", " ", m, n, nrhs, &c_n1, (ftnlen)6, 
 		    (ftnlen)1);
-	    nb4 = ilaenv_(&c__1, "DORMRQ", " ", m, n, nrhs, &c_n1, (ftnlen)6, 
+	    nb4 = ilaenv_(&c__1, "DORMRZ", " ", m, n, nrhs, &c_n1, (ftnlen)6, 
 		    (ftnlen)1);
 /* Computing MAX */
 	    i__1 = f2cmax(nb1,nb2), i__1 = f2cmax(i__1,nb3);
@@ -587,7 +582,6 @@ f"> */
 
     smlnum = dlamch_("S") / dlamch_("P");
     bignum = 1. / smlnum;
-    dlabad_(&smlnum, &bignum);
 
 /*     Scale A, B if f2cmax entries outside range [SMLNUM,BIGNUM] */
 

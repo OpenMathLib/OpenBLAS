@@ -258,8 +258,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
@@ -272,7 +270,6 @@ static integer c__1 = 1;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download ZHETF2_RK + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhetf2_
 rk.f"> */
@@ -283,7 +280,6 @@ rk.f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhetf2_
 rk.f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -474,9 +470,7 @@ rk.f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup complex16HEcomputational */
+/* > \ingroup hetf2_rk */
 
 /* > \par Further Details: */
 /*  ===================== */
@@ -511,48 +505,43 @@ rk.f"> */
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2, i__3, i__4, i__5, i__6;
     doublereal d__1, d__2;
-    doublecomplex z__1, z__2, z__3, z__4, z__5, z__6, z__7, z__8;
+    doublecomplex z__1, z__2, z__3, z__4, z__5, z__6;
 
     /* Local variables */
+    doublereal d__;
+    integer i__, j, k, p;
+    doublecomplex t;
+    doublereal r1, d11;
+    doublecomplex d12;
+    doublereal d22;
+    doublecomplex d21;
+    integer ii, kk, kp;
+    doublecomplex wk;
+    doublereal tt;
+    doublecomplex wkm1, wkp1;
     logical done;
     integer imax, jmax;
     extern /* Subroutine */ void zher_(char *, integer *, doublereal *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
-    doublereal d__;
-    integer i__, j, k, p;
-    doublecomplex t;
     doublereal alpha;
     extern logical lsame_(char *, char *);
     doublereal dtemp, sfmin;
     integer itemp, kstep;
     logical upper;
-    doublereal r1;
     extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
-    extern doublereal dlapy2_(doublereal *, doublereal *);
-    doublereal d11;
-    doublecomplex d12;
-    doublereal d22;
-    doublecomplex d21;
-    integer ii, kk;
-    extern doublereal dlamch_(char *);
-    integer kp;
+    extern doublereal dlapy2_(doublereal *, doublereal *), dlamch_(char *);
     doublereal absakk;
-    doublecomplex wk;
-    doublereal tt;
-    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
-    extern void zdscal_(
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen), zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     doublereal colmax;
     extern integer izamax_(integer *, doublecomplex *, integer *);
     doublereal rowmax;
-    doublecomplex wkm1, wkp1;
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ====================================================================== */
@@ -563,7 +552,7 @@ rk.f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     --e;
     --ipiv;
@@ -711,7 +700,7 @@ L12:
 
 /*                 Case(2) */
 /*                 Equivalent to testing for */
-/*                 ABS( REAL( W( IMAX,KW-1 ) ) ).GE.ALPHA*ROWMAX */
+/*                 ABS( DBLE( W( IMAX,KW-1 ) ) ).GE.ALPHA*ROWMAX */
 /*                 (used to handle NaN and Inf) */
 
 		i__1 = imax + imax * a_dim1;
@@ -784,7 +773,7 @@ L12:
 		    a[i__2].r = t.r, a[i__2].i = t.i;
 /* L14: */
 		}
-/*              (3) Swap and conjugate corner elements at row-col interserction */
+/*              (3) Swap and conjugate corner elements at row-col intersection */
 		i__1 = p + k * a_dim1;
 		d_cnjg(&z__1, &a[p + k * a_dim1]);
 		a[i__1].r = z__1.r, a[i__1].i = z__1.i;
@@ -831,7 +820,7 @@ L12:
 		    a[i__2].r = t.r, a[i__2].i = t.i;
 /* L15: */
 		}
-/*              (3) Swap and conjugate corner elements at row-col interserction */
+/*              (3) Swap and conjugate corner elements at row-col intersection */
 		i__1 = kp + kk * a_dim1;
 		d_cnjg(&z__1, &a[kp + kk * a_dim1]);
 		a[i__1].r = z__1.r, a[i__1].i = z__1.i;
@@ -986,25 +975,27 @@ L12:
 
 		    for (j = k - 2; j >= 1; --j) {
 
-/*                    Compute  D21 * ( W(k)W(k+1) ) * inv(D(k)) for row J */
+/*                    Compute  ( W(k)W(k+1) ) * inv(D(k)) for row J */
 
 			i__1 = j + (k - 1) * a_dim1;
-			z__3.r = d11 * a[i__1].r, z__3.i = d11 * a[i__1].i;
-			d_cnjg(&z__5, &d12);
+			z__4.r = d11 * a[i__1].r, z__4.i = d11 * a[i__1].i;
+			d_cnjg(&z__6, &d12);
 			i__2 = j + k * a_dim1;
-			z__4.r = z__5.r * a[i__2].r - z__5.i * a[i__2].i, 
-				z__4.i = z__5.r * a[i__2].i + z__5.i * a[i__2]
+			z__5.r = z__6.r * a[i__2].r - z__6.i * a[i__2].i, 
+				z__5.i = z__6.r * a[i__2].i + z__6.i * a[i__2]
 				.r;
-			z__2.r = z__3.r - z__4.r, z__2.i = z__3.i - z__4.i;
+			z__3.r = z__4.r - z__5.r, z__3.i = z__4.i - z__5.i;
+			z__2.r = z__3.r / d__, z__2.i = z__3.i / d__;
 			z__1.r = tt * z__2.r, z__1.i = tt * z__2.i;
 			wkm1.r = z__1.r, wkm1.i = z__1.i;
 			i__1 = j + k * a_dim1;
-			z__3.r = d22 * a[i__1].r, z__3.i = d22 * a[i__1].i;
+			z__4.r = d22 * a[i__1].r, z__4.i = d22 * a[i__1].i;
 			i__2 = j + (k - 1) * a_dim1;
-			z__4.r = d12.r * a[i__2].r - d12.i * a[i__2].i, 
-				z__4.i = d12.r * a[i__2].i + d12.i * a[i__2]
+			z__5.r = d12.r * a[i__2].r - d12.i * a[i__2].i, 
+				z__5.i = d12.r * a[i__2].i + d12.i * a[i__2]
 				.r;
-			z__2.r = z__3.r - z__4.r, z__2.i = z__3.i - z__4.i;
+			z__3.r = z__4.r - z__5.r, z__3.i = z__4.i - z__5.i;
+			z__2.r = z__3.r / d__, z__2.i = z__3.i / d__;
 			z__1.r = tt * z__2.r, z__1.i = tt * z__2.i;
 			wk.r = z__1.r, wk.i = z__1.i;
 
@@ -1014,23 +1005,19 @@ L12:
 			    i__1 = i__ + j * a_dim1;
 			    i__2 = i__ + j * a_dim1;
 			    i__3 = i__ + k * a_dim1;
-			    z__4.r = a[i__3].r / d__, z__4.i = a[i__3].i / 
-				    d__;
-			    d_cnjg(&z__5, &wk);
-			    z__3.r = z__4.r * z__5.r - z__4.i * z__5.i, 
-				    z__3.i = z__4.r * z__5.i + z__4.i * 
-				    z__5.r;
+			    d_cnjg(&z__4, &wk);
+			    z__3.r = a[i__3].r * z__4.r - a[i__3].i * z__4.i, 
+				    z__3.i = a[i__3].r * z__4.i + a[i__3].i * 
+				    z__4.r;
 			    z__2.r = a[i__2].r - z__3.r, z__2.i = a[i__2].i - 
 				    z__3.i;
 			    i__4 = i__ + (k - 1) * a_dim1;
-			    z__7.r = a[i__4].r / d__, z__7.i = a[i__4].i / 
-				    d__;
-			    d_cnjg(&z__8, &wkm1);
-			    z__6.r = z__7.r * z__8.r - z__7.i * z__8.i, 
-				    z__6.i = z__7.r * z__8.i + z__7.i * 
-				    z__8.r;
-			    z__1.r = z__2.r - z__6.r, z__1.i = z__2.i - 
-				    z__6.i;
+			    d_cnjg(&z__6, &wkm1);
+			    z__5.r = a[i__4].r * z__6.r - a[i__4].i * z__6.i, 
+				    z__5.i = a[i__4].r * z__6.i + a[i__4].i * 
+				    z__6.r;
+			    z__1.r = z__2.r - z__5.r, z__1.i = z__2.i - 
+				    z__5.i;
 			    a[i__1].r = z__1.r, a[i__1].i = z__1.i;
 /* L20: */
 			}
@@ -1038,11 +1025,9 @@ L12:
 /*                    Store U(k) and U(k-1) in cols k and k-1 for row J */
 
 			i__1 = j + k * a_dim1;
-			z__1.r = wk.r / d__, z__1.i = wk.i / d__;
-			a[i__1].r = z__1.r, a[i__1].i = z__1.i;
+			a[i__1].r = wk.r, a[i__1].i = wk.i;
 			i__1 = j + (k - 1) * a_dim1;
-			z__1.r = wkm1.r / d__, z__1.i = wkm1.i / d__;
-			a[i__1].r = z__1.r, a[i__1].i = z__1.i;
+			a[i__1].r = wkm1.r, a[i__1].i = wkm1.i;
 /*                    (*) Make sure that diagonal element of pivot is real */
 			i__1 = j + j * a_dim1;
 			i__2 = j + j * a_dim1;
@@ -1208,7 +1193,7 @@ L42:
 
 /*                 Case(2) */
 /*                 Equivalent to testing for */
-/*                 ABS( REAL( W( IMAX,KW-1 ) ) ).GE.ALPHA*ROWMAX */
+/*                 ABS( DBLE( W( IMAX,KW-1 ) ) ).GE.ALPHA*ROWMAX */
 /*                 (used to handle NaN and Inf) */
 
 		i__1 = imax + imax * a_dim1;
@@ -1282,7 +1267,7 @@ L42:
 		    a[i__2].r = t.r, a[i__2].i = t.i;
 /* L44: */
 		}
-/*              (3) Swap and conjugate corner elements at row-col interserction */
+/*              (3) Swap and conjugate corner elements at row-col intersection */
 		i__1 = p + k * a_dim1;
 		d_cnjg(&z__1, &a[p + k * a_dim1]);
 		a[i__1].r = z__1.r, a[i__1].i = z__1.i;
@@ -1328,7 +1313,7 @@ L42:
 		    a[i__2].r = t.r, a[i__2].i = t.i;
 /* L45: */
 		}
-/*              (3) Swap and conjugate corner elements at row-col interserction */
+/*              (3) Swap and conjugate corner elements at row-col intersection */
 		i__1 = kp + kk * a_dim1;
 		d_cnjg(&z__1, &a[kp + kk * a_dim1]);
 		a[i__1].r = z__1.r, a[i__1].i = z__1.i;
@@ -1484,25 +1469,27 @@ L42:
 		    i__1 = *n;
 		    for (j = k + 2; j <= i__1; ++j) {
 
-/*                    Compute  D21 * ( W(k)W(k+1) ) * inv(D(k)) for row J */
+/*                    Compute  ( W(k)W(k+1) ) * inv(D(k)) for row J */
 
 			i__2 = j + k * a_dim1;
-			z__3.r = d11 * a[i__2].r, z__3.i = d11 * a[i__2].i;
+			z__4.r = d11 * a[i__2].r, z__4.i = d11 * a[i__2].i;
 			i__3 = j + (k + 1) * a_dim1;
-			z__4.r = d21.r * a[i__3].r - d21.i * a[i__3].i, 
-				z__4.i = d21.r * a[i__3].i + d21.i * a[i__3]
+			z__5.r = d21.r * a[i__3].r - d21.i * a[i__3].i, 
+				z__5.i = d21.r * a[i__3].i + d21.i * a[i__3]
 				.r;
-			z__2.r = z__3.r - z__4.r, z__2.i = z__3.i - z__4.i;
+			z__3.r = z__4.r - z__5.r, z__3.i = z__4.i - z__5.i;
+			z__2.r = z__3.r / d__, z__2.i = z__3.i / d__;
 			z__1.r = tt * z__2.r, z__1.i = tt * z__2.i;
 			wk.r = z__1.r, wk.i = z__1.i;
 			i__2 = j + (k + 1) * a_dim1;
-			z__3.r = d22 * a[i__2].r, z__3.i = d22 * a[i__2].i;
-			d_cnjg(&z__5, &d21);
+			z__4.r = d22 * a[i__2].r, z__4.i = d22 * a[i__2].i;
+			d_cnjg(&z__6, &d21);
 			i__3 = j + k * a_dim1;
-			z__4.r = z__5.r * a[i__3].r - z__5.i * a[i__3].i, 
-				z__4.i = z__5.r * a[i__3].i + z__5.i * a[i__3]
+			z__5.r = z__6.r * a[i__3].r - z__6.i * a[i__3].i, 
+				z__5.i = z__6.r * a[i__3].i + z__6.i * a[i__3]
 				.r;
-			z__2.r = z__3.r - z__4.r, z__2.i = z__3.i - z__4.i;
+			z__3.r = z__4.r - z__5.r, z__3.i = z__4.i - z__5.i;
+			z__2.r = z__3.r / d__, z__2.i = z__3.i / d__;
 			z__1.r = tt * z__2.r, z__1.i = tt * z__2.i;
 			wkp1.r = z__1.r, wkp1.i = z__1.i;
 
@@ -1513,23 +1500,19 @@ L42:
 			    i__3 = i__ + j * a_dim1;
 			    i__4 = i__ + j * a_dim1;
 			    i__5 = i__ + k * a_dim1;
-			    z__4.r = a[i__5].r / d__, z__4.i = a[i__5].i / 
-				    d__;
-			    d_cnjg(&z__5, &wk);
-			    z__3.r = z__4.r * z__5.r - z__4.i * z__5.i, 
-				    z__3.i = z__4.r * z__5.i + z__4.i * 
-				    z__5.r;
+			    d_cnjg(&z__4, &wk);
+			    z__3.r = a[i__5].r * z__4.r - a[i__5].i * z__4.i, 
+				    z__3.i = a[i__5].r * z__4.i + a[i__5].i * 
+				    z__4.r;
 			    z__2.r = a[i__4].r - z__3.r, z__2.i = a[i__4].i - 
 				    z__3.i;
 			    i__6 = i__ + (k + 1) * a_dim1;
-			    z__7.r = a[i__6].r / d__, z__7.i = a[i__6].i / 
-				    d__;
-			    d_cnjg(&z__8, &wkp1);
-			    z__6.r = z__7.r * z__8.r - z__7.i * z__8.i, 
-				    z__6.i = z__7.r * z__8.i + z__7.i * 
-				    z__8.r;
-			    z__1.r = z__2.r - z__6.r, z__1.i = z__2.i - 
-				    z__6.i;
+			    d_cnjg(&z__6, &wkp1);
+			    z__5.r = a[i__6].r * z__6.r - a[i__6].i * z__6.i, 
+				    z__5.i = a[i__6].r * z__6.i + a[i__6].i * 
+				    z__6.r;
+			    z__1.r = z__2.r - z__5.r, z__1.i = z__2.i - 
+				    z__5.i;
 			    a[i__3].r = z__1.r, a[i__3].i = z__1.i;
 /* L50: */
 			}
@@ -1537,11 +1520,9 @@ L42:
 /*                    Store L(k) and L(k+1) in cols k and k+1 for row J */
 
 			i__2 = j + k * a_dim1;
-			z__1.r = wk.r / d__, z__1.i = wk.i / d__;
-			a[i__2].r = z__1.r, a[i__2].i = z__1.i;
+			a[i__2].r = wk.r, a[i__2].i = wk.i;
 			i__2 = j + (k + 1) * a_dim1;
-			z__1.r = wkp1.r / d__, z__1.i = wkp1.i / d__;
-			a[i__2].r = z__1.r, a[i__2].i = z__1.i;
+			a[i__2].r = wkp1.r, a[i__2].i = wkp1.i;
 /*                    (*) Make sure that diagonal element of pivot is real */
 			i__2 = j + j * a_dim1;
 			i__3 = j + j * a_dim1;

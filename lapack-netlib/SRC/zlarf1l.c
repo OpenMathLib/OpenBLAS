@@ -415,6 +415,10 @@ static integer c__1 = 1;
     --work;
 
     /* Function Body */
+/* Quick return if C is empty */
+    if (*m <= 0 || *n <= 0)
+            return;
+
     applyleft = lsame_(side, "L");
     firstv = 1;
     lastc = 0;

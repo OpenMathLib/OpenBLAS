@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
@@ -239,7 +237,6 @@ static integer c__1 = 1;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DSPTRF + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dsptrf.
 f"> */
@@ -250,7 +247,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dsptrf.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -340,9 +336,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup doubleOTHERcomputational */
+/* > \ingroup hptrf */
 
 /* > \par Further Details: */
 /*  ===================== */
@@ -398,11 +392,16 @@ f"> */
     doublereal d__1, d__2, d__3;
 
     /* Local variables */
+    integer i__, j, k;
+    doublereal t, r1, d11, d12, d21, d22;
+    integer kc, kk, kp;
+    doublereal wk;
+    integer kx, knc, kpc, npp;
+    doublereal wkm1, wkp1;
     integer imax, jmax;
     extern /* Subroutine */ void dspr_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *);
-    integer i__, j, k;
-    doublereal t, alpha;
+    doublereal alpha;
     extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
@@ -410,21 +409,16 @@ f"> */
 	    doublereal *, integer *);
     integer kstep;
     logical upper;
-    doublereal r1, d11, d12, d21, d22;
-    integer kc, kk, kp;
-    doublereal absakk, wk;
-    integer kx;
+    doublereal absakk;
     extern integer idamax_(integer *, doublereal *, integer *);
+    extern logical disnan_(doublereal *);
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     doublereal colmax, rowmax;
-    integer knc, kpc, npp;
-    doublereal wkm1, wkp1;
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -489,9 +483,10 @@ L10:
 	    colmax = 0.;
 	}
 
-	if (f2cmax(absakk,colmax) == 0.) {
+	if (f2cmax(absakk,colmax) == 0. || disnan_(&absakk)) {
 
-/*           Column K is zero: set INFO and continue */
+/*           Column K is zero or underflow, or contains a NaN: */
+/*           set INFO and continue */
 
 	    if (*info == 0) {
 		*info = k;
@@ -622,13 +617,12 @@ L10:
 		    d22 = ap[k - 1 + (k - 2) * (k - 1) / 2] / d12;
 		    d11 = ap[k + (k - 1) * k / 2] / d12;
 		    t = 1. / (d11 * d22 - 1.);
-		    d12 = t / d12;
 
 		    for (j = k - 2; j >= 1; --j) {
-			wkm1 = d12 * (d11 * ap[j + (k - 2) * (k - 1) / 2] - 
-				ap[j + (k - 1) * k / 2]);
-			wk = d12 * (d22 * ap[j + (k - 1) * k / 2] - ap[j + (k 
-				- 2) * (k - 1) / 2]);
+			wkm1 = t * ((d11 * ap[j + (k - 2) * (k - 1) / 2] - ap[
+				j + (k - 1) * k / 2]) / d12);
+			wk = t * ((d22 * ap[j + (k - 1) * k / 2] - ap[j + (k 
+				- 2) * (k - 1) / 2]) / d12);
 			for (i__ = j; i__ >= 1; --i__) {
 			    ap[i__ + (j - 1) * j / 2] = ap[i__ + (j - 1) * j /
 				     2] - ap[i__ + (k - 1) * k / 2] * wk - ap[
@@ -696,9 +690,10 @@ L60:
 	    colmax = 0.;
 	}
 
-	if (f2cmax(absakk,colmax) == 0.) {
+	if (f2cmax(absakk,colmax) == 0. || disnan_(&absakk)) {
 
-/*           Column K is zero: set INFO and continue */
+/*           Column K is zero or underflow, or contains a NaN: */
+/*           set INFO and continue */
 
 	    if (*info == 0) {
 		*info = k;
@@ -840,14 +835,15 @@ L60:
 		    d11 = ap[k + 1 + k * ((*n << 1) - k - 1) / 2] / d21;
 		    d22 = ap[k + (k - 1) * ((*n << 1) - k) / 2] / d21;
 		    t = 1. / (d11 * d22 - 1.);
-		    d21 = t / d21;
 
 		    i__1 = *n;
 		    for (j = k + 2; j <= i__1; ++j) {
-			wk = d21 * (d11 * ap[j + (k - 1) * ((*n << 1) - k) / 
-				2] - ap[j + k * ((*n << 1) - k - 1) / 2]);
-			wkp1 = d21 * (d22 * ap[j + k * ((*n << 1) - k - 1) / 
-				2] - ap[j + (k - 1) * ((*n << 1) - k) / 2]);
+			wk = t * ((d11 * ap[j + (k - 1) * ((*n << 1) - k) / 2]
+				 - ap[j + k * ((*n << 1) - k - 1) / 2]) / d21)
+				;
+			wkp1 = t * ((d22 * ap[j + k * ((*n << 1) - k - 1) / 2]
+				 - ap[j + (k - 1) * ((*n << 1) - k) / 2]) / 
+				d21);
 
 			i__2 = *n;
 			for (i__ = j; i__ <= i__2; ++i__) {

@@ -58,6 +58,7 @@
 *
 *  =====================================================================
       SUBROUTINE SERRST( PATH, NUNIT )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -85,6 +86,7 @@
      $                   E( NMAX ), Q( NMAX, NMAX ), R( NMAX ),
      $                   TAU( NMAX ), W( LW ), X( NMAX ),
      $                   Z( NMAX, NMAX )
+      REAL               RINF, RZERO
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAMEN
@@ -437,6 +439,49 @@
          CALL SSTEIN( 2, D, E, 0, X, I1, I2, Z, 1, W, IW, I3, INFO )
          CALL CHKXER( 'SSTEIN', INFOT, NOUT, LERR, OK )
          NT = NT + 4
+*
+*        A matrix that holds an infinity must come back from the
+*        drivers that scale it, instead of reaching XERBLA with a
+*        scale factor of zero.
+*
+         RZERO = 0.0E0
+         RINF = 1.0E0 / RZERO
+         DO 50 J = 1, NMAX
+            D( J ) = REAL( J )
+            E( J ) = 1.0E0 / REAL( J+1 )
+            DO 40 I = 1, NMAX
+               A( I, J ) = RZERO
+   40       CONTINUE
+            A( J, J ) = D( J )
+   50    CONTINUE
+         D( 1 ) = RINF
+         A( 1, 1 ) = RINF
+         E( NMAX ) = RZERO
+         A( 1, 2 ) = E( 1 )
+         A( 2, 3 ) = E( 2 )
+         SRNAMT = 'SSTEVX'
+         INFOT = 0
+         LERR = .FALSE.
+         CALL SSTEVX( 'V', 'V', NMAX, D, E, RZERO, 1.0E0, 1, NMAX,
+     $                RZERO, M, X, Z, NMAX, W, IW, I3, INFO )
+         IF( LERR ) THEN
+            WRITE( NOUT, FMT = 9997 )'SSTEVX'
+            OK = .FALSE.
+         END IF
+         D( 1 ) = RINF
+         E( 1 ) = 1.0E0 / REAL( 2 )
+         E( 2 ) = 1.0E0 / REAL( 3 )
+         E( NMAX ) = RZERO
+         SRNAMT = 'SSYEVX'
+         INFOT = 0
+         LERR = .FALSE.
+         CALL SSYEVX( 'V', 'V', 'U', NMAX, A, NMAX, RZERO, 1.0E0, 1,
+     $                NMAX, RZERO, M, X, Z, NMAX, W, LW, IW, I3, INFO )
+         IF( LERR ) THEN
+            WRITE( NOUT, FMT = 9997 )'SSYEVX'
+            OK = .FALSE.
+         END IF
+         NT = NT + 2
 *
 *        SSTEQR
 *
@@ -1424,6 +1469,8 @@
      $      ' (', I3, ' tests done)' )
  9998 FORMAT( ' *** ', A3, ' routines failed the tests of the error ',
      $      'exits ***' )
+ 9997 FORMAT( ' *** ', A6, ' called XERBLA for a matrix with an ',
+     $      'infinity ***' )
 *
       RETURN
 *

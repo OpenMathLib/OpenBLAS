@@ -250,8 +250,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static doublecomplex c_b1 = {0.,0.};
@@ -269,7 +267,6 @@ static doublereal c_b59 = 0.;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download ZGELSS + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgelss.
 f"> */
@@ -280,7 +277,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgelss.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -433,9 +429,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date June 2016 */
-
-/* > \ingroup complex16GEsolve */
+/* > \ingroup gelss */
 
 /*  ===================================================================== */
 /* Subroutine */ void zgelss_(integer *m, integer *n, integer *nrhs, 
@@ -448,8 +442,10 @@ f"> */
     doublereal d__1;
 
     /* Local variables */
-    doublereal anrm, bnrm;
-    integer itau, lwork_zgebrd__, lwork_zgelqf__, i__, lwork_zgeqrf__, 
+    integer i__, bl, ie, il, mm;
+    doublecomplex dum[1];
+    doublereal eps, thr, anrm, bnrm;
+    integer itau, lwork_zgebrd__, lwork_zgelqf__, lwork_zgeqrf__, 
 	    lwork_zungbr__, lwork_zunmbr__, iascl, ibscl, lwork_zunmlq__, 
 	    chunk, lwork_zunmqr__;
     doublereal sfmin;
@@ -464,16 +460,13 @@ f"> */
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     integer iwork;
     extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *), dlabad_(doublereal *, doublereal *);
-    integer bl, ie, il;
+	    doublecomplex *, integer *);
     extern doublereal dlamch_(char *);
-    integer mm;
     extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), dlaset_(char *, integer *, integer 
-	    *, doublereal *, doublereal *, doublereal *, integer *); 
-    extern void xerbla_(char *, integer *, ftnlen);
-    extern void zgebrd_(integer *, integer *, 
+	    *, doublereal *, doublereal *, doublereal *, integer *), 
+	    xerbla_(char *, integer *, ftnlen), zgebrd_(integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *, 
 	    integer *);
@@ -512,14 +505,11 @@ f"> */
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *), zunmqr_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *);
-    doublecomplex dum[1];
-    doublereal eps, thr;
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     June 2016 */
 
 
 /*  ===================================================================== */
@@ -529,10 +519,10 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --s;
     --work;
@@ -730,7 +720,6 @@ f"> */
     sfmin = dlamch_("S");
     smlnum = sfmin / eps;
     bignum = 1. / smlnum;
-    dlabad_(&smlnum, &bignum);
 
 /*     Scale A if f2cmax element outside range [SMLNUM,BIGNUM] */
 
@@ -907,7 +896,7 @@ f"> */
 		zlacpy_("G", n, &bl, &work[1], n, &b[i__ * b_dim1 + 1], ldb);
 /* L20: */
 	    }
-	} else {
+	} else if (*nrhs == 1) {
 	    zgemv_("C", n, n, &c_b2, &a[a_offset], lda, &b[b_offset], &c__1, &
 		    c_b1, &work[1], &c__1);
 	    zcopy_(n, &work[1], &c__1, &b[b_offset], &c__1);
@@ -1038,7 +1027,7 @@ f"> */
 			    , ldb);
 /* L40: */
 		}
-	    } else {
+	    } else if (*nrhs == 1) {
 		zgemv_("C", m, m, &c_b2, &work[il], &ldwork, &b[b_dim1 + 1], &
 			c__1, &c_b1, &work[iwork], &c__1);
 		zcopy_(m, &work[iwork], &c__1, &b[b_dim1 + 1], &c__1);
@@ -1150,7 +1139,7 @@ f"> */
 			    ldb);
 /* L60: */
 		}
-	    } else {
+	    } else if (*nrhs == 1) {
 		zgemv_("C", m, n, &c_b2, &a[a_offset], lda, &b[b_offset], &
 			c__1, &c_b1, &work[1], &c__1);
 		zcopy_(n, &work[1], &c__1, &b[b_offset], &c__1);
@@ -1158,25 +1147,37 @@ f"> */
 	}
     }
 
-/*     Undo scaling */
+/*     Undo scaling.  The solution carries the factor of B divided by */
+/*     the factor of A.  When both were scaled to the same end of the */
+/*     range the constants cancel and BNRM/ANRM is applied in one step: */
+/*     applied in two, the first step could flush or overflow an entry */
+/*     that the second would have brought back into range. */
 
+    if (iascl == ibscl && iascl != 0) {
+	zlascl_("G", &c__0, &c__0, &anrm, &bnrm, n, nrhs, &b[b_offset], ldb, 
+		info);
+    } else {
+	if (iascl == 1) {
+	    zlascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (iascl == 2) {
+	    zlascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+	if (ibscl == 1) {
+	    zlascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (ibscl == 2) {
+	    zlascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+    }
     if (iascl == 1) {
-	zlascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	dlascl_("G", &c__0, &c__0, &smlnum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
     } else if (iascl == 2) {
-	zlascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	dlascl_("G", &c__0, &c__0, &bignum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
-    }
-    if (ibscl == 1) {
-	zlascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
-    } else if (ibscl == 2) {
-	zlascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
     }
 L70:
     work[1].r = (doublereal) maxwrk, work[1].i = 0.;

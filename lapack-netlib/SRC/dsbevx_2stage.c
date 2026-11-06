@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__2 = 2;
@@ -238,326 +236,6 @@ static doublereal c_b24 = 1.;
 static integer c__1 = 1;
 static doublereal c_b45 = 0.;
 
-/* > \brief <b> DSBEVX_2STAGE computes the eigenvalues and, optionally, the left and/or right eigenvectors for
- OTHER matrices</b> */
-
-/*  @precisions fortran d -> s */
-
-/*  =========== DOCUMENTATION =========== */
-
-/* Online html documentation available at */
-/*            http://www.netlib.org/lapack/explore-html/ */
-
-/* > \htmlonly */
-/* > Download DSBEVX_2STAGE + dependencies */
-/* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dsbevx_
-2stage.f"> */
-/* > [TGZ]</a> */
-/* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dsbevx_
-2stage.f"> */
-/* > [ZIP]</a> */
-/* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dsbevx_
-2stage.f"> */
-/* > [TXT]</a> */
-/* > \endhtmlonly */
-
-/*  Definition: */
-/*  =========== */
-
-/*       SUBROUTINE DSBEVX_2STAGE( JOBZ, RANGE, UPLO, N, KD, AB, LDAB, Q, */
-/*                                 LDQ, VL, VU, IL, IU, ABSTOL, M, W, Z, */
-/*                                 LDZ, WORK, LWORK, IWORK, IFAIL, INFO ) */
-
-/*       IMPLICIT NONE */
-
-/*       CHARACTER          JOBZ, RANGE, UPLO */
-/*       INTEGER            IL, INFO, IU, KD, LDAB, LDQ, LDZ, M, N, LWORK */
-/*       DOUBLE PRECISION   ABSTOL, VL, VU */
-/*       INTEGER            IFAIL( * ), IWORK( * ) */
-/*       DOUBLE PRECISION   AB( LDAB, * ), Q( LDQ, * ), W( * ), WORK( * ), */
-/*      $                   Z( LDZ, * ) */
-
-
-/* > \par Purpose: */
-/*  ============= */
-/* > */
-/* > \verbatim */
-/* > */
-/* > DSBEVX_2STAGE computes selected eigenvalues and, optionally, eigenvectors */
-/* > of a real symmetric band matrix A using the 2stage technique for */
-/* > the reduction to tridiagonal. Eigenvalues and eigenvectors can */
-/* > be selected by specifying either a range of values or a range of */
-/* > indices for the desired eigenvalues. */
-/* > \endverbatim */
-
-/*  Arguments: */
-/*  ========== */
-
-/* > \param[in] JOBZ */
-/* > \verbatim */
-/* >          JOBZ is CHARACTER*1 */
-/* >          = 'N':  Compute eigenvalues only; */
-/* >          = 'V':  Compute eigenvalues and eigenvectors. */
-/* >                  Not available in this release. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] RANGE */
-/* > \verbatim */
-/* >          RANGE is CHARACTER*1 */
-/* >          = 'A': all eigenvalues will be found; */
-/* >          = 'V': all eigenvalues in the half-open interval (VL,VU] */
-/* >                 will be found; */
-/* >          = 'I': the IL-th through IU-th eigenvalues will be found. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] UPLO */
-/* > \verbatim */
-/* >          UPLO is CHARACTER*1 */
-/* >          = 'U':  Upper triangle of A is stored; */
-/* >          = 'L':  Lower triangle of A is stored. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] N */
-/* > \verbatim */
-/* >          N is INTEGER */
-/* >          The order of the matrix A.  N >= 0. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] KD */
-/* > \verbatim */
-/* >          KD is INTEGER */
-/* >          The number of superdiagonals of the matrix A if UPLO = 'U', */
-/* >          or the number of subdiagonals if UPLO = 'L'.  KD >= 0. */
-/* > \endverbatim */
-/* > */
-/* > \param[in,out] AB */
-/* > \verbatim */
-/* >          AB is DOUBLE PRECISION array, dimension (LDAB, N) */
-/* >          On entry, the upper or lower triangle of the symmetric band */
-/* >          matrix A, stored in the first KD+1 rows of the array.  The */
-/* >          j-th column of A is stored in the j-th column of the array AB */
-/* >          as follows: */
-/* >          if UPLO = 'U', AB(kd+1+i-j,j) = A(i,j) for f2cmax(1,j-kd)<=i<=j; */
-/* >          if UPLO = 'L', AB(1+i-j,j)    = A(i,j) for j<=i<=f2cmin(n,j+kd). */
-/* > */
-/* >          On exit, AB is overwritten by values generated during the */
-/* >          reduction to tridiagonal form.  If UPLO = 'U', the first */
-/* >          superdiagonal and the diagonal of the tridiagonal matrix T */
-/* >          are returned in rows KD and KD+1 of AB, and if UPLO = 'L', */
-/* >          the diagonal and first subdiagonal of T are returned in the */
-/* >          first two rows of AB. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] LDAB */
-/* > \verbatim */
-/* >          LDAB is INTEGER */
-/* >          The leading dimension of the array AB.  LDAB >= KD + 1. */
-/* > \endverbatim */
-/* > */
-/* > \param[out] Q */
-/* > \verbatim */
-/* >          Q is DOUBLE PRECISION array, dimension (LDQ, N) */
-/* >          If JOBZ = 'V', the N-by-N orthogonal matrix used in the */
-/* >                         reduction to tridiagonal form. */
-/* >          If JOBZ = 'N', the array Q is not referenced. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] LDQ */
-/* > \verbatim */
-/* >          LDQ is INTEGER */
-/* >          The leading dimension of the array Q.  If JOBZ = 'V', then */
-/* >          LDQ >= f2cmax(1,N). */
-/* > \endverbatim */
-/* > */
-/* > \param[in] VL */
-/* > \verbatim */
-/* >          VL is DOUBLE PRECISION */
-/* >          If RANGE='V', the lower bound of the interval to */
-/* >          be searched for eigenvalues. VL < VU. */
-/* >          Not referenced if RANGE = 'A' or 'I'. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] VU */
-/* > \verbatim */
-/* >          VU is DOUBLE PRECISION */
-/* >          If RANGE='V', the upper bound of the interval to */
-/* >          be searched for eigenvalues. VL < VU. */
-/* >          Not referenced if RANGE = 'A' or 'I'. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] IL */
-/* > \verbatim */
-/* >          IL is INTEGER */
-/* >          If RANGE='I', the index of the */
-/* >          smallest eigenvalue to be returned. */
-/* >          1 <= IL <= IU <= N, if N > 0; IL = 1 and IU = 0 if N = 0. */
-/* >          Not referenced if RANGE = 'A' or 'V'. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] IU */
-/* > \verbatim */
-/* >          IU is INTEGER */
-/* >          If RANGE='I', the index of the */
-/* >          largest eigenvalue to be returned. */
-/* >          1 <= IL <= IU <= N, if N > 0; IL = 1 and IU = 0 if N = 0. */
-/* >          Not referenced if RANGE = 'A' or 'V'. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] ABSTOL */
-/* > \verbatim */
-/* >          ABSTOL is DOUBLE PRECISION */
-/* >          The absolute error tolerance for the eigenvalues. */
-/* >          An approximate eigenvalue is accepted as converged */
-/* >          when it is determined to lie in an interval [a,b] */
-/* >          of width less than or equal to */
-/* > */
-/* >                  ABSTOL + EPS *   f2cmax( |a|,|b| ) , */
-/* > */
-/* >          where EPS is the machine precision.  If ABSTOL is less than */
-/* >          or equal to zero, then  EPS*|T|  will be used in its place, */
-/* >          where |T| is the 1-norm of the tridiagonal matrix obtained */
-/* >          by reducing AB to tridiagonal form. */
-/* > */
-/* >          Eigenvalues will be computed most accurately when ABSTOL is */
-/* >          set to twice the underflow threshold 2*DLAMCH('S'), not zero. */
-/* >          If this routine returns with INFO>0, indicating that some */
-/* >          eigenvectors did not converge, try setting ABSTOL to */
-/* >          2*DLAMCH('S'). */
-/* > */
-/* >          See "Computing Small Singular Values of Bidiagonal Matrices */
-/* >          with Guaranteed High Relative Accuracy," by Demmel and */
-/* >          Kahan, LAPACK Working Note #3. */
-/* > \endverbatim */
-/* > */
-/* > \param[out] M */
-/* > \verbatim */
-/* >          M is INTEGER */
-/* >          The total number of eigenvalues found.  0 <= M <= N. */
-/* >          If RANGE = 'A', M = N, and if RANGE = 'I', M = IU-IL+1. */
-/* > \endverbatim */
-/* > */
-/* > \param[out] W */
-/* > \verbatim */
-/* >          W is DOUBLE PRECISION array, dimension (N) */
-/* >          The first M elements contain the selected eigenvalues in */
-/* >          ascending order. */
-/* > \endverbatim */
-/* > */
-/* > \param[out] Z */
-/* > \verbatim */
-/* >          Z is DOUBLE PRECISION array, dimension (LDZ, f2cmax(1,M)) */
-/* >          If JOBZ = 'V', then if INFO = 0, the first M columns of Z */
-/* >          contain the orthonormal eigenvectors of the matrix A */
-/* >          corresponding to the selected eigenvalues, with the i-th */
-/* >          column of Z holding the eigenvector associated with W(i). */
-/* >          If an eigenvector fails to converge, then that column of Z */
-/* >          contains the latest approximation to the eigenvector, and the */
-/* >          index of the eigenvector is returned in IFAIL. */
-/* >          If JOBZ = 'N', then Z is not referenced. */
-/* >          Note: the user must ensure that at least f2cmax(1,M) columns are */
-/* >          supplied in the array Z; if RANGE = 'V', the exact value of M */
-/* >          is not known in advance and an upper bound must be used. */
-/* > \endverbatim */
-/* > */
-/* > \param[in] LDZ */
-/* > \verbatim */
-/* >          LDZ is INTEGER */
-/* >          The leading dimension of the array Z.  LDZ >= 1, and if */
-/* >          JOBZ = 'V', LDZ >= f2cmax(1,N). */
-/* > \endverbatim */
-/* > */
-/* > \param[out] WORK */
-/* > \verbatim */
-/* >          WORK is DOUBLE PRECISION array, dimension (LWORK) */
-/* > \endverbatim */
-/* > */
-/* > \param[in] LWORK */
-/* > \verbatim */
-/* >          LWORK is INTEGER */
-/* >          The length of the array WORK. LWORK >= 1, when N <= 1; */
-/* >          otherwise */
-/* >          If JOBZ = 'N' and N > 1, LWORK must be queried. */
-/* >                                   LWORK = MAX(1, 7*N, dimension) where */
-/* >                                   dimension = (2KD+1)*N + KD*NTHREADS + 2*N */
-/* >                                   where KD is the size of the band. */
-/* >                                   NTHREADS is the number of threads used when */
-/* >                                   openMP compilation is enabled, otherwise =1. */
-/* >          If JOBZ = 'V' and N > 1, LWORK must be queried. Not yet available */
-/* > */
-/* >          If LWORK = -1, then a workspace query is assumed; the routine */
-/* >          only calculates the optimal size of the WORK array, returns */
-/* >          this value as the first entry of the WORK array, and no error */
-/* >          message related to LWORK is issued by XERBLA. */
-/* > \endverbatim */
-/* > */
-/* > \param[out] IWORK */
-/* > \verbatim */
-/* >          IWORK is INTEGER array, dimension (5*N) */
-/* > \endverbatim */
-/* > */
-/* > \param[out] IFAIL */
-/* > \verbatim */
-/* >          IFAIL is INTEGER array, dimension (N) */
-/* >          If JOBZ = 'V', then if INFO = 0, the first M elements of */
-/* >          IFAIL are zero.  If INFO > 0, then IFAIL contains the */
-/* >          indices of the eigenvectors that failed to converge. */
-/* >          If JOBZ = 'N', then IFAIL is not referenced. */
-/* > \endverbatim */
-/* > */
-/* > \param[out] INFO */
-/* > \verbatim */
-/* >          INFO is INTEGER */
-/* >          = 0:  successful exit. */
-/* >          < 0:  if INFO = -i, the i-th argument had an illegal value. */
-/* >          > 0:  if INFO = i, then i eigenvectors failed to converge. */
-/* >                Their indices are stored in array IFAIL. */
-/* > \endverbatim */
-
-/*  Authors: */
-/*  ======== */
-
-/* > \author Univ. of Tennessee */
-/* > \author Univ. of California Berkeley */
-/* > \author Univ. of Colorado Denver */
-/* > \author NAG Ltd. */
-
-/* > \date June 2016 */
-
-/* > \ingroup doubleOTHEReigen */
-
-/* > \par Further Details: */
-/*  ===================== */
-/* > */
-/* > \verbatim */
-/* > */
-/* >  All details about the 2stage techniques are available in: */
-/* > */
-/* >  Azzam Haidar, Hatem Ltaief, and Jack Dongarra. */
-/* >  Parallel reduction to condensed forms for symmetric eigenvalue problems */
-/* >  using aggregated fine-grained and memory-aware kernels. In Proceedings */
-/* >  of 2011 International Conference for High Performance Computing, */
-/* >  Networking, Storage and Analysis (SC '11), New York, NY, USA, */
-/* >  Article 8 , 11 pages. */
-/* >  http://doi.acm.org/10.1145/2063384.2063394 */
-/* > */
-/* >  A. Haidar, J. Kurzak, P. Luszczek, 2013. */
-/* >  An improved parallel singular value algorithm and its implementation */
-/* >  for multicore hardware, In Proceedings of 2013 International Conference */
-/* >  for High Performance Computing, Networking, Storage and Analysis (SC '13). */
-/* >  Denver, Colorado, USA, 2013. */
-/* >  Article 90, 12 pages. */
-/* >  http://doi.acm.org/10.1145/2503210.2503292 */
-/* > */
-/* >  A. Haidar, R. Solca, S. Tomov, T. Schulthess and J. Dongarra. */
-/* >  A novel hybrid CPU-GPU generalized eigensolver for electronic structure */
-/* >  calculations based on fine-grained memory aware tasks. */
-/* >  International Journal of High Performance Computing Applications. */
-/* >  Volume 28 Issue 2, Pages 196-209, May 2014. */
-/* >  http://hpc.sagepub.com/content/28/2/196 */
-/* > */
-/* > \endverbatim */
-
-/*  ===================================================================== */
 /* Subroutine */ void dsbevx_2stage_(char *jobz, char *range, char *uplo, 
 	integer *n, integer *kd, doublereal *ab, integer *ldab, doublereal *q,
 	 integer *ldq, doublereal *vl, doublereal *vu, integer *il, integer *
@@ -571,18 +249,18 @@ static doublereal c_b45 = 0.;
     doublereal d__1, d__2;
 
     /* Local variables */
+    integer iscale, i__, j, ib, jj;
+    doublereal eps, vll, vuu, tmp1;
     integer indd, inde;
     extern integer ilaenv2stage_(integer *, char *, char *, integer *, 
 	    integer *, integer *, integer *);
-    doublereal anrm;
-    integer imax;
-    doublereal rmin, rmax;
+    doublereal anrm, rmin, rmax;
     logical test;
     extern /* Subroutine */ void dsytrd_sb2st_(char *, char *, char *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *);
-    integer itmp1, i__, j, indee;
+    integer itmp1, indee;
     extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
@@ -600,15 +278,14 @@ static doublereal c_b45 = 0.;
     logical lower;
     integer lwtrd;
     logical wantz;
-    integer ib, jj;
     extern doublereal dlamch_(char *);
     logical alleig, indeig;
-    integer iscale, indibl;
-    extern doublereal dlansb_(char *, char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *);
+    integer indibl;
     extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
+    extern doublereal dlansb_(char *, char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *);
     logical valeig;
     extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
@@ -631,16 +308,13 @@ static doublereal c_b45 = 0.;
     integer nsplit, llwork;
     doublereal smlnum;
     logical lquery;
-    doublereal eps, vll, vuu;
     integer indhous;
-    doublereal tmp1;
 
 
 
-/*  -- LAPACK driver routine (version 3.8.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     June 2016 */
 
 
 /*  ===================================================================== */
@@ -650,14 +324,14 @@ static doublereal c_b45 = 0.;
 
     /* Parameter adjustments */
     ab_dim1 = *ldab;
-    ab_offset = 1 + ab_dim1 * 1;
+    ab_offset = 1 + ab_dim1;
     ab -= ab_offset;
     q_dim1 = *ldq;
-    q_offset = 1 + q_dim1 * 1;
+    q_offset = 1 + q_dim1;
     q -= q_offset;
     --w;
     z_dim1 = *ldz;
-    z_offset = 1 + z_dim1 * 1;
+    z_offset = 1 + z_dim1;
     z__ -= z_offset;
     --work;
     --iwork;
@@ -727,7 +401,7 @@ static doublereal c_b45 = 0.;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DSBEVX_2STAGE ", &i__1, (ftnlen)13);
+	xerbla_("DSBEVX_2STAGE ", &i__1, (ftnlen)14);
 	return;
     } else if (lquery) {
 	return;
@@ -788,8 +462,12 @@ static doublereal c_b45 = 0.;
 	iscale = 1;
 	sigma = rmin / anrm;
     } else if (anrm > rmax) {
-	iscale = 1;
+/*        An infinite norm gives SIGMA = 0; leave such a matrix */
+/*        unscaled so that VL and VU remain a valid interval. */
 	sigma = rmax / anrm;
+	if (sigma > 0.) {
+	    iscale = 1;
+	}
     }
     if (iscale == 1) {
 	if (lower) {
@@ -870,12 +548,21 @@ static doublereal c_b45 = 0.;
     indiwo = indisp + *n;
     dstebz_(range, order, n, &vll, &vuu, il, iu, &abstll, &work[indd], &work[
 	    inde], m, &nsplit, &w[1], &iwork[indibl], &iwork[indisp], &work[
-	    indwrk], &iwork[indiwo], info);
+	    indwrk], &iwork[indiwo], &iinfo);
+    if (iinfo != 0) {
+	*info = *n + iinfo;
+	if (iinfo != 1) {
+	    goto L30;
+	}
+    }
 
     if (wantz) {
 	dstein_(n, &work[indd], &work[inde], m, &w[1], &iwork[indibl], &iwork[
 		indisp], &z__[z_offset], ldz, &work[indwrk], &iwork[indiwo], &
-		ifail[1], info);
+		ifail[1], &iinfo);
+	if (iinfo != 0 && *info == 0) {
+	    *info = iinfo;
+	}
 
 /*        Apply orthogonal matrix used in reduction to tridiagonal */
 /*        form to eigenvectors returned by DSTEIN. */
@@ -893,13 +580,8 @@ static doublereal c_b45 = 0.;
 
 L30:
     if (iscale == 1) {
-	if (*info == 0) {
-	    imax = *m;
-	} else {
-	    imax = *info - 1;
-	}
 	d__1 = 1. / sigma;
-	dscal_(&imax, &d__1, &w[1], &c__1);
+	dscal_(m, &d__1, &w[1], &c__1);
     }
 
 /*     If eigenvalues are not in order, then sort them, along with */

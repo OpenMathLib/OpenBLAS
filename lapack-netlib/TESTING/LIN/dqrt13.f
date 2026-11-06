@@ -88,6 +88,7 @@
 *
 *  =====================================================================
       SUBROUTINE DQRT13( SCALE, M, N, A, LDA, NORMA, ISEED )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -110,14 +111,14 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            INFO, J
-      DOUBLE PRECISION   BIGNUM, SMLNUM
+      DOUBLE PRECISION   BIGNUM, BIGUP, SMLNUM
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DASUM, DLAMCH, DLANGE
       EXTERNAL           DASUM, DLAMCH, DLANGE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLABAD, DLARNV, DLASCL
+      EXTERNAL           DLARNV, DLASCL
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          SIGN
@@ -146,15 +147,20 @@
          NORMA = DLANGE( 'Max', M, N, A, LDA, DUMMY )
          SMLNUM = DLAMCH( 'Safe minimum' )
          BIGNUM = ONE / SMLNUM
-         CALL DLABAD( SMLNUM, BIGNUM )
          SMLNUM = SMLNUM / DLAMCH( 'Epsilon' )
          BIGNUM = ONE / SMLNUM
+*
+*        The least squares drivers scale a matrix whose largest
+*        entry lies outside [SMLNUM, BIGNUM].  Scale up past
+*        that bound, so that their scaling is exercised.
+*
+         BIGUP = DLAMCH( 'Overflow' ) / 256
 *
          IF( SCALE.EQ.2 ) THEN
 *
 *           matrix scaled up
 *
-            CALL DLASCL( 'General', 0, 0, NORMA, BIGNUM, M, N, A, LDA,
+            CALL DLASCL( 'General', 0, 0, NORMA, BIGUP, M, N, A, LDA,
      $                   INFO )
          ELSE IF( SCALE.EQ.3 ) THEN
 *

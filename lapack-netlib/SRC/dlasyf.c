@@ -225,9 +225,6 @@ typedef struct Namelist Namelist;
 	-lf2c -lm   (in that order)
 */
 
-
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
@@ -242,7 +239,6 @@ onal pivoting method. */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DLASYF + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlasyf.
 f"> */
@@ -253,7 +249,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlasyf.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -395,9 +390,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date November 2013 */
-
-/* > \ingroup doubleSYcomputational */
+/* > \ingroup lahef */
 
 /* > \par Contributors: */
 /*  ================== */
@@ -415,16 +408,16 @@ f"> */
 	ldw, integer *info)
 {
     /* System generated locals */
-    integer a_dim1, a_offset, w_dim1, w_offset, i__1, i__2, i__3, i__4, i__5;
+    integer a_dim1, a_offset, w_dim1, w_offset, i__1, i__2;
     doublereal d__1, d__2, d__3;
 
     /* Local variables */
-    integer imax, jmax, j, k;
-    doublereal t, alpha;
+    integer j, k;
+    doublereal t, r1, d11, d21, d22;
+    integer jj, kk, jp, kp, kw, kkw, imax, jmax;
+    doublereal alpha;
     extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
-	    integer *), dgemm_(char *, char *, integer *, integer *, integer *
-	    , doublereal *, doublereal *, integer *, doublereal *, integer *, 
-	    doublereal *, doublereal *, integer *);
+	    integer *);
     extern logical lsame_(char *, char *);
     extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
@@ -432,19 +425,17 @@ f"> */
 	    doublereal *, integer *, doublereal *, integer *), dswap_(integer 
 	    *, doublereal *, integer *, doublereal *, integer *);
     integer kstep;
-    doublereal r1, d11, d21, d22;
-    integer jb, jj, kk, jp, kp;
     doublereal absakk;
-    integer kw;
     extern integer idamax_(integer *, doublereal *, integer *);
     doublereal colmax, rowmax;
-    integer kkw;
+    extern /* Subroutine */ void dgemmtr_(char *, char *, char *, integer *, 
+	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
+	    integer *, doublereal *, doublereal *, integer *);
 
 
-/*  -- LAPACK computational routine (version 3.5.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     November 2013 */
 
 
 /*  ===================================================================== */
@@ -452,11 +443,11 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     --ipiv;
     w_dim1 = *ldw;
-    w_offset = 1 + w_dim1 * 1;
+    w_offset = 1 + w_dim1;
     w -= w_offset;
 
     /* Function Body */
@@ -482,7 +473,7 @@ L10:
 
 /*        Exit from loop */
 
-	if ((k <= *n - *nb + 1 && *nb < *n) || k < 1) {
+	if (k <= *n - *nb + 1 && *nb < *n || k < 1) {
 	    goto L30;
 	}
 
@@ -523,6 +514,7 @@ L10:
 		*info = k;
 	    }
 	    kp = k;
+	    dcopy_(&k, &w[kw * w_dim1 + 1], &c__1, &a[k * a_dim1 + 1], &c__1);
 	} else {
 	    if (absakk >= alpha * colmax) {
 
@@ -695,14 +687,14 @@ L10:
 /*                 = 1/d21 * T * ( ( D11 ) (  -1 ) ) */
 /*                               ( (  -1 ) ( D22 ) ) */
 
-/*                 = D21 * ( ( D11 ) (  -1 ) ) */
-/*                         ( (  -1 ) ( D22 ) ) */
+/*                 T/d21 is not formed, since it overflows when d21 is */
+/*                 subnormal: each entry of the product is divided by */
+/*                 d21 and then scaled by T. */
 
 		    d21 = w[k - 1 + kw * w_dim1];
 		    d11 = w[k + kw * w_dim1] / d21;
 		    d22 = w[k - 1 + (kw - 1) * w_dim1] / d21;
 		    t = 1. / (d11 * d22 - 1.);
-		    d21 = t / d21;
 
 /*                 Update elements in columns A(k-1) and A(k) as */
 /*                 dot products of rows of ( W(kw-1) W(kw) ) and columns */
@@ -710,10 +702,10 @@ L10:
 
 		    i__1 = k - 2;
 		    for (j = 1; j <= i__1; ++j) {
-			a[j + (k - 1) * a_dim1] = d21 * (d11 * w[j + (kw - 1) 
-				* w_dim1] - w[j + kw * w_dim1]);
-			a[j + k * a_dim1] = d21 * (d22 * w[j + kw * w_dim1] - 
-				w[j + (kw - 1) * w_dim1]);
+			a[j + (k - 1) * a_dim1] = t * ((d11 * w[j + (kw - 1) *
+				 w_dim1] - w[j + kw * w_dim1]) / d21);
+			a[j + k * a_dim1] = t * ((d22 * w[j + kw * w_dim1] - 
+				w[j + (kw - 1) * w_dim1]) / d21);
 /* L20: */
 		    }
 		}
@@ -748,36 +740,10 @@ L30:
 
 /*        A11 := A11 - U12*D*U12**T = A11 - U12*W**T */
 
-/*        computing blocks of NB columns at a time */
-
-	i__1 = -(*nb);
-	for (j = (k - 1) / *nb * *nb + 1; i__1 < 0 ? j >= 1 : j <= 1; j += 
-		i__1) {
-/* Computing MIN */
-	    i__2 = *nb, i__3 = k - j + 1;
-	    jb = f2cmin(i__2,i__3);
-
-/*           Update the upper triangle of the diagonal block */
-
-	    i__2 = j + jb - 1;
-	    for (jj = j; jj <= i__2; ++jj) {
-		i__3 = jj - j + 1;
-		i__4 = *n - k;
-		dgemv_("No transpose", &i__3, &i__4, &c_b8, &a[j + (k + 1) * 
-			a_dim1], lda, &w[jj + (kw + 1) * w_dim1], ldw, &c_b9, 
-			&a[j + jj * a_dim1], &c__1);
-/* L40: */
-	    }
-
-/*           Update the rectangular superdiagonal block */
-
-	    i__2 = j - 1;
-	    i__3 = *n - k;
-	    dgemm_("No transpose", "Transpose", &i__2, &jb, &i__3, &c_b8, &a[(
-		    k + 1) * a_dim1 + 1], lda, &w[j + (kw + 1) * w_dim1], ldw,
-		     &c_b9, &a[j * a_dim1 + 1], lda);
-/* L50: */
-	}
+	i__1 = *n - k;
+	dgemmtr_("Upper", "No transpose", "Transpose", &k, &i__1, &c_b8, &a[(
+		k + 1) * a_dim1 + 1], lda, &w[(kw + 1) * w_dim1 + 1], ldw, &
+		c_b9, &a[a_dim1 + 1], lda);
 
 /*        Put U12 in standard form by partially undoing the interchanges */
 /*        in columns k+1:n looping backwards from k+1 to n */
@@ -824,7 +790,7 @@ L70:
 
 /*        Exit from loop */
 
-	if ((k >= *nb && *nb < *n) || k > *n) {
+	if (k >= *nb && *nb < *n || k > *n) {
 	    goto L90;
 	}
 
@@ -864,6 +830,9 @@ L70:
 		*info = k;
 	    }
 	    kp = k;
+	    i__1 = *n - k + 1;
+	    dcopy_(&i__1, &w[k + k * w_dim1], &c__1, &a[k + k * a_dim1], &
+		    c__1);
 	} else {
 	    if (absakk >= alpha * colmax) {
 
@@ -1034,14 +1003,14 @@ L70:
 /*                 = 1/d21 * T * ( ( D11 ) (  -1 ) ) */
 /*                               ( (  -1 ) ( D22 ) ) */
 
-/*                 = D21 * ( ( D11 ) (  -1 ) ) */
-/*                         ( (  -1 ) ( D22 ) ) */
+/*                 T/d21 is not formed, since it overflows when d21 is */
+/*                 subnormal: each entry of the product is divided by */
+/*                 d21 and then scaled by T. */
 
 		    d21 = w[k + 1 + k * w_dim1];
 		    d11 = w[k + 1 + (k + 1) * w_dim1] / d21;
 		    d22 = w[k + k * w_dim1] / d21;
 		    t = 1. / (d11 * d22 - 1.);
-		    d21 = t / d21;
 
 /*                 Update elements in columns A(k) and A(k+1) as */
 /*                 dot products of rows of ( W(k) W(k+1) ) and columns */
@@ -1049,10 +1018,10 @@ L70:
 
 		    i__1 = *n;
 		    for (j = k + 2; j <= i__1; ++j) {
-			a[j + k * a_dim1] = d21 * (d11 * w[j + k * w_dim1] - 
-				w[j + (k + 1) * w_dim1]);
-			a[j + (k + 1) * a_dim1] = d21 * (d22 * w[j + (k + 1) *
-				 w_dim1] - w[j + k * w_dim1]);
+			a[j + k * a_dim1] = t * ((d11 * w[j + k * w_dim1] - w[
+				j + (k + 1) * w_dim1]) / d21);
+			a[j + (k + 1) * a_dim1] = t * ((d22 * w[j + (k + 1) * 
+				w_dim1] - w[j + k * w_dim1]) / d21);
 /* L80: */
 		    }
 		}
@@ -1087,38 +1056,11 @@ L90:
 
 /*        A22 := A22 - L21*D*L21**T = A22 - L21*W**T */
 
-/*        computing blocks of NB columns at a time */
-
-	i__1 = *n;
-	i__2 = *nb;
-	for (j = k; i__2 < 0 ? j >= i__1 : j <= i__1; j += i__2) {
-/* Computing MIN */
-	    i__3 = *nb, i__4 = *n - j + 1;
-	    jb = f2cmin(i__3,i__4);
-
-/*           Update the lower triangle of the diagonal block */
-
-	    i__3 = j + jb - 1;
-	    for (jj = j; jj <= i__3; ++jj) {
-		i__4 = j + jb - jj;
-		i__5 = k - 1;
-		dgemv_("No transpose", &i__4, &i__5, &c_b8, &a[jj + a_dim1], 
-			lda, &w[jj + w_dim1], ldw, &c_b9, &a[jj + jj * a_dim1]
-			, &c__1);
-/* L100: */
-	    }
-
-/*           Update the rectangular subdiagonal block */
-
-	    if (j + jb <= *n) {
-		i__3 = *n - j - jb + 1;
-		i__4 = k - 1;
-		dgemm_("No transpose", "Transpose", &i__3, &jb, &i__4, &c_b8, 
-			&a[j + jb + a_dim1], lda, &w[j + w_dim1], ldw, &c_b9, 
-			&a[j + jb + j * a_dim1], lda);
-	    }
-/* L110: */
-	}
+	i__1 = *n - k + 1;
+	i__2 = k - 1;
+	dgemmtr_("Lower", "No transpose", "Transpose", &i__1, &i__2, &c_b8, &
+		a[k + a_dim1], lda, &w[k + w_dim1], ldw, &c_b9, &a[k + k * 
+		a_dim1], lda);
 
 /*        Put L21 in standard form by partially undoing the interchanges */
 /*        of rows in columns 1:k-1 looping backwards from k-1 to 1 */
