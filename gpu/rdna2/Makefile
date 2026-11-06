@@ -57,9 +57,10 @@ bench-run: bench
 	./bench_rdna2 "$(OB_DLL)"
 
 # Level-3 bridge test against the library built in this tree: checks the
-# interface-side kernel plumbing (SGEMM, and SYRK/SYR2K where the dispatch is
-# compiled in) against an independent double-precision reference, including the
-# SYRK contract that the unstored triangle and the ldc padding are untouched.
+# interface-side kernel plumbing (SGEMM, SYMM, TRMM, TRSM, SYRK and SYR2K where
+# the dispatch is compiled in) against an independent double-precision reference,
+# including the contract that the unstored triangle and the ldb/ldc padding are
+# untouched, over every layout and over zero, negative and large scalars.
 # The same binary is useful either way -- the device path is exercised only when
 # OBLAS_LIB is a USE_HIP build, while the reference checks still run on a
 # CPU-only build. Point OBLAS_LIB/LDFLAGS at another tree or a ROCm runtime

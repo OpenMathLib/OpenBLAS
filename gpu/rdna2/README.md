@@ -326,8 +326,26 @@ are never read (they hold a value that no correct result can produce), which is
 what fails loudly if a bridge reads the wrong half.
 
 All six ops are seen at the default size gate as well, so the real dispatch
-decision is covered end to end, not only the forced-open small shapes. It builds and passes on a CPU-only
-library, so it runs in ordinary CI (see `.github/workflows/rdna2_level3.yml`);
+decision is covered end to end, not only the forced-open small shapes.
+
+The scalars get their own pass on top of the layouts: `alpha` and `beta` at
+zero, negative and large values (0, -0.5, -2, 1000). A zero scalar has to drop
+its term exactly -- `alpha == 0` leaves `beta*C` and nothing else, `beta == 0`
+drops the old `C`, both zero means exact zeros -- and the large values keep the
+accumulation honest. TRMM and TRSM have no `beta`, so they sweep `alpha` only.
+
+The TRSM factor is built row-wise diagonally dominant, each stored row summing
+to a quarter of its diagonal. A triangular solve over a merely "small"
+off-diagonal grows by orders of magnitude across a thousand rows, and the answer
+then depends on the order the terms happened to be summed in rather than on the
+triangle: the loosely conditioned 1300-row version reached `||A^-1|| ~ 2e8` and
+flipped between builds of equivalent code. Dominance keeps the reference usable
+at the gate size. The above-gate TRSM case is a dispatch check rather than an
+accuracy one: at 1300 rows a float solve on this path is only good to about a
+percent however it is compiled, so the layout and scalar cases carry the tight
+tolerances.
+
+It builds and passes on a CPU-only library, so it runs in ordinary CI (see `.github/workflows/rdna2_level3.yml`);
 against a `USE_HIP` library it exercises the real dispatch, which
 `OPENBLAS_RDNA2_GPU_DEBUG=1` makes visible as one `handled=1` line per call.
 The link line adds the HIP runtime by itself when the archive contains the

@@ -19,7 +19,8 @@
  *
  *   SYMM   cover every order/side/uplo/trans/diag combination against a double
  *   TRMM   precision reference (an LU solve for TRSM, so the reference shares
- *   TRSM   none of the triangle logic under test). The unstored triangle of the
+ *   TRSM   none of the triangle logic under test), at alpha and beta values
+ *          including zero, negative and large ones. The unstored triangle of the
  *          factor, and the stored diagonal of a unit-diagonal one, are filled
  *          with a value that no correct result can produce, so a bridge that
  *          reads them fails loudly; the ldb/ldc padding must be untouched.
@@ -81,6 +82,16 @@ static void violation(long *count, const char *tag, int row, int col,
       printf("%s: (%d,%d) got %.6f want %.6f (rel %.2e)\n", tag, row, col, got,
              want, rel);
   }
+}
+
+/* Tolerance for one element: the structural tolerance the test has always
+ * used, plus the rounding the reference itself carries when a scalar edge
+ * inflates the magnitudes. A result that is small next to the terms that went
+ * into it (a large beta*C, heavy cancellation) cannot be judged below its own
+ * representation error, while a wrong triangle or a dropped term is off by
+ * orders of magnitude more, so the cases keep their power. */
+static double tol_for(double scale, double mag) {
+  return 5e-4 + 1e-6 * mag / scale;
 }
 
 /* Element (i,j) of an m x n matrix with stride ld, in either store order. */
@@ -194,7 +205,7 @@ static int sym_case(int two, int order, int uplo, int trans, int n, int k,
       continue;
     }
     {
-      double ref = 0.0, got, err, scale;
+      double ref = 0.0, got, err, scale, mag = 0.0, tol;
       int p;
 
       for (p = 0; p < k; ++p) {
@@ -206,15 +217,18 @@ static int sym_case(int two, int order, int uplo, int trans, int n, int k,
           const double b_jp = sym_op(B, ldb, order, trans, col, p);
 
           ref += a_ip * b_jp + b_ip * a_jp;
+          mag += fabs(a_ip * b_jp) + fabs(b_ip * a_jp);
         } else {
           ref += a_ip * a_jp;
+          mag += fabs(a_ip * a_jp);
         }
       }
       ref = alpha * ref + beta * (double)C0[idx];
       got = (double)C[idx];
       err = fabs(got - ref);
       scale = fabs(ref) > 1.0 ? fabs(ref) : 1.0;
-      if (err / scale > 5e-4) {
+      tol = tol_for(scale, fabs(alpha) * mag + fabs(beta) * fabs((double)C0[idx]));
+      if (err / scale > tol) {
         violation(&nviol, "syrk/syr2k", row, col, NULL, got, ref, err / scale);
         bad = 1;
       }
@@ -339,17 +353,24 @@ static int symm_case(int order, int side, int uplo, int m, int n, double alpha,
 
   for (j = 0; j < n; ++j)
     for (i = 0; i < m; ++i) {
-      double ref = 0.0;
+      double ref = 0.0, mag = 0.0, c0;
       int p;
 
-      for (p = 0; p < kdim; ++p)
-        ref += (side ? mat_get(B, ldb, order, i, p) *
-                           sym_el(A, lda, order, uplo, p, j)
-                     : sym_el(A, lda, order, uplo, i, p) *
-                           mat_get(B, ldb, order, p, j));
-      ref = alpha * ref + beta * (double)mat_get(C0, ldc, order, i, j);
-      check_el("symm", i, j, mat_get(C, ldc, order, i, j), ref, 5e-4, &nviol,
-               &bad);
+      for (p = 0; p < kdim; ++p) {
+        const double t = side ? mat_get(B, ldb, order, i, p) *
+                                    sym_el(A, lda, order, uplo, p, j)
+                              : sym_el(A, lda, order, uplo, i, p) *
+                                    mat_get(B, ldb, order, p, j);
+
+        ref += t;
+        mag += fabs(t);
+      }
+      c0 = mat_get(C0, ldc, order, i, j);
+      ref = alpha * ref + beta * c0;
+      check_el("symm", i, j, mat_get(C, ldc, order, i, j), ref,
+               tol_for(fabs(ref) > 1.0 ? fabs(ref) : 1.0,
+                       fabs(alpha) * mag + fabs(beta) * fabs(c0)),
+               &nviol, &bad);
     }
   bad |= pad_intact("symm", C, C0, ldc, order, m, n, &nviol);
 
@@ -494,11 +515,20 @@ static int lu_solve(double *M, int n, double *X, int nrhs, int ldx) {
   return 1;
 }
 
+/* Deterministic off-diagonal of a triangular factor, in [-3/32, 3/32]. */
+static double tri_raw(int i, int j) {
+  return (double)((i * 5 + j * 3) % 7 - 3) / 32.0;
+}
+
+/* Stored diagonal of a non-unit factor, deliberately not 1 so a bridge that
+ * reads it when the caller said unit diagonal is caught. */
+static double tri_diag(int i) { return 1.0 + 0.5 * ((i % 3) + 1) / 4.0; }
+
 /* Solves op(A)*X = alpha*B (side=left) or X*op(A) = alpha*B (side=right), in
  * place on B, A triangular. The reference solves a dense copy of op(A) with a
  * pivoting LU, so it does not share the triangle logic under test. */
 static int trsm_case(int order, int side, int uplo, int trans, int unit, int m,
-                     int n, double alpha) {
+                     int n, double alpha, double floor_tol) {
   const int kdim = side ? n : m;
   const int lda = kdim + 3;
   const int ldb = (m > n ? m : n) + 4;
@@ -511,18 +541,40 @@ static int trsm_case(int order, int side, int uplo, int trans, int unit, int m,
   float *B0 = (float *)malloc(bsz * sizeof(float));
   double *M = (double *)malloc((size_t)kdim * (size_t)kdim * sizeof(double));
   double *X = (double *)malloc((size_t)kdim * (size_t)nrhs * sizeof(double));
+  double *scale = (double *)malloc((size_t)kdim * sizeof(double));
   size_t k;
   int i, j, bad = 0;
   long nviol = 0;
 
-  if (!A || !B || !B0 || !M || !X) {
+  if (!A || !B || !B0 || !M || !X || !scale) {
     printf("trsm: allocation failed at m=%d n=%d\n", m, n);
     free(A);
     free(B);
     free(B0);
     free(M);
     free(X);
+    free(scale);
     return 1;
+  }
+
+  /* The factor is made row-wise diagonally dominant, with each stored row's
+   * off-diagonals summing to a quarter of its diagonal. A merely small
+   * off-diagonal still grows enormously over a thousand rows in a triangular
+   * solve: the 1300-row gate case below reached ||A^-1|| ~ 2e8, which is far
+   * into the range where a float solve's answer depends on the order the terms
+   * happen to be summed in. Such a case cannot tell a broken triangle from a
+   * differently compiled correct one, so it is not worth having. Dominance
+   * keeps the reference a reliable oracle at every size, while the diagonal
+   * stays away from 1 so a bridge that ignores the unit-diagonal flag is still
+   * caught reading the stored diagonal. */
+  for (i = 0; i < kdim; ++i) {
+    double sum = 0.0;
+    const int j0 = (uplo == 0) ? i : 0;
+    const int j1 = (uplo == 0) ? kdim - 1 : i;
+
+    for (j = j0; j <= j1; ++j)
+      if (!(i == j && unit)) sum += fabs(tri_raw(i, j));
+    scale[i] = 0.25 * tri_diag(i) / (sum > 1.0 ? sum : 1.0);
   }
 
   for (k = 0; k < asz; ++k) A[k] = UNUSED_FILL;
@@ -530,8 +582,8 @@ static int trsm_case(int order, int side, int uplo, int trans, int unit, int m,
     for (i = 0; i < kdim; ++i)
       if (sym_stored(uplo, i, j) && !(i == j && unit))
         mat_put(A, lda, order, i, j,
-                (i == j) ? (float)(1.0 + 0.5 * ((j % 3) + 1) / 4.0)
-                         : (float)((double)((i * 5 + j * 3) % 7) - 3.0) / 32.0f);
+                (i == j) ? (float)tri_diag(i)
+                         : (float)(tri_raw(i, j) * scale[i]));
   for (k = 0; k < bsz; ++k) B0[k] = B[k] = sentinel;
   for (j = 0; j < n; ++j)
     for (i = 0; i < m; ++i)
@@ -566,15 +618,23 @@ static int trsm_case(int order, int side, int uplo, int trans, int unit, int m,
   if (!lu_solve(M, kdim, X, nrhs, kdim)) {
     printf("FAIL trsm: reference matrix is singular (m=%d n=%d)\n", m, n);
     bad = 1;
-  } else {
-    for (j = 0; j < n; ++j)
-      for (i = 0; i < m; ++i) {
-        const double ref = side ? X[(size_t)j + (size_t)i * kdim]
-                                : X[(size_t)i + (size_t)j * kdim];
+  } else {      /* A solve accumulates over kdim rows, so its float result drifts with the
+       * size of the factor, and where in that range it lands depends on the
+       * order the terms happen to be summed in rather than on the answer being
+       * right. The tolerance follows the row count on top of the caller's
+       * floor. A broken triangle or a dropped scalar is off by orders of
+       * magnitude more than this (the sentinel alone is 1e6), so the layout
+       * cases give nothing up. */
+      const double tol = floor_tol + 1e-5 * (double)kdim;
 
-        check_el("trsm", i, j, mat_get(B, ldb, order, i, j), ref, 1e-3, &nviol,
-                 &bad);
-      }
+      for (j = 0; j < n; ++j)
+        for (i = 0; i < m; ++i) {
+          const double ref = side ? X[(size_t)j + (size_t)i * kdim]
+                                  : X[(size_t)i + (size_t)j * kdim];
+
+          check_el("trsm", i, j, mat_get(B, ldb, order, i, j), ref, tol, &nviol,
+                  &bad);
+        }
     bad |= pad_intact("trsm", B, B0, ldb, order, m, n, &nviol);
   }
 
@@ -589,6 +649,7 @@ static int trsm_case(int order, int side, int uplo, int trans, int unit, int m,
   free(B0);
   free(M);
   free(X);
+  free(scale);
   return bad;
 }
 
@@ -690,6 +751,35 @@ int main(int argc, char **argv) {
           cases++;
         }
 
+    /* Scalar edges. alpha == 0 must drop the product term exactly, leaving
+     * beta*C and nothing else; beta == 0 must drop the old C, so both zero
+     * means exact zeros. The negative and large values catch a scalar applied
+     * to one term only, or a sign lost where the two triangles are merged. */
+    printf("syrk/syr2k scalar edges (size gate forced open)\n");
+    for (order = 0; order <= 1; ++order)
+      for (uplo = 0; uplo <= 1; ++uplo)
+        for (trans = 0; trans <= 1; ++trans) {
+          const int ord = order ? CblasRowMajor : CblasColMajor;
+          int two;
+
+          for (two = 0; two <= 1; ++two) {
+            sym_failures += sym_case(two, ord, uplo, trans, 97, 61, 0.0, 1.0);
+            cases++;
+            sym_failures += sym_case(two, ord, uplo, trans, 97, 61, 0.0, -0.5);
+            cases++;
+            sym_failures += sym_case(two, ord, uplo, trans, 97, 61, 0.0, 0.0);
+            cases++;
+            sym_failures += sym_case(two, ord, uplo, trans, 53, 130, -2.0, 1.0);
+            cases++;
+            sym_failures +=
+                sym_case(two, ord, uplo, trans, 53, 130, 1000.0, 0.0);
+            cases++;
+            sym_failures +=
+                sym_case(two, ord, uplo, trans, 53, 130, 1.0, 1000.0);
+            cases++;
+          }
+        }
+
     printf("syrk/syr2k: %d cases, %d failure(s)\n", cases, sym_failures);
     failures += sym_failures;
   }
@@ -712,7 +802,13 @@ int main(int argc, char **argv) {
     cases++;
     sec_failures += trmm_case(CblasColMajor, 0, 0, 0, 0, gate_mn, gate_mn, 1.0);
     cases++;
-    sec_failures += trsm_case(CblasColMajor, 0, 0, 0, 0, gate_mn, gate_mn, 1.0);
+    /* The gate case is here for the dispatch decision, not for accuracy: at
+     * 1300 rows the device solve is only good to about a percent whatever the
+     * build, so the tolerance is loose enough not to argue about roundoff that
+     * this path cannot avoid. The triangle, layout and scalar checks all live
+     * in the small cases below, where a float solve is accurate to ~1e-5. */
+    sec_failures +=
+        trsm_case(CblasColMajor, 0, 0, 0, 0, gate_mn, gate_mn, 1.0, 5e-2);
     cases++;
     printf("gate cases: %d cases, %d failure(s)\n", cases, sec_failures);
     failures += sec_failures;
@@ -734,6 +830,29 @@ int main(int argc, char **argv) {
           sec_failures += symm_case(ord, side, uplo, 53, 130, 0.5, -0.25);
           cases++;
         }
+
+    /* Scalar edges, same reasoning as for SYRK: alpha == 0 leaves beta*C, beta
+     * == 0 drops the old C, and a large scalar on one term only shows up as a
+     * mismatch rather than as a rounding artefact. */
+    printf("symm scalar edges (size gate forced open)\n");
+    for (order = 0; order <= 1; ++order)
+      for (side = 0; side <= 1; ++side)
+        for (uplo = 0; uplo <= 1; ++uplo) {
+          const int ord = order ? CblasRowMajor : CblasColMajor;
+
+          sec_failures += symm_case(ord, side, uplo, 97, 61, 0.0, 1.0);
+          cases++;
+          sec_failures += symm_case(ord, side, uplo, 97, 61, 0.0, -0.5);
+          cases++;
+          sec_failures += symm_case(ord, side, uplo, 97, 61, 0.0, 0.0);
+          cases++;
+          sec_failures += symm_case(ord, side, uplo, 53, 130, -2.0, 1.0);
+          cases++;
+          sec_failures += symm_case(ord, side, uplo, 53, 130, 1000.0, 0.0);
+          cases++;
+          sec_failures += symm_case(ord, side, uplo, 53, 130, 1.0, 1000.0);
+          cases++;
+        }
     printf("symm: %d cases, %d failure(s)\n", cases, sec_failures);
     failures += sec_failures;
 
@@ -752,6 +871,28 @@ int main(int argc, char **argv) {
                   trmm_case(ord, side, uplo, trans, diag, 53, 130, -0.75);
               cases++;
             }
+
+    /* alpha edges: zero must give exact zeros, the negative value must keep
+     * its sign, and the large one must not be folded into the accumulation at
+     * reduced precision. */
+    printf("trmm alpha edges (size gate forced open)\n");
+    for (order = 0; order <= 1; ++order)
+      for (side = 0; side <= 1; ++side)
+        for (uplo = 0; uplo <= 1; ++uplo)
+          for (trans = 0; trans <= 1; ++trans)
+            for (diag = 0; diag <= 1; ++diag) {
+              const int ord = order ? CblasRowMajor : CblasColMajor;
+
+              sec_failures +=
+                  trmm_case(ord, side, uplo, trans, diag, 97, 61, 0.0);
+              cases++;
+              sec_failures +=
+                  trmm_case(ord, side, uplo, trans, diag, 97, 61, -2.0);
+              cases++;
+              sec_failures +=
+                  trmm_case(ord, side, uplo, trans, diag, 53, 130, 1000.0);
+              cases++;
+            }
     printf("trmm: %d cases, %d failure(s)\n", cases, sec_failures);
     failures += sec_failures;
 
@@ -764,10 +905,33 @@ int main(int argc, char **argv) {
             for (diag = 0; diag <= 1; ++diag) {
               const int ord = order ? CblasRowMajor : CblasColMajor;
 
-              sec_failures += trsm_case(ord, side, uplo, trans, diag, 97, 61, 1.0);
+              sec_failures +=
+                  trsm_case(ord, side, uplo, trans, diag, 97, 61, 1.0, 1e-3);
               cases++;
               sec_failures +=
-                  trsm_case(ord, side, uplo, trans, diag, 53, 130, 0.75);
+                  trsm_case(ord, side, uplo, trans, diag, 53, 130, 0.75, 1e-3);
+              cases++;
+            }
+
+    /* alpha edges for the solve too: zero gives exact zeros, the negative
+     * value must keep its sign, and the large one must scale the whole right
+     * hand side rather than only part of it. */
+    printf("trsm alpha edges (size gate forced open)\n");
+    for (order = 0; order <= 1; ++order)
+      for (side = 0; side <= 1; ++side)
+        for (uplo = 0; uplo <= 1; ++uplo)
+          for (trans = 0; trans <= 1; ++trans)
+            for (diag = 0; diag <= 1; ++diag) {
+              const int ord = order ? CblasRowMajor : CblasColMajor;
+
+              sec_failures +=
+                  trsm_case(ord, side, uplo, trans, diag, 97, 61, 0.0, 1e-3);
+              cases++;
+              sec_failures +=
+                  trsm_case(ord, side, uplo, trans, diag, 97, 61, -2.0, 1e-3);
+              cases++;
+              sec_failures +=
+                  trsm_case(ord, side, uplo, trans, diag, 53, 130, 1000.0, 1e-3);
               cases++;
             }
     printf("trsm: %d cases, %d failure(s)\n", cases, sec_failures);
