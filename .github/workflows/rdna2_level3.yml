@@ -47,7 +47,7 @@ jobs:
     name: bridge test (linux, CPU build)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install toolchain
         run: |
@@ -69,7 +69,7 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: msys2/setup-msys2@v2
         with:
@@ -94,7 +94,7 @@ jobs:
   #   name: bridge test (self-hosted, USE_HIP)
   #   runs-on: [self-hosted, gpu, rocm]
   #   steps:
-  #     - uses: actions/checkout@v4
+  #     - uses: actions/checkout@v5
   #     - name: Build library with the device kernels
   #       run: |
   #         make clean
