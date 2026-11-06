@@ -310,6 +310,34 @@ The resulting library needs the HIP runtime at link time: `make` adds
 `-L$(HIP_LIB_PATH) -lamdhip64 -lstdc++` for its own tests, and a program linking
 the static archive must add the same.
 
+On Windows with the ROCm HIP SDK three extra steps are environment, not code:
+
+- `hipcc` cannot find the device libraries unless it is told where they are.
+  clang looks under `lib/amdgcn`, while HIP 7.x installs them in
+  `lib/llvm/amdgcn/bitcode`, so `rdna2_kernels.hip` fails with *cannot find
+  ROCm device library*:
+
+      make USE_HIP=1 GPU_ARCH=gfx1031 HIPFLAGS="-O2 -std=c++17 --rocm-path=C:/Rocm10/lib/llvm" libs
+
+  `--rocm-device-lib-path` looks like the right flag for this and is not: clang
+  23 accepts it and still fails to resolve the bitcode.
+
+- The SDK ships only the MSVC import library (`amdhip64.lib`), so a mingw link
+  needs one generated from the DLL:
+
+      gendef C:/Rocm10/bin/amdhip64_7.dll
+      dlltool -d amdhip64_7.def -l libamdhip64.a
+
+- Which `amdhip64_*.dll` the process loads decides whether it sees a device at
+  all. The SDK installs a versioned runtime next to `hipcc` and the display
+  driver installs another one into `System32`, which Windows resolves first
+  unless the executable sits in the SDK's `bin`. Against the driver's copy
+  `hipGetDeviceCount` returns `hipErrorNoDevice` (100) even though `hipInfo.exe`
+  lists the card, and every launcher silently takes its CPU reference path (see
+  *CPU fallback is silent*). Run the test binaries from the SDK `bin`
+  directory, or copy the SDK's `amdhip64_7.dll` beside them, before trusting any
+  GPU number.
+
 ### Level-3 bridge test
 
     make level3-test                 # build the library, then run the test
@@ -613,16 +641,105 @@ Correctness through the library (MATCH = max |diff| < 1e-3):
 - Library transpose is now tiled 64×64 (cache-resident); the naive copy was the
   ~200 ms strided-store bottleneck at k=2048.
 
-Coverage limits: everything above is one RDNA4 card (gfx1201).
- The gfx1030 and
-gfx1031 paths are compiled and host-simulated but were not executed on RDNA2
-hardware, so the dp4a-in-LDS timing on RDNA2 is the same code measured only on
-RDNA4. The shuffle-based emulation of the matrix instruction is compiled (its
+Coverage limits: the timing tables in *Performance* are one RDNA4 card
+(gfx1201) and are not re-timed on RDNA2. The gfx1030/gfx1031 path has since
+been executed through the library on an RX 6700 XT - see *RDNA2 hardware* -
+so the dispatch and the numerics are covered there, while the kernel-level
+shapes remain RDNA4-only measurements.
+
+The shuffle-based emulation of the matrix instruction is compiled (its
 branch is visible in a fresh gfx1031 dump: 0 `v_wmma_*`, 167 `v_dot4c_i32_i8`,
 83 `ds_bpermute_b32` of which 64 are the emulation's lane gathers, 0 warnings)
 and never selected by a dispatcher, but it is not covered by a runtime device
 test. Wave-level behaviour is covered on the device; the 141
 checks are functional, not a stress or fuzz suite.
+
+## RDNA2 hardware (measured on an RX 6700 XT, gfx1031)
+
+The gfx1031 path has now been executed on a real RDNA2 card: RX 6700 XT (20 CUs
+as `hipGetDeviceProperties` reports them, 12.0 GB), HIP 7.16, clang 23,
+Windows 11, 12 host threads, `-O2`, with a library built
+`USE_HIP=1 GPU_ARCH=gfx1031` as described above. gfx1030 is the same ISA family
+and is still compiled and host-simulated only. Through that library, end to end
+and including the transfers:
+
+| size | CPU f32 GFLOPS (`OPENBLAS_RDNA2_GPU=0`) | GPU f32 GFLOPS | ratio |
+|---|---|---|---|
+| 1024^3 | 620.6 | 574.2 (below the 2e9 gate, so CPU) | 1.00x |
+| 2048^3 | 589.8 | **693.3** | **1.18x** |
+| 4096^3 | 654.5 | **1031.2** | **1.58x** |
+
+On RDNA2 the bridge is a real but modest win - about 1.2x at 2048 and 1.6x at
+4096 against a 12-thread host - and the default gate keeps everything below
+roughly 1260^3 on the CPU, where the device would lose. That is well short of
+the 2.6-4.1x the same dispatch gives on RDNA4 (above), which is what the kernel
+shapes predict: gfx12 has the 16x16x16 matrix instruction for int8 and the
+128x128 f32 tile, while gfx1031 has neither and runs the 64x64 dp4a (int8) and
+the 64x64 KSTEP-16 (f32) shapes.
+
+The level-3 bridge suite (`test_oblas_gpu.exe`) with the device visible:
+**517 cases, 0 failures**, every op dispatch-confirmed, with the above-gate 1300
+cases timed at ssymm 10 ms, ssyrk 11 ms, ssyr2k 20 ms, strmm 13 ms, trsm 110 ms,
+and `sgemm 2048` 201 ms on the first call (25 ms on the same call warmed up; the
+first one carries the code-object load).
+
+int8 through the C API (`test_gemm_i8.c`): **185 checks, 0 failures**, both paths
+exact, and 512x512xK4=128 in 3.0 ms on the device against 87.0 ms on the CPU
+path - a 29x win.
+
+### Where the 1.2x goes
+
+Per shape, end to end through `rdna2_sgemm_f32_host_v` - allocation, upload and
+download included, no bridge repacking - same card, `C = A * Bt^T`, ms / GFLOPS:
+
+| M = N = K | v0 (global 4x4) | v1 (64x64, KSTEP 8) | v2 (128x128) | **v3 (64x64, KSTEP 16)** |
+|---|---|---|---|---|
+| 1024 | 21.0 / 102 | 2.42 / 886 | 2.46 / 874 | **1.85 / 1161** |
+| 2048 | 107.1 / 160 | 8.73 / 1968 | 9.31 / 1846 | **8.28 / 2074** |
+| 4096 | 779.0 / 176 | 53.2 / 2584 | 49.2 / 2796 | **47.0 / 2925** |
+
+`rdna2_sgemm_f32_host_tuned` is v3 and reproduces that column. v3 is already the
+arch default, and v0 - the shape the first version of this tree shipped - is
+11-17x slower, so the kernel choice costs nothing here; the loss is elsewhere.
+
+The same problem through `cblas_sgemm` costs 25.0 ms at 2048 and 133 ms at 4096,
+against 8.28 ms and 47.0 ms for the call above. The difference, 16.7 ms and
+86.0 ms, is `rdna2_gemm_cm_core`'s unconditional host work: it allocates an
+`m x k` buffer and runs `rdna2_cm_to_rm` over A on every call. Nothing else is
+in it - B passes through untouched when `ldb == k`, and with `alpha = 1`,
+`beta = 0`, `ldc == m` the kernel writes directly into C, so there is no output
+pass and no temporary. Those copies move 16.8 MB at 2048 and 67.1 MB at 4096 at
+an effective 1.0 and 0.78 GB/s: the 64x64 tiling does not make a column-major
+read plus a row-strided store pay for itself, and the destination is a fresh
+allocation, first-touched, on every call.
+
+| size | CPU (12 threads) | GPU call | bridge transpose | library total | ratio | without it |
+|---|---|---|---|---|---|---|
+| 2048^3 | 29.1 ms | 8.28 ms | 16.7 ms | 25.0 ms | 1.18x | 3.5x |
+| 4096^3 | 210 ms | 47.0 ms | 86.0 ms | 133 ms | 1.58x | 4.5x |
+
+So the kernel and the transfers are not what limits RDNA2: the device does the
+4096^3 product in 47 ms end to end, 4.5x the 12-thread CPU, and 2.9 TFLOP/s. A
+single per-call column-major to row-major pass over A gives most of that back.
+Removing it - a per-thread scratch buffer, transposing once when the caller
+reuses A, or teaching the tiled staging loop to read column-major A, which is a
+stride swap - is worth about 3x at the gate sizes, far more than further kernel
+tuning. The same pass is the most likely reason the RDNA4 library numbers above
+sit below the kernel-only tables there.
+
+### CPU fallback is silent
+
+This matters before reading any number above as a GPU result. When
+`rdna2_device_count() == 0`, the host layers call the file's own `rdna2_*_ref`
+CPU implementation, return `RDNA2_OK`, and the bridge logs `handled=1` exactly
+as it does after a real launch. Reached through the `System32` `amdhip64_7.dll`
+above, the first run of the level-3 suite reported 517 passes and 518
+`handled=1` lines **without touching the GPU**, at 3.1 GFLOPS - 200x slower than
+the CPU - for 2048^3 and 4096^3 alike. The flat throughput and the absent size
+dependence are the only symptoms. The same binary, run where the device is
+visible, gives the 693 / 1031 GFLOPS and the 201 ms first-call timing in the
+table above. Until the fallback returns a status distinct from a launch,
+`handled=1` means "the call was answered", not "the device ran".
 
 ## Not included
 
