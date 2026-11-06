@@ -1,6 +1,6 @@
 include $(KERNELDIR)/KERNEL.NEOVERSEN1
 
-# SME2 level-3 kernels (GEMM_UNROLL_M 64, GEMM_UNROLL_N one streaming vector); GCC builds keep the NEON kernels
+# SME2 level-3 kernels (GEMM_UNROLL_M 64 real, 16 complex; GEMM_UNROLL_N one streaming vector); GCC keeps NEON
 ifneq ($(C_COMPILER), GCC)
 SGEMMKERNEL    = gemm_kernel_sme2.c
 STRMMKERNEL    = gemm_kernel_sme2.c
@@ -51,4 +51,27 @@ SSYMMUCOPY_M   = symm_copy_sme2.c
 SSYMMLCOPY_M   = symm_copy_sme2.c
 DSYMMUCOPY_M   = symm_copy_sme2.c
 DSYMMLCOPY_M   = symm_copy_sme2.c
+
+CGEMMKERNEL    = zgemm_kernel_sme2.c
+CTRMMKERNEL    = zgemm_kernel_sme2.c
+CGEMMINCOPY    = ../generic/zgemm_ncopy_$(CGEMM_UNROLL_M).c
+CGEMMITCOPY    = ../generic/zgemm_tcopy_$(CGEMM_UNROLL_M).c
+CGEMMONCOPY    = ../generic/zgemm_ncopy_$(CGEMM_UNROLL_N).c
+CGEMMOTCOPY    = ../generic/zgemm_tcopy_$(CGEMM_UNROLL_N).c
+
+ZGEMMKERNEL    = zgemm_kernel_sme2.c
+ZTRMMKERNEL    = zgemm_kernel_sme2.c
+ZGEMMINCOPY    = ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_M).c
+ZGEMMITCOPY    = ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_M).c
+ZGEMMONCOPY    = ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_N).c
+ZGEMMOTCOPY    = ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_N).c
+
+CTRSMKERNEL_LN = ztrsm_kernel_sme2.c
+CTRSMKERNEL_LT = ztrsm_kernel_sme2.c
+CTRSMKERNEL_RN = ztrsm_kernel_sme2.c
+CTRSMKERNEL_RT = ztrsm_kernel_sme2.c
+ZTRSMKERNEL_LN = ztrsm_kernel_sme2.c
+ZTRSMKERNEL_LT = ztrsm_kernel_sme2.c
+ZTRSMKERNEL_RN = ztrsm_kernel_sme2.c
+ZTRSMKERNEL_RT = ztrsm_kernel_sme2.c
 endif
