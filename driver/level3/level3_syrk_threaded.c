@@ -37,6 +37,40 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
+/* Number of elements (COMPSIZE FLOATs each) that inner_thread() may pack
+ * behind sb.  The callers of this driver (interface/syrk.c, and
+ * interface/lapack/potrf.c and zpotrf.c through potrf_[UL]_parallel.c) and
+ * the thread servers (driver/others/blas_server*.c) all carve sa and sb out
+ * of a BUFFER_SIZE work area as
+ *   sa = buffer + GEMM_OFFSET_A,
+ *   sb = sa + ((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)
+ *           + GEMM_OFFSET_B,
+ * except that the pthreads server on LoongArch puts the sa of its workers at
+ * buffer + (WhereAmI() & 0xf) * GEMM_OFFSET_A.  Leave 64 KiB of slack, but
+ * never use less than the GEMM_Q x GEMM_R block that the GEMM drivers pack
+ * behind the same sb (where GEMM_R is derived from BUFFER_SIZE, as on x86,
+ * that block is the larger limit).  This is defined before the GEMM_P
+ * override below because the callers size the sa area with the regular
+ * GEMM_P. */
+static BLASLONG syrk_sb_space(void){
+
+  BLASLONG offset_a = GEMM_OFFSET_A;
+  BLASLONG space;
+
+#if defined(ARCH_LOONGARCH64) && !defined(NO_AFFINITY)
+  offset_a *= 15;
+#endif
+
+  space = (BLASLONG)BUFFER_SIZE - offset_a
+    - (BLASLONG)((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)
+    - GEMM_OFFSET_B - 65536;
+  space /= (BLASLONG)(COMPSIZE * SIZE);
+
+  if (space < (BLASLONG)GEMM_Q * GEMM_R) space = (BLASLONG)GEMM_Q * GEMM_R;
+
+  return space;
+}
+
 #if defined(__loongarch__) && defined(LA464) && defined(DOUBLE)
 #undef GEMM_P
 #define GEMM_P 96
@@ -152,6 +186,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
   BLASLONG ls, min_l, jjs, min_jj;
   BLASLONG is, min_i, div_n;
+  BLASLONG max_div_n, q_blk, sb_space;
 
   BLASLONG i, current;
 #ifdef LOWER
@@ -221,18 +256,40 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
   div_n = (((m_to - m_from + DIVIDE_RATE - 1) / DIVIDE_RATE + GEMM_UNROLL_MN - 1)/GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
 
+  /* Every thread packs op(A) for its whole row range and one K block into
+   * its sb area (DIVIDE_RATE panels of div_n x min_l), where the other
+   * threads read it.  Shorten the K block until the panels of the widest
+   * thread fit into the space behind sb.  range_n is shared and the space
+   * does not depend on the thread, so all threads compute the same K
+   * blocking.  (With q_blk >= 1 this works as long as DIVIDE_RATE * max_div_n
+   * does not exceed the space itself, i.e. no thread owns millions of rows,
+   * which no C that fits in memory requires.) */
+  max_div_n = div_n;
+  if (range_n) {
+    for (i = 0; i < args -> nthreads; i++) {
+      BLASLONG d = (((range_n[i + 1] - range_n[i] + DIVIDE_RATE - 1) / DIVIDE_RATE + GEMM_UNROLL_MN - 1)/GEMM_UNROLL_MN) * GEMM_UNROLL_MN;
+      if (d > max_div_n) max_div_n = d;
+    }
+  }
+  q_blk = GEMM_Q;
+  sb_space = syrk_sb_space();
+  if (DIVIDE_RATE * max_div_n > sb_space / GEMM_Q) {
+    q_blk = sb_space / (DIVIDE_RATE * max_div_n);
+    if (q_blk < 1) q_blk = 1;
+  }
+
   buffer[0] = sb;
   for (i = 1; i < DIVIDE_RATE; i++) {
-    buffer[i] = buffer[i - 1] + GEMM_Q * div_n * COMPSIZE;
+    buffer[i] = buffer[i - 1] + q_blk * div_n * COMPSIZE;
   }
 
   for(ls = 0; ls < k; ls += min_l){
 
     min_l = k - ls;
-    if (min_l >= GEMM_Q * 2) {
-      min_l  = GEMM_Q;
+    if (min_l >= q_blk * 2) {
+      min_l  = q_blk;
     } else {
-      if (min_l > GEMM_Q) min_l = (min_l + 1) / 2;
+      if (min_l > q_blk) min_l = (min_l + 1) / 2;
     }
 
     min_i = m_to - m_from;
