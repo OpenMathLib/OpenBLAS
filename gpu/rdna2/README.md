@@ -315,9 +315,18 @@ the static archive must add the same.
     make level3-test                 # build the library, then run the test
     make -C gpu/rdna2 oblas-test     # run it against an existing library
 
-The test checks the CBLAS SGEMM/SYRK/SYR2K entry points against its own
-double-precision reference, including the contract that the unstored triangle
-and the `ldc` padding are left untouched. It builds and passes on a CPU-only
+The test checks every dispatched level-3 entry point -- SGEMM, SYMM, SYRK,
+SYR2K, TRMM and TRSM -- against its own double-precision reference (an LU solve
+for TRSM, so the reference does not share the bridge's triangle logic). Each op
+runs over its full layout range: both store orders, side, uplo, trans and diag.
+The contracts the bridges must keep are checked too: the unstored triangle and
+the `ldb`/`ldc` padding are left untouched, and the unused triangle of a
+symmetric or triangular factor plus the stored diagonal of a unit-diagonal one
+are never read (they hold a value that no correct result can produce), which is
+what fails loudly if a bridge reads the wrong half.
+
+All six ops are seen at the default size gate as well, so the real dispatch
+decision is covered end to end, not only the forced-open small shapes. It builds and passes on a CPU-only
 library, so it runs in ordinary CI (see `.github/workflows/rdna2_level3.yml`);
 against a `USE_HIP` library it exercises the real dispatch, which
 `OPENBLAS_RDNA2_GPU_DEBUG=1` makes visible as one `handled=1` line per call.

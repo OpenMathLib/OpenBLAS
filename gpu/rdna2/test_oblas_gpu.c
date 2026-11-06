@@ -17,6 +17,13 @@
  *          same cases still run, on the CPU kernels, and still check the
  *          triangle contract.
  *
+ *   SYMM   cover every order/side/uplo/trans/diag combination against a double
+ *   TRMM   precision reference (an LU solve for TRSM, so the reference shares
+ *   TRSM   none of the triangle logic under test). The unstored triangle of the
+ *          factor, and the stored diagonal of a unit-diagonal one, are filled
+ *          with a value that no correct result can produce, so a bridge that
+ *          reads them fails loudly; the ldb/ldc padding must be untouched.
+ *
  * This build may use NUM_THREADS=1, so the CPU timings here are single-threaded
  * and only meaningful as a sanity check; the CPU-vs-GPU numbers in bench_full.txt
  * use a 32-thread OpenBLAS.
@@ -65,15 +72,53 @@ static double sym_op(const float *a, int ld, int order, int tr, int i, int p) {
  * buries the log (a 1300x1300 clobber is 845k lines), so print the first few
  * and count the rest. */
 #define SYM_REPORT_MAX 8
-static void sym_violation(long *count, int row, int col, const char *what,
-                          double got, double want, double rel) {
+static void violation(long *count, const char *tag, int row, int col,
+                      const char *what, double got, double want, double rel) {
   if ((*count)++ < SYM_REPORT_MAX) {
     if (what)
-      printf("syrk/syr2k: %s element (%d,%d) was written\n", what, row, col);
+      printf("%s: %s element (%d,%d) was written\n", tag, what, row, col);
     else
-      printf("syrk/syr2k: (%d,%d) got %.6f want %.6f (rel %.2e)\n", row, col,
-             got, want, rel);
+      printf("%s: (%d,%d) got %.6f want %.6f (rel %.2e)\n", tag, row, col, got,
+             want, rel);
   }
+}
+
+/* Element (i,j) of an m x n matrix with stride ld, in either store order. */
+static double mat_get(const float *x, int ld, int order, int i, int j) {
+  return (order == CblasColMajor) ? (double)x[(size_t)i + (size_t)j * ld]
+                                  : (double)x[(size_t)i * ld + (size_t)j];
+}
+
+static void mat_put(float *x, int ld, int order, int i, int j, float v) {
+  if (order == CblasColMajor)
+    x[(size_t)i + (size_t)j * ld] = v;
+  else
+    x[(size_t)i * ld + (size_t)j] = v;
+}
+
+/* Bytes to allocate for an m x n matrix with row or column stride ld. */
+static size_t mat_size(int ld, int order, int m, int n) {
+  return (order == CblasColMajor) ? (size_t)ld * (size_t)n
+                                  : (size_t)ld * (size_t)m;
+}
+
+/* Element (i,p) of a symmetric factor given only its uplo triangle. The mirror
+ * image is read out of the stored triangle, never from the unused one. */
+static double sym_el(const float *a, int ld, int order, int uplo, int i, int p) {
+  const int stored = sym_stored(uplo, i, p);
+  return mat_get(a, ld, order, stored ? i : p, stored ? p : i);
+}
+
+/* Element (i,p) of op(T) for a triangular factor T: op(T) is T (tr == 0) or
+ * T^T, zero outside the stored triangle, with an implicit unit diagonal when
+ * unit is set. */
+static double tri_el(const float *a, int ld, int order, int uplo, int tr,
+                     int unit, int i, int p) {
+  const int si = tr ? p : i;
+  const int sj = tr ? i : p;
+  if (!sym_stored(uplo, si, sj)) return 0.0;
+  if (si == sj && unit) return 1.0;
+  return mat_get(a, ld, order, si, sj);
 }
 
 /* Runs one SYRK (two == 0) or SYR2K (two == 1) case and compares it against a
@@ -135,14 +180,15 @@ static int sym_case(int two, int order, int uplo, int trans, int n, int k,
 
     if (row >= n || col >= n) {
       if (C[idx] != C0[idx]) {
-        sym_violation(&nviol, row, col, "padding", 0.0, 0.0, 0.0);
+        violation(&nviol, "syrk/syr2k", row, col, "padding", 0.0, 0.0, 0.0);
         bad = 1;
       }
       continue;
     }
     if (!sym_stored(uplo, row, col)) {
       if (C[idx] != C0[idx]) {
-        sym_violation(&nviol, row, col, "unstored triangle", 0.0, 0.0, 0.0);
+        violation(&nviol, "syrk/syr2k", row, col, "unstored triangle", 0.0, 0.0,
+                  0.0);
         bad = 1;
       }
       continue;
@@ -169,7 +215,7 @@ static int sym_case(int two, int order, int uplo, int trans, int n, int k,
       err = fabs(got - ref);
       scale = fabs(ref) > 1.0 ? fabs(ref) : 1.0;
       if (err / scale > 5e-4) {
-        sym_violation(&nviol, row, col, NULL, got, ref, err / scale);
+        violation(&nviol, "syrk/syr2k", row, col, NULL, got, ref, err / scale);
         bad = 1;
       }
     }
@@ -190,6 +236,359 @@ static int sym_case(int two, int order, int uplo, int trans, int n, int k,
   free(B);
   free(C);
   free(C0);
+  return bad;
+}
+
+/* ------------------------------------------------------------------------- */
+/* SYMM / TRMM / TRSM                                                        */
+/* ------------------------------------------------------------------------- */
+
+/* Written into every element the operation must not look at (the unstored
+ * triangle of a symmetric or triangular factor, a unit diagonal). A pipeline
+ * that reads it turns this into errors of this order, far above the tolerances
+ * below, without producing the NaNs that would also poison a correct build. */
+#define UNUSED_FILL 1.0e6f
+
+/* Everything outside the logical m x n block of a matrix with stride ld must
+ * still hold what it was filled with. */
+static int pad_intact(const char *tag, const float *x, const float *x0, int ld,
+                      int order, int m, int n, long *nviol) {
+  int i, j, bad = 0;
+
+  if (order == CblasColMajor) {
+    for (j = 0; j < n; ++j)
+      for (i = m; i < ld; ++i)
+        if (x[(size_t)i + (size_t)j * ld] != x0[(size_t)i + (size_t)j * ld]) {
+          violation(nviol, tag, i, j, "padding", 0.0, 0.0, 0.0);
+          bad = 1;
+        }
+  } else {
+    for (i = 0; i < m; ++i)
+      for (j = n; j < ld; ++j)
+        if (x[(size_t)i * ld + (size_t)j] != x0[(size_t)i * ld + (size_t)j]) {
+          violation(nviol, tag, i, j, "padding", 0.0, 0.0, 0.0);
+          bad = 1;
+        }
+  }
+  return bad;
+}
+
+/* Compares one result element against the reference and reports a mismatch. */
+static void check_el(const char *tag, int i, int j, double got, double want,
+                     double tol, long *nviol, int *bad) {
+  const double err = fabs(got - want);
+  const double scale = fabs(want) > 1.0 ? fabs(want) : 1.0;
+
+  if (err / scale > tol) {
+    violation(nviol, tag, i, j, NULL, got, want, err / scale);
+    *bad = 1;
+  }
+}
+
+/* C := alpha*A*B + beta*C (side=left) or alpha*B*A + beta*C (side=right), A
+ * symmetric with only its uplo triangle stored. Checks every element of C, the
+ * ldc padding, and that A's other triangle is never read. */
+static int symm_case(int order, int side, int uplo, int m, int n, double alpha,
+                     double beta) {
+  const int kdim = side ? n : m;
+  const int lda = kdim + 3;
+  const int ldb = (m > n ? m : n) + 4;
+  const int ldc = (m > n ? m : n) + 5;
+  const float sentinel = -12345.5f;
+  const size_t asz = mat_size(lda, order, kdim, kdim);
+  const size_t bsz = mat_size(ldb, order, m, n);
+  const size_t csz = mat_size(ldc, order, m, n);
+  float *A = (float *)malloc(asz * sizeof(float));
+  float *B = (float *)malloc(bsz * sizeof(float));
+  float *C = (float *)malloc(csz * sizeof(float));
+  float *C0 = (float *)malloc(csz * sizeof(float));
+  size_t k;
+  int i, j, bad = 0;
+  long nviol = 0;
+
+  if (!A || !B || !C || !C0) {
+    printf("symm: allocation failed at m=%d n=%d\n", m, n);
+    free(A);
+    free(B);
+    free(C);
+    free(C0);
+    return 1;
+  }
+
+  for (k = 0; k < asz; ++k) A[k] = UNUSED_FILL;
+  for (k = 0; k < bsz; ++k) B[k] = sentinel;
+  for (k = 0; k < csz; ++k) C0[k] = C[k] = sentinel;
+
+  for (j = 0; j < kdim; ++j)
+    for (i = 0; i < kdim; ++i)
+      if (sym_stored(uplo, i, j))
+        mat_put(A, lda, order, i, j,
+                (float)((double)((i * 5 + j * 3) % 17) - 8.0) / 8.0f);
+  for (j = 0; j < n; ++j)
+    for (i = 0; i < m; ++i) {
+      const float v = (float)((double)((i * 7 + j * 11) % 23) - 11.0) / 9.0f;
+
+      mat_put(B, ldb, order, i, j, v);
+      mat_put(C0, ldc, order, i, j, v * 0.5f + 0.25f);
+    }
+  memcpy(C, C0, csz * sizeof(float));
+
+  cblas_ssymm(order, side ? CblasRight : CblasLeft,
+              uplo ? CblasLower : CblasUpper, m, n, (float)alpha, A, lda, B, ldb,
+              (float)beta, C, ldc);
+
+  for (j = 0; j < n; ++j)
+    for (i = 0; i < m; ++i) {
+      double ref = 0.0;
+      int p;
+
+      for (p = 0; p < kdim; ++p)
+        ref += (side ? mat_get(B, ldb, order, i, p) *
+                           sym_el(A, lda, order, uplo, p, j)
+                     : sym_el(A, lda, order, uplo, i, p) *
+                           mat_get(B, ldb, order, p, j));
+      ref = alpha * ref + beta * (double)mat_get(C0, ldc, order, i, j);
+      check_el("symm", i, j, mat_get(C, ldc, order, i, j), ref, 5e-4, &nviol,
+               &bad);
+    }
+  bad |= pad_intact("symm", C, C0, ldc, order, m, n, &nviol);
+
+  if (nviol > SYM_REPORT_MAX)
+    printf("symm: ... %ld more violation(s) in this case\n",
+           nviol - SYM_REPORT_MAX);
+  printf("%s symm order=%d side=%d uplo=%d m=%d n=%d alpha=%g beta=%g\n",
+         bad ? "FAIL" : "ok  ", order, side, uplo, m, n, alpha, beta);
+
+  free(A);
+  free(B);
+  free(C);
+  free(C0);
+  return bad;
+}
+
+/* B := alpha*op(A)*B (side=left) or alpha*B*op(A) (side=right), in place, A
+ * triangular with only its uplo triangle stored. The unused triangle and the
+ * stored diagonal of a unit-diagonal factor carry UNUSED_FILL, so reading
+ * either one shows up as a large error. */
+static int trmm_case(int order, int side, int uplo, int trans, int unit, int m,
+                     int n, double alpha) {
+  const int kdim = side ? n : m;
+  const int lda = kdim + 3;
+  const int ldb = (m > n ? m : n) + 4;
+  const float sentinel = -12345.5f;
+  const size_t asz = mat_size(lda, order, kdim, kdim);
+  const size_t bsz = mat_size(ldb, order, m, n);
+  float *A = (float *)malloc(asz * sizeof(float));
+  float *B = (float *)malloc(bsz * sizeof(float));
+  float *B0 = (float *)malloc(bsz * sizeof(float));
+  size_t k;
+  int i, j, bad = 0;
+  long nviol = 0;
+
+  if (!A || !B || !B0) {
+    printf("trmm: allocation failed at m=%d n=%d\n", m, n);
+    free(A);
+    free(B);
+    free(B0);
+    return 1;
+  }
+
+  for (k = 0; k < asz; ++k) A[k] = UNUSED_FILL;
+  for (j = 0; j < kdim; ++j)
+    for (i = 0; i < kdim; ++i)
+      if (sym_stored(uplo, i, j) && !(i == j && unit))
+        mat_put(A, lda, order, i, j,
+                (float)((double)((i * 5 + j * 3) % 17) - 8.0) / 16.0f);
+  for (k = 0; k < bsz; ++k) B0[k] = B[k] = sentinel;
+  for (j = 0; j < n; ++j)
+    for (i = 0; i < m; ++i)
+      mat_put(B0, ldb, order, i, j,
+              (float)((double)((i * 7 + j * 11) % 23) - 11.0) / 11.0f);
+  memcpy(B, B0, bsz * sizeof(float));
+
+  cblas_strmm(order, side ? CblasRight : CblasLeft,
+              uplo ? CblasLower : CblasUpper,
+              trans ? CblasTrans : CblasNoTrans,
+              unit ? CblasUnit : CblasNonUnit, m, n, (float)alpha, A, lda, B,
+              ldb);
+
+  for (j = 0; j < n; ++j)
+    for (i = 0; i < m; ++i) {
+      double ref = 0.0;
+      int p;
+
+      for (p = 0; p < kdim; ++p)
+        ref += (side ? tri_el(A, lda, order, uplo, trans, unit, p, j) *
+                           mat_get(B0, ldb, order, i, p)
+                     : tri_el(A, lda, order, uplo, trans, unit, i, p) *
+                           mat_get(B0, ldb, order, p, j));
+      check_el("trmm", i, j, mat_get(B, ldb, order, i, j), alpha * ref, 5e-4,
+               &nviol, &bad);
+    }
+  bad |= pad_intact("trmm", B, B0, ldb, order, m, n, &nviol);
+
+  if (nviol > SYM_REPORT_MAX)
+    printf("trmm: ... %ld more violation(s) in this case\n",
+           nviol - SYM_REPORT_MAX);
+  printf("%s trmm order=%d side=%d uplo=%d trans=%d diag=%d m=%d n=%d alpha=%g\n",
+         bad ? "FAIL" : "ok  ", order, side, uplo, trans, unit, m, n, alpha);
+
+  free(A);
+  free(B);
+  free(B0);
+  return bad;
+}
+
+/* Solves M*Y = X in double precision with partial pivoting. M (n x n) is
+ * destroyed, X is n x nrhs with row stride ldx. Returns 0 if M is singular. */
+static int lu_solve(double *M, int n, double *X, int nrhs, int ldx) {
+  int k, i, j, r;
+
+  for (k = 0; k < n; ++k) {
+    int piv = k;
+    double best = fabs(M[(size_t)k + (size_t)k * n]);
+
+    for (i = k + 1; i < n; ++i) {
+      const double v = fabs(M[(size_t)i + (size_t)k * n]);
+
+      if (v > best) {
+        best = v;
+        piv = i;
+      }
+    }
+    if (best < 1e-9) return 0;
+    if (piv != k) {
+      for (j = 0; j < n; ++j) {
+        const double t = M[(size_t)k + (size_t)j * n];
+
+        M[(size_t)k + (size_t)j * n] = M[(size_t)piv + (size_t)j * n];
+        M[(size_t)piv + (size_t)j * n] = t;
+      }
+      for (r = 0; r < nrhs; ++r) {
+        const double t = X[(size_t)k + (size_t)r * ldx];
+
+        X[(size_t)k + (size_t)r * ldx] = X[(size_t)piv + (size_t)r * ldx];
+        X[(size_t)piv + (size_t)r * ldx] = t;
+      }
+    }
+    for (i = k + 1; i < n; ++i) {
+      const double f =
+          M[(size_t)i + (size_t)k * n] / M[(size_t)k + (size_t)k * n];
+
+      if (f == 0.0) continue;
+      for (j = k + 1; j < n; ++j)
+        M[(size_t)i + (size_t)j * n] -= f * M[(size_t)k + (size_t)j * n];
+      for (r = 0; r < nrhs; ++r)
+        X[(size_t)i + (size_t)r * ldx] -= f * X[(size_t)k + (size_t)r * ldx];
+    }
+  }
+
+  for (r = 0; r < nrhs; ++r)
+    for (i = n - 1; i >= 0; --i) {
+      double s = X[(size_t)i + (size_t)r * ldx];
+
+      for (j = i + 1; j < n; ++j)
+        s -= M[(size_t)i + (size_t)j * n] * X[(size_t)j + (size_t)r * ldx];
+      X[(size_t)i + (size_t)r * ldx] = s / M[(size_t)i + (size_t)i * n];
+    }
+  return 1;
+}
+
+/* Solves op(A)*X = alpha*B (side=left) or X*op(A) = alpha*B (side=right), in
+ * place on B, A triangular. The reference solves a dense copy of op(A) with a
+ * pivoting LU, so it does not share the triangle logic under test. */
+static int trsm_case(int order, int side, int uplo, int trans, int unit, int m,
+                     int n, double alpha) {
+  const int kdim = side ? n : m;
+  const int lda = kdim + 3;
+  const int ldb = (m > n ? m : n) + 4;
+  const int nrhs = side ? m : n;
+  const float sentinel = -12345.5f;
+  const size_t asz = mat_size(lda, order, kdim, kdim);
+  const size_t bsz = mat_size(ldb, order, m, n);
+  float *A = (float *)malloc(asz * sizeof(float));
+  float *B = (float *)malloc(bsz * sizeof(float));
+  float *B0 = (float *)malloc(bsz * sizeof(float));
+  double *M = (double *)malloc((size_t)kdim * (size_t)kdim * sizeof(double));
+  double *X = (double *)malloc((size_t)kdim * (size_t)nrhs * sizeof(double));
+  size_t k;
+  int i, j, bad = 0;
+  long nviol = 0;
+
+  if (!A || !B || !B0 || !M || !X) {
+    printf("trsm: allocation failed at m=%d n=%d\n", m, n);
+    free(A);
+    free(B);
+    free(B0);
+    free(M);
+    free(X);
+    return 1;
+  }
+
+  for (k = 0; k < asz; ++k) A[k] = UNUSED_FILL;
+  for (j = 0; j < kdim; ++j)
+    for (i = 0; i < kdim; ++i)
+      if (sym_stored(uplo, i, j) && !(i == j && unit))
+        mat_put(A, lda, order, i, j,
+                (i == j) ? (float)(1.0 + 0.5 * ((j % 3) + 1) / 4.0)
+                         : (float)((double)((i * 5 + j * 3) % 7) - 3.0) / 32.0f);
+  for (k = 0; k < bsz; ++k) B0[k] = B[k] = sentinel;
+  for (j = 0; j < n; ++j)
+    for (i = 0; i < m; ++i)
+      mat_put(B0, ldb, order, i, j,
+              (float)((double)((i * 7 + j * 11) % 23) - 11.0) / 11.0f);
+  memcpy(B, B0, bsz * sizeof(float));
+
+  cblas_strsm(order, side ? CblasRight : CblasLeft,
+              uplo ? CblasLower : CblasUpper,
+              trans ? CblasTrans : CblasNoTrans,
+              unit ? CblasUnit : CblasNonUnit, m, n, (float)alpha, A, lda, B,
+              ldb);
+
+  /* side=right is solved as op(A)^T * Y = alpha*B^T, so the dense copy is
+   * transposed there; side=left solves against op(A) directly. */
+  for (j = 0; j < kdim; ++j)
+    for (i = 0; i < kdim; ++i)
+      M[(size_t)i + (size_t)j * kdim] = tri_el(
+          A, lda, order, uplo, trans, unit, side ? j : i, side ? i : j);
+  /* X := alpha*B, or alpha*B^T for side=right, so both sides are a plain
+   * solve against a matrix the code under test built nothing of. */
+  for (j = 0; j < n; ++j)
+    for (i = 0; i < m; ++i) {
+      const double v = alpha * mat_get(B0, ldb, order, i, j);
+
+      if (side)
+        X[(size_t)j + (size_t)i * kdim] = v;
+      else
+        X[(size_t)i + (size_t)j * kdim] = v;
+    }
+
+  if (!lu_solve(M, kdim, X, nrhs, kdim)) {
+    printf("FAIL trsm: reference matrix is singular (m=%d n=%d)\n", m, n);
+    bad = 1;
+  } else {
+    for (j = 0; j < n; ++j)
+      for (i = 0; i < m; ++i) {
+        const double ref = side ? X[(size_t)j + (size_t)i * kdim]
+                                : X[(size_t)i + (size_t)j * kdim];
+
+        check_el("trsm", i, j, mat_get(B, ldb, order, i, j), ref, 1e-3, &nviol,
+                 &bad);
+      }
+    bad |= pad_intact("trsm", B, B0, ldb, order, m, n, &nviol);
+  }
+
+  if (nviol > SYM_REPORT_MAX)
+    printf("trsm: ... %ld more violation(s) in this case\n",
+           nviol - SYM_REPORT_MAX);
+  printf("%s trsm order=%d side=%d uplo=%d trans=%d diag=%d m=%d n=%d alpha=%g\n",
+         bad ? "FAIL" : "ok  ", order, side, uplo, trans, unit, m, n, alpha);
+
+  free(A);
+  free(B);
+  free(B0);
+  free(M);
+  free(X);
   return bad;
 }
 
@@ -293,6 +692,86 @@ int main(int argc, char **argv) {
 
     printf("syrk/syr2k: %d cases, %d failure(s)\n", cases, sym_failures);
     failures += sym_failures;
+  }
+
+  /* ----------------------------------------------------------------------- */
+  /* SYMM / TRMM / TRSM: one case per op above the default size gate, then     */
+  /* every layout combination at shapes the gate would otherwise filter out.   */
+  /* ----------------------------------------------------------------------- */
+  {
+    int order, side, uplo, trans, diag;
+    int cases, sec_failures;
+    /* m*n*kdim = 2.2e9, just past the bridge's default 2e9 threshold. */
+    const int gate_mn = 1300;
+
+    SETENV("OPENBLAS_RDNA2_GPU", "1");
+    SETENV("OPENBLAS_RDNA2_GPU_MIN_MNK", "2000000000");
+    printf("\nsymm/trmm/trsm at the default size gate (m=n=%d)\n", gate_mn);
+    cases = sec_failures = 0;
+    sec_failures += symm_case(CblasColMajor, 0, 0, gate_mn, gate_mn, 1.0, 0.0);
+    cases++;
+    sec_failures += trmm_case(CblasColMajor, 0, 0, 0, 0, gate_mn, gate_mn, 1.0);
+    cases++;
+    sec_failures += trsm_case(CblasColMajor, 0, 0, 0, 0, gate_mn, gate_mn, 1.0);
+    cases++;
+    printf("gate cases: %d cases, %d failure(s)\n", cases, sec_failures);
+    failures += sec_failures;
+
+    /* Every remaining case is small on purpose, so it reaches the device, or
+     * the CPU kernels on a GPU-less machine, at shapes a GEMM crossover would
+     * never route there. */
+    SETENV("OPENBLAS_RDNA2_GPU_MIN_MNK", "0");
+
+    cases = sec_failures = 0;
+    printf("symm edge shapes (size gate forced open)\n");
+    for (order = 0; order <= 1; ++order)
+      for (side = 0; side <= 1; ++side)
+        for (uplo = 0; uplo <= 1; ++uplo) {
+          const int ord = order ? CblasRowMajor : CblasColMajor;
+
+          sec_failures += symm_case(ord, side, uplo, 97, 61, 1.0, 0.0);
+          cases++;
+          sec_failures += symm_case(ord, side, uplo, 53, 130, 0.5, -0.25);
+          cases++;
+        }
+    printf("symm: %d cases, %d failure(s)\n", cases, sec_failures);
+    failures += sec_failures;
+
+    cases = sec_failures = 0;
+    printf("trmm edge shapes (size gate forced open)\n");
+    for (order = 0; order <= 1; ++order)
+      for (side = 0; side <= 1; ++side)
+        for (uplo = 0; uplo <= 1; ++uplo)
+          for (trans = 0; trans <= 1; ++trans)
+            for (diag = 0; diag <= 1; ++diag) {
+              const int ord = order ? CblasRowMajor : CblasColMajor;
+
+              sec_failures += trmm_case(ord, side, uplo, trans, diag, 97, 61, 1.0);
+              cases++;
+              sec_failures +=
+                  trmm_case(ord, side, uplo, trans, diag, 53, 130, -0.75);
+              cases++;
+            }
+    printf("trmm: %d cases, %d failure(s)\n", cases, sec_failures);
+    failures += sec_failures;
+
+    cases = sec_failures = 0;
+    printf("trsm edge shapes (size gate forced open)\n");
+    for (order = 0; order <= 1; ++order)
+      for (side = 0; side <= 1; ++side)
+        for (uplo = 0; uplo <= 1; ++uplo)
+          for (trans = 0; trans <= 1; ++trans)
+            for (diag = 0; diag <= 1; ++diag) {
+              const int ord = order ? CblasRowMajor : CblasColMajor;
+
+              sec_failures += trsm_case(ord, side, uplo, trans, diag, 97, 61, 1.0);
+              cases++;
+              sec_failures +=
+                  trsm_case(ord, side, uplo, trans, diag, 53, 130, 0.75);
+              cases++;
+            }
+    printf("trsm: %d cases, %d failure(s)\n", cases, sec_failures);
+    failures += sec_failures;
   }
 
   if (failures == 0)
