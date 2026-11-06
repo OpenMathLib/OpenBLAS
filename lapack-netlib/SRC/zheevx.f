@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download ZHEEVX + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zheevx.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zheevx.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -253,12 +251,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16HEeigen
+*> \ingroup heevx
 *
 *  =====================================================================
-      SUBROUTINE ZHEEVX( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU,
+      SUBROUTINE ZHEEVX( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL,
+     $                   IU,
      $                   ABSTOL, M, W, Z, LDZ, WORK, LWORK, RWORK,
      $                   IWORK, IFAIL, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -287,7 +287,7 @@
       LOGICAL            ALLEIG, INDEIG, LOWER, LQUERY, TEST, VALEIG,
      $                   WANTZ
       CHARACTER          ORDER
-      INTEGER            I, IINFO, IMAX, INDD, INDE, INDEE, INDIBL,
+      INTEGER            I, IINFO, INDD, INDE, INDEE, INDIBL,
      $                   INDISP, INDIWK, INDRWK, INDTAU, INDWRK, ISCALE,
      $                   ITMP1, J, JJ, LLWORK, LWKMIN, LWKOPT, NB,
      $                   NSPLIT
@@ -301,7 +301,8 @@
       EXTERNAL           LSAME, ILAENV, DLAMCH, ZLANHE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DSCAL, DSTEBZ, DSTERF, XERBLA, ZDSCAL,
+      EXTERNAL           DCOPY, DSCAL, DSTEBZ, DSTERF, XERBLA,
+     $                   ZDSCAL,
      $                   ZHETRD, ZLACPY, ZSTEIN, ZSTEQR, ZSWAP, ZUNGTR,
      $                   ZUNMTR
 *     ..
@@ -355,7 +356,8 @@
          ELSE
             LWKMIN = 2*N
             NB = ILAENV( 1, 'ZHETRD', UPLO, N, -1, -1, -1 )
-            NB = MAX( NB, ILAENV( 1, 'ZUNMTR', UPLO, N, -1, -1, -1 ) )
+            NB = MAX( NB, ILAENV( 1, 'ZUNMTR', UPLO, N, -1, -1,
+     $                -1 ) )
             LWKOPT = MAX( 1, ( NB + 1 )*N )
             WORK( 1 ) = LWKOPT
          END IF
@@ -416,8 +418,11 @@
          ISCALE = 1
          SIGMA = RMIN / ANRM
       ELSE IF( ANRM.GT.RMAX ) THEN
-         ISCALE = 1
+*        An infinite norm gives SIGMA = 0; leave such a matrix
+*        unscaled so that VL and VU remain a valid interval.
          SIGMA = RMAX / ANRM
+         IF( SIGMA.GT.ZERO )
+     $      ISCALE = 1
       END IF
       IF( ISCALE.EQ.1 ) THEN
          IF( LOWER ) THEN
@@ -514,21 +519,16 @@
 *        Apply unitary matrix used in reduction to tridiagonal
 *        form to eigenvectors returned by ZSTEIN.
 *
-         CALL ZUNMTR( 'L', UPLO, 'N', N, M, A, LDA, WORK( INDTAU ), Z,
+         CALL ZUNMTR( 'L', UPLO, 'N', N, M, A, LDA, WORK( INDTAU ),
+     $                Z,
      $                LDZ, WORK( INDWRK ), LLWORK, IINFO )
       END IF
 *
 *     If matrix was scaled, then rescale eigenvalues appropriately.
 *
    40 CONTINUE
-      IF( ISCALE.EQ.1 ) THEN
-         IF( INFO.EQ.0 ) THEN
-            IMAX = M
-         ELSE
-            IMAX = INFO - 1
-         END IF
-         CALL DSCAL( IMAX, ONE / SIGMA, W, 1 )
-      END IF
+      IF( ISCALE.EQ.1 )
+     $   CALL DSCAL( M, ONE / SIGMA, W, 1 )
 *
 *     If eigenvalues are not in order, then sort them, along with
 *     eigenvectors.

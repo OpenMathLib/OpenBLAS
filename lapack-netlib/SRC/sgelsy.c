@@ -222,8 +222,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
@@ -240,7 +238,6 @@ static real c_b54 = 1.f;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download SGELSY + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgelsy.
 f"> */
@@ -251,7 +248,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/sgelsy.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -349,6 +345,7 @@ f"> */
 /* >          B is REAL array, dimension (LDB,NRHS) */
 /* >          On entry, the M-by-NRHS right hand side matrix B. */
 /* >          On exit, the N-by-NRHS solution matrix X. */
+/* >          If M = 0 or N = 0, B is not referenced. */
 /* > \endverbatim */
 /* > */
 /* > \param[in] LDB */
@@ -381,6 +378,7 @@ f"> */
 /* >          The effective rank of A, i.e., the order of the submatrix */
 /* >          R11.  This is the same as the order of the submatrix T11 */
 /* >          in the complete orthogonal factorization of A. */
+/* >          If NRHS = 0, RANK = 0 on output. */
 /* > \endverbatim */
 /* > */
 /* > \param[out] WORK */
@@ -423,9 +421,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup realGEsolve */
+/* > \ingroup gelsy */
 
 /* > \par Contributors: */
 /*  ================== */
@@ -444,21 +440,20 @@ f"> */
     real r__1, r__2;
 
     /* Local variables */
+    integer i__, j;
+    real c1, c2, s1, s2;
+    integer nb, mn, nb1, nb2, nb3, nb4;
     real anrm, bnrm, smin, smax;
-    integer i__, j, iascl, ibscl, ismin, ismax;
-    real c1, c2;
+    integer iascl, ibscl, ismin, ismax;
     extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
-    real wsize, s1, s2;
+    real wsize;
     extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    ), slaic1_(integer *, integer *, 
 	    real *, real *, real *, real *, real *, real *, real *), sgeqp3_(
 	    integer *, integer *, real *, integer *, integer *, real *, real *
 	    , integer *, integer *);
-    integer nb;
-    extern /* Subroutine */ void slabad_(real *, real *);
-    integer mn;
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
@@ -468,7 +463,7 @@ f"> */
     extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *), slaset_(char *, integer *, integer *, real *, real *, 
 	    real *, integer *);
-    integer lwkmin, nb1, nb2, nb3, nb4;
+    integer lwkmin;
     real sminpr, smaxpr, smlnum;
     integer lwkopt;
     logical lquery;
@@ -478,12 +473,12 @@ f"> */
 	    integer *, integer *, integer *, integer *, real *, integer *, 
 	    real *, real *, integer *, real *, integer *, integer *), stzrzf_(integer *, integer *, real *, integer *, real *, 
 	    real *, integer *, integer *);
+    extern real sroundup_lwork__(integer *);
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -491,10 +486,10 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --jpvt;
     --work;
@@ -533,11 +528,11 @@ f"> */
 	} else {
 	    nb1 = ilaenv_(&c__1, "SGEQRF", " ", m, n, &c_n1, &c_n1, (ftnlen)6,
 		     (ftnlen)1);
-	    nb2 = ilaenv_(&c__1, "SGERQF", " ", m, n, &c_n1, &c_n1, (ftnlen)6,
+	    nb2 = ilaenv_(&c__1, "STZRZF", " ", m, n, &c_n1, &c_n1, (ftnlen)6,
 		     (ftnlen)1);
 	    nb3 = ilaenv_(&c__1, "SORMQR", " ", m, n, nrhs, &c_n1, (ftnlen)6, 
 		    (ftnlen)1);
-	    nb4 = ilaenv_(&c__1, "SORMRQ", " ", m, n, nrhs, &c_n1, (ftnlen)6, 
+	    nb4 = ilaenv_(&c__1, "SORMRZ", " ", m, n, nrhs, &c_n1, (ftnlen)6, 
 		    (ftnlen)1);
 /* Computing MAX */
 	    i__1 = f2cmax(nb1,nb2), i__1 = f2cmax(i__1,nb3);
@@ -551,7 +546,7 @@ f"> */
 		    i__1,i__2), i__2 = (mn << 1) + nb * *nrhs;
 	    lwkopt = f2cmax(i__1,i__2);
 	}
-	work[1] = (real) lwkopt;
+	work[1] = sroundup_lwork__(&lwkopt);
 
 	if (*lwork < lwkmin && ! lquery) {
 	    *info = -12;
@@ -577,7 +572,6 @@ f"> */
 
     smlnum = slamch_("S") / slamch_("P");
     bignum = 1.f / smlnum;
-    slabad_(&smlnum, &bignum);
 
 /*     Scale A, B if f2cmax entries outside range [SMLNUM,BIGNUM] */
 
@@ -631,7 +625,7 @@ f"> */
     i__1 = *lwork - mn;
     sgeqp3_(m, n, &a[a_offset], lda, &jpvt[1], &work[1], &work[mn + 1], &i__1,
 	     info);
-    wsize = mn + work[mn + 1];
+    wsize = (real) mn + work[mn + 1];
 
 /*     workspace: MN+2*N+NB*(N+1). */
 /*     Details of Householder rotations stored in WORK(1:MN). */
@@ -698,7 +692,7 @@ L10:
     sormqr_("Left", "Transpose", m, nrhs, &mn, &a[a_offset], lda, &work[1], &
 	    b[b_offset], ldb, &work[(mn << 1) + 1], &i__1, info);
 /* Computing MAX */
-    r__1 = wsize, r__2 = (mn << 1) + work[(mn << 1) + 1];
+    r__1 = wsize, r__2 = (real) (mn << 1) + work[(mn << 1) + 1];
     wsize = f2cmax(r__1,r__2);
 
 /*     workspace: 2*MN+NB*NRHS. */
@@ -745,29 +739,41 @@ L10:
 
 /*     workspace: N. */
 
-/*     Undo scaling */
+/*     Undo scaling.  The solution carries the factor of B divided by */
+/*     the factor of A.  When both were scaled to the same end of the */
+/*     range the constants cancel and BNRM/ANRM is applied in one step: */
+/*     applied in two, the first step could flush or overflow an entry */
+/*     that the second would have brought back into range. */
 
+    if (iascl == ibscl && iascl != 0) {
+	slascl_("G", &c__0, &c__0, &anrm, &bnrm, n, nrhs, &b[b_offset], ldb, 
+		info);
+    } else {
+	if (iascl == 1) {
+	    slascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (iascl == 2) {
+	    slascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+	if (ibscl == 1) {
+	    slascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	} else if (ibscl == 2) {
+	    slascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], 
+		    ldb, info);
+	}
+    }
     if (iascl == 1) {
-	slascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	slascl_("U", &c__0, &c__0, &smlnum, &anrm, rank, rank, &a[a_offset], 
 		lda, info);
     } else if (iascl == 2) {
-	slascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], ldb,
-		 info);
 	slascl_("U", &c__0, &c__0, &bignum, &anrm, rank, rank, &a[a_offset], 
 		lda, info);
     }
-    if (ibscl == 1) {
-	slascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
-    } else if (ibscl == 2) {
-	slascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], ldb,
-		 info);
-    }
 
 L70:
-    work[1] = (real) lwkopt;
+    work[1] = sroundup_lwork__(&lwkopt);
 
     return;
 

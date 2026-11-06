@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CLAUU2 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clauu2.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clauu2.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -71,7 +69,9 @@
 *>          On exit, if UPLO = 'U', the upper triangle of A is
 *>          overwritten with the upper triangle of the product U * U**H;
 *>          if UPLO = 'L', the lower triangle of A is overwritten with
-*>          the lower triangle of the product L**H * L.
+*>          the lower triangle of the product L**H * L. Regardless,
+*>          the diagonal elements are explicitly set to be real by casting
+*.          to REAL before exit.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -95,10 +95,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERauxiliary
+*> \ingroup lauu2
 *
 *  =====================================================================
       SUBROUTINE CLAUU2( UPLO, N, A, LDA, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -120,19 +121,18 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            UPPER
-      INTEGER            I
-      REAL               AII
+      INTEGER            I, J
+      COMPLEX            AII, AJJ
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      COMPLEX            CDOTC
-      EXTERNAL           LSAME, CDOTC
+      EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CGEMV, CLACGV, CSSCAL, XERBLA
+      EXTERNAL           CGEMM, CSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          CMPLX, MAX, REAL
+      INTRINSIC          CONJG, MAX, REAL
 *     ..
 *     .. Executable Statements ..
 *
@@ -161,39 +161,51 @@
 *
 *        Compute the product U * U**H.
 *
-         DO 10 I = 1, N
-            AII = REAL( A( I, I ) )
-            IF( I.LT.N ) THEN
-               A( I, I ) = AII*AII + REAL( CDOTC( N-I, A( I, I+1 ), LDA,
-     $                     A( I, I+1 ), LDA ) )
-               CALL CLACGV( N-I, A( I, I+1 ), LDA )
-               CALL CGEMV( 'No transpose', I-1, N-I, ONE, A( 1, I+1 ),
-     $                     LDA, A( I, I+1 ), LDA, CMPLX( AII ),
-     $                     A( 1, I ), 1 )
-               CALL CLACGV( N-I, A( I, I+1 ), LDA )
+         DO J = 1, N
+            AJJ = CONJG(A(J,J))
+            IF( J.EQ.N ) THEN
+*
+*              We have this case separate just to ensure we never
+*              access A out of bounds when we do A(J,J+1) = A(N,N+1)
+*
+               CALL CSCAL( N, AJJ, A(1,N), 1 )
             ELSE
-               CALL CSSCAL( I, AII, A( 1, I ), 1 )
+               CALL CGEMM('No Transpose', 'Conjugate Transpose',
+     $            J, 1, N-J, ONE, A(1,J+1), LDA, A(J,J+1), LDA,
+     $            AJJ, A(1,J), LDA)
             END IF
-   10    CONTINUE
+*
+*           Since in exact arithmetic the diagonal will be real on output
+*           we explicitly cast the diagonal to real (zero out the
+*           imaginary component)
+*
+            A(J,J) = REAL(A(J,J))
+         END DO
 *
       ELSE
 *
 *        Compute the product L**H * L.
 *
-         DO 20 I = 1, N
-            AII = REAL( A( I, I ) )
-            IF( I.LT.N ) THEN
-               A( I, I ) = AII*AII + REAL( CDOTC( N-I, A( I+1, I ), 1,
-     $                     A( I+1, I ), 1 ) )
-               CALL CLACGV( I-1, A( I, 1 ), LDA )
-               CALL CGEMV( 'Conjugate transpose', N-I, I-1, ONE,
-     $                     A( I+1, 1 ), LDA, A( I+1, I ), 1,
-     $                     CMPLX( AII ), A( I, 1 ), LDA )
-               CALL CLACGV( I-1, A( I, 1 ), LDA )
+         DO I = 1, N
+            AII = CONJG(A(I,I))
+            IF( I.EQ.N ) THEN
+*
+*              We have this case separate just to ensure we never
+*              access A out of bounds when we do A(I+1,I) = A(N+1,N)
+*
+               CALL CSCAL(N, AII, A(N,1), LDA)
             ELSE
-               CALL CSSCAL( I, AII, A( I, 1 ), LDA )
+               CALL CGEMM('Conjugate Transpose', 'No Transpose',
+     $            1, I, N-I, ONE, A(I+1,I), LDA, A(I+1,1), LDA,
+     $            AII, A(I,1), LDA)
             END IF
-   20    CONTINUE
+*
+*           Since in exact arithmetic the diagonal will be real on output
+*           we explicitly cast the diagonal to real (zero out the
+*           imaginary component)
+*
+            A(I,I) = REAL(A(I,I))
+         END DO
       END IF
 *
       RETURN

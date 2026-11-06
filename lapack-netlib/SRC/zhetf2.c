@@ -258,9 +258,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
@@ -273,7 +270,6 @@ thod (unblocked algorithm, calling Level 2 BLAS). */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download ZHETF2 + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhetf2.
 f"> */
@@ -284,7 +280,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhetf2.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -394,9 +389,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date November 2013 */
-
-/* > \ingroup complex16HEcomputational */
+/* > \ingroup hetf2 */
 
 /* > \par Further Details: */
 /*  ===================== */
@@ -465,42 +458,39 @@ f"> */
     doublecomplex z__1, z__2, z__3, z__4, z__5, z__6;
 
     /* Local variables */
-    integer imax, jmax;
-    extern /* Subroutine */ void zher_(char *, integer *, doublereal *, 
-	    doublecomplex *, integer *, doublecomplex *, integer *);
     doublereal d__;
     integer i__, j, k;
     doublecomplex t;
-    doublereal alpha;
-    extern logical lsame_(char *, char *);
-    integer kstep;
-    logical upper;
-    doublereal r1;
-    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *);
-    extern doublereal dlapy2_(doublereal *, doublereal *);
-    doublereal d11;
+    doublereal r1, d11;
     doublecomplex d12;
     doublereal d22;
     doublecomplex d21;
     integer kk, kp;
-    doublereal absakk;
     doublecomplex wk;
     doublereal tt;
+    doublecomplex wkm1, wkp1;
+    integer imax, jmax;
+    extern /* Subroutine */ void zher_(char *, integer *, doublereal *, 
+	    doublecomplex *, integer *, doublecomplex *, integer *);
+    doublereal alpha;
+    extern logical lsame_(char *, char *);
+    integer kstep;
+    logical upper;
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
+	    doublecomplex *, integer *);
+    extern doublereal dlapy2_(doublereal *, doublereal *);
+    doublereal absakk;
     extern logical disnan_(doublereal *);
-    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
-    extern void zdscal_(
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen), zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     doublereal colmax;
     extern integer izamax_(integer *, doublecomplex *, integer *);
     doublereal rowmax;
-    doublecomplex wkm1, wkp1;
 
 
-/*  -- LAPACK computational routine (version 3.5.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     November 2013 */
 
 
 /*  ===================================================================== */
@@ -510,7 +500,7 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     --ipiv;
 
@@ -756,27 +746,28 @@ L10:
 		    i__1 = k - 1 + k * a_dim1;
 		    z__1.r = a[i__1].r / d__, z__1.i = a[i__1].i / d__;
 		    d12.r = z__1.r, d12.i = z__1.i;
-		    d__ = tt / d__;
 
 		    for (j = k - 2; j >= 1; --j) {
 			i__1 = j + (k - 1) * a_dim1;
-			z__3.r = d11 * a[i__1].r, z__3.i = d11 * a[i__1].i;
-			d_cnjg(&z__5, &d12);
+			z__4.r = d11 * a[i__1].r, z__4.i = d11 * a[i__1].i;
+			d_cnjg(&z__6, &d12);
 			i__2 = j + k * a_dim1;
-			z__4.r = z__5.r * a[i__2].r - z__5.i * a[i__2].i, 
-				z__4.i = z__5.r * a[i__2].i + z__5.i * a[i__2]
+			z__5.r = z__6.r * a[i__2].r - z__6.i * a[i__2].i, 
+				z__5.i = z__6.r * a[i__2].i + z__6.i * a[i__2]
 				.r;
-			z__2.r = z__3.r - z__4.r, z__2.i = z__3.i - z__4.i;
-			z__1.r = d__ * z__2.r, z__1.i = d__ * z__2.i;
+			z__3.r = z__4.r - z__5.r, z__3.i = z__4.i - z__5.i;
+			z__2.r = z__3.r / d__, z__2.i = z__3.i / d__;
+			z__1.r = tt * z__2.r, z__1.i = tt * z__2.i;
 			wkm1.r = z__1.r, wkm1.i = z__1.i;
 			i__1 = j + k * a_dim1;
-			z__3.r = d22 * a[i__1].r, z__3.i = d22 * a[i__1].i;
+			z__4.r = d22 * a[i__1].r, z__4.i = d22 * a[i__1].i;
 			i__2 = j + (k - 1) * a_dim1;
-			z__4.r = d12.r * a[i__2].r - d12.i * a[i__2].i, 
-				z__4.i = d12.r * a[i__2].i + d12.i * a[i__2]
+			z__5.r = d12.r * a[i__2].r - d12.i * a[i__2].i, 
+				z__5.i = d12.r * a[i__2].i + d12.i * a[i__2]
 				.r;
-			z__2.r = z__3.r - z__4.r, z__2.i = z__3.i - z__4.i;
-			z__1.r = d__ * z__2.r, z__1.i = d__ * z__2.i;
+			z__3.r = z__4.r - z__5.r, z__3.i = z__4.i - z__5.i;
+			z__2.r = z__3.r / d__, z__2.i = z__3.i / d__;
+			z__1.r = tt * z__2.r, z__1.i = tt * z__2.i;
 			wk.r = z__1.r, wk.i = z__1.i;
 			for (i__ = j; i__ >= 1; --i__) {
 			    i__1 = i__ + j * a_dim1;
@@ -1054,28 +1045,29 @@ L50:
 		    i__1 = k + 1 + k * a_dim1;
 		    z__1.r = a[i__1].r / d__, z__1.i = a[i__1].i / d__;
 		    d21.r = z__1.r, d21.i = z__1.i;
-		    d__ = tt / d__;
 
 		    i__1 = *n;
 		    for (j = k + 2; j <= i__1; ++j) {
 			i__2 = j + k * a_dim1;
-			z__3.r = d11 * a[i__2].r, z__3.i = d11 * a[i__2].i;
+			z__4.r = d11 * a[i__2].r, z__4.i = d11 * a[i__2].i;
 			i__3 = j + (k + 1) * a_dim1;
-			z__4.r = d21.r * a[i__3].r - d21.i * a[i__3].i, 
-				z__4.i = d21.r * a[i__3].i + d21.i * a[i__3]
+			z__5.r = d21.r * a[i__3].r - d21.i * a[i__3].i, 
+				z__5.i = d21.r * a[i__3].i + d21.i * a[i__3]
 				.r;
-			z__2.r = z__3.r - z__4.r, z__2.i = z__3.i - z__4.i;
-			z__1.r = d__ * z__2.r, z__1.i = d__ * z__2.i;
+			z__3.r = z__4.r - z__5.r, z__3.i = z__4.i - z__5.i;
+			z__2.r = z__3.r / d__, z__2.i = z__3.i / d__;
+			z__1.r = tt * z__2.r, z__1.i = tt * z__2.i;
 			wk.r = z__1.r, wk.i = z__1.i;
 			i__2 = j + (k + 1) * a_dim1;
-			z__3.r = d22 * a[i__2].r, z__3.i = d22 * a[i__2].i;
-			d_cnjg(&z__5, &d21);
+			z__4.r = d22 * a[i__2].r, z__4.i = d22 * a[i__2].i;
+			d_cnjg(&z__6, &d21);
 			i__3 = j + k * a_dim1;
-			z__4.r = z__5.r * a[i__3].r - z__5.i * a[i__3].i, 
-				z__4.i = z__5.r * a[i__3].i + z__5.i * a[i__3]
+			z__5.r = z__6.r * a[i__3].r - z__6.i * a[i__3].i, 
+				z__5.i = z__6.r * a[i__3].i + z__6.i * a[i__3]
 				.r;
-			z__2.r = z__3.r - z__4.r, z__2.i = z__3.i - z__4.i;
-			z__1.r = d__ * z__2.r, z__1.i = d__ * z__2.i;
+			z__3.r = z__4.r - z__5.r, z__3.i = z__4.i - z__5.i;
+			z__2.r = z__3.r / d__, z__2.i = z__3.i / d__;
+			z__1.r = tt * z__2.r, z__1.i = tt * z__2.i;
 			wkp1.r = z__1.r, wkp1.i = z__1.i;
 			i__2 = *n;
 			for (i__ = j; i__ <= i__2; ++i__) {

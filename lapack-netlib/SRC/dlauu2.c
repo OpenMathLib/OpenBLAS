@@ -228,6 +228,7 @@ typedef struct Namelist Namelist;
 
 
 
+
 /* Table of constant values */
 
 static doublereal c_b7 = 1.;
@@ -241,7 +242,6 @@ nblocked algorithm). */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DLAUU2 + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dlauu2.
 f"> */
@@ -252,7 +252,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dlauu2.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -330,9 +329,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup doubleOTHERauxiliary */
+/* > \ingroup lauu2 */
 
 /*  ===================================================================== */
 /* Subroutine */ void dlauu2_(char *uplo, integer *n, doublereal *a, integer *
@@ -342,9 +339,10 @@ f"> */
     integer a_dim1, a_offset, i__1, i__2, i__3;
 
     /* Local variables */
+    integer i__;
+    doublereal aii;
     extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
-    integer i__;
     extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
@@ -353,13 +351,11 @@ f"> */
 	    doublereal *, doublereal *, integer *);
     logical upper;
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
-    doublereal aii;
 
 
-/*  -- LAPACK auxiliary routine (version 3.7.0) -- */
+/*  -- LAPACK auxiliary routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -369,7 +365,7 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
 
     /* Function Body */

@@ -1,5 +1,6 @@
 DEC             Key indicating type of input
 20.0            Threshold value for test ratios
+T                 Put T to test the error exits
    8   2   7
   1.0D+00  1.0D+00  1.1D+00  1.3D+00  2.0D+00  3.0D+00 -4.7D+00  3.3D+00
  -1.0D+00  1.0D+00  3.7D+00  7.9D+00  4.0D+00  5.3D+00  3.3D+00 -9.0D-01

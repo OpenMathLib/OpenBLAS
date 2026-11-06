@@ -534,6 +534,7 @@
          DO WHILE ( K.GE.ISTART2 )
 
             IF( ABS( B( K, K ) ) .LT. BTOL ) THEN
+               B( K, K ) = CZERO
 *              A diagonal element of B is negligible, move it
 *              to the top and deflate it
                

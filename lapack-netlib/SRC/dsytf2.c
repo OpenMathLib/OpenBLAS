@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
@@ -240,7 +238,6 @@ oting method (unblocked algorithm). */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DSYTF2 + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dsytf2.
 f"> */
@@ -251,7 +248,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dsytf2.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -361,9 +357,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup doubleSYcomputational */
+/* > \ingroup hetf2 */
 
 /* > \par Further Details: */
 /*  ===================== */
@@ -434,11 +428,14 @@ f"> */
     doublereal d__1, d__2, d__3;
 
     /* Local variables */
+    integer i__, j, k;
+    doublereal t, r1, d11, d12, d21, d22;
+    integer kk, kp;
+    doublereal wk, wkm1, wkp1;
     integer imax, jmax;
     extern /* Subroutine */ void dsyr_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *);
-    integer i__, j, k;
-    doublereal t, alpha;
+    doublereal alpha;
     extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
@@ -446,19 +443,16 @@ f"> */
 	    doublereal *, integer *);
     integer kstep;
     logical upper;
-    doublereal r1, d11, d12, d21, d22;
-    integer kk, kp;
-    doublereal absakk, wk;
+    doublereal absakk;
     extern integer idamax_(integer *, doublereal *, integer *);
     extern logical disnan_(doublereal *);
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
-    doublereal colmax, rowmax, wkm1, wkp1;
+    doublereal colmax, rowmax;
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -468,7 +462,7 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     --ipiv;
 
@@ -647,13 +641,12 @@ L10:
 		    d22 = a[k - 1 + (k - 1) * a_dim1] / d12;
 		    d11 = a[k + k * a_dim1] / d12;
 		    t = 1. / (d11 * d22 - 1.);
-		    d12 = t / d12;
 
 		    for (j = k - 2; j >= 1; --j) {
-			wkm1 = d12 * (d11 * a[j + (k - 1) * a_dim1] - a[j + k 
-				* a_dim1]);
-			wk = d12 * (d22 * a[j + k * a_dim1] - a[j + (k - 1) * 
-				a_dim1]);
+			wkm1 = t * ((d11 * a[j + (k - 1) * a_dim1] - a[j + k *
+				 a_dim1]) / d12);
+			wk = t * ((d22 * a[j + k * a_dim1] - a[j + (k - 1) * 
+				a_dim1]) / d12);
 			for (i__ = j; i__ >= 1; --i__) {
 			    a[i__ + j * a_dim1] = a[i__ + j * a_dim1] - a[i__ 
 				    + k * a_dim1] * wk - a[i__ + (k - 1) * 
@@ -841,15 +834,14 @@ L40:
 		    d11 = a[k + 1 + (k + 1) * a_dim1] / d21;
 		    d22 = a[k + k * a_dim1] / d21;
 		    t = 1. / (d11 * d22 - 1.);
-		    d21 = t / d21;
 
 		    i__1 = *n;
 		    for (j = k + 2; j <= i__1; ++j) {
 
-			wk = d21 * (d11 * a[j + k * a_dim1] - a[j + (k + 1) * 
-				a_dim1]);
-			wkp1 = d21 * (d22 * a[j + (k + 1) * a_dim1] - a[j + k 
-				* a_dim1]);
+			wk = t * ((d11 * a[j + k * a_dim1] - a[j + (k + 1) * 
+				a_dim1]) / d21);
+			wkp1 = t * ((d22 * a[j + (k + 1) * a_dim1] - a[j + k *
+				 a_dim1]) / d21);
 
 			i__2 = *n;
 			for (i__ = j; i__ <= i__2; ++i__) {

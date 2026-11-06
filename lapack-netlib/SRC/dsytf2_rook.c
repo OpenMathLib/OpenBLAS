@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
@@ -240,7 +238,6 @@ Bunch-Kaufman ("rook") diagonal pivoting method (unblocked algorithm). */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DSYTF2_ROOK + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dsytf2_
 rook.f"> */
@@ -251,7 +248,6 @@ rook.f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dsytf2_
 rook.f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -363,9 +359,7 @@ rook.f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date November 2013 */
-
-/* > \ingroup doubleSYcomputational */
+/* > \ingroup hetf2_rook */
 
 /* > \par Further Details: */
 /*  ===================== */
@@ -434,12 +428,15 @@ rook.f"> */
     doublereal d__1;
 
     /* Local variables */
+    integer i__, j, k, p;
+    doublereal t, d11, d12, d21, d22;
+    integer ii, kk, kp;
+    doublereal wk, wkm1, wkp1;
     logical done;
     integer imax, jmax;
     extern /* Subroutine */ void dsyr_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *);
-    integer i__, j, k, p;
-    doublereal t, alpha;
+    doublereal alpha;
     extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
@@ -449,20 +446,16 @@ rook.f"> */
 	    doublereal *, integer *);
     integer kstep;
     logical upper;
-    doublereal d11, d12, d21, d22;
-    integer ii, kk;
     extern doublereal dlamch_(char *);
-    integer kp;
-    doublereal absakk, wk;
+    doublereal absakk;
     extern integer idamax_(integer *, doublereal *, integer *);
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
-    doublereal colmax, rowmax, wkm1, wkp1;
+    doublereal colmax, rowmax;
 
 
-/*  -- LAPACK computational routine (version 3.5.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     November 2013 */
 
 
 /*  ===================================================================== */
@@ -472,7 +465,7 @@ rook.f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     --ipiv;
 
@@ -760,22 +753,22 @@ L12:
 
 		    for (j = k - 2; j >= 1; --j) {
 
-			wkm1 = t * (d11 * a[j + (k - 1) * a_dim1] - a[j + k * 
-				a_dim1]);
-			wk = t * (d22 * a[j + k * a_dim1] - a[j + (k - 1) * 
-				a_dim1]);
+			wkm1 = t * ((d11 * a[j + (k - 1) * a_dim1] - a[j + k *
+				 a_dim1]) / d12);
+			wk = t * ((d22 * a[j + k * a_dim1] - a[j + (k - 1) * 
+				a_dim1]) / d12);
 
 			for (i__ = j; i__ >= 1; --i__) {
 			    a[i__ + j * a_dim1] = a[i__ + j * a_dim1] - a[i__ 
-				    + k * a_dim1] / d12 * wk - a[i__ + (k - 1)
-				     * a_dim1] / d12 * wkm1;
+				    + k * a_dim1] * wk - a[i__ + (k - 1) * 
+				    a_dim1] * wkm1;
 /* L20: */
 			}
 
 /*                    Store U(k) and U(k-1) in cols k and k-1 for row J */
 
-			a[j + k * a_dim1] = wk / d12;
-			a[j + (k - 1) * a_dim1] = wkm1 / d12;
+			a[j + k * a_dim1] = wk;
+			a[j + (k - 1) * a_dim1] = wkm1;
 
 /* L30: */
 		    }
@@ -1060,27 +1053,27 @@ L42:
 		    i__1 = *n;
 		    for (j = k + 2; j <= i__1; ++j) {
 
-/*                    Compute  D21 * ( W(k)W(k+1) ) * inv(D(k)) for row J */
+/*                    Compute  ( W(k)W(k+1) ) * inv(D(k)) for row J */
 
-			wk = t * (d11 * a[j + k * a_dim1] - a[j + (k + 1) * 
-				a_dim1]);
-			wkp1 = t * (d22 * a[j + (k + 1) * a_dim1] - a[j + k * 
-				a_dim1]);
+			wk = t * ((d11 * a[j + k * a_dim1] - a[j + (k + 1) * 
+				a_dim1]) / d21);
+			wkp1 = t * ((d22 * a[j + (k + 1) * a_dim1] - a[j + k *
+				 a_dim1]) / d21);
 
 /*                    Perform a rank-2 update of A(k+2:n,k+2:n) */
 
 			i__2 = *n;
 			for (i__ = j; i__ <= i__2; ++i__) {
 			    a[i__ + j * a_dim1] = a[i__ + j * a_dim1] - a[i__ 
-				    + k * a_dim1] / d21 * wk - a[i__ + (k + 1)
-				     * a_dim1] / d21 * wkp1;
+				    + k * a_dim1] * wk - a[i__ + (k + 1) * 
+				    a_dim1] * wkp1;
 /* L50: */
 			}
 
 /*                    Store L(k) and L(k+1) in cols k and k+1 for row J */
 
-			a[j + k * a_dim1] = wk / d21;
-			a[j + (k + 1) * a_dim1] = wkp1 / d21;
+			a[j + k * a_dim1] = wk;
+			a[j + (k + 1) * a_dim1] = wkp1;
 
 /* L60: */
 		    }

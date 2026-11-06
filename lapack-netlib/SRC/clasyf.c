@@ -182,14 +182,14 @@ typedef struct Namelist Namelist;
 #define bit_set(a,b)	((a) |  ((uinteger)1 << (b)))
 
 #define abort_() { sig_die("Fortran abort routine called", 1); }
+#define r_cnjg(R, Z) { pCf(R) = conjf(Cf(Z)); }
+#define r_imag(z) (cimagf(Cf(z)))
 #define c_abs(z) (cabsf(Cf(z)))
 #define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
 #ifdef _MSC_VER
 #define c_div(c, a, b) {float nenn=crealf(_FCmulcc(Cf(b),conjf(Cf(b)))); _Fcomplex zaehl=_FCmulcc(Cf(a),conjf(Cf(b))); pCf(c)=_FCbuild(crealf(zaehl)/nenn,cimagf(zaehl)/nenn);}
-#define z_div(c, a, b) {double nenn=creal(_Cmulcc(Cd(b),conj(Cd(b)))); _Dcomplex zaehl=_Cmulcc(Cd(a),conj(Cd(b))); pCd(c)=_Cbuild(creal(zaehl)/nenn,cimag(zaehl)/nenn);}
 #else
 #define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
-#define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
 #endif
 #define c_exp(R, Z) {pCf(R) = cexpf(Cf(Z));}
 #define c_log(R, Z) {pCf(R) = clogf(Cf(Z));}
@@ -201,14 +201,10 @@ typedef struct Namelist Namelist;
 #define d_asin(x) (asin(*(x)))
 #define d_atan(x) (atan(*(x)))
 #define d_atn2(x, y) (atan2(*(x),*(y)))
-#define d_cnjg(R, Z) { pCd(R) = conj(Cd(Z)); }
-#define r_cnjg(R, Z) { pCf(R) = conjf(Cf(Z)); }
 #define d_cos(x) (cos(*(x)))
 #define d_cosh(x) (cosh(*(x)))
 #define d_dim(__a, __b) ( *(__a) > *(__b) ? *(__a) - *(__b) : 0.0 )
 #define d_exp(x) (exp(*(x)))
-#define d_imag(z) (cimag(Cd(z)))
-#define r_imag(z) (cimagf(Cf(z)))
 #define d_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define r_int(__x) (*(__x)>0 ? floor(*(__x)) : -floor(- *(__x)))
 #define d_lg10(x) ( 0.43429448190325182765 * log(*(x)) )
@@ -234,9 +230,6 @@ typedef struct Namelist Namelist;
 #define pow_si(B,E) spow_ui(*(B),*(E))
 #define pow_ri(B,E) spow_ui(*(B),*(E))
 #define pow_di(B,E) dpow_ui(*(B),*(E))
-#define pow_zi(p, a, b) {pCd(p) = zpow_ui(Cd(a), *(b));}
-#define pow_ci(p, a, b) {pCf(p) = cpow_ui(Cf(a), *(b));}
-#define pow_zz(R,A,B) {pCd(R) = cpow(Cd(A),*(B));}
 #define s_cat(lpp, rpp, rnp, np, llp) { 	ftnlen i, nc, ll; char *f__rp, *lp; 	ll = (llp); lp = (lpp); 	for(i=0; i < (int)*(np); ++i) {         	nc = ll; 	        if((rnp)[i] < nc) nc = (rnp)[i]; 	        ll -= nc;         	f__rp = (rpp)[i]; 	        while(--nc >= 0) *lp++ = *(f__rp)++;         } 	while(--ll >= 0) *lp++ = ' '; }
 #define s_cmp(a,b,c,d) ((integer)strncmp((a),(b),f2cmin((c),(d))))
 #define s_copy(A,B,C,D) { int __i,__m; for (__i=0, __m=f2cmin((C),(D)); __i<__m && (B)[__i] != 0; ++__i) (A)[__i] = (B)[__i]; }
@@ -256,7 +249,6 @@ typedef struct Namelist Namelist;
 
 
 
-
 /* Table of constant values */
 
 static complex c_b1 = {1.f,0.f};
@@ -270,7 +262,6 @@ iagonal pivoting method. */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download CLASYF + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/clasyf.
 f"> */
@@ -281,7 +272,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/clasyf.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -424,9 +414,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date November 2013 */
-
-/* > \ingroup complexSYcomputational */
+/* > \ingroup lahef */
 
 /* > \par Contributors: */
 /*  ================== */
@@ -444,18 +432,17 @@ f"> */
 	integer *info)
 {
     /* System generated locals */
-    integer a_dim1, a_offset, w_dim1, w_offset, i__1, i__2, i__3, i__4, i__5;
-    real r__1=0., r__2=0., r__3=0., r__4=0.;
-    complex q__1={0.,0.}, q__2={0.,0.}, q__3={0.,0.};
+    integer a_dim1, a_offset, w_dim1, w_offset, i__1, i__2, i__3, i__4;
+    real r__1, r__2, r__3, r__4;
+    complex q__1, q__2, q__3, q__4;
 
     /* Local variables */
-    integer imax, jmax, j, k;
-    complex t;
+    integer j, k;
+    complex t, r1, d11, d21, d22;
+    integer jj, kk, jp, kp, kw, kkw, imax, jmax;
     real alpha;
     extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
-	    integer *), cgemm_(char *, char *, integer *, integer *, integer *
-	    , complex *, complex *, integer *, complex *, integer *, complex *
-	    , complex *, integer *);
+	    integer *);
     extern logical lsame_(char *, char *);
     extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
@@ -463,19 +450,17 @@ f"> */
 	    complex *, integer *), cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer kstep;
-    complex r1, d11, d21, d22;
-    integer jb, jj, kk, jp, kp;
     real absakk;
-    integer kw;
     extern integer icamax_(integer *, complex *, integer *);
     real colmax, rowmax;
-    integer kkw;
+    extern /* Subroutine */ void cgemmtr_(char *, char *, char *, integer *, 
+	    integer *, complex *, complex *, integer *, complex *, integer *, 
+	    complex *, complex *, integer *);
 
 
-/*  -- LAPACK computational routine (version 3.5.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     November 2013 */
 
 
 /*  ===================================================================== */
@@ -483,11 +468,11 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     --ipiv;
     w_dim1 = *ldw;
-    w_offset = 1 + w_dim1 * 1;
+    w_offset = 1 + w_dim1;
     w -= w_offset;
 
     /* Function Body */
@@ -513,7 +498,7 @@ L10:
 
 /*        Exit from loop */
 
-	if ((k <= *n - *nb + 1 && *nb < *n) || k < 1) {
+	if (k <= *n - *nb + 1 && *nb < *n || k < 1) {
 	    goto L30;
 	}
 
@@ -522,7 +507,7 @@ L10:
 	ccopy_(&k, &a[k * a_dim1 + 1], &c__1, &w[kw * w_dim1 + 1], &c__1);
 	if (k < *n) {
 	    i__1 = *n - k;
-	    q__1.r = -1.f, q__1.i = 0.f;
+	    q__1.r = -1.f, q__1.i = -0.f;
 	    cgemv_("No transpose", &k, &i__1, &q__1, &a[(k + 1) * a_dim1 + 1],
 		     lda, &w[k + (kw + 1) * w_dim1], ldw, &c_b1, &w[kw * 
 		    w_dim1 + 1], &c__1);
@@ -559,6 +544,7 @@ L10:
 		*info = k;
 	    }
 	    kp = k;
+	    ccopy_(&k, &w[kw * w_dim1 + 1], &c__1, &a[k * a_dim1 + 1], &c__1);
 	} else {
 	    if (absakk >= alpha * colmax) {
 
@@ -576,7 +562,7 @@ L10:
 			1 + (kw - 1) * w_dim1], &c__1);
 		if (k < *n) {
 		    i__1 = *n - k;
-		    q__1.r = -1.f, q__1.i = 0.f;
+		    q__1.r = -1.f, q__1.i = -0.f;
 		    cgemv_("No transpose", &k, &i__1, &q__1, &a[(k + 1) * 
 			    a_dim1 + 1], lda, &w[imax + (kw + 1) * w_dim1], 
 			    ldw, &c_b1, &w[(kw - 1) * w_dim1 + 1], &c__1);
@@ -743,8 +729,9 @@ L10:
 /*                 = 1/d21 * T * ( ( D11 ) (  -1 ) ) */
 /*                               ( (  -1 ) ( D22 ) ) */
 
-/*                 = D21 * ( ( D11 ) (  -1 ) ) */
-/*                         ( (  -1 ) ( D22 ) ) */
+/*                 T/d21 is not formed, since it overflows when d21 is */
+/*                 subnormal: each entry of the product is divided by */
+/*                 d21 and then scaled by T. */
 
 		    i__1 = k - 1 + kw * w_dim1;
 		    d21.r = w[i__1].r, d21.i = w[i__1].i;
@@ -754,7 +741,7 @@ L10:
 		    d22.r = q__1.r, d22.i = q__1.i;
 		    q__3.r = d11.r * d22.r - d11.i * d22.i, q__3.i = d11.r * 
 			    d22.i + d11.i * d22.r;
-		    q__2.r = q__3.r - 1.f, q__2.i = q__3.i + 0.f;
+		    q__2.r = q__3.r - 1.f, q__2.i = q__3.i - 0.f;
 		    c_div(&q__1, &c_b1, &q__2);
 		    t.r = q__1.r, t.i = q__1.i;
 
@@ -762,31 +749,31 @@ L10:
 /*                 dot products of rows of ( W(kw-1) W(kw) ) and columns */
 /*                 of D**(-1) */
 
-		    c_div(&q__1, &t, &d21);
-		    d21.r = q__1.r, d21.i = q__1.i;
 		    i__1 = k - 2;
 		    for (j = 1; j <= i__1; ++j) {
 			i__2 = j + (k - 1) * a_dim1;
 			i__3 = j + (kw - 1) * w_dim1;
-			q__3.r = d11.r * w[i__3].r - d11.i * w[i__3].i, 
-				q__3.i = d11.r * w[i__3].i + d11.i * w[i__3]
+			q__4.r = d11.r * w[i__3].r - d11.i * w[i__3].i, 
+				q__4.i = d11.r * w[i__3].i + d11.i * w[i__3]
 				.r;
 			i__4 = j + kw * w_dim1;
-			q__2.r = q__3.r - w[i__4].r, q__2.i = q__3.i - w[i__4]
+			q__3.r = q__4.r - w[i__4].r, q__3.i = q__4.i - w[i__4]
 				.i;
-			q__1.r = d21.r * q__2.r - d21.i * q__2.i, q__1.i = 
-				d21.r * q__2.i + d21.i * q__2.r;
+			c_div(&q__2, &q__3, &d21);
+			q__1.r = t.r * q__2.r - t.i * q__2.i, q__1.i = t.r * 
+				q__2.i + t.i * q__2.r;
 			a[i__2].r = q__1.r, a[i__2].i = q__1.i;
 			i__2 = j + k * a_dim1;
 			i__3 = j + kw * w_dim1;
-			q__3.r = d22.r * w[i__3].r - d22.i * w[i__3].i, 
-				q__3.i = d22.r * w[i__3].i + d22.i * w[i__3]
+			q__4.r = d22.r * w[i__3].r - d22.i * w[i__3].i, 
+				q__4.i = d22.r * w[i__3].i + d22.i * w[i__3]
 				.r;
 			i__4 = j + (kw - 1) * w_dim1;
-			q__2.r = q__3.r - w[i__4].r, q__2.i = q__3.i - w[i__4]
+			q__3.r = q__4.r - w[i__4].r, q__3.i = q__4.i - w[i__4]
 				.i;
-			q__1.r = d21.r * q__2.r - d21.i * q__2.i, q__1.i = 
-				d21.r * q__2.i + d21.i * q__2.r;
+			c_div(&q__2, &q__3, &d21);
+			q__1.r = t.r * q__2.r - t.i * q__2.i, q__1.i = t.r * 
+				q__2.i + t.i * q__2.r;
 			a[i__2].r = q__1.r, a[i__2].i = q__1.i;
 /* L20: */
 		    }
@@ -828,38 +815,11 @@ L30:
 
 /*        A11 := A11 - U12*D*U12**T = A11 - U12*W**T */
 
-/*        computing blocks of NB columns at a time */
-
-	i__1 = -(*nb);
-	for (j = (k - 1) / *nb * *nb + 1; i__1 < 0 ? j >= 1 : j <= 1; j += 
-		i__1) {
-/* Computing MIN */
-	    i__2 = *nb, i__3 = k - j + 1;
-	    jb = f2cmin(i__2,i__3);
-
-/*           Update the upper triangle of the diagonal block */
-
-	    i__2 = j + jb - 1;
-	    for (jj = j; jj <= i__2; ++jj) {
-		i__3 = jj - j + 1;
-		i__4 = *n - k;
-		q__1.r = -1.f, q__1.i = 0.f;
-		cgemv_("No transpose", &i__3, &i__4, &q__1, &a[j + (k + 1) * 
-			a_dim1], lda, &w[jj + (kw + 1) * w_dim1], ldw, &c_b1, 
-			&a[j + jj * a_dim1], &c__1);
-/* L40: */
-	    }
-
-/*           Update the rectangular superdiagonal block */
-
-	    i__2 = j - 1;
-	    i__3 = *n - k;
-	    q__1.r = -1.f, q__1.i = 0.f;
-	    cgemm_("No transpose", "Transpose", &i__2, &jb, &i__3, &q__1, &a[(
-		    k + 1) * a_dim1 + 1], lda, &w[j + (kw + 1) * w_dim1], ldw,
-		     &c_b1, &a[j * a_dim1 + 1], lda);
-/* L50: */
-	}
+	i__1 = *n - k;
+	q__1.r = -1.f, q__1.i = -0.f;
+	cgemmtr_("Upper", "No transpose", "Transpose", &k, &i__1, &q__1, &a[(
+		k + 1) * a_dim1 + 1], lda, &w[(kw + 1) * w_dim1 + 1], ldw, &
+		c_b1, &a[a_dim1 + 1], lda);
 
 /*        Put U12 in standard form by partially undoing the interchanges */
 /*        in columns k+1:n looping backwards from k+1 to n */
@@ -906,7 +866,7 @@ L70:
 
 /*        Exit from loop */
 
-	if ((k >= *nb && *nb < *n) || k > *n) {
+	if (k >= *nb && *nb < *n || k > *n) {
 	    goto L90;
 	}
 
@@ -916,7 +876,7 @@ L70:
 	ccopy_(&i__1, &a[k + k * a_dim1], &c__1, &w[k + k * w_dim1], &c__1);
 	i__1 = *n - k + 1;
 	i__2 = k - 1;
-	q__1.r = -1.f, q__1.i = 0.f;
+	q__1.r = -1.f, q__1.i = -0.f;
 	cgemv_("No transpose", &i__1, &i__2, &q__1, &a[k + a_dim1], lda, &w[k 
 		+ w_dim1], ldw, &c_b1, &w[k + k * w_dim1], &c__1);
 
@@ -951,6 +911,9 @@ L70:
 		*info = k;
 	    }
 	    kp = k;
+	    i__1 = *n - k + 1;
+	    ccopy_(&i__1, &w[k + k * w_dim1], &c__1, &a[k + k * a_dim1], &
+		    c__1);
 	} else {
 	    if (absakk >= alpha * colmax) {
 
@@ -969,7 +932,7 @@ L70:
 			1) * w_dim1], &c__1);
 		i__1 = *n - k + 1;
 		i__2 = k - 1;
-		q__1.r = -1.f, q__1.i = 0.f;
+		q__1.r = -1.f, q__1.i = -0.f;
 		cgemv_("No transpose", &i__1, &i__2, &q__1, &a[k + a_dim1], 
 			lda, &w[imax + w_dim1], ldw, &c_b1, &w[k + (k + 1) * 
 			w_dim1], &c__1);
@@ -1133,8 +1096,9 @@ L70:
 /*                 = 1/d21 * T * ( ( D11 ) (  -1 ) ) */
 /*                               ( (  -1 ) ( D22 ) ) */
 
-/*                 = D21 * ( ( D11 ) (  -1 ) ) */
-/*                         ( (  -1 ) ( D22 ) ) */
+/*                 T/d21 is not formed, since it overflows when d21 is */
+/*                 subnormal: each entry of the product is divided by */
+/*                 d21 and then scaled by T. */
 
 		    i__1 = k + 1 + k * w_dim1;
 		    d21.r = w[i__1].r, d21.i = w[i__1].i;
@@ -1144,11 +1108,9 @@ L70:
 		    d22.r = q__1.r, d22.i = q__1.i;
 		    q__3.r = d11.r * d22.r - d11.i * d22.i, q__3.i = d11.r * 
 			    d22.i + d11.i * d22.r;
-		    q__2.r = q__3.r - 1.f, q__2.i = q__3.i + 0.f;
+		    q__2.r = q__3.r - 1.f, q__2.i = q__3.i - 0.f;
 		    c_div(&q__1, &c_b1, &q__2);
 		    t.r = q__1.r, t.i = q__1.i;
-		    c_div(&q__1, &t, &d21);
-		    d21.r = q__1.r, d21.i = q__1.i;
 
 /*                 Update elements in columns A(k) and A(k+1) as */
 /*                 dot products of rows of ( W(k) W(k+1) ) and columns */
@@ -1158,25 +1120,27 @@ L70:
 		    for (j = k + 2; j <= i__1; ++j) {
 			i__2 = j + k * a_dim1;
 			i__3 = j + k * w_dim1;
-			q__3.r = d11.r * w[i__3].r - d11.i * w[i__3].i, 
-				q__3.i = d11.r * w[i__3].i + d11.i * w[i__3]
+			q__4.r = d11.r * w[i__3].r - d11.i * w[i__3].i, 
+				q__4.i = d11.r * w[i__3].i + d11.i * w[i__3]
 				.r;
 			i__4 = j + (k + 1) * w_dim1;
-			q__2.r = q__3.r - w[i__4].r, q__2.i = q__3.i - w[i__4]
+			q__3.r = q__4.r - w[i__4].r, q__3.i = q__4.i - w[i__4]
 				.i;
-			q__1.r = d21.r * q__2.r - d21.i * q__2.i, q__1.i = 
-				d21.r * q__2.i + d21.i * q__2.r;
+			c_div(&q__2, &q__3, &d21);
+			q__1.r = t.r * q__2.r - t.i * q__2.i, q__1.i = t.r * 
+				q__2.i + t.i * q__2.r;
 			a[i__2].r = q__1.r, a[i__2].i = q__1.i;
 			i__2 = j + (k + 1) * a_dim1;
 			i__3 = j + (k + 1) * w_dim1;
-			q__3.r = d22.r * w[i__3].r - d22.i * w[i__3].i, 
-				q__3.i = d22.r * w[i__3].i + d22.i * w[i__3]
+			q__4.r = d22.r * w[i__3].r - d22.i * w[i__3].i, 
+				q__4.i = d22.r * w[i__3].i + d22.i * w[i__3]
 				.r;
 			i__4 = j + k * w_dim1;
-			q__2.r = q__3.r - w[i__4].r, q__2.i = q__3.i - w[i__4]
+			q__3.r = q__4.r - w[i__4].r, q__3.i = q__4.i - w[i__4]
 				.i;
-			q__1.r = d21.r * q__2.r - d21.i * q__2.i, q__1.i = 
-				d21.r * q__2.i + d21.i * q__2.r;
+			c_div(&q__2, &q__3, &d21);
+			q__1.r = t.r * q__2.r - t.i * q__2.i, q__1.i = t.r * 
+				q__2.i + t.i * q__2.r;
 			a[i__2].r = q__1.r, a[i__2].i = q__1.i;
 /* L80: */
 		    }
@@ -1218,40 +1182,12 @@ L90:
 
 /*        A22 := A22 - L21*D*L21**T = A22 - L21*W**T */
 
-/*        computing blocks of NB columns at a time */
-
-	i__1 = *n;
-	i__2 = *nb;
-	for (j = k; i__2 < 0 ? j >= i__1 : j <= i__1; j += i__2) {
-/* Computing MIN */
-	    i__3 = *nb, i__4 = *n - j + 1;
-	    jb = f2cmin(i__3,i__4);
-
-/*           Update the lower triangle of the diagonal block */
-
-	    i__3 = j + jb - 1;
-	    for (jj = j; jj <= i__3; ++jj) {
-		i__4 = j + jb - jj;
-		i__5 = k - 1;
-		q__1.r = -1.f, q__1.i = 0.f;
-		cgemv_("No transpose", &i__4, &i__5, &q__1, &a[jj + a_dim1], 
-			lda, &w[jj + w_dim1], ldw, &c_b1, &a[jj + jj * a_dim1]
-			, &c__1);
-/* L100: */
-	    }
-
-/*           Update the rectangular subdiagonal block */
-
-	    if (j + jb <= *n) {
-		i__3 = *n - j - jb + 1;
-		i__4 = k - 1;
-		q__1.r = -1.f, q__1.i = 0.f;
-		cgemm_("No transpose", "Transpose", &i__3, &jb, &i__4, &q__1, 
-			&a[j + jb + a_dim1], lda, &w[j + w_dim1], ldw, &c_b1, 
-			&a[j + jb + j * a_dim1], lda);
-	    }
-/* L110: */
-	}
+	i__1 = *n - k + 1;
+	i__2 = k - 1;
+	q__1.r = -1.f, q__1.i = -0.f;
+	cgemmtr_("Lower", "No transpose", "Transpose", &i__1, &i__2, &q__1, &
+		a[k + a_dim1], lda, &w[k + w_dim1], ldw, &c_b1, &a[k + k * 
+		a_dim1], lda);
 
 /*        Put L21 in standard form by partially undoing the interchanges */
 /*        of rows in columns 1:k-1 looping backwards from k-1 to 1 */

@@ -48,6 +48,9 @@
 *> H(i) is stored in the i-th row of the array V, and
 *>
 *>    H  =  I - V**T * T * V
+*>
+*> If DIRECT or STOREV = 'T', see Further Details for the shape of T
+*>
 *> \endverbatim
 *
 *  Arguments:
@@ -60,6 +63,8 @@
 *>          multiplied to form the block reflector:
 *>          = 'F': H = H(1) H(2) . . . H(k) (Forward)
 *>          = 'B': H = H(k) . . . H(2) H(1) (Backward)
+*>          = 'T' (with STOREV='R'): H = H(k) . . . H(2) H(1) (backward)
+*>                but we return the T matrix that is already (conjugate) transposed
 *> \endverbatim
 *>
 *> \param[in] STOREV
@@ -67,8 +72,10 @@
 *>          STOREV is CHARACTER*1
 *>          Specifies how the vectors which define the elementary
 *>          reflectors are stored (see also Further Details):
-*>          = 'C': columnwise
-*>          = 'R': rowwise
+*>          = 'C': column-wise
+*>          = 'R': row-wise
+*>          = 'T': (With DIRECT='F') Row-wise, but we return the T
+*>                matrix that is already (conjugate) transposed.
 *> \endverbatim
 *>
 *> \param[in] N
@@ -139,7 +146,7 @@
 *>  the H(i) is best illustrated by the following example with n = 5 and
 *>  k = 3. The elements equal to 1 are not stored.
 *>
-*>  DIRECT = 'F' and STOREV = 'C':         DIRECT = 'F' and STOREV = 'R':
+*>  DIRECT = 'F' and STOREV = 'C':         DIRECT = 'F' and (STOREV = 'R' or STOREV = 'T'):
 *>
 *>               V = (  1       )                 V = (  1 v1 v1 v1 v1 )
 *>                   ( v1  1    )                     (     1 v2 v2 v2 )
@@ -147,13 +154,36 @@
 *>                   ( v1 v2 v3 )
 *>                   ( v1 v2 v3 )
 *>
-*>  DIRECT = 'B' and STOREV = 'C':         DIRECT = 'B' and STOREV = 'R':
+*>  DIRECT = 'B' and STOREV = 'C':         (DIRECT = 'B' or DIRECT = 'T') and STOREV = 'R':
 *>
 *>               V = ( v1 v2 v3 )                 V = ( v1 v1  1       )
 *>                   ( v1 v2 v3 )                     ( v2 v2 v2  1    )
 *>                   (  1 v2 v3 )                     ( v3 v3 v3 v3  1 )
 *>                   (     1 v3 )
 *>                   (        1 )
+*>
+*>  In addition, the shape of T is determined by these same flags as
+*>   in the below table.
+*>    'U' denotes upper triangular
+*>    'L' denotes lower triangular
+*>    'X' denotes no current implementation
+*>    We also provide the logical variable that represents the case
+*>    in the code if it is implemented
+*>
+*>    |-----------------------------------------------------------|
+*>    |              | DIRECT = 'F' | DIRECT = 'B' | DIRECT = 'T' |
+*>    |--------------+--------------+--------------+--------------|
+*>    | STOREV = 'C' | U (QR)       | L (QL)       | X            |
+*>    | STOREV = 'R' | U (LQ)       | L (RQ)       | U (RQT)      |
+*>    | STOREV = 'T' | L (LQT)      | X            | X            |
+*>    |-----------------------------------------------------------|
+*>
+*>    Finally, the relationship between the (conjugate) transposed T matrices
+*>    are as follows: (Note that T_{FC} denotes the T associated with calling
+*>    this routine with DIRECT = 'F' and STOREV = 'C')
+*>
+*>    T_{TR} = (T_{BR})**H
+*>    T_{FT} = (T_{FR})**H
 *> \endverbatim
 *>
 *  =====================================================================
@@ -177,24 +207,26 @@
 *
 *     .. Parameters ..
 *
-      DOUBLE PRECISION ONE, NEG_ONE, ZERO
-      PARAMETER(ONE=1.0D+0, ZERO = 0.0D+0, NEG_ONE=-1.0D+0)
+      DOUBLE PRECISION ONE, NEG_ONE
+      PARAMETER(ONE=1.0D+0, NEG_ONE=-1.0D+0)
 *
 *     .. Local Scalars ..
 *
-      INTEGER           I,J,L,NX
-      LOGICAL           QR,LQ,QL,DIRF,COLV
+      INTEGER           I,J,L,NX,INFO
+      LOGICAL           QR, LQ, QL, RQ, LQT, RQT,
+     $                  DIRF, DIRB, DIRT,
+     $                  STOREC, STORER, STORET
 *
 *     .. External Subroutines ..
 *
-      EXTERNAL          DTRMM,DGEMM,DLACPY
+      EXTERNAL          DLARFT_LVL2, DTRMM, DGEMM, DLACPY, XERBLA
 *
 *     .. External Functions..
 *
       LOGICAL           LSAME
       INTEGER           ILAENV
       EXTERNAL          LSAME, ILAENV
-*     
+*
 *     The general scheme used is inspired by the approach inside DGEQRT3
 *     which was (at the time of writing this code):
 *     Based on the algorithm of Elmroth and Gustavson,
@@ -202,11 +234,89 @@
 *     ..
 *     .. Executable Statements ..
 *
+*     Convert our character flags to logical flags for later
+*
+      DIRF = LSAME(DIRECT,'F')
+      DIRB = LSAME(DIRECT,'B')
+      DIRT = LSAME(DIRECT,'T')
+      STOREC = LSAME(STOREV,'C')
+      STORER = LSAME(STOREV,'R')
+      STORET = LSAME(STOREV,'T')
+*
+*     Error handling for our character flags
+*
+      INFO = 0
+      IF( .NOT.(DIRF.OR.DIRB.OR.DIRT) ) THEN
+*
+*        DIRECT holds an illegal value
+*
+         INFO = 1
+      ELSE IF( .NOT.(STOREC.OR.STORER.OR.STORET) ) THEN
+*
+*        STOREV holds an illegal value
+*
+         INFO = 2
+      ELSE IF( DIRB.AND.STORET ) THEN
+*
+*        This case is purposefully not implemented, but any other value for
+*        STOREV is valid, so we report STOREV as the invalid input
+*
+         INFO = 2
+      ELSE IF( DIRT.AND.STOREC ) THEN
+*
+*        This case is purposefully not implemented, but any other value for
+*        DIRECT is valid, so we report DIRECT as the invalid input
+*
+         INFO = 1
+      ELSE IF( DIRT.AND.STORET ) THEN
+*
+*        This case is purposefully not implemented, and is ambiguous what
+*        the user wants to do, so we arbitrarily say DIRECT is the incorrect
+*        character flag.
+*
+         INFO = 1
+      END IF
+
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA('DLARFT', INFO)
+         RETURN
+      END IF
+*
 *     Quick return if possible
 *
       IF(N.EQ.0.OR.K.EQ.0) THEN
          RETURN
       END IF
+*
+*     Now we determine what factorization our flags are associated with
+*
+*     QR happens when we have forward direction in column storage
+*
+      QR = DIRF.AND.STOREC
+*
+*     LQT happens when we have forward direction in row storage and want to compute the transpose of
+*     the T we would normally compute
+*
+      LQT = DIRF.AND.STORET
+*
+*     LQ happens when we have forward direction in row storage and want to compute the T we would
+*     normally compute
+*
+      LQ = DIRF.AND.STORER
+*
+*     QL happens when we have backward direction in column storage
+*
+      QL = DIRB.AND.STOREC
+*
+*     RQT happens when we have backward direction in row storage and want to compute the transpose
+*     of the T we would normally compute
+*
+      RQT = DIRT.AND.STORER
+*
+*     RQ happens when we have backward direction in row storage and want to compute the T that we
+*     would normally compute
+*
+      RQ = DIRB.AND.STORER
 *
 *     Base case
 *
@@ -215,44 +325,20 @@
          RETURN
       END IF
 *
-*     Determine when to cross over into the level 2 based implementation
+*     Determine crossover point from level 2 to level 3 BLAS implementation
 *
       NX = ILAENV(3, "DLARFT", DIRECT // STOREV, N, K, -1, -1)
       IF(K.LT.NX) THEN
+*
+*        Finish this component with a level 2 BLAS implementation
+*
          CALL DLARFT_LVL2(DIRECT, STOREV, N, K, V, LDV, TAU, T, LDT)
          RETURN
       END IF
 *
-*     Beginning of executable statements
+*     Beginning of executable statements for the recursive case
 *
       L = K / 2
-*
-*     Determine what kind of Q we need to compute
-*     We assume that if the user doesn't provide 'F' for DIRECT,
-*     then they meant to provide 'B' and if they don't provide
-*     'C' for STOREV, then they meant to provide 'R'
-*
-      DIRF = LSAME(DIRECT,'F')
-      COLV = LSAME(STOREV,'C')
-*
-*     QR happens when we have forward direction in column storage
-*
-      QR = DIRF.AND.COLV
-*
-*     LQ happens when we have forward direction in row storage
-*
-      LQ = DIRF.AND.(.NOT.COLV)
-*
-*     QL happens when we have backward direction in column storage
-*
-      QL = (.NOT.DIRF).AND.COLV
-*
-*     The last case is RQ. Due to how we structured this, if the
-*     above 3 are false, then RQ must be true, so we never store 
-*     this
-*     RQ happens when we have backward direction in row storage
-*     RQ = (.NOT.DIRF).AND.(.NOT.COLV)
-*
       IF(QR) THEN
 *
 *        Break V apart into 6 components
@@ -266,17 +352,17 @@
 *        V_{1,1}\in\R^{l,l}      unit lower triangular
 *        V_{2,1}\in\R^{k-l,l}    rectangular
 *        V_{3,1}\in\R^{n-k,l}    rectangular
-*        
+*
 *        V_{2,2}\in\R^{k-l,k-l}  unit lower triangular
 *        V_{3,2}\in\R^{n-k,k-l}  rectangular
 *
-*        We will construct the T matrix 
+*        We will construct the T matrix
 *        T = |---------------|
 *            |T_{1,1} T_{1,2}|
 *            |0       T_{2,2}|
 *            |---------------|
 *
-*        T is the triangular factor obtained from block reflectors. 
+*        T is the triangular factor obtained from block reflectors.
 *        To motivate the structure, assume we have already computed T_{1,1}
 *        and T_{2,2}. Then collect the associated reflectors in V_1 and V_2
 *
@@ -287,17 +373,17 @@
 *        Where l = floor(k/2)
 *
 *        Then, consider the product:
-*        
+*
 *        (I - V_1*T_{1,1}*V_1')*(I - V_2*T_{2,2}*V_2')
 *        = I - V_1*T_{1,1}*V_1' - V_2*T_{2,2}*V_2' + V_1*T_{1,1}*V_1'*V_2*T_{2,2}*V_2'
-*        
+*
 *        Define T_{1,2} = -T_{1,1}*V_1'*V_2*T_{2,2}
-*        
-*        Then, we can define the matrix V as 
+*
+*        Then, we can define the matrix V as
 *        V = |-------|
 *            |V_1 V_2|
 *            |-------|
-*        
+*
 *        So, our product is equivalent to the matrix product
 *        I - V*T*V'
 *        This means, we can compute T_{1,1} and T_{2,2}, then use this information
@@ -309,30 +395,29 @@
 *
 *        Compute T_{2,2} recursively
 *
-         CALL DLARFT(DIRECT, STOREV, N-L, K-L, V(L+1, L+1), LDV, 
-     $               TAU(L+1), T(L+1, L+1), LDT)
+         CALL DLARFT(DIRECT, STOREV, N-L, K-L, V(L+1,L+1), LDV,
+     $      TAU(L+1), T(L+1,L+1), LDT)
 *
-*        Compute T_{1,2} 
+*        Compute T_{1,2}
 *        T_{1,2} = V_{2,1}'
 *
          DO J = 1, L
             DO I = 1, K-L
-               T(J, L+I) = V(L+I, J)
+               T(J,L+I) = V(L+I,J)
             END DO
          END DO
 *
 *        T_{1,2} = T_{1,2}*V_{2,2}
 *
          CALL DTRMM('Right', 'Lower', 'No transpose', 'Unit', L,
-     $               K-L, ONE, V(L+1, L+1), LDV, T(1, L+1), LDT)
+     $         K-L, ONE, V(L+1, L+1), LDV, T(1, L+1), LDT)
 
 *
 *        T_{1,2} = V_{3,1}'*V_{3,2} + T_{1,2}
 *        Note: We assume K <= N, and GEMM will do nothing if N=K
 *
-         CALL DGEMM('Transpose', 'No transpose', L, K-L, N-K, ONE, 
-     $               V(K+1, 1), LDV, V(K+1, L+1), LDV, ONE, 
-     $               T(1, L+1), LDT)
+         CALL DGEMM('Transpose', 'No transpose', L, K-L, N-K, ONE,
+     $         V(K+1, 1), LDV, V(K+1,L+1), LDV, ONE, T(1, L+1), LDT)
 *
 *        At this point, we have that T_{1,2} = V_1'*V_2
 *        All that is left is to pre and post multiply by -T_{1,1} and T_{2,2}
@@ -341,12 +426,12 @@
 *        T_{1,2} = -T_{1,1}*T_{1,2}
 *
          CALL DTRMM('Left', 'Upper', 'No transpose', 'Non-unit', L,
-     $               K-L, NEG_ONE, T, LDT, T(1, L+1), LDT)
+     $         K-L, NEG_ONE, T, LDT, T(1, L+1), LDT)
 *
 *        T_{1,2} = T_{1,2}*T_{2,2}
 *
-         CALL DTRMM('Right', 'Upper', 'No transpose', 'Non-unit', L, 
-     $               K-L, ONE, T(L+1, L+1), LDT, T(1, L+1), LDT)
+         CALL DTRMM('Right', 'Upper', 'No transpose', 'Non-unit', L,
+     $         K-L, ONE, T(L+1,L+1), LDT, T(1, L+1), LDT)
 
       ELSE IF(LQ) THEN
 *
@@ -360,19 +445,19 @@
 *        V_{1,1}\in\R^{l,l}      unit upper triangular
 *        V_{1,2}\in\R^{l,k-l}    rectangular
 *        V_{1,3}\in\R^{l,n-k}    rectangular
-*        
+*
 *        V_{2,2}\in\R^{k-l,k-l}  unit upper triangular
 *        V_{2,3}\in\R^{k-l,n-k}  rectangular
 *
 *        Where l = floor(k/2)
 *
-*        We will construct the T matrix 
+*        We will construct the T matrix
 *        T = |---------------|
 *            |T_{1,1} T_{1,2}|
 *            |0       T_{2,2}|
 *            |---------------|
 *
-*        T is the triangular factor obtained from block reflectors. 
+*        T is the triangular factor obtained from block reflectors.
 *        To motivate the structure, assume we have already computed T_{1,1}
 *        and T_{2,2}. Then collect the associated reflectors in V_1 and V_2
 *
@@ -381,20 +466,20 @@
 *        T_{1,2}\in\R^{l, k-l}   rectangular
 *
 *        Then, consider the product:
-*        
-*        (I - V_1'*T_{1,1}*V_1)*(I - V_2'*T_{2,2}*V_2)
-*        = I - V_1'*T_{1,1}*V_1 - V_2'*T_{2,2}*V_2 + V_1'*T_{1,1}*V_1*V_2'*T_{2,2}*V_2
-*        
+*
+*        (I - V_1'*T_{1,1}'*V_1)*(I - V_2'*T_{2,2}'*V_2)
+*        = I - V_1'*T_{1,1}'*V_1 - V_2'*T_{2,2}'*V_2 + V_1'*T_{1,1}'*V_1*V_2'*T_{2,2}'*V_2
+*
 *        Define T_{1,2} = -T_{1,1}*V_1*V_2'*T_{2,2}
-*        
-*        Then, we can define the matrix V as 
+*
+*        Then, we can define the matrix V as
 *        V = |---|
 *            |V_1|
 *            |V_2|
 *            |---|
-*        
+*
 *        So, our product is equivalent to the matrix product
-*        I - V'*T*V
+*        I - V'*T'*V
 *        This means, we can compute T_{1,1} and T_{2,2}, then use this information
 *        to compute T_{1,2}
 *
@@ -404,27 +489,26 @@
 *
 *        Compute T_{2,2} recursively
 *
-         CALL DLARFT(DIRECT, STOREV, N-L, K-L, V(L+1, L+1), LDV, 
-     $      TAU(L+1), T(L+1, L+1), LDT)
+         CALL DLARFT(DIRECT, STOREV, N-L, K-L, V(L+1,L+1), LDV,
+     $      TAU(L+1), T(L+1,L+1), LDT)
 
 *
 *        Compute T_{1,2}
 *        T_{1,2} = V_{1,2}
 *
-         CALL DLACPY('All', L, K-L, V(1, L+1), LDV, T(1, L+1), LDT)
+         CALL DLACPY('All', L, K - L, V(1,L+1), LDV, T(1, L+1), LDT)
 *
 *        T_{1,2} = T_{1,2}*V_{2,2}'
 *
          CALL DTRMM('Right', 'Upper', 'Transpose', 'Unit', L, K-L,
-     $               ONE, V(L+1, L+1), LDV, T(1, L+1), LDT)
+     $      ONE, V(L+1, L+1), LDV, T(1, L+1), LDT)
 
 *
 *        T_{1,2} = V_{1,3}*V_{2,3}' + T_{1,2}
 *        Note: We assume K <= N, and GEMM will do nothing if N=K
 *
          CALL DGEMM('No transpose', 'Transpose', L, K-L, N-K, ONE,
-     $               V(1, K+1), LDV, V(L+1, K+1), LDV, ONE, 
-     $               T(1, L+1), LDT)
+     $      V(1, K+1), LDV, V(L+1, K+1), LDV, ONE, T(1, L+1), LDT)
 *
 *        At this point, we have that T_{1,2} = V_1*V_2'
 *        All that is left is to pre and post multiply by -T_{1,1} and T_{2,2}
@@ -433,13 +517,106 @@
 *        T_{1,2} = -T_{1,1}*T_{1,2}
 *
          CALL DTRMM('Left', 'Upper', 'No transpose', 'Non-unit', L,
-     $               K-L, NEG_ONE, T, LDT, T(1, L+1), LDT)
+     $      K-L, NEG_ONE, T, LDT, T(1, L+1), LDT)
 
 *
 *        T_{1,2} = T_{1,2}*T_{2,2}
 *
          CALL DTRMM('Right', 'Upper', 'No transpose', 'Non-unit', L,
-     $               K-L, ONE, T(L+1, L+1), LDT, T(1, L+1), LDT)
+     $      K-L, ONE, T(L+1,L+1), LDT, T(1, L+1), LDT)
+      ELSE IF(LQT) THEN
+*
+*        Break V apart into 6 components
+*
+*        V = |----------------------|
+*            |V_{1,1} V_{1,2} V{1,3}|
+*            |0       V_{2,2} V{2,3}|
+*            |----------------------|
+*
+*        V_{1,1}\in\R^{l,l}      unit upper triangular
+*        V_{1,2}\in\R^{l,k-l}    rectangular
+*        V_{1,3}\in\R^{l,n-k}    rectangular
+*
+*        V_{2,2}\in\R^{k-l,k-l}  unit upper triangular
+*        V_{2,3}\in\R^{k-l,n-k}  rectangular
+*
+*        Where l = floor(k/2)
+*
+*        We will construct the T matrix
+*        T = |---------------|
+*            |T_{1,1} 0      |
+*            |T_{2,1} T_{2,2}|
+*            |---------------|
+*
+*        T is the triangular factor obtained from block reflectors.
+*        To motivate the structure, assume we have already computed T_{1,1}
+*        and T_{2,2}. Then collect the associated reflectors in V_1 and V_2
+*
+*        T_{1,1}\in\R^{l, l}     lower triangular
+*        T_{2,2}\in\R^{k-l, k-l} lower triangular
+*        T_{2,1}\in\R^{k-l, l}   rectangular
+*
+*        Then, consider the product:
+*
+*        (I - V_1'*T_{1,1}*V_1)*(I - V_2'*T_{2,2}*V_2)
+*        = I - V_1'*T_{1,1}*V_1 - V_2'*T_{2,2}*V_2 + V_1'*T_{1,1}*V_1*V_2'*T_{2,2}*V_2
+*
+*        Define T_{2,1} = -T_{2,2}*V_2*V_1'*T_{1,1}
+*
+*        Then, we can define the matrix V as
+*        V = |---|
+*            |V_1|
+*            |V_2|
+*            |---|
+*
+*        So, our product is equivalent to the matrix product
+*        I - V'*T*V
+*        This means, we can compute T_{1,1} and T_{2,2}, then use this information
+*        to compute T_{2,1}
+*
+*        Compute T_{1,1} recursively
+*
+         CALL DLARFT(DIRECT, STOREV, N, L, V, LDV, TAU, T, LDT)
+*
+*        Compute T_{2,2} recursively
+*
+         CALL DLARFT(DIRECT, STOREV, N-L, K-L, V(L+1,L+1), LDV,
+     $      TAU(L+1), T(L+1,L+1), LDT)
+
+*
+*        Compute T_{2,1}
+*        T_{2,1} = V_{1,2}'
+*
+         DO I = 1, K-L
+            DO J = 1, L
+               T(L+I,J) = V(J,L+I)
+            END DO
+         END DO
+*
+*        T_{2,1} = V_{2,2}*T_{2,1}
+*
+         CALL DTRMM('Left', 'Upper', 'No Transpose', 'Unit', K-L, L,
+     $         ONE, V(L+1,L+1), LDV, T(L+1,1), LDT)
+*
+*        T_{2,1} = V_{2,3}*V_{1,3}' + T_{2,1}
+*        Note: We assume K <= N, and GEMM will do nothing if N=K
+*
+         CALL DGEMM('No Transpose', 'Transpose', K-L, L, N-K, ONE,
+     $         V(L+1,K+1), LDV, V(1, K+1), LDV, ONE, T(L+1,1), LDT)
+*
+*        At this point, we have that T_{2,1} = V_2*V_1'
+*        All that is left is to pre and post multiply by -T_{2,2} and T_{1,1}
+*        respectively.
+*
+*        T_{2,1} = -T_{2,2}*T_{2,1}
+*
+         CALL DTRMM('Left', 'Lower', 'No Transpose', 'Non-unit',
+     $         K-L, L, NEG_ONE, T(L+1,L+1), LDT, T(L+1,1), LDT)
+*
+*        T_{2,1} = T_{2,1}*T_{1,1}
+*
+         CALL DTRMM('Right', 'Lower', 'No Transpose', 'Non-unit',
+     $         K-L, L, ONE, T, LDT, T(L+1,1), LDT)
       ELSE IF(QL) THEN
 *
 *        Break V apart into 6 components
@@ -452,18 +629,18 @@
 *
 *        V_{1,1}\in\R^{n-k,k-l}  rectangular
 *        V_{2,1}\in\R^{k-l,k-l}  unit upper triangular
-*        
+*
 *        V_{1,2}\in\R^{n-k,l}    rectangular
 *        V_{2,2}\in\R^{k-l,l}    rectangular
 *        V_{3,2}\in\R^{l,l}      unit upper triangular
 *
-*        We will construct the T matrix 
+*        We will construct the T matrix
 *        T = |---------------|
 *            |T_{1,1} 0      |
 *            |T_{2,1} T_{2,2}|
 *            |---------------|
 *
-*        T is the triangular factor obtained from block reflectors. 
+*        T is the triangular factor obtained from block reflectors.
 *        To motivate the structure, assume we have already computed T_{1,1}
 *        and T_{2,2}. Then collect the associated reflectors in V_1 and V_2
 *
@@ -474,17 +651,17 @@
 *        Where l = floor(k/2)
 *
 *        Then, consider the product:
-*        
+*
 *        (I - V_2*T_{2,2}*V_2')*(I - V_1*T_{1,1}*V_1')
 *        = I - V_2*T_{2,2}*V_2' - V_1*T_{1,1}*V_1' + V_2*T_{2,2}*V_2'*V_1*T_{1,1}*V_1'
-*        
+*
 *        Define T_{2,1} = -T_{2,2}*V_2'*V_1*T_{1,1}
-*        
-*        Then, we can define the matrix V as 
+*
+*        Then, we can define the matrix V as
 *        V = |-------|
 *            |V_1 V_2|
 *            |-------|
-*        
+*
 *        So, our product is equivalent to the matrix product
 *        I - V*T*V'
 *        This means, we can compute T_{1,1} and T_{2,2}, then use this information
@@ -492,34 +669,34 @@
 *
 *        Compute T_{1,1} recursively
 *
-         CALL DLARFT(DIRECT, STOREV, N-L, K-L, V, LDV, TAU, T, LDT)
+         CALL DLARFT(DIRECT, STOREV, N-L, K-L, V, LDV, TAU, T,
+     $         LDT)
 *
 *        Compute T_{2,2} recursively
 *
          CALL DLARFT(DIRECT, STOREV, N, L, V(1, K-L+1), LDV,
-     $               TAU(K-L+1), T(K-L+1, K-L+1), LDT)
+     $      TAU(K-L+1), T(K-L+1,K-L+1), LDT)
 *
 *        Compute T_{2,1}
 *        T_{2,1} = V_{2,2}'
 *
          DO J = 1, K-L
             DO I = 1, L
-               T(K-L+I, J) = V(N-K+J, K-L+I)
+               T(K-L+I,J) = V(N-K+J, K-L+I)
             END DO
          END DO
 *
 *        T_{2,1} = T_{2,1}*V_{2,1}
 *
          CALL DTRMM('Right', 'Upper', 'No transpose', 'Unit', L,
-     $               K-L, ONE, V(N-K+1, 1), LDV, T(K-L+1, 1), LDT)
+     $      K-L, ONE, V(N-K+1,1), LDV, T(K-L+1,1), LDT)
 
 *
 *        T_{2,1} = V_{2,2}'*V_{2,1} + T_{2,1}
 *        Note: We assume K <= N, and GEMM will do nothing if N=K
 *
          CALL DGEMM('Transpose', 'No transpose', L, K-L, N-K, ONE,
-     $               V(1, K-L+1), LDV, V, LDV, ONE, T(K-L+1, 1),
-     $               LDT)
+     $      V(1,K-L+1), LDV, V, LDV, ONE, T(K-L+1,1), LDT)
 *
 *        At this point, we have that T_{2,1} = V_2'*V_1
 *        All that is left is to pre and post multiply by -T_{2,2} and T_{1,1}
@@ -528,17 +705,13 @@
 *        T_{2,1} = -T_{2,2}*T_{2,1}
 *
          CALL DTRMM('Left', 'Lower', 'No transpose', 'Non-unit', L,
-     $               K-L, NEG_ONE, T(K-L+1, K-L+1), LDT,
-     $               T(K-L+1, 1), LDT)
+     $      K-L, NEG_ONE, T(K-L+1,K-L+1), LDT, T(K-L+1,1), LDT)
 *
 *        T_{2,1} = T_{2,1}*T_{1,1}
 *
          CALL DTRMM('Right', 'Lower', 'No transpose', 'Non-unit', L,
-     $               K-L, ONE, T, LDT, T(K-L+1, 1), LDT)
-      ELSE
-*
-*        Else means RQ case
-*
+     $      K-L, ONE, T, LDT, T(K-L+1,1), LDT)
+      ELSE IF(RQ) THEN
 *        Break V apart into 6 components
 *
 *        V = |-----------------------|
@@ -553,13 +726,13 @@
 *        V_{2,2}\in\R^{l,k-l}    rectangular
 *        V_{2,3}\in\R^{l,l}      unit lower triangular
 *
-*        We will construct the T matrix 
+*        We will construct the T matrix
 *        T = |---------------|
 *            |T_{1,1} 0      |
 *            |T_{2,1} T_{2,2}|
 *            |---------------|
 *
-*        T is the triangular factor obtained from block reflectors. 
+*        T is the triangular factor obtained from block reflectors.
 *        To motivate the structure, assume we have already computed T_{1,1}
 *        and T_{2,2}. Then collect the associated reflectors in V_1 and V_2
 *
@@ -570,51 +743,51 @@
 *        Where l = floor(k/2)
 *
 *        Then, consider the product:
-*        
-*        (I - V_2'*T_{2,2}*V_2)*(I - V_1'*T_{1,1}*V_1)
-*        = I - V_2'*T_{2,2}*V_2 - V_1'*T_{1,1}*V_1 + V_2'*T_{2,2}*V_2*V_1'*T_{1,1}*V_1
-*        
+*
+*        (I - V_2'*T_{2,2}'*V_2)*(I - V_1'*T_{1,1}'*V_1)
+*        = I - V_2'*T_{2,2}'*V_2 - V_1'*T_{1,1}'*V_1 + V_2'*T_{2,2}'*V_2*V_1'*T_{1,1}'*V_1
+*
 *        Define T_{2,1} = -T_{2,2}*V_2*V_1'*T_{1,1}
-*        
-*        Then, we can define the matrix V as 
+*
+*        Then, we can define the matrix V as
 *        V = |---|
 *            |V_1|
 *            |V_2|
 *            |---|
-*        
+*
 *        So, our product is equivalent to the matrix product
-*        I - V'*T*V
+*        I - V'*T'*V
 *        This means, we can compute T_{1,1} and T_{2,2}, then use this information
 *        to compute T_{2,1}
 *
 *        Compute T_{1,1} recursively
 *
-         CALL DLARFT(DIRECT, STOREV, N-L, K-L, V, LDV, TAU, T, LDT)
+         CALL DLARFT(DIRECT, STOREV, N-L, K-L, V, LDV, TAU, T,
+     $         LDT)
 *
 *        Compute T_{2,2} recursively
 *
-         CALL DLARFT(DIRECT, STOREV, N, L, V(K-L+1, 1), LDV,
-     $               TAU(K-L+1), T(K-L+1, K-L+1), LDT)
+         CALL DLARFT(DIRECT, STOREV, N, L, V(K-L+1,1), LDV,
+     $      TAU(K-L+1), T(K-L+1,K-L+1), LDT)
 *
 *        Compute T_{2,1}
 *        T_{2,1} = V_{2,2}
 *
-         CALL DLACPY('All', L, K-L, V(K-L+1, N-K+1), LDV,
-     $               T(K-L+1, 1), LDT)
+         CALL DLACPY('All', L, K-L, V(K-L+1,N-K+1), LDV, T(K-L+1,1),
+     $      LDT)
 
 *
 *        T_{2,1} = T_{2,1}*V_{1,2}'
 *
          CALL DTRMM('Right', 'Lower', 'Transpose', 'Unit', L, K-L,
-     $               ONE, V(1, N-K+1), LDV, T(K-L+1, 1), LDT)
+     $      ONE, V(1, N-K+1), LDV, T(K-L+1,1), LDT)
 
 *
-*        T_{2,1} = V_{2,1}*V_{1,1}' + T_{2,1} 
+*        T_{2,1} = V_{2,1}*V_{1,1}' + T_{2,1}
 *        Note: We assume K <= N, and GEMM will do nothing if N=K
 *
-         CALL DGEMM('No transpose', 'Transpose', L, K-L, N-K, ONE, 
-     $               V(K-L+1, 1), LDV, V, LDV, ONE, T(K-L+1, 1),
-     $               LDT)
+         CALL DGEMM('No transpose', 'Transpose', L, K-L, N-K, ONE,
+     $      V(K-L+1,1), LDV, V, LDV, ONE, T(K-L+1,1), LDT)
 
 *
 *        At this point, we have that T_{2,1} = V_2*V_1'
@@ -623,14 +796,104 @@
 *
 *        T_{2,1} = -T_{2,2}*T_{2,1}
 *
-         CALL DTRMM('Left', 'Lower', 'No tranpose', 'Non-unit', L,
-     $               K-L, NEG_ONE, T(K-L+1, K-L+1), LDT,
-     $               T(K-L+1, 1), LDT)
+         CALL DTRMM('Left', 'Lower', 'No transpose', 'Non-unit', L,
+     $      K-L, NEG_ONE, T(K-L+1,K-L+1), LDT, T(K-L+1,1), LDT)
 
 *
 *        T_{2,1} = T_{2,1}*T_{1,1}
 *
-         CALL DTRMM('Right', 'Lower', 'No tranpose', 'Non-unit', L,
-     $               K-L, ONE, T, LDT, T(K-L+1, 1), LDT)
+         CALL DTRMM('Right', 'Lower', 'No transpose', 'Non-unit', L,
+     $      K-L, ONE, T, LDT, T(K-L+1,1), LDT)
+      ELSE IF(RQT) THEN
+*        Break V apart into 6 components
+*
+*        V = |-----------------------|
+*            |V_{1,1} V_{1,2} 0      |
+*            |V_{2,1} V_{2,2} V_{2,3}|
+*            |-----------------------|
+*
+*        V_{1,1}\in\R^{k-l,n-k}  rectangular
+*        V_{1,2}\in\R^{k-l,k-l}  unit lower triangular
+*
+*        V_{2,1}\in\R^{l,n-k}    rectangular
+*        V_{2,2}\in\R^{l,k-l}    rectangular
+*        V_{2,3}\in\R^{l,l}      unit lower triangular
+*
+*        We will construct the T matrix
+*        T = |---------------|
+*            |T_{1,1} T_{1,2}|
+*            | 0      T_{2,2}|
+*            |---------------|
+*
+*        T is the triangular factor obtained from block reflectors.
+*        To motivate the structure, assume we have already computed T_{1,1}
+*        and T_{2,2}. Then collect the associated reflectors in V_1 and V_2
+*
+*        T_{1,1}\in\R^{k-l, k-l} non-unit upper triangular
+*        T_{2,2}\in\R^{l, l}     non-unit upper triangular
+*        T_{1,2}\in\R^{k-l, l}   rectangular
+*
+*        Where l = floor(k/2)
+*
+*        Then, consider the product:
+*
+*        (I - V_1'*T_{1,1}*V_1)*(I - V_2'*T_{2,2}*V_2)
+*        = I - V_1'*T_{1,1}*V_1 - V_2'*T_{2,2}*V_2 + V_1'*T_{1,1}*V_1*V_2'*T_{2,2}*V_2
+*
+*        Define T_{1,2} = -T_{1,1}*V_1*V_2'*T_{2,2}
+*
+*        Then, we can define the matrix V as
+*        V = |---|
+*            |V_1|
+*            |V_2|
+*            |---|
+*
+*        So, our product is equivalent to the matrix product
+*        I - V'*T*V
+*        This means, we can compute T_{1,1} and T_{2,2}, then use this information
+*        to compute T_{1,2}
+*
+*        Compute T_{1,1} recursively
+*
+         CALL DLARFT(DIRECT, STOREV, N-L, K-L, V, LDV, TAU, T,
+     $         LDT)
+*
+*        Compute T_{2,2} recursively
+*
+         CALL DLARFT(DIRECT, STOREV, N, L, V(K-L+1,1), LDV,
+     $      TAU(K-L+1), T(K-L+1,K-L+1), LDT)
+*
+*        Compute T_{1,2}
+*        T_{1,2} = V_{2,2}'
+*
+         DO I = 1, K-L
+            DO J = 1, L
+               T(I,K-L+J) = V(K-L+J, N-K+I)
+            END DO
+         END DO
+*
+*        T_{1,2} = V_{1,2}T_{1,2}
+*
+         CALL DTRMM('Left', 'Lower', 'No Transpose', 'Unit', K-L, L,
+     $         ONE, V(1,N-K+1), LDV, T(1,K-L+1), LDT)
+*
+*        T_{1,2} = V_{1,1}V_{2,1}' + T_{1,2}
+*
+         CALL DGEMM('No Transpose', 'Transpose', K-L, L, N-K, ONE, V,
+     $         LDV, V(K-L+1,1), LDV, ONE, T(1, K-L+1), LDT)
+*
+*        At this point, we have that T_{1,2} = V_1*V_2'
+*        All that is left is to pre and post multiply by -T_{1,1} and T_{2,2}
+*        respectively.
+*
+*        T_{1,2} = -T_{1,1}*T_{1,2}
+*
+         CALL DTRMM('Left', 'Upper', 'No Transpose', 'Non-Unit',
+     $         K-L, L, NEG_ONE, T, LDT, T(1, K-L+1), LDT)
+*
+*        T_{1,2} = T_{1,2}*T_{2,2}
+*
+         CALL DTRMM('Right', 'Upper', 'No Transpose', 'Non-Unit',
+     $         K-L, L, ONE, T(K-L+1,K-L+1), LDT, T(1, K-L+1), LDT)
       END IF
       END SUBROUTINE

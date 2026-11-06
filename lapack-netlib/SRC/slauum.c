@@ -228,266 +228,16 @@ typedef logical (*L_fp)(...);
 #else
 typedef logical (*L_fp)();
 #endif
-#if 0
-static float spow_ui(float x, integer n) {
-	float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static double dpow_ui(double x, integer n) {
-	double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#ifdef _MSC_VER
-static _Fcomplex cpow_ui(complex x, integer n) {
-	complex pow={1.0,0.0}; unsigned long int u;
-		if(n != 0) {
-		if(n < 0) n = -n, x.r = 1/x.r, x.i=1/x.i;
-		for(u = n; ; ) {
-			if(u & 01) pow.r *= x.r, pow.i *= x.i;
-			if(u >>= 1) x.r *= x.r, x.i *= x.i;
-			else break;
-		}
-	}
-	_Fcomplex p={pow.r, pow.i};
-	return p;
-}
-#else
-static _Complex float cpow_ui(_Complex float x, integer n) {
-	_Complex float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-#ifdef _MSC_VER
-static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
-	_Dcomplex pow={1.0,0.0}; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x._Val[0] = 1/x._Val[0], x._Val[1] =1/x._Val[1];
-		for(u = n; ; ) {
-			if(u & 01) pow._Val[0] *= x._Val[0], pow._Val[1] *= x._Val[1];
-			if(u >>= 1) x._Val[0] *= x._Val[0], x._Val[1] *= x._Val[1];
-			else break;
-		}
-	}
-	_Dcomplex p = {pow._Val[0], pow._Val[1]};
-	return p;
-}
-#else
-static _Complex double zpow_ui(_Complex double x, integer n) {
-	_Complex double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-static integer pow_ii(integer x, integer n) {
-	integer pow; unsigned long int u;
-	if (n <= 0) {
-		if (n == 0 || x == 1) pow = 1;
-		else if (x != -1) pow = x == 0 ? 1/x : 0;
-		else n = -n;
-	}
-	if ((n > 0) || !(n == 0 || x == 1 || x != -1)) {
-		u = n;
-		for(pow = 1; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static integer dmaxloc_(double *w, integer s, integer e, integer *n)
-{
-	double m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-static integer smaxloc_(float *w, integer s, integer e, integer *n)
-{
-	float m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Fcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conjf(Cf(&x[i]))._Val[0] * Cf(&y[i])._Val[0];
-			zdotc._Val[1] += conjf(Cf(&x[i]))._Val[1] * Cf(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conjf(Cf(&x[i*incx]))._Val[0] * Cf(&y[i*incy])._Val[0];
-			zdotc._Val[1] += conjf(Cf(&x[i*incx]))._Val[1] * Cf(&y[i*incy])._Val[1];
-		}
-	}
-	pCf(z) = zdotc;
-}
-#else
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i])) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i*incx])) * Cf(&y[i*incy]);
-		}
-	}
-	pCf(z) = zdotc;
-}
-#endif
-static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Dcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i]))._Val[0] * Cd(&y[i])._Val[0];
-			zdotc._Val[1] += conj(Cd(&x[i]))._Val[1] * Cd(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i*incx]))._Val[0] * Cd(&y[i*incy])._Val[0];
-			zdotc._Val[1] += conj(Cd(&x[i*incx]))._Val[1] * Cd(&y[i*incy])._Val[1];
-		}
-	}
-	pCd(z) = zdotc;
-}
-#else
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i])) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i*incx])) * Cd(&y[i*incy]);
-		}
-	}
-	pCd(z) = zdotc;
-}
-#endif	
-static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Fcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0];
-			zdotc._Val[1] += Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0];
-			zdotc._Val[1] += Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
-		}
-	}
-	pCf(z) = zdotc;
-}
-#else
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i]) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i*incx]) * Cf(&y[i*incy]);
-		}
-	}
-	pCf(z) = zdotc;
-}
-#endif
-static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Dcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0];
-			zdotc._Val[1] += Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0];
-			zdotc._Val[1] += Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
-		}
-	}
-	pCd(z) = zdotc;
-}
-#else
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i]) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i*incx]) * Cd(&y[i*incy]);
-		}
-	}
-	pCd(z) = zdotc;
-}
-#endif
-#endif
-/*  -- translated by f2c (version 20000121).
-   You must link the resulting object file with the libraries:
-	-lf2c -lm   (in that order)
-*/
 
 
-
-
-/* Table of constant values */
-
-static integer c__1 = 1;
-static integer c_n1 = -1;
-static real c_b15 = 1.f;
-
-/* > \brief \b SLAUUM computes the product UUH or LHL, where U and L are upper or lower triangular matrices (b
-locked algorithm). */
+/* > \brief \b SLAUUM computes the product UUH or LHL, where U and L are upper or lower triangular matrices (d
+river algorithm). */
 
 /*  =========== DOCUMENTATION =========== */
 
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download SLAUUM + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/slauum.
 f"> */
@@ -498,7 +248,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/slauum.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -520,11 +269,13 @@ f"> */
 /* > the array A. */
 /* > */
 /* > If UPLO = 'U' or 'u' then the upper triangle of the result is stored, */
-/* > overwriting the factor U in A. */
+/* > overwriting the factor U in A, and the strictly lower triangular part */
+/* > of A is not referenced. */
 /* > If UPLO = 'L' or 'l' then the lower triangle of the result is stored, */
-/* > overwriting the factor L in A. */
+/* > overwriting the factor L in A, and the strictly upper triangular part */
+/* > of A is not referenced. */
 /* > */
-/* > This is the blocked form of the algorithm, calling Level 3 BLAS. */
+/* > This is the driver that dispatches to either blocked or recursive */
 /* > \endverbatim */
 
 /*  Arguments: */
@@ -550,9 +301,11 @@ f"> */
 /* >          A is REAL array, dimension (LDA,N) */
 /* >          On entry, the triangular factor U or L. */
 /* >          On exit, if UPLO = 'U', the upper triangle of A is */
-/* >          overwritten with the upper triangle of the product U * U**T; */
-/* >          if UPLO = 'L', the lower triangle of A is overwritten with */
-/* >          the lower triangle of the product L**T * L. */
+/* >          overwritten with the upper triangle of the product U * U**T, */
+/* >          and the strictly lower triangular part of A is not referenced. */
+/* >          If UPLO = 'L', the lower triangle of A is overwritten with */
+/* >          the lower triangle of the product L**T * L, and the strictly upper */
+/* >          triangular part of A is not referenced. */
 /* > \endverbatim */
 /* > */
 /* > \param[in] LDA */
@@ -576,42 +329,25 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup realOTHERauxiliary */
+/* > \ingroup lauum */
 
 /*  ===================================================================== */
 /* Subroutine */ void slauum_(char *uplo, integer *n, real *a, integer *lda, 
 	integer *info)
 {
     /* System generated locals */
-    integer a_dim1, a_offset, i__1, i__2, i__3, i__4;
+    integer a_dim1, a_offset, i__1;
 
     /* Local variables */
-    integer i__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
-	    integer *, real *, real *, integer *, real *, integer *, real *, 
-	    real *, integer *);
     logical upper;
-    extern /* Subroutine */ void strmm_(char *, char *, char *, char *, 
-	    integer *, integer *, real *, real *, integer *, real *, integer *
-	    ), ssyrk_(char *, char *, integer 
-	    *, integer *, real *, real *, integer *, real *, real *, integer *
-	    );
-    integer ib;
-    extern /* Subroutine */ void slauu2_(char *, integer *, real *, integer *, 
-	    integer *);
-    integer nb;
-    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
-    extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
-	    integer *, integer *, ftnlen, ftnlen);
+    extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen), slauum_recursive_(
+	    char *, integer *, real *, integer *, integer *);
 
 
-/*  -- LAPACK auxiliary routine (version 3.7.0) -- */
+/*  -- LAPACK auxiliary routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -621,7 +357,7 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
 
     /* Function Body */
@@ -646,81 +382,13 @@ f"> */
 	return;
     }
 
-/*     Determine the block size for this environment. */
+/*     Here we dispatch to whatever is more efficient in a particular environment */
+/*     We are defaulting to recursive, but if you want to use the blocked variant */
+/*     Comment out the line starting with `CALL SLAUUM_...` */
+/*     and uncomment the line starting with `CALL SLAUUM_BLOCKED...` */
 
-    nb = ilaenv_(&c__1, "SLAUUM", uplo, n, &c_n1, &c_n1, &c_n1, (ftnlen)6, (
-	    ftnlen)1);
-
-    if (nb <= 1 || nb >= *n) {
-
-/*        Use unblocked code */
-
-	slauu2_(uplo, n, &a[a_offset], lda, info);
-    } else {
-
-/*        Use blocked code */
-
-	if (upper) {
-
-/*           Compute the product U * U**T. */
-
-	    i__1 = *n;
-	    i__2 = nb;
-	    for (i__ = 1; i__2 < 0 ? i__ >= i__1 : i__ <= i__1; i__ += i__2) {
-/* Computing MIN */
-		i__3 = nb, i__4 = *n - i__ + 1;
-		ib = f2cmin(i__3,i__4);
-		i__3 = i__ - 1;
-		strmm_("Right", "Upper", "Transpose", "Non-unit", &i__3, &ib, 
-			&c_b15, &a[i__ + i__ * a_dim1], lda, &a[i__ * a_dim1 
-			+ 1], lda)
-			;
-		slauu2_("Upper", &ib, &a[i__ + i__ * a_dim1], lda, info);
-		if (i__ + ib <= *n) {
-		    i__3 = i__ - 1;
-		    i__4 = *n - i__ - ib + 1;
-		    sgemm_("No transpose", "Transpose", &i__3, &ib, &i__4, &
-			    c_b15, &a[(i__ + ib) * a_dim1 + 1], lda, &a[i__ + 
-			    (i__ + ib) * a_dim1], lda, &c_b15, &a[i__ * 
-			    a_dim1 + 1], lda);
-		    i__3 = *n - i__ - ib + 1;
-		    ssyrk_("Upper", "No transpose", &ib, &i__3, &c_b15, &a[
-			    i__ + (i__ + ib) * a_dim1], lda, &c_b15, &a[i__ + 
-			    i__ * a_dim1], lda);
-		}
-/* L10: */
-	    }
-	} else {
-
-/*           Compute the product L**T * L. */
-
-	    i__2 = *n;
-	    i__1 = nb;
-	    for (i__ = 1; i__1 < 0 ? i__ >= i__2 : i__ <= i__2; i__ += i__1) {
-/* Computing MIN */
-		i__3 = nb, i__4 = *n - i__ + 1;
-		ib = f2cmin(i__3,i__4);
-		i__3 = i__ - 1;
-		strmm_("Left", "Lower", "Transpose", "Non-unit", &ib, &i__3, &
-			c_b15, &a[i__ + i__ * a_dim1], lda, &a[i__ + a_dim1], 
-			lda);
-		slauu2_("Lower", &ib, &a[i__ + i__ * a_dim1], lda, info);
-		if (i__ + ib <= *n) {
-		    i__3 = i__ - 1;
-		    i__4 = *n - i__ - ib + 1;
-		    sgemm_("Transpose", "No transpose", &ib, &i__3, &i__4, &
-			    c_b15, &a[i__ + ib + i__ * a_dim1], lda, &a[i__ + 
-			    ib + a_dim1], lda, &c_b15, &a[i__ + a_dim1], lda);
-		    i__3 = *n - i__ - ib + 1;
-		    ssyrk_("Lower", "Transpose", &ib, &i__3, &c_b15, &a[i__ + 
-			    ib + i__ * a_dim1], lda, &c_b15, &a[i__ + i__ * 
-			    a_dim1], lda);
-		}
-/* L20: */
-	    }
-	}
-    }
-
+    slauum_recursive_(uplo, n, &a[a_offset], lda, info);
+    //slauum_blocked_(uplo, n, &a[a_offset], lda, info);
     return;
 
 /*     End of SLAUUM */

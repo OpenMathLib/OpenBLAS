@@ -1,5 +1,6 @@
 CEC               Key indicating type of input
 20.0E0            Threshold value for test ratios
+T                 Put T to test the error exits
    1   1
 ( 2.0E0,  0.0E0)
 ( 2.0E0,  0.0E0)

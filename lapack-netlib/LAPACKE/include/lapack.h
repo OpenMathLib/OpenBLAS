@@ -403,6 +403,52 @@ void LAPACK_zbdsqr_base(
     #define LAPACK_zbdsqr(...) LAPACK_zbdsqr_base(__VA_ARGS__)
 #endif
 
+#define LAPACK_dbdsvdmr3_base LAPACK_GLOBAL(dbdsvdmr3,DBDSVDMR3)
+void LAPACK_dbdsvdmr3_base(
+    char const* uplo, char const* jobz, char const* range,
+    lapack_int const* n,
+    double const* D,
+    double const* E,
+    double const* vl,
+    double const* vu, lapack_int const* il, lapack_int const* iu, lapack_int* ns,
+    double* S,
+    double* Z, lapack_int const* ldz,
+    double* work, lapack_int const* lwork,
+    lapack_int* iwork, lapack_int const* liwork,
+    lapack_int* info
+#ifdef LAPACK_FORTRAN_STRLEN_END
+    , FORTRAN_STRLEN, FORTRAN_STRLEN, FORTRAN_STRLEN
+#endif
+);
+#ifdef LAPACK_FORTRAN_STRLEN_END
+    #define LAPACK_dbdsvdmr3(...) LAPACK_dbdsvdmr3_base(__VA_ARGS__, 1, 1, 1)
+#else
+    #define LAPACK_dbdsvdmr3(...) LAPACK_dbdsvdmr3_base(__VA_ARGS__)
+#endif
+
+#define LAPACK_sbdsvdmr3_base LAPACK_GLOBAL(sbdsvdmr3,SBDSVDMR3)
+void LAPACK_sbdsvdmr3_base(
+    char const* uplo, char const* jobz, char const* range,
+    lapack_int const* n,
+    float const* D,
+    float const* E,
+    float const* vl,
+    float const* vu, lapack_int const* il, lapack_int const* iu, lapack_int* ns,
+    float* S,
+    float* Z, lapack_int const* ldz,
+    float* work, lapack_int const* lwork,
+    lapack_int* iwork, lapack_int const* liwork,
+    lapack_int* info
+#ifdef LAPACK_FORTRAN_STRLEN_END
+    , FORTRAN_STRLEN, FORTRAN_STRLEN, FORTRAN_STRLEN
+#endif
+);
+#ifdef LAPACK_FORTRAN_STRLEN_END
+    #define LAPACK_sbdsvdmr3(...) LAPACK_sbdsvdmr3_base(__VA_ARGS__, 1, 1, 1)
+#else
+    #define LAPACK_sbdsvdmr3(...) LAPACK_sbdsvdmr3_base(__VA_ARGS__)
+#endif
+
 #define LAPACK_dbdsvdx_base LAPACK_GLOBAL(dbdsvdx,DBDSVDX)
 void LAPACK_dbdsvdx_base(
     char const* uplo, char const* jobz, char const* range,
@@ -3922,6 +3968,30 @@ void LAPACK_cgesvdx_base(
     #define LAPACK_cgesvdx(...) LAPACK_cgesvdx_base(__VA_ARGS__)
 #endif
 
+#define LAPACK_cgesvdmr3_base LAPACK_GLOBAL(cgesvdmr3,CGESVDMR3)
+void LAPACK_cgesvdmr3_base(
+    char const* jobu, char const* jobvt, char const* range,
+    lapack_int const* m, lapack_int const* n,
+    lapack_complex_float* A, lapack_int const* lda,
+    float const* vl,
+    float const* vu, lapack_int const* il, lapack_int const* iu, lapack_int* ns,
+    float* S,
+    lapack_complex_float* U, lapack_int const* ldu,
+    lapack_complex_float* VT, lapack_int const* ldvt,
+    lapack_complex_float* work, lapack_int const* lwork,
+    float* rwork,
+    lapack_int* iwork,
+    lapack_int* info
+#ifdef LAPACK_FORTRAN_STRLEN_END
+    , FORTRAN_STRLEN, FORTRAN_STRLEN, FORTRAN_STRLEN
+#endif
+);
+#ifdef LAPACK_FORTRAN_STRLEN_END
+    #define LAPACK_cgesvdmr3(...) LAPACK_cgesvdmr3_base(__VA_ARGS__, 1, 1, 1)
+#else
+    #define LAPACK_cgesvdmr3(...) LAPACK_cgesvdmr3_base(__VA_ARGS__)
+#endif
+
 
 #define LAPACK_dgesvdx_base LAPACK_GLOBAL(dgesvdx,DGESVDX)
 void LAPACK_dgesvdx_base(
@@ -3944,6 +4014,29 @@ void LAPACK_dgesvdx_base(
     #define LAPACK_dgesvdx(...) LAPACK_dgesvdx_base(__VA_ARGS__, 1, 1, 1)
 #else
     #define LAPACK_dgesvdx(...) LAPACK_dgesvdx_base(__VA_ARGS__)
+#endif
+
+#define LAPACK_dgesvdmr3_base LAPACK_GLOBAL(dgesvdmr3,DGESVDMR3)
+void LAPACK_dgesvdmr3_base(
+    char const* jobu, char const* jobvt, char const* range,
+    lapack_int const* m, lapack_int const* n,
+    double* A, lapack_int const* lda,
+    double const* vl,
+    double const* vu, lapack_int const* il, lapack_int const* iu, lapack_int* ns,
+    double* S,
+    double* U, lapack_int const* ldu,
+    double* VT, lapack_int const* ldvt,
+    double* work, lapack_int const* lwork,
+    lapack_int* iwork,
+    lapack_int* info
+#ifdef LAPACK_FORTRAN_STRLEN_END
+    , FORTRAN_STRLEN, FORTRAN_STRLEN, FORTRAN_STRLEN
+#endif
+);
+#ifdef LAPACK_FORTRAN_STRLEN_END
+    #define LAPACK_dgesvdmr3(...) LAPACK_dgesvdmr3_base(__VA_ARGS__, 1, 1, 1)
+#else
+    #define LAPACK_dgesvdmr3(...) LAPACK_dgesvdmr3_base(__VA_ARGS__)
 #endif
 
 #define LAPACK_sgesvdx_base LAPACK_GLOBAL(sgesvdx,SGESVDX)
@@ -3969,6 +4062,29 @@ void LAPACK_sgesvdx_base(
     #define LAPACK_sgesvdx(...) LAPACK_sgesvdx_base(__VA_ARGS__)
 #endif
 
+#define LAPACK_sgesvdmr3_base LAPACK_GLOBAL(sgesvdmr3,SGESVDMR3)
+void LAPACK_sgesvdmr3_base(
+    char const* jobu, char const* jobvt, char const* range,
+    lapack_int const* m, lapack_int const* n,
+    float* A, lapack_int const* lda,
+    float const* vl,
+    float const* vu, lapack_int const* il, lapack_int const* iu, lapack_int* ns,
+    float* S,
+    float* U, lapack_int const* ldu,
+    float* VT, lapack_int const* ldvt,
+    float* work, lapack_int const* lwork,
+    lapack_int* iwork,
+    lapack_int* info
+#ifdef LAPACK_FORTRAN_STRLEN_END
+    , FORTRAN_STRLEN, FORTRAN_STRLEN, FORTRAN_STRLEN
+#endif
+);
+#ifdef LAPACK_FORTRAN_STRLEN_END
+    #define LAPACK_sgesvdmr3(...) LAPACK_sgesvdmr3_base(__VA_ARGS__, 1, 1, 1)
+#else
+    #define LAPACK_sgesvdmr3(...) LAPACK_sgesvdmr3_base(__VA_ARGS__)
+#endif
+
 #define LAPACK_zgesvdx_base LAPACK_GLOBAL(zgesvdx,ZGESVDX)
 void LAPACK_zgesvdx_base(
     char const* jobu, char const* jobvt, char const* range,
@@ -3991,6 +4107,30 @@ void LAPACK_zgesvdx_base(
     #define LAPACK_zgesvdx(...) LAPACK_zgesvdx_base(__VA_ARGS__, 1, 1, 1)
 #else
     #define LAPACK_zgesvdx(...) LAPACK_zgesvdx_base(__VA_ARGS__)
+#endif
+
+#define LAPACK_zgesvdmr3_base LAPACK_GLOBAL(zgesvdmr3,ZGESVDMR3)
+void LAPACK_zgesvdmr3_base(
+    char const* jobu, char const* jobvt, char const* range,
+    lapack_int const* m, lapack_int const* n,
+    lapack_complex_double* A, lapack_int const* lda,
+    double const* vl,
+    double const* vu, lapack_int const* il, lapack_int const* iu, lapack_int* ns,
+    double* S,
+    lapack_complex_double* U, lapack_int const* ldu,
+    lapack_complex_double* VT, lapack_int const* ldvt,
+    lapack_complex_double* work, lapack_int const* lwork,
+    double* rwork,
+    lapack_int* iwork,
+    lapack_int* info
+#ifdef LAPACK_FORTRAN_STRLEN_END
+    , FORTRAN_STRLEN, FORTRAN_STRLEN, FORTRAN_STRLEN
+#endif
+);
+#ifdef LAPACK_FORTRAN_STRLEN_END
+    #define LAPACK_zgesvdmr3(...) LAPACK_zgesvdmr3_base(__VA_ARGS__, 1, 1, 1)
+#else
+    #define LAPACK_zgesvdmr3(...) LAPACK_zgesvdmr3_base(__VA_ARGS__)
 #endif
 
 #define LAPACK_cgesvj_base LAPACK_GLOBAL(cgesvj,CGESVJ)
@@ -16509,6 +16649,24 @@ void LAPACK_sstebz_base(
 #else
     #define LAPACK_sstebz(...) LAPACK_sstebz_base(__VA_ARGS__)
 #endif
+
+#define LAPACK_dstebr LAPACK_GLOBAL(dstebr,DSTEBR)
+void LAPACK_dstebr(
+    lapack_int const* n,
+    double* D, 
+    double* E,
+    double* work, lapack_int const* lwork,
+    lapack_int* iwork, lapack_int const* liwork,
+    lapack_int* info );
+    
+#define LAPACK_sstebr LAPACK_GLOBAL(sstebr,SSTEBR)
+void LAPACK_sstebr(
+    lapack_int const* n,
+    float* D,
+    float* E,
+    float* work, lapack_int const* lwork,
+    lapack_int* iwork, lapack_int const* liwork,
+    lapack_int* info );
 
 #define LAPACK_cstedc_base LAPACK_GLOBAL(cstedc,CSTEDC)
 void LAPACK_cstedc_base(

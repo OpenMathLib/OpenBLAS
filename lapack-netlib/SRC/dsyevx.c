@@ -226,8 +226,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
@@ -241,7 +239,6 @@ rices</b> */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download DSYEVX + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dsyevx.
 f"> */
@@ -252,7 +249,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dsyevx.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -467,8 +463,11 @@ f"> */
 /* >          INFO is INTEGER */
 /* >          = 0:  successful exit */
 /* >          < 0:  if INFO = -i, the i-th argument had an illegal value */
-/* >          > 0:  if INFO = i, then i eigenvectors failed to converge. */
-/* >                Their indices are stored in array IFAIL. */
+/* >          > 0:  if INFO = i, and i is: */
+/* >                <= N: then i eigenvectors failed to converge in */
+/* >                     DSTEIN; their indices are stored in IFAIL. */
+/* >                > N: DSTEBZ returned INFO = INFO - N; */
+/* >                     see DSTEBZ for details. */
 /* > \endverbatim */
 
 /*  Authors: */
@@ -479,9 +478,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date June 2016 */
-
-/* > \ingroup doubleSYeigen */
+/* > \ingroup heevx */
 
 /*  ===================================================================== */
 /* Subroutine */ void dsyevx_(char *jobz, char *range, char *uplo, integer *n, 
@@ -495,12 +492,12 @@ f"> */
     doublereal d__1, d__2;
 
     /* Local variables */
+    integer iscale, i__, j, nb, jj;
+    doublereal eps, vll, vuu, tmp1;
     integer indd, inde;
-    doublereal anrm;
-    integer imax;
-    doublereal rmin, rmax;
+    doublereal anrm, rmin, rmax;
     logical test;
-    integer itmp1, i__, j, indee;
+    integer itmp1, indee;
     extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
@@ -511,10 +508,9 @@ f"> */
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     logical lower, wantz;
-    integer nb, jj;
     extern doublereal dlamch_(char *);
     logical alleig, indeig;
-    integer iscale, indibl;
+    integer indibl;
     logical valeig;
     extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
@@ -549,13 +545,11 @@ f"> */
 	     integer *, integer *);
     integer lwkopt;
     logical lquery;
-    doublereal eps, vll, vuu, tmp1;
 
 
-/*  -- LAPACK driver routine (version 3.7.0) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     June 2016 */
 
 
 /* ===================================================================== */
@@ -565,11 +559,11 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     --w;
     z_dim1 = *ldz;
-    z_offset = 1 + z_dim1 * 1;
+    z_offset = 1 + z_dim1;
     z__ -= z_offset;
     --work;
     --iwork;
@@ -616,7 +610,7 @@ f"> */
     if (*info == 0) {
 	if (*n <= 1) {
 	    lwkmin = 1;
-	    work[1] = (doublereal) lwkmin;
+	    lwkopt = 1;
 	} else {
 	    lwkmin = *n << 3;
 	    nb = ilaenv_(&c__1, "DSYTRD", uplo, n, &c_n1, &c_n1, &c_n1, (
@@ -628,8 +622,8 @@ f"> */
 /* Computing MAX */
 	    i__1 = lwkmin, i__2 = (nb + 3) * *n;
 	    lwkopt = f2cmax(i__1,i__2);
-	    work[1] = (doublereal) lwkopt;
 	}
+	work[1] = (doublereal) lwkopt;
 
 	if (*lwork < lwkmin && ! lquery) {
 	    *info = -17;
@@ -691,8 +685,12 @@ f"> */
 	iscale = 1;
 	sigma = rmin / anrm;
     } else if (anrm > rmax) {
-	iscale = 1;
+/*        An infinite norm gives SIGMA = 0; leave such a matrix */
+/*        unscaled so that VL and VU remain a valid interval. */
 	sigma = rmax / anrm;
+	if (sigma > 0.) {
+	    iscale = 1;
+	}
     }
     if (iscale == 1) {
 	if (lower) {
@@ -780,12 +778,21 @@ f"> */
     indiwo = indisp + *n;
     dstebz_(range, order, n, &vll, &vuu, il, iu, &abstll, &work[indd], &work[
 	    inde], m, &nsplit, &w[1], &iwork[indibl], &iwork[indisp], &work[
-	    indwrk], &iwork[indiwo], info);
+	    indwrk], &iwork[indiwo], &iinfo);
+    if (iinfo != 0) {
+	*info = *n + iinfo;
+	if (iinfo != 1) {
+	    goto L40;
+	}
+    }
 
     if (wantz) {
 	dstein_(n, &work[indd], &work[inde], m, &w[1], &iwork[indibl], &iwork[
 		indisp], &z__[z_offset], ldz, &work[indwrk], &iwork[indiwo], &
-		ifail[1], info);
+		ifail[1], &iinfo);
+	if (iinfo != 0 && *info == 0) {
+	    *info = iinfo;
+	}
 
 /*        Apply orthogonal matrix used in reduction to tridiagonal */
 /*        form to eigenvectors returned by DSTEIN. */
@@ -800,13 +807,8 @@ f"> */
 
 L40:
     if (iscale == 1) {
-	if (*info == 0) {
-	    imax = *m;
-	} else {
-	    imax = *info - 1;
-	}
 	d__1 = 1. / sigma;
-	dscal_(&imax, &d__1, &w[1], &c__1);
+	dscal_(m, &d__1, &w[1], &c__1);
     }
 
 /*     If eigenvalues are not in order, then sort them, along with */
