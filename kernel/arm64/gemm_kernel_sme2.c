@@ -62,15 +62,49 @@ static inline void s2p_krange(BLASLONG i0, BLASLONG j0, int wm, int wn, BLASLONG
 #ifdef HAVE_SME2_GEMM
 #pragma clang attribute push(__attribute__((target("sme2"))), apply_to = function)
 
-typedef void (*s2p_bfn)(BLASLONG, const FLOAT *, int, const FLOAT *, int, FLOAT *, BLASLONG, FLOAT, int) S2_S S2_ZA;
+typedef void (*s2p_bfn)(BLASLONG, const FLOAT *, int, const FLOAT *, int, FLOAT *, BLASLONG, FLOAT, int,
+                        BLASLONG) S2_S S2_ZA;
+
+#if defined(TRMMKERNEL) && defined(LEFT)
+/* Steps [l0, l1) at the diagonal: tile Q only from step g + Q * VL on (TRANSA: before step g + (Q + 1) * VL). */
+S2_INL void s2p_mac_diag(const int TN, BLASLONG l0, BLASLONG l1, BLASLONG g, const FLOAT *a, int wm, const FLOAT *b,
+                         int wn) S2_S S2_ZA {
+  const svbool_t pt = S2_PT(), pb = S2_PW(0, wn);
+  for (BLASLONG l = l0; l < l1; ++l) {
+    const s2_v bv = S2_LD1(pb, b + l * wn);
+    const s2_v4 a0 = s2_ld4n(a + l * wm, wm);
+    const s2_v4 a1 = TN > 4 ? s2_ld4n(a + l * wm + 4 * S2_VL, wm - 4 * S2_VL) : a0;
+    const BLASLONG q = (l - g) / S2_VL;
+#ifndef TRANSA
+    S2_UNROLL for (int Q = 0; Q < TN; ++Q) if (Q <= q) s2_mopa(Q, pt, bv, s2_pick(a0, a1, Q));
+#else
+    S2_UNROLL for (int Q = 0; Q < TN; ++Q) if (Q >= q) s2_mopa(Q, pt, bv, s2_pick(a0, a1, Q));
+#endif
+  }
+}
+/* Left TRMM: the diagonal steps through s2p_mac_diag (g: the step of the diagonal element in row 0). */
+#ifndef TRANSA
+#define S2P_MAC_BLK(TN, BF, SUB)                                                                                 \
+  const BLASLONG t = s2_clip(g + (TN - 1) * S2_VL, kb);                                                          \
+  s2p_mac_diag(TN, 0, t, g, a, wm, b, wn);                                                                       \
+  s2p_mac(TN, BF, SUB, kb - t, a + t * wm, wm, b + t * wn, wn);
+#else
+#define S2P_MAC_BLK(TN, BF, SUB)                                                                                 \
+  const BLASLONG t = s2_clip(g + S2_VL, kb);                                                                     \
+  s2p_mac(TN, BF, SUB, t, a, wm, b, wn);                                                                         \
+  s2p_mac_diag(TN, t, kb, g, a, wm, b, wn);
+#endif
+#else
+#define S2P_MAC_BLK(TN, BF, SUB) s2p_mac(TN, BF, SUB, kb, a, wm, b, wn);
+#endif
 
 /* Block of wm rows and wn columns of C; cm 0: C += A B, 1: C -= A B, 2: C += alpha A B, 3: C = alpha A B. */
 #define S2P_DEF(TN, BF, SUB)                                                                                     \
   S2_NOINL void s2p_blk_##TN##_##BF##_##SUB(BLASLONG kb, const FLOAT *a, int wm, const FLOAT *b, int wn, FLOAT *C, \
-                                            BLASLONG ldc, FLOAT alpha, int cm) S2_S S2_ZA {                      \
+                                            BLASLONG ldc, FLOAT alpha, int cm, BLASLONG g) S2_S S2_ZA {          \
     if (cm < 2) s2_c_load(1, TN, C, ldc, wn, wm, S2_LOAD, (FLOAT)1);                                             \
     else svzero_za();                                                                                            \
-    s2p_mac(TN, BF, SUB, kb, a, wm, b, wn);                                                                      \
+    S2P_MAC_BLK(TN, BF, SUB)                                                                                     \
     if (cm < 2) s2_c_store(1, TN, C, ldc, wn, wm);                                                               \
     else s2_c_store_alpha(TN, C, ldc, wn, wm, alpha, cm == 2);                                                   \
   }
@@ -105,9 +139,9 @@ __arm_new("za") __arm_locally_streaming static void s2p_drive(BLASLONG m, BLASLO
       const int wm = m - i0 < S2_NR ? (int)(m - i0) : S2_NR;
       BLASLONG ks, kl;
       s2p_krange(i0, j0, wm, wn, k, offset, &ks, &kl);
-      s2p_blk[(wm + S2_VL - 1) / S2_VL - 1][wn == S2_VL][cm == 1](kl, sa + i0 * k + ks * wm, wm,
-                                                                  sb + j0 * k + ks * wn, wn, C + i0 + j0 * ldc,
-                                                                  ldc, alpha, cm);
+      s2p_blk[(wm + S2_VL - 1) / S2_VL - 1][wn == S2_VL][cm == 1](kl, sa + i0 * k + ks * wm, wm, sb + j0 * k + ks * wn,
+                                                                  wn, C + i0 + j0 * ldc, ldc, alpha, cm,
+                                                                  offset + i0 - ks);
     }
     j0 += wn;
   }
