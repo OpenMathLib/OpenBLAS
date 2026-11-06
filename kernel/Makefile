@@ -118,6 +118,56 @@ endif
 
 -include $(KERNELDIR)/KERNEL.$(TARGET_CORE)
 
+# RDNA2/RDNA4 HIP kernels. Built whenever USE_HIP is set, whatever the CPU core
+# is: the CPU side keeps that core's own kernels and these add the GPU side, so
+# an ordinary build (TARGET=zen, TARGET=haswell, ...) gets both. A GPU-core
+# build (TARGET=GFX1201) is just the special case where there is no separate CPU
+# core. Defined before Makefile.L3 so SKERNELOBJS picks the objects up (SBLASOBJS
+# is expanded from it at parse time).
+ifdef USE_HIP
+USE_RDNA2 = 1
+endif
+
+ifdef USE_RDNA2
+HIPCC ?= hipcc
+# $(SUFFIX) keeps these out of the profiled object list, which would otherwise
+# compile the same file a second time with -pg.
+RDNA2_OBJS = rdna2/rdna2_kernels.$(SUFFIX) rdna2/rdna2_oblas.$(SUFFIX)
+# GPU_ARCH selects the device architecture(s) independently of the CPU core;
+# a GPU-core target supplies it implicitly. One --offload-arch per entry, so
+# GPU_ARCH="gfx1031 gfx1201" produces a fat object that runs on both families.
+ifneq ($(strip $(GPU_ARCH)),)
+RDNA2_GPU_ARCH = $(GPU_ARCH)
+else
+RDNA2_GPU_ARCH = $(if $(filter GFX%,$(TARGET_CORE)),gfx$(patsubst GFX%,%,$(TARGET_CORE)),gfx1201)
+endif
+RDNA2_OFFLOAD = $(addprefix --offload-arch=,$(RDNA2_GPU_ARCH))
+# The kernels have a single source of truth, gpu/rdna2/, shared with the
+# standalone test and benchmark harnesses.
+RDNA2_HIP_SRC = $(TOPDIR)/gpu/rdna2/rdna2_kernels.hip
+# The architecture list is baked into the device object but make cannot see
+# flags, so record it in a stamp the object depends on: changing GPU_ARCH then
+# relinks the library instead of silently keeping the previous cards' code.
+RDNA2_ARCH_STAMP = rdna2/rdna2_gpu_arch.stamp
+$(RDNA2_ARCH_STAMP): FORCE
+	@printf '%s\n' '$(RDNA2_GPU_ARCH)' | cmp -s - $@ || printf '%s\n' '$(RDNA2_GPU_ARCH)' > $@
+rdna2/rdna2_kernels.$(SUFFIX): $(RDNA2_HIP_SRC) $(RDNA2_ARCH_STAMP)
+	$(HIPCC) $(HIPFLAGS) $(RDNA2_OFFLOAD) -x hip -c $< -o $@
+rdna2/rdna2_oblas.$(SUFFIX): rdna2/rdna2_oblas.c
+	$(CC) $(CFLAGS) -c $< -o $@
+SKERNELOBJS += $(RDNA2_OBJS)
+endif
+
+# The device objects carry an -offload-arch list inside them, so they must not
+# outlive a clean: obj/o are spelled out because $(SUFFIX) is empty here.
+clean ::
+	@rm -f rdna2/rdna2_gpu_arch.stamp \
+		rdna2/rdna2_kernels.obj rdna2/rdna2_kernels.o \
+		rdna2/rdna2_oblas.obj rdna2/rdna2_oblas.o
+
+.PHONY: FORCE
+FORCE:
+
 include $(KERNELDIR)/KERNEL
 
 include Makefile.L1
@@ -229,35 +279,3 @@ clean ::
 #endif
 
 include $(TOPDIR)/Makefile.tail
-
-# RDNA2/RDNA4 HIP kernels
-ifdef USE_HIP
-ifeq ($(TARGET_CORE), RDNA2)
-USE_RDNA2 = 1
-endif
-ifeq ($(TARGET_CORE), GFX1030)
-USE_RDNA2 = 1
-endif
-ifeq ($(TARGET_CORE), GFX1031)
-USE_RDNA2 = 1
-endif
-ifeq ($(TARGET_CORE), GFX1200)
-USE_RDNA2 = 1
-endif
-ifeq ($(TARGET_CORE), GFX1201)
-USE_RDNA2 = 1
-endif
-endif
-
-ifdef USE_RDNA2
-HIPCC ?= hipcc
-RDNA2_OBJS = rdna2/rdna2_kernels.o rdna2/rdna2_oblas.o
-rdna2/rdna2_kernels.o: rdna2/rdna2_kernels.hip
-	$(HIPCC) $(HIPFLAGS) --offload-arch=$(TARGET_CORE) -x hip -c $< -o $@
-rdna2/rdna2_oblas.o: rdna2/rdna2_oblas.c
-	$(CC) $(CFLAGS) -c $< -o $@
-endif
-
-ifdef USE_RDNA2
-SKERNELOBJS += $(RDNA2_OBJS)
-endif

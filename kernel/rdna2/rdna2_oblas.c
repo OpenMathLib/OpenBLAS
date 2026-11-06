@@ -36,8 +36,8 @@ int rdna2_sgemm_f32_host_tuned(float *C, const float *A, const float *Bt,
  * kernel's N x K left operand; a column-major A (m x k) is contiguous in m and
  * is transposed once into a temporary.
  *
- * All four bridges funnel into rdna2_gemm_cm_core(), so every level-3 routine
- * runs the same GEMM path that the standalone harness verifies against the CPU.
+ * Every bridge funnels into rdna2_gemm_cm_core(), so every level-3 routine runs
+ * the same GEMM path that the standalone harness verifies against the CPU.
  */
 
 /* Below this the CPU path wins, because the host entry point allocates, copies
@@ -397,6 +397,212 @@ int rdna2_oblas_strmm_cm(BLASLONG m, BLASLONG n, double alpha,
             (long)m, (long)n, side, uplo, tr, unit_diag, ok, rdna2_ms(t0));
 
   free(d);
+  return ok;
+}
+
+/* C := alpha*T + beta*C, only on the stored triangle of the symmetric result.
+ * C is n x n column-major with stride ldc, T is the same shape with stride n.
+ * uplo: 0 = upper (i <= j), 1 = lower (i >= j). The triangle the caller did not
+ * store is neither read nor written, which is what SYRK/SYR2K promise, so the
+ * GEMM core may compute both triangles and only half of them is kept. */
+static void rdna2_sym_triangle(double alpha, double beta, float *c, BLASLONG ldc,
+                               const float *t, BLASLONG n, int uplo) {
+  BLASLONG i, j;
+
+  for (j = 0; j < n; ++j) {
+    const BLASLONG i0 = (uplo == 0) ? 0 : j;
+    const BLASLONG i1 = (uplo == 0) ? j + 1 : n;
+
+    for (i = i0; i < i1; ++i) {
+      const float d = t[(size_t)i + (size_t)j * (size_t)n];
+      float *cp = c + (size_t)i + (size_t)j * (size_t)ldc;
+
+      if (alpha == 1.0 && beta == 0.0)
+        *cp = d;
+      else if (beta == 0.0)
+        *cp = (float)(alpha * (double)d);
+      else
+        *cp = (float)(alpha * (double)d + beta * (double)*cp);
+    }
+  }
+}
+
+/* Materialises X = op(A) as an n x k array in the two layouts the GEMM core
+ * needs: *rm is X stored row-major with row stride k, and *cm is X stored
+ * column-major with stride n when op(A) is not already inside the caller's
+ * array (*cm is NULL then, since A itself is X).
+ *
+ * tr == 0: op(A) = A, an n x k column-major array with stride lda.
+ * tr != 0: op(A) = A^T, an n x k result of a k x n array with stride lda.
+ *
+ * The row-major form is what the core's second operand wants: its row j is
+ * op(B)(j,:), so passing the row-major form of op(A) as that operand makes the
+ * core compute X*X^T (SYRK) or X*Y^T (SYR2K). Returns 0 on allocation
+ * failure, in which case the caller falls back to the CPU path.
+ */
+static int rdna2_sym_pack(const float *a, BLASLONG lda, BLASLONG n, BLASLONG k,
+                          int tr, float **cm_out, float **rm_out) {
+  BLASLONG i, p;
+  float *rm = (float *)malloc((size_t)n * (size_t)k * sizeof(float));
+
+  *cm_out = NULL;
+  *rm_out = NULL;
+  if (rm == NULL) return 0;
+
+  if (!tr) {
+    /* rm[i*k + p] = A(i,p) = a[i + p*lda] */
+    rdna2_cm_to_rm(a, lda, rm, k, n, k);
+  } else {
+    float *cm = (float *)malloc((size_t)n * (size_t)k * sizeof(float));
+
+    if (cm == NULL) {
+      free(rm);
+      return 0;
+    }
+
+    /* op(A)(i,p) = A(p,i) = a[p + i*lda] */
+    for (i = 0; i < n; ++i) {
+      for (p = 0; p < k; ++p) {
+        const float v = a[(size_t)p + (size_t)i * (size_t)lda];
+
+        cm[(size_t)i + (size_t)p * (size_t)n] = v;
+        rm[(size_t)i * (size_t)k + (size_t)p] = v;
+      }
+    }
+    *cm_out = cm;
+  }
+
+  *rm_out = rm;
+  return 1;
+}
+
+/* SSYRK: C := alpha*A*A^T + beta*C (trans=0) or alpha*A^T*A + beta*C (trans=1),
+ * with C n x n symmetric and only the uplo triangle stored.
+ *
+ * A is n x k for trans=0 and k x n for trans=1, column-major with stride lda,
+ * matching the interface's already-normalised nrowa rule. The product is an
+ * ordinary GEMM over the full square (the kernel has no triangle mode); only
+ * the stored triangle of the result is applied to C, so the other triangle is
+ * left exactly as the caller left it. Half of that arithmetic is therefore
+ * discarded, so the size gate below still measures the GEMM that is actually
+ * run, not SYRK's n*n*k/2 flop count.
+ *
+ * uplo: 0 = upper, 1 = lower. Returns 1 when C was produced on the GPU.
+ */
+int rdna2_oblas_ssyrk_cm(BLASLONG n, BLASLONG k, double alpha,
+                         const float *a, BLASLONG lda,
+                         double beta, float *c, BLASLONG ldc,
+                         int uplo, int trans) {
+  const int tr = trans & 1;
+  float *cm = NULL, *rm = NULL, *tmp = NULL;
+  const float *x;
+  BLASLONG ldxa;
+  int ok;
+  clock_t t0;
+
+  if (!rdna2_gpu_enabled()) return 0;
+  if (n <= 0 || k <= 0) return 0;
+  if (n > RDNA2_MAX_DIM || k > RDNA2_MAX_DIM) return 0;
+  if ((double)n * (double)n * (double)k < rdna2_min_mnk()) return 0;
+  if (ldc < n) return 0;
+  if (lda < (tr ? k : n)) return 0;
+
+  if (!rdna2_sym_pack(a, lda, n, k, tr, &cm, &rm)) return 0;
+
+  tmp = (float *)malloc((size_t)n * (size_t)n * sizeof(float));
+  if (tmp == NULL) {
+    free(cm);
+    free(rm);
+    return 0;
+  }
+
+  x = tr ? cm : a;
+  ldxa = tr ? n : lda;
+
+  t0 = clock();
+  ok = rdna2_gemm_cm_core(n, n, k, 1.0, x, ldxa, rm, k, 0.0, tmp, n);
+
+  if (ok)
+    rdna2_sym_triangle(alpha, beta, c, ldc, tmp, n, uplo);
+
+  if (rdna2_debug())
+    fprintf(stderr, "[rdna2] ssyrk %ldx%ld trans=%d uplo=%d handled=%d %ldms\n",
+            (long)n, (long)k, tr, uplo, ok, rdna2_ms(t0));
+
+  free(tmp);
+  free(cm);
+  free(rm);
+  return ok;
+}
+
+/* SSYR2K: C := alpha*A*B^T + alpha*B*A^T + beta*C (trans=0) or
+ * alpha*A^T*B + alpha*B^T*A + beta*C (trans=1), with C n x n symmetric and only
+ * the uplo triangle stored. A and B are n x k for trans=0 and k x n for
+ * trans=1, column-major with strides lda and ldb.
+ *
+ * The rank-2k update is a rank-2k GEMM: one core call for A*B^T and a second
+ * that accumulates B*A^T into the same buffer, after which the stored triangle
+ * is merged into C. uplo: 0 = upper, 1 = lower. Returns 1 when C was produced
+ * on the GPU.
+ */
+int rdna2_oblas_ssyr2k_cm(BLASLONG n, BLASLONG k, double alpha,
+                          const float *a, BLASLONG lda,
+                          const float *b, BLASLONG ldb,
+                          double beta, float *c, BLASLONG ldc,
+                          int uplo, int trans) {
+  const int tr = trans & 1;
+  const BLASLONG nrowa = tr ? k : n;
+  float *cma = NULL, *rma = NULL, *cmb = NULL, *rmb = NULL, *tmp = NULL;
+  const float *xa, *xb;
+  BLASLONG ldxa, ldxb;
+  int ok;
+  clock_t t0;
+
+  if (!rdna2_gpu_enabled()) return 0;
+  if (n <= 0 || k <= 0) return 0;
+  if (n > RDNA2_MAX_DIM || k > RDNA2_MAX_DIM) return 0;
+  if ((double)n * (double)n * (double)k < rdna2_min_mnk()) return 0;
+  if (ldc < n) return 0;
+  if (lda < nrowa || ldb < nrowa) return 0;
+
+  if (!rdna2_sym_pack(a, lda, n, k, tr, &cma, &rma)) return 0;
+  if (!rdna2_sym_pack(b, ldb, n, k, tr, &cmb, &rmb)) {
+    free(cma);
+    free(rma);
+    return 0;
+  }
+
+  tmp = (float *)malloc((size_t)n * (size_t)n * sizeof(float));
+  if (tmp == NULL) {
+    free(cmb);
+    free(rmb);
+    free(cma);
+    free(rma);
+    return 0;
+  }
+
+  xa = tr ? cma : a;
+  xb = tr ? cmb : b;
+  ldxa = tr ? n : lda;
+  ldxb = tr ? n : ldb;
+
+  t0 = clock();
+  ok = rdna2_gemm_cm_core(n, n, k, 1.0, xa, ldxa, rmb, k, 0.0, tmp, n);
+  if (ok)
+    ok = rdna2_gemm_cm_core(n, n, k, 1.0, xb, ldxb, rma, k, 1.0, tmp, n);
+
+  if (ok)
+    rdna2_sym_triangle(alpha, beta, c, ldc, tmp, n, uplo);
+
+  if (rdna2_debug())
+    fprintf(stderr, "[rdna2] ssyr2k %ldx%ld trans=%d uplo=%d handled=%d %ldms\n",
+            (long)n, (long)k, tr, uplo, ok, rdna2_ms(t0));
+
+  free(tmp);
+  free(cmb);
+  free(rmb);
+  free(cma);
+  free(rma);
   return ok;
 }
 

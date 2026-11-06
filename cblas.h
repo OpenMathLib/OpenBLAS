@@ -520,6 +520,69 @@ OPENBLAS_EXPORT void cblas_sbgemm_batch(OPENBLAS_CONST enum CBLAS_ORDER Order, O
 		       OPENBLAS_CONST float * alpha_array, OPENBLAS_CONST bfloat16 ** A_array, OPENBLAS_CONST blasint * lda_array, OPENBLAS_CONST bfloat16 ** B_array, OPENBLAS_CONST blasint * ldb_array, OPENBLAS_CONST float * beta_array, float ** C_array, OPENBLAS_CONST blasint * ldc_array, OPENBLAS_CONST blasint group_count, OPENBLAS_CONST blasint * group_size);
 
 OPENBLAS_EXPORT void cblas_sbgemm_batch_strided(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_CONST enum CBLAS_TRANSPOSE TransA, OPENBLAS_CONST enum CBLAS_TRANSPOSE TransB, OPENBLAS_CONST blasint M, OPENBLAS_CONST blasint N, OPENBLAS_CONST blasint K, OPENBLAS_CONST float alpha, OPENBLAS_CONST bfloat16 * A, OPENBLAS_CONST blasint lda, OPENBLAS_CONST blasint stridea, OPENBLAS_CONST bfloat16 * B, OPENBLAS_CONST blasint ldb, OPENBLAS_CONST blasint strideb, OPENBLAS_CONST float beta, float * C, OPENBLAS_CONST blasint ldc, OPENBLAS_CONST blasint stridec, OPENBLAS_CONST blasint group_size);
+/*** INT8 extensions (packed int8 GEMM) ***/
+/* C := op(A) * op(B), with 8-bit integer operands packed four per int32 word.
+ *
+ * These entry points expose the RDNA2/RDNA4 int8 GEMM kernels
+ * (gpu/rdna2/rdna2_kernels.hip) through the normal library, and are also
+ * available in builds without a GPU, where the same product is computed in
+ * portable C. Both paths are exact: accumulation is 32-bit two's complement
+ * (v_dot4_i32_i8), so the two agree bit for bit and no tolerance applies.
+ *
+ * Data contract
+ *   - A and B are arrays of int32 words, each holding four signed int8 values:
+ *     value k of a word is bits [8k, 8k+8), i.e. little-endian byte order. This
+ *     is the layout v_dot4_* consumes, so packed quantized weights are used
+ *     byte for byte as stored.
+ *   - K4 is the number of words per row, so the inner dimension is K = 4*K4
+ *     int8 values. K must be a multiple of 4: a partial trailing word is not
+ *     accepted, and this call performs no repacking of the stored values.
+ *   - lda and ldb are the leading dimensions in words, in the usual BLAS
+ *     sense for the requested order. A is stored M x K4 (TransA ==
+ *     CblasNoTrans) or K4 x M (transposed), B is stored K4 x N or N x K4, and:
+ *       CblasColMajor: lda is the row count of the stored array, so
+ *                      lda >= max(1, K4) when transposed and >= max(1, M)
+ *                      otherwise; ldb >= max(1, N) when transposed and
+ *                      >= max(1, K4) otherwise; ldc >= max(1, M).
+ *       CblasRowMajor: lda is the row stride, so lda >= max(1, M) when
+ *                      transposed and >= max(1, K4) otherwise; ldb >=
+ *                      max(1, K4) when transposed and >= max(1, N)
+ *                      otherwise; ldc >= max(1, N).
+ *   - C is int32 for cblas_gemm_i8 and float for cblas_gemm_i8_scale, with
+ *     ldc in C elements: ldc >= max(1, M) for CblasColMajor and
+ *     ldc >= max(1, N) for CblasRowMajor.
+ *   - Order == CblasRowMajor is supported and gives the same result as the
+ *     column-major call on the transposed problem; CblasConjTrans and
+ *     CblasConjNoTrans are accepted as CblasTrans and CblasNoTrans, since
+ *     conjugation is the identity on integers.
+ *
+ * Scaling (cblas_gemm_i8_scale only)
+ *   C[i][j] = (acc[i][j] - zp_b * rowsum_j) * sa[i] * sb[j]
+ *   where rowsum_j is the sum of the int8 values of column j of op(B) - the
+ *   exact integer form of asymmetric storage, q representing (q - zp_b) - and
+ *   the correction is computed in 64 bits. sa scales rows of op(A) and has M
+ *   entries, sb scales columns of op(B) and has N entries; either may be NULL
+ *   for 1.0. zp_b is the zero point of op(B), i.e. the weight side; 0 skips the
+ *   row-sum pass. No stored operand is converted to floating point: the only
+ *   float produced per output element is the finished dot product.
+ *
+ * There is no alpha/beta in either call. Scale the result on output, or use
+ * cblas_gemm_i8_scale, which applies the per-row/per-column scale for free.
+ * 4-bit formats (Q4_0, Q4_K, ...) are not supported: dp4a consumes whole
+ * bytes, so they would need an in-kernel nibble unpack first.
+ *
+ * Dispatch
+ *   In a build with USE_HIP=1 the HIP kernels run the product;
+ *   OPENBLAS_RDNA2_GPU=0 (or =n) forces the CPU implementation, which is also
+ *   what a build without USE_HIP and any failing or device-less launch uses.
+ *
+ * Returns 0 on success, -1 on an invalid argument or layout, -2 when a host
+ * workspace allocation failed. C is left untouched on error. Both calls are
+ * reentrant; all workspaces are allocated per call.
+ */
+OPENBLAS_EXPORT int cblas_gemm_i8(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_CONST enum CBLAS_TRANSPOSE TransA, OPENBLAS_CONST enum CBLAS_TRANSPOSE TransB, OPENBLAS_CONST blasint M, OPENBLAS_CONST blasint N, OPENBLAS_CONST blasint K4, OPENBLAS_CONST int *A, OPENBLAS_CONST blasint lda, OPENBLAS_CONST int *B, OPENBLAS_CONST blasint ldb, int *C, OPENBLAS_CONST blasint ldc);
+OPENBLAS_EXPORT int cblas_gemm_i8_scale(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_CONST enum CBLAS_TRANSPOSE TransA, OPENBLAS_CONST enum CBLAS_TRANSPOSE TransB, OPENBLAS_CONST blasint M, OPENBLAS_CONST blasint N, OPENBLAS_CONST blasint K4, OPENBLAS_CONST int *A, OPENBLAS_CONST blasint lda, OPENBLAS_CONST int *B, OPENBLAS_CONST blasint ldb, float *C, OPENBLAS_CONST blasint ldc, OPENBLAS_CONST float *sa, OPENBLAS_CONST float *sb, OPENBLAS_CONST int zp_b);
+
 /*** FLOAT16 extensions ***/
 OPENBLAS_EXPORT void cblas_shgemm(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_CONST enum CBLAS_TRANSPOSE TransA, OPENBLAS_CONST enum CBLAS_TRANSPOSE TransB, OPENBLAS_CONST blasint M, OPENBLAS_CONST blasint N, OPENBLAS_CONST blasint K,
 		    OPENBLAS_CONST float alpha, OPENBLAS_CONST hfloat16 *A, OPENBLAS_CONST blasint lda, OPENBLAS_CONST hfloat16 *B, OPENBLAS_CONST blasint ldb, OPENBLAS_CONST float beta, float *C, OPENBLAS_CONST blasint ldc);

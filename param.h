@@ -4518,5 +4518,57 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define SHUFPS_39	shufps	$0x39,
 #endif
 
+/* RDNA2 / RDNA4 GPU targets: the host is x86_64 but the core is not one of the
+ * x86 cores above, so the block chain never reaches a set of GEMM defaults.
+ * These are the values getarch's FORCE_GFX blocks publish and they match the
+ * generic C kernels KERNEL.GFX* selects (4x4 f32/f64, 2x2 complex). They only
+ * describe host-side packing; the GEMM math itself runs on the GPU. */
+#if defined(RDNA2)
+#ifndef SGEMM_DEFAULT_UNROLL_M
+#define SGEMM_DEFAULT_UNROLL_M 4
+#define SGEMM_DEFAULT_UNROLL_N 4
+#define DGEMM_DEFAULT_UNROLL_M 4
+#define DGEMM_DEFAULT_UNROLL_N 4
+#define QGEMM_DEFAULT_UNROLL_M 2
+#define QGEMM_DEFAULT_UNROLL_N 2
+#define CGEMM_DEFAULT_UNROLL_M 2
+#define CGEMM_DEFAULT_UNROLL_N 2
+#define ZGEMM_DEFAULT_UNROLL_M 2
+#define ZGEMM_DEFAULT_UNROLL_N 2
+#define XGEMM_DEFAULT_UNROLL_M 1
+#define XGEMM_DEFAULT_UNROLL_N 1
+#define SGEMM_DEFAULT_P sgemm_p
+#define DGEMM_DEFAULT_P dgemm_p
+#define QGEMM_DEFAULT_P qgemm_p
+#define CGEMM_DEFAULT_P cgemm_p
+#define ZGEMM_DEFAULT_P zgemm_p
+#define XGEMM_DEFAULT_P xgemm_p
+#define SGEMM_DEFAULT_R sgemm_r
+#define DGEMM_DEFAULT_R dgemm_r
+#define QGEMM_DEFAULT_R qgemm_r
+#define CGEMM_DEFAULT_R cgemm_r
+#define ZGEMM_DEFAULT_R zgemm_r
+#define XGEMM_DEFAULT_R xgemm_r
+#define SGEMM_DEFAULT_Q 128
+#define DGEMM_DEFAULT_Q 64
+#define QGEMM_DEFAULT_Q 64
+#define CGEMM_DEFAULT_Q 64
+#define ZGEMM_DEFAULT_Q 32
+#define XGEMM_DEFAULT_Q 32
+#define GEMM_DEFAULT_OFFSET_A 64
+#define GEMM_DEFAULT_OFFSET_B 256
+#define GEMM_DEFAULT_ALIGN (BLASLONG)0xffffUL
+#define SNUMOPT 4
+#define DNUMOPT 2
+#define SYMV_P 16
+#ifndef DTB_DEFAULT_ENTRIES
+#define DTB_DEFAULT_ENTRIES 64
+#endif
+#ifndef ITB_DEFAULT_ENTRIES
+#define ITB_DEFAULT_ENTRIES 64
+#endif
+#endif
+#endif
+
 
 #endif

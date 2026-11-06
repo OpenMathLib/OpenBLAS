@@ -52,7 +52,7 @@ endif
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench cpp_thread_test
 
-.PHONY : all libs netlib $(RELA) test ctest shared install
+.PHONY : all libs netlib $(RELA) test ctest shared install level3-test
 .NOTPARALLEL : shared
 
 all :: tests
@@ -170,6 +170,15 @@ ifeq ($(OSNAME), AIX)
 	@$(MAKE) -C exports so
 endif
 endif
+
+# Level-3 bridge test: gpu/rdna2/test_oblas_gpu.c checks the CBLAS level-3
+# entry points against its own double-precision reference, including the SYRK
+# contract that the unstored triangle and the ldc padding are left alone. It
+# needs nothing beyond a built library, so it also runs on CPU-only builds; when
+# the library was built with USE_HIP=1 it additionally exercises the device
+# dispatch, which is the case it exists for.
+level3-test : libs
+	@$(MAKE) -C gpu/rdna2 oblas-test
 
 tests : shared
 ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))

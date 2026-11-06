@@ -192,6 +192,21 @@ void NAME(char *UPLO, char *TRANS,
     return;
   }
 
+#if defined(OPENBLAS_USE_HIP) && !defined(COMPLEX) && !defined(DOUBLE) && !defined(XDOUBLE) && !defined(BFLOAT16) && !defined(HFLOAT16)
+  {
+    /* n x n symmetric rank-k update on the GPU; only the uplo triangle of C is
+     * read or written. Returns 0 when the CPU path should run instead. */
+    extern int rdna2_oblas_ssyrk_cm(BLASLONG, BLASLONG, double, const float *,
+                                    BLASLONG, double, float *, BLASLONG, int, int);
+
+    if (rdna2_oblas_ssyrk_cm(args.n, args.k, (double)*(const FLOAT *)args.alpha,
+                             (const float *)args.a, args.lda,
+                             (double)*(const FLOAT *)args.beta,
+                             (float *)args.c, args.ldc, uplo, trans))
+      return;
+  }
+#endif
+
 #else
 
 void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Trans,
@@ -342,6 +357,20 @@ double NNK;
   }
 
   if (args.n == 0) return;
+
+#if defined(OPENBLAS_USE_HIP) && !defined(COMPLEX) && !defined(DOUBLE) && !defined(XDOUBLE) && !defined(BFLOAT16) && !defined(HFLOAT16)
+  {
+    /* n x n symmetric rank-k update on the GPU; only the uplo triangle of C is
+     * read or written. Returns 0 when the CPU path should run instead. */
+    extern int rdna2_oblas_ssyrk_cm(BLASLONG, BLASLONG, double, const float *,
+                                    BLASLONG, double, float *, BLASLONG, int, int);
+
+    if (rdna2_oblas_ssyrk_cm(args.n, args.k, (double)alpha, (const float *)args.a,
+                             args.lda, (double)beta, (float *)args.c, args.ldc,
+                             uplo, trans))
+      return;
+  }
+#endif
 
 #ifdef DYNAMIC_ARCH
 extern char* gotoblas_corename(void);

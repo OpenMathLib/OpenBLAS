@@ -860,7 +860,7 @@ cleanup:
 }
 
 // variant 0 = one thread per row, 1 = one wave per row.
-int rdna2_gemv_i8_host_variant(int* y, const int* A, const int* x, int rows, int k4, int variant) {
+extern "C" int rdna2_gemv_i8_host_variant(int* y, const int* A, const int* x, int rows, int k4, int variant) {
   if (!y || !A || !x || rows <= 0 || k4 <= 0) return RDNA2_ERR_ARG;
   if (rdna2_device_count() == 0) {
     rdna2_gemv_i8_ref(y, A, x, rows, k4);
@@ -869,7 +869,7 @@ int rdna2_gemv_i8_host_variant(int* y, const int* A, const int* x, int rows, int
   return rdna2_gemv_i8_device(y, A, x, rows, k4, variant);
 }
 
-int rdna2_gemv_i8_host(int* y, const int* A, const int* x, int rows, int k4) {
+extern "C" int rdna2_gemv_i8_host(int* y, const int* A, const int* x, int rows, int k4) {
   return rdna2_gemv_i8_host_variant(y, A, x, rows, k4, k4 >= RDNA2_GEMV_WAVE_MIN_K4 ? 1 : 0);
 }
 
@@ -916,7 +916,7 @@ cleanup:
 }
 
 // variant 0 = one thread per row, 1 = one wave per row.
-int rdna2_sgemv_f32_host_variant(float* y, const float* A, const float* x, int rows, int K,
+extern "C" int rdna2_sgemv_f32_host_variant(float* y, const float* A, const float* x, int rows, int K,
                                  int variant) {
   if (!y || !A || !x || rows <= 0 || K <= 0) return RDNA2_ERR_ARG;
   if (rdna2_device_count() == 0) {
@@ -926,7 +926,7 @@ int rdna2_sgemv_f32_host_variant(float* y, const float* A, const float* x, int r
   return rdna2_sgemv_f32_device(y, A, x, rows, K, variant);
 }
 
-int rdna2_sgemv_f32_host(float* y, const float* A, const float* x, int rows, int K) {
+extern "C" int rdna2_sgemv_f32_host(float* y, const float* A, const float* x, int rows, int K) {
   return rdna2_sgemv_f32_host_variant(y, A, x, rows, K,
                                       K >= RDNA2_SGEMV_WAVE_MIN_K ? 1 : 0);
 }
@@ -1002,7 +1002,7 @@ cleanup:
 // LDS-staged K chunks, 3 = LDS staging with 8x4 register blocking (quarter less
 // LDS traffic for the same math), 4 = RDNA4 128x128 tile with 8x8 blocking.
 // Any non-zero value keeps the tiled shape; 4 picks its own grid.
-int rdna2_gemm_i8_host(int* C, const int* A, const int* Bt, int M, int N, int K4, int tiled) {
+extern "C" int rdna2_gemm_i8_host(int* C, const int* A, const int* Bt, int M, int N, int K4, int tiled) {
   if (!C || !A || !Bt || M <= 0 || N <= 0 || K4 <= 0) return RDNA2_ERR_ARG;
   if (rdna2_device_count() == 0) {
     rdna2_gemm_i8_ref(C, A, Bt, M, N, K4);
@@ -1072,7 +1072,7 @@ cleanup:
   return rc;
 }
 
-int rdna2_gemm_i8_scale_host(float* C, const int* A, const int* Bt, int M, int N, int K4,
+extern "C" int rdna2_gemm_i8_scale_host(float* C, const int* A, const int* Bt, int M, int N, int K4,
                              int tiled, const float* sa, const float* sb, int zp_b) {
   if (!C || !A || !Bt || M <= 0 || N <= 0 || K4 <= 0) return RDNA2_ERR_ARG;
   if (rdna2_device_count() == 0) {
@@ -1085,7 +1085,7 @@ int rdna2_gemm_i8_scale_host(float* C, const int* A, const int* Bt, int M, int N
 // variant 0 = 4x4 tiled reading global memory, 1 = the same tiling with LDS
 // staging (fewer global reads per output), 2 = RDNA4 128x128 tile with 8x8
 // blocking.
-int rdna2_sgemm_f32_host_v(float* C, const float* A, const float* Bt, int M, int N, int K,
+extern "C" int rdna2_sgemm_f32_host_v(float* C, const float* A, const float* Bt, int M, int N, int K,
                            int variant) {
   if (!C || !A || !Bt || M <= 0 || N <= 0 || K <= 0) return RDNA2_ERR_ARG;
   if (rdna2_device_count() == 0) {
@@ -1139,11 +1139,11 @@ cleanup:
   return rc;
 }
 
-int rdna2_sgemm_f32_host(float* C, const float* A, const float* Bt, int M, int N, int K) {
+extern "C" int rdna2_sgemm_f32_host(float* C, const float* A, const float* Bt, int M, int N, int K) {
   return rdna2_sgemm_f32_host_v(C, A, Bt, M, N, K, 1);
 }
 
-int rdna2_dot_u8_host(unsigned* out, const unsigned* a, const unsigned* b, int n) {
+extern "C" int rdna2_dot_u8_host(unsigned* out, const unsigned* a, const unsigned* b, int n) {
   if (!out || !a || !b || n <= 0) return RDNA2_ERR_ARG;
   if (rdna2_device_count() == 0) {
     *out = rdna2_dot_u8_ref(a, b, n);
@@ -1183,7 +1183,7 @@ cleanup:
 }
 
 // a and b hold n packed pairs of _Float16 (two per uint32).
-int rdna2_dot_f16_host(float* out, const unsigned* a, const unsigned* b, int n) {
+extern "C" int rdna2_dot_f16_host(float* out, const unsigned* a, const unsigned* b, int n) {
   if (!out || !a || !b || n <= 0) return RDNA2_ERR_ARG;
   if (rdna2_device_count() == 0) {
 #if defined(__FLT16_MAX__)
@@ -1229,7 +1229,7 @@ cleanup:
 }
 
 // Inclusive prefix sum over a single wave; n must satisfy 1 <= n <= warpSize.
-int rdna2_prefix_host(int* out, const int* in, int n) {
+extern "C" int rdna2_prefix_host(int* out, const int* in, int n) {
   if (!out || !in || n <= 0) return RDNA2_ERR_ARG;
   const int ws = rdna2_warp_size();
   if (n > ws) return RDNA2_ERR_ARG;
@@ -1266,7 +1266,7 @@ cleanup:
 // RDNA2_ARCH_* codes (1 = gfx1031, 2 = gfx1030, 3 = gfx1201, 4 = gfx1200), or 0
 // when the running device is none of those.
 // ---------------------------------------------------------------------------
-int rdna2_device_info(char* name, size_t len, int* warp_size, int* arch_ok) {
+extern "C" int rdna2_device_info(char* name, size_t len, int* warp_size, int* arch_ok) {
   if (warp_size) *warp_size = 0;
   if (arch_ok) *arch_ok = 0;
   if (rdna2_device_count() == 0) {
@@ -1315,7 +1315,7 @@ int rdna2_device_info(char* name, size_t len, int* warp_size, int* arch_ok) {
 // same 128x128 tile beat the 64x64 8x4 dp4a kernel by 3.1x at 1024^3, 3.3x at
 // 2048^2 and 3.1x at 4096^3 on the 9070 XT (29.4/40.6/40.1 TOPS ->
 // 91.3/134.0/125.0), so gfx1200/gfx1201 take tiled == 5 and RDNA2 keeps dp4a.
-int rdna2_tiled_for_arch(int arch) {
+extern "C" int rdna2_tiled_for_arch(int arch) {
   if (arch == RDNA2_ARCH_GFX1200 || arch == RDNA2_ARCH_GFX1201) {
     return 5;  // 128x128 tile, one 16x16x16 matrix instruction per k step
   }
@@ -1334,7 +1334,7 @@ int rdna2_tiled_for_arch(int arch) {
 // by 3-42%, the margin shrinking as the problem grows, so it is the default on
 // the RDNA2 and RDNA4 parts and the generic 64x64 shape is kept for anything
 // unrecognised.
-int rdna2_sgemm_variant_for_arch(int arch) {
+extern "C" int rdna2_sgemm_variant_for_arch(int arch) {
   if (arch == RDNA2_ARCH_GFX1030 || arch == RDNA2_ARCH_GFX1031 ||
       arch == RDNA2_ARCH_GFX1200 || arch == RDNA2_ARCH_GFX1201) {
     return 3;  // 64x64 tile, 16-deep K step, four floats staged per thread
@@ -1346,20 +1346,20 @@ int rdna2_sgemm_variant_for_arch(int arch) {
 // rdna2_sgemm_f32_host, but the tile shape follows the device that is actually
 // present instead of a fixed default. On a machine with no GPU both fall back to
 // the CPU reference exactly like the plain entry points do.
-int rdna2_gemm_i8_host_tuned(int* C, const int* A, const int* Bt, int M, int N, int K4) {
+extern "C" int rdna2_gemm_i8_host_tuned(int* C, const int* A, const int* Bt, int M, int N, int K4) {
   int arch = RDNA2_ARCH_UNKNOWN;
   (void)rdna2_device_info(nullptr, 0, nullptr, &arch);
   return rdna2_gemm_i8_host(C, A, Bt, M, N, K4, rdna2_tiled_for_arch(arch));
 }
 
-int rdna2_gemm_i8_scale_host_tuned(float* C, const int* A, const int* Bt, int M, int N, int K4,
+extern "C" int rdna2_gemm_i8_scale_host_tuned(float* C, const int* A, const int* Bt, int M, int N, int K4,
                                    const float* sa, const float* sb, int zp_b) {
   int arch = RDNA2_ARCH_UNKNOWN;
   (void)rdna2_device_info(nullptr, 0, nullptr, &arch);
   return rdna2_gemm_i8_scale_host(C, A, Bt, M, N, K4, rdna2_tiled_for_arch(arch), sa, sb, zp_b);
 }
 
-int rdna2_sgemm_f32_host_tuned(float* C, const float* A, const float* Bt, int M, int N, int K) {
+extern "C" int rdna2_sgemm_f32_host_tuned(float* C, const float* A, const float* Bt, int M, int N, int K) {
   int arch = RDNA2_ARCH_UNKNOWN;
   (void)rdna2_device_info(nullptr, 0, nullptr, &arch);
   return rdna2_sgemm_f32_host_v(C, A, Bt, M, N, K, rdna2_sgemm_variant_for_arch(arch));

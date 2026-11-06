@@ -456,7 +456,12 @@ ZBLAS3OBJS   += $(CZBLAS3OBJS)
 
 SBEXTOBJS     += $(CSBEXTOBJS)
 
-CBAUXOBJS += $(CXERBLAOBJ)
+CBAUXOBJS += $(CXERBLAOBJ) cblas_gemm_i8.$(SUFFIX)
+
+# Packed int8 GEMM extension: precision independent, so it lives on the aux
+# list rather than in one of the typed level-3 lists.
+cblas_gemm_i8.$(SUFFIX) cblas_gemm_i8.$(PSUFFIX) : gemm_i8.c ../param.h
+	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
 endif
 
 BBLASOBJS    = $(BBLAS3OBJS) $(BBLAS2OBJS) $(BBLAS1OBJS)

@@ -1,0 +1,106 @@
+name: rdna2 level-3 bridge test
+
+# Builds the library and runs gpu/rdna2/test_oblas_gpu.c, which checks the CBLAS
+# level-3 entry points (SGEMM and SYRK/SYR2K) against its own double-precision
+# reference. The test needs no GPU: on a CPU-only build it still verifies values
+# and the SYRK contract that the unstored triangle and the ldc padding are left
+# untouched. The GPU dispatch itself is only exercised on a build made with
+# USE_HIP=1 on a machine with an AMD card, which hosted runners do not have --
+# the "gpu" job at the bottom is the place to add that on a self-hosted runner.
+
+on:
+  push:
+    paths:
+      - 'gpu/rdna2/**'
+      - 'kernel/rdna2/**'
+      - 'interface/syrk.c'
+      - 'interface/syr2k.c'
+      - 'interface/gemm_i8.c'
+      - 'cblas.h'
+      - 'Makefile'
+      - 'Makefile.system'
+      - 'Makefile.rule'
+      - '.github/workflows/rdna2_level3.yml'
+  pull_request:
+    paths:
+      - 'gpu/rdna2/**'
+      - 'kernel/rdna2/**'
+      - 'interface/syrk.c'
+      - 'interface/syr2k.c'
+      - 'interface/gemm_i8.c'
+      - 'cblas.h'
+      - 'Makefile'
+      - 'Makefile.system'
+      - 'Makefile.rule'
+      - '.github/workflows/rdna2_level3.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    name: bridge test (linux, CPU build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential gfortran
+
+      # NOFORTRAN/NO_LAPACK keep the job to what the bridge test needs: CBLAS
+      # level-3 entry points and the kernels behind them.
+      - name: Build library
+        run: make -j"$(nproc)" NOFORTRAN=1 NO_LAPACK=1 NO_LAPACKE=1 libs
+
+      - name: Level-3 bridge test
+        run: make NOFORTRAN=1 NO_LAPACK=1 NO_LAPACKE=1 level3-test
+
+  windows:
+    name: bridge test (windows, CPU build)
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: false
+          install: >-
+            base-devel
+            make
+            mingw-w64-ucrt-x86_64-gcc
+
+      - name: Build library
+        run: make -j"$(nproc)" CC=gcc NOFORTRAN=1 NO_LAPACK=1 NO_LAPACKE=1 libs
+
+      - name: Level-3 bridge test
+        run: make CC=gcc NOFORTRAN=1 NO_LAPACK=1 NO_LAPACKE=1 level3-test
+
+  # Device coverage needs an AMD GPU and a ROCm install, which GitHub-hosted
+  # runners do not provide. On a self-hosted runner carrying one, this job is
+  # the same two commands with the HIP build switched on:
+  #
+  # gpu:
+  #   name: bridge test (self-hosted, USE_HIP)
+  #   runs-on: [self-hosted, gpu, rocm]
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Build library with the device kernels
+  #       run: |
+  #         make clean
+  #         make -j"$(nproc)" USE_HIP=1 GPU_ARCH=gfx1201 libs
+  #     - name: Level-3 bridge test (asserts the dispatch actually fires)
+  #       run: |
+  #         make USE_HIP=1 GPU_ARCH=gfx1201 level3-test
+  #         make -C gpu/rdna2 oblas-test OPENBLAS_RDNA2_GPU_DEBUG=1 2>&1 | tee gpu.log
+  #         grep -q 'handled=1' gpu.log
