@@ -60,7 +60,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     (defined(BUILD_DOUBLE) || defined(BUILD_COMPLEX16))
 
 #if !defined(_WIN32) || defined(__CYGWIN__)
-#include <time.h>
+#include <sys/time.h>
 #endif
 
 #define WA_MARGIN    (64 * 1024)   /* the old driver writes at least this far past the end */
@@ -86,9 +86,10 @@ static double wa_now(void)
   QueryPerformanceFrequency(&f); QueryPerformanceCounter(&c);
   return (double)c.QuadPart / (double)f.QuadPart;
 #else
-  struct timespec t;
-  clock_gettime(CLOCK_MONOTONIC, &t);
-  return (double)t.tv_sec + 1e-9 * (double)t.tv_nsec;
+  /* not clock_gettime(): with glibc before 2.17 (manylinux1) that needs -lrt */
+  struct timeval t;
+  gettimeofday(&t, NULL);
+  return (double)t.tv_sec + 1e-6 * (double)t.tv_usec;
 #endif
 }
 
