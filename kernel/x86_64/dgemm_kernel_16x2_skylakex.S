@@ -101,8 +101,8 @@
 
 #endif
 
-#define L_BUFFER_SIZE 512*8*4
-#define LB2_OFFSET    512*8*2
+#define L_BUFFER_SIZE 512*8*6
+#define LB2_OFFSET    512*8*3
 
 #define Ndiv6	 24(%rsp)
 #define Nmod6	 32(%rsp)
@@ -117,6 +117,8 @@
 #if defined(OS_WINDOWS)
 #if   L_BUFFER_SIZE > 16384
 #define STACK_TOUCH \
+        movl    $0,  4096 * 6(%rsp);\
+        movl    $0,  4096 * 5(%rsp);\
         movl    $0,  4096 * 4(%rsp);\
         movl    $0,  4096 * 3(%rsp);\
         movl    $0,  4096 * 2(%rsp);\
