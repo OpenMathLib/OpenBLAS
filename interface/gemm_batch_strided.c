@@ -75,7 +75,7 @@ static int (*gemm[])(blas_arg_t *, BLASLONG *, BLASLONG *, IFLOAT *, IFLOAT *, B
 #ifndef DYNAMIC_ARCH
 #define SMALL_KERNEL_ADDR(table, idx) ((void *)(table[idx]))
 #else
-#define SMALL_KERNEL_ADDR(table, idx) ((void *)(*(uintptr_t *)((char *)gotoblas + (size_t)(table[idx]))))
+#define SMALL_KERNEL_ADDR(table, idx) ((void *)(*(uintptr_t *)(GEMM_SMALL_KERNEL_BASE + (size_t)(table[idx]))))
 #endif
 
 

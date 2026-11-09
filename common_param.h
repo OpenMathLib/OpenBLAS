@@ -44,7 +44,19 @@
 
 #ifdef DYNAMIC_ARCH
 
+/* OPENBLAS_CORE_LIST(X, arg) expands to X(CORE, arg) for each core in this
+   build.  dyn_cores.h is generated from DYNAMIC_CORE by the build system. */
+#include "dyn_cores.h"
+
+#define OPENBLAS_CORE_ENUM(core, unused) OPENBLAS_CORE_##core,
+enum { OPENBLAS_CORE_LIST(OPENBLAS_CORE_ENUM, ~) OPENBLAS_NUM_CORES };
+
+#define OPENBLAS_DISPATCH(group)		(openblas_##group##_dispatch[gotoblas->core])
+#define OPENBLAS_DISPATCH_OFFSET(group, func)	(size_t)(&((openblas_##group##_dispatch_t *)NULL)->func)
+#define OPENBLAS_DISPATCH_BASE(group)		((char *)OPENBLAS_DISPATCH(group))
+
 typedef struct {
+  int core;
   int dtb_entries;
   int switch_ratio;
   int divide_rate;
@@ -1322,6 +1334,8 @@ int (*shgemv_t) (BLASLONG, BLASLONG, float, hfloat16 *, BLASLONG, hfloat16 *, BL
 extern gotoblas_t *gotoblas;
 
 #define FUNC_OFFSET(func)	(size_t)(&((gotoblas_t *)NULL)->func)
+/* The address that FUNC_OFFSET(func) is an offset from. */
+#define FUNC_BASE(func)	((char *)gotoblas)
 
 #define DTB_ENTRIES  gotoblas -> dtb_entries
 #define GEMM_OFFSET_A	gotoblas -> offsetA
@@ -1461,6 +1475,7 @@ extern gotoblas_t *gotoblas;
 #else
 
 #define FUNC_OFFSET(func)	(size_t)(func)
+#define OPENBLAS_DISPATCH_OFFSET(group, func)	(size_t)(func)
 
 #define DTB_ENTRIES  DTB_DEFAULT_ENTRIES
 

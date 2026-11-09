@@ -392,6 +392,7 @@
 
 #endif
 
+#define SGEMM_SMALL_KERNEL_BASE		FUNC_BASE(sgemm_small_kernel_nn)
 #define SGEMM_SMALL_KERNEL_NN		FUNC_OFFSET(sgemm_small_kernel_nn)
 #define SGEMM_SMALL_KERNEL_NT		FUNC_OFFSET(sgemm_small_kernel_nt)
 #define SGEMM_SMALL_KERNEL_TN		FUNC_OFFSET(sgemm_small_kernel_tn)
