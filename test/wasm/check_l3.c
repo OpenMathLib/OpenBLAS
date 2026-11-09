@@ -1507,6 +1507,11 @@ static void run_deep_gemm(void) {
       for (int ib = 0; ib < 2; ib++) {
         test_sgemm(tr[ia], tr[ib], n, n, n);
         test_dgemm(tr[ia], tr[ib], n, n, n);
+        /* Exercise both GEMM-to-GEMV branches with a nontrivial reduction. */
+        test_sgemm(tr[ia], tr[ib], n, 1, n + 2);
+        test_sgemm(tr[ia], tr[ib], 1, n, n + 2);
+        test_dgemm(tr[ia], tr[ib], n, 1, n + 2);
+        test_dgemm(tr[ia], tr[ib], 1, n, n + 2);
         /* Small sizes also get a non-square shape with a distinct k. */
         if (n <= 36) {
           int m2 = n + 1;
@@ -1530,6 +1535,11 @@ static void run_deep_complex_gemm(void) {
       for (int ib = 0; ib < 3; ib++) {
         test_cgemm(ctr[ia], ctr[ib], n, n, n);
         test_zgemm(ctr[ia], ctr[ib], n, n, n);
+        /* Include conjugated vector operands in both forwarding branches. */
+        test_cgemm(ctr[ia], ctr[ib], n, 1, n + 2);
+        test_cgemm(ctr[ia], ctr[ib], 1, n, n + 2);
+        test_zgemm(ctr[ia], ctr[ib], n, 1, n + 2);
+        test_zgemm(ctr[ia], ctr[ib], 1, n, n + 2);
       }
   }
 }
