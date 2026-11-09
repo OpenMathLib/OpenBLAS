@@ -55,18 +55,18 @@
 	ftst
 	fnstsw	%ax
 	andb	$68, %ah
-	je	.L300
+	je	L(300)
 
 /* Alpha == ZERO */
 	cmpq	$1, INCX
-	jne	.L104
+	jne	L(104)
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L102
+	jle	L(102)
 	ALIGN_4
 
-.L101:
+L(101):
 	fld	%st
 	FST	0 * SIZE(X)
 	fld	%st
@@ -86,34 +86,34 @@
 
 	addq	$8 * SIZE, X
 	decq	I
-	jg	.L101
+	jg	L(101)
 	ALIGN_4
 
-.L102:
+L(102):
 	movq	M,  I
 	andq	$7, I
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L103:
+L(103):
 	fld	%st
 	FST	0 * SIZE(X)
 
 	addq	$SIZE, X
 	decq	I
-	jg	.L103
-	jmp	.L999
+	jg	L(103)
+	jmp	L(999)
 	ALIGN_4
 
-.L104:
+L(104):
 	salq	$BASE_SHIFT, INCX
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L106
+	jle	L(106)
 	ALIGN_4
 
-.L105:
+L(105):
 	fld	%st
 	FST	0 * SIZE(X)
 	addq	INCX, X
@@ -140,36 +140,36 @@
 	addq	INCX, X
 
 	decq	I
-	jg	.L105
+	jg	L(105)
 	ALIGN_4
 
-.L106:
+L(106):
 	movq	M,  I
 	andq	$7, I
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L107:
+L(107):
 	fld	%st
 	FST	0 * SIZE(X)
 	addq	INCX, X
 	decq	I
-	jg	.L107
-	jmp	.L999
+	jg	L(107)
+	jmp	L(999)
 	ALIGN_4
 
 /* Alpha != ZERO */
 
-.L300:
+L(300):
 	cmpq	$1,INCX
-	jne	.L304
+	jne	L(304)
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L302
+	jle	L(302)
 	ALIGN_4
 
-.L301:
+L(301):
 #ifdef PREFETCHW
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -208,34 +208,34 @@
 
 	addq	$8 * SIZE, X
 	decq	I
-	jg	.L301
+	jg	L(301)
 	ALIGN_4
 
-.L302:
+L(302):
 	movq	M,  I
 	andq	$7, I
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L303:
+L(303):
 	FLD	0 * SIZE(X)
 	fmul	%st(1), %st
 	FST	0 * SIZE(X)
 	addq	$SIZE, X
 	decq	I
-	jg	.L303
-	jmp	.L999
+	jg	L(303)
+	jmp	L(999)
 	ALIGN_4
 
-.L304:
+L(304):
 	salq	$BASE_SHIFT, INCX
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L306
+	jle	L(306)
 	ALIGN_4
 
-.L305:
+L(305):
 	FLD	0 * SIZE(X)
 	fmul	%st(1), %st
 	FST	0 * SIZE(X)
@@ -277,25 +277,25 @@
 	addq	INCX, X
 
 	decq	I
-	jg	.L305
+	jg	L(305)
 	ALIGN_4
 
-.L306:
+L(306):
 	movq	M,  I
 	andq	$7, I
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L307:
+L(307):
 	FLD	0 * SIZE(X)
 	fmul	%st(1), %st
 	FST	0 * SIZE(X)
 	addq	INCX, X
 	decq	I
-	jg	.L307
+	jg	L(307)
 	ALIGN_4
 
-.L999:
+L(999):
 	ffreep	%st(0)
 	ret
 

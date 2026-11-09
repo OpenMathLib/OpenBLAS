@@ -118,10 +118,10 @@
 
 	movq	N,  J
 	sarq	$2, J
-	jle	.L20
+	jle	L(20)
 	ALIGN_4
 
-.L11:
+L(11):
 #if 0
 	movq	A, AO1
 	leaq	(A,   LDA, 1), AO2
@@ -130,10 +130,10 @@
 
 	movq	M,  I
 	sarq	$4, I
-	jle	.L13
+	jle	L(13)
 	ALIGN_4
 
-.L12:
+L(12):
 	MOVQ	0 * SIZE(AO1), %mm0
 	addq	$8 * SIZE, AO1
 	MOVQ	0 * SIZE(AO2), %mm1
@@ -144,10 +144,10 @@
 	addq	$8 * SIZE, AO4
 
 	decq	I
-	jg	.L12
+	jg	L(12)
 	ALIGN_4
 
-.L13:
+L(13):
 #endif
 
 	movq	A, AO1
@@ -158,10 +158,10 @@
 
 	movq	M,  I
 	sarq	$2, I
-	jle	.L15
+	jle	L(15)
 	ALIGN_4
 
-.L14:
+L(14):
 	RPREFETCH	(RPREFETCHSIZE) * SIZE(AO1)
 
 	MOVQ	0 * SIZE(AO1), %mm0
@@ -217,16 +217,16 @@
 
 	subq	$-16 * SIZE, B
 	decq	I
-	jg	.L14
+	jg	L(14)
 	ALIGN_4
 
-.L15:
+L(15):
 	movq	M,  I
 	andq	$3, I
-	jle	.L17
+	jle	L(17)
 	ALIGN_4
 
-.L16:
+L(16):
 	MOVQ	0 * SIZE(AO1), %mm0
 	MOVQ	0 * SIZE(AO2), %mm1
 	MOVQ	0 * SIZE(AO3), %mm2
@@ -243,17 +243,17 @@
 	addq	$SIZE, AO4
 	addq	$4 * SIZE, B
 	decq	I
-	jg	.L16
+	jg	L(16)
 	ALIGN_4
 
-.L17:
+L(17):
 	decq	J
-	jg	.L11
+	jg	L(11)
 	ALIGN_4
 
-.L20:
+L(20):
 	testq	$2, N
-	jle	.L30
+	jle	L(30)
 
 	movq	A, AO1
 	leaq	(A,   LDA), AO2
@@ -261,10 +261,10 @@
 
 	movq	M,  I
 	sarq	$2, I
-	jle	.L24
+	jle	L(24)
 	ALIGN_4
 
-.L23:
+L(23):
 	prefetch	(RPREFETCHSIZE) * SIZE(AO1)
 	MOVQ	0 * SIZE(AO1), %mm0
 	prefetch	(RPREFETCHSIZE) * SIZE(AO2)
@@ -291,16 +291,16 @@
 	addq	$4 * SIZE, AO2
 	subq	$-8 * SIZE, B
 	decq	I
-	jg	.L23
+	jg	L(23)
 	ALIGN_4
 
-.L24:
+L(24):
 	movq	M,  I
 	andq	$3, I
-	jle	.L30
+	jle	L(30)
 	ALIGN_4
 
-.L25:
+L(25):
 	MOVQ	0 * SIZE(AO1), %mm0
 	MOVQ	0 * SIZE(AO2), %mm1
 
@@ -311,21 +311,21 @@
 	addq	$SIZE, AO2
 	addq	$2 * SIZE, B
 	decq	I
-	jg	.L25
+	jg	L(25)
 	ALIGN_4
 
-.L30:
+L(30):
 	testq	$1, N
-	jle	.L999
+	jle	L(999)
 
 	movq	A, AO1
 
 	movq	M,  I
 	sarq	$2, I
-	jle	.L34
+	jle	L(34)
 	ALIGN_4
 
-.L33:
+L(33):
 	MOVQ	0 * SIZE(AO1), %mm0
 	MOVQ	1 * SIZE(AO1), %mm1
 	MOVQ	2 * SIZE(AO1), %mm2
@@ -339,27 +339,27 @@
 	addq	$4 * SIZE, AO1
 	subq	$-4 * SIZE, B
 	decq	I
-	jg	.L33
+	jg	L(33)
 	ALIGN_4
 
-.L34:
+L(34):
 	movq	M,  I
 	andq	$3, I
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L35:
+L(35):
 	MOVQ	0 * SIZE(AO1), %mm0
 	addq	$SIZE, AO1
 
 	MOVNTQ	%mm0,   0 * SIZE(B)
 	addq	$1 * SIZE, B
 	decq	I
-	jg	.L35
+	jg	L(35)
 	ALIGN_4
 
 
-.L999:
+L(999):
 	EMMS
 
 #ifdef WINDOWS_ABI

@@ -267,14 +267,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lsl	LDA, LDA, #2					// LDA = LDA * SIZE
 
-.Lsgemm_ncopy_L8_BEGIN:
+L(sgemm_ncopy_L8_BEGIN):
 
 	asr	J, N, #3					// J = N / 8
 	cmp 	J, #0
-	ble	.Lsgemm_ncopy_L4_BEGIN
+	ble	L(sgemm_ncopy_L4_BEGIN)
 
 	.align	5
-.Lsgemm_ncopy_L8_M4_BEGIN:
+L(sgemm_ncopy_L8_M4_BEGIN):
 
 	mov	A01, A00
 	add	A02, A01, LDA
@@ -288,136 +288,136 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	I, M, #2					// I = M / 4
 	cmp	I, #0
-	ble	.Lsgemm_ncopy_L8_M4_40
+	ble	L(sgemm_ncopy_L8_M4_40)
 
 	asr	K, M, #4					// K = M / 16(cacheline)
 	mov	TEMP1, A01
 
 	.align	5
-.Lsgemm_tcopy_L8_warnup_1:
+L(sgemm_tcopy_L8_warnup_1):
 
 	ldr	s0, [TEMP1], #64
 
 	subs	K, K, #1
-	bgt	.Lsgemm_tcopy_L8_warnup_1
+	bgt	L(sgemm_tcopy_L8_warnup_1)
 
 	asr	K, M, #4					// K = M / 16(cacheline)
 	mov	TEMP1, A02
 
 	.align	5
-.Lsgemm_tcopy_L8_warnup_2:
+L(sgemm_tcopy_L8_warnup_2):
 
 	ldr	s0, [TEMP1], #64
 
 	subs	K, K, #1
-	bgt	.Lsgemm_tcopy_L8_warnup_2
+	bgt	L(sgemm_tcopy_L8_warnup_2)
 
 	asr	K, M, #4					// K = M / 16(cacheline)
 	mov	TEMP1, A03
 
 	.align	5
-.Lsgemm_tcopy_L8_warnup_3:
+L(sgemm_tcopy_L8_warnup_3):
 
 	ldr	s0, [TEMP1], #64
 
 	subs	K, K, #1
-	bgt	.Lsgemm_tcopy_L8_warnup_3
+	bgt	L(sgemm_tcopy_L8_warnup_3)
 
 	asr	K, M, #4					// K = M / 16(cacheline)
 	mov	TEMP1, A04
 
 	.align	5
-.Lsgemm_tcopy_L8_warnup_4:
+L(sgemm_tcopy_L8_warnup_4):
 
 	ldr	s0, [TEMP1], #64
 
 	subs	K, K, #1
-	bgt	.Lsgemm_tcopy_L8_warnup_4
+	bgt	L(sgemm_tcopy_L8_warnup_4)
 
 	asr	K, M, #4					// K = M / 16(cacheline)
 	mov	TEMP1, A05
 
 	.align	5
-.Lsgemm_tcopy_L8_warnup_5:
+L(sgemm_tcopy_L8_warnup_5):
 
 	ldr	s0, [TEMP1], #64
 
 	subs	K, K, #1
-	bgt	.Lsgemm_tcopy_L8_warnup_5
+	bgt	L(sgemm_tcopy_L8_warnup_5)
 
 	asr	K, M, #4					// K = M / 16(cacheline)
 	mov	TEMP1, A06
 
 	.align	5
-.Lsgemm_tcopy_L8_warnup_6:
+L(sgemm_tcopy_L8_warnup_6):
 
 	ldr	s0, [TEMP1], #64
 
 	subs	K, K, #1
-	bgt	.Lsgemm_tcopy_L8_warnup_6
+	bgt	L(sgemm_tcopy_L8_warnup_6)
 
 	asr	K, M, #4					// K = M / 16(cacheline)
 	mov	TEMP1, A07
 
 	.align	5
-.Lsgemm_tcopy_L8_warnup_7:
+L(sgemm_tcopy_L8_warnup_7):
 
 	ldr	s0, [TEMP1], #64
 
 	subs	K, K, #1
-	bgt	.Lsgemm_tcopy_L8_warnup_7
+	bgt	L(sgemm_tcopy_L8_warnup_7)
 
 	asr	K, M, #4					// K = M / 16(cacheline)
 	mov	TEMP1, A08
 
 	.align	5
-.Lsgemm_tcopy_L8_warnup_8:
+L(sgemm_tcopy_L8_warnup_8):
 
 	ldr	s0, [TEMP1], #64
 
 	subs	K, K, #1
-	bgt	.Lsgemm_tcopy_L8_warnup_8
+	bgt	L(sgemm_tcopy_L8_warnup_8)
 
 	.align	5
-.Lsgemm_ncopy_L8_M4_20:
+L(sgemm_ncopy_L8_M4_20):
 
 	COPY4x8
 
 	subs	I, I, #1
-	bne	.Lsgemm_ncopy_L8_M4_20
+	bne	L(sgemm_ncopy_L8_M4_20)
 
-.Lsgemm_ncopy_L8_M4_40:
+L(sgemm_ncopy_L8_M4_40):
 
 	and	I, M, #2
 	cmp	I, #0
-	ble	.Lsgemm_ncopy_L8_M4_60
+	ble	L(sgemm_ncopy_L8_M4_60)
 
 	COPY2x8
 
-.Lsgemm_ncopy_L8_M4_60:
+L(sgemm_ncopy_L8_M4_60):
 
 	and	I, M, #1
 	cmp	I, #0
-	ble	.Lsgemm_ncopy_L8_M4_END
+	ble	L(sgemm_ncopy_L8_M4_END)
 
 	COPY1x8
 
-.Lsgemm_ncopy_L8_M4_END:
+L(sgemm_ncopy_L8_M4_END):
 
 	subs	J , J, #1						// j--
-	bne	.Lsgemm_ncopy_L8_M4_BEGIN
+	bne	L(sgemm_ncopy_L8_M4_BEGIN)
 
 /*********************************************************************************************/
 
-.Lsgemm_ncopy_L4_BEGIN:
+L(sgemm_ncopy_L4_BEGIN):
 
 	tst	N, #7
-	ble	.Lsgemm_ncopy_L999
+	ble	L(sgemm_ncopy_L999)
 
 	tst	N, #4
-	ble	.Lsgemm_ncopy_L2_BEGIN
+	ble	L(sgemm_ncopy_L2_BEGIN)
 
-.Lsgemm_ncopy_L4_M4_BEGIN:
+L(sgemm_ncopy_L4_M4_BEGIN):
 	mov	A01, A00
 	add	A02, A01, LDA
 	add	A03, A02, LDA
@@ -426,43 +426,43 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	I, M, #2					// I = M / 4
 	cmp 	I, #0
-	ble	.Lsgemm_ncopy_L4_M4_40
+	ble	L(sgemm_ncopy_L4_M4_40)
 
 	.align	5
-.Lsgemm_ncopy_L4_M4_20:
+L(sgemm_ncopy_L4_M4_20):
 
 	COPY4x4
 
 	subs	I, I, #1
-	bne	.Lsgemm_ncopy_L4_M4_20
+	bne	L(sgemm_ncopy_L4_M4_20)
 
-.Lsgemm_ncopy_L4_M4_40:
+L(sgemm_ncopy_L4_M4_40):
 
 	and	I, M, #2
 	cmp	I, #0
-	ble	.Lsgemm_ncopy_L4_M4_60
+	ble	L(sgemm_ncopy_L4_M4_60)
 
 	COPY2x4
 
-.Lsgemm_ncopy_L4_M4_60:
+L(sgemm_ncopy_L4_M4_60):
 
 	and	I, M, #1
 	cmp	I, #0
-	ble	.Lsgemm_ncopy_L4_M4_END
+	ble	L(sgemm_ncopy_L4_M4_END)
 
 	COPY1x4
 
-.Lsgemm_ncopy_L4_M4_END:
+L(sgemm_ncopy_L4_M4_END):
 
 
 /*********************************************************************************************/
 
-.Lsgemm_ncopy_L2_BEGIN:
+L(sgemm_ncopy_L2_BEGIN):
 
 	tst	N, #2
-	ble	.Lsgemm_ncopy_L1_BEGIN
+	ble	L(sgemm_ncopy_L1_BEGIN)
 
-.Lsgemm_ncopy_L2_M4_BEGIN:
+L(sgemm_ncopy_L2_M4_BEGIN):
 
 	mov	A01, A00
 	add	A02, A01, LDA
@@ -470,59 +470,59 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	I, M, #2					// I = M / 4
 	cmp	I, #0
-	ble	.Lsgemm_ncopy_L2_M4_40
+	ble	L(sgemm_ncopy_L2_M4_40)
 
 	.align	5
-.Lsgemm_ncopy_L2_M4_20:
+L(sgemm_ncopy_L2_M4_20):
 
 	COPY4x2
 
 	subs	I , I , #1
-	bne	.Lsgemm_ncopy_L2_M4_20
+	bne	L(sgemm_ncopy_L2_M4_20)
 
 
-.Lsgemm_ncopy_L2_M4_40:
+L(sgemm_ncopy_L2_M4_40):
 
 	and	I, M, #2
 	cmp	I, #0
-	ble	.Lsgemm_ncopy_L2_M4_60
+	ble	L(sgemm_ncopy_L2_M4_60)
 
 	COPY2x2
 
-.Lsgemm_ncopy_L2_M4_60:
+L(sgemm_ncopy_L2_M4_60):
 
 	and	I, M, #1
 	cmp	I, #0
-	ble	.Lsgemm_ncopy_L2_M4_END
+	ble	L(sgemm_ncopy_L2_M4_END)
 
 	COPY1x2
 
-.Lsgemm_ncopy_L2_M4_END:
+L(sgemm_ncopy_L2_M4_END):
 
-.Lsgemm_ncopy_L1_BEGIN:
+L(sgemm_ncopy_L1_BEGIN):
 
 	tst	N, #1
-	ble	.Lsgemm_ncopy_L999
+	ble	L(sgemm_ncopy_L999)
 
-.Lsgemm_ncopy_L1_M1_BEGIN:
+L(sgemm_ncopy_L1_M1_BEGIN):
 
 	mov	A01, A00
 
 	mov	I, M
 	cmp	I, #0
-	ble	.Lsgemm_ncopy_L1_M1_END
+	ble	L(sgemm_ncopy_L1_M1_END)
 
 	.align	5
-.Lsgemm_ncopy_L1_M1_20:
+L(sgemm_ncopy_L1_M1_20):
 
 	COPY1x1
 
 	subs	I, I, #1
-	bne	.Lsgemm_ncopy_L1_M1_20
+	bne	L(sgemm_ncopy_L1_M1_20)
 
-.Lsgemm_ncopy_L1_M1_END:
+L(sgemm_ncopy_L1_M1_END):
 
-.Lsgemm_ncopy_L999:
+L(sgemm_ncopy_L999):
 
 	mov	x0, #0
 	RESTORE_REGS

@@ -149,10 +149,10 @@
 	leaq	(,   M,   SIZE), M8
 	movq	M,  J
 	sarq	$2, J
-	jle	.L20
+	jle	L(20)
 	ALIGN_4
 
-.L11:
+L(11):
 #if 0
 	movq	A, AO1
 	leaq	(A,   LDA, 1), AO2
@@ -161,10 +161,10 @@
 
 	movq	N,  I
 	sarq	$3, I
-	jle	.L13
+	jle	L(13)
 	ALIGN_4
 
-.L12:
+L(12):
 	MOVQ	0 * SIZE(AO1), %mm0
 	addq	$8 * SIZE, AO1
 	MOVQ	0 * SIZE(AO2), %mm1
@@ -175,10 +175,10 @@
 	addq	$8 * SIZE, AO4
 
 	decq	I
-	jg	.L12
+	jg	L(12)
 	ALIGN_4
 
-.L13:
+L(13):
 #endif
 
 	movq	A, AO1
@@ -192,10 +192,10 @@
 
 	movq	N,  I
 	sarq	$2, I
-	jle	.L15
+	jle	L(15)
 	ALIGN_4
 
-.L14:
+L(14):
 
 	RPREFETCH	(RPREFETCHSIZE) * SIZE(AO1)
 
@@ -253,12 +253,12 @@
 
 	leaq	(BO, M8, 4), BO
 	decq	I
-	jg	.L14
+	jg	L(14)
 	ALIGN_4
 
-.L15:
+L(15):
 	testq	$2, N
-	jle	.L16
+	jle	L(16)
 
 	MOVQ	0 * SIZE(AO1), %mm0
 	MOVQ	1 * SIZE(AO1), %mm1
@@ -286,9 +286,9 @@
 	addq	$8 * SIZE, BO1
 	ALIGN_4
 
-.L16:
+L(16):
 	testq	$1, N
-	jle	.L19
+	jle	L(19)
 
 	MOVQ	0 * SIZE(AO1), %mm0
 	MOVQ	0 * SIZE(AO2), %mm1
@@ -303,17 +303,17 @@
 	addq	$4 * SIZE, BO2
 	ALIGN_4
 
-.L19:
+L(19):
 	decq	J
-	jg	.L11
+	jg	L(11)
 	ALIGN_4
 
-.L20:
+L(20):
 	testq	$2, M
-	jle	.L30
+	jle	L(30)
 	ALIGN_4
 
-.L21:
+L(21):
 	movq	A, AO1
 	leaq	(A,   LDA   ), AO2
 	leaq	(A,   LDA, 2), A
@@ -323,10 +323,10 @@
 
 	movq	N,  I
 	sarq	$2, I
-	jle	.L23
+	jle	L(23)
 	ALIGN_4
 
-.L22:
+L(22):
 	RPREFETCH	(RPREFETCHSIZE) * SIZE(AO1)
 	MOVQ	0 * SIZE(AO1), %mm0
 	MOVQ	1 * SIZE(AO1), %mm1
@@ -353,12 +353,12 @@
 	addq	$4 * SIZE, AO2
 	leaq	(BO, M8, 4), BO
 	decq	I
-	jg	.L22
+	jg	L(22)
 	ALIGN_4
 
-.L23:
+L(23):
 	testq	$2, N
-	jle	.L24
+	jle	L(24)
 
 	MOVQ	0 * SIZE(AO1), %mm0
 	MOVQ	1 * SIZE(AO1), %mm1
@@ -375,9 +375,9 @@
 	addq	$4 * SIZE, BO1
 	ALIGN_4
 
-.L24:
+L(24):
 	testq	$1, N
-	jle	.L30
+	jle	L(30)
 
 	MOVQ	0 * SIZE(AO1), %mm0
 	MOVQ	0 * SIZE(AO2), %mm1
@@ -388,21 +388,21 @@
 	addq	$2 * SIZE, BO2
 	ALIGN_4
 
-.L30:
+L(30):
 	testq	$1, M
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L31:
+L(31):
 	movq	A, AO1
 	movq	B, BO
 
 	movq	N,  I
 	sarq	$2, I
-	jle	.L33
+	jle	L(33)
 	ALIGN_4
 
-.L32:
+L(32):
 	MOVQ	0 * SIZE(AO1), %mm0
 	MOVQ	1 * SIZE(AO1), %mm1
 	MOVQ	2 * SIZE(AO1), %mm2
@@ -416,12 +416,12 @@
 	addq	$4 * SIZE, AO1
 	leaq	(BO, M8, 4), BO
 	decq	I
-	jg	.L32
+	jg	L(32)
 	ALIGN_4
 
-.L33:
+L(33):
 	testq	$2, N
-	jle	.L34
+	jle	L(34)
 
 	MOVQ	0 * SIZE(AO1), %mm0
 	MOVQ	1 * SIZE(AO1), %mm1
@@ -433,9 +433,9 @@
 	addq	$2 * SIZE, BO1
 	ALIGN_4
 
-.L34:
+L(34):
 	testq	$1, N
-	jle	.L999
+	jle	L(999)
 
 	MOVQ	0 * SIZE(AO1), %mm0
 	MOVNTQ	%mm0,   0 * SIZE(BO2)
@@ -443,7 +443,7 @@
 	addq	$1 * SIZE, BO2
 	ALIGN_4
 
-.L999:
+L(999):
 	EMMS
 
 #ifdef WINDOWS_ABI

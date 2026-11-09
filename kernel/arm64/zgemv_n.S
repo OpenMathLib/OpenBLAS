@@ -364,9 +364,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	SAVE_REGS
 
 	cmp	N, xzr
-	ble	.Lzgemv_n_kernel_L999
+	ble	L(zgemv_n_kernel_L999)
 	cmp	M, xzr
-	ble	.Lzgemv_n_kernel_L999
+	ble	L(zgemv_n_kernel_L999)
 
 	lsl	LDA, LDA, #SHZ
 	lsl	INC_X, INC_X, #SHZ
@@ -375,9 +375,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	INIT
 
 	cmp	INC_Y, #1
-	bne	.Lzgemv_n_kernel_S_BEGIN
+	bne	L(zgemv_n_kernel_S_BEGIN)
 
-.Lzgemv_n_kernel_F_LOOP:
+L(zgemv_n_kernel_F_LOOP):
 	mov	A_PTR, A
 	mov	Y_IPTR, Y
 	mov	Y_OPTR, Y
@@ -387,40 +387,40 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	I, M, #2
 	cmp	I, xzr
-	beq	.Lzgemv_n_kernel_F1
+	beq	L(zgemv_n_kernel_F1)
 
-.Lzgemv_n_kernel_F4:
+L(zgemv_n_kernel_F4):
 
 	KERNEL_F4
 
 	subs	I, I, #1
-	bne	.Lzgemv_n_kernel_F4
+	bne	L(zgemv_n_kernel_F4)
 
-.Lzgemv_n_kernel_F1:
+L(zgemv_n_kernel_F1):
 
 	ands	I, M, #3
-	ble	.Lzgemv_n_kernel_F_END
+	ble	L(zgemv_n_kernel_F_END)
 
-.Lzgemv_n_kernel_F10:
+L(zgemv_n_kernel_F10):
 
 	KERNEL_F1
 
 	subs	I, I, #1
-	bne	.Lzgemv_n_kernel_F10
+	bne	L(zgemv_n_kernel_F10)
 
-.Lzgemv_n_kernel_F_END:
+L(zgemv_n_kernel_F_END):
 
 	add	A, A, LDA
 	subs    J, J, #1
-        bne     .Lzgemv_n_kernel_F_LOOP
+        bne     L(zgemv_n_kernel_F_LOOP)
 
-	b	.Lzgemv_n_kernel_L999
+	b	L(zgemv_n_kernel_L999)
 
-.Lzgemv_n_kernel_S_BEGIN:
+L(zgemv_n_kernel_S_BEGIN):
 
 	INIT_S
 
-.Lzgemv_n_kernel_S_LOOP:
+L(zgemv_n_kernel_S_LOOP):
 	mov	A_PTR, A
 	mov	Y_IPTR, Y
 	mov	Y_OPTR, Y
@@ -430,9 +430,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	I, M, #2
 	cmp	I, xzr
-	ble	.Lzgemv_n_kernel_S1
+	ble	L(zgemv_n_kernel_S1)
 
-.Lzgemv_n_kernel_S4:
+L(zgemv_n_kernel_S4):
 
 	KERNEL_S1
 	KERNEL_S1
@@ -440,27 +440,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Lzgemv_n_kernel_S4
+	bne	L(zgemv_n_kernel_S4)
 
-.Lzgemv_n_kernel_S1:
+L(zgemv_n_kernel_S1):
 
 	ands	I, M, #3
-	ble	.Lzgemv_n_kernel_S_END
+	ble	L(zgemv_n_kernel_S_END)
 
-.Lzgemv_n_kernel_S10:
+L(zgemv_n_kernel_S10):
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     .Lzgemv_n_kernel_S10
+        bne     L(zgemv_n_kernel_S10)
 
-.Lzgemv_n_kernel_S_END:
+L(zgemv_n_kernel_S_END):
 
 	add	A, A, LDA
 	subs    J, J, #1
-        bne     .Lzgemv_n_kernel_S_LOOP
+        bne     L(zgemv_n_kernel_S_LOOP)
 
-.Lzgemv_n_kernel_L999:
+L(zgemv_n_kernel_L999):
 	RESTORE_REGS
 
 	mov	w0, wzr

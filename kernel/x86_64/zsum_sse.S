@@ -54,9 +54,9 @@
 
 	pxor	%xmm0, %xmm0
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 	testq	INCX, INCX
-	jle	.L999
+	jle	L(999)
 
 	pxor	%xmm1, %xmm1
 	pxor	%xmm2, %xmm2
@@ -65,25 +65,25 @@
 	salq	$ZBASE_SHIFT, INCX
 
 	cmpq	$2 * SIZE, INCX
-	jne	.L100
+	jne	L(100)
 
 	subq	$-32 * SIZE, X
 	addq	M, M
 
 	cmpq	$3, M
-	jle	.L18
+	jle	L(18)
 
 	testq	$4, X
-	je	.L05
+	je	L(05)
 	movss	-32 * SIZE(X), %xmm0
 	addq	$SIZE, X
 	decq	M
-	jle	.L998
+	jle	L(998)
 	ALIGN_3
 
-.L05:
+L(05):
 	testq	$8, X
-	je	.L10
+	je	L(10)
 
 #ifdef movsd
 	xorps	%xmm1, %xmm1
@@ -91,13 +91,13 @@
 	movsd	-32 * SIZE(X), %xmm1
 	addq	$2 * SIZE, X
 	subq	$2, M
-	jle	.L998
+	jle	L(998)
 	ALIGN_3
 
-.L10:
+L(10):
 	movq	M,  I
 	sarq	$5, I
-	jle	.L14
+	jle	L(14)
 
 	movaps	-32 * SIZE(X), %xmm4
 	movaps	-28 * SIZE(X), %xmm5
@@ -109,10 +109,10 @@
 	movaps	 -8 * SIZE(X), %xmm10
 	movaps	 -4 * SIZE(X), %xmm11
 	decq	I
-	jle	.L12
+	jle	L(12)
 	ALIGN_3
 
-.L11:
+L(11):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -147,10 +147,10 @@
 
 	subq	$-32 * SIZE, X
 	decq	I
-	jg	.L11
+	jg	L(11)
 	ALIGN_3
 
-.L12:
+L(12):
 	addps	%xmm4,  %xmm0
 	addps	%xmm5,  %xmm1
 
@@ -166,13 +166,13 @@
 	addq	$32 * SIZE, X
 	ALIGN_3
 
-.L14:
+L(14):
 	testq	$31,  M
-	jle	.L998
+	jle	L(998)
 
-.L15:
+L(15):
 	testq	$16, M
-	je	.L16
+	je	L(16)
 
 	movaps	-32 * SIZE(X), %xmm4
 	addps	%xmm4, %xmm0
@@ -189,9 +189,9 @@
 	addq	$16 * SIZE, X
 	ALIGN_3
 
-.L16:
+L(16):
 	testq	$8, M
-	je	.L17
+	je	L(17)
 
 	movaps	-32 * SIZE(X), %xmm4
 	addps	%xmm4, %xmm0
@@ -202,18 +202,18 @@
 	addq	$8 * SIZE, X
 	ALIGN_3
 
-.L17:
+L(17):
 	testq	$4, M
-	je	.L18
+	je	L(18)
 
 	movaps	-32 * SIZE(X), %xmm6
 	addps	%xmm6, %xmm2
 	addq	$4 * SIZE, X
 	ALIGN_3
 
-.L18:
+L(18):
 	testq	$2, M
-	je	.L19
+	je	L(19)
 
 #ifdef movsd
 	xorps	%xmm7, %xmm7
@@ -223,22 +223,22 @@
 	addq	$2 * SIZE, X
 	ALIGN_3
 
-.L19:
+L(19):
 	testq	$1, M
-	je	.L998
+	je	L(998)
 
 	movss	-32 * SIZE(X), %xmm6
 	addps	%xmm6, %xmm2
-	jmp	.L998
+	jmp	L(998)
 	ALIGN_4
 
-.L100:
+L(100):
 	movq	M,  I
 	sarq	$2, I
-	jle	.L105
+	jle	L(105)
 	ALIGN_4
 
-.L101:
+L(101):
 	movsd	(X), %xmm4
 	addq	INCX, X
 	movhps	(X), %xmm4
@@ -254,26 +254,26 @@
 	addps	%xmm5,  %xmm1
 
 	decq	I
-	jg	.L101
+	jg	L(101)
 	ALIGN_4
 
-.L105:
+L(105):
 #ifdef movsd
 	xorps	%xmm4, %xmm4
 #endif
 	andq	$3,  M
-	jle	.L998
+	jle	L(998)
 	ALIGN_4
 
-.L106:
+L(106):
 	movsd	(X), %xmm4
 	addps	%xmm4, %xmm0
 	addq	INCX, X
 	decq	M
-	jg	.L106
+	jg	L(106)
 	ALIGN_4
 
-.L998:
+L(998):
 	addps	%xmm1, %xmm0
 	addps	%xmm3, %xmm2
 	addps	%xmm2, %xmm0
@@ -291,7 +291,7 @@
 #endif
 	ALIGN_4
 
-.L999:
+L(999):
 	RESTOREREGISTERS
 
 	ret

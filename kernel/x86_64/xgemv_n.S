@@ -101,9 +101,9 @@
 	movq	$0, IS
 
 	test	M, M
-	jle	.L79
+	jle	L(79)
 	test	N, N
-	jle	.L79
+	jle	L(79)
 
 	movq	LDA, %rax
 	imulq	$P,  %rax		# P * lda
@@ -114,7 +114,7 @@
 	salq	$ZBASE_SHIFT, LDA
 	ALIGN_2
 
-.L32:
+L(32):
 	movq	$P,  %rax
 	movq	N,    MIN_N
 	subq	IS,   MIN_N
@@ -126,17 +126,17 @@
 	leaq	(X,XP, 1), XP
 
 	cmpq	$2 * SIZE, INCX
-	je	.L34
+	je	L(34)
 
 	movq	BUFFER, XP
 	movq	XP,     X1
 
 	movq	MIN_N, I
 	sarq	$1,    I
-	jle	.L35
+	jle	L(35)
 	ALIGN_2
 
-.L36:
+L(36):
 	FLD	0 * SIZE(X)
 	FLD	1 * SIZE(X)
 	addq	INCX,X		# x += incx
@@ -151,13 +151,13 @@
 
 	addq	$4 * SIZE, X1		# xp += 4
 	decq	I
-	jg	.L36
+	jg	L(36)
 	ALIGN_3
 
-.L35:
+L(35):
 	movq	MIN_N, I
 	andq	$1,    I
-	jle	.L34
+	jle	L(34)
 
 	FLD	0 * SIZE(X)
 	FLD	1 * SIZE(X)
@@ -167,12 +167,12 @@
 	ALIGN_3
 
 /* Main Routine */
-.L34:
+L(34):
 	movq	 Y, Y1		# c_offset
 	movq	 M, J		# j = m
 	ALIGN_3
 
-.L61:
+L(61):
 	movq	A, A1			# a_offset = a
 	addq	$2 * SIZE, A		# a++
 
@@ -186,10 +186,10 @@
 
 	movq	MIN_N, I
 	sarq	$1,    I
-	jle	.L64
+	jle	L(64)
 	ALIGN_3
 
-.L65:
+L(65):
 	FLD	 0 * SIZE(A1)		# at1  = *(a_offset + 0)
 	fmul	%st(1)			# at1 *= bt1
 	faddp	%st, %st(2)		# ct1 += at1
@@ -241,15 +241,15 @@
 	addq	LDA,  A1		# a_offset += lda
 
 	decq	I
-	jg	.L65
+	jg	L(65)
 
-.L64:
+L(64):
 	movq	MIN_N, I
 	andq	$1, I
-	jle	.L70
+	jle	L(70)
 	ALIGN_2
 
-.L71:
+L(71):
 	FLD	 0 * SIZE(A1)		# at1  = *(a_offset + 0)
 	fmul	%st(1)			# at1 *= bt1
 	faddp	%st, %st(2)		# ct1 += at1
@@ -273,7 +273,7 @@
 	fldz
 	ALIGN_2
 
-.L70:
+L(70):
 	ffreep	%st(0)
 
 #ifndef XCONJ
@@ -315,15 +315,15 @@
 
 	addq	INCY, Y1
 	decq	J
-	jg	.L61
+	jg	L(61)
 
-.L60:
+L(60):
 	addq	PLDA_M, A
 	addq	$P, IS
 	cmpq	N,  IS
-	jl	.L32
+	jl	L(32)
 
-.L79:
+L(79):
 	ffreep	%st
 	ffreep	%st
 

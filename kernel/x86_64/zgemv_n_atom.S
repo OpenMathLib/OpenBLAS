@@ -175,9 +175,9 @@
 	subq	$-16 * SIZE, A
 
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 	testq	N, N
-	jle	.L999
+	jle	L(999)
 	ALIGN_3
 
 	movq	BUFFER, Y1
@@ -189,7 +189,7 @@
 	sarq	$3,  %rax
 	ALIGN_3
 
-.L01:
+L(01):
 	movapd	%xmm4,  0 * SIZE(Y1)
 	movapd	%xmm4,  2 * SIZE(Y1)
 	movapd	%xmm4,  4 * SIZE(Y1)
@@ -201,16 +201,16 @@
 
 	subq	$-16 * SIZE, Y1
 	decq	%rax
-	jg	.L01
+	jg	L(01)
 	ALIGN_3
 
-.L10:
+L(10):
 	movq	N,  J
 	sarq	$1, J
-	jle	.L20
+	jle	L(20)
 	ALIGN_3
 
-.L11:
+L(11):
 	leaq	16 * SIZE(BUFFER), Y1
 	movq	A,  A1
 	leaq	(A,  LDA, 1), A2
@@ -257,7 +257,7 @@
 
 	movq	M,   I
 	sarq	$2,  I
-	jle	.L15
+	jle	L(15)
 
 	movsd	 -16 * SIZE(A1), %xmm8
 	movsd	 -15 * SIZE(A1), %xmm9
@@ -276,10 +276,10 @@
 	ADD2	%xmm12, %xmm1
 
 	decq	 I
-	jle	 .L14
+	jle	 L(14)
 	ALIGN_3
 
-.L13:
+L(13):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE + 0) * SIZE(A2)
 #endif
@@ -422,10 +422,10 @@
 
 	subq	 $1, I
 	BRANCH
-	jg	.L13
+	jg	L(13)
 	ALIGN_3
 
-.L14:
+L(14):
 	movapd	%xmm9,  %xmm12
 	mulsd	%xmm5,  %xmm9
 	ADD1	%xmm10, %xmm2
@@ -546,9 +546,9 @@
 	subq	 $-8 * SIZE, Y1
 	ALIGN_3
 
-.L15:
+L(15):
 	testq	$2, M
-	je	.L17
+	je	L(17)
 
 	movsd	 -16 * SIZE(A1), %xmm8
 	movsd	 -15 * SIZE(A1), %xmm9
@@ -622,9 +622,9 @@
 	addq	 $4 * SIZE, Y1
 	ALIGN_3
 
-.L17:
+L(17):
 	testq	$1, M
-	je	.L19
+	je	L(19)
 
 	movsd	 -16 * SIZE(A1), %xmm8
 	movsd	 -15 * SIZE(A1), %xmm9
@@ -660,14 +660,14 @@
 	movlpd	 %xmm1, -15 * SIZE(Y1)
 	ALIGN_3
 
-.L19:
+L(19):
 	decq	J
-	jg	.L11
+	jg	L(11)
 	ALIGN_3
 
-.L20:
+L(20):
 	testq	$1, N
-	jle	.L90
+	jle	L(90)
 
 	leaq	16 * SIZE(BUFFER), Y1
 	movq	A,  A1
@@ -698,7 +698,7 @@
 
 	movq	M,   I
 	sarq	$2,  I
-	jle	.L25
+	jle	L(25)
 
 	movsd	 -16 * SIZE(A1), %xmm8
 	movsd	 -15 * SIZE(A1), %xmm9
@@ -717,10 +717,10 @@
 	ADD2	%xmm12, %xmm1
 
 	decq	 I
-	jle	 .L24
+	jle	 L(24)
 	ALIGN_3
 
-.L23:
+L(23):
 #ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE + 0) * SIZE(A2)
 #endif
@@ -803,10 +803,10 @@
 
 	subq	 $1, I
 	BRANCH
-	jg	.L23
+	jg	L(23)
 	ALIGN_3
 
-.L24:
+L(24):
 	movapd	%xmm9,  %xmm12
 	mulsd	%xmm5,  %xmm9
 	ADD1	%xmm10, %xmm2
@@ -871,9 +871,9 @@
 	subq	 $-8 * SIZE, Y1
 	ALIGN_3
 
-.L25:
+L(25):
 	testq	$2, M
-	je	.L27
+	je	L(27)
 
 	movsd	 -16 * SIZE(A1), %xmm8
 	movsd	 -15 * SIZE(A1), %xmm9
@@ -916,9 +916,9 @@
 	addq	 $4 * SIZE, Y1
 	ALIGN_3
 
-.L27:
+L(27):
 	testq	$1, M
-	je	.L90
+	je	L(90)
 
 	movsd	 -16 * SIZE(A1), %xmm8
 	movsd	 -15 * SIZE(A1), %xmm9
@@ -940,15 +940,15 @@
 	movlpd	 %xmm1, -15 * SIZE(Y1)
 	ALIGN_3
 
-.L90:
+L(90):
 	movq	Y,  Y1
 
 	movq	M,  %rax
 	sarq	$3, %rax
-	jle	.L94
+	jle	L(94)
 	ALIGN_3
 
-.L92:
+L(92):
  	movsd	 0 * SIZE(Y), %xmm0
 	movhpd	 1 * SIZE(Y), %xmm0
 	addq	INCY, Y
@@ -1024,15 +1024,15 @@
 
 	subq	$-16 * SIZE, BUFFER
 	decq	%rax
-	jg	.L92
+	jg	L(92)
 	ALIGN_3
 
-.L94:
+L(94):
 	testq	$7, M
-	jle	.L999
+	jle	L(999)
 
 	testq	$4, M
-	jle	.L95
+	jle	L(95)
 
  	movsd	 0 * SIZE(Y), %xmm0
 	movhpd	 1 * SIZE(Y), %xmm0
@@ -1074,9 +1074,9 @@
 	addq	$8 * SIZE, BUFFER
 	ALIGN_3
 
-.L95:
+L(95):
 	testq	$2, M
-	jle	.L96
+	jle	L(96)
 
  	movsd	 0 * SIZE(Y), %xmm0
 	movhpd	 1 * SIZE(Y), %xmm0
@@ -1100,9 +1100,9 @@
 	addq	$4 * SIZE, BUFFER
 	ALIGN_3
 
-.L96:
+L(96):
 	testq	$1, M
-	jle	.L999
+	jle	L(999)
 
  	movsd	 0 * SIZE(Y), %xmm0
 	movhpd	 1 * SIZE(Y), %xmm0
@@ -1113,7 +1113,7 @@
 	movhpd	%xmm0,  1 * SIZE(Y1)
 	ALIGN_3
 
-.L999:
+L(999):
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12

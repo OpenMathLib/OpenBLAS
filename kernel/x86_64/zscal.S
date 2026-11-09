@@ -60,7 +60,7 @@
 	FLD	24(%rsp)
 
 	testq	N, N
-	jle	.L999
+	jle	L(999)
 
 	fld	%st(1)
 	fabs
@@ -71,21 +71,21 @@
 	fldz
 	fcomip	%st(1), %st
 	ffreep	%st
-	jne	.L30
+	jne	L(30)
 
 	EMMS
 
 	pxor	%mm0, %mm0
 
 	cmpq	$2 * SIZE, INCX
-	jne	.L20
+	jne	L(20)
 
 	movq	N,  I
 	sarq	$2, I
-	jle	.L15
+	jle	L(15)
 	ALIGN_4
 
-.L12:
+L(12):
 #ifdef PREFETCHW
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -108,16 +108,16 @@
 	movq	%mm0, 120(X)
 	addq	$8 * SIZE, X
 	decq	I
-	jg	.L12
+	jg	L(12)
 	ALIGN_3
 
-.L15:
+L(15):
 	movq	N,  I
 	andq	$3, I
-	jle	.L18
+	jle	L(18)
 	ALIGN_2
 
-.L16:
+L(16):
 	movq	%mm0,   0(X)
 	movq	%mm0,   8(X)
 	movq	%mm0,  16(X)
@@ -125,21 +125,21 @@
 
 	addq	$2 * SIZE, X
 	decq	I
-	jg	.L16
+	jg	L(16)
 
-.L18:
+L(18):
 	EMMS
 
 	ret
 	ALIGN_2
 
-.L20:
+L(20):
 	movq	N,  I
 	sarq	$2, I
-	jle	.L25
+	jle	L(25)
 	ALIGN_3
 
-.L22:
+L(22):
 	movq	%mm0,   0(X)
 	movq	%mm0,   8(X)
 	movq	%mm0,  16(X)
@@ -165,16 +165,16 @@
 	addq	INCX, X
 
 	decq	I
-	jg	.L22
+	jg	L(22)
 	ALIGN_3
 
-.L25:
+L(25):
 	movq	N,  I
 	andq	$3, I
-	jle	.L28
+	jle	L(28)
 	ALIGN_3
 
-.L26:
+L(26):
 	movq	%mm0,   0(X)
 	movq	%mm0,   8(X)
 	movq	%mm0,  16(X)
@@ -182,19 +182,19 @@
 	addq	INCX, X
 
 	decq	I
-	jg	.L26
+	jg	L(26)
 
-.L28:
+L(28):
 	EMMS
 
 	ret
 	ALIGN_3
 
-.L30:
+L(30):
 	movq	N, I
 	ALIGN_2
 
-.L32:
+L(32):
 #ifdef PREFETCHW
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -215,10 +215,10 @@
 	FST	1 * SIZE(X)
 	addq	INCX, X
 	decq	I
-	jg	.L32
+	jg	L(32)
 	ALIGN_2
 
-.L999:
+L(999):
 	ffreep	%st
 	ffreep	%st
 

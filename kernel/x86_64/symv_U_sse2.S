@@ -205,7 +205,7 @@
 	leaq	(,LDA,  SIZE), LDA
 
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 
 	negq	IS
 	addq	M, IS
@@ -220,10 +220,10 @@
 
 	movq	M,  %rax
 	sarq	$3, %rax
-	jle	.L02
+	jle	L(02)
 	ALIGN_3
 
-.L01:
+L(01):
 	movsd	0 * SIZE(X), %xmm1
 	addq	INCX, X
 	movhpd	0 * SIZE(X), %xmm1
@@ -253,16 +253,16 @@
 
 	addq	$8 * SIZE, XX
 	decq	%rax
-	jg	.L01
+	jg	L(01)
 	ALIGN_3
 
-.L02:
+L(02):
 	movq	M, %rax
 	andq	$7, %rax
-	jle	.L05
+	jle	L(05)
 	ALIGN_3
 
-.L03:
+L(03):
 	movsd	0 * SIZE(X), %xmm1
 	addq	INCX, X
 
@@ -272,10 +272,10 @@
 
 	addq	$1 * SIZE, XX
 	decq	%rax
-	jg	.L03
+	jg	L(03)
 	ALIGN_3
 
-.L05:
+L(05):
 	/* now we don't need original X */
 	movq   Y, NEW_Y
 
@@ -283,17 +283,17 @@
 	andq   $-512, XX
 
 	cmpq   $SIZE, INCY
-	je    .L10
+	je    L(10)
 
 	movq   Y,  YY
 	movq   XX, NEW_Y
 
 	movq	M,  %rax
 	sarq	$3, %rax
-	jle	.L07
+	jle	L(07)
 	ALIGN_3
 
-.L06:
+L(06):
 	movsd	0 * SIZE(YY), %xmm0
 	addq	INCY, YY
 	movhpd	0 * SIZE(YY), %xmm0
@@ -318,16 +318,16 @@
 
 	addq	$8 * SIZE, XX
 	decq	%rax
-	jg	.L06
+	jg	L(06)
 	ALIGN_3
 
-.L07:
+L(07):
 	movq	M, %rax
 	andq	$7, %rax
-	jle	.L10
+	jle	L(10)
 	ALIGN_3
 
-.L08:
+L(08):
 	movsd	0 * SIZE(YY), %xmm0
 	addq	INCY, YY
 
@@ -335,17 +335,17 @@
 
 	addq	$1 * SIZE, XX
 	decq	%rax
-	jg	.L08
+	jg	L(08)
 	ALIGN_3
 
-.L10:
+L(10):
 	movq	 IS, I
 	addq	 $4, I
 	cmpq	 M,  I
-	jg	 .L20
+	jg	 L(20)
 	ALIGN_3
 
-.L11:
+L(11):
 	movq	A,  A1
 	leaq	(A, LDA, 2), A2
 	leaq	(A, LDA, 4), A
@@ -391,10 +391,10 @@
 
 	movq	IS,  I
 	sarq	$3,  I
-	jle	.L15
+	jle	L(15)
 	ALIGN_3
 
-.L12:
+L(12):
 	movapd	 xtemp1, xt1
 	mulpd	 a1,     xt1
 	mulpd	 atemp1, a1
@@ -569,12 +569,12 @@
 	addq	 $8 * SIZE, A2
 
 	decq	 I
-	jg	 .L12
+	jg	 L(12)
 	ALIGN_3
 
-.L15:
+L(15):
 	testq	$4, IS
-	jle	.L18
+	jle	L(18)
 
 	movapd	 xtemp1, xt1
 	mulpd	 a1,     xt1
@@ -652,7 +652,7 @@
 	addq	 $4 * SIZE, A2
 	ALIGN_3
 
-.L18:
+L(18):
 	unpckhpd atemp2, atemp1
 	unpckhpd atemp4, atemp3
 
@@ -726,15 +726,15 @@
 	movq	 IS, I
 	addq	 $4, I
 	cmpq	 M, I
-	jle	 .L11
+	jle	 L(11)
 	ALIGN_3
 
-.L20:
+L(20):
 	testq	$2, M
-	je	.L30
+	je	L(30)
 	ALIGN_3
 
-.L21:
+L(21):
 	movq	A,  A1
 	leaq	(A, LDA, 2), A
 
@@ -766,10 +766,10 @@
 
 	movq	IS,  I
 	sarq	$1,  I
-	jle	.L28
+	jle	L(28)
 	ALIGN_3
 
-.L22:
+L(22):
 	movapd	 xtemp1, xt1
 	mulpd	 a1,     xt1
 	mulpd	 atemp1, a1
@@ -797,10 +797,10 @@
 	addq	 $2 * SIZE, A1
 
 	decq	 I
-	jg	 .L22
+	jg	 L(22)
 	ALIGN_3
 
-.L28:
+L(28):
 	unpckhpd atemp2, atemp1
 
 	movsd	 0 * SIZE(A1), a1
@@ -832,12 +832,12 @@
 	addq	 $2, IS
 	ALIGN_3
 
-.L30:
+L(30):
 	testq	$1, M
-	je	.L990
+	je	L(990)
 	ALIGN_3
 
-.L31:
+L(31):
 	movq	A,  A1
 
 #ifdef HAVE_SSE3
@@ -858,10 +858,10 @@
 
 	movq	IS,  I
 	testq	I,  I
-	jle	.L38
+	jle	L(38)
 	ALIGN_3
 
-.L32:
+L(32):
 	movapd	 xtemp1, xt1
 	mulpd	 a1,     xt1
 	mulpd	 atemp1, a1
@@ -879,10 +879,10 @@
 	addq	 $1 * SIZE, A1
 
 	decq	 I
-	jg	 .L32
+	jg	 L(32)
 	ALIGN_3
 
-.L38:
+L(38):
 	movsd	 0 * SIZE(A1), a1
 	mulsd	 atemp1, a1
 	addsd	 a1, xsum1
@@ -892,16 +892,16 @@
 	movsd	 yy1, 0 * SIZE(YY)
 	ALIGN_3
 
-.L990:
+L(990):
 	cmpq   $SIZE, INCY
-	je    .L999
+	je    L(999)
 
 	movq	M,  %rax
 	sarq	$3, %rax
-	jle	.L997
+	jle	L(997)
 	ALIGN_3
 
-.L996:
+L(996):
 	movapd	 0 * SIZE(NEW_Y), %xmm0
 	movapd	 2 * SIZE(NEW_Y), %xmm1
 	movapd	 4 * SIZE(NEW_Y), %xmm2
@@ -926,16 +926,16 @@
 
 	addq	$8 * SIZE, NEW_Y
 	decq	%rax
-	jg	.L996
+	jg	L(996)
 	ALIGN_3
 
-.L997:
+L(997):
 	movq	M, %rax
 	andq	$7, %rax
-	jle	.L999
+	jle	L(999)
 	ALIGN_3
 
-.L998:
+L(998):
 	movsd	0 * SIZE(NEW_Y), %xmm0
 
 	movsd	%xmm0,  0 * SIZE(Y)
@@ -944,11 +944,11 @@
 	addq	$1 * SIZE, NEW_Y
 
 	decq	%rax
-	jg	.L998
+	jg	L(998)
 	ALIGN_3
 
 
-.L999:
+L(999):
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12

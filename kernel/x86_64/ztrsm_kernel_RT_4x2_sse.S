@@ -332,7 +332,7 @@
 #endif
 
 	testq	$1, N
-	je	.L40
+	je	L(40)
 	ALIGN_4
 
 #ifdef LN
@@ -369,10 +369,10 @@
 	subq	KK, %rax
 #endif
 	sarq	$2, %rax
-	jle	.L43
+	jle	L(43)
 	ALIGN_4
 
-.L42:
+L(42):
 	movaps	 0 * SIZE(B), %xmm3
 	movaps	 4 * SIZE(B), %xmm7
 
@@ -399,10 +399,10 @@
 	addq	$ 8 * SIZE, B
 	addq	$32 * SIZE, BO
 	decq	%rax
-	jne	.L42
+	jne	L(42)
 	ALIGN_4
 
-.L43:
+L(43):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -411,10 +411,10 @@
 #endif
 	andq	$3, %rax
 	BRANCH
-	jle	.L50
+	jle	L(50)
 	ALIGN_4
 
-.L44:
+L(44):
 	movlps	 0 * SIZE(B), %xmm3
 
 	pshufd	 $0x00, %xmm3, %xmm0
@@ -426,10 +426,10 @@
 	addq	$2 * SIZE, B
 	addq	$8 * SIZE, BO
 	decq	%rax
-	jne	.L44
+	jne	L(44)
 	ALIGN_4
 
-.L50:
+L(50):
 #if defined(LT) || defined(RN)
 	movq	A, AO
 #else
@@ -448,10 +448,10 @@
 
 	movq	M,  I
 	sarq	$2, I		# i = (m >> 2)
-	jle	.L60
+	jle	L(60)
 	ALIGN_4
 
-.L51:
+L(51):
 #ifdef LN
        movq	K, %rax
        salq	$2 + ZBASE_SHIFT, %rax
@@ -502,10 +502,10 @@
 	subq	KK, %rax
 #endif
 	sarq	$3, %rax
-	je	.L55
+	je	L(55)
 	ALIGN_4
 
-.L52:
+L(52):
 	mulps	%xmm8, %xmm9
 #if defined(OPTERON) && defined(HAVE_PREFETCH)
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
@@ -627,10 +627,10 @@
 
 
 	decq   %rax
-	jne    .L52
+	jne    L(52)
 	ALIGN_4
 
-.L55:
+L(55):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -640,10 +640,10 @@
 	movaps	POSINV,  %xmm15
 	andq	$7, %rax		# if (k & 1)
 	BRANCH
-	je .L58
+	je L(58)
 	ALIGN_4
 
-.L56:
+L(56):
 	mulps	%xmm8, %xmm9
 	mulps	 4 * SIZE(BO), %xmm8
 	addps	%xmm9, %xmm0
@@ -660,10 +660,10 @@
 	addq	$ 8 * SIZE, AO		# aoffset  += 4
 	addq	$ 8 * SIZE, BO		# boffset1 += 8
 	decq	%rax
-	jg	.L56
+	jg	L(56)
 	ALIGN_4
 
-.L58:
+L(58):
 	shufps	$0xb1, %xmm1, %xmm1
 	shufps	$0xb1, %xmm5, %xmm5
 
@@ -1206,12 +1206,12 @@
 #endif
 
 	decq	I			# i --
-	jg	.L51
+	jg	L(51)
 	ALIGN_4
 
-.L60:
+L(60):
 	testq	$2, M
-	je	.L70
+	je	L(70)
 
 #ifdef LN
        movq	K, %rax
@@ -1254,10 +1254,10 @@
 	subq	KK, %rax
 #endif
 	sarq	$3, %rax
-	je	.L65
+	je	L(65)
 	ALIGN_4
 
-.L62:
+L(62):
 	mulps	%xmm8, %xmm9
 #if defined(OPTERON) && defined(HAVE_PREFETCH)
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
@@ -1321,10 +1321,10 @@
 	addq   $64 * SIZE, BO
 
 	decq   %rax
-	jne    .L62
+	jne    L(62)
 	ALIGN_4
 
-.L65:
+L(65):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -1334,10 +1334,10 @@
 	movaps	POSINV,  %xmm15
 	andq	$7, %rax		# if (k & 1)
 	BRANCH
-	je .L68
+	je L(68)
 	ALIGN_4
 
-.L66:
+L(66):
 	mulps	%xmm8, %xmm9
 	mulps	 4 * SIZE(BO), %xmm8
 	addps	%xmm9, %xmm0
@@ -1348,10 +1348,10 @@
 	addq	$4 * SIZE, AO		# aoffset  += 4
 	addq	$8 * SIZE, BO		# boffset1 += 8
 	decq	%rax
-	jg	.L66
+	jg	L(66)
 	ALIGN_4
 
-.L68:
+L(68):
 	addps	%xmm2, %xmm0
 	addps	%xmm3, %xmm1
 
@@ -1599,9 +1599,9 @@
 #endif
 	ALIGN_4
 
-.L70:
+L(70):
 	testq	$1, M
-	je	.L79
+	je	L(79)
 
 #ifdef LN
        movq	K, %rax
@@ -1646,10 +1646,10 @@
 	subq	KK, %rax
 #endif
 	sarq	$3, %rax
-	je	.L75
+	je	L(75)
 	ALIGN_4
 
-.L72:
+L(72):
 	mulps	%xmm8, %xmm9
 	addps	%xmm9, %xmm0
 #if defined(OPTERON) && defined(HAVE_PREFETCH)
@@ -1722,10 +1722,10 @@
 	addq   $64 * SIZE, BO
 
 	decq   %rax
-	jne    .L72
+	jne    L(72)
 	ALIGN_4
 
-.L75:
+L(75):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -1735,10 +1735,10 @@
 	movaps	POSINV,  %xmm15
 	andq	$7, %rax		# if (k & 1)
 	BRANCH
-	je .L78
+	je L(78)
 	ALIGN_4
 
-.L76:
+L(76):
 	mulps	%xmm8, %xmm9
 	addps	%xmm9, %xmm0
 	movaps	 4 * SIZE(BO), %xmm9
@@ -1750,10 +1750,10 @@
 	addq	$2 * SIZE, AO		# aoffset  += 4
 	addq	$8 * SIZE, BO		# boffset1 += 8
 	decq	%rax
-	jg	.L76
+	jg	L(76)
 	ALIGN_4
 
-.L78:
+L(78):
 	addps	%xmm2, %xmm0
 	addps	%xmm3, %xmm1
 
@@ -1897,7 +1897,7 @@
 #endif
 	ALIGN_4
 
-.L79:
+L(79):
 #ifdef LN
        leaq	(, K, SIZE), %rax
        leaq	(B, %rax, COMPSIZE), B
@@ -1919,13 +1919,13 @@
 #endif
 	ALIGN_4
 
-.L40:
+L(40):
 	movq	N,  J
 	sarq	$1, J		# j = (n >> 2)
-	jle	.L999
+	jle	L(999)
 	ALIGN_4
 
-.L01:
+L(01):
 #ifdef LN
 	movq	OFFSET, %rax
 	addq	M, %rax
@@ -1960,10 +1960,10 @@
 	subq	KK, %rax
 #endif
 	sarq	$2, %rax
-	jle	.L03
+	jle	L(03)
 	ALIGN_4
 
-.L02:
+L(02):
 	movaps	 0 * SIZE(B), %xmm3
 	movaps	 4 * SIZE(B), %xmm7
 
@@ -2013,10 +2013,10 @@
 	addq	$16 * SIZE, B
 	addq	$64 * SIZE, BO
 	decq	%rax
-	jne	.L02
+	jne	L(02)
 	ALIGN_4
 
-.L03:
+L(03):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -2025,10 +2025,10 @@
 #endif
 	andq	$3, %rax
 	BRANCH
-	jle	.L10
+	jle	L(10)
 	ALIGN_4
 
-.L04:
+L(04):
 	movaps	 0 * SIZE(B), %xmm3
 
 	pshufd	 $0x00, %xmm3, %xmm0
@@ -2044,10 +2044,10 @@
 	addq	$ 4 * SIZE, B
 	addq	$16 * SIZE, BO
 	decq	%rax
-	jne	.L04
+	jne	L(04)
 	ALIGN_4
 
-.L10:
+L(10):
 #if defined(LT) || defined(RN)
 	movq	A, AO
 #else
@@ -2068,10 +2068,10 @@
 
 	movq	M,  I
 	sarq	$2, I		# i = (m >> 2)
-	jle	.L20
+	jle	L(20)
 	ALIGN_4
 
-.L11:
+L(11):
 #ifdef LN
        movq	K, %rax
        salq	$2 + ZBASE_SHIFT, %rax
@@ -2122,8 +2122,8 @@
 #endif
 	andq	$-8, %rax
 	salq	$4, %rax
-	je	.L15
-.L1X:
+	je	L(15)
+L(1X):
 	KERNEL1(32 *  0)
 	KERNEL2(32 *  0)
 	KERNEL3(32 *  0)
@@ -2144,14 +2144,14 @@
 	addq	$32 * 2  * SIZE, AO
 	addq	$64 * 2  * SIZE, BO
 	subq	$64 * 2, %rax
-	jg	.L1X
+	jg	L(1X)
 
-.L12:
+L(12):
 	leaq	(AO, %rax, 2), AO
 	leaq	(BO, %rax, 4), BO
 	ALIGN_4
 
-.L15:
+L(15):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -2161,10 +2161,10 @@
 	movaps	POSINV,  %xmm15
 	andq	$7, %rax		# if (k & 1)
 	BRANCH
-	je .L18
+	je L(18)
 	ALIGN_4
 
-.L16:
+L(16):
 	mulps	%xmm8, %xmm9
 	addps	%xmm9, %xmm0
 	movaps	 4 * SIZE(BO), %xmm9
@@ -2193,10 +2193,10 @@
 	addq	$ 8 * SIZE, AO		# aoffset  += 4
 	addq	$16 * SIZE, BO		# boffset1 += 8
 	decq	%rax
-	jg	.L16
+	jg	L(16)
 	ALIGN_4
 
-.L18:
+L(18):
 	shufps	$0xb1, %xmm1, %xmm1
 	shufps	$0xb1, %xmm3, %xmm3
 	shufps	$0xb1, %xmm5, %xmm5
@@ -2914,12 +2914,12 @@
 #endif
 
 	decq	I			# i --
-	jg	.L11
+	jg	L(11)
 	ALIGN_4
 
-.L20:
+L(20):
 	testq	$2, M
-	je	.L30
+	je	L(30)
 
 #ifdef LN
        movq	K, %rax
@@ -2964,10 +2964,10 @@
 	subq	KK, %rax
 #endif
 	sarq	$3, %rax
-	je	.L25
+	je	L(25)
 	ALIGN_4
 
-.L22:
+L(22):
 	mulps	%xmm8, %xmm9
 	addps	%xmm9, %xmm0
 #if defined(OPTERON) && defined(HAVE_PREFETCH)
@@ -3082,10 +3082,10 @@
 	addq   $128 * SIZE, BO
 
 	decq   %rax
-	jne    .L22
+	jne    L(22)
 	ALIGN_4
 
-.L25:
+L(25):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -3095,10 +3095,10 @@
 	movaps	POSINV,  %xmm15
 	andq	$7, %rax		# if (k & 1)
 	BRANCH
-	je .L28
+	je L(28)
 	ALIGN_4
 
-.L26:
+L(26):
 	mulps	%xmm8, %xmm9
 	addps	%xmm9, %xmm0
 	movaps	 4 * SIZE(BO), %xmm9
@@ -3115,10 +3115,10 @@
 	addq	$ 4 * SIZE, AO		# aoffset  += 4
 	addq	$16 * SIZE, BO		# boffset1 += 8
 	decq	%rax
-	jg	.L26
+	jg	L(26)
 	ALIGN_4
 
-.L28:
+L(28):
 	shufps	$0xb1, %xmm1, %xmm1
 	shufps	$0xb1, %xmm3, %xmm3
 
@@ -3477,9 +3477,9 @@
 #endif
 	ALIGN_4
 
-.L30:
+L(30):
 	testq	$1, M
-	je	.L39
+	je	L(39)
 
 #ifdef LN
        movq	K, %rax
@@ -3524,10 +3524,10 @@
 	subq	KK, %rax
 #endif
 	sarq	$3, %rax
-	je	.L35
+	je	L(35)
 	ALIGN_4
 
-.L32:
+L(32):
 	mulps	%xmm8, %xmm9
 	addps	%xmm9, %xmm0
 #if defined(OPTERON) && defined(HAVE_PREFETCH)
@@ -3645,10 +3645,10 @@
 	addq   $128 * SIZE, BO
 
 	decq   %rax
-	jne    .L32
+	jne    L(32)
 	ALIGN_4
 
-.L35:
+L(35):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -3658,10 +3658,10 @@
 	movaps	POSINV,  %xmm15
 	andq	$7, %rax		# if (k & 1)
 	BRANCH
-	je .L38
+	je L(38)
 	ALIGN_4
 
-.L36:
+L(36):
 	mulps	%xmm8, %xmm9
 	addps	%xmm9, %xmm0
 	movaps	 4 * SIZE(BO), %xmm9
@@ -3680,10 +3680,10 @@
 	addq	$ 2 * SIZE, AO		# aoffset  += 4
 	addq	$16 * SIZE, BO		# boffset1 += 8
 	decq	%rax
-	jg	.L36
+	jg	L(36)
 	ALIGN_4
 
-.L38:
+L(38):
 	shufps	$0xb1, %xmm1, %xmm1
 	shufps	$0xb1, %xmm3, %xmm3
 
@@ -3958,7 +3958,7 @@
 #endif
 	ALIGN_4
 
-.L39:
+L(39):
 #ifdef LN
        leaq	(, K, SIZE), %rax
        leaq	(B, %rax, 2 * COMPSIZE), B
@@ -3980,10 +3980,10 @@
 #endif
 
 	decq	J			# j --
-	jg	.L01
+	jg	L(01)
 	ALIGN_4
 
-.L999:
+L(999):
 	movq	%rbx, %rsp
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp
