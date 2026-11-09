@@ -5,13 +5,10 @@
 cmake_minimum_required(VERSION 3.16.0)
 
 set (CMAKE_ASM_SOURCE_FILE_EXTENSIONS "S")
-project(OpenBLAS C ASM)
-
-set(OpenBLAS_MAJOR_VERSION 0)
-set(OpenBLAS_MINOR_VERSION 3)
-set(OpenBLAS_PATCH_VERSION 34.dev)
-
-set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
+project(
+  OpenBLAS
+  VERSION 0.3.34
+  LANGUAGES C ASM)
 
 # Adhere to GNU filesystem layout conventions
 include(GNUInstallDirs)
@@ -42,6 +39,8 @@ option(DYNAMIC_OLDER "Include specific support for older x86 cpu models (Penryn,
 option(BUILD_RELAPACK "Build with ReLAPACK (recursive implementation of several LAPACK functions on top of standard LAPACK)" OFF)
 
 option(WASM_RELAXED_SIMD "WASM: emit relaxed SIMD opcodes (not portable to engines without the feature, including shipping Safari)" OFF)
+
+option(USE_OPENMP "Build OpenBLAS with OpenMP parallelism" OFF)
 
 option(USE_LOCKING "Use locks even in single-threaded builds to make them callable from multiple threads" OFF)
 
@@ -486,8 +485,8 @@ endif()
 
 if (NOT FIXED_LIBNAME)
 set_target_properties(${OpenBLAS_LIBS} PROPERTIES
-  VERSION ${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}
-  SOVERSION ${OpenBLAS_MAJOR_VERSION}
+  VERSION "${PROJECT_MAJOR_VERSION}.${PROJECT_MINOR_VERSION}"
+  SOVERSION "${PROJECT_MAJOR_VERSION}"
 )
 endif()
 if (BUILD_SHARED_LIBS AND BUILD_RELAPACK)
@@ -721,7 +720,7 @@ foreach(line ${__lines})
   string(REPLACE "#define " "" line ${line})
   file(APPEND ${OPENBLAS_CONFIG_H} "#define OPENBLAS_${line}\n")
 endforeach()
-file(APPEND ${OPENBLAS_CONFIG_H} "#define OPENBLAS_VERSION \"OpenBLAS ${OpenBLAS_VERSION}\"\n")
+file(APPEND ${OPENBLAS_CONFIG_H} "#define OPENBLAS_VERSION \"OpenBLAS ${PROJECT_VERSION}\"\n")
 file(READ   ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h OPENBLAS_CONFIG_TEMPLATE_H_CONTENTS)
 file(APPEND ${OPENBLAS_CONFIG_H} "${OPENBLAS_CONFIG_TEMPLATE_H_CONTENTS}\n")
 file(APPEND ${OPENBLAS_CONFIG_H} "#endif /* OPENBLAS_CONFIG_H */\n")
