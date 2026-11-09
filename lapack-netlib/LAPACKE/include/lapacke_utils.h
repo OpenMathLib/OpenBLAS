@@ -304,8 +304,15 @@ void LAPACKE_ztz_trans( int matrix_layout, char direct, char uplo,
 /* NaN checkers */
 #define LAPACK_SISNAN( x ) ( x != x )
 #define LAPACK_DISNAN( x ) ( x != x )
+#if _MSC_VER
+#define LAPACK_CISNAN( x ) ( LAPACK_SISNAN(lapack_complex_float_real(x)) || \
+                              LAPACK_SISNAN(lapack_complex_float_imag(x )))
+#define LAPACK_ZISNAN( x ) ( LAPACK_DISNAN(*((double*)&x)) || \
+                              LAPACK_DISNAN(*(((double*)&x)+1)) )
+#else
 #define LAPACK_CISNAN( x ) ( LAPACK_SISNAN(*((float*) &x)) || \
                               LAPACK_SISNAN(*(((float*) &x)+1)) )
+#endif
 #define LAPACK_ZISNAN( x ) ( LAPACK_DISNAN(*((double*)&x)) || \
                               LAPACK_DISNAN(*(((double*)&x)+1)) )
 
