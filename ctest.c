@@ -84,6 +84,10 @@ OS_DARWIN
 OS_AIX
 #endif
 
+#if defined(__PASE__)
+OS_PASE
+#endif
+
 #if defined(__OSF)
 OS_OSF
 #endif

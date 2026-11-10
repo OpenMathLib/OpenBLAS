@@ -6,7 +6,7 @@
 # Checking cross compile
 $hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
 $hostarch = `uname -m | sed -e s/i.86/x86/`;
-$hostarch = `uname -p` if ($hostos eq "AIX" || $hostos eq "SunOS");
+$hostarch = `uname -p` if ($hostos eq "AIX" || $hostos eq "SunOS" || $hostos eq "OS400");
 chop($hostarch);
 $hostarch = "x86_64" if ($hostarch eq "amd64");
 $hostarch = "arm" if ($hostarch ne "arm64" && $hostarch =~ /^arm.*/);
@@ -57,6 +57,7 @@ if ($@){
 
 $compiler = "";
 $darwin_os = "";
+$pase = 0;
 $compiler = LSB       if ($data =~ /COMPILER_LSB/);
 $compiler = CLANG     if ($data =~ /COMPILER_CLANG/);
 $compiler = PGI       if ($data =~ /COMPILER_PGI/);
@@ -83,6 +84,7 @@ if ($data =~ /OS_IOS/) {
 }
 $os = SunOS           if ($data =~ /OS_SUNOS/);
 $os = AIX             if ($data =~ /OS_AIX/);
+$pase = 1             if ($data =~ /OS_PASE/);
 $os = osf             if ($data =~ /OS_OSF/);
 $os = WINNT           if ($data =~ /OS_WINNT/);
 $os = CYGWIN_NT       if ($data =~ /OS_CYGWIN_NT/);
@@ -396,8 +398,15 @@ if ($architecture ne $hostarch) {
     $cross = 0 if (($hostarch eq "mips64") && ($architecture eq "mips"));
 }
 
-$cross = 1 if ($os ne $hostos);
-$cross = 0 if (($os eq "Android") && ($hostos eq "Linux") && ($ENV{TERMUX_APP_PID} != ""));
+if ($os ne $hostos) {
+    if ($os eq "AIX" && $hostos eq "OS400" && $pase == 1) {
+        # PASE on OS400 is native execution
+    } elsif ($os eq "Android" && $hostos eq "Linux" && ($ENV{TERMUX_APP_PID} ne "")) {
+        # Termux on Android
+    } else {
+        $cross = 1;
+    }
+}
 $cross = 1 if $darwin_os eq "iOS";
 
 $openmp = "" if $ENV{USE_OPENMP} != 1;
@@ -472,6 +481,7 @@ print MAKEFILE "BINARY64=1\n" if $binformat eq bin64;
 print MAKEFILE "FU=$need_fu\n" if $need_fu ne "";
 print MAKEFILE "CROSS_SUFFIX=$cross_suffix\n" if $cross != 0 && $cross_suffix ne "";
 print MAKEFILE "CROSS=1\n" if $cross != 0;
+print MAKEFILE "PASE=1\n" if $pase;
 print MAKEFILE "CEXTRALIB=$linker_L $linker_l $linker_a\n";
 print MAKEFILE "HAVE_MSA=1\n" if $have_msa eq 1;
 print MAKEFILE "MSA_FLAGS=$msa_flags\n" if $have_msa eq 1;
@@ -488,6 +498,7 @@ $compiler     =~ tr/[a-z]/[A-Z]/;
 
 print CONFFILE "#define OS_$os\t1\n";
 print CONFFILE "#define ARCH_$architecture\t1\n";
+print CONFFILE "#define OS_PASE\t1\n" if $pase;
 print CONFFILE "#define C_$compiler\t1\n";
 print CONFFILE "#define __32BIT__\t1\n"  if $binformat eq bin32;
 print CONFFILE "#define __64BIT__\t1\n"  if $binformat eq bin64;

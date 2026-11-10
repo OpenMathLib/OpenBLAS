@@ -3,7 +3,7 @@
 # Checking cross compile
 hostos=`uname -s | sed -e 's/\-.*//'`
 hostarch=`uname -m | sed -e 's/i.86/x86/'`
-if [ "$hostos" = "AIX" ] || [ "$hostos" = "SunOS" ]; then
+if [ "$hostos" = "AIX" ] || [ "$hostos" = "SunOS" ] || [ "$hostos" = "OS400" ]; then
     hostarch=`uname -p`
 fi
 if [ "$hostarch" = "evbarm" ]; then
@@ -24,6 +24,7 @@ compiler_name="$3"
 shift 3
 flags="$*"
 darwin_os=""
+pase=0
 
 # First, we need to know the target OS and compiler name
 {
@@ -73,6 +74,7 @@ case "$data" in *OS_DRAGONFLY*) os=DragonFly ;; esac
 case "$data" in *OS_DARWIN*) os=Darwin; darwin_os=macOS ;; esac
 case "$data" in *OS_SUNOS*) os=SunOS ;; esac
 case "$data" in *OS_AIX*) os=AIX ;; esac
+case "$data" in *OS_PASE*) pase=1 ;; esac
 case "$data" in *OS_OSF*) os=osf ;; esac
 case "$data" in *OS_WINNT*) os=WINNT ;; esac
 case "$data" in *OS_CYGWIN_NT*) os=CYGWIN_NT ;; esac
@@ -417,9 +419,15 @@ if [ "$architecture" != "$hostarch" ]; then
     [ "$hostarch" = "mips64" ] && [ "$architecture" = "mips" ] && cross=0
 fi
 
-[ "$os" != "$hostos" ] && cross=1
-[ "$os" = "Android" ] && [ "$hostos" = "Linux" ] && [ -n "$TERMUX_APP_PID" ] \
-    && cross=0
+if [ "$os" != "$hostos" ]; then
+    if [ "$os" = "AIX" ] && [ "$hostos" = "OS400" ] && [ "$pase" -eq 1 ]; then
+        :
+    elif [ "$os" = "Android" ] && [ "$hostos" = "Linux" ] && [ -n "$TERMUX_APP_PID" ]; then
+        :
+    else
+        cross=1
+    fi
+fi
 
 [ "$darwin_os" = iOS ] && cross=1
 
@@ -504,6 +512,7 @@ done
     [ "$cross" -ne 0 ] && [ -n "$cross_suffix" ] && \
         printf "CROSS_SUFFIX=%s\n" "$cross_suffix"
     [ "$cross" -ne 0 ] && printf "CROSS=1\n"
+    [ "$pase" = 1 ] && printf "PASE=1\n"
     printf "CEXTRALIB=%s %s %s\n" "$linker_L" "$linker_l" "$linker_a"
     [ "$no_msa" -eq 1 ] &&  printf "NO_MSA=1\n"
     [ "$no_sve" -eq 1 ] && printf "NO_SVE=1\n"
@@ -525,6 +534,7 @@ compiler=`echo "$compiler" | tr '[[:lower:]]' '[[:upper:]]' `
 {
     printf "#define OS_%s\t1\n" "$os"
     printf "#define ARCH_%s\t1\n" "$architecture"
+    [ "$pase" = 1 ] && printf "#define OS_PASE\t1\n"
     printf "#define C_%s\t1\n" "$compiler"
     [ "$binformat" = "bin32" ] && printf "#define __32BIT__\t1\n"
     [ "$binformat" = "bin64" ] && printf "#define __64BIT__\t1\n"
