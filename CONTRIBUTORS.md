@@ -299,3 +299,6 @@ hheei <hheei@users.noreply.github.com>
 
 * Andrew Pullin <pullin@berkeley.edu>
   * [2026-11-06] Fix work buffer overflow in threaded SYRK/HERK for large N
+
+* Devansh-Kumar <devansh.kumar@ibm.com>
+  * [2026-11-10] Improve native IBM i PASE builds and test detection
