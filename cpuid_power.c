@@ -39,7 +39,6 @@
 #include  <sys/utsname.h>
 #ifdef _AIX
 #include <sys/systemcfg.h>
-#include <sys/vminfo.h>
 #endif
 #ifdef __APPLE__
 #include <mach/mach.h>

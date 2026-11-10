@@ -176,6 +176,7 @@ endif
 endif
 
 ifeq ($(OSNAME), AIX)
+CCOMMON_OPT	+= -D_ALL_SOURCE
 ifeq ($(C_COMPILER), GCC)
 CCOMMON_OPT	+= -mpowerpc64 -maix64
 else
@@ -190,13 +191,13 @@ endif
 ifeq ($(COMPILER_F77), xlf)
 FCOMMON_OPT	+= -q64
 endif
-ARFLAGS		= -X 64
+ARFLAGS		= -X64
 ASFLAGS		= -a64
 endif
 else
 ifeq ($(OSNAME), AIX)
 CCOMMON_OPT	+= -Wa,-a32
-ARFLAGS		= -X 32
+ARFLAGS		= -X32
 ASFLAGS		= -a32
 endif
 endif
