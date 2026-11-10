@@ -17,13 +17,62 @@ $config   = shift(@ARGV);
 
 $nofortran = 0;
 
-$compiler = join(" ", @ARGV);
-$compiler_bin = shift(@ARGV);
+$raw_fc = shift(@ARGV);
+$compiler_args = join(" ", @ARGV);
+
+my $exec_word = "";
+if (defined $raw_fc && $raw_fc =~ /^\s*(\S+)/) {
+    $exec_word = $1;
+}
+
+$compiler_bin = $exec_word;
+
+if (defined $raw_fc && $raw_fc ne "") {
+    if ($compiler_args ne "") {
+        $compiler = "$raw_fc $compiler_args";
+    } else {
+        $compiler = "$raw_fc";
+    }
+} else {
+    $compiler = "";
+}
 
 # f77 is too ambiguous
-$compiler = "" if $compiler eq "f77";
+$compiler = "" if $compiler_bin eq "f77";
 
-@path = split(/:/, $ENV{"PATH"});
+sub get_path_dirs {
+    if (!exists $ENV{"PATH"}) {
+        return ("/usr/bin", "/bin");
+    }
+    my $path = $ENV{"PATH"};
+    if ($path eq "") {
+        return (".");
+    }
+    my @raw = split(/:/, $path, -1);
+    my @dirs = map { $_ eq "" ? "." : $_ } @raw;
+    return @dirs;
+}
+
+sub check_compiler {
+    my ($bin) = @_;
+    return 0 if (!defined $bin || $bin eq "");
+    if ($bin =~ m{/}) {
+        return (-f $bin && -x $bin) ? 1 : 0;
+    }
+    my @dirs = get_path_dirs();
+    foreach my $dir (@dirs) {
+        my $target = "$dir/$bin";
+        return 1 if (-f $target && -x $target);
+    }
+    return 0;
+}
+
+if ($compiler ne "") {
+    if (!check_compiler($compiler_bin)) {
+        $compiler = "";
+        $compiler_bin = "";
+    }
+}
 
 if ($compiler eq "") {
 
@@ -36,14 +85,15 @@ if ($compiler eq "") {
 	      "flang", "egfortran",
               "ifort", "nagfor", "ifx", "ftn", "crayftn");
 
-OUTER:
-    foreach $lists (@lists) {
-        foreach $path (@path) {
-            if (-x $path . "/" . $lists) {
-                $compiler = $lists;
-                $compiler_bin = $lists;
-                last OUTER;
+    foreach my $cand (@lists) {
+        if (check_compiler($cand)) {
+            if ($compiler_args ne "") {
+                $compiler = "$cand $compiler_args";
+            } else {
+                $compiler = "$cand";
             }
+            $compiler_bin = $cand;
+            last;
         }
     }
 
@@ -58,10 +108,9 @@ if ($compiler eq "") {
 
 } else {
 
-    $data = `which $compiler_bin > /dev/null 2> /dev/null`;
     $vendor = "";
 
-    if (!$?) {
+    if (check_compiler($compiler_bin)) {
 
 	$data = `$compiler -O2 -S ftest.f > /dev/null 2>&1 && cat ftest.s && rm -f ftest.s`;
 	if ($data eq "") {
@@ -261,9 +310,7 @@ if ($compiler eq "") {
     }
 }
 
-$data = `which $compiler_bin > /dev/null 2> /dev/null`;
-
-if (!$?) {
+if (check_compiler($compiler_bin)) {
 
     $binary = $ENV{"BINARY"};
 
@@ -280,8 +327,8 @@ if (!$?) {
 	}
        #For gfortran MIPS
 	if ($?) {
-    $mips_data = `$compiler_bin -E -dM - < /dev/null`;
-    if ($mips_data =~ /_MIPS_ISA_MIPS64/) {
+	   $mips_data = `$compiler -E -dM - < /dev/null`;
+	   if ($mips_data =~ /_MIPS_ISA_MIPS64/) {
         $link = `$compiler $openmp -mabi=n32 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
     } else {
         $link = `$compiler $openmp -mabi=32 -v ftest2.f 2>&1 && rm -f a.out a.exe`;

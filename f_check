@@ -1,15 +1,5 @@
 #!/bin/sh
 
-split() {
-    set -f
-    old_ifs=$IFS
-    IFS=$2
-    set -- $1
-    printf '%s ' "$@"
-    IFS=$old_ifs
-    set +f
-}
-
 hostos="$(uname -s | sed 's/\-.*//')"
 
 #
@@ -28,15 +18,75 @@ config="$2"
 nofortran=0
 
 shift 2
-compiler="$*"
-compiler_bin="$1"
-shift
-compiler_args="$*"
+
+raw_fc="$1"
+if [ $# -gt 0 ]; then
+    shift
+    compiler_args="$*"
+else
+    compiler_args=""
+fi
+
+# Derive executable word for validation
+exec_word=""
+set -f
+for w in $raw_fc; do
+    exec_word="$w"
+    break
+done
+set +f
+compiler_bin="$exec_word"
+
+if [ -n "$raw_fc" ]; then
+    if [ -n "$compiler_args" ]; then
+        compiler="$raw_fc $compiler_args"
+    else
+        compiler="$raw_fc"
+    fi
+else
+    compiler=""
+fi
 
 # f77 is too ambiguous
 [ "$compiler_bin" = "f77" ] && compiler=''
 
-path=`split "$PATH" ':'`
+check_compiler() {
+    [ -z "$1" ] && return 1
+    case "$1" in
+        */*)
+            [ -f "$1" ] && [ -x "$1" ] && return 0
+            return 1
+            ;;
+        *)
+            if [ -z "${PATH+x}" ]; then
+                cur_path="/usr/bin:/bin"
+            else
+                cur_path="$PATH"
+            fi
+            if [ -z "$cur_path" ]; then
+                [ -f "./$1" ] && [ -x "./$1" ] && return 0
+                return 1
+            fi
+            rest="$cur_path:"
+            while [ -n "$rest" ]; do
+                dir="${rest%%:*}"
+                rest="${rest#*:}"
+                [ -z "$dir" ] && dir="."
+                if [ -f "$dir/$1" ] && [ -x "$dir/$1" ]; then
+                    return 0
+                fi
+            done
+            return 1
+            ;;
+    esac
+}
+
+if [ -n "$compiler" ]; then
+    if ! check_compiler "$compiler_bin"; then
+        compiler=''
+        compiler_bin=''
+    fi
+fi
 
 if [ -z "$compiler" ]; then
 
@@ -50,13 +100,15 @@ if [ -z "$compiler" ]; then
               ifort nagfor ifx ftn crayftn armflang"
 
     for list in $lists; do
-        for p in $path; do
-            if [ -x "$p/$list" ]; then
+        if check_compiler "$list"; then
+            if [ -n "$compiler_args" ]; then
                 compiler="$list $compiler_args"
-                compiler_bin=$list
-                break 2
+            else
+                compiler="$list"
             fi
-        done
+            compiler_bin="$list"
+            break
+        fi
     done
 fi
 
@@ -68,10 +120,8 @@ if [ -z "$compiler" ]; then
     bu="_"
 
 else
-    {
-        data="$(command -v "$compiler_bin" >/dev/null 2>&1)"
-        vendor=""
-    } && {
+    vendor=""
+    if check_compiler "$compiler_bin"; then
     	data=`$compiler -O2 -S ftest.f > /dev/null 2>&1 && cat ftest.s && rm -f ftest.s`
     	if [ -z "$data" ]; then
     		data=`$compiler -O2 -S ftest.f > /dev/null 2>&1 && cat ftest.c && rm -f ftest.c`
@@ -187,7 +237,7 @@ else
 
     	case "$data" in *' zho_ge__'*) need2bu=1 ;; esac
     	case "$vendor" in *G95*) [ "$NO_LAPACKE" != 1 ] && need2bu='' ;; esac
-	}
+    fi
 
     if [ -z "$vendor" ]; then
         case "$compiler" in
@@ -277,9 +327,7 @@ else
     fi
 fi
 
-{
-    data=`command -v $compiler_bin >/dev/null 2>&1`
-} && {
+if check_compiler "$compiler_bin"; then
 
     binary=$BINARY
 
@@ -296,7 +344,7 @@ fi
                 link=`$compiler $openmp -maix32 -v ftest2.f 2>&1 && rm -f a.out a.exe`
             } || {
                 # for gfortran MIPS
-                mips_data=`$compiler_bin -E -dM - < /dev/null`
+                mips_data=`$compiler -E -dM - < /dev/null`
                 case "$mips_data" in
                     *_MIPS_ISA_MIPS64*)
                         link=`$compiler $openmp -mabi=n32 -v ftest2.f 2>&1 && rm -f a.out a.exe`
@@ -332,7 +380,7 @@ fi
     if [ -z "$binary" ]; then
         link=`$compiler $openmp -v ftest2.f 2>&1 && rm -f a.out a.exe`
     fi
-}
+fi
 
 if [ "$vendor" = "NAG" ]; then
     link=`$compiler $openmp -dryrun ftest2.f 2>&1 && rm -f a.out a.exe`
