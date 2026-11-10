@@ -14,6 +14,9 @@ ifneq ($(C_COMPILER), PGI)
 ifeq ($(C_COMPILER), GCC)
 ifeq ($(GCCVERSIONGTEQ10), 1)
 CCOMMON_OPT += -O3 -mcpu=power10 -mtune=power10 -mvsx -fno-fast-math
+ifeq ($(PASE), 1)
+CCOMMON_OPT += -mno-prefixed
+endif
 else ifneq ($(GCCVERSIONGT4), 1)
 $(warning your compiler is too old to fully support POWER9, getting a newer version of gcc is recommended)
 CCOMMON_OPT += -O3 -mcpu=power8 -mtune=power8 -mvsx -fno-fast-math
@@ -28,6 +31,16 @@ ifeq ($(F_COMPILER), IBM)
 FCOMMON_OPT += -O2 -qrecur -qnosave -qarch=pwr10 -qtune=pwr10 -qfloat=nomaf -qzerosize
 else
 FCOMMON_OPT += -O2 -frecursive -mcpu=power10 -mtune=power10 -fno-fast-math
+ifeq ($(PASE), 1)
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
+ifeq ($(F_COMPILER), GFORTRAN)
+GFORTRANVERSIONGTEQ10 := $(shell expr `$(FC) -dumpversion | cut -f1 -d.` \>= 10)
+ifeq ($(GFORTRANVERSIONGTEQ10), 1)
+FCOMMON_OPT += -mno-prefixed
+endif
+endif
+endif
+endif
 endif
 endif
 endif
