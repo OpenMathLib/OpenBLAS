@@ -139,7 +139,7 @@ static inline void sgemm_sme_compute_32x32_tile(blasint current_K, const float *
                          "z16", "z17", "z18", "z19", "z20", "z21", "z22", "z23",
                          "z24", "z25", "z26", "z27", "z28", "z29", "z30", "z31",
       			 "p0", "p1", "p2", "p3", "p4", "p5", "p6", "p7",
-                         "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15","za");
+                         "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15" SME_ZA_CLOBBER);
 
 
 }
