@@ -48,7 +48,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install autoconf automake autotools-dev ninja-build make \
-          libgomp1-riscv64-cross ccache qemu-kvm qemu-user libc6-riscv64-cross
+          libgomp1-riscv64-cross ccache qemu-system-x86 qemu-utils libvirt-daemon-system \
+          libvirt-clients bridge-utils virt-manager qemu-user libc6-riscv64-cross
           wget ${riscv_gnu_toolchain}/${riscv_gnu_toolchain_nightly_download_path}
           tar -xvf $(basename ${riscv_gnu_toolchain_nightly_download_path}) -C /opt
           wget https://gist.github.com/martin-frbg/bb630e0de34978e578eeb496b1538d4e/raw/7fd8d971f327f7a517b8f5f7989479ff2b36f71f/qemu-riscv64-10.1-ubuntu24 -P /opt/riscv/bin -o riscv64-qemu

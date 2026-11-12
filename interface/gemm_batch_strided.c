@@ -416,18 +416,18 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE transa, enum CBLAS_TRANS
 
 #if defined(CBLAS)
       if (order == CblasColMajor) {      
-	args_array[i].a=&(a[i*stridea]);
-	args_array[i].b=&(b[i*strideb]);
+	args_array[i].a=&(a[i*stridea*COMPSIZE]);
+	args_array[i].b=&(b[i*strideb*COMPSIZE]);
       }else if(order == CblasRowMajor){
-	args_array[i].a=&(b[i*strideb]);
-	args_array[i].b=&(a[i*stridea]);
+	args_array[i].a=&(b[i*strideb*COMPSIZE]);
+	args_array[i].b=&(a[i*stridea*COMPSIZE]);
       }
 #else
-	args_array[i].a=&(a[i*stridea]);
-	args_array[i].b=&(b[i*strideb]);
+	args_array[i].a=&(a[i*stridea*COMPSIZE]);
+	args_array[i].b=&(b[i*strideb*COMPSIZE]);
 #endif
       
-      args_array[i].c= &c[i*stridec];
+      args_array[i].c= &c[i*stridec*COMPSIZE];
       
       args_array[i].routine_mode=group_mode;
       args_array[i].routine=group_routine;

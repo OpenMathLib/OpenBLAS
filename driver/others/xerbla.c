@@ -104,9 +104,11 @@ void __xerbla(char *message, blasint *info, blasint length) {
   return openblas_xerbla_dispatch(message, info, length);
 }
 
+OPENBLAS_EXPORT
 void BLASFUNC(xerbla)(char *, blasint *, blasint)
   __attribute__ ((weak, alias ("__xerbla")));
 #else
+OPENBLAS_EXPORT
 void BLASFUNC(xerbla)(char *message, blasint *info, blasint length) {
   return openblas_xerbla_dispatch(message, info, length);
 }

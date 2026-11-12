@@ -248,6 +248,51 @@ int get_num_procs(void) {
 
   if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
 
+#if defined(OS_LINUX)
+  char quota[10];
+  int period;
+  float cpuquota;
+  char cgroupname[200];
+  char *cgp;
+  char cg[1000];
+  int ncpus=nums;
+  int havequota=0;
+  FILE *p = fopen("/proc/self/cgroup","r");
+  if (p) {
+    memset(cg,0,1000);
+    memset(cgroupname,0,200);
+    fscanf(p,"%s",cgroupname);
+    fclose(p);
+    if (cgroupname[0] == '0') {
+	strcpy(cg,"/sys/fs/cgroup");
+	cgp=strrchr(cgroupname,':');
+	cgp++;
+	strcat(cg,cgp);
+	strcat(cg,"/");
+	do {
+	    cgp=strrchr(cg,'/');
+	    *cgp='\0';
+	    strcat(cgp,"/cpu.max");
+	    p=fopen(cg,"r");
+	    if (p) {
+		fscanf(p,"%s %d",quota,&period);
+		fclose(p);
+		if (!strstr(quota,"max")) {
+		    havequota = 1;
+		    cpuquota=atof(quota)/period;
+		    ncpus=MIN(ncpus,(int)(0.5+cpuquota));
+		}
+	    }
+	    *cgp='\0';
+	} while(cgp-cg>15);
+
+	if (havequota && (ncpus < nums)) {
+	    return ncpus;
+	}
+    }
+  }
+#endif
+
 #if defined(USE_OPENMP)
 #if _OPENMP >= 201511
     int i,n;
@@ -1827,6 +1872,51 @@ int get_num_procs(void) {
 #endif
 
   if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
+
+#if defined(OS_LINUX)
+  char quota[10];
+  int period;
+  float cpuquota;
+  char cgroupname[200];
+  char *cgp;
+  char cg[1000];
+  int ncpus=nums;
+  int havequota=0;
+  FILE *p = fopen("/proc/self/cgroup","r");
+  if (p) {
+    memset(cg,0,1000);
+    memset(cgroupname,0,200);
+    fscanf(p,"%s",cgroupname);
+    fclose(p);
+    if (cgroupname[0] == '0') {
+	strcpy(cg,"/sys/fs/cgroup");
+	cgp=strrchr(cgroupname,':');
+	cgp++;
+	strcat(cg,cgp);
+	strcat(cg,"/");
+	do {
+	    cgp=strrchr(cg,'/');
+	    *cgp='\0';
+	    strcat(cgp,"/cpu.max");
+	    p=fopen(cg,"r");
+	    if (p) {
+		fscanf(p,"%s %d",quota,&period);
+		fclose(p);
+		if (!strstr(quota,"max")) {
+		    havequota = 1;
+		    cpuquota=atof(quota)/period;
+		    ncpus=MIN(ncpus,(int)(0.5+cpuquota));
+		}
+	    }
+	    *cgp='\0';
+	} while(cgp-cg>15);
+
+	if (havequota && (ncpus < nums)) {
+	    return ncpus;
+	}
+    }
+  }
+#endif
 
 #if defined(USE_OPENMP)
 /*  if (omp_get_proc_bind() != omp_proc_bind_false) */

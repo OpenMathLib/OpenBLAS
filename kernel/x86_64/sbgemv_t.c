@@ -39,46 +39,71 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ALIGN64_FREE(ptr) \
     free(ptr)
 
-#ifndef HAVE_SBGEMV_T_ACCL_KERNEL
-static void sbgemv_kernel_t(BLASLONG m, BLASLONG n, float alpha, bfloat16 *a, BLASLONG lda, bfloat16 *x, float beta, float *y)
+/* bfloat16 -> float exactly as SBF16TOS_K (kernel/x86_64/bf16to.c) converts it:
+ * denormals become signed zero, NaNs are made quiet */
+static inline float sbgemv_bf16tos(bfloat16 v)
 {
-	BLASLONG offset_lda, offset_n;
-    float accum = 0.0;
+    uint32_t u = ((uint32_t)v) << 16;
+    float f;
 
-    bfloat16 * a_bf16 = malloc(sizeof(bfloat16)*m*n);
-    float *    a_fp32 = malloc(sizeof(float)*m*n);
-    float *    x_fp32 = malloc(sizeof(float)*n);
+    if ((u & 0x7f800000u) == 0)
+        u &= 0x80000000u;
+    else if (((u & 0x7f800000u) == 0x7f800000u) && (u & 0x007f0000u))
+        u |= 0x00400000u;
+    memcpy(&f, &u, sizeof(f));
+    return f;
+}
 
-    for (BLASLONG i=0; i<m; i++)  {
-        offset_lda = lda * i;
-        offset_n = n * i;
-        for (BLASLONG j=0; j<n; j++) {
-            a_bf16[offset_n + j] = a[offset_lda + j];
+/* Computes directly from the bfloat16 data and the strided x/y, without allocating copies of A, x
+ * or y (m and n are already swapped: y has m elements, x has n).  Every y[i] is accumulated over
+ * j in increasing order, as before; four outputs share each converted x[j]. */
+static void sbgemv_kernel_t_generic(BLASLONG m, BLASLONG n, float alpha, bfloat16 *a, BLASLONG lda, bfloat16 *x, BLASLONG incx, float beta, float *y, BLASLONG incy)
+{
+    BLASLONG i = 0;
+
+    for (; i + 4 <= m; i += 4) {
+        bfloat16 *a0 = a + (i + 0) * lda;
+        bfloat16 *a1 = a + (i + 1) * lda;
+        bfloat16 *a2 = a + (i + 2) * lda;
+        bfloat16 *a3 = a + (i + 3) * lda;
+        float accum0 = 0.0, accum1 = 0.0, accum2 = 0.0, accum3 = 0.0;
+
+        for (BLASLONG j = 0; j < n; j++) {
+            float tmp_x = sbgemv_bf16tos(x[j * incx]);
+            accum0 += sbgemv_bf16tos(a0[j]) * tmp_x;
+            accum1 += sbgemv_bf16tos(a1[j]) * tmp_x;
+            accum2 += sbgemv_bf16tos(a2[j]) * tmp_x;
+            accum3 += sbgemv_bf16tos(a3[j]) * tmp_x;
+        }
+        if (beta == ZERO) {
+            y[(i + 0) * incy] = alpha * accum0;
+            y[(i + 1) * incy] = alpha * accum1;
+            y[(i + 2) * incy] = alpha * accum2;
+            y[(i + 3) * incy] = alpha * accum3;
+        } else {
+            y[(i + 0) * incy] = alpha * accum0 + beta * y[(i + 0) * incy];
+            y[(i + 1) * incy] = alpha * accum1 + beta * y[(i + 1) * incy];
+            y[(i + 2) * incy] = alpha * accum2 + beta * y[(i + 2) * incy];
+            y[(i + 3) * incy] = alpha * accum3 + beta * y[(i + 3) * incy];
         }
     }
 
-    SBF16TOS_K(n, x, 1, x_fp32, 1);
-    SBF16TOS_K(m*n, a_bf16, 1, a_fp32, 1);
+    for (; i < m; i++) {
+        bfloat16 *a0 = a + i * lda;
+        float accum = 0.0;
 
-	for (BLASLONG i=0; i<m; i++) {
-		offset_n = n * i;
-        accum = 0.0;
-		for (BLASLONG j=0; j<n; j++) {
-		    accum += a_fp32[offset_n + j] * x_fp32[j];
-		}
-        if (beta == ZERO) {
-		    y[i] = alpha * accum;
-        } else {
-            y[i] = alpha * accum + beta * y[i];
+        for (BLASLONG j = 0; j < n; j++) {
+            accum += sbgemv_bf16tos(a0[j]) * sbgemv_bf16tos(x[j * incx]);
         }
-	}
-
-    free(a_bf16);
-    free(a_fp32);
-    free(x_fp32);
+        if (beta == ZERO) {
+            y[i * incy] = alpha * accum;
+        } else {
+            y[i * incy] = alpha * accum + beta * y[i * incy];
+        }
+    }
 }
-#endif
 
+#ifdef HAVE_SBGEMV_T_ACCL_KERNEL
 static void bf16_compress_vector(BLASLONG n, bfloat16 * src, bfloat16 * target, BLASLONG inc)
 {
     for(BLASLONG i=0; i<n; i++) {
@@ -99,29 +124,45 @@ static void fp32_expand_vector(BLASLONG n, float * src, float * target, BLASLONG
         target[i*inc] = src[i];
     }
 }
+#endif
 
 int CNAME(BLASLONG m, BLASLONG n, float alpha, bfloat16 *a, BLASLONG lda, bfloat16 *x, BLASLONG incx, float beta, float * y, BLASLONG incy)
 {
     if ( m < 1 || n < 1) return(0);
-
-    bfloat16 * xbuffer_align = x;
-    float    * ybuffer_align = y;
-
-    bfloat16 * xbuffer = NULL;
-    float    * ybuffer = NULL;
 
     // Switch m and n
     BLASLONG t = m;
     m = n;
     n = t;
 
+#ifdef HAVE_SBGEMV_T_ACCL_KERNEL
+    bfloat16 * xbuffer_align = x;
+    float    * ybuffer_align = y;
+
+    bfloat16 * xbuffer = NULL;
+    float    * ybuffer = NULL;
+
     if (incx != 1) {
         ALIGN64_ALLOC(n, bfloat16, xbuffer_align, xbuffer);
-        bf16_compress_vector(n, x, xbuffer_align, incx);
     }
 
     if (incy != 1) {
         ALIGN64_ALLOC(m, float, ybuffer_align, ybuffer);
+    }
+
+    if ((incx != 1 && xbuffer == NULL) || (incy != 1 && ybuffer == NULL)) {
+        /* out of memory for the contiguous copies of x/y: use the strided C code */
+        ALIGN64_FREE(xbuffer);
+        ALIGN64_FREE(ybuffer);
+        sbgemv_kernel_t_generic(m, n, alpha, a, lda, x, incx, beta, y, incy);
+        return(0);
+    }
+
+    if (incx != 1) {
+        bf16_compress_vector(n, x, xbuffer_align, incx);
+    }
+
+    if (incy != 1) {
         if (beta != ZERO) {
             fp32_compress_vector(m, y, ybuffer_align, incy);
         }
@@ -137,6 +178,9 @@ int CNAME(BLASLONG m, BLASLONG n, float alpha, bfloat16 *a, BLASLONG lda, bfloat
     if (incx != 1) {
         ALIGN64_FREE(xbuffer);
     }
+#else
+    sbgemv_kernel_t_generic(m, n, alpha, a, lda, x, incx, beta, y, incy);
+#endif
 
 	return(0);
 }

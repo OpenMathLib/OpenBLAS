@@ -34,7 +34,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "utest/openblas_utest.h"
 #include "common.h"
 
-#define DATASIZE 100
+#define DATASIZE 600
 
 struct DATA_DOMATCOPY {
     double a_test[DATASIZE * DATASIZE];
@@ -408,6 +408,98 @@ CTEST(domatcopy, rowmajor_notrans_col_100_row_50)
     char order = 'R';
     char trans = 'N'; 
     double alpha = 0.0;
+
+    double norm = check_domatcopy('F', order, trans, m, n, alpha, lda, ldb);
+
+    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+}
+
+/**
+ * Fortran API specific test
+ * Test domatcopy by comparing it against refernce
+ * with the following options:
+ *
+ * Column Major
+ * Transposition
+ * Large enough to be split between threads
+ * alpha = 2.0
+ */
+CTEST(domatcopy, colmajor_trans_col_600_row_500)
+{
+    blasint m = 500, n = 600;
+    blasint lda = 500, ldb = 600;
+    char order = 'C';
+    char trans = 'T';
+    double alpha = 2.0;
+
+    double norm = check_domatcopy('F', order, trans, m, n, alpha, lda, ldb);
+
+    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+}
+
+/**
+ * Fortran API specific test
+ * Test domatcopy by comparing it against refernce
+ * with the following options:
+ *
+ * Column Major
+ * Copy only
+ * Large enough to be split between threads
+ * alpha = 2.0
+ */
+CTEST(domatcopy, colmajor_notrans_col_600_row_500)
+{
+    blasint m = 500, n = 600;
+    blasint lda = 500, ldb = 500;
+    char order = 'C';
+    char trans = 'N';
+    double alpha = 2.0;
+
+    double norm = check_domatcopy('F', order, trans, m, n, alpha, lda, ldb);
+
+    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+}
+
+/**
+ * Fortran API specific test
+ * Test domatcopy by comparing it against refernce
+ * with the following options:
+ *
+ * Row Major
+ * Transposition
+ * Large enough to be split between threads
+ * alpha = 2.0
+ */
+CTEST(domatcopy, rowmajor_trans_col_600_row_500)
+{
+    blasint m = 500, n = 600;
+    blasint lda = 600, ldb = 500;
+    char order = 'R';
+    char trans = 'T';
+    double alpha = 2.0;
+
+    double norm = check_domatcopy('F', order, trans, m, n, alpha, lda, ldb);
+
+    ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
+}
+
+/**
+ * Fortran API specific test
+ * Test domatcopy by comparing it against refernce
+ * with the following options:
+ *
+ * Row Major
+ * Copy only
+ * Large enough to be split between threads
+ * alpha = 2.0
+ */
+CTEST(domatcopy, rowmajor_notrans_col_600_row_500)
+{
+    blasint m = 500, n = 600;
+    blasint lda = 600, ldb = 600;
+    char order = 'R';
+    char trans = 'N';
+    double alpha = 2.0;
 
     double norm = check_domatcopy('F', order, trans, m, n, alpha, lda, ldb);
 
