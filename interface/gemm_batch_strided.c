@@ -311,19 +311,19 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE transa, enum CBLAS_TRANS
       group_ldb = ldb;
       group_ldc = ldc;
       
-      if (tb == 'N')   group_transa = 0;
-      if (tb == 'T')   group_transa = 1;
+      if (ta == 'N')   group_transa = 0;
+      if (ta == 'T')   group_transa = 1;
 #ifndef COMPLEX
-      if (tb == 'C')   group_transa = 1;
+      if (ta == 'C')   group_transa = 1;
 #else
-      if (tb == 'C')   group_transa = 3;
+      if (ta == 'C')   group_transa = 3;
 #endif
-      if (ta == 'N')   group_transb = 0;
-      if (ta == 'T')   group_transb = 1;
+      if (tb == 'N')   group_transb = 0;
+      if (tb == 'T')   group_transb = 1;
 #ifndef COMPLEX
-      if (ta == 'C')   group_transb = 1;
+      if (tb == 'C')   group_transb = 1;
 #else
-      if (ta == 'C')   group_transb = 3;
+      if (tb == 'C')   group_transb = 3;
 #endif
 #endif
 
@@ -352,7 +352,8 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE transa, enum CBLAS_TRANS
       return;
     }
 
-    if (group_m == 0 || group_n == 0) continue;
+    /* Every member shares M and N: an empty member means an empty batch. */
+    if (group_m == 0 || group_n == 0) { free(args_array); return; }
 
     group_mode=mode;
 
@@ -361,7 +362,16 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE transa, enum CBLAS_TRANS
 #endif
 
 #ifdef SMALL_MATRIX_OPT
-    if (MNK <= 100.0*100.0*100.0){
+#if !defined(COMPLEX)
+    if (*(FLOAT *)(&alpha) != ZERO &&
+        GEMM_SMALL_MATRIX_PERMIT(group_transa, group_transb, group_m, group_n, group_k,
+                                 *(FLOAT *)(&alpha), *(FLOAT *)(&beta))){
+#else
+    if (((FLOAT *)(alpha))[0] != ZERO &&
+        GEMM_SMALL_MATRIX_PERMIT(group_transa, group_transb, group_m, group_n, group_k,
+                                 ((FLOAT *)(alpha))[0], ((FLOAT *)(alpha))[1],
+                                 ((FLOAT *)(beta))[0], ((FLOAT *)(beta))[1])){
+#endif
       group_routine=NULL;
 #if !defined(COMPLEX)
       if(beta == 0.0){
@@ -406,18 +416,18 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE transa, enum CBLAS_TRANS
 
 #if defined(CBLAS)
       if (order == CblasColMajor) {      
-	args_array[i].a=&(a[i*stridea]);
-	args_array[i].b=&(b[i*strideb]);
+	args_array[i].a=&(a[i*stridea*COMPSIZE]);
+	args_array[i].b=&(b[i*strideb*COMPSIZE]);
       }else if(order == CblasRowMajor){
-	args_array[i].a=&(b[i*strideb]);
-	args_array[i].b=&(a[i*stridea]);
+	args_array[i].a=&(b[i*strideb*COMPSIZE]);
+	args_array[i].b=&(a[i*stridea*COMPSIZE]);
       }
 #else
-	args_array[i].a=&(a[i*stridea]);
-	args_array[i].b=&(b[i*strideb]);
+	args_array[i].a=&(a[i*stridea*COMPSIZE]);
+	args_array[i].b=&(b[i*strideb*COMPSIZE]);
 #endif
       
-      args_array[i].c= &c[i*stridec];
+      args_array[i].c= &c[i*stridec*COMPSIZE];
       
       args_array[i].routine_mode=group_mode;
       args_array[i].routine=group_routine;

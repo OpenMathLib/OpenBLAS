@@ -292,6 +292,9 @@ ifeq ($(ARCH), power)
 GEMM_GEMV_FORWARD = 1
 SBGEMM_GEMV_FORWARD = 1
 endif
+ifeq ($(ARCH), wasm)
+GEMM_GEMV_FORWARD = 1
+endif
 
 ifeq ($(SMALL_MATRIX_OPT), 1)
 CCOMMON_OPT += -DSMALL_MATRIX_OPT

@@ -258,8 +258,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static doublecomplex c_b1 = {1.,0.};
@@ -273,7 +271,6 @@ e algorithm. */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download ZGBTF2 + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgbtf2.
 f"> */
@@ -284,7 +281,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgbtf2.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -382,9 +378,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup complex16GBcomputational */
+/* > \ingroup gbtf2 */
 
 /* > \par Further Details: */
 /*  ===================== */
@@ -418,21 +412,21 @@ f"> */
     doublecomplex z__1;
 
     /* Local variables */
-    integer i__, j;
+    integer i__, j, km, jp, ju, kv;
+    doublereal sfmin;
     extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgeru_(integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *), zswap_(integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
-    integer km, jp, ju, kv;
+    extern doublereal dlamch_(char *);
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern integer izamax_(integer *, doublecomplex *, integer *);
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -443,7 +437,7 @@ f"> */
 
     /* Parameter adjustments */
     ab_dim1 = *ldab;
-    ab_offset = 1 + ab_dim1 * 1;
+    ab_offset = 1 + ab_dim1;
     ab -= ab_offset;
     --ipiv;
 
@@ -475,6 +469,10 @@ f"> */
     if (*m == 0 || *n == 0) {
 	return;
     }
+
+/*     Compute machine safe minimum */
+
+    sfmin = dlamch_("S");
 
 /*     Gaussian elimination with partial pivoting */
 
@@ -540,14 +538,25 @@ f"> */
 
 /*              Compute multipliers. */
 
-		z_div(&z__1, &c_b1, &ab[kv + 1 + j * ab_dim1]);
-		zscal_(&km, &z__1, &ab[kv + 2 + j * ab_dim1], &c__1);
+		if (z_abs(&ab[kv + 1 + j * ab_dim1]) >= sfmin) {
+		    z_div(&z__1, &c_b1, &ab[kv + 1 + j * ab_dim1]);
+		    zscal_(&km, &z__1, &ab[kv + 2 + j * ab_dim1], &c__1);
+		} else {
+		    i__2 = km;
+		    for (i__ = 1; i__ <= i__2; ++i__) {
+			i__3 = kv + 1 + i__ + j * ab_dim1;
+			z_div(&z__1, &ab[kv + 1 + i__ + j * ab_dim1], &ab[kv 
+				+ 1 + j * ab_dim1]);
+			ab[i__3].r = z__1.r, ab[i__3].i = z__1.i;
+/* L35: */
+		    }
+		}
 
 /*              Update trailing submatrix within the band. */
 
 		if (ju > j) {
 		    i__2 = ju - j;
-		    z__1.r = -1., z__1.i = 0.;
+		    z__1.r = -1., z__1.i = -0.;
 		    i__3 = *ldab - 1;
 		    i__4 = *ldab - 1;
 		    zgeru_(&km, &i__2, &z__1, &ab[kv + 2 + j * ab_dim1], &

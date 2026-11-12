@@ -28,7 +28,7 @@
 *> \verbatim
 *>
 *> CGLMTS tests CGGGLM - a subroutine for solving the generalized
-*> linear model problem.
+*> linear model problem, including independent scaling of its inputs.
 *> \endverbatim
 *
 *  Arguments:
@@ -147,6 +147,7 @@
 *  =====================================================================
       SUBROUTINE CGLMTS( N, M, P, A, AF, LDA, B, BF, LDB, D, DF,
      $                   X, U, WORK, LWORK, RWORK, RESULT )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -167,22 +168,28 @@
 *     .. Parameters ..
       REAL               ZERO
       PARAMETER          ( ZERO = 0.0E+0 )
+      REAL              ONE
+      PARAMETER          ( ONE = 1.0E+0 )
+      INTEGER            MAXEXP
+      PARAMETER          ( MAXEXP = MAXEXPONENT( ZERO ) - 2 )
       COMPLEX            CONE
       PARAMETER          ( CONE = 1.0E+0 )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            INFO
+      INTEGER            INFO, ISCALE, J
       REAL               ANORM, BNORM, EPS, XNORM, YNORM, DNORM, UNFL
+      REAL               ASCL, BSCL, DSCL, SCL, TNRM
 *     ..
 *     .. External Functions ..
       REAL               SCASUM, SLAMCH, CLANGE
-      EXTERNAL           SCASUM, SLAMCH, CLANGE
+      LOGICAL            SISNAN
+      EXTERNAL           SISNAN, SCASUM, SLAMCH, CLANGE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLACPY
+      EXTERNAL           CCOPY, CGEMV, CGGGLM, CLACPY, CSSCAL
 *
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX
+      INTRINSIC          EXPONENT, MAX, MAXEXPONENT, SCALE
 *     ..
 *     .. Executable Statements ..
 *
@@ -224,6 +231,68 @@
          RESULT = ZERO
       ELSE
          RESULT =  ( ( DNORM / YNORM ) / XNORM ) /EPS
+      END IF
+*
+*     A, B and d may be scaled independently: for factors a, b, d,
+*     the solutions become (d/a)*x and (d/b)*u.  Test large and
+*     tiny inputs, then undo solution scaling before the residual.
+*
+      TNRM = MAX( CLANGE( 'M', N, M, A, LDA, RWORK ),
+     $           CLANGE( 'M', N, P, B, LDB, RWORK ),
+     $           CLANGE( 'M', N, 1, D, N, RWORK ) )
+      IF( TNRM.GT.ZERO .AND. TNRM.LE.SLAMCH( 'Overflow' ) ) THEN
+*
+*        Cases: common large, common tiny, tiny d, tiny (A,d),
+*        and tiny (B,d).
+*
+         DO 30 ISCALE = 1, 5
+            IF( ISCALE.EQ.1 ) THEN
+               SCL = SCALE( ONE, MAXEXP-EXPONENT( TNRM ) )
+            ELSE
+               SCL = SLAMCH( 'Safe minimum' ) /
+     $               SLAMCH( 'Precision' )
+               SCL = SCALE( ONE, EXPONENT( SCL )-4-
+     $                      EXPONENT( TNRM ) )
+            END IF
+            ASCL = SCL
+            BSCL = SCL
+            DSCL = SCL
+            IF( ISCALE.EQ.3 .OR. ISCALE.EQ.5 ) ASCL = ONE
+            IF( ISCALE.EQ.3 .OR. ISCALE.EQ.4 ) BSCL = ONE
+            CALL CLACPY( 'Full', N, M, A, LDA, AF, LDA )
+            CALL CLACPY( 'Full', N, P, B, LDB, BF, LDB )
+            CALL CCOPY( N, D, 1, DF, 1 )
+            DO 10 J = 1, M
+               CALL CSSCAL( N, ASCL, AF( 1, J ), 1 )
+   10       CONTINUE
+            DO 20 J = 1, P
+               CALL CSSCAL( N, BSCL, BF( 1, J ), 1 )
+   20       CONTINUE
+            CALL CSSCAL( N, DSCL, DF, 1 )
+*
+            CALL CGGGLM( N, M, P, AF, LDA, BF, LDB, DF, X, U, WORK,
+     $                   LWORK, INFO )
+            IF( INFO.NE.0 ) THEN
+               RESULT = ONE / EPS
+               GO TO 30
+            END IF
+            CALL CSSCAL( M, ASCL / DSCL, X, 1 )
+            CALL CSSCAL( P, BSCL / DSCL, U, 1 )
+*
+            CALL CCOPY( N, D, 1, DF, 1 )
+            CALL CGEMV( 'No transpose', N, M, -CONE, A, LDA, X, 1, CONE,
+     $                  DF, 1 )
+            CALL CGEMV( 'No transpose', N, P, -CONE, B, LDB, U, 1, CONE,
+     $                  DF, 1 )
+            DNORM = SCASUM( N, DF, 1 )
+            XNORM = SCASUM( M, X, 1 ) + SCASUM( P, U, 1 )
+            IF( SISNAN( DNORM ) .OR. SISNAN( XNORM ) ) THEN
+               RESULT = ONE / EPS
+            ELSE IF( XNORM.GT.ZERO ) THEN
+               RESULT = MAX( RESULT,
+     $                       ( ( DNORM / YNORM ) / XNORM ) / EPS )
+            END IF
+   30    CONTINUE
       END IF
 *
       RETURN

@@ -6,6 +6,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "common.h"
+#include "sme2_gemm_detect.h"
+#ifdef HAVE_SME2_GEMM
+#include "sme2_gemm_impl.h"
+#endif
 #ifndef stdmin
 #define stdmin(a,b)   (a>b? b:a)
 #endif
@@ -1185,6 +1189,12 @@ void CNAME(const char *transa, const char *transb, const BLASLONG m, const BLASL
 {
     bool trans_a = (*transa == 'T' || *transa == 't' || *transa == 'C' || *transa == 'c');
     bool trans_b = (*transb == 'T' || *transb == 't' || *transb == 'C' || *transb == 'c');
+#if defined(HAVE_SME2_GEMM)
+    if (s2_usable() && S2_FITS(m, n, k)) {
+        s2_gemm(trans_a, trans_b, m, n, k, *alpha, a, lda, b, ldb, *beta, c, ldc);
+        return;
+    }
+#endif
     if (!trans_a && !trans_b) {
         dgemm_sme_NN(m, n, k, *alpha, a, lda, b, ldb, *beta, c, ldc);
     }

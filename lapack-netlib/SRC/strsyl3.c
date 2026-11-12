@@ -774,10 +774,6 @@ static real c_b32 = 1.f;
 	*info = -9;
     } else if (*ldc < f2cmax(1,*m)) {
 	*info = -11;
-    } else if (! lquery && *liwork < iwork[1]) {
-	*info = -14;
-    } else if (! lquery && *ldswork < f2cmax(nba,nbb)) {
-	*info = -16;
     }
     if (*info != 0) {
 	i__1 = -(*info);

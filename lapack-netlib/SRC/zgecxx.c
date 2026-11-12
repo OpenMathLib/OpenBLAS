@@ -258,7 +258,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
 /* Table of constant values */
 
 static integer c_n1 = -1;
@@ -312,13 +311,14 @@ static integer c__1 = 1;
     doublereal safmin;
     extern /* Subroutine */ void xerbla_(char *, integer *, ftnlen);
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
-	    integer *, doublecomplex *);
+	    integer *, doublereal *);
     integer mresid, nresid;
     extern integer izamax_(integer *, doublecomplex *, integer *);
+    integer kmaxls;
     extern /* Subroutine */ void zgeqrf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    );
-    integer kmaxls, lwkmin;
+    integer lwkmin;
     extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     logical usetol, lquery;
@@ -634,9 +634,9 @@ static integer c__1 = 1;
 
 	if (*lwork < lwkmin && ! lquery) {
 	    *info = -26;
-	} else if (*lrwork < lrwkmin && ! lquery) {
+	} else if ((*lrwork < lrwkmin) && ! lquery) {
 	    *info = -28;
-	} else if (*liwork < liwkmin && ! lquery) {
+	} else if ((*liwork < liwkmin) && ! lquery) {
 	    *info = -30;
 	}
     }
@@ -1036,7 +1036,7 @@ static integer c__1 = 1;
 
     if (f2cmin(mresid,nresid) != 0) {
 	*fnrmk = zlange_("F", &mresid, &nresid, &a[*k + 1 + (*k + 1) * a_dim1]
-		, lda, &work[1]);
+		, lda, &rwork[1]);
     } else {
 	*fnrmk = 0.;
     }

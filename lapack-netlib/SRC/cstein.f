@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download CSTEIN + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cstein.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cstein.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -97,6 +95,8 @@
 *>          the first submatrix from the top, =2 if W(i) belongs to
 *>          the second submatrix, etc.  ( The output array IBLOCK
 *>          from SSTEBZ is expected here. )
+*>          A negative entry, with which SSTEBZ flags an eigenvalue that
+*>          did not converge, is treated as its absolute value.
 *> \endverbatim
 *>
 *> \param[in] ISPLIT
@@ -174,11 +174,12 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup stein
 *
 *  =====================================================================
       SUBROUTINE CSTEIN( N, D, E, M, W, IBLOCK, ISPLIT, Z, LDZ, WORK,
      $                   IWORK, IFAIL, INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -222,7 +223,8 @@
       EXTERNAL           ISAMAX, SLAMCH, SNRM2
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SLAGTF, SLAGTS, SLARNV, SSCAL, XERBLA
+      EXTERNAL           SCOPY, SLAGTF, SLAGTS, SLARNV, SSCAL,
+     $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, CMPLX, MAX, REAL, SQRT
@@ -244,11 +246,12 @@
          INFO = -9
       ELSE
          DO 20 J = 2, M
-            IF( IBLOCK( J ).LT.IBLOCK( J-1 ) ) THEN
+            IF( ABS( IBLOCK( J ) ).LT.ABS( IBLOCK( J-1 ) ) ) THEN
                INFO = -6
                GO TO 30
             END IF
-            IF( IBLOCK( J ).EQ.IBLOCK( J-1 ) .AND. W( J ).LT.W( J-1 ) )
+            IF( ABS( IBLOCK( J ) ).EQ.ABS( IBLOCK( J-1 ) ) .AND.
+     $          W( J ).LT.W( J-1 ) )
      $           THEN
                INFO = -5
                GO TO 30
@@ -292,7 +295,7 @@
 *     Compute eigenvectors of matrix blocks.
 *
       J1 = 1
-      DO 180 NBLK = 1, IBLOCK( M )
+      DO 180 NBLK = 1, ABS( IBLOCK( M ) )
 *
 *        Find starting and ending indices of block nblk.
 *
@@ -317,14 +320,14 @@
    50    CONTINUE
          ORTOL = ODM3*ONENRM
 *
-         STPCRT = SQRT( ODM1 / BLKSIZ )
+         STPCRT = SQRT( ODM1 / REAL( BLKSIZ ) )
 *
 *        Loop through eigenvalues of block nblk.
 *
    60    CONTINUE
          JBLK = 0
          DO 170 J = J1, M
-            IF( IBLOCK( J ).NE.NBLK ) THEN
+            IF( ABS( IBLOCK( J ) ).NE.NBLK ) THEN
                J1 = J
                GO TO 180
             END IF
@@ -365,7 +368,8 @@
 *           Compute LU factors with partial pivoting  ( PT = LU )
 *
             TOL = ZERO
-            CALL SLAGTF( BLKSIZ, WORK( INDRV4+1 ), XJ, WORK( INDRV2+2 ),
+            CALL SLAGTF( BLKSIZ, WORK( INDRV4+1 ), XJ,
+     $                   WORK( INDRV2+2 ),
      $                   WORK( INDRV3+1 ), TOL, WORK( INDRV5+1 ), IWORK,
      $                   IINFO )
 *
@@ -379,14 +383,15 @@
 *           Normalize and scale the righthand side vector Pb.
 *
             JMAX = ISAMAX( BLKSIZ, WORK( INDRV1+1 ), 1 )
-            SCL = BLKSIZ*ONENRM*MAX( EPS,
+            SCL = REAL( BLKSIZ )*ONENRM*MAX( EPS,
      $            ABS( WORK( INDRV4+BLKSIZ ) ) ) /
      $            ABS( WORK( INDRV1+JMAX ) )
             CALL SSCAL( BLKSIZ, SCL, WORK( INDRV1+1 ), 1 )
 *
 *           Solve the system LU = Pb.
 *
-            CALL SLAGTS( -1, BLKSIZ, WORK( INDRV4+1 ), WORK( INDRV2+2 ),
+            CALL SLAGTS( -1, BLKSIZ, WORK( INDRV4+1 ),
+     $                   WORK( INDRV2+2 ),
      $                   WORK( INDRV3+1 ), WORK( INDRV5+1 ), IWORK,
      $                   WORK( INDRV1+1 ), TOL, IINFO )
 *

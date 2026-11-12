@@ -506,3 +506,6 @@ ZSUMKERNEL = zsum_sse2.S
 
 SOMATCOPY_RT = omatcopy_rt.c
 SOMATCOPY_CT = omatcopy_ct.c
+
+DOMATCOPY_RT = domatcopy_t_avx.c
+DOMATCOPY_CT = domatcopy_t_avx.c

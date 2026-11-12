@@ -249,7 +249,6 @@ typedef struct Namelist Namelist;
 
 
 
-
 /* Table of constant values */
 
 static integer c__1 = 1;
@@ -262,7 +261,6 @@ thod (unblocked algorithm calling Level 2 BLAS). */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download CHETF2 + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chetf2.
 f"> */
@@ -273,7 +271,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chetf2.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -383,9 +380,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup complexHEcomputational */
+/* > \ingroup hetf2 */
 
 /* > \par Further Details: */
 /*  ===================== */
@@ -445,45 +440,43 @@ f"> */
 {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2, i__3, i__4, i__5, i__6;
-    real r__1=0., r__2=0., r__3=0., r__4=0.;
-    complex q__1={0.,0.}, q__2={0.,0.}, q__3={0.,0.}, q__4={0.,0.}, q__5={0.,0.}, q__6={0.,0.};
+    real r__1, r__2, r__3, r__4;
+    complex q__1, q__2, q__3, q__4, q__5, q__6;
 
     /* Local variables */
-    extern /* Subroutine */ void cher_(char *, integer *, real *, complex *, 
-	    integer *, complex *, integer *);
-    integer imax, jmax;
     real d__;
     integer i__, j, k;
     complex t;
+    real r1, d11;
+    complex d12;
+    real d22;
+    complex d21;
+    integer kk, kp;
+    complex wk;
+    real tt;
+    complex wkm1, wkp1;
+    extern /* Subroutine */ void cher_(char *, integer *, real *, complex *, 
+	    integer *, complex *, integer *);
+    integer imax, jmax;
     real alpha;
     extern logical lsame_(char *, char *);
     extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer kstep;
     logical upper;
-    real r1, d11;
-    complex d12;
-    real d22;
-    complex d21;
     extern real slapy2_(real *, real *);
-    integer kk, kp;
     real absakk;
-    complex wk;
     extern integer icamax_(integer *, complex *, integer *);
-    real tt;
     extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
-	    *);
-    extern void xerbla_(char *, integer *, ftnlen);
+	    *), xerbla_(char *, integer *, ftnlen);
     real colmax;
     extern logical sisnan_(real *);
     real rowmax;
-    complex wkm1, wkp1;
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -493,7 +486,7 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     --ipiv;
 
@@ -729,27 +722,28 @@ L10:
 		    i__1 = k - 1 + k * a_dim1;
 		    q__1.r = a[i__1].r / d__, q__1.i = a[i__1].i / d__;
 		    d12.r = q__1.r, d12.i = q__1.i;
-		    d__ = tt / d__;
 
 		    for (j = k - 2; j >= 1; --j) {
 			i__1 = j + (k - 1) * a_dim1;
-			q__3.r = d11 * a[i__1].r, q__3.i = d11 * a[i__1].i;
-			r_cnjg(&q__5, &d12);
+			q__4.r = d11 * a[i__1].r, q__4.i = d11 * a[i__1].i;
+			r_cnjg(&q__6, &d12);
 			i__2 = j + k * a_dim1;
-			q__4.r = q__5.r * a[i__2].r - q__5.i * a[i__2].i, 
-				q__4.i = q__5.r * a[i__2].i + q__5.i * a[i__2]
+			q__5.r = q__6.r * a[i__2].r - q__6.i * a[i__2].i, 
+				q__5.i = q__6.r * a[i__2].i + q__6.i * a[i__2]
 				.r;
-			q__2.r = q__3.r - q__4.r, q__2.i = q__3.i - q__4.i;
-			q__1.r = d__ * q__2.r, q__1.i = d__ * q__2.i;
+			q__3.r = q__4.r - q__5.r, q__3.i = q__4.i - q__5.i;
+			q__2.r = q__3.r / d__, q__2.i = q__3.i / d__;
+			q__1.r = tt * q__2.r, q__1.i = tt * q__2.i;
 			wkm1.r = q__1.r, wkm1.i = q__1.i;
 			i__1 = j + k * a_dim1;
-			q__3.r = d22 * a[i__1].r, q__3.i = d22 * a[i__1].i;
+			q__4.r = d22 * a[i__1].r, q__4.i = d22 * a[i__1].i;
 			i__2 = j + (k - 1) * a_dim1;
-			q__4.r = d12.r * a[i__2].r - d12.i * a[i__2].i, 
-				q__4.i = d12.r * a[i__2].i + d12.i * a[i__2]
+			q__5.r = d12.r * a[i__2].r - d12.i * a[i__2].i, 
+				q__5.i = d12.r * a[i__2].i + d12.i * a[i__2]
 				.r;
-			q__2.r = q__3.r - q__4.r, q__2.i = q__3.i - q__4.i;
-			q__1.r = d__ * q__2.r, q__1.i = d__ * q__2.i;
+			q__3.r = q__4.r - q__5.r, q__3.i = q__4.i - q__5.i;
+			q__2.r = q__3.r / d__, q__2.i = q__3.i / d__;
+			q__1.r = tt * q__2.r, q__1.i = tt * q__2.i;
 			wk.r = q__1.r, wk.i = q__1.i;
 			for (i__ = j; i__ >= 1; --i__) {
 			    i__1 = i__ + j * a_dim1;
@@ -1017,28 +1011,29 @@ L50:
 		    i__1 = k + 1 + k * a_dim1;
 		    q__1.r = a[i__1].r / d__, q__1.i = a[i__1].i / d__;
 		    d21.r = q__1.r, d21.i = q__1.i;
-		    d__ = tt / d__;
 
 		    i__1 = *n;
 		    for (j = k + 2; j <= i__1; ++j) {
 			i__2 = j + k * a_dim1;
-			q__3.r = d11 * a[i__2].r, q__3.i = d11 * a[i__2].i;
+			q__4.r = d11 * a[i__2].r, q__4.i = d11 * a[i__2].i;
 			i__3 = j + (k + 1) * a_dim1;
-			q__4.r = d21.r * a[i__3].r - d21.i * a[i__3].i, 
-				q__4.i = d21.r * a[i__3].i + d21.i * a[i__3]
+			q__5.r = d21.r * a[i__3].r - d21.i * a[i__3].i, 
+				q__5.i = d21.r * a[i__3].i + d21.i * a[i__3]
 				.r;
-			q__2.r = q__3.r - q__4.r, q__2.i = q__3.i - q__4.i;
-			q__1.r = d__ * q__2.r, q__1.i = d__ * q__2.i;
+			q__3.r = q__4.r - q__5.r, q__3.i = q__4.i - q__5.i;
+			q__2.r = q__3.r / d__, q__2.i = q__3.i / d__;
+			q__1.r = tt * q__2.r, q__1.i = tt * q__2.i;
 			wk.r = q__1.r, wk.i = q__1.i;
 			i__2 = j + (k + 1) * a_dim1;
-			q__3.r = d22 * a[i__2].r, q__3.i = d22 * a[i__2].i;
-			r_cnjg(&q__5, &d21);
+			q__4.r = d22 * a[i__2].r, q__4.i = d22 * a[i__2].i;
+			r_cnjg(&q__6, &d21);
 			i__3 = j + k * a_dim1;
-			q__4.r = q__5.r * a[i__3].r - q__5.i * a[i__3].i, 
-				q__4.i = q__5.r * a[i__3].i + q__5.i * a[i__3]
+			q__5.r = q__6.r * a[i__3].r - q__6.i * a[i__3].i, 
+				q__5.i = q__6.r * a[i__3].i + q__6.i * a[i__3]
 				.r;
-			q__2.r = q__3.r - q__4.r, q__2.i = q__3.i - q__4.i;
-			q__1.r = d__ * q__2.r, q__1.i = d__ * q__2.i;
+			q__3.r = q__4.r - q__5.r, q__3.i = q__4.i - q__5.i;
+			q__2.r = q__3.r / d__, q__2.i = q__3.i / d__;
+			q__1.r = tt * q__2.r, q__1.i = tt * q__2.i;
 			wkp1.r = q__1.r, wkp1.i = q__1.i;
 			i__2 = *n;
 			for (i__ = j; i__ <= i__2; ++i__) {

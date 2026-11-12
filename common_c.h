@@ -44,12 +44,8 @@
 
 #define	CAMAX_K			camax_k
 #define	CAMIN_K			camin_k
-#define	CMAX_K			cmax_k
-#define	CMIN_K			cmin_k
 #define	ICAMAX_K		icamax_k
 #define	ICAMIN_K		icamin_k
-#define	ICMAX_K			icmax_k
-#define	ICMIN_K			icmin_k
 #define	CASUM_K			casum_k
 #define	CAXPYU_K		caxpy_k
 #define	CAXPYC_K		caxpyc_k
@@ -292,12 +288,8 @@
 
 #define	CAMAX_K			gotoblas -> camax_k
 #define	CAMIN_K			gotoblas -> camin_k
-#define	CMAX_K			gotoblas -> cmax_k
-#define	CMIN_K			gotoblas -> cmin_k
 #define	ICAMAX_K		gotoblas -> icamax_k
 #define	ICAMIN_K		gotoblas -> icamin_k
-#define	ICMAX_K			gotoblas -> icmax_k
-#define	ICMIN_K			gotoblas -> icmin_k
 #define	CASUM_K			gotoblas -> casum_k
 #define	CAXPYU_K		gotoblas -> caxpy_k
 #define	CAXPYC_K		gotoblas -> caxpyc_k

@@ -823,7 +823,7 @@ mv.f"> */
 		    i__2 = i__;
 		    for (j = 1; j <= i__2; ++j) {
 			temp = (r__1 = a[j + i__ * a_dim1], abs(r__1));
-			symb_zero__ = symb_zero__ && (x[j] == 0.f || temp == 
+			symb_zero__ = symb_zero__ && (x[jx] == 0.f || temp == 
 				0.f);
 			y[iy] += *alpha * (r__1 = x[jx], abs(r__1)) * temp;
 			jx += *incx;
@@ -831,7 +831,7 @@ mv.f"> */
 		    i__2 = *n;
 		    for (j = i__ + 1; j <= i__2; ++j) {
 			temp = (r__1 = a[i__ + j * a_dim1], abs(r__1));
-			symb_zero__ = symb_zero__ && (x[j] == 0.f || temp == 
+			symb_zero__ = symb_zero__ && (x[jx] == 0.f || temp == 
 				0.f);
 			y[iy] += *alpha * (r__1 = x[jx], abs(r__1)) * temp;
 			jx += *incx;
@@ -859,7 +859,7 @@ mv.f"> */
 		    i__2 = i__;
 		    for (j = 1; j <= i__2; ++j) {
 			temp = (r__1 = a[i__ + j * a_dim1], abs(r__1));
-			symb_zero__ = symb_zero__ && (x[j] == 0.f || temp == 
+			symb_zero__ = symb_zero__ && (x[jx] == 0.f || temp == 
 				0.f);
 			y[iy] += *alpha * (r__1 = x[jx], abs(r__1)) * temp;
 			jx += *incx;
@@ -867,7 +867,7 @@ mv.f"> */
 		    i__2 = *n;
 		    for (j = i__ + 1; j <= i__2; ++j) {
 			temp = (r__1 = a[j + i__ * a_dim1], abs(r__1));
-			symb_zero__ = symb_zero__ && (x[j] == 0.f || temp == 
+			symb_zero__ = symb_zero__ && (x[jx] == 0.f || temp == 
 				0.f);
 			y[iy] += *alpha * (r__1 = x[jx], abs(r__1)) * temp;
 			jx += *incx;

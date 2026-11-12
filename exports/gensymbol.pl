@@ -49,7 +49,8 @@
     chbmv,chemm,chemv,cher2,cher2k,cher,cherk,scabs1,scamax,
     chpmv,chpr2,chpr,crotg,cscal,csrot,csscal,cswap,scamin,scasum,scnrm2,
     csymm,csyr2k,csyrk,ctbmv,ctbsv,ctpmv,ctpsv,ctrmm,ctrmv,ctrsm,
-    ctrsv,icamax,icamin,cimatcopy,comatcopy,cgeadd,scsum,cgemmt,cgemmtr);
+    ctrsv,icamax,icamin,cimatcopy,comatcopy,cgeadd,scsum,cgemmt,cgemmtr,
+    cgemm_batch,cgemm_batch_strided);
     
 @blasobjsd = (
     damax,damin,dasum,daxpy,daxpby,dcabs1,dcopy,ddot,dgbmv,dgemm,
@@ -57,7 +58,8 @@
     dscal,dsdot,dspmv,dspr2,dimatcopy,domatcopy,
     dspr,dswap,dsymm,dsymv,dsyr2,dsyr2k,dsyr,dsyrk,dtbmv,dtbsv,
     dtpmv,dtpsv,dtrmm,dtrmv,dtrsm,dtrsv,
-        idamax,idamin,idmax,idmin,dgeadd,dsum,dgemmt,dgemmtr);
+    idamax,idamin,idmax,idmin,dgeadd,dsum,dgemmt,dgemmtr,
+    dgemm_batch,dgemm_batch_strided);
     
 @blasobjss = (
     isamax,isamin,ismax,ismin,
@@ -66,7 +68,8 @@
     smax,smin,snrm2,simatcopy,somatcopy,
     srot,srotg,srotm,srotmg,ssbmv,sscal,sspmv,sspr2,sspr,sswap,
     ssymm,ssymv,ssyr2,ssyr2k,ssyr,ssyrk,stbmv,stbsv,stpmv,stpsv,
-    strmm,strmv,strsm,strsv, sgeadd,ssum,sgemmt,sgemmtr);
+    strmm,strmv,strsm,strsv,sgeadd,ssum,sgemmt,sgemmtr,
+    sgemm_batch,sgemm_batch_strided);
      
 @blasobjsz = (
     izamax,izamin,,
@@ -76,10 +79,10 @@
     zhpr,zrotg,zscal,zswap,zsymm,zsyr2k,zsyrk,ztbmv,
     ztbsv,ztpmv,ztpsv,ztrmm,ztrmv,ztrsm,ztrsv,
     zomatcopy, zimatcopy,dzamax,dzamin,dzasum,dznrm2,
-    zgeadd, dzsum, zgemmt,zgemmtr);
+    zgeadd, dzsum, zgemmt,zgemmtr,zgemm_batch,zgemm_batch_strided);
 
 @blasobjs = (lsame, xerbla);
-@bfblasobjs = (bgemm, bgemv, sbgemm, sbgemmt, sbgemmtr, sbgemv, sbdot, sbstobf16, sbdtobf16, sbf16tos, dbf16tod);
+@bfblasobjs = (bgemm, bgemv, bscal, sbgemm, sbgemm_batch, sbgemm_batch_strided, sbgemmt, sbgemmtr, sbgemv, sbdot, sbstobf16, sbdtobf16, sbf16tos, dbf16tod);
 @hfblasobjs = (shgemm, shgemv);
 @cblasobjsc = (
     cblas_caxpy, cblas_ccopy, cblas_cdotc, cblas_cdotu, cblas_cgbmv, cblas_cgemm, cblas_cgemv,
@@ -88,8 +91,8 @@
     cblas_csscal, cblas_cswap, cblas_csymm, cblas_csyr2k, cblas_csyrk, cblas_ctbmv, cblas_cgeadd,
     cblas_ctbsv, cblas_ctpmv, cblas_ctpsv, cblas_ctrmm, cblas_ctrmv, cblas_ctrsm, cblas_ctrsv, 
     cblas_scnrm2, cblas_scasum, cblas_cgemmt, cblas_cgemmtr,
-    cblas_icamax, cblas_icamin, cblas_icmin, cblas_icmax, cblas_scsum,cblas_cimatcopy,cblas_comatcopy,
-    cblas_caxpyc, cblas_crotg, cblas_csrot, cblas_scamax, cblas_scamin, cblas_cgemm_batch);
+    cblas_icamax, cblas_icamin, cblas_scsum,cblas_cimatcopy,cblas_comatcopy,
+    cblas_caxpyc, cblas_crotg, cblas_csrot, cblas_scamax, cblas_scamin, cblas_cgemm_batch, cblas_cgemm_batch_strided);
 
 @cblasobjsd = (
     cblas_dasum, cblas_daxpy, cblas_dcopy, cblas_ddot,
@@ -99,7 +102,7 @@
     cblas_dsyr2k, cblas_dsyr, cblas_dsyrk, cblas_dtbmv, cblas_dtbsv, cblas_dtpmv, cblas_dtpsv,
     cblas_dtrmm, cblas_dtrmv, cblas_dtrsm, cblas_dtrsv, cblas_daxpby, cblas_dgeadd, cblas_dgemmt, cblas_dgemmtr,
     cblas_idamax, cblas_idamin, cblas_idmin, cblas_idmax, cblas_dsum,cblas_dimatcopy,cblas_domatcopy,
-    cblas_damax, cblas_damin, cblas_dgemm_batch);
+    cblas_damax, cblas_damin, cblas_dgemm_batch, cblas_dgemm_batch_strided);
     
 @cblasobjss = (
     cblas_sasum, cblas_saxpy, cblas_saxpby,
@@ -110,7 +113,7 @@
     cblas_stbmv, cblas_stbsv, cblas_stpmv, cblas_stpsv, cblas_strmm, cblas_strmv, cblas_strsm,
     cblas_strsv, cblas_sgeadd, cblas_sgemmt, cblas_sgemmtr,
     cblas_isamax, cblas_isamin, cblas_ismin, cblas_ismax, cblas_ssum,cblas_simatcopy,cblas_somatcopy,
-    cblas_samax, cblas_samin, cblas_sgemm_batch);
+    cblas_samax, cblas_samin, cblas_sgemm_batch, cblas_sgemm_batch_strided);
 
 @cblasobjsz = (
     cblas_dzasum, cblas_dznrm2, cblas_zaxpy, cblas_zcopy, cblas_zdotc, cblas_zdotu, cblas_zdscal,
@@ -120,12 +123,12 @@
     cblas_ztbmv, cblas_ztbsv, cblas_ztpmv, cblas_ztpsv, cblas_ztrmm, cblas_ztrmv, cblas_ztrsm,
     cblas_ztrsv, cblas_cdotc_sub, cblas_cdotu_sub, cblas_zdotc_sub, cblas_zdotu_sub,
     cblas_zaxpby, cblas_zgeadd, cblas_zgemmt, cblas_zgemmtr,
-    cblas_izamax, cblas_izamin, cblas_izmin, cblas_izmax, cblas_dzsum,cblas_zimatcopy,cblas_zomatcopy,
-    cblas_zaxpyc, cblas_zdrot, cblas_zrotg, cblas_dzamax, cblas_dzamin, cblas_zgemm_batch);
+    cblas_izamax, cblas_izamin, cblas_dzsum,cblas_zimatcopy,cblas_zomatcopy,
+    cblas_zaxpyc, cblas_zdrot, cblas_zrotg, cblas_dzamax, cblas_dzamin, cblas_zgemm_batch, cblas_zgemm_batch_strided);
 
 @cblasobjs = (  cblas_xerbla );
 
-@bfcblasobjs = (cblas_sbgemm, cblas_sbgemmt, cblas_sbgemmtr, cblas_sbgemv, cblas_sbdot, cblas_sbstobf16, cblas_sbdtobf16, cblas_sbf16tos, cblas_dbf16tod, cblas_sbgemm_batch);
+@bfcblasobjs = (cblas_bgemm, cblas_bgemv, cblas_bscal, cblas_sbgemm, cblas_sbgemmt, cblas_sbgemmtr, cblas_sbgemv, cblas_sbdot, cblas_sbstobf16, cblas_sbdtobf16, cblas_sbf16tos, cblas_dbf16tod, cblas_sbgemm_batch, cblas_sbgemm_batch_strided);
 @hfcblasobjs = (cblas_shgemm);
 @exblasobjs = (
     qamax,qamin,qasum,qaxpy,qcabs1,qcopy,qdot,qgbmv,qgemm,
@@ -894,7 +897,8 @@ zpotri,
     clatrs3,
     crscl,
     ctrsyl3,
-    cgecxx
+    cgecxx,
+    cgesvdmr3
     );
 #    claqz0
 #    claqz1
@@ -910,7 +914,23 @@ zpotri,
     dlarmm,
     dlatrs3,
     dtrsyl3,
-    dgecxx
+    dgecxx,
+    dbdsvdmr3,
+    dbdsvdmr3_work,
+    dbdtgk,
+    dgesvdmr3,
+    dlar1v_tgk,
+    dlarrb_tgk,
+    dlarrf_tgk,
+    dlarrv_tgk,
+	dlaed0_br,
+    dlaed0_merge_pair,
+    dlaed4_br,
+    dlaed7_br,
+    dlaed8_br,
+    dlaed9_br,
+    dstebr,
+    dsteqr_boundary_br
     );
 
 @lapackobjs2s = (@lapackobjs2s,
@@ -921,7 +941,23 @@ zpotri,
     slarmm,
     slatrs3,
     strsyl3,
-    sgecxx
+    sgecxx,
+    sbdsvdmr3,
+    sbdsvdmr3_work,
+    sbdtgk,
+    sgesvdmr3,
+    slar1v_tgk,
+    slarrb_tgk,
+    slarrf_tgk,
+    slarrv_tgk,
+	slaed0_br,
+    slaed0_merge_pair,
+    slaed4_br,
+    slaed7_br,
+    slaed8_br,
+    slaed9_br,
+    sstebr,
+    ssteqr_boundary_br
     );
 
 @lapackobjs2z = (@lapackobjs2z,
@@ -932,7 +968,8 @@ zpotri,
     zlatrs3,
     zrscl,
     ztrsyl3,
-    zgecxx
+    zgecxx,
+    zgesvdmr3
     );
 #    zlaqz0
 #    zlaqz1
@@ -1711,7 +1748,9 @@ zpotri,
     LAPACKE_ctz_nancheck,
     LAPACKE_ctz_trans,
     LAPACKE_cunhr_col,
-    LAPACKE_cunhr_col_work
+    LAPACKE_cunhr_col_work,
+    LAPACKE_cgesvdmr3,
+    LAPACKE_cgesvdmr3_work
 );
 @lapackeobjsd = (
     LAPACKE_dgb_nancheck,
@@ -2338,7 +2377,12 @@ zpotri,
     LAPACKE_dtrsyl3_work,
     LAPACKE_dtz_nancheck,
     LAPACKE_dtz_trans,
-
+    LAPACKE_dbdsvdmr3,
+    LAPACKE_dbdsvdmr3_work,
+    LAPACKE_dgesvdmr3,
+    LAPACKE_dgesvdmr3_work,
+	LAPACKE_dstebr,
+	LAPACKE_dstebr_work
 );
 @lapackeobjss = (
     LAPACKE_sgb_nancheck,
@@ -2957,7 +3001,12 @@ zpotri,
     LAPACKE_strsyl3_work,
     LAPACKE_stz_nancheck,
     LAPACKE_stz_trans,
-
+    LAPACKE_sbdsvdmr3,
+    LAPACKE_sbdsvdmr3_work,
+    LAPACKE_sgesvdmr3,
+    LAPACKE_sgesvdmr3_work,
+	LAPACKE_sstebr,
+	LAPACKE_sstebr_work
 );
 @lapackeobjsz = (    
     LAPACKE_zgb_nancheck,
@@ -3514,6 +3563,8 @@ zpotri,
     LAPACKE_ztrsyl3_work,
     LAPACKE_ztz_nancheck,
     LAPACKE_ztz_trans,
+    LAPACKE_zgesvdmr3,
+    LAPACKE_zgesvdmr3_work,
 
     ## @(SRCX_OBJ) from `lapack-3.4.1/lapacke/src/Makefile`
     ## Not exported: requires LAPACKE_EXTENDED to be set and depends on the

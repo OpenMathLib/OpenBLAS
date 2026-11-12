@@ -1917,12 +1917,8 @@
 
 #define	AMAX_K			ZAMAX_K
 #define	AMIN_K			ZAMIN_K
-#define	MAX_K			ZMAX_K
-#define	MIN_K			ZMIN_K
 #define	IAMAX_K			IZAMAX_K
 #define	IAMIN_K			IZAMIN_K
-#define	IMAX_K			IZMAX_K
-#define	IMIN_K			IZMIN_K
 #define	ASUM_K			ZASUM_K
 #define	AXPYU_K			ZAXPYU_K
 #define	AXPYC_K			ZAXPYC_K
@@ -2437,12 +2433,8 @@
 
 #define	AMAX_K			CAMAX_K
 #define	AMIN_K			CAMIN_K
-#define	MAX_K			CMAX_K
-#define	MIN_K			CMIN_K
 #define	IAMAX_K			ICAMAX_K
 #define	IAMIN_K			ICAMIN_K
-#define	IMAX_K			ICMAX_K
-#define	IMIN_K			ICMIN_K
 #define	ASUM_K			CASUM_K
 #define	AXPYU_K			CAXPYU_K
 #define	AXPYC_K			CAXPYC_K

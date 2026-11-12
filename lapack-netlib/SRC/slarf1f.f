@@ -155,6 +155,11 @@
 *     ..
 *     .. Executable Statements ..
 *
+*     Quick return if C is empty
+*
+      IF( M.LE.0 .OR. N.LE.0 )
+     $   RETURN
+*
       APPLYLEFT = LSAME( SIDE, 'L' )
       LASTV = 1
       LASTC = 0
@@ -183,6 +188,11 @@
 !     Scan for the last non-zero row in C(:,1:lastv).
             LASTC = ILASLR(M, LASTV, C, LDC)
          END IF
+!     Set index for V. If INCV < 0, then I points to the end of V. 
+!     For INCV > 0, set I to point to V(2)
+         IF( INCV.GT.0 ) THEN
+            I = 1 + INCV
+         END IF         
       END IF
       IF( LASTC.EQ.0 ) THEN
          RETURN
@@ -201,7 +211,7 @@
 *        w(1:lastc,1) := C(2:lastv,1:lastc)**T * v(2:lastv,1)
 *
          CALL SGEMV( 'Transpose', LASTV - 1, LASTC, ONE, C( 2, 1 ),
-     $               LDC, V( 1 + INCV ), INCV, ZERO, WORK, 1 )
+     $               LDC, V( I ), INCV, ZERO, WORK, 1 )
 *
 *        w(1:lastc,1) += v(1,1) * C(1,1:lastc)**T
 *
@@ -213,7 +223,7 @@
 *
 *        C(2:lastv,1:lastc) += - tau * v(2:lastv,1) * w(1:lastc,1)**T
 *
-         CALL SGER( LASTV - 1, LASTC, -TAU, V( 1 + INCV ), INCV,
+         CALL SGER( LASTV - 1, LASTC, -TAU, V( I ), INCV,
      $              WORK, 1, C( 2, 1 ), LDC )
             END IF
       ELSE
@@ -230,7 +240,7 @@
 *           w(1:lastc,1) := C(1:lastc,2:lastv) * v(2:lastv,1)
 *
             CALL SGEMV( 'No transpose', LASTC, LASTV - 1, ONE,
-     $                  C( 1, 2 ), LDC, V( 1 + INCV ), INCV, ZERO,
+     $                  C( 1, 2 ), LDC, V( I ), INCV, ZERO,
      $                  WORK, 1 )
 *
 *           w(1:lastc,1) += v(1,1) * C(1:lastc,1)
@@ -244,7 +254,7 @@
 *           C(1:lastc,2:lastv) += - tau * w(1:lastc,1) * v(2:lastv)**T
 *
             CALL SGER( LASTC, LASTV - 1, -TAU, WORK, 1,
-     $                 V( 1 + INCV ), INCV, C( 1, 2 ), LDC )
+     $                 V( I ), INCV, C( 1, 2 ), LDC )
          END IF
       END IF
       RETURN

@@ -189,6 +189,11 @@
 *     ..
 *     .. Executable Statements ..
 *
+*     Quick return if C is empty
+*
+      IF( M.LE.0 .OR. N.LE.0 )
+     $   RETURN
+*
       APPLYLEFT = LSAME( SIDE, 'L' )
       LASTV = 1
       LASTC = 0
@@ -219,6 +224,11 @@
 !     Scan for the last non-zero row in C(:,1:lastv).
             LASTC = ILADLR(M, LASTV, C, LDC)
          END IF
+!     Set index for V. If INCV < 0, then I points to the end of V. 
+!     For INCV > 0, set I to point to V(2)
+         IF( INCV.GT.0 ) THEN
+            I = 1 + INCV
+         END IF
       END IF
       IF( LASTC.EQ.0 ) THEN
          RETURN
@@ -240,7 +250,7 @@
 *
             ! w(1:lastc,1) := C(2:lastv,1:lastc)**T * v(2:lastv,1)
             CALL DGEMV( 'Transpose', LASTV-1, LASTC, ONE, C(1+1,1),
-     $                  LDC, V(1+INCV), INCV, ZERO, WORK, 1)
+     $                  LDC, V(I), INCV, ZERO, WORK, 1)
             ! w(1:lastc,1) += C(1,1:lastc)**T * v(1,1) = C(1,1:lastc)**T
             CALL DAXPY(LASTC, ONE, C, LDC, WORK, 1)
 *
@@ -250,7 +260,7 @@
             !                  = C(...) - tau * w(1:lastc,1)**T
             CALL DAXPY(LASTC, -TAU, WORK, 1, C, LDC)
             ! C(2:lastv,1:lastc) := C(...) - tau * v(2:lastv,1)*w(1:lastc,1)**T
-            CALL DGER(LASTV-1, LASTC, -TAU, V(1+INCV), INCV, WORK, 1,
+            CALL DGER(LASTV-1, LASTC, -TAU, V(I), INCV, WORK, 1,
      $                  C(1+1,1), LDC)
          END IF
       ELSE
@@ -270,7 +280,7 @@
 *
             ! w(1:lastc,1) := C(1:lastc,2:lastv) * v(2:lastv,1)
             CALL DGEMV( 'No transpose', LASTC, LASTV-1, ONE, 
-     $         C(1,1+1), LDC, V(1+INCV), INCV, ZERO, WORK, 1 )
+     $         C(1,1+1), LDC, V(I), INCV, ZERO, WORK, 1 )
             ! w(1:lastc,1) += C(1:lastc,1) v(1,1) = C(1:lastc,1)
             CALL DAXPY(LASTC, ONE, C, 1, WORK, 1)
 *
@@ -280,7 +290,7 @@
             !                   = C(...) - tau * w(1:lastc,1)
             CALL DAXPY(LASTC, -TAU, WORK, 1, C, 1)
             ! C(1:lastc,2:lastv) := C(...) - tau * w(1:lastc,1) * v(2:lastv)**T
-            CALL DGER( LASTC, LASTV-1, -TAU, WORK, 1, V(1+INCV),
+            CALL DGER( LASTC, LASTV-1, -TAU, WORK, 1, V(I),
      $                  INCV, C(1,1+1), LDC )
          END IF
       END IF

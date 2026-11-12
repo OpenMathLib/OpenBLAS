@@ -47,6 +47,36 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BlasNoTrans  0
 #define BlasTrans    1
 
+#ifdef SMP
+#ifndef GEMM_MULTITHREAD_THRESHOLD
+#define GEMM_MULTITHREAD_THRESHOLD 4
+#endif
+
+static int omatcopy_rn(BLASLONG m, BLASLONG n, BLASLONG dummy0, FLOAT alpha, FLOAT *a, BLASLONG lda,
+		       FLOAT *b, BLASLONG ldb, FLOAT *dummy1, BLASLONG dummy2, void *dummy3)
+{
+	return OMATCOPY_K_RN(m, n, alpha, a, lda, b, ldb);
+}
+
+static int omatcopy_rt(BLASLONG m, BLASLONG n, BLASLONG dummy0, FLOAT alpha, FLOAT *a, BLASLONG lda,
+		       FLOAT *b, BLASLONG ldb, FLOAT *dummy1, BLASLONG dummy2, void *dummy3)
+{
+	return OMATCOPY_K_RT(m, n, alpha, a, lda, b, ldb);
+}
+
+static int omatcopy_cn(BLASLONG m, BLASLONG n, BLASLONG dummy0, FLOAT alpha, FLOAT *a, BLASLONG lda,
+		       FLOAT *b, BLASLONG ldb, FLOAT *dummy1, BLASLONG dummy2, void *dummy3)
+{
+	return OMATCOPY_K_CN(n, m, alpha, a, lda, b, ldb);
+}
+
+static int omatcopy_ct(BLASLONG m, BLASLONG n, BLASLONG dummy0, FLOAT alpha, FLOAT *a, BLASLONG lda,
+		       FLOAT *b, BLASLONG ldb, FLOAT *dummy1, BLASLONG dummy2, void *dummy3)
+{
+	return OMATCOPY_K_CT(n, m, alpha, a, lda, b, ldb);
+}
+#endif
+
 OPENBLAS_EXPORT
 
 #ifndef CBLAS 
@@ -56,6 +86,9 @@ void NAME( char* ORDER, char* TRANS, blasint *rows, blasint *cols, FLOAT *alpha,
 	char Order, Trans;
 	int order=-1,trans=-1;
 	blasint info = -1;
+#ifdef SMP
+	int nthreads;
+#endif
 
 	Order = *ORDER;
 	Trans = *TRANS;
@@ -76,6 +109,9 @@ void CNAME(enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows, 
 	FLOAT   *alpha; 
 	int order=-1,trans=-1;
 	blasint info = -1;
+#ifdef SMP
+	int nthreads;
+#endif
 
 	if ( CORDER == CblasColMajor ) order = BlasColMajor; 
 	if ( CORDER == CblasRowMajor ) order = BlasRowMajor; 
@@ -114,6 +150,48 @@ void CNAME(enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows, 
   	}
 
 	if ((*rows == 0) || (*cols == 0)) return;
+
+#ifdef SMP
+	nthreads = num_cpu_avail(1);
+	/* Small copies stay on one thread */
+	if ((double)*rows * (double)*cols < 65536. * GEMM_MULTITHREAD_THRESHOLD) nthreads = 1;
+	/* In the transposed copies each thread writes a narrow band of every row
+	   (or column) of B. Keep the bands at least 32 elements (256 bytes of double,
+	   128 of float) wide, otherwise the threads keep writing into the same cache
+	   lines. */
+	if (trans == BlasTrans) {
+		blasint split = (order == BlasRowMajor) ? *rows : *cols;
+		if (nthreads > split / 32) nthreads = MAX(1, split / 32);
+	}
+
+	if (nthreads > 1) {
+#ifdef DOUBLE
+		int mode = BLAS_DOUBLE | BLAS_REAL;
+#else
+		int mode = BLAS_SINGLE | BLAS_REAL;
+#endif
+		/* Each thread gets a block of rows (row-major) or columns (column-major)
+		   of A, so the column-major wrappers swap m and n. For the transposed
+		   copies a block of B then starts width elements further along, not width
+		   rows or columns, which is what BLAS_TRANSB_T does. */
+		if (order == BlasRowMajor) {
+			if (trans == BlasNoTrans)
+				blas_level1_thread(mode, *rows, *cols, 0, alpha, a, *lda, b, *ldb, NULL, 0,
+						   (int (*)(void))omatcopy_rn, nthreads);
+			else
+				blas_level1_thread(mode | BLAS_TRANSB_T, *rows, *cols, 0, alpha, a, *lda, b, *ldb, NULL, 0,
+						   (int (*)(void))omatcopy_rt, nthreads);
+		} else {
+			if (trans == BlasNoTrans)
+				blas_level1_thread(mode, *cols, *rows, 0, alpha, a, *lda, b, *ldb, NULL, 0,
+						   (int (*)(void))omatcopy_cn, nthreads);
+			else
+				blas_level1_thread(mode | BLAS_TRANSB_T, *cols, *rows, 0, alpha, a, *lda, b, *ldb, NULL, 0,
+						   (int (*)(void))omatcopy_ct, nthreads);
+		}
+		return;
+	}
+#endif
 
 	if ( order == BlasColMajor )
 	{

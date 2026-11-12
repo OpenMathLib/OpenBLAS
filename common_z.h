@@ -44,12 +44,8 @@
 
 #define	ZAMAX_K			zamax_k
 #define	ZAMIN_K			zamin_k
-#define	ZMAX_K			zmax_k
-#define	ZMIN_K			zmin_k
 #define	IZAMAX_K		izamax_k
 #define	IZAMIN_K		izamin_k
-#define	IZMAX_K			izmax_k
-#define	IZMIN_K			izmin_k
 #define	ZASUM_K			zasum_k
 #define	ZAXPYU_K		zaxpy_k
 #define	ZAXPYC_K		zaxpyc_k
@@ -292,12 +288,8 @@
 
 #define	ZAMAX_K			gotoblas -> zamax_k
 #define	ZAMIN_K			gotoblas -> zamin_k
-#define	ZMAX_K			gotoblas -> zmax_k
-#define	ZMIN_K			gotoblas -> zmin_k
 #define	IZAMAX_K		gotoblas -> izamax_k
 #define	IZAMIN_K		gotoblas -> izamin_k
-#define	IZMAX_K			gotoblas -> izmax_k
-#define	IZMIN_K			gotoblas -> izmin_k
 #define	ZASUM_K			gotoblas -> zasum_k
 #define	ZAXPYU_K		gotoblas -> zaxpy_k
 #define	ZAXPYC_K		gotoblas -> zaxpyc_k

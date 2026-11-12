@@ -189,6 +189,7 @@
       SUBROUTINE SDRVLS( DOTYPE, NM, MVAL, NN, NVAL, NNS, NSVAL, NNB,
      $                   NBVAL, NXVAL, THRESH, TSTERR, A, COPYA, B,
      $                   COPYB, C, S, COPYS, NOUT )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -198,6 +199,7 @@
       LOGICAL            TSTERR
       INTEGER            NM, NN, NNB, NNS, NOUT
       REAL               THRESH
+      REAL               SMLX
 *     ..
 *     .. Array Arguments ..
       LOGICAL            DOTYPE( * )
@@ -275,6 +277,7 @@
          ISEED( I ) = ISEEDY( I )
    10 CONTINUE
       EPS = SLAMCH( 'Epsilon' )
+      SMLX = 256*SLAMCH( 'Safe minimum' )
 *
 *     Threshold for rank estimation
 *
@@ -455,6 +458,14 @@
                                  CALL SSCAL( NCOLS*NRHS,
      $                                       ONE / REAL( NCOLS ), WORK,
      $                                       1 )
+*
+*                             Make the last solution column small
+*                             enough that undoing the scaling of
+*                             the solution in two steps flushes it.
+*
+                                 IF( ISCALE.EQ.2 .AND. NRHS.GT.1 )
+     $               CALL SSCAL( NCOLS, SMLX,
+     $                          WORK( ( NRHS-1 )*LDWORK+1 ), 1 )
                               END IF
                               CALL SGEMM( TRANS, 'No transpose', NROWS,
      $                                    NRHS, NCOLS, ONE, COPYA, LDA,
@@ -572,6 +583,14 @@
                                  CALL SSCAL( NCOLS*NRHS,
      $                                       ONE / REAL( NCOLS ), WORK,
      $                                       1 )
+*
+*                             Make the last solution column small
+*                             enough that undoing the scaling of
+*                             the solution in two steps flushes it.
+*
+                                 IF( ISCALE.EQ.2 .AND. NRHS.GT.1 )
+     $               CALL SSCAL( NCOLS, SMLX,
+     $                          WORK( ( NRHS-1 )*LDWORK+1 ), 1 )
                               END IF
                               CALL SGEMM( TRANS, 'No transpose', NROWS,
      $                                    NRHS, NCOLS, ONE, COPYA, LDA,
@@ -696,6 +715,14 @@
                                     CALL SSCAL( NCOLS*NRHS,
      $                                          ONE / REAL( NCOLS ),
      $                                          WORK, 1 )
+*
+*                             Make the last solution column small
+*                             enough that undoing the scaling of
+*                             the solution in two steps flushes it.
+*
+                                    IF( ISCALE.EQ.2 .AND. NRHS.GT.1 )
+     $               CALL SSCAL( NCOLS, SMLX,
+     $                          WORK( ( NRHS-1 )*LDWORK+1 ), 1 )
                                  END IF
                                  CALL SGEMM( TRANS, 'No transpose',
      $                                       NROWS, NRHS, NCOLS, ONE,

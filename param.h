@@ -3564,6 +3564,44 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 2048
 
+#elif defined(VORTEXM4) && defined(__clang__)
+
+/* SME2 kernels (kernel/arm64/gemm_kernel_sme2.c): 64 rows of C per ZA row of tiles, one streaming vector of columns */
+#define SGEMM_DEFAULT_UNROLL_M  64
+#define SGEMM_DEFAULT_UNROLL_N  16
+
+#define DGEMM_DEFAULT_UNROLL_M  64
+#define DGEMM_DEFAULT_UNROLL_N  8
+
+#define CGEMM_DEFAULT_UNROLL_M  8
+#define CGEMM_DEFAULT_UNROLL_N  4
+
+#define ZGEMM_DEFAULT_UNROLL_M  4
+#define ZGEMM_DEFAULT_UNROLL_N  4
+
+/* SME2 sbgemm kernel (kernel/arm64/sbgemm_kernel_sme2.c): four ZA32 tiles of 16x16 fp32 */
+#undef SBGEMM_DEFAULT_UNROLL_M
+#undef SBGEMM_DEFAULT_UNROLL_N
+#define SBGEMM_DEFAULT_UNROLL_M 64
+#define SBGEMM_DEFAULT_UNROLL_N 16
+#undef SBGEMM_ALIGN_K
+#define SBGEMM_ALIGN_K 2 /* k-pair interleaved panels: the sbgemm copies pad k to even */
+
+#define SGEMM_DEFAULT_P 1024
+#define DGEMM_DEFAULT_P 512
+#define CGEMM_DEFAULT_P 256
+#define ZGEMM_DEFAULT_P 128
+
+#define SGEMM_DEFAULT_Q 1024
+#define DGEMM_DEFAULT_Q 512
+#define CGEMM_DEFAULT_Q 512
+#define ZGEMM_DEFAULT_Q 512
+
+#define SGEMM_DEFAULT_R 4096
+#define DGEMM_DEFAULT_R 4096
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 2048
+
 #elif defined(CORTEXA57) || defined(CORTEXX1) || \
     defined(CORTEXA73) || \
     defined(FALKOR)    || defined(TSV110) || defined(EMAG8180) || defined(VORTEX) || defined(FT2000) || defined(VORTEXM4)
@@ -4076,6 +4114,16 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define USE_SSYRK_KERNEL_DIRECT 1
 #define USE_SSYR2K_KERNEL_DIRECT 1
 #endif /* ARMv9 SME */
+
+/* NEON BFDOT sbgemm kernel (kernel/arm64/sbgemm_kernel_bfdot.c): 8x8 C blocks */
+#ifdef VORTEX
+#undef SBGEMM_DEFAULT_UNROLL_M
+#undef SBGEMM_DEFAULT_UNROLL_N
+#define SBGEMM_DEFAULT_UNROLL_M 8
+#define SBGEMM_DEFAULT_UNROLL_N 8
+#undef SBGEMM_ALIGN_K
+#define SBGEMM_ALIGN_K 2 /* k-pair interleaved panels: the sbgemm copies pad k to even */
+#endif
 
 #if defined(ARMV5)
 #define SNUMOPT		2

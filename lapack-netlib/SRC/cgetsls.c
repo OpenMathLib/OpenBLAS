@@ -235,18 +235,16 @@ typedef struct Namelist Namelist;
 #define sig_die(s, kill) { exit(1); }
 #define s_stop(s, n) {exit(0);}
 #define myexit_() break;
-#define mycycle() continue;
-#define myceiling(w) {ceil(w)}
-#define myhuge(w) {HUGE_VAL}
+#define mycycle_() continue;
+#define myceiling_(w) {ceil(w)}
+#define myhuge_(w) {HUGE_VAL}
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
-#define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
+#define mymaxloc_(w,s,e,n) dmaxloc_(w,*(s),*(e),n)
 
 /*  -- translated by f2c (version 20000121).
    You must link the resulting object file with the libraries:
 	-lf2c -lm   (in that order)
 */
-
-
 
 
 /* Table of constant values */
@@ -276,8 +274,17 @@ static integer c__0 = 0;
 /* > */
 /* > CGETSLS solves overdetermined or underdetermined complex linear systems */
 /* > involving an M-by-N matrix A, using a tall skinny QR or short wide LQ */
-/* > factorization of A.  It is assumed that A has full rank. */
+/* > factorization of A. */
 /* > */
+/* > It is assumed that A has full rank, and only a rudimentary protection */
+/* > against rank-deficient matrices is provided. This subroutine only detects */
+/* > exact rank-deficiency, where a diagonal element of the triangular factor */
+/* > of A is exactly zero. */
+/* > */
+/* > It is conceivable for one (or more) of the diagonal elements of the triangular */
+/* > factor of A to be subnormally tiny numbers without this subroutine signalling */
+/* > an error. The solutions computed for such almost-rank-deficient matrices may */
+/* > be less accurate due to a loss of numerical precision. */
 /* > */
 /* > */
 /* > The following options are provided: */
@@ -381,7 +388,7 @@ static integer c__0 = 0;
 /* > \param[in] LWORK */
 /* > \verbatim */
 /* >          LWORK is INTEGER */
-/* >          The dimension of the array WORK. */
+/* >          The dimension of the array WORK. LWORK >= 1. */
 /* >          If LWORK = -1 or -2, then a workspace query is assumed. */
 /* >          If LWORK = -1, the routine calculates optimal size of WORK for the */
 /* >          optimal performance and returns this value in WORK(1). */
@@ -395,7 +402,7 @@ static integer c__0 = 0;
 /* >          = 0:  successful exit */
 /* >          < 0:  if INFO = -i, the i-th argument had an illegal value */
 /* >          > 0:  if INFO =  i, the i-th diagonal element of the */
-/* >                triangular factor of A is zero, so that A does not have */
+/* >                triangular factor of A is exactly zero, so that A does not have */
 /* >                full rank; the least squares solution could not be */
 /* >                computed. */
 /* > \endverbatim */
@@ -408,9 +415,7 @@ static integer c__0 = 0;
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date June 2017 */
-
-/* > \ingroup complexGEsolve */
+/* > \ingroup getsls */
 
 /*  ===================================================================== */
 /* Subroutine */ void cgetsls_(char *trans, integer *m, integer *n, integer *
@@ -422,30 +427,32 @@ static integer c__0 = 0;
     real r__1;
 
     /* Local variables */
+    integer i__, j;
+    complex tq[5];
+    integer lw1, lw2;
+    real dum[1];
+    integer lwm, lwo;
     real anrm, bnrm;
     logical tran;
-    integer brow, tszm, tszo, info2, i__, j, iascl, ibscl;
+    integer brow, tszm, tszo, info2, iascl, ibscl;
     extern /* Subroutine */ void cgelq_(integer *, integer *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *, integer *);
     extern logical lsame_(char *, char *);
     extern /* Subroutine */ void cgeqr_(integer *, integer *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *, integer *);
-    integer minmn, maxmn;
+    integer maxmn;
     complex workq[1];
-    extern /* Subroutine */ void slabad_(real *, real *);
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *);
-    complex tq[5];
     extern real slamch_(char *);
     extern /* Subroutine */ void cgemlq_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, integer *), 
 	    claset_(char *, integer *, integer *, complex *, complex *, 
-	    complex *, integer *);
-    extern void xerbla_(char *, integer *, ftnlen);
-    extern void cgemqr_(char *, char *, integer *, integer *, integer *, complex 
+	    complex *, integer *), xerbla_(char *, integer *, ftnlen),
+	     cgemqr_(char *, char *, integer *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *, complex *, integer *, complex 
 	    *, integer *, integer *);
     integer scllen;
@@ -454,15 +461,12 @@ static integer c__0 = 0;
     logical lquery;
     extern /* Subroutine */ void ctrtrs_(char *, char *, char *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, integer *);
-    integer lw1, lw2, mnk;
-    real dum[1];
-    integer lwm, lwo;
+    extern real sroundup_lwork__(integer *);
 
 
-/*  -- LAPACK driver routine (version 3.7.1) -- */
+/*  -- LAPACK driver routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     June 2017 */
 
 
 
@@ -473,18 +477,16 @@ static integer c__0 = 0;
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --work;
 
     /* Function Body */
     *info = 0;
-    minmn = f2cmin(*m,*n);
     maxmn = f2cmax(*m,*n);
-    mnk = f2cmax(minmn,*nrhs);
     tran = lsame_(trans, "C");
 
     lquery = *lwork == -1 || *lwork == -2;
@@ -508,9 +510,14 @@ static integer c__0 = 0;
 
     if (*info == 0) {
 
-/*     Determine the block size and minimum LWORK */
+/*     Determine the optimum and minimum LWORK */
 
-	if (*m >= *n) {
+/* Computing MIN */
+	i__1 = f2cmin(*m,*n);
+	if (f2cmin(i__1,*nrhs) == 0) {
+	    wsizeo = 1;
+	    wsizem = 1;
+	} else if (*m >= *n) {
 	    cgeqr_(m, n, &a[a_offset], lda, tq, &c_n1, workq, &c_n1, &info2);
 	    tszo = (integer) tq[0].r;
 	    lwo = (integer) workq[0].r;
@@ -554,22 +561,19 @@ static integer c__0 = 0;
 	    *info = -10;
 	}
 
+	r__1 = sroundup_lwork__(&wsizeo);
+	work[1].r = r__1, work[1].i = 0.f;
+
     }
 
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGETSLS", &i__1, (ftnlen)7);
-	r__1 = (real) wsizeo;
-	work[1].r = r__1, work[1].i = 0.f;
 	return;
     }
     if (lquery) {
-	if (*lwork == -1) {
-	    r__1 = (real) wsizeo;
-	    work[1].r = r__1, work[1].i = 0.f;
-	}
 	if (*lwork == -2) {
-	    r__1 = (real) wsizem;
+	    r__1 = sroundup_lwork__(&wsizem);
 	    work[1].r = r__1, work[1].i = 0.f;
 	}
 	return;
@@ -596,7 +600,6 @@ static integer c__0 = 0;
 
     smlnum = slamch_("S") / slamch_("P");
     bignum = 1.f / smlnum;
-    slabad_(&smlnum, &bignum);
 
 /*     Scale A, B if f2cmax element outside range [SMLNUM,BIGNUM] */
 
@@ -775,29 +778,39 @@ static integer c__0 = 0;
 
     }
 
-/*     Undo scaling */
+/*     Undo scaling.  The solution carries the factor of B divided by */
+/*     the factor of A.  When both were scaled to the same end of the */
+/*     range the constants cancel and BNRM/ANRM is applied in one step: */
+/*     applied in two, the first step could flush or overflow an entry */
+/*     that the second would have brought back into range. */
 
-    if (iascl == 1) {
-	clascl_("G", &c__0, &c__0, &anrm, &smlnum, &scllen, nrhs, &b[b_offset]
-		, ldb, info);
-    } else if (iascl == 2) {
-	clascl_("G", &c__0, &c__0, &anrm, &bignum, &scllen, nrhs, &b[b_offset]
-		, ldb, info);
-    }
-    if (ibscl == 1) {
-	clascl_("G", &c__0, &c__0, &smlnum, &bnrm, &scllen, nrhs, &b[b_offset]
-		, ldb, info);
-    } else if (ibscl == 2) {
-	clascl_("G", &c__0, &c__0, &bignum, &bnrm, &scllen, nrhs, &b[b_offset]
-		, ldb, info);
+    if (iascl == ibscl && iascl != 0) {
+	clascl_("G", &c__0, &c__0, &anrm, &bnrm, &scllen, nrhs, &b[b_offset], 
+		ldb, info);
+    } else {
+	if (iascl == 1) {
+	    clascl_("G", &c__0, &c__0, &anrm, &smlnum, &scllen, nrhs, &b[
+		    b_offset], ldb, info);
+	} else if (iascl == 2) {
+	    clascl_("G", &c__0, &c__0, &anrm, &bignum, &scllen, nrhs, &b[
+		    b_offset], ldb, info);
+	}
+	if (ibscl == 1) {
+	    clascl_("G", &c__0, &c__0, &smlnum, &bnrm, &scllen, nrhs, &b[
+		    b_offset], ldb, info);
+	} else if (ibscl == 2) {
+	    clascl_("G", &c__0, &c__0, &bignum, &bnrm, &scllen, nrhs, &b[
+		    b_offset], ldb, info);
+	}
     }
 
 L50:
-    r__1 = (real) (tszo + lwo);
+    i__1 = tszo + lwo;
+    r__1 = sroundup_lwork__(&i__1);
     work[1].r = r__1, work[1].i = 0.f;
     return;
 
-/*     End of ZGETSLS */
+/*     End of CGETSLS */
 
 } /* cgetsls_ */
 

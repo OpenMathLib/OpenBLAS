@@ -52,6 +52,7 @@
 *
 *  =====================================================================
       SUBROUTINE SERRBD( PATH, NUNIT )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -66,13 +67,14 @@
 *
 *     .. Parameters ..
       INTEGER            NMAX, LW
-      PARAMETER          ( NMAX = 4, LW = NMAX )
+      PARAMETER          ( NMAX = 4, LW = 4*NMAX )
       REAL               ZERO, ONE
       PARAMETER          ( ZERO = 0.0E0, ONE = 1.0E0 )
 *     ..
 *     .. Local Scalars ..
       CHARACTER*2        C2
       INTEGER            I, INFO, J, NS, NT
+      REAL               RNAN, RONE
 *     ..
 *     .. Local Arrays ..
       INTEGER            IQ( NMAX, NMAX ), IW( NMAX )
@@ -86,8 +88,8 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CHKXER, SBDSDC, SBDSQR, SBDSVDX, SGEBD2,
-     $                   SGEBRD, SORGBR, SORMBR
+      EXTERNAL           CHKXER, SBDSDC, SBDSQR, SBDSVDX, SBDSVDMR3,
+     $                   SGEBD2, SGEBRD, SORGBR, SORMBR
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -99,7 +101,7 @@
       COMMON             / SRNAMC / SRNAMT
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          REAL
+      INTRINSIC          REAL, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -111,7 +113,7 @@
 *
       DO 20 J = 1, NMAX
          DO 10 I = 1, NMAX
-            A( I, J ) = 1.D0 / REAL( I+J )
+            A( I, J ) = ONE / REAL( I+J )
    10    CONTINUE
    20 CONTINUE
       OK = .TRUE.
@@ -277,6 +279,29 @@
          CALL CHKXER( 'SBDSQR', INFOT, NOUT, LERR, OK )
          NT = NT + 8
 *
+*        SBDSQR without singular vectors must return when D contains a
+*        NaN, which the dqds path would otherwise pass to SLASCL as a
+*        scaling factor, instead of stopping in XERBLA.
+*
+         RONE = ONE
+         RNAN = SQRT( -RONE )
+         DO 30 J = 1, NMAX
+            D( J ) = REAL( J )
+            E( J ) = ONE / REAL( J+1 )
+   30    CONTINUE
+         D( NMAX ) = RNAN
+         E( NMAX ) = ZERO
+         SRNAMT = 'SBDSQR'
+         INFOT = 0
+         LERR = .FALSE.
+         CALL SBDSQR( 'U', NMAX, 0, 0, 0, D, E, V, 1, U, 1, A, 1, W,
+     $                INFO )
+         IF( LERR ) THEN
+            WRITE( NOUT, FMT = 9997 )'SBDSQR'
+            OK = .FALSE.
+         END IF
+         NT = NT + 1
+*
 *        SBDSDC
 *
          SRNAMT = 'SBDSDC'
@@ -353,6 +378,58 @@
          CALL SBDSVDX( 'L', 'V', 'A', 4, D, E, ZERO, ZERO, 0, 0,
      $                    NS, S, Q, 2, W, IW, INFO)
          CALL CHKXER( 'SBDSVDX', INFOT, NOUT, LERR, OK )
+*
+*        SBDSVDMR3
+*
+         SRNAMT = 'SBDSVDMR3'
+         INFOT = 1
+         CALL SBDSVDMR3( 'X', 'N', 'A', 1, D, E, ZERO, ONE, 0, 0, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL SBDSVDMR3( 'U', 'X', 'A', 1, D, E, ZERO, ONE, 0, 0, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL SBDSVDMR3( 'U', 'V', 'X', 1, D, E, ZERO, ONE, 0, 0, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL SBDSVDMR3( 'U', 'V', 'A', -1, D, E, ZERO, ONE, 0, 0, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL SBDSVDMR3( 'U', 'V', 'V', 2, D, E, -ONE, ZERO, 0, 0, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL SBDSVDMR3( 'U', 'V', 'V', 2, D, E, ONE, ZERO, 0, 0, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL SBDSVDMR3( 'L', 'V', 'I', 2, D, E, ZERO, ZERO, 0, 2, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL SBDSVDMR3( 'L', 'V', 'I', 4, D, E, ZERO, ZERO, 5, 2, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL SBDSVDMR3( 'L', 'V', 'I', 4, D, E, ZERO, ZERO, 3, 2, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL SBDSVDMR3( 'L', 'V', 'I', 4, D, E, ZERO, ZERO, 3, 5, NS,
+     $                 S, Q, 1, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 14
+         CALL SBDSVDMR3( 'L', 'V', 'A', 4, D, E, ZERO, ZERO, 0, 0, NS,
+     $                 S, Q, 0, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
+         INFOT = 14
+         CALL SBDSVDMR3( 'L', 'V', 'A', 4, D, E, ZERO, ZERO, 0, 0, NS,
+     $                 S, Q, 2, W, 1, IW, 1, INFO )
+         CALL CHKXER( 'SBDSVDMR3', INFOT, NOUT, LERR, OK )
          NT = NT + 12
       END IF
 *
@@ -368,6 +445,8 @@
      $      ' (', I3, ' tests done)' )
  9998 FORMAT( ' *** ', A3, ' routines failed the tests of the error ',
      $      'exits ***' )
+ 9997 FORMAT( ' *** ', A6, ' called XERBLA for a matrix with a NaN',
+     $      ' ***' )
 *
       RETURN
 *

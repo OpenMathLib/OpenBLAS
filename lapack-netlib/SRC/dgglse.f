@@ -5,7 +5,6 @@
 * Online html documentation available at
 *            http://www.netlib.org/lapack/explore-html/
 *
-*> \htmlonly
 *> Download DGGLSE + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgglse.f">
 *> [TGZ]</a>
@@ -13,7 +12,6 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgglse.f">
 *> [TXT]</a>
-*> \endhtmlonly
 *
 *  Definition:
 *  ===========
@@ -52,6 +50,16 @@
 *> matrices (B, A) given by
 *>
 *>    B = (0 R)*Q,   A = Z*T*Q.
+*>
+*> Callers of this subroutine should note that the singularity/rank-deficiency checks
+*> implemented in this subroutine are rudimentary. The DTRTRS subroutine called by this
+*> subroutine only signals a failure due to singularity if the problem is exactly singular.
+*>
+*> It is conceivable for one (or more) of the factors involved in the generalized RQ
+*> factorization of the pair (B, A) to be subnormally close to singularity without this
+*> subroutine signalling an error. The solutions computed for such almost-rank-deficient
+*> problems may be less accurate due to a loss of numerical precision.
+*> 
 *> \endverbatim
 *
 *  Arguments:
@@ -153,12 +161,12 @@
 *>          = 0:  successful exit.
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value.
 *>          = 1:  the upper triangular factor R associated with B in the
-*>                generalized RQ factorization of the pair (B, A) is
+*>                generalized RQ factorization of the pair (B, A) is exactly
 *>                singular, so that rank(B) < P; the least squares
 *>                solution could not be computed.
 *>          = 2:  the (N-P) by (N-P) part of the upper trapezoidal factor
 *>                T associated with A in the generalized RQ factorization
-*>                of the pair (B, A) is singular, so that
+*>                of the pair (B, A) is exactly singular, so that
 *>                rank( (A) ) < N; the least squares solution could not
 *>                    ( (B) )
 *>                be computed.
@@ -172,11 +180,13 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHERsolve
+*> \ingroup gglse
 *
 *  =====================================================================
-      SUBROUTINE DGGLSE( M, N, P, A, LDA, B, LDB, C, D, X, WORK, LWORK,
+      SUBROUTINE DGGLSE( M, N, P, A, LDA, B, LDB, C, D, X, WORK,
+     $                   LWORK,
      $                   INFO )
+      IMPLICIT NONE
 *
 *  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -193,24 +203,30 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   ONE
-      PARAMETER          ( ONE = 1.0D+0 )
+      DOUBLE PRECISION   ZERO, ONE
+      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LQUERY
       INTEGER            LOPT, LWKMIN, LWKOPT, MN, NB, NB1, NB2, NB3,
      $                   NB4, NR
+      INTEGER            IA, IB, IBIG, IC, ID, ISML, IU, KA, KB, KT
+      DOUBLE PRECISION   ANRM, BIGNUM, BNRM, CNRM, DNRM, SMLNUM
+*     ..
+*     .. Local Arrays ..
+      DOUBLE PRECISION   RWORK( 1 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DAXPY, DCOPY, DGEMV, DGGRQF, DORMQR, DORMRQ,
-     $                   DTRMV, DTRTRS, XERBLA
+      EXTERNAL           DAXPY, DCOPY, DGEMV, DGGRQF, DLASCL, DORMQR,
+     $                   DORMRQ, DSCAL, DTRMV, DTRTRS, XERBLA
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      DOUBLE PRECISION   DLAMCH, DLANGE
+      EXTERNAL           DLAMCH, DLANGE, ILAENV
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          INT, MAX, MIN
+      INTRINSIC          EXPONENT, HUGE, INT, MAX, MIN, SCALE
 *     ..
 *     .. Executable Statements ..
 *
@@ -265,6 +281,72 @@
       IF( N.EQ.0 )
      $   RETURN
 *
+*     Get machine parameters
+*
+      SMLNUM = DLAMCH( 'S' ) / DLAMCH( 'P' )
+      BIGNUM = ONE / SMLNUM
+      ISML = EXPONENT( SMLNUM )
+      IBIG = EXPONENT( BIGNUM ) - 1
+*
+*     Scale A, B, c and d by powers of two so that their largest
+*     entries lie in [SMLNUM,BIGNUM), the values whose EXPONENT lies
+*     in [ISML,IBIG].  A and B are scaled independently, by 2**KA and
+*     2**KB.  c is scaled by 2**(KA+KT) and d by 2**(KB+KT), which
+*     keeps the constraint and the residual consistent and scales x by
+*     2**KT; KT brings the larger of the two right-hand sides into
+*     range.  Scaling by a power of two is exact.  A norm that is zero,
+*     infinite or NaN takes no part.  DLASCL is called with both
+*     endpoints at or above one so that forming the factor raises no
+*     underflow.
+*
+      ANRM = DLANGE( 'M', M, N, A, LDA, RWORK )
+      KA = 0
+      IF( ANRM.GT.ZERO .AND. ANRM.LE.HUGE( ZERO ) ) THEN
+         IA = EXPONENT( ANRM )
+         IF( IA.LT.ISML ) THEN
+            KA = ISML - IA
+         ELSE IF( IA.GT.IBIG ) THEN
+            KA = IBIG - IA
+         END IF
+      END IF
+      IF( KA.NE.0 )
+     $   CALL DLASCL( 'G', 0, 0, SCALE( ONE, MAX( -KA, 0 ) ),
+     $                SCALE( ONE, MAX( KA, 0 ) ), M, N, A, LDA, INFO )
+*
+      BNRM = DLANGE( 'M', P, N, B, LDB, RWORK )
+      KB = 0
+      IF( BNRM.GT.ZERO .AND. BNRM.LE.HUGE( ZERO ) ) THEN
+         IB = EXPONENT( BNRM )
+         IF( IB.LT.ISML ) THEN
+            KB = ISML - IB
+         ELSE IF( IB.GT.IBIG ) THEN
+            KB = IBIG - IB
+         END IF
+      END IF
+      IF( KB.NE.0 )
+     $   CALL DLASCL( 'G', 0, 0, SCALE( ONE, MAX( -KB, 0 ) ),
+     $                SCALE( ONE, MAX( KB, 0 ) ), P, N, B, LDB, INFO )
+*
+      CNRM = DLANGE( 'M', M, 1, C, MAX( 1, M ), RWORK )
+      DNRM = DLANGE( 'M', P, 1, D, MAX( 1, P ), RWORK )
+      IC = -HUGE( 0 )
+      IF( CNRM.GT.ZERO .AND. CNRM.LE.HUGE( ZERO ) )
+     $   IC = EXPONENT( CNRM ) + KA
+      ID = -HUGE( 0 )
+      IF( DNRM.GT.ZERO .AND. DNRM.LE.HUGE( ZERO ) )
+     $   ID = EXPONENT( DNRM ) + KB
+      IU = MAX( IC, ID )
+      KT = 0
+      IF( IU.GT.IBIG ) THEN
+         KT = IBIG - IU
+      ELSE IF( IU.LT.ISML .AND. IU.NE.-HUGE( 0 ) ) THEN
+         KT = ISML - IU
+      END IF
+      IF( KA+KT.NE.0 )
+     $   CALL DSCAL( M, SCALE( ONE, KA+KT ), C, 1 )
+      IF( KB+KT.NE.0 )
+     $   CALL DSCAL( P, SCALE( ONE, KB+KT ), D, 1 )
+*
 *     Compute the GRQ factorization of matrices B and A:
 *
 *            B*Q**T = (  0  T12 ) P   Z**T*A*Q**T = ( R11 R12 ) N-P
@@ -281,7 +363,8 @@
 *     Update c = Z**T *c = ( c1 ) N-P
 *                          ( c2 ) M+P-N
 *
-      CALL DORMQR( 'Left', 'Transpose', M, 1, MN, A, LDA, WORK( P+1 ),
+      CALL DORMQR( 'Left', 'Transpose', M, 1, MN, A, LDA,
+     $             WORK( P+1 ),
      $             C, MAX( 1, M ), WORK( P+MN+1 ), LWORK-P-MN, INFO )
       LOPT = MAX( LOPT, INT( WORK( P+MN+1 ) ) )
 *
@@ -302,7 +385,8 @@
 *
 *        Update c1
 *
-         CALL DGEMV( 'No transpose', N-P, P, -ONE, A( 1, N-P+1 ), LDA,
+         CALL DGEMV( 'No transpose', N-P, P, -ONE, A( 1, N-P+1 ),
+     $               LDA,
      $               D, 1, ONE, C, 1 )
       END IF
 *
@@ -327,7 +411,8 @@
       IF( M.LT.N ) THEN
          NR = M + P - N
          IF( NR.GT.0 )
-     $      CALL DGEMV( 'No transpose', NR, N-M, -ONE, A( N-P+1, M+1 ),
+     $      CALL DGEMV( 'No transpose', NR, N-M, -ONE, A( N-P+1,
+     $                  M+1 ),
      $                  LDA, D( NR+1 ), 1, ONE, C( N-P+1 ), 1 )
       ELSE
          NR = P
@@ -340,8 +425,18 @@
 *
 *     Backward transformation x = Q**T*x
 *
-      CALL DORMRQ( 'Left', 'Transpose', N, 1, P, B, LDB, WORK( 1 ), X,
+      CALL DORMRQ( 'Left', 'Transpose', N, 1, P, B, LDB, WORK( 1 ),
+     $             X,
      $             N, WORK( P+MN+1 ), LWORK-P-MN, INFO )
+*
+*     Undo scaling: x carries 2**KT and the residual in c(N-P+1:M)
+*     carries 2**(KA+KT)
+*
+      IF( KT.NE.0 )
+     $   CALL DSCAL( N, SCALE( ONE, -KT ), X, 1 )
+      IF( KA+KT.NE.0 .AND. M+P.GT.N )
+     $   CALL DSCAL( M+P-N, SCALE( ONE, -KA-KT ), C( N-P+1 ), 1 )
+*
       WORK( 1 ) = P + MN + MAX( LOPT, INT( WORK( P+MN+1 ) ) )
 *
       RETURN

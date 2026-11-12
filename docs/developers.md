@@ -6,28 +6,30 @@
 OpenBLAS/  
 ├── benchmark                  Benchmark codes for BLAS
 ├── cmake                      CMakefiles
-├── ctest                      Test codes for CBLAS interfaces
-├── driver                     Implemented in C
-│   ├── level2
-│   ├── level3
+├── ctest                      Test codes for CBLAS interfaces, implemented in C (copied from the Reference BLAS)
+├── driver                     
+│   ├── level2                 Driver functions that handle copying, rearranging or rescaling data as well
+│   ├── level3                 as splitting workloads across multiple threads
 │   ├── mapper
 │   └── others                 Memory management, threading, etc
 ├── exports                    Generate shared library
 ├── interface                  Implement BLAS and CBLAS interfaces (calling driver or kernel)
 │   ├── lapack
 │   └── netlib
-├── kernel                     Optimized assembly kernels for CPU architectures
+├── kernel                     Optimized assembly (or C intrinsics) kernels for CPU architectures
 │   ├── alpha                  Original GotoBLAS kernels for DEC Alpha
 │   ├── arm                    ARMV5,V6,V7 kernels (including generic C codes used by other architectures)
-│   ├── arm64                  ARMV8
+│   ├── arm64                  ARMV8, V9
 │   ├── generic                General kernel codes written in plain C, parts used by many architectures.
 │   ├── ia64                   Original GotoBLAS kernels for Intel Itanium
+│   ├── loongarch64
 │   ├── mips
 │   ├── mips64
 │   ├── power
 |   ├── riscv64
 |   ├── simd                   Common code for Universal Intrinsics, used by some x86_64 and arm64 kernels
 │   ├── sparc
+│   ├── wasm
 │   ├── x86
 │   ├── x86_64
 │   └── zarch   
@@ -35,6 +37,7 @@ OpenBLAS/
 │   ├── getf2
 │   ├── getrf
 │   ├── getrs
+|   ├── laed3
 │   ├── laswp
 │   ├── lauu2
 │   ├── lauum
@@ -46,8 +49,9 @@ OpenBLAS/
 ├── lapack-netlib               LAPACK codes from netlib reference implementation
 ├── reference                   BLAS Fortran reference implementation (unused)
 ├── relapack                    Elmar Peise's recursive LAPACK (implemented on top of regular LAPACK)
-├── test                        Test codes for BLAS
+├── test                        Test codes for BLAS, copied from the Reference BLAS
 └── utest                       Regression test
+    └── utest_ext               Tests for the BLAS Extensions not covered by the other tests
 
 ```
 
@@ -149,6 +153,8 @@ in a number of places. For example:
 * [MatlabJuliaMatrixOperationsBenchmark](https://github.com/RoyiAvital/MatlabJuliaMatrixOperationsBenchmark)
   (various matrix operations in Julia and Matlab)
 * [mmperf/mmperf](https://github.com/mmperf/mmperf/) (single-core matrix multiplication)
+* [BLAS Microbenchmark](https://github.com/MathieuCAISSA/blas-microbenchmark) Suite covering all BLAS routines in all standard precisions,
+  capable of comparing all BLAS implementations supported by FlexiBLAS, including relative performance graphs
 
 
 ## Adding autodetection support for a new revision or variant of a supported CPU 

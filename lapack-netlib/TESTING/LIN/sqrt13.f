@@ -88,6 +88,7 @@
 *
 *  =====================================================================
       SUBROUTINE SQRT13( SCALE, M, N, A, LDA, NORMA, ISEED )
+      IMPLICIT NONE
 *
 *  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -110,14 +111,14 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            INFO, J
-      REAL               BIGNUM, SMLNUM
+      REAL               BIGNUM, BIGUP, SMLNUM
 *     ..
 *     .. External Functions ..
       REAL               SASUM, SLAMCH, SLANGE
       EXTERNAL           SASUM, SLAMCH, SLANGE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLABAD, SLARNV, SLASCL
+      EXTERNAL           SLARNV, SLASCL
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          SIGN
@@ -146,15 +147,20 @@
          NORMA = SLANGE( 'Max', M, N, A, LDA, DUMMY )
          SMLNUM = SLAMCH( 'Safe minimum' )
          BIGNUM = ONE / SMLNUM
-         CALL SLABAD( SMLNUM, BIGNUM )
          SMLNUM = SMLNUM / SLAMCH( 'Epsilon' )
          BIGNUM = ONE / SMLNUM
+*
+*        The least squares drivers scale a matrix whose largest
+*        entry lies outside [SMLNUM, BIGNUM].  Scale up past
+*        that bound, so that their scaling is exercised.
+*
+         BIGUP = SLAMCH( 'Overflow' ) / 256
 *
          IF( SCALE.EQ.2 ) THEN
 *
 *           matrix scaled up
 *
-            CALL SLASCL( 'General', 0, 0, NORMA, BIGNUM, M, N, A, LDA,
+            CALL SLASCL( 'General', 0, 0, NORMA, BIGUP, M, N, A, LDA,
      $                   INFO )
          ELSE IF( SCALE.EQ.3 ) THEN
 *

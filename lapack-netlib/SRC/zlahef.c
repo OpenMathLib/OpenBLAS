@@ -258,8 +258,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static doublecomplex c_b1 = {1.,0.};
@@ -273,7 +271,6 @@ h-Kaufman diagonal pivoting method (blocked algorithm, calling Level 3 BLAS). */
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download ZLAHEF + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zlahef.
 f"> */
@@ -284,7 +281,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zlahef.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -427,9 +423,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup complex16HEcomputational */
+/* > \ingroup lahef */
 
 /* > \par Contributors: */
 /*  ================== */
@@ -447,30 +441,25 @@ f"> */
 	integer *ldw, integer *info)
 {
     /* System generated locals */
-    integer a_dim1, a_offset, w_dim1, w_offset, i__1, i__2, i__3, i__4, i__5;
+    integer a_dim1, a_offset, w_dim1, w_offset, i__1, i__2, i__3, i__4;
     doublereal d__1, d__2, d__3, d__4;
-    doublecomplex z__1, z__2, z__3, z__4;
+    doublecomplex z__1, z__2, z__3, z__4, z__5;
 
     /* Local variables */
-    integer imax, jmax, j, k;
-    doublereal t, alpha;
+    integer j, k;
+    doublereal t, r1;
+    doublecomplex d11, d21, d22;
+    integer jj, kk, jp, kp, kw, kkw, imax, jmax;
+    doublereal alpha;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
-	    integer *, doublecomplex *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *);
     integer kstep;
     extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
-	    integer *, doublecomplex *, doublecomplex *, integer *);
-    doublereal r1;
-    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *), zswap_(integer *, doublecomplex *, 
-	    integer *, doublecomplex *, integer *);
-    doublecomplex d11, d21, d22;
-    integer jb, jj, kk, jp, kp;
+	    integer *, doublecomplex *, doublecomplex *, integer *), 
+	    zcopy_(integer *, doublecomplex *, integer *, doublecomplex *, 
+	    integer *), zswap_(integer *, doublecomplex *, integer *, 
+	    doublecomplex *, integer *);
     doublereal absakk;
-    integer kw;
     extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
     doublereal colmax;
@@ -478,13 +467,15 @@ f"> */
 	    ;
     extern integer izamax_(integer *, doublecomplex *, integer *);
     doublereal rowmax;
-    integer kkw;
+    extern /* Subroutine */ void zgemmtr_(char *, char *, char *, integer *, 
+	    integer *, doublecomplex *, doublecomplex *, integer *, 
+	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
+	    integer *);
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ===================================================================== */
@@ -492,11 +483,11 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     --ipiv;
     w_dim1 = *ldw;
-    w_offset = 1 + w_dim1 * 1;
+    w_offset = 1 + w_dim1;
     w -= w_offset;
 
     /* Function Body */
@@ -522,7 +513,7 @@ L10:
 
 /*        Exit from loop */
 
-	if ((k <= *n - *nb + 1 && *nb < *n) || k < 1) {
+	if (k <= *n - *nb + 1 && *nb < *n || k < 1) {
 	    goto L30;
 	}
 
@@ -538,7 +529,7 @@ L10:
 	w[i__1].r = d__1, w[i__1].i = 0.;
 	if (k < *n) {
 	    i__1 = *n - k;
-	    z__1.r = -1., z__1.i = 0.;
+	    z__1.r = -1., z__1.i = -0.;
 	    zgemv_("No transpose", &k, &i__1, &z__1, &a[(k + 1) * a_dim1 + 1],
 		     lda, &w[k + (kw + 1) * w_dim1], ldw, &c_b1, &w[kw * 
 		    w_dim1 + 1], &c__1);
@@ -576,10 +567,7 @@ L10:
 		*info = k;
 	    }
 	    kp = k;
-	    i__1 = k + k * a_dim1;
-	    i__2 = k + k * a_dim1;
-	    d__1 = a[i__2].r;
-	    a[i__1].r = d__1, a[i__1].i = 0.;
+	    zcopy_(&k, &w[kw * w_dim1 + 1], &c__1, &a[k * a_dim1 + 1], &c__1);
 	} else {
 
 /*           ============================================================ */
@@ -613,7 +601,7 @@ L10:
 		zlacgv_(&i__1, &w[imax + 1 + (kw - 1) * w_dim1], &c__1);
 		if (k < *n) {
 		    i__1 = *n - k;
-		    z__1.r = -1., z__1.i = 0.;
+		    z__1.r = -1., z__1.i = -0.;
 		    zgemv_("No transpose", &k, &i__1, &z__1, &a[(k + 1) * 
 			    a_dim1 + 1], lda, &w[imax + (kw + 1) * w_dim1], 
 			    ldw, &c_b1, &w[(kw - 1) * w_dim1 + 1], &c__1);
@@ -814,16 +802,16 @@ L10:
 /*                 = (1/|d21|**2) * T * ( d21*( D11 ) conj(d21)*(  -1 ) ) = */
 /*                                      (     (  -1 )           ( D22 ) ) */
 
-/*                 = ( (T/conj(d21))*( D11 ) (T/d21)*(  -1 ) ) = */
+/*                 = ( (T/conj(d21))*( D11 ) (T/d21)*(  -1 ) ), */
 /*                   (               (  -1 )         ( D22 ) ) */
-
-/*                 = ( conj(D21)*( D11 ) D21*(  -1 ) ) */
-/*                   (           (  -1 )     ( D22 ) ), */
 
 /*                 where D11 = d22/d21, */
 /*                       D22 = d11/conj(d21), */
-/*                       D21 = T/d21, */
 /*                       T = 1/(D22*D11-1). */
+
+/*                 T/d21 is not formed, since it overflows when d21 is */
+/*                 subnormal: each entry of the product is divided by */
+/*                 d21 or conj(d21) and then scaled by T. */
 
 /*                 (NOTE: No need to check for division by ZERO, */
 /*                  since that was ensured earlier in pivot search: */
@@ -842,9 +830,6 @@ L10:
 		    z__1.r = d11.r * d22.r - d11.i * d22.i, z__1.i = d11.r * 
 			    d22.i + d11.i * d22.r;
 		    t = 1. / (z__1.r - 1.);
-		    z__2.r = t, z__2.i = 0.;
-		    z_div(&z__1, &z__2, &d21);
-		    d21.r = z__1.r, d21.i = z__1.i;
 
 /*                 Update elements in columns A(k-1) and A(k) as */
 /*                 dot products of rows of ( W(kw-1) W(kw) ) and columns */
@@ -854,17 +839,16 @@ L10:
 		    for (j = 1; j <= i__1; ++j) {
 			i__2 = j + (k - 1) * a_dim1;
 			i__3 = j + (kw - 1) * w_dim1;
-			z__3.r = d11.r * w[i__3].r - d11.i * w[i__3].i, 
-				z__3.i = d11.r * w[i__3].i + d11.i * w[i__3]
+			z__4.r = d11.r * w[i__3].r - d11.i * w[i__3].i, 
+				z__4.i = d11.r * w[i__3].i + d11.i * w[i__3]
 				.r;
 			i__4 = j + kw * w_dim1;
-			z__2.r = z__3.r - w[i__4].r, z__2.i = z__3.i - w[i__4]
+			z__3.r = z__4.r - w[i__4].r, z__3.i = z__4.i - w[i__4]
 				.i;
-			z__1.r = d21.r * z__2.r - d21.i * z__2.i, z__1.i = 
-				d21.r * z__2.i + d21.i * z__2.r;
+			z_div(&z__2, &z__3, &d21);
+			z__1.r = t * z__2.r, z__1.i = t * z__2.i;
 			a[i__2].r = z__1.r, a[i__2].i = z__1.i;
 			i__2 = j + k * a_dim1;
-			d_cnjg(&z__2, &d21);
 			i__3 = j + kw * w_dim1;
 			z__4.r = d22.r * w[i__3].r - d22.i * w[i__3].i, 
 				z__4.i = d22.r * w[i__3].i + d22.i * w[i__3]
@@ -872,8 +856,9 @@ L10:
 			i__4 = j + (kw - 1) * w_dim1;
 			z__3.r = z__4.r - w[i__4].r, z__3.i = z__4.i - w[i__4]
 				.i;
-			z__1.r = z__2.r * z__3.r - z__2.i * z__3.i, z__1.i = 
-				z__2.r * z__3.i + z__2.i * z__3.r;
+			d_cnjg(&z__5, &d21);
+			z_div(&z__2, &z__3, &z__5);
+			z__1.r = t * z__2.r, z__1.i = t * z__2.i;
 			a[i__2].r = z__1.r, a[i__2].i = z__1.i;
 /* L20: */
 		    }
@@ -922,47 +907,13 @@ L30:
 
 /*        A11 := A11 - U12*D*U12**H = A11 - U12*W**H */
 
-/*        computing blocks of NB columns at a time (note that conjg(W) is */
-/*        actually stored) */
+/*        (note that conjg(W) is actually stored) */
 
-	i__1 = -(*nb);
-	for (j = (k - 1) / *nb * *nb + 1; i__1 < 0 ? j >= 1 : j <= 1; j += 
-		i__1) {
-/* Computing MIN */
-	    i__2 = *nb, i__3 = k - j + 1;
-	    jb = f2cmin(i__2,i__3);
-
-/*           Update the upper triangle of the diagonal block */
-
-	    i__2 = j + jb - 1;
-	    for (jj = j; jj <= i__2; ++jj) {
-		i__3 = jj + jj * a_dim1;
-		i__4 = jj + jj * a_dim1;
-		d__1 = a[i__4].r;
-		a[i__3].r = d__1, a[i__3].i = 0.;
-		i__3 = jj - j + 1;
-		i__4 = *n - k;
-		z__1.r = -1., z__1.i = 0.;
-		zgemv_("No transpose", &i__3, &i__4, &z__1, &a[j + (k + 1) * 
-			a_dim1], lda, &w[jj + (kw + 1) * w_dim1], ldw, &c_b1, 
-			&a[j + jj * a_dim1], &c__1);
-		i__3 = jj + jj * a_dim1;
-		i__4 = jj + jj * a_dim1;
-		d__1 = a[i__4].r;
-		a[i__3].r = d__1, a[i__3].i = 0.;
-/* L40: */
-	    }
-
-/*           Update the rectangular superdiagonal block */
-
-	    i__2 = j - 1;
-	    i__3 = *n - k;
-	    z__1.r = -1., z__1.i = 0.;
-	    zgemm_("No transpose", "Transpose", &i__2, &jb, &i__3, &z__1, &a[(
-		    k + 1) * a_dim1 + 1], lda, &w[j + (kw + 1) * w_dim1], ldw,
-		     &c_b1, &a[j * a_dim1 + 1], lda);
-/* L50: */
-	}
+	i__1 = *n - k;
+	z__1.r = -1., z__1.i = -0.;
+	zgemmtr_("Upper", "No transpose", "Transpose", &k, &i__1, &z__1, &a[(
+		k + 1) * a_dim1 + 1], lda, &w[(kw + 1) * w_dim1 + 1], ldw, &
+		c_b1, &a[a_dim1 + 1], lda);
 
 /*        Put U12 in standard form by partially undoing the interchanges */
 /*        in columns k+1:n looping backwards from k+1 to n */
@@ -1009,7 +960,7 @@ L70:
 
 /*        Exit from loop */
 
-	if ((k >= *nb && *nb < *n) || k > *n) {
+	if (k >= *nb && *nb < *n || k > *n) {
 	    goto L90;
 	}
 
@@ -1028,7 +979,7 @@ L70:
 	}
 	i__1 = *n - k + 1;
 	i__2 = k - 1;
-	z__1.r = -1., z__1.i = 0.;
+	z__1.r = -1., z__1.i = -0.;
 	zgemv_("No transpose", &i__1, &i__2, &z__1, &a[k + a_dim1], lda, &w[k 
 		+ w_dim1], ldw, &c_b1, &w[k + k * w_dim1], &c__1);
 	i__1 = k + k * w_dim1;
@@ -1064,10 +1015,9 @@ L70:
 		*info = k;
 	    }
 	    kp = k;
-	    i__1 = k + k * a_dim1;
-	    i__2 = k + k * a_dim1;
-	    d__1 = a[i__2].r;
-	    a[i__1].r = d__1, a[i__1].i = 0.;
+	    i__1 = *n - k + 1;
+	    zcopy_(&i__1, &w[k + k * w_dim1], &c__1, &a[k + k * a_dim1], &
+		    c__1);
 	} else {
 
 /*           ============================================================ */
@@ -1103,7 +1053,7 @@ L70:
 		}
 		i__1 = *n - k + 1;
 		i__2 = k - 1;
-		z__1.r = -1., z__1.i = 0.;
+		z__1.r = -1., z__1.i = -0.;
 		zgemv_("No transpose", &i__1, &i__2, &z__1, &a[k + a_dim1], 
 			lda, &w[imax + w_dim1], ldw, &c_b1, &w[k + (k + 1) * 
 			w_dim1], &c__1);
@@ -1299,16 +1249,16 @@ L70:
 /*                 = (1/|d21|**2) * T * ( d21*( D11 ) conj(d21)*(  -1 ) ) = */
 /*                                      (     (  -1 )           ( D22 ) ) */
 
-/*                 = ( (T/conj(d21))*( D11 ) (T/d21)*(  -1 ) ) = */
+/*                 = ( (T/conj(d21))*( D11 ) (T/d21)*(  -1 ) ), */
 /*                   (               (  -1 )         ( D22 ) ) */
-
-/*                 = ( conj(D21)*( D11 ) D21*(  -1 ) ) */
-/*                   (           (  -1 )     ( D22 ) ), */
 
 /*                 where D11 = d22/d21, */
 /*                       D22 = d11/conj(d21), */
-/*                       D21 = T/d21, */
 /*                       T = 1/(D22*D11-1). */
+
+/*                 T/d21 is not formed, since it overflows when d21 is */
+/*                 subnormal: each entry of the product is divided by */
+/*                 d21 or conj(d21) and then scaled by T. */
 
 /*                 (NOTE: No need to check for division by ZERO, */
 /*                  since that was ensured earlier in pivot search: */
@@ -1327,9 +1277,6 @@ L70:
 		    z__1.r = d11.r * d22.r - d11.i * d22.i, z__1.i = d11.r * 
 			    d22.i + d11.i * d22.r;
 		    t = 1. / (z__1.r - 1.);
-		    z__2.r = t, z__2.i = 0.;
-		    z_div(&z__1, &z__2, &d21);
-		    d21.r = z__1.r, d21.i = z__1.i;
 
 /*                 Update elements in columns A(k) and A(k+1) as */
 /*                 dot products of rows of ( W(k) W(k+1) ) and columns */
@@ -1338,7 +1285,6 @@ L70:
 		    i__1 = *n;
 		    for (j = k + 2; j <= i__1; ++j) {
 			i__2 = j + k * a_dim1;
-			d_cnjg(&z__2, &d21);
 			i__3 = j + k * w_dim1;
 			z__4.r = d11.r * w[i__3].r - d11.i * w[i__3].i, 
 				z__4.i = d11.r * w[i__3].i + d11.i * w[i__3]
@@ -1346,19 +1292,20 @@ L70:
 			i__4 = j + (k + 1) * w_dim1;
 			z__3.r = z__4.r - w[i__4].r, z__3.i = z__4.i - w[i__4]
 				.i;
-			z__1.r = z__2.r * z__3.r - z__2.i * z__3.i, z__1.i = 
-				z__2.r * z__3.i + z__2.i * z__3.r;
+			d_cnjg(&z__5, &d21);
+			z_div(&z__2, &z__3, &z__5);
+			z__1.r = t * z__2.r, z__1.i = t * z__2.i;
 			a[i__2].r = z__1.r, a[i__2].i = z__1.i;
 			i__2 = j + (k + 1) * a_dim1;
 			i__3 = j + (k + 1) * w_dim1;
-			z__3.r = d22.r * w[i__3].r - d22.i * w[i__3].i, 
-				z__3.i = d22.r * w[i__3].i + d22.i * w[i__3]
+			z__4.r = d22.r * w[i__3].r - d22.i * w[i__3].i, 
+				z__4.i = d22.r * w[i__3].i + d22.i * w[i__3]
 				.r;
 			i__4 = j + k * w_dim1;
-			z__2.r = z__3.r - w[i__4].r, z__2.i = z__3.i - w[i__4]
+			z__3.r = z__4.r - w[i__4].r, z__3.i = z__4.i - w[i__4]
 				.i;
-			z__1.r = d21.r * z__2.r - d21.i * z__2.i, z__1.i = 
-				d21.r * z__2.i + d21.i * z__2.r;
+			z_div(&z__2, &z__3, &d21);
+			z__1.r = t * z__2.r, z__1.i = t * z__2.i;
 			a[i__2].r = z__1.r, a[i__2].i = z__1.i;
 /* L80: */
 		    }
@@ -1407,49 +1354,14 @@ L90:
 
 /*        A22 := A22 - L21*D*L21**H = A22 - L21*W**H */
 
-/*        computing blocks of NB columns at a time (note that conjg(W) is */
-/*        actually stored) */
+/*        (note that conjg(W) is actually stored) */
 
-	i__1 = *n;
-	i__2 = *nb;
-	for (j = k; i__2 < 0 ? j >= i__1 : j <= i__1; j += i__2) {
-/* Computing MIN */
-	    i__3 = *nb, i__4 = *n - j + 1;
-	    jb = f2cmin(i__3,i__4);
-
-/*           Update the lower triangle of the diagonal block */
-
-	    i__3 = j + jb - 1;
-	    for (jj = j; jj <= i__3; ++jj) {
-		i__4 = jj + jj * a_dim1;
-		i__5 = jj + jj * a_dim1;
-		d__1 = a[i__5].r;
-		a[i__4].r = d__1, a[i__4].i = 0.;
-		i__4 = j + jb - jj;
-		i__5 = k - 1;
-		z__1.r = -1., z__1.i = 0.;
-		zgemv_("No transpose", &i__4, &i__5, &z__1, &a[jj + a_dim1], 
-			lda, &w[jj + w_dim1], ldw, &c_b1, &a[jj + jj * a_dim1]
-			, &c__1);
-		i__4 = jj + jj * a_dim1;
-		i__5 = jj + jj * a_dim1;
-		d__1 = a[i__5].r;
-		a[i__4].r = d__1, a[i__4].i = 0.;
-/* L100: */
-	    }
-
-/*           Update the rectangular subdiagonal block */
-
-	    if (j + jb <= *n) {
-		i__3 = *n - j - jb + 1;
-		i__4 = k - 1;
-		z__1.r = -1., z__1.i = 0.;
-		zgemm_("No transpose", "Transpose", &i__3, &jb, &i__4, &z__1, 
-			&a[j + jb + a_dim1], lda, &w[j + w_dim1], ldw, &c_b1, 
-			&a[j + jb + j * a_dim1], lda);
-	    }
-/* L110: */
-	}
+	i__1 = *n - k + 1;
+	i__2 = k - 1;
+	z__1.r = -1., z__1.i = -0.;
+	zgemmtr_("Lower", "No transpose", "Transpose", &i__1, &i__2, &z__1, &
+		a[k + a_dim1], lda, &w[k + w_dim1], ldw, &c_b1, &a[k + k * 
+		a_dim1], lda);
 
 /*        Put L21 in standard form by partially undoing the interchanges */
 /*        of rows in columns 1:k-1 looping backwards from k-1 to 1 */
