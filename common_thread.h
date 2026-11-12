@@ -157,7 +157,7 @@ extern int blas_omp_threads_local;
 extern int blas_is_num_threads_set_explicitly;
 
 #if defined(ARCH_ARM64) && defined(OS_DARWIN) && defined(__clang__) && (defined(VORTEXM4) || defined(DYNAMIC_ARCH)) && \
-    !defined(COMPLEX) && !defined(BFLOAT16) && !defined(HFLOAT16)
+    !defined(COMPLEX) && (!defined(BFLOAT16) || !defined(BGEMM)) && !defined(HFLOAT16)
 #include <sys/sysctl.h>
 #ifdef DYNAMIC_ARCH
 extern char *gotoblas_corename(void);

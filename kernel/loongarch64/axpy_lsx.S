@@ -77,7 +77,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     vreplgr2vr.w VXA, t1
 #endif
 
+    beq $r0, INCY, .L5
     srai.d I, N, 3
+    b .L10
+.L5:
+    srai.d I, N, 0
+.L10:
     bne INCX, TEMP, .L20
     bne INCY, TEMP, .L12 // INCX==1 and INCY!=1
     b .L11  // INCX==1 and INCY==1
@@ -186,6 +191,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .align 3
 
 .L121:
+    beq $r0, INCY, .L124
 #ifdef DOUBLE
     vld VX0, X, 0 * SIZE
     ld.d t1, Y, 0 * SIZE
@@ -294,6 +300,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .align 3
 
 .L123:
+    beq $r0, INCY, .L124
     LD  $f12, X, 0 * SIZE
     LD  $f14, Y, 0 * SIZE
     addi.d I, I, -1
@@ -302,6 +309,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     addi.d  X, X, SIZE
     add.d  Y, Y, INCY
     blt $r0, I, .L123
+    b .L999
+    .align 3
+
+.L124:// INCX=1 and INCY=0
+    LD  $f14, Y, 0 * SIZE
+.L125:
+    LD  $f12, X, 0 * SIZE
+    addi.d I, I, -1
+    MADD $f14, $f12, $f0, $f14
+    addi.d  X, X, SIZE
+    blt $r0, I, .L125
+    ST  $f14, Y, 0 * SIZE
     b .L999
     .align 3
 
@@ -408,6 +427,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .align 3
 
 .L222:
+    beq $r0, INCY, .L225
 #ifdef DOUBLE
     ld.d t1, X, 0 * SIZE
     add.d X, X, INCX
@@ -555,6 +575,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .align 3
 
 .L224:
+    beq $r0, INCY, .L225
     LD  $f12, X, 0 * SIZE
     LD  $f14, Y, 0 * SIZE
     addi.d I, I, -1
@@ -563,6 +584,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     add.d X, X, INCX
     add.d Y, Y, INCY
     blt $r0, I, .L224
+    .align 3
+    b .L999
+
+.L225: //INCX !=1 and INCY=0
+    LD  $f14, Y, 0 * SIZE
+.L226:
+    LD  $f12, X, 0 * SIZE
+    addi.d I, I, -1
+    MADD $f14, $f12, $f0, $f14
+    add.d X, X, INCX
+    blt $r0, I, .L226
+    ST  $f14, Y, 0 * SIZE
     .align 3
 
 .L999:

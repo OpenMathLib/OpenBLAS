@@ -1666,7 +1666,57 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, FLOAT* A, FLOAT* B, F
             vfloat64m2_t resultCD =  __riscv_vfmul_vf_f64m2( A00, B6, 8 );
             vfloat64m2_t resultEF =  __riscv_vfmul_vf_f64m2( A00, B7, 8 );
 
-            for (BLASLONG k = K; --k; ) {
+            /* 2x K-unroll with A double-buffering, as in the ZVL256B SGEMM
+             * kernel: two consecutive k-steps are folded into one iteration so
+             * the per-k loop control (counter, B/A pointer bumps, backedge) is
+             * halved, and the two A vectors are loaded before the FMA stream
+             * to expose A-load latency. Each accumulator still consumes the
+             * k-steps in the original ascending order (step p then step p+1),
+             * so the per-column FP accumulation order is unchanged. */
+            BLASLONG k;
+            for (k = K; k > 2; k -= 2) {
+                FLOAT B8 = B[8];
+                FLOAT B9 = B[9];
+                FLOAT BA = B[10];
+                FLOAT BB = B[11];
+                FLOAT BC = B[12];
+                FLOAT BD = B[13];
+                FLOAT BE = B[14];
+                FLOAT BF = B[15];
+
+                B0 = B[0];
+                B1 = B[1];
+                B2 = B[2];
+                B3 = B[3];
+                B4 = B[4];
+                B5 = B[5];
+                B6 = B[6];
+                B7 = B[7];
+                B += 16;
+
+                vfloat64m2_t A0 = __riscv_vle64_v_f64m2( A, 8 );
+                vfloat64m2_t A1 = __riscv_vle64_v_f64m2( A + 8, 8 );
+                A += 16;
+
+                result01 = __riscv_vfmacc_vf_f64m2( result01, B0, A0, 8 );
+                result23 = __riscv_vfmacc_vf_f64m2( result23, B1, A0, 8 );
+                result45 = __riscv_vfmacc_vf_f64m2( result45, B2, A0, 8 );
+                result67 = __riscv_vfmacc_vf_f64m2( result67, B3, A0, 8 );
+                result89 = __riscv_vfmacc_vf_f64m2( result89, B4, A0, 8 );
+                resultAB = __riscv_vfmacc_vf_f64m2( resultAB, B5, A0, 8 );
+                resultCD = __riscv_vfmacc_vf_f64m2( resultCD, B6, A0, 8 );
+                resultEF = __riscv_vfmacc_vf_f64m2( resultEF, B7, A0, 8 );
+
+                result01 = __riscv_vfmacc_vf_f64m2( result01, B8, A1, 8 );
+                result23 = __riscv_vfmacc_vf_f64m2( result23, B9, A1, 8 );
+                result45 = __riscv_vfmacc_vf_f64m2( result45, BA, A1, 8 );
+                result67 = __riscv_vfmacc_vf_f64m2( result67, BB, A1, 8 );
+                result89 = __riscv_vfmacc_vf_f64m2( result89, BC, A1, 8 );
+                resultAB = __riscv_vfmacc_vf_f64m2( resultAB, BD, A1, 8 );
+                resultCD = __riscv_vfmacc_vf_f64m2( resultCD, BE, A1, 8 );
+                resultEF = __riscv_vfmacc_vf_f64m2( resultEF, BF, A1, 8 );
+            }
+            for (; --k; ) {
                 B0 = B[0];
                 B1 = B[1];
                 B2 = B[2];

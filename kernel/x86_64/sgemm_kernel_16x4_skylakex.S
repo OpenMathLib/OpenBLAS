@@ -92,11 +92,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
-#if defined(OS_WINDOWS)
-#define L_BUFFER_SIZE 8192
-#else
-#define L_BUFFER_SIZE 12288
-#endif
+/* room for 6 values of B per k for K up to SGEMM_Q (at most 512) */
+#define L_BUFFER_SIZE 512*4*6
 
 #define Ndiv6	 24(%rsp)
 #define Nmod6	 32(%rsp)

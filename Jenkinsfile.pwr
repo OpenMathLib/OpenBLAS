@@ -11,7 +11,7 @@ pipeline {
                 checkout scm
                 sh 'sudo apt update'
                 sh 'sudo apt install gfortran -y'
-                sh 'make clean && make'
+                sh 'make MAKE_NB_JOBS=2 clean && make MAKE_NB_JOBS=2'
             }
         }
         stage('Clang build') {
@@ -24,7 +24,7 @@ pipeline {
                 checkout scm
                 sh 'sudo apt update'
                 sh 'sudo apt install -y clang gfortran'
-                sh 'make clean && make CC=clang'
+                sh 'make MAKE_NB_JOBS=2 clean && make CC=clang MAKE_NB_JOBS=2'
             }
         }
     }

@@ -8,6 +8,8 @@ on:
       - 'kernel/simd/intrin_wasm.h'
       - 'kernel/simd/intrin.h'
       - 'Makefile.wasm'
+      - 'Makefile.system'
+      - 'cmake/system.cmake'
       - '.github/workflows/wasm.yml'
   pull_request:
     paths:
@@ -16,6 +18,8 @@ on:
       - 'kernel/simd/intrin_wasm.h'
       - 'kernel/simd/intrin.h'
       - 'Makefile.wasm'
+      - 'Makefile.system'
+      - 'cmake/system.cmake'
       - '.github/workflows/wasm.yml'
   workflow_dispatch:
 

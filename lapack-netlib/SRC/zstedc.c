@@ -545,6 +545,7 @@ f"> */
 	    doublereal *, doublecomplex *, integer *, doublereal *, integer *);
     integer lgn;
     doublereal eps;
+    extern doublereal droundup_lwork__(integer *);
 
 
 /*  -- LAPACK computational routine (version 3.7.1) -- */
@@ -623,7 +624,7 @@ f"> */
 	    lrwmin = (*n << 2) + 1 + (i__1 * i__1 << 1);
 	    liwmin = *n * 5 + 3;
 	}
-	work[1].r = (doublereal) lwmin, work[1].i = 0.;
+	work[1].r = droundup_lwork__( &lwmin ), work[1].i = 0.;
 	rwork[1] = (doublereal) lrwmin;
 	iwork[1] = liwmin;
 
@@ -815,7 +816,7 @@ L40:
     }
 
 L70:
-    work[1].r = (doublereal) lwmin, work[1].i = 0.;
+    work[1].r = droundup_lwork__( &lwmin ), work[1].i = 0.;
     rwork[1] = (doublereal) lrwmin;
     iwork[1] = liwmin;
 
