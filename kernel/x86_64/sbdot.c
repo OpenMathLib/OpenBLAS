@@ -31,28 +31,75 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sbdot_microk_cooperlake.c"
 #endif
 
-static float sbdot_compute(BLASLONG n, bfloat16 *x, BLASLONG inc_x, bfloat16 *y, BLASLONG inc_y)
+/* the inputs are converted to fp32 in blocks of SBDOT_BLOCK elements held in
+   a stack array; these SDOTU_K calls are too short to start threads of their
+   own (kernel/arm64/dot.c threads above 10000 elements) */
+#define SBDOT_BLOCK 1024
+
+#ifdef HAVE_SBDOT_ACCL_KERNEL
+/* keep the generic path out of line, so that the AVX512-BF16 path does not
+   set up its stack frame (HAVE_SBDOT_ACCL_KERNEL implies GCC, clang or
+   NVHPC) */
+#define SBDOT_GENERIC_NOINLINE __attribute__((noinline))
+#else
+#define SBDOT_GENERIC_NOINLINE
+#endif
+
+/* same results as SBF16TOS_K (bf16to.c): denormals become signed zeros, NaNs
+   are forced to quiet NaNs, all other values are converted exactly */
+static inline void sbdot_bf16tos(BLASLONG n, bfloat16 *in, BLASLONG inc, float *out)
+{
+    union { uint32_t u; float f; } v;
+    uint32_t b, e;
+    BLASLONG i;
+
+    for (i = 0; i < n; i++) {
+        b = in[i * inc];
+        e = b & 0x7f80u;
+        v.u = b << 16;
+        v.u = (e == 0) ? (v.u & 0x80000000u) : v.u;
+        v.u = (e == 0x7f80u && (b & 0x007fu)) ? (v.u | 0x00400000u) : v.u;
+        out[i] = v.f;
+    }
+}
+
+static SBDOT_GENERIC_NOINLINE float sbdot_generic(BLASLONG n, bfloat16 *x, BLASLONG inc_x, bfloat16 *y, BLASLONG inc_y)
 {
     float d = 0.0;
+    /* both blocks share one stack array, aligned to 64 bytes by hand (16
+       spare floats): this file is also built by MSVC, which does not accept
+       __attribute__((aligned)) */
+    float buffer[2 * SBDOT_BLOCK + 16];
+    float *x_fp32 = (float *)(((BLASLONG)buffer + 63) & ~63);
+    float *y_fp32 = x_fp32 + SBDOT_BLOCK;
+    float r;
+    BLASLONG i, m;
 
+    for (i = 0; i < n; i += SBDOT_BLOCK) {
+        m = n - i;
+        if (m > SBDOT_BLOCK) m = SBDOT_BLOCK;
+
+        sbdot_bf16tos(m, x + i * inc_x, inc_x, x_fp32);
+        sbdot_bf16tos(m, y + i * inc_y, inc_y, y_fp32);
+
+        r = SDOTU_K(m, x_fp32, 1, y_fp32, 1);
+        /* the first block is taken as is, so that n <= SBDOT_BLOCK returns
+           the SDOTU_K result bit for bit */
+        d = (i == 0) ? r : d + r;
+    }
+
+    return d;
+}
+
+static float sbdot_compute(BLASLONG n, bfloat16 *x, BLASLONG inc_x, bfloat16 *y, BLASLONG inc_y)
+{
 #ifdef HAVE_SBDOT_ACCL_KERNEL
     if ((inc_x == 1) && (inc_y == 1)) {
         return sbdot_accl_kernel(n, x, y);
     }
 #endif
 
-    float * x_fp32 = malloc(sizeof(float)*n);
-    float * y_fp32 = malloc(sizeof(float)*n);
-
-    SBF16TOS_K(n, x, inc_x, x_fp32, 1);
-    SBF16TOS_K(n, y, inc_y, y_fp32, 1);
-
-    d = SDOTU_K(n, x_fp32, 1, y_fp32, 1);
-
-    free(x_fp32);
-    free(y_fp32);
-
-    return d;
+    return sbdot_generic(n, x, inc_x, y, inc_y);
 }
 
 #if defined(SMP)
