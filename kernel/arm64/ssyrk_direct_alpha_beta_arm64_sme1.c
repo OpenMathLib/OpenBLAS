@@ -244,7 +244,7 @@ void CNAME (BLASLONG N, BLASLONG K, float alpha, float * __restrict A,\
 	     * of reading directly from vector (z) registers.
 	     * */
         asm volatile("" : : :"p0", "p1", "p2", "p3", "p4", "p5", "p6", "p7",
-                         "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15",
+                         "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
                          "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7",
                          "z8", "z9", "z10", "z11", "z12", "z13", "z14", "z15",
                          "z16", "z17", "z18", "z19", "z20", "z21", "z22", "z23",
@@ -255,7 +255,7 @@ void CNAME (BLASLONG N, BLASLONG K, float alpha, float * __restrict A,\
          */
         SGEMM_PREPROCESS (N, K, A, A_mod);
         asm volatile("" : : :"p0", "p1", "p2", "p3", "p4", "p5", "p6", "p7",
-                         "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15",
+                         "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
                          "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7",
                          "z8", "z9", "z10", "z11", "z12", "z13", "z14", "z15",
                          "z16", "z17", "z18", "z19", "z20", "z21", "z22", "z23",

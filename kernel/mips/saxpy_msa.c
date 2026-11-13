@@ -231,6 +231,10 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x,
                 y[0] += da * x[0];
             }
         }
+    } 
+    else if (0 == inc_y)
+    {
+        for (i=0;i<n;i++) y[0]+=da*x[i*inc_x];
     }
     else
     {

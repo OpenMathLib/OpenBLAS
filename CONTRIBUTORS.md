@@ -296,3 +296,6 @@ hheei <hheei@users.noreply.github.com>
 
 * Arthur031221 <levi74108520963@gmail.com>
   * [2026-10-02] Fix complex scaling in strided batched GEMM.
+
+* Andrew Pullin <pullin@berkeley.edu>
+  * [2026-11-06] Fix work buffer overflow in threaded SYRK/HERK for large N

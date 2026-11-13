@@ -31,9 +31,19 @@
 static float
 bfloat16tof32 (bfloat16 value)
 {
+#if 0
   blasint one = 1;
   float result;
   sbf16tos_(&one, &value, &one, &result, &one);
+#else
+  float result = 0;
+  unsigned short* q = (unsigned short*) &result;
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+  q[0] = value;
+#else
+  q[1] = value;
+#endif
+#endif
   return result;
 }
 

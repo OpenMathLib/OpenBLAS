@@ -255,8 +255,6 @@ typedef struct Namelist Namelist;
 */
 
 
-
-
 /* Table of constant values */
 
 static integer c__1 = 1;
@@ -268,7 +266,6 @@ static integer c__1 = 1;
 /* Online html documentation available at */
 /*            http://www.netlib.org/lapack/explore-html/ */
 
-/* > \htmlonly */
 /* > Download CUNBDB + dependencies */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/cunbdb.
 f"> */
@@ -279,7 +276,6 @@ f"> */
 /* > <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/cunbdb.
 f"> */
 /* > [TXT]</a> */
-/* > \endhtmlonly */
 
 /*  Definition: */
 /*  =========== */
@@ -517,9 +513,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date December 2016 */
-
-/* > \ingroup complexOTHERcomputational */
+/* > \ingroup unbdb */
 
 /* > \par Further Details: */
 /*  ===================== */
@@ -554,31 +548,32 @@ f"> */
     /* System generated locals */
     integer x11_dim1, x11_offset, x12_dim1, x12_offset, x21_dim1, x21_offset, 
 	    x22_dim1, x22_offset, i__1, i__2, i__3;
-    real r__1=0.;
-    complex q__1={0.,0.};
+    real r__1;
+    complex q__1;
 
     /* Local variables */
     logical colmajor;
     integer lworkmin, lworkopt, i__;
+    real z1, z2, z3, z4;
     extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
-	    integer *), clarf_(char *, integer *, integer *, complex *, 
-	    integer *, complex *, complex *, integer *, complex *);
+	    integer *);
     extern logical lsame_(char *, char *);
     extern /* Subroutine */ void caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
-    real z1, z2, z3, z4;
     extern real scnrm2_(integer *, complex *, integer *);
-    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *); 
-    extern void xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *), 
+	    xerbla_(char *, integer *, ftnlen), clarf1f_(char *, integer *, 
+	    integer *, complex *, integer *, complex *, complex *, integer *, 
+	    complex *);
     logical lquery;
     extern /* Subroutine */ void clarfgp_(integer *, complex *, complex *, 
 	    integer *, complex *);
+    extern real sroundup_lwork__(integer *);
 
 
-/*  -- LAPACK computational routine (version 3.7.0) -- */
+/*  -- LAPACK computational routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     December 2016 */
 
 
 /*  ==================================================================== */
@@ -589,16 +584,16 @@ f"> */
 
     /* Parameter adjustments */
     x11_dim1 = *ldx11;
-    x11_offset = 1 + x11_dim1 * 1;
+    x11_offset = 1 + x11_dim1;
     x11 -= x11_offset;
     x12_dim1 = *ldx12;
-    x12_offset = 1 + x12_dim1 * 1;
+    x12_offset = 1 + x12_dim1;
     x12 -= x12_offset;
     x21_dim1 = *ldx21;
-    x21_offset = 1 + x21_dim1 * 1;
+    x21_offset = 1 + x21_dim1;
     x21 -= x21_offset;
     x22_dim1 = *ldx22;
-    x22_offset = 1 + x22_dim1 * 1;
+    x22_offset = 1 + x22_dim1;
     x22 -= x22_offset;
     --theta;
     --phi;
@@ -669,14 +664,15 @@ f"> */
     if (*info == 0) {
 	lworkopt = *m - *q;
 	lworkmin = *m - *q;
-	work[1].r = (real) lworkopt, work[1].i = 0.f;
+	r__1 = sroundup_lwork__(&lworkopt);
+	work[1].r = r__1, work[1].i = 0.f;
 	if (*lwork < lworkmin && ! lquery) {
 	    *info = -21;
 	}
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("xORBDB", &i__1, (ftnlen)6);
+	xerbla_("CUNBDB", &i__1, (ftnlen)6);
 	return;
     } else if (lquery) {
 	return;
@@ -736,8 +732,6 @@ f"> */
 		clarfgp_(&i__2, &x11[i__ + i__ * x11_dim1], &x11[i__ + i__ * 
 			x11_dim1], &c__1, &taup1[i__]);
 	    }
-	    i__2 = i__ + i__ * x11_dim1;
-	    x11[i__2].r = 1.f, x11[i__2].i = 0.f;
 	    if (*m - *p > i__) {
 		i__2 = *m - *p - i__ + 1;
 		clarfgp_(&i__2, &x21[i__ + i__ * x21_dim1], &x21[i__ + 1 + 
@@ -747,34 +741,32 @@ f"> */
 		clarfgp_(&i__2, &x21[i__ + i__ * x21_dim1], &x21[i__ + i__ * 
 			x21_dim1], &c__1, &taup2[i__]);
 	    }
-	    i__2 = i__ + i__ * x21_dim1;
-	    x21[i__2].r = 1.f, x21[i__2].i = 0.f;
 
 	    if (*q > i__) {
 		i__2 = *p - i__ + 1;
 		i__3 = *q - i__;
 		r_cnjg(&q__1, &taup1[i__]);
-		clarf_("L", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], &c__1, &
-			q__1, &x11[i__ + (i__ + 1) * x11_dim1], ldx11, &work[
-			1]);
+		clarf1f_("L", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], &c__1,
+			 &q__1, &x11[i__ + (i__ + 1) * x11_dim1], ldx11, &
+			work[1]);
 		i__2 = *m - *p - i__ + 1;
 		i__3 = *q - i__;
 		r_cnjg(&q__1, &taup2[i__]);
-		clarf_("L", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], &c__1, &
-			q__1, &x21[i__ + (i__ + 1) * x21_dim1], ldx21, &work[
-			1]);
+		clarf1f_("L", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], &c__1,
+			 &q__1, &x21[i__ + (i__ + 1) * x21_dim1], ldx21, &
+			work[1]);
 	    }
 	    if (*m - *q + 1 > i__) {
 		i__2 = *p - i__ + 1;
 		i__3 = *m - *q - i__ + 1;
 		r_cnjg(&q__1, &taup1[i__]);
-		clarf_("L", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], &c__1, &
-			q__1, &x12[i__ + i__ * x12_dim1], ldx12, &work[1]);
+		clarf1f_("L", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], &c__1,
+			 &q__1, &x12[i__ + i__ * x12_dim1], ldx12, &work[1]);
 		i__2 = *m - *p - i__ + 1;
 		i__3 = *m - *q - i__ + 1;
 		r_cnjg(&q__1, &taup2[i__]);
-		clarf_("L", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], &c__1, &
-			q__1, &x22[i__ + i__ * x22_dim1], ldx22, &work[1]);
+		clarf1f_("L", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], &c__1,
+			 &q__1, &x22[i__ + i__ * x22_dim1], ldx22, &work[1]);
 	    }
 
 	    if (i__ < *q) {
@@ -818,8 +810,6 @@ f"> */
 		    clarfgp_(&i__2, &x11[i__ + (i__ + 1) * x11_dim1], &x11[
 			    i__ + (i__ + 2) * x11_dim1], ldx11, &tauq1[i__]);
 		}
-		i__2 = i__ + (i__ + 1) * x11_dim1;
-		x11[i__2].r = 1.f, x11[i__2].i = 0.f;
 	    }
 	    if (*m - *q + 1 > i__) {
 		i__2 = *m - *q - i__ + 1;
@@ -834,33 +824,31 @@ f"> */
 			    i__ + 1) * x12_dim1], ldx12, &tauq2[i__]);
 		}
 	    }
-	    i__2 = i__ + i__ * x12_dim1;
-	    x12[i__2].r = 1.f, x12[i__2].i = 0.f;
 
 	    if (i__ < *q) {
 		i__2 = *p - i__;
 		i__3 = *q - i__;
-		clarf_("R", &i__2, &i__3, &x11[i__ + (i__ + 1) * x11_dim1], 
+		clarf1f_("R", &i__2, &i__3, &x11[i__ + (i__ + 1) * x11_dim1], 
 			ldx11, &tauq1[i__], &x11[i__ + 1 + (i__ + 1) * 
 			x11_dim1], ldx11, &work[1]);
 		i__2 = *m - *p - i__;
 		i__3 = *q - i__;
-		clarf_("R", &i__2, &i__3, &x11[i__ + (i__ + 1) * x11_dim1], 
+		clarf1f_("R", &i__2, &i__3, &x11[i__ + (i__ + 1) * x11_dim1], 
 			ldx11, &tauq1[i__], &x21[i__ + 1 + (i__ + 1) * 
 			x21_dim1], ldx21, &work[1]);
 	    }
 	    if (*p > i__) {
 		i__2 = *p - i__;
 		i__3 = *m - *q - i__ + 1;
-		clarf_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12, &
-			tauq2[i__], &x12[i__ + 1 + i__ * x12_dim1], ldx12, &
+		clarf1f_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12,
+			 &tauq2[i__], &x12[i__ + 1 + i__ * x12_dim1], ldx12, &
 			work[1]);
 	    }
 	    if (*m - *p > i__) {
 		i__2 = *m - *p - i__;
 		i__3 = *m - *q - i__ + 1;
-		clarf_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12, &
-			tauq2[i__], &x22[i__ + 1 + i__ * x22_dim1], ldx22, &
+		clarf1f_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12,
+			 &tauq2[i__], &x22[i__ + 1 + i__ * x22_dim1], ldx22, &
 			work[1]);
 	    }
 
@@ -893,21 +881,19 @@ f"> */
 		clarfgp_(&i__2, &x12[i__ + i__ * x12_dim1], &x12[i__ + (i__ + 
 			1) * x12_dim1], ldx12, &tauq2[i__]);
 	    }
-	    i__2 = i__ + i__ * x12_dim1;
-	    x12[i__2].r = 1.f, x12[i__2].i = 0.f;
 
 	    if (*p > i__) {
 		i__2 = *p - i__;
 		i__3 = *m - *q - i__ + 1;
-		clarf_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12, &
-			tauq2[i__], &x12[i__ + 1 + i__ * x12_dim1], ldx12, &
+		clarf1f_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12,
+			 &tauq2[i__], &x12[i__ + 1 + i__ * x12_dim1], ldx12, &
 			work[1]);
 	    }
 	    if (*m - *p - *q >= 1) {
 		i__2 = *m - *p - *q;
 		i__3 = *m - *q - i__ + 1;
-		clarf_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12, &
-			tauq2[i__], &x22[*q + 1 + i__ * x22_dim1], ldx22, &
+		clarf1f_("R", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], ldx12,
+			 &tauq2[i__], &x22[*q + 1 + i__ * x22_dim1], ldx22, &
 			work[1]);
 	    }
 
@@ -932,13 +918,11 @@ f"> */
 	    clarfgp_(&i__2, &x22[*q + i__ + (*p + i__) * x22_dim1], &x22[*q + 
 		    i__ + (*p + i__ + 1) * x22_dim1], ldx22, &tauq2[*p + i__])
 		    ;
-	    i__2 = *q + i__ + (*p + i__) * x22_dim1;
-	    x22[i__2].r = 1.f, x22[i__2].i = 0.f;
 	    i__2 = *m - *p - *q - i__;
 	    i__3 = *m - *p - *q - i__ + 1;
-	    clarf_("R", &i__2, &i__3, &x22[*q + i__ + (*p + i__) * x22_dim1], 
-		    ldx22, &tauq2[*p + i__], &x22[*q + i__ + 1 + (*p + i__) * 
-		    x22_dim1], ldx22, &work[1]);
+	    clarf1f_("R", &i__2, &i__3, &x22[*q + i__ + (*p + i__) * x22_dim1]
+		    , ldx22, &tauq2[*p + i__], &x22[*q + i__ + 1 + (*p + i__) 
+		    * x22_dim1], ldx22, &work[1]);
 
 	    i__2 = *m - *p - *q - i__ + 1;
 	    clacgv_(&i__2, &x22[*q + i__ + (*p + i__) * x22_dim1], ldx22);
@@ -997,8 +981,6 @@ f"> */
 	    i__2 = *p - i__ + 1;
 	    clarfgp_(&i__2, &x11[i__ + i__ * x11_dim1], &x11[i__ + (i__ + 1) *
 		     x11_dim1], ldx11, &taup1[i__]);
-	    i__2 = i__ + i__ * x11_dim1;
-	    x11[i__2].r = 1.f, x11[i__2].i = 0.f;
 	    if (i__ == *m - *p) {
 		i__2 = *m - *p - i__ + 1;
 		clarfgp_(&i__2, &x21[i__ + i__ * x21_dim1], &x21[i__ + i__ * 
@@ -1008,26 +990,24 @@ f"> */
 		clarfgp_(&i__2, &x21[i__ + i__ * x21_dim1], &x21[i__ + (i__ + 
 			1) * x21_dim1], ldx21, &taup2[i__]);
 	    }
-	    i__2 = i__ + i__ * x21_dim1;
-	    x21[i__2].r = 1.f, x21[i__2].i = 0.f;
 
 	    i__2 = *q - i__;
 	    i__3 = *p - i__ + 1;
-	    clarf_("R", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], ldx11, &
+	    clarf1f_("R", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], ldx11, &
 		    taup1[i__], &x11[i__ + 1 + i__ * x11_dim1], ldx11, &work[
 		    1]);
 	    i__2 = *m - *q - i__ + 1;
 	    i__3 = *p - i__ + 1;
-	    clarf_("R", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], ldx11, &
+	    clarf1f_("R", &i__2, &i__3, &x11[i__ + i__ * x11_dim1], ldx11, &
 		    taup1[i__], &x12[i__ + i__ * x12_dim1], ldx12, &work[1]);
 	    i__2 = *q - i__;
 	    i__3 = *m - *p - i__ + 1;
-	    clarf_("R", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], ldx21, &
+	    clarf1f_("R", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], ldx21, &
 		    taup2[i__], &x21[i__ + 1 + i__ * x21_dim1], ldx21, &work[
 		    1]);
 	    i__2 = *m - *q - i__ + 1;
 	    i__3 = *m - *p - i__ + 1;
-	    clarf_("R", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], ldx21, &
+	    clarf1f_("R", &i__2, &i__3, &x21[i__ + i__ * x21_dim1], ldx21, &
 		    taup2[i__], &x22[i__ + i__ * x22_dim1], ldx22, &work[1]);
 
 	    i__2 = *p - i__ + 1;
@@ -1068,41 +1048,37 @@ f"> */
 		i__2 = *q - i__;
 		clarfgp_(&i__2, &x11[i__ + 1 + i__ * x11_dim1], &x11[i__ + 2 
 			+ i__ * x11_dim1], &c__1, &tauq1[i__]);
-		i__2 = i__ + 1 + i__ * x11_dim1;
-		x11[i__2].r = 1.f, x11[i__2].i = 0.f;
 	    }
 	    i__2 = *m - *q - i__ + 1;
 	    clarfgp_(&i__2, &x12[i__ + i__ * x12_dim1], &x12[i__ + 1 + i__ * 
 		    x12_dim1], &c__1, &tauq2[i__]);
-	    i__2 = i__ + i__ * x12_dim1;
-	    x12[i__2].r = 1.f, x12[i__2].i = 0.f;
 
 	    if (i__ < *q) {
 		i__2 = *q - i__;
 		i__3 = *p - i__;
 		r_cnjg(&q__1, &tauq1[i__]);
-		clarf_("L", &i__2, &i__3, &x11[i__ + 1 + i__ * x11_dim1], &
+		clarf1f_("L", &i__2, &i__3, &x11[i__ + 1 + i__ * x11_dim1], &
 			c__1, &q__1, &x11[i__ + 1 + (i__ + 1) * x11_dim1], 
 			ldx11, &work[1]);
 		i__2 = *q - i__;
 		i__3 = *m - *p - i__;
 		r_cnjg(&q__1, &tauq1[i__]);
-		clarf_("L", &i__2, &i__3, &x11[i__ + 1 + i__ * x11_dim1], &
+		clarf1f_("L", &i__2, &i__3, &x11[i__ + 1 + i__ * x11_dim1], &
 			c__1, &q__1, &x21[i__ + 1 + (i__ + 1) * x21_dim1], 
 			ldx21, &work[1]);
 	    }
 	    i__2 = *m - *q - i__ + 1;
 	    i__3 = *p - i__;
 	    r_cnjg(&q__1, &tauq2[i__]);
-	    clarf_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1, &
+	    clarf1f_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1, &
 		    q__1, &x12[i__ + (i__ + 1) * x12_dim1], ldx12, &work[1]);
 	    if (*m - *p > i__) {
 		i__2 = *m - *q - i__ + 1;
 		i__3 = *m - *p - i__;
 		r_cnjg(&q__1, &tauq2[i__]);
-		clarf_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1, &
-			q__1, &x22[i__ + (i__ + 1) * x22_dim1], ldx22, &work[
-			1]);
+		clarf1f_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1,
+			 &q__1, &x22[i__ + (i__ + 1) * x22_dim1], ldx22, &
+			work[1]);
 	    }
 	}
 
@@ -1118,24 +1094,22 @@ f"> */
 	    i__2 = *m - *q - i__ + 1;
 	    clarfgp_(&i__2, &x12[i__ + i__ * x12_dim1], &x12[i__ + 1 + i__ * 
 		    x12_dim1], &c__1, &tauq2[i__]);
-	    i__2 = i__ + i__ * x12_dim1;
-	    x12[i__2].r = 1.f, x12[i__2].i = 0.f;
 
 	    if (*p > i__) {
 		i__2 = *m - *q - i__ + 1;
 		i__3 = *p - i__;
 		r_cnjg(&q__1, &tauq2[i__]);
-		clarf_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1, &
-			q__1, &x12[i__ + (i__ + 1) * x12_dim1], ldx12, &work[
-			1]);
+		clarf1f_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1,
+			 &q__1, &x12[i__ + (i__ + 1) * x12_dim1], ldx12, &
+			work[1]);
 	    }
 	    if (*m - *p - *q >= 1) {
 		i__2 = *m - *q - i__ + 1;
 		i__3 = *m - *p - *q;
 		r_cnjg(&q__1, &tauq2[i__]);
-		clarf_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1, &
-			q__1, &x22[i__ + (*q + 1) * x22_dim1], ldx22, &work[1]
-			);
+		clarf1f_("L", &i__2, &i__3, &x12[i__ + i__ * x12_dim1], &c__1,
+			 &q__1, &x22[i__ + (*q + 1) * x22_dim1], ldx22, &work[
+			1]);
 	    }
 
 	}
@@ -1154,13 +1128,11 @@ f"> */
 	    clarfgp_(&i__2, &x22[*p + i__ + (*q + i__) * x22_dim1], &x22[*p + 
 		    i__ + 1 + (*q + i__) * x22_dim1], &c__1, &tauq2[*p + i__])
 		    ;
-	    i__2 = *p + i__ + (*q + i__) * x22_dim1;
-	    x22[i__2].r = 1.f, x22[i__2].i = 0.f;
 	    if (*m - *p - *q != i__) {
 		i__2 = *m - *p - *q - i__ + 1;
 		i__3 = *m - *p - *q - i__;
 		r_cnjg(&q__1, &tauq2[*p + i__]);
-		clarf_("L", &i__2, &i__3, &x22[*p + i__ + (*q + i__) * 
+		clarf1f_("L", &i__2, &i__3, &x22[*p + i__ + (*q + i__) * 
 			x22_dim1], &c__1, &q__1, &x22[*p + i__ + (*q + i__ + 
 			1) * x22_dim1], ldx22, &work[1]);
 	    }
