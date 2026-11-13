@@ -280,6 +280,9 @@ endif
 ifeq ($(ARCH), loongarch64)
 SMALL_MATRIX_OPT = 1
 endif
+ifeq ($(ARCH), x86_64)
+GEMM_GEMV_FORWARD = 1
+endif
 ifeq ($(ARCH), arm64)
 GEMM_GEMV_FORWARD = 1
 SBGEMM_GEMV_FORWARD = 1
