@@ -104,6 +104,13 @@ static inline int get_gemv_optimal_nthreads_neoversev2(BLASLONG MN, int ncpu) {
 }
 #endif
 
+#if defined(__clang__) && (defined(DYNAMIC_ARCH) || defined(VORTEXM4))
+/* Apple M4: ncpu from num_cpu_avail(3) is one thread per SME unit; one unit is faster below about 8 MB of matrix. */
+static inline int get_gemv_optimal_nthreads_vortexm4(BLASLONG MN, int ncpu) {
+  return MN * (BLASLONG)sizeof(FLOAT) <= (8L << 20) ? 1 : ncpu;
+}
+#endif
+
 static inline int get_gemv_optimal_nthreads(BLASLONG MN) {
   int ncpu = num_cpu_avail(3);
 #if defined(_WIN64) && defined(_M_ARM64)
@@ -115,6 +122,8 @@ static inline int get_gemv_optimal_nthreads(BLASLONG MN) {
   return get_gemv_optimal_nthreads_neoversev1(MN, ncpu);
 #elif defined(NEOVERSEV2) && !defined(COMPLEX) && !defined(DOUBLE) && !defined(BFLOAT16)
   return get_gemv_optimal_nthreads_neoversev2(MN, ncpu);
+#elif defined(VORTEXM4) && defined(__clang__) && !defined(COMPLEX) && !defined(BFLOAT16)
+  return get_gemv_optimal_nthreads_vortexm4(MN, ncpu);
 #elif defined(DYNAMIC_ARCH) && !defined(COMPLEX) && !defined(BFLOAT16)
   if (strcmp(gotoblas_corename(), "neoversev1") == 0) {
     return get_gemv_optimal_nthreads_neoversev1(MN, ncpu);
@@ -122,6 +131,11 @@ static inline int get_gemv_optimal_nthreads(BLASLONG MN) {
   if (strcmp(gotoblas_corename(), "neoversev2") == 0) {
     return get_gemv_optimal_nthreads_neoversev2(MN, ncpu);
   }
+#ifdef __clang__
+  if (strcmp(gotoblas_corename(), "vortexm4") == 0) {
+    return get_gemv_optimal_nthreads_vortexm4(MN, ncpu);
+  }
+#endif
 #endif
 
   if ( MN < 115200L * GEMM_MULTITHREAD_THRESHOLD )
