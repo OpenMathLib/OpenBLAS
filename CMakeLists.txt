@@ -282,7 +282,10 @@ endif()
 
 # add objects to the openblas lib
 if(NOT NO_LAPACK)
-  add_library(LAPACK_OVERRIDES OBJECT ${LA_SOURCES})
+  add_library(LAPACK_OVERRIDES OBJECT ${lapack_sources})
+  if(C_LAPACK)
+    target_include_directories(LAPACK_OVERRIDES PRIVATE "${PROJECT_SOURCE_DIR}")
+  endif()
   if (USE_OPENMP AND (NOT NOFORTRAN))
     # Disable OpenMP for LAPACK Fortran codes on Windows.
     if(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")

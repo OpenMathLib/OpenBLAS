@@ -1,22 +1,19 @@
-# Sources for compiling lapack-netlib. Can't use CMakeLists.txt because lapack-netlib already has its own cmake files.
-if (NOT C_LAPACK)
-	message (STATUS "fortran lapack")
-set(ALLAUX ilaenv.f ilaenv2stage.f lsamen.f iparmq.f iparam2stage.F
+# LAPACK sources combined with the OpenBLAS implementations.
+set(all_aux ilaenv.f ilaenv2stage.f lsamen.f iparmq.f iparam2stage.F
    ilaprec.f ilatrans.f ilauplo.f iladiag.f chla_transtype.f dlaset.f la_xisnan.F90
    ../INSTALL/ilaver.f xerbla_array.f
    ../INSTALL/slamch.f)
 
-if (${CMAKE_Fortran_COMPILER} MATCHES GFORTRAN)
-if ((${CMAKE_Fortran_COMPILER_VERSION} VERSION_LESS 5.0) OR (${CMAKE_SYSTEM_NAME} MATCHES FreeBSD AND ${CMAKE_SYSTEM_VERSION} VERSION_LESS 16.0 AND ${CMAKE_SYSTEM_PROCESSOR} MATCHES "^(x86|x86_64)"))
-  list (APPEND ALLAUX DEPRECATED/ieeeck.f)
+if(NOT C_LAPACK AND "${CMAKE_Fortran_COMPILER}" MATCHES GFORTRAN AND
+    (CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 5.0 OR
+     (CMAKE_SYSTEM_NAME MATCHES "FreeBSD" AND CMAKE_SYSTEM_VERSION VERSION_LESS 16.0 AND
+      CMAKE_SYSTEM_PROCESSOR MATCHES "^(x86|x86_64)")))
+  list(APPEND all_aux DEPRECATED/ieeeck.f)
 else()
-  list (APPEND ALLAUX ieeeck.f)
-endif()
-else()
-  list (APPEND ALLAUX ieeeck.f)
+  list(APPEND all_aux ieeeck.f)
 endif()
 
-set(SCLAUX
+set(sc_aux
 	scombssq.f sbdsvdx.f sstevx.f sstein.f
    la_constants.f90
    sbdsdc.f
@@ -36,7 +33,7 @@ set(SCLAUX
    slartgp.f slartgs.f ../INSTALL/sroundup_lwork.f
    ../INSTALL/second_${TIMER}.f)
 
-set(DZLAUX
+set(dz_aux
    la_constants.f90
    dbdsdc.f
    dbdsvdx.f dstevx.f dstein.f
@@ -56,7 +53,7 @@ set(DZLAUX
    dlartgp.f dlartgs.f ../INSTALL/droundup_lwork.f
    ../INSTALL/dlamch.f ../INSTALL/dsecnd_${TIMER}.f)
 
-set(SLASRC
+set(s_lapack
    sgbbrd.f sgbcon.f sgbequ.f sgbrfs.f sgbsv.f
    sgbsvx.f sgbtf2.f sgbtrf.f sgbtrs.f sgebak.f sgebal.f sgebd2.f
    sgebrd.f sgecon.f sgeequ.f sgees.f  sgeesx.f sgeev.f  sgeevx.f
@@ -140,7 +137,7 @@ set(SLASRC
    slaed4_br.f slaed7_br.f slaed8_br.f slaed9_br.f sstebr.f ssteqr_boundary_br.f
    slall2.f slallm.f slallm_blocked.f slallm_recursive.f)
 
-set(SXLASRC sgesvxx.f sgerfsx.f sla_gerfsx_extended.f sla_geamv.f
+set(s_xblas sgesvxx.f sgerfsx.f sla_gerfsx_extended.f sla_geamv.f
    sla_gercond.f sla_gerpvgrw.f ssysvxx.f ssyrfsx.f
    sla_syrfsx_extended.f sla_syamv.f sla_syrcond.f sla_syrpvgrw.f
    sposvxx.f sporfsx.f sla_porfsx_extended.f sla_porcond.f
@@ -148,7 +145,7 @@ set(SXLASRC sgesvxx.f sgerfsx.f sla_gerfsx_extended.f sla_geamv.f
    sla_gbamv.f sla_gbrcond.f sla_gbrpvgrw.f sla_lin_berr.f slarscl2.f
    slascl2.f sla_wwaddw.f)
 
-set(CLASRC
+set(c_lapack
    cbdsqr.f cgbbrd.f cgbcon.f cgbequ.f cgbrfs.f cgbsv.f  cgbsvx.f
    cgbtf2.f cgbtrf.f cgbtrs.f cgebak.f cgebal.f cgebd2.f cgebrd.f
    cgecon.f cgeequ.f cgees.f  cgeesx.f cgeev.f  cgeevx.f
@@ -241,7 +238,7 @@ set(CLASRC
    clatrs3.f ctrsyl3.f cgelst.f cgedmd.f90 cgedmdq.f90 cgecxx.f
    cgesvdmr3.f clall2.f clallm.f clallm_blocked.f clallm_recursive.f)
 
-set(CXLASRC cgesvxx.f cgerfsx.f cla_gerfsx_extended.f cla_geamv.f
+set(c_xblas cgesvxx.f cgerfsx.f cla_gerfsx_extended.f cla_geamv.f
    cla_gercond_c.f cla_gercond_x.f cla_gerpvgrw.f
    csysvxx.f csyrfsx.f cla_syrfsx_extended.f cla_syamv.f
    cla_syrcond_c.f cla_syrcond_x.f cla_syrpvgrw.f
@@ -253,7 +250,7 @@ set(CXLASRC cgesvxx.f cgerfsx.f cla_gerfsx_extended.f cla_geamv.f
    cla_hercond_c.f cla_hercond_x.f cla_herpvgrw.f
    cla_lin_berr.f clarscl2.f clascl2.f cla_wwaddw.f)
 
-set(DLASRC
+set(d_lapack
    dgbbrd.f dgbcon.f dgbequ.f dgbrfs.f dgbsv.f
    dgbsvx.f dgbtf2.f dgbtrf.f dgbtrs.f dgebak.f dgebal.f dgebd2.f
    dgebrd.f dgecon.f dgeequ.f dgees.f  dgeesx.f dgeev.f  dgeevx.f
@@ -338,7 +335,7 @@ set(DLASRC
    dlaed4_br.f dlaed7_br.f dlaed8_br.f dlaed9_br.f dstebr.f dsteqr_boundary_br.f
    dlall2.f dlallm.f dlallm_blocked.f dlallm_recursive.f)
 
-set(DXLASRC dgesvxx.f dgerfsx.f dla_gerfsx_extended.f dla_geamv.f
+set(d_xblas dgesvxx.f dgerfsx.f dla_gerfsx_extended.f dla_geamv.f
    dla_gercond.f dla_gerpvgrw.f dsysvxx.f dsyrfsx.f
    dla_syrfsx_extended.f dla_syamv.f dla_syrcond.f dla_syrpvgrw.f
    dposvxx.f dporfsx.f dla_porfsx_extended.f dla_porcond.f
@@ -346,7 +343,7 @@ set(DXLASRC dgesvxx.f dgerfsx.f dla_gerfsx_extended.f dla_geamv.f
    dla_gbamv.f dla_gbrcond.f dla_gbrpvgrw.f dla_lin_berr.f dlarscl2.f
    dlascl2.f dla_wwaddw.f)
 
-set(ZLASRC
+set(z_lapack
    zbdsqr.f zgbbrd.f zgbcon.f zgbequ.f zgbrfs.f zgbsv.f  zgbsvx.f
    zgbtf2.f zgbtrf.f zgbtrs.f zgebak.f zgebal.f zgebd2.f zgebrd.f
    zgecon.f zgeequ.f zgees.f  zgeesx.f zgeev.f  zgeevx.f
@@ -442,7 +439,7 @@ set(ZLASRC
    zlatrs3.f ztrsyl3.f zgelst.f zgedmd.f90 zgedmdq.f90 zgecxx.f
    zgesvdmr3.f zlall2.f zlallm.f zlallm_blocked.f zlallm_recursive.f)
 
-set(ZXLASRC zgesvxx.f zgerfsx.f zla_gerfsx_extended.f zla_geamv.f
+set(z_xblas zgesvxx.f zgerfsx.f zla_gerfsx_extended.f zla_geamv.f
    zla_gercond_c.f zla_gercond_x.f zla_gerpvgrw.f zsysvxx.f zsyrfsx.f
    zla_syrfsx_extended.f zla_syamv.f zla_syrcond_c.f zla_syrcond_x.f
    zla_syrpvgrw.f zposvxx.f zporfsx.f zla_porfsx_extended.f
@@ -454,611 +451,96 @@ set(ZXLASRC zgesvxx.f zgerfsx.f zla_gerfsx_extended.f zla_geamv.f
 
 
 if(USE_XBLAS)
-  set(ALLXOBJ ${SXLASRC} ${DXLASRC} ${CXLASRC} ${ZXLASRC})
+  set(ALLXOBJ ${s_xblas} ${d_xblas} ${c_xblas} ${z_xblas})
 endif()
 
 if(BUILD_LAPACK_DEPRECATED)
-list(APPEND SLASRC DEPRECATED/sgegs.f DEPRECATED/sgegv.f
+list(APPEND s_lapack DEPRECATED/sgegs.f DEPRECATED/sgegv.f
   DEPRECATED/sgelqs.f DEPRECATED/sgeqrs.f
   DEPRECATED/sgeqpf.f DEPRECATED/sgelsx.f DEPRECATED/sggsvd.f
   DEPRECATED/sggsvp.f DEPRECATED/slahrd.f DEPRECATED/slatzm.f DEPRECATED/stzrqf.f)
-list(APPEND DLASRC DEPRECATED/dgegs.f DEPRECATED/dgegv.f
+list(APPEND d_lapack DEPRECATED/dgegs.f DEPRECATED/dgegv.f
   DEPRECATED/dgelqs.f DEPRECATED/dgeqrs.f
   DEPRECATED/dgeqpf.f DEPRECATED/dgelsx.f DEPRECATED/dggsvd.f
   DEPRECATED/dggsvp.f DEPRECATED/dlahrd.f DEPRECATED/dlatzm.f DEPRECATED/dtzrqf.f)
-list(APPEND CLASRC DEPRECATED/cgegs.f DEPRECATED/cgegv.f
+list(APPEND c_lapack DEPRECATED/cgegs.f DEPRECATED/cgegv.f
   DEPRECATED/cgelqs.f DEPRECATED/cgeqrs.f
   DEPRECATED/cgeqpf.f DEPRECATED/cgelsx.f DEPRECATED/cggsvd.f
   DEPRECATED/cggsvp.f DEPRECATED/clahrd.f DEPRECATED/clatzm.f DEPRECATED/ctzrqf.f)
-list(APPEND ZLASRC DEPRECATED/zgegs.f DEPRECATED/zgegv.f
+list(APPEND z_lapack DEPRECATED/zgegs.f DEPRECATED/zgegv.f
   DEPRECATED/zgelqs.f DEPRECATED/zgeqrs.f
   DEPRECATED/zgeqpf.f DEPRECATED/zgelsx.f DEPRECATED/zggsvd.f
   DEPRECATED/zggsvp.f DEPRECATED/zlahrd.f DEPRECATED/zlatzm.f DEPRECATED/ztzrqf.f)
 message(STATUS "Building deprecated routines")
 endif()
 
-set(DSLASRC spotrs.f)
+set(ds_lapack spotrs.f)
 
-set(ZCLASRC cpotrs.f)
+set(zc_lapack cpotrs.f)
 
-set(SCATGEN slatm1.f slaran.f slarnd.f)
+set(sc_atgen slatm1.f slaran.f slarnd.f)
 
-set(SMATGEN slatms.f slatme.f slatmr.f slatmt.f
+set(s_matgen slatms.f slatme.f slatmr.f slatmt.f
    slagge.f slagsy.f slakf2.f slarge.f slaror.f slarot.f slatm2.f
    slatm3.f slatm5.f slatm6.f slatm7.f slahilb.f)
 
-set(CMATGEN clatms.f clatme.f clatmr.f clatmt.f
+set(c_matgen clatms.f clatme.f clatmr.f clatmt.f
    clagge.f claghe.f clagsy.f clakf2.f clarge.f claror.f clarot.f
    clatm1.f clarnd.f clatm2.f clatm3.f clatm5.f clatm6.f clahilb.f slatm7.f)
 
-set(DZATGEN dlatm1.f dlaran.f dlarnd.f)
+set(dz_atgen dlatm1.f dlaran.f dlarnd.f)
 
-set(DMATGEN dlatms.f dlatme.f dlatmr.f dlatmt.f
+set(d_matgen dlatms.f dlatme.f dlatmr.f dlatmt.f
    dlagge.f dlagsy.f dlakf2.f dlarge.f dlaror.f dlarot.f dlatm2.f
    dlatm3.f dlatm5.f dlatm6.f dlatm7.f dlahilb.f)
 
-set(ZMATGEN zlatms.f zlatme.f zlatmr.f zlatmt.f
+set(z_matgen zlatms.f zlatme.f zlatmr.f zlatmt.f
   zlagge.f zlaghe.f zlagsy.f zlakf2.f zlarge.f zlaror.f zlarot.f
   zlatm1.f zlarnd.f zlatm2.f zlatm3.f zlatm5.f zlatm6.f zlahilb.f dlatm7.f)
 
+set(lapack_routines "")
+set(lapack_matgen "")
 if(BUILD_SINGLE)
-  set(LA_REL_SRC ${SLASRC} ${DSLASRC} ${ALLAUX} ${SCLAUX})
-  set(LA_GEN_SRC ${SMATGEN} ${SCATGEN})
-  message(STATUS "Building Single Precision")
+  list(APPEND lapack_routines ${s_lapack} ${ds_lapack} ${all_aux} ${sc_aux})
+  list(APPEND lapack_matgen ${s_matgen} ${sc_atgen})
 endif()
 if(BUILD_DOUBLE)
-  set(LA_REL_SRC ${LA_REL_SRC} ${DLASRC} ${DSLASRC} ${ALLAUX} ${DZLAUX})
-  set(LA_GEN_SRC ${LA_GEN_SRC} ${DMATGEN} ${DZATGEN})
-  message(STATUS "Building Double Precision")
+  list(APPEND lapack_routines ${d_lapack} ${ds_lapack} ${all_aux} ${dz_aux})
+  list(APPEND lapack_matgen ${d_matgen} ${dz_atgen})
 endif()
 if(BUILD_COMPLEX)
-  set(LA_REL_SRC ${LA_REL_SRC} ${CLASRC} ${ZCLASRC} ${ALLAUX} ${SCLAUX})
-  SET(LA_GEN_SRC ${LA_GEN_SRC} ${CMATGEN} ${SCATGEN})
-  message(STATUS "Building Single Precision Complex")
+  list(APPEND lapack_routines ${c_lapack} ${zc_lapack} ${all_aux} ${sc_aux})
+  list(APPEND lapack_matgen ${c_matgen} ${sc_atgen})
 endif()
 if(BUILD_COMPLEX16)
-  set(LA_REL_SRC ${LA_REL_SRC} ${ZLASRC} ${ZCLASRC} ${ALLAUX} ${DZLAUX})
-  SET(LA_GEN_SRC ${LA_GEN_SRC} ${ZMATGEN} ${DZATGEN})
-# for zlange/zlanhe
-  if (NOT BUILD_DOUBLE)
-    set (LA_REL_SRC ${LA_REL_SRC} dcombssq.f)
-  endif	()  
-  message(STATUS "Building Double Precision Complex")
+  list(APPEND lapack_routines ${z_lapack} ${zc_lapack} ${all_aux} ${dz_aux})
+  list(APPEND lapack_matgen ${z_matgen} ${dz_atgen})
+  # ZLANGE and ZLANHE also use DCOMBSSQ.
+  if(NOT BUILD_DOUBLE)
+    list(APPEND lapack_routines dcombssq.f)
+  endif()
 endif()
 
-else ()
-
-	message (STATUS "c lapack")
-set(ALLAUX ilaenv.c ilaenv2stage.c ieeeck.c lsamen.c iparmq.c iparam2stage.c
-   ilaprec.c ilatrans.c ilauplo.c iladiag.c chla_transtype.c dlaset.c
-   ../INSTALL/ilaver.c xerbla_array.c
-   ../INSTALL/slamch.c)
-
-set(SCLAUX
-	scombssq.c sbdsvdx.c sstevx.c sstein.c
-   sbdsdc.c
-   sbdsqr.c sdisna.c slabad.c slacpy.c sladiv.c slae2.c  slaebz.c
-   slaed0.c slaed1.c slaed2.c slaed4.c slaed5.c slaed6.c
-   slaed7.c slaed8.c slaed9.c slaeda.c slaev2.c slagtf.c
-   slagts.c slamrg.c slanst.c
-   slapy2.c slapy3.c slarnv.c
-   slarra.c slarrb.c slarrc.c slarrd.c slarre.c slarrf.c slarrj.c
-   slarrk.c slarrr.c slaneg.c
-   slartg.c slaruv.c slas2.c  slascl.c
-   slasd0.c slasd1.c slasd2.c slasd3.c slasd4.c slasd5.c slasd6.c
-   slasd7.c slasd8.c slasda.c slasdq.c slasdt.c
-   slaset.c slasq1.c slasq2.c slasq3.c slasq4.c slasq5.c slasq6.c
-   slasr.c  slasrt.c slassq.c slasv2.c spttrf.c sstebz.c sstedc.c
-   ssteqr.c ssterf.c slaisnan.c sisnan.c
-   slartgp.c slartgs.c slarmm.c ../INSTALL/sroundup_lwork.c
-   ../INSTALL/second_${TIMER}.c)
-
-set(DZLAUX
-   dbdsdc.c
-   dbdsvdx.c dstevx.c dstein.c
-   dbdsqr.c ddisna.c dlabad.c dlacpy.c dladiv.c dlae2.c  dlaebz.c
-   dlaed0.c dlaed1.c dlaed2.c dlaed4.c dlaed5.c dlaed6.c
-   dlaed7.c dlaed8.c dlaed9.c dlaeda.c dlaev2.c dlagtf.c
-   dlagts.c dlamrg.c dlanst.c
-   dlapy2.c dlapy3.c dlarnv.c
-   dlarra.c dlarrb.c dlarrc.c dlarrd.c dlarre.c dlarrf.c dlarrj.c
-   dlarrk.c dlarrr.c dlaneg.c
-   dlartg.c dlaruv.c dlas2.c  dlascl.c
-   dlasd0.c dlasd1.c dlasd2.c dlasd3.c dlasd4.c dlasd5.c dlasd6.c
-   dlasd7.c dlasd8.c dlasda.c dlasdq.c dlasdt.c
-   dlasq1.c dlasq2.c dlasq3.c dlasq4.c dlasq5.c dlasq6.c
-   dlasr.c  dlasrt.c dlassq.c dlasv2.c dpttrf.c dstebz.c dstedc.c
-   dsteqr.c dsterf.c dlaisnan.c disnan.c
-   dlartgp.c dlartgs.c dlarmm.c ../INSTALL/droundup_lwork.c
-   ../INSTALL/dlamch.c ../INSTALL/dsecnd_${TIMER}.c)
-
-set(SLASRC
-   sgbbrd.c sgbcon.c sgbequ.c sgbrfs.c sgbsv.c
-   sgbsvx.c sgbtf2.c sgbtrf.c sgbtrs.c sgebak.c sgebal.c sgebd2.c
-   sgebrd.c sgecon.c sgeequ.c sgees.c  sgeesx.c sgeev.c  sgeevx.c
-   sgehd2.c sgehrd.c sgelq2.c sgelqf.c
-   sgels.c  sgelsd.c sgelss.c sgelsy.c sgeql2.c sgeqlf.c
-   sgeqp3.c sgeqp3rk.c sgeqr2.c sgeqr2p.c sgeqrf.c sgeqrfp.c sgerfs.c sgerq2.c sgerqf.c
-   sgesc2.c sgesdd.c sgesvd.c sgesvdx.c sgesvx.c sgetc2.c
-   sgetrf2.c sgetri.c
-   sggbak.c sggbal.c
-   sgges.c  sgges3.c sggesx.c sggev.c  sggev3.c sggevx.c
-   sggglm.c sgghrd.c sgghd3.c sgglse.c sggqrf.c
-   sggrqf.c sggsvd3.c sggsvp3.c sgtcon.c sgtrfs.c sgtsv.c
-   sgtsvx.c sgttrf.c sgttrs.c sgtts2.c shgeqz.c
-   shsein.c shseqr.c slabrd.c slacon.c slacn2.c
-   slaein.c slaexc.c slag2.c  slags2.c slagtm.c slagv2.c slahqr.c
-   slahr2.c slaic1.c slaln2.c slals0.c slalsa.c slalsd.c
-   slangb.c slange.c slangt.c slanhs.c slansb.c slansp.c
-   slansy.c slantb.c slantp.c slantr.c slanv2.c
-   slapll.c slapmt.c
-   slaqgb.c slaqge.c slaqp2.c slaqp2rk.c slaqp3rk.c slaqps.c slaqsb.c slaqsp.c slaqsy.c
-   slaqr0.c slaqr1.c slaqr2.c slaqr3.c slaqr4.c slaqr5.c
-   slaqtr.c slar1v.c slar2v.c ilaslr.c ilaslc.c
-   slarf.c  slarfb.c slarfb_gett.c slarfg.c slarfgp.c slarft.c slarft_lvl2.c slarfx.c
-   slarfy.c slargv.c slarf1f.c slarf1l.c slarrv.c slartv.c
-   slarz.c  slarzb.c slarzt.c slasy2.c
-   slasyf.c slasyf_rook.c slasyf_rk.c slasyf_aa.c
-   slatbs.c slatdf.c slatps.c slatrd.c slatrs.c slatrz.c
-   sopgtr.c sopmtr.c sorg2l.c sorg2r.c
-   sorgbr.c sorghr.c sorgl2.c sorglq.c sorgql.c sorgqr.c sorgr2.c
-   sorgrq.c sorgtr.c sorm2l.c sorm2r.c sorm22.c
-   sormbr.c sormhr.c sorml2.c sormlq.c sormql.c sormqr.c sormr2.c
-   sormr3.c sormrq.c sormrz.c sormtr.c spbcon.c spbequ.c spbrfs.c
-   spbstf.c spbsv.c  spbsvx.c
-   spbtf2.c spbtrf.c spbtrs.c spocon.c spoequ.c sporfs.c sposv.c
-   sposvx.c spotrf2.c spotri.c spstrf.c spstf2.c
-   sppcon.c sppequ.c
-   spprfs.c sppsv.c  sppsvx.c spptrf.c spptri.c spptrs.c sptcon.c
-   spteqr.c sptrfs.c sptsv.c  sptsvx.c spttrs.c sptts2.c srscl.c
-   ssbev.c  ssbevd.c ssbevx.c ssbgst.c ssbgv.c  ssbgvd.c ssbgvx.c
-   ssbtrd.c sspcon.c sspev.c  sspevd.c sspevx.c sspgst.c
-   sspgv.c  sspgvd.c sspgvx.c ssprfs.c sspsv.c  sspsvx.c ssptrd.c
-   ssptrf.c ssptri.c ssptrs.c sstegr.c sstev.c  sstevd.c sstevr.c
-   ssycon.c ssyev.c  ssyevd.c ssyevr.c ssyevx.c ssygs2.c
-   ssygst.c ssygv.c  ssygvd.c ssygvx.c ssyrfs.c ssysv.c  ssysvx.c
-   ssytd2.c ssytf2.c ssytrd.c ssytrf.c ssytri.c ssytri2.c ssytri2x.c
-   ssyswapr.c ssytrs.c ssytrs2.c
-   ssyconv.c ssyconvf.c ssyconvf_rook.c
-   ssysv_aa.c ssysv_aa_2stage.c ssytrf_aa.c ssytrf_aa_2stage.c ssytrs_aa.c ssytrs_aa_2stage.c
-   ssytf2_rook.c ssytrf_rook.c ssytrs_rook.c
-   ssytri_rook.c ssycon_rook.c ssysv_rook.c
-   ssytf2_rk.c ssytrf_rk.c ssytrs_3.c
-   ssytri_3.c ssytri_3x.c ssycon_3.c ssysv_rk.c
-   ssysv_aa.c ssytrf_aa.c ssytrs_aa.c
-   stbcon.c
-   stbrfs.c stbtrs.c stgevc.c stgex2.c stgexc.c stgsen.c
-   stgsja.c stgsna.c stgsy2.c stgsyl.c stpcon.c stprfs.c stptri.c
-   stptrs.c
-   strcon.c strevc.c strevc3.c strexc.c strrfs.c strsen.c strsna.c strsyl.c
-   strtrs.c stzrzf.c sstemr.c
-   slansf.c spftrf.c spftri.c spftrs.c ssfrk.c stfsm.c stftri.c stfttp.c
-   stfttr.c stpttf.c stpttr.c strttf.c strttp.c
-   sgejsv.c sgesvj.c sgsvj0.c sgsvj1.c
-   sgeequb.c ssyequb.c spoequb.c sgbequb.c
-   sbbcsd.c slapmr.c sorbdb.c sorbdb1.c sorbdb2.c sorbdb3.c sorbdb4.c
-   sorbdb5.c sorbdb6.c sorcsd.c sorcsd2by1.c
-   sgeqrt.c sgeqrt2.c sgeqrt3.c sgemqrt.c
-   stpqrt.c stpqrt2.c stpmqrt.c stprfb.c
-   sgelqt.c sgelqt3.c sgemlqt.c
-   sgetsls.c sgetsqrhrt.c sgeqr.c slatsqr.c slamtsqr.c sgemqr.c
-   sgelq.c slaswlq.c slamswlq.c sgemlq.c
-   stplqt.c stplqt2.c stpmlqt.c
-   ssytrd_2stage.c ssytrd_sy2sb.c ssytrd_sb2st.c ssb2st_kernels.c
-   ssyevd_2stage.c ssyev_2stage.c ssyevx_2stage.c ssyevr_2stage.c
-   ssbev_2stage.c ssbevx_2stage.c ssbevd_2stage.c ssygv_2stage.c
-   sgesvdq.c slaorhr_col_getrfnp.c
-   slaorhr_col_getrfnp2.c sorgtsqr.c sorgtsqr_row.c sorhr_col.c 
-   slatrs3.c strsyl3.c sgelst.c sgedmd.c sgedmdq.c sgecxx.c
-   sbdsvdmr3.c sbdsvdmr3_work.c sgesvdmr3.c sbdtgk.c slar1v_tgk.c
-   slarrf_tgk.c slarrb_tgk.c slarrv_tgk.c slaed0_br.c slaed0_merge_pair.c
-   slaed4_br.c slaed7_br.c slaed8_br.c slaed9_br.c sstebr.c ssteqr_boundary_br.c
-   slall2.c slallm.c slallm_blocked.c slallm_recursive.c)
-
-set(SXLASRC sgesvxx.c sgerfsx.c sla_gerfsx_extended.c sla_geamv.c
-   sla_gercond.c sla_gerpvgrw.c ssysvxx.c ssyrfsx.c
-   sla_syrfsx_extended.c sla_syamv.c sla_syrcond.c sla_syrpvgrw.c
-   sposvxx.c sporfsx.c sla_porfsx_extended.c sla_porcond.c
-   sla_porpvgrw.c sgbsvxx.c sgbrfsx.c sla_gbrfsx_extended.c
-   sla_gbamv.c sla_gbrcond.c sla_gbrpvgrw.c sla_lin_berr.c slarscl2.c
-   slascl2.c sla_wwaddw.c)
-
-set(CLASRC
-   cbdsqr.c cgbbrd.c cgbcon.c cgbequ.c cgbrfs.c cgbsv.c  cgbsvx.c
-   cgbtf2.c cgbtrf.c cgbtrs.c cgebak.c cgebal.c cgebd2.c cgebrd.c
-   cgecon.c cgeequ.c cgees.c  cgeesx.c cgeev.c  cgeevx.c
-   cgehd2.c cgehrd.c cgelq2.c cgelqf.c
-   cgels.c  cgelsd.c cgelss.c cgelsy.c cgeql2.c cgeqlf.c cgeqp3.c cgeqp3rk.c
-   cgeqr2.c cgeqr2p.c cgeqrf.c cgeqrfp.c cgerfs.c cgerq2.c cgerqf.c
-   cgesc2.c cgesdd.c cgesvd.c cgesvdx.c
-   cgesvj.c cgejsv.c cgsvj0.c cgsvj1.c
-   cgesvx.c cgetc2.c cgetrf2.c
-   cgetri.c
-   cggbak.c cggbal.c
-   cgges.c  cgges3.c cggesx.c cggev.c  cggev3.c cggevx.c
-   cggglm.c cgghrd.c cgghd3.c cgglse.c cggqrf.c cggrqf.c
-   cggsvd3.c cggsvp3.c
-   cgtcon.c cgtrfs.c cgtsv.c  cgtsvx.c cgttrf.c cgttrs.c cgtts2.c chbev.c
-   chbevd.c chbevx.c chbgst.c chbgv.c  chbgvd.c chbgvx.c chbtrd.c
-   checon.c cheev.c  cheevd.c cheevr.c cheevx.c chegs2.c chegst.c
-   chegv.c  chegvd.c chegvx.c cherfs.c chesv.c  chesvx.c chetd2.c
-   chetf2.c chetrd.c
-   chetrf.c chetri.c chetri2.c chetri2x.c cheswapr.c
-   chetrs.c chetrs2.c
-   chetf2_rook.c chetrf_rook.c chetri_rook.c
-   chetrs_rook.c checon_rook.c chesv_rook.c
-   chetf2_rk.c chetrf_rk.c chetri_3.c chetri_3x.c
-   chetrs_3.c checon_3.c chesv_rk.c
-   chesv_aa.c chesv_aa_2stage.c chetrf_aa.c chetrf_aa_2stage.c chetrs_aa.c chetrs_aa_2stage.c
-   chgeqz.c chpcon.c chpev.c  chpevd.c
-   chpevx.c chpgst.c chpgv.c  chpgvd.c chpgvx.c chprfs.c chpsv.c
-   chpsvx.c
-   chptrd.c chptrf.c chptri.c chptrs.c chsein.c chseqr.c clabrd.c
-   clacgv.c clacon.c clacn2.c clacp2.c clacpy.c clacrm.c clacrt.c cladiv.c
-   claed0.c claed7.c claed8.c
-   claein.c claesy.c claev2.c clags2.c clagtm.c
-   clahef.c clahef_rook.c clahef_rk.c clahef_aa.c clahqr.c
-   clahr2.c claic1.c clals0.c clalsa.c clalsd.c clangb.c clange.c clangt.c
-   clanhb.c clanhe.c
-   clanhp.c clanhs.c clanht.c clansb.c clansp.c clansy.c clantb.c
-   clantp.c clantr.c clapll.c clapmt.c clarcm.c claqgb.c claqge.c
-   claqhb.c claqhe.c claqhp.c claqp2.c claqp2rk.c claqp3rk.c claqps.c claqsb.c
-   claqr0.c claqr1.c claqr2.c claqr3.c claqr4.c claqr5.c
-   claqsp.c claqsy.c clar1v.c clar2v.c ilaclr.c ilaclc.c
-   clarf.c  clarfb.c clarfb_gett.c clarfg.c clarfgp.c clarft.c
-   clarft_lvl2.c clarf1f.c clarf1l.c
-   clarfx.c clarfy.c clargv.c clarnv.c clarrv.c clartg.c clartv.c
-   clarz.c  clarzb.c clarzt.c clascl.c claset.c clasr.c  classq.c
-   clasyf.c clasyf_rook.c clasyf_rk.c clasyf_aa.c
-   clatbs.c clatdf.c clatps.c clatrd.c clatrs.c clatrz.c
-   cpbcon.c cpbequ.c cpbrfs.c cpbstf.c cpbsv.c
-   cpbsvx.c cpbtf2.c cpbtrf.c cpbtrs.c cpocon.c cpoequ.c cporfs.c
-   cposv.c  cposvx.c cpotrf2.c cpotri.c cpstrf.c cpstf2.c
-   cppcon.c cppequ.c cpprfs.c cppsv.c  cppsvx.c cpptrf.c cpptri.c cpptrs.c
-   cptcon.c cpteqr.c cptrfs.c cptsv.c  cptsvx.c cpttrf.c cpttrs.c cptts2.c
-   crot.c crscl.c  cspcon.c csprfs.c cspsv.c
-   cspsvx.c csptrf.c csptri.c csptrs.c csrscl.c cstedc.c
-   cstegr.c cstein.c csteqr.c csycon.c
-   csyrfs.c csysv.c  csysvx.c csytf2.c csytrf.c csytri.c
-   csytri2.c csytri2x.c csyswapr.c
-   csytrs.c csytrs2.c
-   csyconv.c csyconvf.c csyconvf_rook.c
-   csytf2_rook.c csytrf_rook.c csytrs_rook.c
-   csytri_rook.c csycon_rook.c csysv_rook.c
-   csytf2_rk.c csytrf_rk.c csytrf_aa.c csytrf_aa_2stage.c csytrs_3.c csytrs_aa.c csytrs_aa_2stage.c
-   csytri_3.c csytri_3x.c csycon_3.c csysv_rk.c csysv_aa.c csysv_aa_2stage.c
-   ctbcon.c ctbrfs.c ctbtrs.c ctgevc.c ctgex2.c
-   ctgexc.c ctgsen.c ctgsja.c ctgsna.c ctgsy2.c ctgsyl.c ctpcon.c
-   ctprfs.c ctptri.c
-   ctptrs.c ctrcon.c ctrevc.c ctrevc3.c ctrexc.c ctrrfs.c ctrsen.c ctrsna.c
-   ctrsyl.c ctrtrs.c ctzrzf.c cung2l.c cung2r.c
-   cungbr.c cunghr.c cungl2.c cunglq.c cungql.c cungqr.c cungr2.c
-   cungrq.c cungtr.c cunm2l.c cunm2r.c cunmbr.c cunmhr.c cunml2.c cunm22.c
-   cunmlq.c cunmql.c cunmqr.c cunmr2.c cunmr3.c cunmrq.c cunmrz.c
-   cunmtr.c cupgtr.c cupmtr.c icmax1.c scsum1.c cstemr.c
-   chfrk.c ctfttp.c clanhf.c cpftrf.c cpftri.c cpftrs.c ctfsm.c ctftri.c
-   ctfttr.c ctpttf.c ctpttr.c ctrttf.c ctrttp.c
-   cgeequb.c cgbequb.c csyequb.c cpoequb.c cheequb.c
-   cbbcsd.c clapmr.c cunbdb.c cunbdb1.c cunbdb2.c cunbdb3.c cunbdb4.c
-   cunbdb5.c cunbdb6.c cuncsd.c cuncsd2by1.c
-   cgeqrt.c cgeqrt2.c cgeqrt3.c cgemqrt.c
-   ctpqrt.c ctpqrt2.c ctpmqrt.c ctprfb.c
-   cgelqt.c cgelqt3.c cgemlqt.c
-   cgetsls.c cgetsqrhrt.c cgeqr.c clatsqr.c clamtsqr.c cgemqr.c
-   cgelq.c claswlq.c clamswlq.c cgemlq.c
-   ctplqt.c ctplqt2.c ctpmlqt.c
-   chetrd_2stage.c chetrd_he2hb.c chetrd_hb2st.c chb2st_kernels.c
-   cheevd_2stage.c cheev_2stage.c cheevx_2stage.c cheevr_2stage.c
-   chbev_2stage.c chbevx_2stage.c chbevd_2stage.c chegv_2stage.c
-   cgesvdq.c claunhr_col_getrfnp.c claunhr_col_getrfnp2.c 
-   cungtsqr.c cungtsqr_row.c cunhr_col.c 
-   clatrs3.c ctrsyl3.c cgelst.c cgedmd.c cgedmdq.c cgecxx.c cgesvdmr3.c
-   clall2.c clallm.c clallm_blocked.c clallm_recursive.c)
-
-set(CXLASRC cgesvxx.c cgerfsx.c cla_gerfsx_extended.c cla_geamv.c
-   cla_gercond_c.c cla_gercond_x.c cla_gerpvgrw.c
-   csysvxx.c csyrfsx.c cla_syrfsx_extended.c cla_syamv.c
-   cla_syrcond_c.c cla_syrcond_x.c cla_syrpvgrw.c
-   cposvxx.c cporfsx.c cla_porfsx_extended.c
-   cla_porcond_c.c cla_porcond_x.c cla_porpvgrw.c
-   cgbsvxx.c cgbrfsx.c cla_gbrfsx_extended.c cla_gbamv.c
-   cla_gbrcond_c.c cla_gbrcond_x.c cla_gbrpvgrw.c
-   chesvxx.c cherfsx.c cla_herfsx_extended.c cla_heamv.c
-   cla_hercond_c.c cla_hercond_x.c cla_herpvgrw.c
-   cla_lin_berr.c clarscl2.c clascl2.c cla_wwaddw.c)
-
-set(DLASRC
-   dgbbrd.c dgbcon.c dgbequ.c dgbrfs.c dgbsv.c
-   dgbsvx.c dgbtf2.c dgbtrf.c dgbtrs.c dgebak.c dgebal.c dgebd2.c
-   dgebrd.c dgecon.c dgeequ.c dgees.c  dgeesx.c dgeev.c  dgeevx.c
-   dgehd2.c dgehrd.c dgelq2.c dgelqf.c
-   dgels.c  dgelsd.c dgelss.c dgelsy.c dgeql2.c dgeqlf.c
-   dgeqp3.c dgeqp3rk.c dgeqr2.c dgeqr2p.c dgeqrf.c dgeqrfp.c dgerfs.c dgerq2.c dgerqf.c
-   dgesc2.c dgesdd.c dgesvd.c dgesvdx.c dgesvx.c dgetc2.c
-   dgetrf2.c dgetri.c
-   dggbak.c dggbal.c
-   dgges.c  dgges3.c dggesx.c dggev.c  dggev3.c dggevx.c
-   dggglm.c dgghrd.c dgghd3.c dgglse.c dggqrf.c
-   dggrqf.c dggsvd3.c dggsvp3.c dgtcon.c dgtrfs.c dgtsv.c
-   dgtsvx.c dgttrf.c dgttrs.c dgtts2.c dhgeqz.c
-   dhsein.c dhseqr.c dlabrd.c dlacon.c dlacn2.c
-   dlaein.c dlaexc.c dlag2.c  dlags2.c dlagtm.c dlagv2.c dlahqr.c
-   dlahr2.c dlaic1.c dlaln2.c dlals0.c dlalsa.c dlalsd.c
-   dlangb.c dlange.c dlangt.c dlanhs.c dlansb.c dlansp.c
-   dlansy.c dlantb.c dlantp.c dlantr.c dlanv2.c
-   dlapll.c dlapmt.c
-   dlaqgb.c dlaqge.c dlaqp2.c dlaqp2rk.c dlaqp3rk.c dlaqps.c dlaqsb.c dlaqsp.c dlaqsy.c
-   dlaqr0.c dlaqr1.c dlaqr2.c dlaqr3.c dlaqr4.c dlaqr5.c
-   dlaqtr.c dlar1v.c dlar2v.c iladlr.c iladlc.c
-   dlarf.c  dlarfb.c dlarfb_gett.c dlarfg.c dlarfgp.c dlarft.c dlarft_lvl2.c 
-   dlarfx.c dlarfy.c dlarf1f.c dlarf1l.c dlargv.c dlarrv.c dlartv.c
-   dlarz.c  dlarzb.c dlarzt.c dlasy2.c
-   dlasyf.c dlasyf_rook.c dlasyf_rk.c dlasyf_aa.c
-   dlatbs.c dlatdf.c dlatps.c dlatrd.c dlatrs.c dlatrz.c
-   dopgtr.c dopmtr.c dorg2l.c dorg2r.c
-   dorgbr.c dorghr.c dorgl2.c dorglq.c dorgql.c dorgqr.c dorgr2.c
-   dorgrq.c dorgtr.c dorm2l.c dorm2r.c dorm22.c
-   dormbr.c dormhr.c dorml2.c dormlq.c dormql.c dormqr.c dormr2.c
-   dormr3.c dormrq.c dormrz.c dormtr.c dpbcon.c dpbequ.c dpbrfs.c
-   dpbstf.c dpbsv.c  dpbsvx.c
-   dpbtf2.c dpbtrf.c dpbtrs.c dpocon.c dpoequ.c dporfs.c dposv.c
-   dposvx.c dpotrf2.c dpotri.c dpotrs.c dpstrf.c dpstf2.c
-   dppcon.c dppequ.c
-   dpprfs.c dppsv.c  dppsvx.c dpptrf.c dpptri.c dpptrs.c dptcon.c
-   dpteqr.c dptrfs.c dptsv.c  dptsvx.c dpttrs.c dptts2.c drscl.c
-   dsbev.c  dsbevd.c dsbevx.c dsbgst.c dsbgv.c  dsbgvd.c dsbgvx.c
-   dsbtrd.c dspcon.c dspev.c  dspevd.c dspevx.c dspgst.c
-   dspgv.c  dspgvd.c dspgvx.c dsprfs.c dspsv.c  dspsvx.c dsptrd.c
-   dsptrf.c dsptri.c dsptrs.c dstegr.c dstev.c  dstevd.c dstevr.c
-   dsycon.c dsyev.c  dsyevd.c dsyevr.c
-   dsyevx.c dsygs2.c dsygst.c dsygv.c  dsygvd.c dsygvx.c dsyrfs.c
-   dsysv.c  dsysvx.c
-   dsytd2.c dsytf2.c dsytrd.c dsytrf.c dsytri.c dsytrs.c dsytrs2.c
-   dsytri2.c dsytri2x.c dsyswapr.c
-   dsyconv.c dsyconvf.c dsyconvf_rook.c
-   dsytf2_rook.c dsytrf_rook.c dsytrs_rook.c
-   dsytri_rook.c dsycon_rook.c dsysv_rook.c
-   dsytf2_rk.c dsytrf_rk.c dsytrs_3.c
-   dsytri_3.c dsytri_3x.c dsycon_3.c dsysv_rk.c
-   dsysv_aa.c dsysv_aa_2stage.c dsytrf_aa.c dsytrf_aa_2stage.c dsytrs_aa.c dsytrs_aa_2stage.c
-   dtbcon.c
-   dtbrfs.c dtbtrs.c dtgevc.c dtgex2.c dtgexc.c dtgsen.c
-   dtgsja.c dtgsna.c dtgsy2.c dtgsyl.c dtpcon.c dtprfs.c dtptri.c
-   dtptrs.c
-   dtrcon.c dtrevc.c dtrevc3.c dtrexc.c dtrrfs.c dtrsen.c dtrsna.c dtrsyl.c
-   dtrtrs.c dtzrzf.c dstemr.c
-   dsgesv.c dsposv.c dlag2s.c slag2d.c dlat2s.c
-   dlansf.c dpftrf.c dpftri.c dpftrs.c dsfrk.c dtfsm.c dtftri.c dtfttp.c
-   dtfttr.c dtpttf.c dtpttr.c dtrttf.c dtrttp.c
-   dgejsv.c dgesvj.c dgsvj0.c dgsvj1.c
-   dgeequb.c dsyequb.c dpoequb.c dgbequb.c
-   dbbcsd.c dlapmr.c dorbdb.c dorbdb1.c dorbdb2.c dorbdb3.c dorbdb4.c
-   dorbdb5.c dorbdb6.c dorcsd.c dorcsd2by1.c
-   dgeqrt.c dgeqrt2.c dgeqrt3.c dgemqrt.c
-   dtpqrt.c dtpqrt2.c dtpmqrt.c dtprfb.c
-   dgelqt.c dgelqt3.c dgemlqt.c
-   dgetsls.c dgetsqrhrt.c dgeqr.c dlatsqr.c dlamtsqr.c dgemqr.c
-   dgelq.c dlaswlq.c dlamswlq.c dgemlq.c
-   dtplqt.c dtplqt2.c dtpmlqt.c
-   dsytrd_2stage.c dsytrd_sy2sb.c dsytrd_sb2st.c dsb2st_kernels.c
-   dsyevd_2stage.c dsyev_2stage.c dsyevx_2stage.c dsyevr_2stage.c
-   dsbev_2stage.c dsbevx_2stage.c dsbevd_2stage.c dsygv_2stage.c
-   dcombssq.c dgesvdq.c dlaorhr_col_getrfnp.c
-   dlaorhr_col_getrfnp2.c dorgtsqr.c dorgtsqr_row.c dorhr_col.c 
-   dlatrs3.c dtrsyl3.c dgelst.c dgedmd.c dgedmdq.c dgecxx.c
-   dbdsvdmr3.c dbdsvdmr3_work.c dgesvdmr3.c dbdtgk.c dlar1v_tgk.c
-   dlarrf_tgk.c dlarrb_tgk.c dlarrv_tgk.c dlaed0_br.c dlaed0_merge_pair.c
-   dlaed4_br.c dlaed7_br.c dlaed8_br.c dlaed9_br.c dstebr.c dsteqr_boundary_br.c
-   dlall2.c dlallm.c dlallm_blocked.c dlallm_recursive.c)
-
-set(DXLASRC dgesvxx.c dgerfsx.c dla_gerfsx_extended.c dla_geamv.c
-   dla_gercond.c dla_gerpvgrw.c dsysvxx.c dsyrfsx.c
-   dla_syrfsx_extended.c dla_syamv.c dla_syrcond.c dla_syrpvgrw.c
-   dposvxx.c dporfsx.c dla_porfsx_extended.c dla_porcond.c
-   dla_porpvgrw.c dgbsvxx.c dgbrfsx.c dla_gbrfsx_extended.c
-   dla_gbamv.c dla_gbrcond.c dla_gbrpvgrw.c dla_lin_berr.c dlarscl2.c
-   dlascl2.c dla_wwaddw.c)
-
-set(ZLASRC
-   zbdsqr.c zgbbrd.c zgbcon.c zgbequ.c zgbrfs.c zgbsv.c  zgbsvx.c
-   zgbtf2.c zgbtrf.c zgbtrs.c zgebak.c zgebal.c zgebd2.c zgebrd.c
-   zgecon.c zgeequ.c zgees.c  zgeesx.c zgeev.c  zgeevx.c
-   zgehd2.c zgehrd.c zgelq2.c zgelqf.c
-   zgels.c  zgelsd.c zgelss.c zgelsy.c zgeql2.c zgeqlf.c zgeqp3.c zgeqp3rk.c
-   zgeqr2.c zgeqr2p.c zgeqrf.c zgeqrfp.c zgerfs.c zgerq2.c zgerqf.c
-   zgesc2.c zgesdd.c zgesvd.c zgesvdx.c zgesvx.c
-   zgesvj.c zgejsv.c zgsvj0.c zgsvj1.c
-   zgetc2.c zgetrf2.c
-   zgetri.c
-   zggbak.c zggbal.c
-   zgges.c  zgges3.c zggesx.c zggev.c  zggev3.c zggevx.c
-   zggglm.c zgghrd.c zgghd3.c zgglse.c zggqrf.c zggrqf.c
-   zggsvd3.c zggsvp3.c
-   zgtcon.c zgtrfs.c zgtsv.c  zgtsvx.c zgttrf.c zgttrs.c zgtts2.c zhbev.c
-   zhbevd.c zhbevx.c zhbgst.c zhbgv.c  zhbgvd.c zhbgvx.c zhbtrd.c
-   zhecon.c zheev.c  zheevd.c zheevr.c zheevx.c zhegs2.c zhegst.c
-   zhegv.c  zhegvd.c zhegvx.c zherfs.c zhesv.c  zhesvx.c zhetd2.c
-   zhetf2.c zhetrd.c
-   zhetrf.c zhetri.c zhetri2.c zhetri2x.c zheswapr.c
-   zhetrs.c zhetrs2.c
-   zhetf2_rook.c zhetrf_rook.c zhetri_rook.c
-   zhetrs_rook.c zhecon_rook.c zhesv_rook.c
-   zhetf2_rk.c zhetrf_rk.c zhetri_3.c zhetri_3x.c
-   zhetrs_3.c zhecon_3.c zhesv_rk.c
-   zhesv_aa.c zhesv_aa_2stage.c zhetrf_aa.c zhetrf_aa_2stage.c zhetrs_aa.c zhetrs_aa_2stage.c
-   zhgeqz.c zhpcon.c zhpev.c  zhpevd.c
-   zhpevx.c zhpgst.c zhpgv.c  zhpgvd.c zhpgvx.c zhprfs.c zhpsv.c
-   zhpsvx.c
-   zhptrd.c zhptrf.c zhptri.c zhptrs.c zhsein.c zhseqr.c zlabrd.c
-   zlacgv.c zlacon.c zlacn2.c zlacp2.c zlacpy.c zlacrm.c zlacrt.c zladiv.c
-   zlaed0.c zlaed7.c zlaed8.c
-   zlaein.c zlaesy.c zlaev2.c zlags2.c zlagtm.c
-   zlahef.c zlahef_rook.c zlahef_rk.c zlahef_aa.c zlahqr.c
-   zlahr2.c zlaic1.c zlals0.c zlalsa.c zlalsd.c zlangb.c zlange.c
-   zlangt.c zlanhb.c
-   zlanhe.c
-   zlanhp.c zlanhs.c zlanht.c zlansb.c zlansp.c zlansy.c zlantb.c
-   zlantp.c zlantr.c zlapll.c zlapmt.c zlaqgb.c zlaqge.c
-   zlaqhb.c zlaqhe.c zlaqhp.c zlaqp2.c zlaqp2rk.c zlaqp3rk.c zlaqps.c zlaqsb.c
-   zlaqr0.c zlaqr1.c zlaqr2.c zlaqr3.c zlaqr4.c zlaqr5.c
-   zlaqsp.c zlaqsy.c zlar1v.c zlar2v.c ilazlr.c ilazlc.c
-   zlarcm.c zlarf.c  zlarfb.c zlarfb_gett.c zlarf1f.c zlarf1l.c
-   zlarfg.c zlarfgp.c zlarft.c zlarft_lvl2.c
-   zlarfx.c zlarfy.c zlargv.c zlarnv.c zlarrv.c zlartg.c zlartv.c
-   zlarz.c  zlarzb.c zlarzt.c zlascl.c zlaset.c zlasr.c
-   zlassq.c zlasyf.c zlasyf_rook.c zlasyf_rk.c zlasyf_aa.c
-   zlatbs.c zlatdf.c zlatps.c zlatrd.c zlatrs.c zlatrz.c
-   zpbcon.c zpbequ.c zpbrfs.c zpbstf.c zpbsv.c
-   zpbsvx.c zpbtf2.c zpbtrf.c zpbtrs.c zpocon.c zpoequ.c zporfs.c
-   zposv.c  zposvx.c zpotrf2.c zpotri.c zpotrs.c zpstrf.c zpstf2.c
-   zppcon.c zppequ.c zpprfs.c zppsv.c  zppsvx.c zpptrf.c zpptri.c zpptrs.c
-   zptcon.c zpteqr.c zptrfs.c zptsv.c  zptsvx.c zpttrf.c zpttrs.c zptts2.c
-   zrot.c zrscl.c  zspcon.c zsprfs.c zspsv.c
-   zspsvx.c zsptrf.c zsptri.c zsptrs.c zdrscl.c zstedc.c
-   zstegr.c zstein.c zsteqr.c zsycon.c
-   zsyrfs.c zsysv.c  zsysvx.c zsytf2.c zsytrf.c zsytri.c
-   zsytri2.c zsytri2x.c zsyswapr.c
-   zsytrs.c zsytrs2.c
-   zsyconv.c zsyconvf.c zsyconvf_rook.c
-   zsytf2_rook.c zsytrf_rook.c zsytrs_rook.c zsytrs_aa.c zsytrs_aa_2stage.c
-   zsytri_rook.c zsycon_rook.c zsysv_rook.c
-   zsytf2_rk.c zsytrf_rk.c zsytrf_aa.c zsytrf_aa_2stage.c zsytrs_3.c
-   zsytri_3.c zsytri_3x.c zsycon_3.c zsysv_rk.c zsysv_aa.c zsysv_aa_2stage.c
-   ztbcon.c ztbrfs.c ztbtrs.c ztgevc.c ztgex2.c
-   ztgexc.c ztgsen.c ztgsja.c ztgsna.c ztgsy2.c ztgsyl.c ztpcon.c
-   ztprfs.c ztptri.c
-   ztptrs.c ztrcon.c ztrevc.c ztrevc3.c ztrexc.c ztrrfs.c ztrsen.c ztrsna.c
-   ztrsyl.c ztrtrs.c ztzrzf.c zung2l.c
-   zung2r.c zungbr.c zunghr.c zungl2.c zunglq.c zungql.c zungqr.c zungr2.c
-   zungrq.c zungtr.c zunm2l.c zunm2r.c zunmbr.c zunmhr.c zunml2.c zunm22.c
-   zunmlq.c zunmql.c zunmqr.c zunmr2.c zunmr3.c zunmrq.c zunmrz.c
-   zunmtr.c zupgtr.c
-   zupmtr.c izmax1.c dzsum1.c zstemr.c
-   zcgesv.c zcposv.c zlag2c.c clag2z.c zlat2c.c
-   zhfrk.c ztfttp.c zlanhf.c zpftrf.c zpftri.c zpftrs.c ztfsm.c ztftri.c
-   ztfttr.c ztpttf.c ztpttr.c ztrttf.c ztrttp.c
-   zgeequb.c zgbequb.c zsyequb.c zpoequb.c zheequb.c
-   zbbcsd.c zlapmr.c zunbdb.c zunbdb1.c zunbdb2.c zunbdb3.c zunbdb4.c
-   zunbdb5.c zunbdb6.c zuncsd.c zuncsd2by1.c
-   zgeqrt.c zgeqrt2.c zgeqrt3.c zgemqrt.c
-   ztpqrt.c ztpqrt2.c ztpmqrt.c ztprfb.c
-   ztplqt.c ztplqt2.c ztpmlqt.c
-   zgelqt.c zgelqt3.c zgemlqt.c
-   zgetsls.c zgetsqrhrt.c zgeqr.c zlatsqr.c zlamtsqr.c zgemqr.c
-   zgelq.c zlaswlq.c zlamswlq.c zgemlq.c
-   zhetrd_2stage.c zhetrd_he2hb.c zhetrd_hb2st.c zhb2st_kernels.c
-   zheevd_2stage.c zheev_2stage.c zheevx_2stage.c zheevr_2stage.c
-   zhbev_2stage.c zhbevx_2stage.c zhbevd_2stage.c zhegv_2stage.c
-   zgesvdq.c zlaunhr_col_getrfnp.c zlaunhr_col_getrfnp2.c
-   zungtsqr.c zungtsqr_row.c zunhr_col.c zlatrs3.c ztrsyl3.c zgelst.c
-   zgedmd.c zgedmdq.c zgecxx.c zgesvdmr3.c zlall2.c zlallm.c
-   zlallm_blocked.c zlallm_recursive.c)
-
-set(ZXLASRC zgesvxx.c zgerfsx.c zla_gerfsx_extended.c zla_geamv.c
-   zla_gercond_c.c zla_gercond_x.c zla_gerpvgrw.c zsysvxx.c zsyrfsx.c
-   zla_syrfsx_extended.c zla_syamv.c zla_syrcond_c.c zla_syrcond_x.c
-   zla_syrpvgrw.c zposvxx.c zporfsx.c zla_porfsx_extended.c
-   zla_porcond_c.c zla_porcond_x.c zla_porpvgrw.c zgbsvxx.c zgbrfsx.c
-   zla_gbrfsx_extended.c zla_gbamv.c zla_gbrcond_c.c zla_gbrcond_x.c
-   zla_gbrpvgrw.c zhesvxx.c zherfsx.c zla_herfsx_extended.c
-   zla_heamv.c zla_hercond_c.c zla_hercond_x.c zla_herpvgrw.c
-   zla_lin_berr.c zlarscl2.c zlascl2.c zla_wwaddw.c)
-
-
-if(USE_XBLAS)
-  set(ALLXOBJ ${SXLASRC} ${DXLASRC} ${CXLASRC} ${ZXLASRC})
+if(C_LAPACK)
+  list(REMOVE_ITEM lapack_routines la_constants.f90 la_xisnan.F90)
+  list(TRANSFORM lapack_routines REPLACE "\\.[fF](90)?$" ".c")
+  list(TRANSFORM lapack_matgen REPLACE "\\.[fF](90)?$" ".c")
 endif()
 
-if(BUILD_LAPACK_DEPRECATED)
-list(APPEND SLASRC DEPRECATED/sgegs.c DEPRECATED/sgegv.c
-  DEPRECATED/sgelqs.c DEPRECATED/sgeqrs.c
-  DEPRECATED/sgeqpf.c DEPRECATED/sgelsx.c DEPRECATED/sggsvd.c
-  DEPRECATED/sggsvp.c DEPRECATED/slahrd.c DEPRECATED/slatzm.c DEPRECATED/stzrqf.c)
-list(APPEND DLASRC DEPRECATED/dgegs.c DEPRECATED/dgegv.c
-  DEPRECATED/dgelqs.c DEPRECATED/dgeqrs.c
-  DEPRECATED/dgeqpf.c DEPRECATED/dgelsx.c DEPRECATED/dggsvd.c
-  DEPRECATED/dggsvp.c DEPRECATED/dlahrd.c DEPRECATED/dlatzm.c DEPRECATED/dtzrqf.c)
-list(APPEND CLASRC DEPRECATED/cgegs.c DEPRECATED/cgegv.c
-  DEPRECATED/cgelqs.c DEPRECATED/cgeqrs.c
-  DEPRECATED/cgeqpf.c DEPRECATED/cgelsx.c DEPRECATED/cggsvd.c
-  DEPRECATED/cggsvp.c DEPRECATED/clahrd.c DEPRECATED/clatzm.c DEPRECATED/ctzrqf.c)
-list(APPEND ZLASRC DEPRECATED/zgegs.c DEPRECATED/zgegv.c
-  DEPRECATED/zgelqs.c DEPRECATED/zgeqrs.c
-  DEPRECATED/zgeqpf.c DEPRECATED/zgelsx.c DEPRECATED/zggsvd.c
-  DEPRECATED/zggsvp.c DEPRECATED/zlahrd.c DEPRECATED/zlatzm.c DEPRECATED/ztzrqf.c)
-message(STATUS "Building deprecated routines")
-endif()
-
-set(DSLASRC spotrs.c)
-
-set(ZCLASRC cpotrs.c)
-
-set(SCATGEN slatm1.c slaran.c slarnd.c)
-
-set(SMATGEN slatms.c slatme.c slatmr.c slatmt.c
-   slagge.c slagsy.c slakf2.c slarge.c slaror.c slarot.c slatm2.c
-   slatm3.c slatm5.c slatm6.c slatm7.c slahilb.c)
-
-set(CMATGEN clatms.c clatme.c clatmr.c clatmt.c
-   clagge.c claghe.c clagsy.c clakf2.c clarge.c claror.c clarot.c
-   clatm1.c clarnd.c clatm2.c clatm3.c clatm5.c clatm6.c clahilb.c slatm7.c)
-
-set(DZATGEN dlatm1.c dlaran.c dlarnd.c)
-
-set(DMATGEN dlatms.c dlatme.c dlatmr.c dlatmt.c
-   dlagge.c dlagsy.c dlakf2.c dlarge.c dlaror.c dlarot.c dlatm2.c
-   dlatm3.c dlatm5.c dlatm6.c dlatm7.c dlahilb.c)
-
-set(ZMATGEN zlatms.c zlatme.c zlatmr.c zlatmt.c
-  zlagge.c zlaghe.c zlagsy.c zlakf2.c zlarge.c zlaror.c zlarot.c
-  zlatm1.c zlarnd.c zlatm2.c zlatm3.c zlatm5.c zlatm6.c zlahilb.c dlatm7.c)
-
-if(BUILD_SINGLE)
-  set(LA_REL_SRC ${SLASRC} ${DSLASRC} ${ALLAUX} ${SCLAUX})
-  set(LA_GEN_SRC ${SMATGEN} ${SCATGEN})
-  message(STATUS "Building Single Precision")
-endif()
-if(BUILD_DOUBLE)
-  set(LA_REL_SRC ${LA_REL_SRC} ${DLASRC} ${DSLASRC} ${ALLAUX} ${DZLAUX})
-  set(LA_GEN_SRC ${LA_GEN_SRC} ${DMATGEN} ${DZATGEN})
-  message(STATUS "Building Double Precision")
-endif()
-if(BUILD_COMPLEX)
-  set(LA_REL_SRC ${LA_REL_SRC} ${CLASRC} ${ZCLASRC} ${ALLAUX} ${SCLAUX})
-  SET(LA_GEN_SRC ${LA_GEN_SRC} ${CMATGEN} ${SCATGEN})
-  message(STATUS "Building Single Precision Complex")
-endif()
-if(BUILD_COMPLEX16)
-  set(LA_REL_SRC ${LA_REL_SRC} ${ZLASRC} ${ZCLASRC} ${ALLAUX} ${DZLAUX})
-  SET(LA_GEN_SRC ${LA_GEN_SRC} ${ZMATGEN} ${DZATGEN})
-# for zlange/zlanhe
-  if (NOT BUILD_DOUBLE)
-    set (LA_REL_SRC ${LA_REL_SRC} dcombssq.c)
-  endif	()  
-  message(STATUS "Building Double Precision Complex")
-endif()
-
-endif()
-
-# add lapack-netlib folder to the sources
-set(LA_SOURCES "")
-foreach (LA_FILE ${LA_REL_SRC})
-  list(APPEND LA_SOURCES "${NETLIB_LAPACK_DIR}/SRC/${LA_FILE}")
-endforeach ()
-foreach (LA_FILE ${LA_GEN_SRC})
-  list(APPEND LA_SOURCES "${NETLIB_LAPACK_DIR}/TESTING/MATGEN/${LA_FILE}")
-endforeach ()
+list(TRANSFORM lapack_routines PREPEND "${NETLIB_LAPACK_DIR}/SRC/")
+list(TRANSFORM lapack_matgen PREPEND "${NETLIB_LAPACK_DIR}/TESTING/MATGEN/")
+set(lapack_sources ${lapack_routines} ${lapack_matgen})
 
 if (NOT C_LAPACK)
   # The below line is duplicating Fortran flags but NAG has a few flags
   # that cannot be specified twice. It's possible this is not needed for
   # any compiler, but for safety, we only turn off for NAG
   if (NOT ${F_COMPILER} STREQUAL "NAGFOR")
-    set_source_files_properties(${LA_SOURCES} PROPERTIES COMPILE_FLAGS "${LAPACK_FFLAGS}")
+    set_source_files_properties(${lapack_sources} PROPERTIES COMPILE_FLAGS "${LAPACK_FFLAGS}")
   endif ()
   if (${F_COMPILER} STREQUAL "GFORTRAN")
-    set_source_files_properties(${LA_SOURCES} PROPERTIES COMPILE_FLAGS "${LAPACK_FFLAGS} -fno-tree-vectorize")
+    set_source_files_properties(${lapack_sources} PROPERTIES COMPILE_FLAGS "${LAPACK_FFLAGS} -fno-tree-vectorize")
   endif()
-else ()
-  set_source_files_properties(${LA_SOURCES} PROPERTIES COMPILE_FLAGS "${LAPACK_CFLAGS} -fvisibility=default")
-endif ()
+else()
+  set_source_files_properties(${lapack_sources} PROPERTIES COMPILE_FLAGS "${LAPACK_CFLAGS} -fvisibility=default")
+endif()
