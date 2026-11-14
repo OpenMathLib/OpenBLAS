@@ -107,3 +107,58 @@ CTEST(max, smax_zero){
 }
 #endif
 
+
+#include <float.h>
+
+#ifdef BUILD_DOUBLE
+CTEST(max, dmax_full_double_range) {
+    blasint n = 65, inc = 3;
+    double x[193];
+    double result;
+    int i;
+    for (i = 0; i < 193; ++i) x[i] = 0.0;
+    for (i = 0; i < 65; ++i) x[3*i] = -ldexp(1.0, 901);
+    x[192] = -ldexp(1.0, 900);
+    result = BLASFUNC(dmax)(&n, x, &inc);
+    ASSERT_TRUE(result == -ldexp(1.0, 900));
+}
+
+CTEST(min, dmin_full_double_range) {
+    blasint n = 65, inc = 3;
+    double x[193];
+    double result;
+    int i;
+    for (i = 0; i < 193; ++i) x[i] = 0.0;
+    for (i = 0; i < 65; ++i) x[3*i] = ldexp(1.0, 901);
+    /* The next double above FLT_MAX for IEEE binary32/binary64. */
+    x[192] = (double)FLT_MAX + ldexp(1.0, 75);
+    result = BLASFUNC(dmin)(&n, x, &inc);
+    ASSERT_TRUE(result == x[192]);
+}
+#endif
+
+#ifdef BUILD_SINGLE
+CTEST(max, smax_negative_infinity) {
+    blasint n = 1, inc = 1;
+    float x = -HUGE_VAL;
+    ASSERT_TRUE(BLASFUNC(smax)(&n, &x, &inc) == -HUGE_VAL);
+}
+CTEST(min, smin_positive_infinity) {
+    blasint n = 1, inc = 1;
+    float x = HUGE_VAL;
+    ASSERT_TRUE(BLASFUNC(smin)(&n, &x, &inc) == HUGE_VAL);
+}
+#endif
+
+#ifdef BUILD_DOUBLE
+CTEST(max, dmax_negative_infinity) {
+    blasint n = 1, inc = 1;
+    double x = -HUGE_VAL;
+    ASSERT_TRUE(BLASFUNC(dmax)(&n, &x, &inc) == -HUGE_VAL);
+}
+CTEST(min, dmin_positive_infinity) {
+    blasint n = 1, inc = 1;
+    double x = HUGE_VAL;
+    ASSERT_TRUE(BLASFUNC(dmin)(&n, &x, &inc) == HUGE_VAL);
+}
+#endif

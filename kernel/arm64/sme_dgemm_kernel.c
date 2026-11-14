@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "common.h"
+#include "sme_gemm_buffer.h"
 #include "sme2_gemm_detect.h"
 #ifdef HAVE_SME2_GEMM
 #include "sme2_gemm_impl.h"
@@ -252,11 +253,12 @@ static void dgemm_sme_NN(int M, int N, int K, double alpha, const double *A, int
         return;
     }
 
-    alignas(256) /*thread_local*/ static double A_pack[MC * KC];
-    alignas(256) /*thread_local*/ static double B_pack[KC * NC];
-
 #pragma omp parallel for schedule(dynamic, 1)
     for (int j = 0; j < N; j += NC) {
+        /* per thread (and OpenMP task): the panels are never shared between threads */
+        void *pool;
+        const size_t kc = stdmin(KC, K), nb = kc * (stdmin(NC, N) + 64), na = kc * (stdmin(MC, M) + 64);
+        double *B_pack = (double *)sme_buf_get((nb + na) * sizeof(double), &pool), *A_pack = B_pack + nb;
 #if PROFILING
         CALI_MARK_BEGIN("loop_j");
 #endif
@@ -512,6 +514,7 @@ static void dgemm_sme_NN(int M, int N, int K, double alpha, const double *A, int
 #if PROFILING
         CALI_MARK_END("loop_j");
 #endif
+        sme_buf_put(pool);
     }
 }
 
@@ -531,11 +534,12 @@ static void dgemm_sme_TN(int M, int N, int K, double alpha, const double *A, int
         return;
     }
 
-    alignas(256) /*thread_local*/ static double A_pack[MC * KC];
-    alignas(256) /*thread_local*/ static double B_pack[KC * NC];
-
 #pragma omp parallel for schedule(dynamic, 1)
     for (int j = 0; j < N; j += NC) {
+        /* per thread (and OpenMP task): the panels are never shared between threads */
+        void *pool;
+        const size_t kc = stdmin(KC, K), nb = kc * (stdmin(NC, N) + 64), na = kc * (stdmin(MC, M) + 64);
+        double *B_pack = (double *)sme_buf_get((nb + na) * sizeof(double), &pool), *A_pack = B_pack + nb;
         int current_N = stdmin(NC, N - j);
         int N_pad = (current_N + 15) & ~15;
 
@@ -743,6 +747,7 @@ static void dgemm_sme_TN(int M, int N, int K, double alpha, const double *A, int
                 }
             }
         }
+        sme_buf_put(pool);
     }
 }
 
@@ -762,11 +767,12 @@ static void dgemm_sme_NT(int M, int N, int K, double alpha, const double *A, int
         return;
     }
 
-    alignas(256) /*thread_local*/ static double A_pack[MC * KC];
-    alignas(256) /*thread_local*/ static double B_pack[KC * NC];
-
 #pragma omp parallel for schedule(dynamic, 1)
     for (int j = 0; j < N; j += NC) {
+        /* per thread (and OpenMP task): the panels are never shared between threads */
+        void *pool;
+        const size_t kc = stdmin(KC, K), nb = kc * (stdmin(NC, N) + 64), na = kc * (stdmin(MC, M) + 64);
+        double *B_pack = (double *)sme_buf_get((nb + na) * sizeof(double), &pool), *A_pack = B_pack + nb;
         int current_N = stdmin(NC, N - j);
         int N_pad = (current_N + 15) & ~15;
 
@@ -964,6 +970,7 @@ static void dgemm_sme_NT(int M, int N, int K, double alpha, const double *A, int
                 }
             }
         }
+        sme_buf_put(pool);
     }
 }
 
@@ -983,11 +990,12 @@ static void dgemm_sme_TT(int M, int N, int K, double alpha, const double *A, int
         return;
     }
 
-    alignas(256) /*thread_local*/ static double A_pack[MC * KC];
-    alignas(256) /*thread_local*/ static double B_pack[KC * NC];
-
 #pragma omp parallel for schedule(dynamic, 1)
     for (int j = 0; j < N; j += NC) {
+        /* per thread (and OpenMP task): the panels are never shared between threads */
+        void *pool;
+        const size_t kc = stdmin(KC, K), nb = kc * (stdmin(NC, N) + 64), na = kc * (stdmin(MC, M) + 64);
+        double *B_pack = (double *)sme_buf_get((nb + na) * sizeof(double), &pool), *A_pack = B_pack + nb;
         int current_N = stdmin(NC, N - j);
         int N_pad = (current_N + 15) & ~15;
 
@@ -1179,6 +1187,7 @@ static void dgemm_sme_TT(int M, int N, int K, double alpha, const double *A, int
                 }
             }
         }
+        sme_buf_put(pool);
     }
 }
 
@@ -1190,8 +1199,7 @@ void CNAME(const char *transa, const char *transb, const BLASLONG m, const BLASL
     bool trans_a = (*transa == 'T' || *transa == 't' || *transa == 'C' || *transa == 'c');
     bool trans_b = (*transb == 'T' || *transb == 't' || *transb == 'C' || *transb == 'c');
 #if defined(HAVE_SME2_GEMM)
-    /* below 5000 multiply-adds the existing kernel is faster when it needs no edge tiles (M and N multiples of 16) */
-    if (s2_usable() && S2_FITS(m, n, k) && !((double)m * (double)n * (double)k < 5000. && m % 16 == 0 && n % 16 == 0)) {
+    if (s2_usable() && S2_FITS(m, n, k)) {
         s2_gemm(trans_a, trans_b, m, n, k, *alpha, a, lda, b, ldb, *beta, c, ldc);
         return;
     }

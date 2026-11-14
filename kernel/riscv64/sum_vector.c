@@ -96,7 +96,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                                 v1 = VLSEV_FLOAT(&x[ix+inc_xv], stride_x, gvl);
                                 v_sum = VFADDVV_FLOAT(v_sum, v1, gvl);
                                 j += gvl * 2;
-                                inc_xv += inc_xv * 2;
+                                ix += inc_xv * 2;
                         }
                         v_res = VFREDSUMVS_FLOAT(v_sum, v_res, gvl);
                 }

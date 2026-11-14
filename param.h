@@ -3573,16 +3573,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define DGEMM_DEFAULT_UNROLL_M  64
 #define DGEMM_DEFAULT_UNROLL_N  8
 
-#define CGEMM_DEFAULT_UNROLL_M  8
-#define CGEMM_DEFAULT_UNROLL_N  4
+/* kernel/arm64/zgemm_kernel_sme2.c: interleaved complex numbers, A in 2 (fp32) or 4 (fp64) vectors, B in 2 */
+#define CGEMM_DEFAULT_UNROLL_M  16
+#define CGEMM_DEFAULT_UNROLL_N  16
 
-#define ZGEMM_DEFAULT_UNROLL_M  4
-#define ZGEMM_DEFAULT_UNROLL_N  4
+#define ZGEMM_DEFAULT_UNROLL_M  16
+#define ZGEMM_DEFAULT_UNROLL_N  8
+
+/* SME2 sbgemm kernel (kernel/arm64/sbgemm_kernel_sme2.c): four ZA32 tiles of 16x16 fp32 */
+#undef SBGEMM_DEFAULT_UNROLL_M
+#undef SBGEMM_DEFAULT_UNROLL_N
+#define SBGEMM_DEFAULT_UNROLL_M 64
+#define SBGEMM_DEFAULT_UNROLL_N 16
+#undef SBGEMM_ALIGN_K
+#define SBGEMM_ALIGN_K 2 /* k-pair interleaved panels: the sbgemm copies pad k to even */
 
 #define SGEMM_DEFAULT_P 1024
 #define DGEMM_DEFAULT_P 512
-#define CGEMM_DEFAULT_P 256
-#define ZGEMM_DEFAULT_P 128
+#define CGEMM_DEFAULT_P 512
+#define ZGEMM_DEFAULT_P 256
 
 #define SGEMM_DEFAULT_Q 1024
 #define DGEMM_DEFAULT_Q 512
@@ -4106,6 +4115,16 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define USE_SSYRK_KERNEL_DIRECT 1
 #define USE_SSYR2K_KERNEL_DIRECT 1
 #endif /* ARMv9 SME */
+
+/* NEON BFDOT sbgemm kernel (kernel/arm64/sbgemm_kernel_bfdot.c): 8x8 C blocks */
+#ifdef VORTEX
+#undef SBGEMM_DEFAULT_UNROLL_M
+#undef SBGEMM_DEFAULT_UNROLL_N
+#define SBGEMM_DEFAULT_UNROLL_M 8
+#define SBGEMM_DEFAULT_UNROLL_N 8
+#undef SBGEMM_ALIGN_K
+#define SBGEMM_ALIGN_K 2 /* k-pair interleaved panels: the sbgemm copies pad k to even */
+#endif
 
 #if defined(ARMV5)
 #define SNUMOPT		2

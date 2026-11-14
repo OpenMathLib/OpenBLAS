@@ -74,16 +74,16 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
 	BLASLONG i=0, j=0;
 	if (n <= 0 || inc_x <= 0) return(0.0);
-	FLOAT minf=FLT_MAX;
+	FLOAT minf=x[0];
         unsigned int gvl = 0;
         FLOAT_V_T v0, v1, v_min;
         FLOAT_V_T_M1 v_res;
-        v_res = VFMVVF_FLOAT_M1(FLT_MAX, 1);
+        v_res = VFMVVF_FLOAT_M1(minf, 1);
 
         if(inc_x == 1){
                 gvl = VSETVL(n);
                 if(gvl <= n/2){
-                        v_min = VFMVVF_FLOAT(FLT_MAX, gvl);
+                        v_min = VFMVVF_FLOAT(minf, gvl);
                         for(i=0,j=0; i<n/(gvl*2); i++){
                                 v0 = VLEV_FLOAT(&x[j], gvl);
                                 v_min = VFMINVV_FLOAT(v_min, v0, gvl);
@@ -104,7 +104,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                 gvl = VSETVL(n);
                 BLASLONG stride_x = inc_x * sizeof(FLOAT);
                 if(gvl <= n/2){
-                        v_min = VFMVVF_FLOAT(FLT_MAX, gvl);
+                        v_min = VFMVVF_FLOAT(minf, gvl);
                         BLASLONG idx = 0, inc_xv = inc_x * gvl;
                         for(i=0,j=0; i<n/(gvl*2); i++){
                                 v0 = VLSEV_FLOAT(&x[idx], stride_x, gvl);

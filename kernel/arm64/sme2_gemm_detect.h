@@ -41,7 +41,20 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/auxv.h>
 #endif
 
-/* SME2 with a 512-bit streaming vector length (the kernels assume 16 fp32 lanes). */
+/* SME2 with a 512-bit streaming vector length (the kernels assume 16 fp32 lanes).
+   The vector length is read through inline asm: as a pure intrinsic svcntsw() can be
+   speculated above the FEAT_SME2 test (clang if-converts the conjunction), and RDSVL
+   is undefined on cores without FEAT_SME. */
+/* Noinline, so that clang cannot if-convert the call above the FEAT_SME2 test. */
+#if defined(__GNUC__) || defined(__clang__)
+__attribute__((noinline))
+#endif
+static int s2_sme2_svl_lanes(void) {
+  uint64_t svl;
+  __asm__ volatile("rdsvl %0, #1" : "=r"(svl)); /* streaming vector length in bytes */
+  return (int)(svl / 4);
+}
+
 static inline int s2_usable(void) {
   static int ok = -1;
   if (ok < 0) {
@@ -53,7 +66,7 @@ static inline int s2_usable(void) {
 #elif defined(__linux__)
     sme2 = (getauxval(AT_HWCAP2) & (1UL << 37)) != 0; /* HWCAP2_SME2 */
 #endif
-    ok = sme2 && svcntsw() == 16;
+    ok = sme2 && s2_sme2_svl_lanes() == 16;
   }
   return ok;
 }
