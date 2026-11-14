@@ -31,41 +31,49 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sme2_gemm_copy.h"
 
 #ifndef LOWER
-#define KEEP(r, c) ((r) > (c))
+#define ZL 0
 #else
-#define KEEP(r, c) ((r) < (c))
+#define ZL 1
 #endif
 #ifdef UNIT
-#define DIAG(v) ONE
+#define UNITD 1
 #else
-#define DIAG(v) (v)
+#define UNITD 0
+#endif
+
+#if ZL
+#define PART(COPY, ZERO)   \
+  COPY(i2, w, ap, lda, b); \
+  ZERO(m - i2, w, b + i2 * w)
+#else
+#define PART(COPY, ZERO) \
+  ZERO(i1, w, b);        \
+  COPY(m - i1, w, ap + i1 * lda, lda, b + i1 * w)
+#endif
+/* Panels of w columns: the rows on the kept side of the diagonal copied, the others zeroed, then the diagonal block. */
+#define PANELS(COPY, ZERO, TRI)                                                                         \
+  for (BLASLONG j0 = 0, w; j0 < n; j0 += w, b += m * w) {                                               \
+    w = n - j0 < S2C_W ? n - j0 : S2C_W;                                                                \
+    const BLASLONG lo = posY + j0, i1 = s2c_clip(lo - posX, 0, m), i2 = s2c_clip(lo + w - posX, i1, m); \
+    const FLOAT *ap = a + lo + posX * lda;                                                              \
+    PART(COPY, ZERO);                                                                                   \
+    TRI(i1, i2, w, posX - lo, ZL, UNITD, b);                                                            \
+  }
+
+#ifdef HAVE_SME2_GEMM
+__arm_locally_streaming static __attribute__((noinline)) void panels_sme(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda,
+                                                                         BLASLONG posX, BLASLONG posY, FLOAT *b) {
+  PANELS(s2c_rows_s, s2c_zero_s, s2c_tri_s)
+}
 #endif
 
 int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, FLOAT *b) {
-  for (BLASLONG j0 = 0; j0 < n; j0 += S2C_W) {
-    const BLASLONG w = n - j0 < S2C_W ? n - j0 : S2C_W, lo = posY + j0;
-    const FLOAT *ap = a + lo + posX * lda;
-    const BLASLONG i1 = s2c_clip(lo - posX, 0, m), i2 = s2c_clip(lo + w - posX, i1, m);
-#ifndef LOWER
-    s2c_zero(i1, w, b);
-    s2c_rows(m - i2, w, ap + i2 * lda, lda, b + i2 * w);
-#else
-    s2c_rows(i1, w, ap, lda, b);
-    s2c_zero(m - i2, w, b + i2 * w);
-#endif
-    /* Diagonal block: a copy, then the zero side of the diagonal (column d of row i) and the unit diagonal. */
-    s2c_rows(i2 - i1, w, ap + i1 * lda, lda, b + i1 * w);
-    for (BLASLONG i = i1; i < i2; ++i) {
-      const BLASLONG d = posX + i - lo;
-      FLOAT *bi = b + i * w;
-      if (KEEP(0, 1)) {
-        for (BLASLONG c = 0; c < d; ++c) bi[c] = ZERO;
-      } else {
-        for (BLASLONG c = d + 1; c < w; ++c) bi[c] = ZERO;
-      }
-      bi[d] = DIAG(bi[d]);
-    }
-    b += m * w;
+#ifdef HAVE_SME2_GEMM
+  if (m * n >= S2C_SME && s2_usable()) {
+    panels_sme(m, n, a, lda, posX, posY, b);
+    return 0;
   }
+#endif
+  PANELS(s2c_rows, s2c_zero, s2c_tri)
   return 0;
 }
