@@ -3,7 +3,7 @@ OpenBLAS checks the following environment variables on startup:
 * `OPENBLAS_NUM_THREADS`: the number of threads to use (for non-OpenMP builds
   of OpenBLAS)
 * `OMP_NUM_THREADS`: the number of threads to use (for OpenMP builds - note
-  that setting this may also affect any other OpenMP code)
+  that setting this may also affect any other OpenMP code and non-OpenMP builds)
 * `OPENBLAS_DEFAULT_NUM_THREADS`: the number of threads to use, irrespective if
   OpenBLAS was built for OpenMP or pthreads
 
