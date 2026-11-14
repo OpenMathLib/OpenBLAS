@@ -43,7 +43,7 @@ static uint64_t sve_cntw() {
     return cnt;
 }
 
-#if defined(__ARM_FEATURE_SME) && defined(__ARM_FEATURE_LOCALLY_STREAMING) && defined(__clang__) && __clang_major__ >= 16
+#if defined(__ARM_FEATURE_SME) && (defined(__ARM_FEATURE_LOCALLY_STREAMING) || defined(__apple_build_version__)) && defined(__clang__) && __clang_major__ >= 16
 
 #if defined(UPPER)
 __arm_new("za") __arm_locally_streaming
