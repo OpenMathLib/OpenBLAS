@@ -42,6 +42,29 @@
 #include "functable.h"
 #endif
 
+#if defined(ARCH_X86_64) && !defined(XDOUBLE)
+/* The real c and s act on the real and imaginary parts separately, so with unit
+   increments the 2n reals can be rotated as one real vector. For long vectors the
+   srot/drot kernels of Haswell and newer (AVX2/AVX-512 FMA) are about twice as fast
+   as the complex SSE kernels; for short ones they cost more per call, and on the older
+   cores the real SSE kernels are not faster at all. So this is only done for
+   RROT_MIN <= n <= RROT_MAX: the upper limit keeps 2n within the range of n that the
+   real kernels get from srot/drot. The test is marked unlikely so that the short
+   vectors keep a straight jump to the complex kernel. */
+#ifdef DOUBLE
+#define RROT_K DROT_K
+#else
+#define RROT_K SROT_K
+#endif
+#define RROT_MIN 4096
+#define RROT_MAX ((BLASLONG)1 << 29)
+#if defined(__GNUC__)
+#define RROT_USE(n) __builtin_expect((n) >= RROT_MIN && (n) <= RROT_MAX, 0)
+#else
+#define RROT_USE(n) ((n) >= RROT_MIN && (n) <= RROT_MAX)
+#endif
+#endif
+
 OPENBLAS_EXPORT
 
 #ifndef CBLAS
@@ -69,7 +92,14 @@ void CNAME(blasint n, void *VX, blasint incx, void *VY, blasint incy, FLOAT c, F
   if (incx < 0) x -= (n - 1) * 2 * incx;
   if (incy < 0) y -= (n - 1) * 2 * incy;
 
+#ifdef RROT_K
+  if (RROT_USE(n) && incx == 1 && incy == 1)
+    RROT_K(2 * n, x, 1, y, 1, c, s);
+  else
+    ROT_K(n, x, incx, y, incy, c, s);
+#else
   ROT_K(n, x, incx, y, incy, c, s);
+#endif
 
   FUNCTION_PROFILE_END(4, n, n);
 
