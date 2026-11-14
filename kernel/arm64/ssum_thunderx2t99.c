@@ -217,6 +217,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 		nthreads = 1;
 	else
 		nthreads = num_cpu_avail(1);
+	nthreads = apple_omp_level1_threads((size_t)n * COMPSIZE * sizeof(FLOAT), inc_x == 1, nthreads);
 
 	if (nthreads == 1) {
 		ssum = ssum_compute(n, x, inc_x);

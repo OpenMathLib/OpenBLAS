@@ -108,6 +108,7 @@ void CNAME(blasint n, FLOAT *ALPHA, FLOAT *x, blasint incx, FLOAT *y, blasint in
 	  nthreads = 1;
   else
 	  nthreads = num_cpu_avail(1);
+  nthreads = apple_omp_level1_threads(3 * (size_t)n * COMPSIZE * sizeof(FLOAT), incx == 1 && incy == 1, nthreads);
 
   if (nthreads == 1) {
 #endif
