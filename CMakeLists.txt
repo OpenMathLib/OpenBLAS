@@ -490,10 +490,10 @@ set_target_properties(${OpenBLAS_LIBS} PROPERTIES
 )
 endif()
 if (BUILD_SHARED_LIBS AND BUILD_RELAPACK)
-  if (NOT MSVC)
-    target_link_libraries(${OpenBLAS_LIBNAME}_shared "-Wl,-allow-multiple-definition")
+  if(MSVC)
+    target_link_options(${OpenBLAS_LIBNAME}_shared PRIVATE /FORCE:MULTIPLE)
   else()
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /FORCE:MULTIPLE")
+    target_link_options(${OpenBLAS_LIBNAME}_shared PRIVATE "LINKER:--allow-multiple-definition")
   endif()
 endif()
 
