@@ -21,6 +21,7 @@ option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS
 option(BUILD_WITHOUT_LAPACKE "Do not build the C interface to LAPACK)" OFF)
 
 option(BUILD_LAPACK_DEPRECATED "When building LAPACK, include also some older, deprecated routines" ON)
+option(BUILD_MATGEN "Build LAPACKE wrappers for the LAPACK matrix generators" ON)
 
 set(LAPACK_STRLEN "" CACHE STRING "When building LAPACK, use this type (e.g. \"int\") for character lengths (defaults to size_t)")
 
@@ -170,10 +171,6 @@ if (NOT DEFINED BUILD_SINGLE AND NOT DEFINED BUILD_DOUBLE AND NOT DEFINED BUILD_
   set(BUILD_COMPLEX16 true)
 endif ()
 
-if (NOT DEFINED BUILD_MATGEN)
-  set(BUILD_MATGEN true)
-endif()
-
 set(FLOAT_TYPES "")
 if (BUILD_SINGLE)
   message(STATUS "Building Single Precision")
@@ -220,10 +217,7 @@ foreach (SUBDIR ${SUBDIRS})
   list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:${subdir_obj}>")
 endforeach ()
 
-# netlib:
-
-# Can't just use lapack-netlib's CMake files, since they are set up to search for BLAS, build and install a binary. We just want to build a couple of lib files out of lapack and lapacke.
-# Not using add_subdirectory here because lapack-netlib already has its own CMakeLists.txt. Instead include a cmake script with the sources we want.
+# Read the source lists before setting up the bundled LAPACK targets.
 if (NOT NO_LAPACK)
   include("${PROJECT_SOURCE_DIR}/cmake/lapack.cmake")
   if (NOT NO_LAPACKE)
@@ -295,7 +289,8 @@ if(NOT NO_LAPACK)
   list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:LAPACK_OVERRIDES>")
 endif()
 if(NOT NO_LAPACKE)
-  add_library(LAPACKE OBJECT ${LAPACKE_SOURCES})
+  add_library(LAPACKE OBJECT ${lapacke_sources})
+  target_include_directories(LAPACKE PRIVATE "${lapacke_dir}/include")
   list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:LAPACKE>")
 endif()
 #if(BUILD_RELAPACK)
