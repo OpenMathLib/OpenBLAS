@@ -796,23 +796,21 @@ if ("${F_COMPILER}" STREQUAL "GFORTRAN")
   set(LAPACK_FFLAGS "${LAPACK_FFLAGS} -Wno-maybe-uninitialized")
 endif ()
 
-set(LAPACK_CFLAGS "${CMAKE_C_CFLAGS} -DHAVE_LAPACK_CONFIG_H")
+set(lapack_c_definitions HAVE_LAPACK_CONFIG_H)
 if (INTERFACE64)
-  set(LAPACK_CFLAGS "${LAPACK_CFLAGS} -DLAPACK_ILP64")
+  list(APPEND lapack_c_definitions LAPACK_ILP64)
 endif ()
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-  set(LAPACK_CFLAGS "${LAPACK_CFLAGS} -DOPENBLAS_OS_WINDOWS")
+  list(APPEND lapack_c_definitions OPENBLAS_OS_WINDOWS)
 endif ()
 
 if (${CMAKE_C_COMPILER} STREQUAL "LSB" OR ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-  set(LAPACK_CFLAGS "${LAPACK_CFLAGS} -DLAPACK_COMPLEX_STRUCTURE")
+  list(APPEND lapack_c_definitions LAPACK_COMPLEX_STRUCTURE)
 endif ()
 if (${CMAKE_C_COMPILER_ID} MATCHES "IntelLLVM" AND ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-	set(LAPACK_CFLAGS "${LAPACK_CFLAGS} -DNOCHANGE")
+  list(APPEND lapack_c_definitions NOCHANGE)
 endif ()
-
-string(REPLACE "-fvisibility=hidden" "" LAPACK_CFLAGS ${LAPACK_CFLAGS})
 
 if (NOT DEFINED SUFFIX)
   set(SUFFIX o)

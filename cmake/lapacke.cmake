@@ -48,4 +48,4 @@ function(openblas_lapacke_sources result)
 endfunction()
 
 openblas_lapacke_sources(lapacke_sources)
-set_source_files_properties(${lapacke_sources} PROPERTIES COMPILE_FLAGS "${LAPACK_CFLAGS} -fvisibility=default")
+set_source_files_properties(${lapacke_sources} PROPERTIES COMPILE_FLAGS "-fvisibility=default")
