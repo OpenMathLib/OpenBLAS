@@ -158,7 +158,7 @@ typedef struct {
 static thread_status_t thread_status[MAX_CPU_NUMBER] __attribute__((aligned(ATTRIBUTE_SIZE)));
 
 #ifndef THREAD_TIMEOUT
-#define THREAD_TIMEOUT	28
+#define THREAD_TIMEOUT	22
 #endif
 
 static unsigned int thread_timeout = (1U << (THREAD_TIMEOUT));
