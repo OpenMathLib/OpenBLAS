@@ -299,3 +299,6 @@ hheei <hheei@users.noreply.github.com>
 
 * Andrew Pullin <pullin@berkeley.edu>
   * [2026-11-06] Fix work buffer overflow in threaded SYRK/HERK for large N
+
+* Nathan Moinvaziri <https://github.com/nmoinvaz>
+  * [2026-11-14] Fix work buffer overflow in threaded GETRF for large N

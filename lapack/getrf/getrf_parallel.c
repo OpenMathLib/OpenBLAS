@@ -91,6 +91,28 @@ static __inline BLASLONG FORMULA1(BLASLONG M, BLASLONG N, BLASLONG IS, BLASLONG 
 
 #define FORMULA2(M, N, IS, BK, T) (BLASLONG)((double)(N - IS + BK) * (1. - sqrt(1. - 1. / (double)(T))))
 
+/* Number of columns that inner_advanced_thread() may pack behind a worker's
+ * sb (DIVIDE_RATE panels of GEMM_Q x div_n) within its BUFFER_SIZE work area,
+ * which is laid out as in level3_syrk_threaded.c. */
+static BLASLONG getrf_max_cols(void){
+
+  BLASLONG offset_a = GEMM_OFFSET_A;
+  BLASLONG space, div_n;
+
+#if defined(ARCH_LOONGARCH64) && !defined(NO_AFFINITY)
+  offset_a *= 15;
+#endif
+
+  space = (BLASLONG)BUFFER_SIZE - offset_a
+    - (BLASLONG)((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)
+    - GEMM_OFFSET_B - 65536;
+  div_n = space / (BLASLONG)(DIVIDE_RATE * GEMM_Q * COMPSIZE * SIZE);
+  div_n = (div_n / GEMM_UNROLL_N) * GEMM_UNROLL_N;
+  if (div_n < GEMM_UNROLL_N) div_n = GEMM_UNROLL_N;
+
+  return DIVIDE_RATE * div_n;
+}
+
 
 static void inner_basic_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLOAT *sb, BLASLONG mypos){
 
@@ -412,6 +434,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   BLASLONG num_cpu;
   BLASLONG f;
+  BLASLONG max_cols;
 
 #ifdef _MSC_VER
   BLASLONG flag[MAX_CPU_NUMBER * CACHE_LINE_SIZE];
@@ -494,6 +517,8 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
   sbb = (FLOAT *)((((BLASULONG)(sb + bk * bk * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
 
+  max_cols = getrf_max_cols();
+
   is = 0;
   num_cpu = 0;
 
@@ -528,6 +553,10 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
     newarg.k   = bk;
     newarg.ldb = is + offset;
 
+    /* The workers take at most max_cols columns each, the main thread the
+     * rest (inner_basic_thread() blocks its range by REAL_GEMM_R). */
+    if (nn - width > (args -> nthreads - 1) * max_cols) width = nn - (args -> nthreads - 1) * max_cols;
+
     nn -= width;
 
     range_n_mine[0] = 0;
@@ -545,6 +574,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	width  = blas_quickdivide(nn + args -> nthreads - num_cpu, args -> nthreads - num_cpu - 1);
 	if (width == 0) width = nn;
 	if (nn < width) width = nn;
+	if (width > max_cols) width = max_cols;
 	nn -= width;
 	range_N[num_cpu + 1] = range_N[num_cpu] + width;
 
@@ -567,6 +597,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 	if (width == 0) width = nn;
 	if (nn < width) width = nn;
 	if (mm <=    0) width = nn;
+	if (width > max_cols) width = max_cols;
 	nn -= width;
 	range_N[num_cpu + 1] = range_N[num_cpu] + width;
 
