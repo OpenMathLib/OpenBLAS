@@ -67,7 +67,7 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
     SV_TYPE a_vec_imag;
     svbool_t pg_true = SV_TRUE();
 
-    BLASLONG single_vectors_n = n & -sve_size;
+    BLASLONG single_vectors_n = n - n % sve_size;
     for (BLASLONG j = 0; j < single_vectors_n; j += sve_size) {
         a_offset_inner = a_offset;
 

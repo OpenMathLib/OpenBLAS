@@ -189,8 +189,8 @@ CNAME(BLASLONG M,
 #endif
   const BLASLONG n4 = N & -4;
   const BLASLONG n2 = N & -2;
-  const BLASLONG v_m2 = M & -v_size2;
-  const BLASLONG v_m1 = M & -v_size;
+  const BLASLONG v_m2 = M - M % v_size2;
+  const BLASLONG v_m1 = M - M % v_size;
 
   FLOAT* b_offset = B;
   FLOAT* a_offset = A;
