@@ -244,7 +244,15 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 			i += inc_x;
         }
 	}
-	return(scale * sqrt(ssq));
+	FLOAT norm = scale * sqrt(ssq);
+	if (inc_x > 0 && isnan(norm)) {
+		// An infinite element makes the scaled update compute inf/inf = NaN. The norm is +Inf
+		// then, unless the input itself contains a NaN.
+		for (i = 0; i < n; i++)
+			if (isnan(x[i * inc_x])) return x[i * inc_x];
+		return INFINITY;
+	}
+	return norm;
 }
 
 
