@@ -65,6 +65,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    st.d    N,       $sp,     8
    st.d    X,       $sp,     16
    st.d    INCX,    $sp,     24
+
+   // CAMAX does not accept negative increments. Reverse its traversal only;
+   // the original X and INCX are restored below for the norm calculation.
+   bge INCX, $r0, .Lcnrm2_amax
+   addi.d TEMP, N, -1
+   beq TEMP, $r0, .Lcnrm2_amax_single
+   mul.d TEMP, TEMP, INCX
+   slli.d TEMP, TEMP, ZBASE_SHIFT
+   add.d X, X, TEMP
+   sub.d INCX, $r0, INCX
+   b .Lcnrm2_amax
+.Lcnrm2_amax_single:
+   // A single element does not require negating a possibly minimal increment.
+   addi.d INCX, $r0, 1
+.Lcnrm2_amax:
 #ifdef DYNAMIC_ARCH
    bl camax_k_LA264
 #else
