@@ -183,6 +183,27 @@ static __inline int sme_level3_threads(int nthreads) {
 #define sme_level3_threads(nthreads) (nthreads)
 #endif
 
+#if defined(USE_OPENMP) && defined(ARCH_ARM64) && defined(OS_DARWIN) && (defined(VORTEXM4) || defined(DYNAMIC_ARCH))
+#ifdef DYNAMIC_ARCH
+extern char *gotoblas_corename(void);
+#endif
+/* Apple M4 with OpenMP: libomp parks idle threads on Apple Silicon (KMP_BLOCKTIME
+   defaults to 0 there), and every threaded call wakes the rest of the OpenMP team,
+   about 3 us per thread on average. A unit-stride level-1 call that reads and writes
+   fewer than about 384 KB per thread that would be woken is faster on one thread;
+   bytes is the memory the call reads and writes. Calls with other strides run a
+   scalar loop and keep the team. Measured on M4 Pro only. */
+static __inline int apple_omp_level1_threads(size_t bytes, int unit_stride, int nthreads) {
+  if (nthreads <= 1 || !unit_stride) return nthreads;
+#ifdef DYNAMIC_ARCH
+  if (strcmp(gotoblas_corename(), "vortexm4") != 0) return nthreads;
+#endif
+  return bytes < (size_t)(nthreads - 1) * 384 * 1024 ? 1 : nthreads;
+}
+#else
+#define apple_omp_level1_threads(bytes, unit_stride, nthreads) (nthreads)
+#endif
+
 static __inline int num_cpu_avail(int level) {
 
 #ifdef USE_OPENMP

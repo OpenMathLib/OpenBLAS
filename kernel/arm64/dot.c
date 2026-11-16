@@ -171,6 +171,7 @@ RETURN_TYPE CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y
 		nthreads = 1;
 	else
 		nthreads = get_dot_optimal_nthreads(n);
+	nthreads = apple_omp_level1_threads(2 * (size_t)n * COMPSIZE * sizeof(FLOAT), inc_x == 1 && inc_y == 1, nthreads);
 
 	if (nthreads == 1) {
 		dot = dot_compute(n, x, inc_x, y, inc_y);
