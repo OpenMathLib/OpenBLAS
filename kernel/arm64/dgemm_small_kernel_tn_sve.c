@@ -207,8 +207,8 @@ CNAME(BLASLONG M,
 #endif
   const svuint64_t lda_vec = svindex_u64(0LL, lda);
 
-  const BLASLONG v_m2 = M & -v_size2;
-  const BLASLONG v_m1 = M & -v_size;
+  const BLASLONG v_m2 = M - M % v_size2;
+  const BLASLONG v_m1 = M - M % v_size;
   const BLASLONG n4 = N & -4;
   const BLASLONG n2 = N & -2;
   const BLASLONG n8 = N & -8;

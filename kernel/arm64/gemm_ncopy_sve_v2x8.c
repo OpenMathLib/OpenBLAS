@@ -78,7 +78,7 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
     svbool_t pg_true = SV_TRUE();
 
     uint64_t double_sve_size = sve_size * 2;
-    BLASLONG double_vectors_n = n & -double_sve_size;
+    BLASLONG double_vectors_n = n - n % double_sve_size;
     for (BLASLONG j = 0; j < double_vectors_n; j += double_sve_size) {
         a_offset_inner = a_offset;
 
@@ -116,7 +116,7 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
         a_offset += double_sve_size * lda;
     }
 
-    BLASLONG single_vectors_n = (n - double_vectors_n) & -sve_size;
+    BLASLONG single_vectors_n = (n - double_vectors_n) - (n - double_vectors_n) % sve_size;
     if (single_vectors_n) {
         a_offset_inner = a_offset;
 

@@ -247,8 +247,8 @@ CNAME(BLASLONG M,
   const svfloat32_t beta_vec = svdup_f32(beta);
 #endif
   const BLASLONG n4 = N & -4;
-  const BLASLONG v_m2 = M & -v_size2;
-  const BLASLONG v_m1 = M & -v_size;
+  const BLASLONG v_m2 = M - M % v_size2;
+  const BLASLONG v_m1 = M - M % v_size;
   const BLASLONG k4 = K & -4;
 
   const int pack_b = M >= v_size2 && N >= 8 && K >= 8 ? 1 : 0;

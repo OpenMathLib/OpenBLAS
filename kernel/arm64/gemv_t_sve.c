@@ -62,8 +62,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
     svbool_t pg_true = SV_TRUE();
     uint64_t sve_size = SV_COUNT();
     uint64_t sve_size2 = sve_size * 2;
-    BLASLONG m1 = m & -sve_size;
-    BLASLONG m2 = m & -sve_size2;
+    BLASLONG m1 = m - m % sve_size;
+    BLASLONG m2 = m - m % sve_size2;
 
     for (j = 0; j < n; j++) {
       BLASLONG i = 0;
