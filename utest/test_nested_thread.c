@@ -46,11 +46,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * the outer call.
  */
 
-#include "openblas_utest.h"
-#include <cblas.h>
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
 #include <stdlib.h>
 #include <string.h>
-
 #if !defined(_WIN32)
 #include <signal.h>
 #include <sys/types.h>
@@ -60,6 +60,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef USE_OPENMP
 #include <omp.h>
 #endif
+#include <cblas.h>
+#include "openblas_utest.h"
 
 #ifdef SMP
 
