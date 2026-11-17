@@ -24,8 +24,8 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-
 #define ASSEMBLER
+
 #include "common.h"
 
 #define N      $r4
@@ -61,6 +61,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define x2     $xr17
 #define x3     $xr16
 #define x4     $xr15
+#define T0     $xr13
+#define T1     $xr14
+#define S0     $xr9
+#define S1     $xr11
+#define VNAI   $xr10
+#define IDXV   $xr7
+
+	.section	.rodata
+	.balign	64
+cscal_idx_d:
+	.word	2, 3, 0, 1, 6, 7, 4, 5
+cscal_idx_s:
+	.word	1, 0, 3, 2, 5, 4, 7, 6
+cscal_vsgn_d:
+	.double	-1.0, 1.0, -1.0, 1.0
+cscal_vsgn_s:
+	.float	-1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0
+	.text
 
     PROLOGUE
 
@@ -78,12 +96,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     movfr2gr.d t2, ALPHAI
     xvreplgr2vr.d VXAI, t2
     xvxor.v VXZ, VXZ, VXZ
+    la.local $r6, cscal_idx_d
+    xvld IDXV, $r6, 0
+    la.local $r6, cscal_vsgn_d
+    xvld $xr5, $r6, 0
+    xvfmul.d VNAI, VXAI, $xr5
     srai.d I, N, 2
 #else
     xvreplgr2vr.w VXAR, t1
     movfr2gr.s t2, ALPHAI
     xvreplgr2vr.w VXAI, t2
     xvxor.v VXZ, VXZ, VXZ
+    la.local $r6, cscal_idx_s
+    xvld IDXV, $r6, 0
+    la.local $r6, cscal_vsgn_s
+    xvld $xr5, $r6, 0
+    xvfmul.s VNAI, VXAI, $xr5
     srai.d I, N, 3
 #endif
     bne INCX, TEMP, .L22
@@ -118,27 +146,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvld VX0, X, 0 * SIZE
 #ifdef DOUBLE
     xvld VX1, X, 4 * SIZE
-    xvpickev.d x1, VX1, VX0
-    xvpickod.d x2, VX1, VX0
-    xvfmul.d VX0, VXAI, x2
-    xvfmsub.d x3, VXAR, x1, VX0
-    xvfmul.d VX1, VXAI, x1
-    xvfmadd.d x4, VXAR, x2, VX1
-    xvilvl.d VX2, x4 ,x3
-    xvilvh.d VX3, x4, x3
+    xvfmul.d T0, VX0, VXAR
+    xvfmul.d T1, VX1, VXAR
+    xvperm.w S0, VX0, IDXV
+    xvperm.w S1, VX1, IDXV
+    xvfmadd.d VX2, S0, VNAI, T0
+    xvfmadd.d VX3, S1, VNAI, T1
     xvst VX2, X, 0 * SIZE
     xvst VX3, X, 4 * SIZE
     addi.d X, X, 8 * SIZE
 #else
     xvld VX1, X, 8 * SIZE
-    xvpickev.w x1, VX1, VX0
-    xvpickod.w x2, VX1, VX0
-    xvfmul.s VX0, VXAI, x2
-    xvfmsub.s x3, VXAR, x1, VX0
-    xvfmul.s VX1, VXAI, x1
-    xvfmadd.s x4, VXAR, x2, VX1
-    xvilvl.w VX2, x4 ,x3
-    xvilvh.w VX3, x4, x3
+    xvfmul.s T0, VX0, VXAR
+    xvfmul.s T1, VX1, VXAR
+    xvperm.w S0, VX0, IDXV
+    xvperm.w S1, VX1, IDXV
+    xvfmadd.s VX2, S0, VNAI, T0
+    xvfmadd.s VX3, S1, VNAI, T1
     xvst VX2, X, 0 * SIZE
     xvst VX3, X, 8 * SIZE
     addi.d X, X, 16 * SIZE
