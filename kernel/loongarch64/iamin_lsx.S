@@ -24,423 +24,289 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-
 #define ASSEMBLER
 
 #include "common.h"
 
-#define N $r4
-#define X $r5
-#define INCX $r6
-#define I $r12
-#define t1 $r13
-#define t2 $r15
-#define t3 $r18
-#define t4 $r16
-#define i0 $r17
-#define i1 $r14
-#define TEMP $r19
-#define x1 $vr9
-#define x2 $vr10
-#define x3 $vr11
-#define x4 $vr12
-#define VX0 $vr13
-#define VX1 $vr14
-#define VM0 $vr15
-#define VM1 $vr16
+/**********************************************************************/
+/* scalar registers */
+#define N	$r4		/* vector length (also return value) */
+#define X	$r5		/* "X" vector address                */
+#define INCX	$r6		/* "X" stride (bytes, after scaling) */
+#define I	$r12		/* vector loop counter               */
+#define J	$r13		/* scalar remainder counter          */
+#define Z	$r14		/* 1-based element index cursor      */
+#define T0	$r15
+#define INDEX	$r16		/* index of min value                */
+#define X0	$r17		/* original X pointer                */
+#define T1	$r18
+#define TSZ	$r19		/* bytes per real element            */
+
+#define MINF	$f20		/* running minimum                   */
+#define FA	$f17		/* caller-saved and no vector uses $vr17 */
+
+/* vector registers ($xrN aliases $vrN low half) */
+#define V1	$vr1
+#define V2	$vr2
+#define V3	$vr3
+#define V4	$vr4
+#define V5	$vr5
+#define V6	$vr6
+#define V7	$vr7
+#define V8	$vr8
+#define V9	$vr9
+#define V10	$vr10
+#define V11	$vr11
+#define V12	$vr12
+#define V13	$vr13
+#define V14	$vr14
+#define V15	$vr15
+#define V16	$vr16
+#define VT0	$vr21		/* tree temps, never raw operands   */
+#define VT1	$vr22
+#define VT2	$vr23
+
 #ifdef DOUBLE
-#define VINC2 $vr17
-#define VINC4 $vr18
+#define FLD	fld.d
+#define FABS	fabs.d
+#define FADD	fadd.d
+#define FCLT	fcmp.clt.d
+#define FCEQ	fcmp.ceq.d
+#define FSEL	fsel
+#define VMIN	vfmin.d
+#define ABSV	vbitclri.d
+#define ABSI	63
+#define REPL	vreplvei.d
+#define BLKSC	$f9	/* = $vr9 low lane; used in scalar ops only */
+
 #else
-#define VINC4 $vr17
-#define VINC8 $vr18
+#define FLD	fld.s
+#define FABS	fabs.s
+#define FADD	fadd.s
+#define FCLT	fcmp.clt.s
+#define FCEQ	fcmp.ceq.s
+#define FSEL	fsel
+#define VMIN	vfmin.s
+#define ABSV	vbitclri.w
+#define ABSI	31
+#define REPL	vreplvei.w
+#define BLKSC	$f9	/* = $vr9 low lane; used in scalar ops only */
 #endif
-#define VI0 $vr20
-#define VI1 $vr21
-#define VI2 $vr22
-#define VI3 $vr8
-#define VI4 $vr19
-#define VT0 $vr23
 
-    PROLOGUE
-    li.d  i0, 0
-    bge $r0, N, .L999
-    bge $r0, INCX, .L999
-    li.d TEMP, 1
-    slli.d TEMP, TEMP, BASE_SHIFT
-    slli.d INCX, INCX, BASE_SHIFT
-    bne INCX, TEMP, .L20
-    vld VM0, X, 0
-#ifdef DOUBLE
-    addi.d  i0, i0, 1
-    srai.d   I, N, 3
-    bge $r0, I, .L21
+/* 32 real elements per vector iteration:
+ *   double : 16 vld (2 per 16B register)  -> 16 magnitudes
+ *   single :  8 vld (4 per 16B register)  ->  8 magnitudes          */
+#define BLK_ELEMS	32
+#define REM_MASK	31
 
-    slli.d i0, i0, 1 //2
-    vreplgr2vr.d VINC2, i0
-    slli.d i0, i0, 1 //4
-    vreplgr2vr.d VINC4, i0
-    addi.d i0, i0, -7
-    vinsgr2vr.d VI1, i0, 0 //initialize the index value for vectorization
-    addi.d i0, i0, 1
-    vinsgr2vr.d VI1, i0, 1
-    addi.d i0, i0, 3
-    vinsgr2vr.d VI0, i0, 0 //1
-    addi.d i0, i0, 1
-    vinsgr2vr.d VI0, i0, 1 //2
-#else
-    addi.w i0, i0, 1
-    srai.d  I, N, 3
-    bge   $r0, I, .L21
+/**********************************************************************/
+/* SCALAR_STEP: process the element at (X, Z) against the running
+ * max.  Z must hold the 1-based index of this element; X is advanced
+ * by INCX, Z is NOT modified. */
+	.macro	SCALAR_STEP
+	FLD	FA, X, 0
+	add.d	X, X, INCX
+	FABS	FA, FA
+	FCLT	$fcc0, FA, MINF
+	FSEL	MINF, MINF, FA, $fcc0
+	bceqz	$fcc0, 9f
+	move	INDEX, Z
+9:
+	.endm
 
-    slli.w i0, i0, 2 //4
-    vreplgr2vr.w VINC4, i0
-    slli.w i0, i0, 1 //8
-    vreplgr2vr.w VINC8, i0
-    addi.w i0, i0, -15
-    vinsgr2vr.w VI1, i0, 0 //initialize the index value for vectorization
-    addi.w i0, i0, 1
-    vinsgr2vr.w VI1, i0, 1
-    addi.w i0, i0, 1
-    vinsgr2vr.w VI1, i0, 2
-    addi.w i0, i0, 1
-    vinsgr2vr.w VI1, i0, 3
-    addi.w i0, i0, 5
-    vinsgr2vr.w VI0, i0, 0 //1
-    addi.w i0, i0, 1
-    vinsgr2vr.w VI0, i0, 1 //2
-    addi.w i0, i0, 1
-    vinsgr2vr.w VI0, i0, 2 //3
-    addi.w i0, i0, 1
-    vinsgr2vr.w VI0, i0, 3 //4
-#endif
-    .align 3
+/**********************************************************************/
+	PROLOGUE
+	PROFCODE
 
+	li.d	INDEX, 0
+	bge	$r0, N, .L999
+	bge	$r0, INCX, .L999
+
+	slli.d	INCX, INCX, BASE_SHIFT		/* INCX in bytes */
+	li.d	T0, 1
+	slli.d	TSZ, T0, BASE_SHIFT		/* bytes per element */
+
+	move	X0, X
+
+	/* INIT: element 1 (1-based) is the initial minimum */
+	addi.d	Z, $r0, 1			/* Z = 1 */
+	move	INDEX, Z
+	FLD	FA, X, 0
+	add.d	X, X, INCX
+	FABS	FA, FA
+	fmov.d	MINF, FA
+	addi.d	N, N, -1			/* remaining = n - 1 */
+	bge	$r0, N, .L999r
+
+	bne	INCX, TSZ, .L60			/* INCX != 1 -> scalar path */
+
+	/* peel until X is 16-byte aligned (vld natural alignment) */
+1:	andi	T0, X, 15
+	beqz	T0, 2f
+	addi.d	Z, Z, 1
+	SCALAR_STEP
+	addi.d	N, N, -1
+	bge	$r0, N, .L999r
+	b	1b
+2:
+	/* contiguous: vector block loop, 64 elements per iteration */
+	srai.d	I, N, 5				/* full 32-element blocks */
+	addi.d	Z, Z, 1				/* next element index     */
+	beqz	I, .L25
+	.align	3
 .L10:
-    vld VX0, X, 0 * SIZE
 #ifdef DOUBLE
-    vadd.d VI1, VI1, VINC4
-    vld VX1, X, 2 * SIZE
-    vadd.d VI2, VI1, VINC2
-    vfmina.d x1, VX0, VX1
-    vfcmp.ceq.d VT0, VX0, x1
-    vbitsel.v x2, VI2, VI1, VT0
-    vld VX0, X, 4 * SIZE
-    vadd.d VI1, VI2, VINC2
-    vld VX1, X, 6 * SIZE
-    vadd.d VI2, VI1, VINC2
-    vfmina.d x3, VX0, VX1
-    vfcmp.ceq.d VT0, VX0, x3
-    vbitsel.v x4, VI2, VI1, VT0
-    vfmina.d x3, x1, x3
-    vfcmp.ceq.d VT0, x1, x3
-    addi.d I, I, -1
-    vbitsel.v x2, x4, x2, VT0
-    vfmina.d VM1, VM0, x3
+	/* 16 registers x 2 doubles = 32 elements */
+	vld	V1, X, 0
+	vld	V2, X, 16
+	vld	V3, X, 32
+	vld	V4, X, 48
+	vld	V5, X, 64
+	vld	V6, X, 80
+	vld	V7, X, 96
+	vld	V8, X, 112
+	vld	V9, X, 128
+	vld	V10, X, 144
+	vld	V11, X, 160
+	vld	V12, X, 176
+	vld	V13, X, 192
+	vld	V14, X, 208
+	vld	V15, X, 224
+	vld	V16, X, 240
+	addi.d	X, X, 256
+	ABSV	V1, V1, ABSI
+	ABSV	V2, V2, ABSI
+	ABSV	V3, V3, ABSI
+	ABSV	V4, V4, ABSI
+	ABSV	V5, V5, ABSI
+	ABSV	V6, V6, ABSI
+	ABSV	V7, V7, ABSI
+	ABSV	V8, V8, ABSI
+	ABSV	V9, V9, ABSI
+	ABSV	V10, V10, ABSI
+	ABSV	V11, V11, ABSI
+	ABSV	V12, V12, ABSI
+	ABSV	V13, V13, ABSI
+	ABSV	V14, V14, ABSI
+	ABSV	V15, V15, ABSI
+	ABSV	V16, V16, ABSI
+	/* tree-reduce 16 registers to one block min */
+	VMIN	V1, V1, V2
+	VMIN	V3, V3, V4
+	VMIN	V5, V5, V6
+	VMIN	V7, V7, V8
+	VMIN	V9, V9, V10
+	VMIN	V11, V11, V12
+	VMIN	V13, V13, V14
+	VMIN	V15, V15, V16
+	VMIN	V1, V1, V3
+	VMIN	V5, V5, V7
+	VMIN	V9, V9, V11
+	VMIN	V13, V13, V15
+	VMIN	V1, V1, V5
+	VMIN	V9, V9, V13
+	VMIN	V1, V1, V9
 #else
-    vadd.w VI1, VI1, VINC8
-    vld VX1, X, 4 * SIZE
-    vadd.w VI2, VI1, VINC4
-    vfmina.s VM1, VX0, VX1
-    vfcmp.ceq.s VT0, VX0, VM1
-    addi.d I, I, -1
-    vbitsel.v x2, VI2, VI1, VT0
-    vfmina.s VM1, VM0, VM1
+	/* 8 registers x 4 floats = 32 elements */
+	vld	V1, X, 0
+	vld	V2, X, 16
+	vld	V3, X, 32
+	vld	V4, X, 48
+	vld	V5, X, 64
+	vld	V6, X, 80
+	vld	V7, X, 96
+	vld	V8, X, 112
+	addi.d	X, X, 128
+	ABSV	V1, V1, ABSI
+	ABSV	V2, V2, ABSI
+	ABSV	V3, V3, ABSI
+	ABSV	V4, V4, ABSI
+	ABSV	V5, V5, ABSI
+	ABSV	V6, V6, ABSI
+	ABSV	V7, V7, ABSI
+	ABSV	V8, V8, ABSI
+	/* tree-reduce 8 registers to one block min */
+	VMIN	V1, V1, V2
+	VMIN	V3, V3, V4
+	VMIN	V5, V5, V6
+	VMIN	V7, V7, V8
+	VMIN	V1, V1, V3
+	VMIN	V5, V5, V7
+	VMIN	V1, V1, V5
 #endif
-    VCMPEQ VT0, VM0, VM1
-    addi.d X, X, 8 * SIZE
-    vbitsel.v VM0, VM1, VM0, VT0
-    vbitsel.v VI0, x2, VI0, VT0
-    blt $r0, I, .L10
-    .align 3
+	/* horizontal: fold the lanes down to lane 0 (128-bit regs) */
+#ifdef DOUBLE
+	/* two lanes: replicate lane 1 and fold */
+	REPL	VT0, V1, 1
+	VMIN	$vr9, V1, VT0			/* block min in lane 0 */
+#else
+	/* Four lanes.  Every lane is replicated out of the ORIGINAL
+	 * register before any vfmin touches it: a vfmin that reads the
+	 * accumulator also writes all of its lanes, so folding lane 2 in
+	 * first would destroy the lane 3 value still to be merged. */
+	REPL	VT0, V1, 1
+	REPL	VT1, V1, 2
+	REPL	VT2, V1, 3
+	VMIN	V1, V1, VT0
+	VMIN	V1, V1, VT1
+	VMIN	$vr9, V1, VT2			/* block min in lane 0 */
+#endif
+	FCLT	$fcc0, BLKSC, MINF		/* block min < running min ? */
+	FSEL	MINF, MINF, BLKSC, $fcc0	/* strict smaller -> update  */
+	bceqz	$fcc0, .Lcont
+	move	INDEX, Z			/* INDEX = block start       */
+.Lcont:
+	addi.d	Z, Z, BLK_ELEMS
+	addi.d	I, I, -1
+	bnez	I, .L10
 
+	/* FALLTHROUGH: rescan the winning block, locate exact position */
 .L15:
-#ifdef DOUBLE
-    vreplvei.d VI1, VI0, 0
-    vreplvei.d VI2, VI0, 1
-    vreplvei.d  x1, VM0, 0
-    vreplvei.d  x2, VM0, 1
-    fcmp.ceq.d $fcc0, $f10, $f9
-    bceqz $fcc0, .L26
-    vfcmp.clt.d VT0, VI1, VI2
-    vbitsel.v   VI0, VI2, VI1, VT0
-    b .L27
-#else
-    vreplvei.w VI1, VI0, 0
-    vreplvei.w VI2, VI0, 1
-    vreplvei.w VI3, VI0, 2
-    vreplvei.w VI4, VI0, 3
-    vreplvei.w  x1, VM0, 0
-    vreplvei.w  x2, VM0, 1
-    vreplvei.w  x3, VM0, 2
-    vreplvei.w  x4, VM0, 3
-    vfmina.s   VM1, x1, x2
-    vfcmp.ceq.s  VT0, VM1, x1
-    vbitsel.v  VINC4, VI2, VI1, VT0
-    vfmina.s     VM0,  x3, x4
-    vfcmp.ceq.s  VT0,  x3, VM0
-    vbitsel.v  VINC8, VI4, VI3, VT0
-    vfmina.s     VM0, VM0, VM1
-    vfcmp.ceq.s  VT0, VM0, VM1
-    vbitsel.v    VI0, VINC8, VINC4, VT0
-    fcmp.ceq.d $fcc0, $f15, $f9
-    bceqz $fcc0, .L26
-    vfcmp.clt.s VT0, VI1, VI0
-    vbitsel.v   VI0, VI0, VI1, VT0
-    b .L26
-#endif
-    .align 3
+	addi.d	T1, INDEX, -1
+	mul.d	T1, T1, TSZ
+	add.d	X, X0, T1			/* X = winning block start   */
+	move	T0, $r0
+	.align	3
+.L16:
+	addi.d	T0, T0, 1
+	addi.d	T1, T0, -BLK_ELEMS
+	bge	T1, $r0, .L17			/* safety bound              */
+	FLD	FA, X, 0
+	add.d	X, X, TSZ
+	FABS	FA, FA
+	FCEQ	$fcc0, FA, MINF			/* == global min ?           */
+	bceqz	$fcc0, .L16			/* not yet -> keep scanning  */
+.L17:
+	addi.d	T0, T0, -1
+	add.d	INDEX, INDEX, T0		/* INDEX += block offset     */
+	addi.d	T1, Z, -1
+	mul.d	T1, T1, TSZ
+	add.d	X, X0, T1			/* X = first unconsumed elem */
 
-.L20: // INCX!=1
-    move TEMP, X
-#ifdef DOUBLE
-    addi.d    i0,   i0, 1
-    ld.d      t1, TEMP, 0 * SIZE
-    add.d   TEMP, TEMP, INCX
-    vinsgr2vr.d    VM0, t1, 0
-    srai.d     I,    N, 3
-    bge $r0,   I, .L21
-    ld.d      t2, TEMP, 0 * SIZE
-    add.d   TEMP, TEMP, INCX
-
-    vinsgr2vr.d VM0, t2, 1
-    slli.d i0, i0, 1 //2
-    vreplgr2vr.d VINC2, i0
-    slli.d i0, i0, 1 //4
-    vreplgr2vr.d VINC4, i0
-    addi.d i0, i0, -7
-    vinsgr2vr.d VI1, i0, 0 //initialize the index value for vectorization
-    addi.d i0, i0, 1
-    vinsgr2vr.d VI1, i0, 1
-    addi.d i0, i0, 3
-    vinsgr2vr.d VI0, i0, 0 //1
-    addi.d i0, i0, 1
-    vinsgr2vr.d VI0, i0, 1 //2
-#else
-    addi.w    i0,   i0, 1
-    ld.w      t1, TEMP, 0 * SIZE
-    add.d   TEMP, TEMP, INCX
-    vinsgr2vr.w    VM0, t1, 0
-    srai.d     I,    N, 3
-    bge $r0,   I, .L21
-    ld.w      t2, TEMP, 0 * SIZE
-    add.d   TEMP, TEMP, INCX
-
-    vreplvei.d VI1, VI0, 0
-    ld.w t3, TEMP, 0 * SIZE
-    add.d TEMP, TEMP, INCX
-    ld.w t4, TEMP, 0 * SIZE
-    add.d TEMP, TEMP, INCX
-    vinsgr2vr.w VM0, t2, 1
-    vinsgr2vr.w VM0, t3, 2
-    vinsgr2vr.w VM0, t4, 3
-    slli.w i0, i0, 2 //4
-    vreplgr2vr.w VINC4, i0
-    slli.w i0, i0, 1 //8
-    vreplgr2vr.w VINC8, i0
-    addi.w i0, i0, -15
-    vinsgr2vr.w VI1, i0, 0 //initialize the index value for vectorization
-    addi.w i0, i0, 1
-    vinsgr2vr.w VI1, i0, 1
-    addi.w i0, i0, 1
-    vinsgr2vr.w VI1, i0, 2
-    addi.w i0, i0, 1
-    vinsgr2vr.w VI1, i0, 3
-    addi.w i0, i0, 5
-    vinsgr2vr.w VI0, i0, 0 //1
-    addi.w i0, i0, 1
-    vinsgr2vr.w VI0, i0, 1 //2
-    addi.w i0, i0, 1
-    vinsgr2vr.w VI0, i0, 2 //3
-    addi.w i0, i0, 1
-    vinsgr2vr.w VI0, i0, 3 //4
-#endif
-    .align 3
-
-.L24:
-#ifdef DOUBLE
-    ld.d  t1, X, 0 * SIZE
-    add.d X,  X, INCX
-    ld.d  t2, X, 0 * SIZE
-    add.d X,  X, INCX
-
-    vinsgr2vr.d VX0, t1, 0
-    vinsgr2vr.d VX0, t2, 1
-    vadd.d VI1, VI1, VINC4
-    ld.d t1, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.d t2, X, 0 * SIZE
-    add.d X, X, INCX
-    vinsgr2vr.d VX1, t1, 0
-    vinsgr2vr.d VX1, t2, 1
-    vadd.d VI2, VI1, VINC2
-    vfmina.d x1, VX0, VX1
-    vfcmp.ceq.d VT0, VX0, x1
-    vbitsel.v x2, VI2, VI1, VT0
-    ld.d t1, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.d t2, X, 0 * SIZE
-    add.d X, X, INCX
-    vinsgr2vr.d VX0, t1, 0
-    vinsgr2vr.d VX0, t2, 1
-    vadd.d VI1, VI2, VINC2
-    ld.d t1, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.d t2, X, 0 * SIZE
-    add.d X, X, INCX
-    vinsgr2vr.d VX1, t1, 0
-    vinsgr2vr.d VX1, t2, 1
-    vadd.d VI2, VI1, VINC2
-    vfmina.d x3, VX0, VX1
-    vfcmp.ceq.d VT0, VX0, x3
-    vbitsel.v x4, VI2, VI1, VT0
-    vfmina.d x3, x1, x3
-    vfcmp.ceq.d VT0, x1, x3
-    addi.d I, I, -1
-    vbitsel.v x2, x4, x2, VT0
-    vfmina.d VM1, VM0, x3
-    vbitsel.v VM0, VM1, VM0, VT0
-    vfcmp.ceq.d VT0, VM0, VM1
-    vbitsel.v VI0, x2, VI0, VT0
-#else
-    ld.w  t1, X, 0 * SIZE
-    add.d X,  X, INCX
-    ld.w  t2, X, 0 * SIZE
-    add.d X,  X, INCX
-
-    ld.w t3, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.w t4, X, 0 * SIZE
-    add.d X, X, INCX
-    vinsgr2vr.w VX0, t1, 0
-    vinsgr2vr.w VX0, t2, 1
-    vinsgr2vr.w VX0, t3, 2
-    vinsgr2vr.w VX0, t4, 3
-    vadd.w VI1, VI1, VINC8
-    ld.w t1, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.w t2, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.w t3, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.w t4, X, 0 * SIZE
-    add.d X, X, INCX
-    vinsgr2vr.w VX1, t1, 0
-    vinsgr2vr.w VX1, t2, 1
-    vinsgr2vr.w VX1, t3, 2
-    vinsgr2vr.w VX1, t4, 3
-    vadd.w VI2, VI1, VINC4
-    vfmina.s VM1, VX0, VX1
-    vfcmp.ceq.s VT0, VX0, VM1
-    vbitsel.v VI2, VI2, VI1, VT0
-    vfmina.s VM1, VM0, VM1
-    vfcmp.ceq.s VT0, VM0, VM1
-    addi.d I, I, -1
-    vbitsel.v VM0, VM1, VM0, VT0
-    vbitsel.v VI0, VI2, VI0, VT0
-#endif
-    blt $r0, I, .L24
-    .align 3
-
+	/* scalar remainder (elements after the winning block) */
 .L25:
-#ifdef DOUBLE
-    vreplvei.d VI1, VI0, 0
-    vreplvei.d VI2, VI0, 1
-    vreplvei.d  x1, VM0, 0
-    vreplvei.d  x2, VM0, 1
-    fcmp.ceq.d $fcc0, $f10, $f9
-    bceqz $fcc0, .L26
-    vfcmp.clt.d VT0, VI1, VI2
-    vbitsel.v VI0, VI2, VI1, VT0
-    b .L27
-#else
-    vreplvei.w VI1, VI0, 0
-    vreplvei.w VI2, VI0, 1
-    vreplvei.w VI3, VI0, 2
-    vreplvei.w VI4, VI0, 3
-    vreplvei.w x1, VM0, 0
-    vreplvei.w x2, VM0, 1
-    vreplvei.w x3, VM0, 2
-    vreplvei.w x4, VM0, 3
-    vfmina.s VM1, x1, x2
-    vfcmp.ceq.s VT0, VM1, x1
-    vbitsel.v VINC4, VI2, VI1, VT0
-    vfmina.s VM0, x3, x4
-    vfcmp.ceq.s VT0, x3, VM0
-    vbitsel.v VINC8, VI4, VI3, VT0
-    vfmina.s VM0, VM0, VM1
-    vfcmp.ceq.s VT0, VM0, VM1
-    vbitsel.v VI0, VINC8, VINC4, VT0
-    fcmp.ceq.d $fcc0, $f15, $f9
-    bceqz $fcc0, .L26
-    vfcmp.clt.s VT0, VI1, VI0
-    vbitsel.v VI0, VI0, VI1, VT0
-#endif
-    .align 3
+	andi	J, N, REM_MASK
+	beqz	J, .L999r
+	.align	3
+.Lrem:
+	SCALAR_STEP
+	addi.d	Z, Z, 1
+	addi.d	J, J, -1
+	bnez	J, .Lrem
+	b	.L999r
 
-.L26:
-#ifdef DOUBLE
-    vfmina.d VM0, x1, x2
-    vfcmp.ceq.d VT0, x1, VM0
-    vbitsel.v VI0, VI2, VI1, VT0
-    .align 3
+	/* INCX != 1: purely scalar, reuses the remainder loop */
+	.align	3
+.L60:
+	addi.d	Z, Z, 1				/* next element index = 2    */
+	move	J, N
+	beqz	J, .L999r
+	b	.Lrem
 
-.L27:
-    movfr2gr.d i0, $f20
-
-#else
-    fcmp.ceq.d $fcc0, $f15, $f10
-    bceqz $fcc0, .L27
-    vfcmp.clt.s VT0, VI2, VI0
-    vbitsel.v VI0, VI0, VI2, VT0
-    .align 3
-
-.L27:
-    fcmp.ceq.d $fcc0, $f15, $f11
-    bceqz $fcc0, .L28
-    vfcmp.clt.s VT0, VI3, VI0
-    vbitsel.v VI0, VI0, VI3, VT0
-    .align 3
-
-.L28:
-    fcmp.ceq.d $fcc0, $f15, $f12
-    bceqz $fcc0, .L29
-    vfcmp.clt.s VT0, VI4, VI0
-    vbitsel.v VI0, VI0, VI4, VT0
-    .align 3
-
-.L29:
-    movfr2gr.s i0, $f20
-#endif
-    .align 3
-
-.L21: //N<8
-    andi I, N, 7
-    bge $r0, I, .L999
-    srai.d i1, N, 3
-    slli.d i1, i1, 3
-    addi.d i1, i1, 1 //current index
-    movgr2fr.d $f21, i1
-    movgr2fr.d $f20, i0
-    .align 3
-
-.L22:
-    LD $f9, X, 0
-    addi.d I, I, -1
-    VFMINA VM1, x1, VM0
-    VCMPEQ VT0, VM0, VM1
-    add.d  X, X, INCX
-    vbitsel.v VM0, VM1, VM0, VT0
-    vbitsel.v VI0, VI1, VI0, VT0
-    addi.d i1, i1, 1
-    MTC $f21, i1
-    blt $r0, I, .L22
-    movfr2gr.s i0, $f20
-    .align 3
-
+.L999r:
+	move	N, INDEX
+	jirl	$r0, $r1, 0x0		/* return (EPILOGUE is only .end)  */
 .L999:
-    move $r4, $r17
-    jirl $r0, $r1, 0x0
-    .align 3
-
-    EPILOGUE
+	move	N, $r0			/* n <= 0 or incx <= 0 -> 0 */
+	jirl	$r0, $r1, 0x0
+	EPILOGUE
