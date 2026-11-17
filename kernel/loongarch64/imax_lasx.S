@@ -24,510 +24,257 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
+
 #define ASSEMBLER
 
 #include "common.h"
 
-#define N $r4
-#define X $r5
-#define INCX $r6
-#define I $r12
-#define t1 $r13
-#define t2 $r15
-#define t3 $r18
-#define t4 $r16
-#define i0 $r17
-#define i1 $r14
-#define TEMP $r19
-#define x1 $xr9
-#define x2 $xr10
-#define x3 $xr11
-#define x4 $xr12
-#define VX0 $xr13
-#define VX1 $xr14
-#define VM0 $xr15
-#define VM1 $xr16
-#define VINC4 $xr17
-#define VINC8 $xr18
-#define VI0 $xr20
-#define VI1 $xr21
-#define VI2 $xr22
-#define VI3 $xr8
-#define VI4 $xr19
-#define VT0 $xr23
+/**********************************************************************/
+/* scalar registers */
+#define N	$r4		/* vector length (also return value) */
+#define X	$r5		/* "X" vector address                */
+#define INCX	$r6		/* "X" stride (bytes, after scaling) */
+#define I	$r12		/* vector loop counter               */
+#define J	$r13		/* scalar remainder counter          */
+#define Z	$r14		/* 1-based element index cursor      */
+#define T0	$r15
+#define INDEX	$r16		/* index of max value                */
+#define X0	$r17		/* original X pointer                */
+#define T1	$r18
+#define TSZ	$r19		/* bytes per real element            */
 
-    PROLOGUE
-    li.d  i0, 0
-    bge $r0, N, .L999
-    bge $r0, INCX, .L999
-    li.d TEMP, 1
-    slli.d TEMP, TEMP, BASE_SHIFT
-    slli.d INCX, INCX, BASE_SHIFT
-    bne INCX, TEMP, .L20
-    xvld VM0, X, 0
+#define MAXF	$f20		/* running maximum                   */
+#define FA	$f10
+
+/* vector registers ($xrN aliases $vrN low half) */
+#define V1	$xr1
+#define V2	$xr2
+#define V3	$xr3
+#define V4	$xr4
+#define V5	$xr5
+#define V6	$xr6
+#define V7	$xr7
+#define V8	$xr8
+#define V9	$xr9
+#define V10	$xr10
+#define V11	$xr11
+#define V12	$xr12
+#define V13	$xr13
+#define V14	$xr14
+#define V15	$xr15
+#define V16	$xr16
+#define VT0	$xr21		/* tree temps, never raw operands   */
+#define VT1	$xr22
+
 #ifdef DOUBLE
-    addi.d i0, i0, 1
-    srai.d I, N, 3
-    bge $r0, I, .L21
-    slli.d i0, i0, 2 //4
-    xvreplgr2vr.d VINC4, i0
-    slli.d i0, i0, 1 //8
-    xvreplgr2vr.d VINC8, i0
-    addi.d i0, i0, -15
-    xvinsgr2vr.d VI1, i0, 0 //initialize the index value for vectorization
-    addi.d i0, i0, 1
-    xvinsgr2vr.d VI1, i0, 1
-    addi.d i0, i0, 1
-    xvinsgr2vr.d VI1, i0, 2
-    addi.d i0, i0, 1
-    xvinsgr2vr.d VI1, i0, 3
-    addi.d i0, i0, 5
-    xvinsgr2vr.d VI0, i0, 0 //1
-    addi.d i0, i0, 1
-    xvinsgr2vr.d VI0, i0, 1 //2
-    addi.d i0, i0, 1
-    xvinsgr2vr.d VI0, i0, 2 //3
-    addi.d i0, i0, 1
-    xvinsgr2vr.d VI0, i0, 3 //4
+#define FLD	fld.d
+#define FADD	fadd.d
+#define FCLT	fcmp.clt.d
+#define FCEQ	fcmp.ceq.d
+#define FSEL	fsel
+#define VMAX	xvfmax.d
+#define PICK	xvpickev.d
+#define PICKO	xvpickod.d
+#define PERMI	xvpermi.d
+#define BLKSC	$f9	/* = $xr9 low lane; used in scalar ops only */
+
 #else
-    addi.w i0, i0, 1
-    srai.d I, N, 3
-    bge $r0, I, .L21
-    slli.w i0, i0, 3 //8
-    xvreplgr2vr.w VINC8, i0
-    addi.w i0, i0, -15
-    xvinsgr2vr.w VI1, i0, 0 //initialize the index value for vectorization
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI1, i0, 1
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI1, i0, 2
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI1, i0, 3
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI1, i0, 4
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI1, i0, 5
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI1, i0, 6
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI1, i0, 7
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 0 //1
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 1 //2
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 2 //3
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 3 //4
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 4 //5
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 5 //6
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 6 //7
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 7 //8
+#define FLD	fld.s
+#define FADD	fadd.s
+#define FCLT	fcmp.clt.s
+#define FCEQ	fcmp.ceq.s
+#define FSEL	fsel
+#define VMAX	xvfmax.s
+#define PICK	xvpickev.w
+#define PICKO	xvpickod.w
+#define PERMI	xvpermi.d
+#define BLKSC	$f1
 #endif
 
-    .align 3
+/* 64 real elements per vector iteration:
+ *   double : 16 xvld (4 per 32B register)  -> 16 magnitudes
+ *   single :  8 xvld (8 per 32B register)  ->  8 magnitudes          */
+#define BLK_ELEMS	64
+#define REM_MASK	63
 
+/**********************************************************************/
+/* SCALAR_STEP: process the element at (X, Z) against the running
+ * max.  Z must hold the 1-based index of this element; X is advanced
+ * by INCX, Z is NOT modified. */
+	.macro	SCALAR_STEP
+	FLD	FA, X, 0
+	add.d	X, X, INCX
+	FCLT	$fcc0, MAXF, FA
+	FSEL	MAXF, MAXF, FA, $fcc0
+	bceqz	$fcc0, 9f
+	move	INDEX, Z
+9:
+	.endm
+
+/**********************************************************************/
+	PROLOGUE
+	PROFCODE
+
+	li.d	INDEX, 0
+	bge	$r0, N, .L999
+	bge	$r0, INCX, .L999
+
+	slli.d	INCX, INCX, BASE_SHIFT		/* INCX in bytes */
+	li.d	T0, 1
+	slli.d	TSZ, T0, BASE_SHIFT		/* bytes per element */
+
+	move	X0, X
+
+	/* INIT: element 1 (1-based) is the initial maximum */
+	addi.d	Z, $r0, 1			/* Z = 1 */
+	move	INDEX, Z
+	FLD	FA, X, 0
+	add.d	X, X, INCX
+	fmov.d	MAXF, FA
+	addi.d	N, N, -1			/* remaining = n - 1 */
+	bge	$r0, N, .L999r
+
+	bne	INCX, TSZ, .L60			/* INCX != 1 -> scalar path */
+
+	/* peel until X is 32-byte aligned (xvld natural alignment) */
+1:	andi	T0, X, 31
+	beqz	T0, 2f
+	addi.d	Z, Z, 1
+	SCALAR_STEP
+	addi.d	N, N, -1
+	bge	$r0, N, .L999r
+	b	1b
+2:
+	/* contiguous: vector block loop, 64 elements per iteration */
+	srai.d	I, N, 6				/* full 64-element blocks */
+	addi.d	Z, Z, 1				/* next element index     */
+	beqz	I, .L25
+	.align	3
 .L10:
-    xvld VX0, X, 0 * SIZE
 #ifdef DOUBLE
-    xvadd.d VI1, VI1, VINC8
-    xvld VX1, X, 4 * SIZE
-    xvadd.d VI2, VI1, VINC4
-    xvfcmp.clt.d VT0, VX0, VX1
-    addi.d I, I, -1
-    xvbitsel.v VM1, VX0, VX1, VT0
-    xvbitsel.v VI2, VI1, VI2, VT0
-    xvfcmp.clt.d VT0, VM0, VM1
-    addi.d X, X, 8 * SIZE
-    xvbitsel.v VM0, VM0, VM1, VT0
-    xvbitsel.v VI0, VI0, VI2, VT0
+	/* 16 registers x 4 doubles = 64 elements */
+	xvld	V1, X, 0
+	xvld	V2, X, 32
+	xvld	V3, X, 64
+	xvld	V4, X, 96
+	xvld	V5, X, 128
+	xvld	V6, X, 160
+	xvld	V7, X, 192
+	xvld	V8, X, 224
+	xvld	V9, X, 256
+	xvld	V10, X, 288
+	xvld	V11, X, 320
+	xvld	V12, X, 352
+	xvld	V13, X, 384
+	xvld	V14, X, 416
+	xvld	V15, X, 448
+	xvld	V16, X, 480
+	addi.d	X, X, 512
+	/* tree-reduce 16 registers to one block max */
+	VMAX	V1, V1, V2
+	VMAX	V3, V3, V4
+	VMAX	V5, V5, V6
+	VMAX	V7, V7, V8
+	VMAX	V9, V9, V10
+	VMAX	V11, V11, V12
+	VMAX	V13, V13, V14
+	VMAX	V15, V15, V16
+	VMAX	V1, V1, V3
+	VMAX	V5, V5, V7
+	VMAX	V9, V9, V11
+	VMAX	V13, V13, V15
+	VMAX	V1, V1, V5
+	VMAX	V9, V9, V13
+	VMAX	V1, V1, V9
 #else
-    xvadd.w VI1, VI1, VINC8
-    xvfcmp.clt.s VT0, VM0, VX0
-    addi.d I, I, -1
-    xvbitsel.v VM0, VM0, VX0, VT0
-    xvbitsel.v VI0, VI0, VI1, VT0
-    addi.d X, X, 8 * SIZE
+	/* 8 registers x 8 floats = 64 elements */
+	xvld	V1, X, 0
+	xvld	V2, X, 32
+	xvld	V3, X, 64
+	xvld	V4, X, 96
+	xvld	V5, X, 128
+	xvld	V6, X, 160
+	xvld	V7, X, 192
+	xvld	V8, X, 224
+	addi.d	X, X, 256
+	/* tree-reduce 8 registers to one block max */
+	VMAX	V1, V1, V2
+	VMAX	V3, V3, V4
+	VMAX	V5, V5, V6
+	VMAX	V7, V7, V8
+	VMAX	V1, V1, V3
+	VMAX	V5, V5, V7
+	VMAX	V1, V1, V5
 #endif
-    blt $r0, I, .L10
-    .align 3
+	/* horizontal: per-half pair-max, then cross-half via xvpermi.d */
+	PICK	VT0, V1, V1
+	PICKO	VT1, V1, V1
+	VMAX	V1, VT0, VT1
+#ifdef DOUBLE
+	PERMI	VT0, V1, 10			/* d0 = high-half winner */
+	VMAX	$xr9, V1, VT0			/* block max             */
+#else
+	PICK	VT0, V1, V1
+	PICKO	VT1, V1, V1
+	VMAX	V1, VT0, VT1
+	PERMI	VT0, V1, 10			/* d0 = high-half winner */
+	VMAX	$xr1, V1, VT0			/* block max             */
+#endif
+	FCLT	$fcc0, MAXF, BLKSC		/* running max < block max ? */
+	FSEL	MAXF, MAXF, BLKSC, $fcc0	/* strict greater -> update  */
+	bceqz	$fcc0, .Lcont
+	move	INDEX, Z			/* INDEX = block start       */
+.Lcont:
+	addi.d	Z, Z, BLK_ELEMS
+	addi.d	I, I, -1
+	bnez	I, .L10
 
+	/* FALLTHROUGH: rescan the winning block, locate exact position */
 .L15:
-#ifdef DOUBLE
-    xvpickve.d VI1, VI0, 0
-    xvpickve.d VI2, VI0, 1
-    xvpickve.d VI3, VI0, 2
-    xvpickve.d VI4, VI0, 3
-    xvpickve.d x1, VM0, 0
-    xvpickve.d x2, VM0, 1
-    xvpickve.d x3, VM0, 2
-    xvpickve.d x4, VM0, 3
-    xvfcmp.clt.d VT0, x1, x2
-#else
-    xvxor.v VX0, VX0, VX0
-    xvor.v VX0, VI0, VX0
-    xvxor.v VX1, VX1, VX1
-    xvor.v VX1, VM0, VX1
-    xvpickve.w VI1, VI0, 0
-    xvpickve.w VI2, VI0, 1
-    xvpickve.w VI3, VI0, 2
-    xvpickve.w VI4, VI0, 3
-    xvpickve.w x1, VM0, 0
-    xvpickve.w x2, VM0, 1
-    xvpickve.w x3, VM0, 2
-    xvpickve.w x4, VM0, 3
-    xvfcmp.clt.s VT0, x1, x2
-#endif
-    xvbitsel.v VM1, x1, x2, VT0
-    xvbitsel.v VINC4, VI1, VI2, VT0
-    XVCMPLT VT0, x3, x4
-    xvbitsel.v VM0, x3, x4, VT0
-    xvbitsel.v VINC8, VI3, VI4, VT0
-    XVCMPLT VT0, VM0, VM1
-    xvbitsel.v VM0, VM0, VM1, VT0
-    xvbitsel.v VI0, VINC8, VINC4, VT0
-    fcmp.ceq.d $fcc0, $f15, $f9
-    bceqz $fcc0, .L26
-    XVCMPLT VT0, VI1, VI0
-    xvbitsel.v VI0, VI0, VI1, VT0
-    b .L26
-    .align 3
+	addi.d	T1, INDEX, -1
+	mul.d	T1, T1, TSZ
+	add.d	X, X0, T1			/* X = winning block start   */
+	move	T0, $r0
+	.align	3
+.L16:
+	addi.d	T0, T0, 1
+	addi.d	T1, T0, -BLK_ELEMS
+	bge	T1, $r0, .L17			/* safety bound              */
+	FLD	FA, X, 0
+	add.d	X, X, TSZ
+	FCEQ	$fcc0, FA, MAXF			/* == global max ?           */
+	bceqz	$fcc0, .L16			/* not yet -> keep scanning  */
+.L17:
+	addi.d	T0, T0, -1
+	add.d	INDEX, INDEX, T0		/* INDEX += block offset     */
+	addi.d	T1, Z, -1
+	mul.d	T1, T1, TSZ
+	add.d	X, X0, T1			/* X = first unconsumed elem */
 
-.L20: // INCX!=1
-    move TEMP, X
-#ifdef DOUBLE
-    addi.d i0, i0, 1
-    ld.d t1, TEMP, 0 * SIZE
-    add.d TEMP, TEMP, INCX
-    xvinsgr2vr.d VM0, t1, 0
-    srai.d I, N, 3
-    bge $r0, I, .L21
-    ld.d t2, TEMP, 0 * SIZE
-#else
-    addi.w i0, i0, 1
-    ld.w t1, TEMP, 0 * SIZE
-    add.d TEMP, TEMP, INCX
-    srai.d I, N, 3
-    bge $r0, I, .L21
-    ld.w t2, TEMP, 0 * SIZE
-    add.d TEMP, TEMP, INCX
-    ld.w t3, TEMP, 0 * SIZE
-    add.d TEMP, TEMP, INCX
-    ld.w t4, TEMP, 0 * SIZE
-    add.d TEMP, TEMP, INCX
-    xvinsgr2vr.w VM0, t1, 0
-    xvinsgr2vr.w VM0, t2, 1
-    xvinsgr2vr.w VM0, t3, 2
-    xvinsgr2vr.w VM0, t4, 3
-    ld.w t1, TEMP, 0 * SIZE
-    add.d TEMP, TEMP, INCX
-    ld.w t2, TEMP, 0 * SIZE
-#endif
-    add.d TEMP, TEMP, INCX
-    ld.d t3, TEMP, 0 * SIZE
-    add.d TEMP, TEMP, INCX
-    ld.d t4, TEMP, 0 * SIZE
-    add.d TEMP, TEMP, INCX
-#ifdef DOUBLE
-    xvinsgr2vr.d VM0, t1, 0
-    xvinsgr2vr.d VM0, t2, 1
-    xvinsgr2vr.d VM0, t3, 2
-    xvinsgr2vr.d VM0, t4, 3
-    slli.d i0, i0, 2 //4
-    xvreplgr2vr.d VINC4, i0
-    slli.d i0, i0, 1 //8
-    xvreplgr2vr.d VINC8, i0
-    addi.d i0, i0, -15
-    xvinsgr2vr.d VI1, i0, 0 //initialize the index value for vectorization
-    addi.d i0, i0, 1
-    xvinsgr2vr.d VI1, i0, 1
-    addi.d i0, i0, 1
-    xvinsgr2vr.d VI1, i0, 2
-    addi.d i0, i0, 1
-    xvinsgr2vr.d VI1, i0, 3
-    addi.d i0, i0, 5
-    xvinsgr2vr.d VI0, i0, 0 //1
-    addi.d i0, i0, 1
-    xvinsgr2vr.d VI0, i0, 1 //2
-    addi.d i0, i0, 1
-    xvinsgr2vr.d VI0, i0, 2 //3
-    addi.d i0, i0, 1
-    xvinsgr2vr.d VI0, i0, 3 //4
-#else
-    xvinsgr2vr.w VM0, t1, 4
-    xvinsgr2vr.w VM0, t2, 5
-    xvinsgr2vr.w VM0, t3, 6
-    xvinsgr2vr.w VM0, t4, 7
-    slli.w i0, i0, 3 //8
-    xvreplgr2vr.w VINC8, i0
-    addi.w i0, i0, -15
-    xvinsgr2vr.w VI1, i0, 0 //initialize the index value for vectorization
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI1, i0, 1
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI1, i0, 2
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI1, i0, 3
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI1, i0, 4
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI1, i0, 5
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI1, i0, 6
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI1, i0, 7
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 0 //1
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 1 //2
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 2 //3
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 3 //4
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 4 //5
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 5 //6
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 6 //7
-    addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 7 //8
-#endif
-    .align 3
-
-.L24:
-#ifdef DOUBLE
-    ld.d t1, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.d t2, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.d t3, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.d t4, X, 0 * SIZE
-    add.d X, X, INCX
-    xvinsgr2vr.d VX0, t1, 0
-    xvinsgr2vr.d VX0, t2, 1
-    xvinsgr2vr.d VX0, t3, 2
-    xvinsgr2vr.d VX0, t4, 3
-    xvadd.d VI1, VI1, VINC8
-    ld.d t1, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.d t2, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.d t3, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.d t4, X, 0 * SIZE
-    add.d X, X, INCX
-    xvinsgr2vr.d VX1, t1, 0
-    xvinsgr2vr.d VX1, t2, 1
-    xvinsgr2vr.d VX1, t3, 2
-    xvinsgr2vr.d VX1, t4, 3
-    xvadd.d VI1, VI1, VINC8
-    xvadd.d VI2, VI1, VINC4
-    xvfcmp.clt.d VT0, VX0, VX1
-    addi.d I, I, -1
-    xvbitsel.v VM1, VX0, VX1, VT0
-    xvbitsel.v VI2, VI1, VI2, VT0
-    xvfcmp.clt.d VT0, VM0, VM1
-    xvbitsel.v VM0, VM0, VM1, VT0
-    xvbitsel.v VI0, VI0, VI2, VT0
-#else
-    ld.w t1, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.w t2, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.w t3, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.w t4, X, 0 * SIZE
-    add.d X, X, INCX
-    xvinsgr2vr.w VX0, t1, 0
-    xvinsgr2vr.w VX0, t2, 1
-    xvinsgr2vr.w VX0, t3, 2
-    xvinsgr2vr.w VX0, t4, 3
-    ld.w t1, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.w t2, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.w t3, X, 0 * SIZE
-    add.d X, X, INCX
-    ld.w t4, X, 0 * SIZE
-    add.d X, X, INCX
-    xvinsgr2vr.w VX0, t1, 4
-    xvinsgr2vr.w VX0, t2, 5
-    xvinsgr2vr.w VX0, t3, 6
-    xvinsgr2vr.w VX0, t4, 7
-    xvadd.w VI1, VI1, VINC8
-    xvfcmp.clt.s VT0, VM0, VX0
-    addi.d I, I, -1
-    xvbitsel.v VM0, VM0, VX0, VT0
-    xvbitsel.v VI0, VI0, VI1, VT0
-#endif
-    blt $r0, I, .L24
-    .align 3
-
+	/* scalar remainder (elements after the winning block) */
 .L25:
-#ifdef DOUBLE
-    xvpickve.d VI1, VI0, 0
-    xvpickve.d VI2, VI0, 1
-    xvpickve.d VI3, VI0, 2
-    xvpickve.d VI4, VI0, 3
-    xvpickve.d  x1, VM0, 0
-    xvpickve.d  x2, VM0, 1
-    xvpickve.d  x3, VM0, 2
-    xvpickve.d  x4, VM0, 3
-#else
-    xvxor.v VX0, VX0, VX0
-    xvor.v VX0, VI0, VX0
-    xvxor.v VX1, VX1, VX1
-    xvor.v VX1, VM0, VX1
-    xvpickve.w VI1, VI0, 0
-    xvpickve.w VI2, VI0, 1
-    xvpickve.w VI3, VI0, 2
-    xvpickve.w VI4, VI0, 3
-    xvpickve.w  x1, VM0, 0
-    xvpickve.w  x2, VM0, 1
-    xvpickve.w  x3, VM0, 2
-    xvpickve.w  x4, VM0, 3
-#endif
-    XVCMPLT VT0, x1, x2
-    xvbitsel.v VM1, x1, x2, VT0
-    xvbitsel.v VINC4, VI1, VI2, VT0
-    XVCMPLT VT0, x3, x4
-    xvbitsel.v VM0, x3, x4, VT0
-    xvbitsel.v VINC8, VI3, VI4, VT0
-    XVCMPLT VT0, VM0, VM1
-    xvbitsel.v VM0, VM0, VM1, VT0
-    xvbitsel.v VI0, VINC8, VINC4, VT0
-    fcmp.ceq.d $fcc0, $f15, $f9
-    bceqz $fcc0, .L26
-    XVCMPLT VT0, VI1, VI0
-    xvbitsel.v VI0, VI0, VI1, VT0
-    .align 3
+	andi	J, N, REM_MASK
+	beqz	J, .L999r
+	.align	3
+.Lrem:
+	SCALAR_STEP
+	addi.d	Z, Z, 1
+	addi.d	J, J, -1
+	bnez	J, .Lrem
+	b	.L999r
 
-.L26:
-    fcmp.ceq.d $fcc0, $f15, $f10
-    bceqz $fcc0, .L27
-    XVCMPLT VT0, VI2, VI0
-    xvbitsel.v VI0, VI0, VI2, VT0
-    .align 3
+	/* INCX != 1: purely scalar, reuses the remainder loop */
+	.align	3
+.L60:
+	addi.d	Z, Z, 1				/* next element index = 2    */
+	move	J, N
+	beqz	J, .L999r
+	b	.Lrem
 
-.L27:
-    fcmp.ceq.d $fcc0, $f15, $f11
-    bceqz $fcc0, .L28
-    XVCMPLT VT0, VI3, VI0
-    xvbitsel.v VI0, VI0, VI3, VT0
-    .align 3
-
-.L28:
-    fcmp.ceq.d $fcc0, $f15, $f12
-    bceqz $fcc0, .L29
-    XVCMPLT VT0, VI4, VI0
-    xvbitsel.v VI0, VI0, VI4, VT0
-    .align 3
-
-.L29:
-#ifdef DOUBLE
-    movfr2gr.d i0, $f20
-#else
-    fmov.s $f16, $f20
-#endif
-    .align 3
-
-#ifndef DOUBLE
-.L252:
-    xvxor.v VI0, VI0, VI0
-    xvor.v VI0, VI0, VX0
-    fmov.s $f13, $f15
-    xvxor.v VM0, VM0, VM0
-    xvor.v VM0, VM0, VX1
-    xvpickve.w VI1, VI0, 4
-    xvpickve.w VI2, VI0, 5
-    xvpickve.w VI3, VI0, 6
-    xvpickve.w VI4, VI0, 7
-    xvpickve.w x1, VM0, 4
-    xvpickve.w x2, VM0, 5
-    xvpickve.w x3, VM0, 6
-    xvpickve.w x4, VM0, 7
-    xvfcmp.clt.s VT0, x1, x2
-    xvbitsel.v x1, x1, x2, VT0
-    xvbitsel.v VINC4, VI1, VI2, VT0
-    xvfcmp.clt.s VT0, x3, x4
-    xvbitsel.v VM0, x3, x4, VT0
-    xvbitsel.v VINC8, VI3, VI4, VT0
-    xvfcmp.clt.s VT0, VM0, x1
-    xvbitsel.v VM0, VM0, x1, VT0
-    xvbitsel.v VI0, VINC8, VINC4, VT0
-    li.d TEMP, 1 //处理尾数相等时取最小序号
-    movgr2fr.w $f17, TEMP
-    ffint.s.w $f17, $f17
-    xvfcmp.ceq.s VT0, VM0, x1
-    fcmp.ceq.s $fcc0, $f23, $f17
-    bceqz $fcc0, .L262
-    xvfcmp.clt.s VT0, VI1, VI0
-    xvbitsel.v VI0, VI0, VI1, VT0
-    .align 3
-
-.L262:
-    xvfcmp.ceq.s VT0, VM0, x2
-    fcmp.ceq.s $fcc0, $f23, $f17
-    bceqz $fcc0, .L272
-    xvfcmp.clt.s VT0, VI2, VI0
-    xvbitsel.v VI0, VI0, VI2, VT0
-    .align 3
-
-.L272:
-    xvfcmp.ceq.s VT0, VM0, x3
-    fcmp.ceq.s $fcc0, $f23, $f17
-    bceqz $fcc0, .L282
-    xvfcmp.clt.s VT0, VI3, VI0
-    xvbitsel.v VI0, VI0, VI3, VT0
-    .align 3
-
-.L282:
-    xvfcmp.ceq.s VT0, VM0, x4
-    fcmp.ceq.s $fcc0, $f23, $f17
-    bceqz $fcc0, .L292
-    xvfcmp.clt.s VT0, VI4, VI0
-    xvbitsel.v VI0, VI0, VI4, VT0
-    .align 3
-
-.L292:
-    fcmp.clt.s $fcc0, $f15, $f13
-    fsel $f15, $f15, $f13, $fcc0
-    fsel $f20, $f20, $f16, $fcc0
-    movfr2gr.s i0, $f20
-#endif
-
-.L21: //N<8
-    andi I, N, 7
-    bge $r0, I, .L999
-    srai.d i1, N, 3
-    slli.d i1, i1, 3
-    addi.d i1, i1, 1 //current index
-    movgr2fr.d $f21, i1
-    movgr2fr.d $f20, i0
-    .align 3
-
-.L22:
-    fld.d $f9, X, 0
-    addi.d I, I, -1
-    CMPLT $fcc0, $f15, $f9
-    add.d  X, X, INCX
-    fsel $f15, $f15, $f9, $fcc0
-    fsel $f20, $f20, $f21, $fcc0
-    addi.d i1, i1, 1
-    movgr2fr.d $f21, i1
-    blt $r0, I, .L22
-    MTG i0, $f20
-    .align 3
-
+.L999r:
+	move	N, INDEX
+	jirl	$r0, $r1, 0x0		/* return (EPILOGUE is only .end)  */
 .L999:
-    move $r4, $r17
-    jirl $r0, $r1, 0x0
-    .align 3
-
-    EPILOGUE
+	move	N, $r0			/* n <= 0 or incx <= 0 -> 0 */
+	jirl	$r0, $r1, 0x0
+	EPILOGUE
