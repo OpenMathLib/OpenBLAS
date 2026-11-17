@@ -72,6 +72,28 @@ int blas_omp_number_max = 0;
 int blas_omp_threads_local = 1;
 int blas_is_num_threads_set_explicitly = 0; // tracks whether the user called openblas_set_num_threads()
 
+#ifdef BLAS_THREAD_LOCAL
+BLAS_THREAD_LOCAL int blas_thread_in_job = 0;
+#define blas_set_in_job(v) (blas_thread_in_job = (v))
+#else
+#include <pthread.h>
+static pthread_key_t blas_in_job_key;
+static pthread_once_t blas_in_job_once = PTHREAD_ONCE_INIT;
+static int blas_in_job_key_ok = 0;
+static void blas_in_job_key_init(void) {
+  blas_in_job_key_ok = (pthread_key_create(&blas_in_job_key, NULL) == 0);
+}
+int blas_in_job(void) {
+  pthread_once(&blas_in_job_once, blas_in_job_key_init);
+  return blas_in_job_key_ok && pthread_getspecific(blas_in_job_key) != NULL;
+}
+static void blas_set_in_job(int v) {
+  pthread_once(&blas_in_job_once, blas_in_job_key_init);
+  if (blas_in_job_key_ok)
+    pthread_setspecific(blas_in_job_key, v ? (void *)1 : NULL);
+}
+#endif
+
 extern int openblas_omp_adaptive_env(void);
 
 static _Atomic(void *) blas_thread_buffer[MAX_PARALLEL_NUMBER][MAX_CPU_NUMBER];
@@ -302,6 +324,7 @@ static void exec_threads(int thread_num, blas_queue_t *queue, int buf_index){
 
   void *buffer, *sa, *sb;
   int pos=0, release_flag=0;
+  int in_job = blas_in_job();
 
   buffer = NULL;
   sa = queue -> sa;
@@ -382,6 +405,8 @@ fprintf(stderr,"UNHANDLED COMPLEX\n");
 
   queue->worker_sb = sb;
 
+  blas_set_in_job(1);
+
   if (queue -> mode & BLAS_LEGACY) {
     legacy_exec(queue -> routine, queue -> mode, queue -> args, sb);
   } else
@@ -395,6 +420,8 @@ fprintf(stderr,"UNHANDLED COMPLEX\n");
       (routine)(queue -> args, queue -> range_m, queue -> range_n, sa, sb, queue -> position);
 
     }
+
+  blas_set_in_job(in_job);
 
   if (release_flag) blas_memory_free(buffer);
 

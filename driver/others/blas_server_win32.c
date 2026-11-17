@@ -65,6 +65,7 @@ typedef struct{
 /* We need this global for checking if initialization is finished.   */
 int blas_server_avail = 0;
 int blas_omp_threads_local = 1;
+BLAS_THREAD_LOCAL int blas_thread_in_job = 0;
 /* Local Variables */
 static BLASULONG server_lock       = 0;
 
@@ -222,6 +223,9 @@ static DWORD WINAPI blas_thread_server(void *arg){
 #ifdef SMP_DEBUG
   fprintf(STDERR, "Server[%2ld] Thread is started!\n", cpu);
 #endif
+
+  /* this thread only ever runs jobs of the pool */
+  blas_thread_in_job = 1;
 
   while (1){
 
@@ -493,6 +497,7 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
 #ifndef ALL_THREADED
    int (*routine)(blas_arg_t *, void *, void *, double *, double *, BLASLONG);
 #endif
+  int in_job;
 
   if ((num <= 0) || (queue == NULL)) return 0;
 
@@ -513,6 +518,9 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
   routine = queue -> routine;
   queue->worker_sb = queue->sb;
 
+  in_job = blas_thread_in_job;
+  blas_thread_in_job = 1;
+
   if (queue -> mode & BLAS_LEGACY) {
     legacy_exec(routine, queue -> mode, queue -> args, queue -> sb);
   } else
@@ -522,6 +530,8 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
     } else
       (routine)(queue -> args, queue -> range_m, queue -> range_n,
 		queue -> sa, queue -> sb, 0);
+
+  blas_thread_in_job = in_job;
 
   if ((num > 1) && queue -> next) exec_blas_async_wait(num - 1, queue -> next);
 
@@ -624,6 +634,7 @@ void openblas_set_num_threads(int num)
 static void exec_threads(int cpu, blas_queue_t *queue, int buf_index) {
 
   void *buffer, *sa, *sb;
+  int in_job = blas_thread_in_job;
 
   buffer = blas_memory_alloc(2);
   sa = queue -> sa;
@@ -699,11 +710,13 @@ if ((queue -> mode & BLAS_PREC) == BLAS_XDOUBLE){
     main_status[cpu] = MAIN_RUNNING2;
   #endif
 
+  blas_thread_in_job = 1;
   if (!(queue -> mode & BLAS_LEGACY)) {
     (routine)(queue -> args, queue -> range_m, queue -> range_n, sa, sb, queue -> position);
   } else {
     legacy_exec(routine, queue -> mode, queue -> args, sb);
   }
+  blas_thread_in_job = in_job;
   if (buffer) blas_memory_free(buffer);
 }
 

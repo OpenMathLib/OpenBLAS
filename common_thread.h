@@ -156,6 +156,29 @@ extern int blas_omp_number_max;
 extern int blas_omp_threads_local;
 extern int blas_is_num_threads_set_explicitly;
 
+#if defined(_MSC_VER) && !defined(__clang__)
+#define BLAS_THREAD_LOCAL __declspec(thread)
+#elif defined(__clang__)
+#if __has_feature(tls)
+#define BLAS_THREAD_LOCAL __thread
+#endif
+#elif defined(__GNUC__) || defined(__SUNPRO_C) || defined(__xlC__)
+#define BLAS_THREAD_LOCAL __thread
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L && !defined(__STDC_NO_THREADS__)
+#define BLAS_THREAD_LOCAL _Thread_local
+#endif
+
+/* Non-zero while the current thread runs a job for the thread server: as a
+   pool or OpenMP team thread, through the threads callback, or as the caller
+   executing its own share in exec_blas().  num_cpu_avail() then returns 1, so
+   that internally threaded kernels do not start nested parallel work. */
+#ifdef BLAS_THREAD_LOCAL
+extern BLAS_THREAD_LOCAL int blas_thread_in_job;
+static __inline int blas_in_job(void) { return blas_thread_in_job; }
+#else
+int blas_in_job(void);
+#endif
+
 #if defined(ARCH_ARM64) && defined(OS_DARWIN) && defined(__clang__) && (defined(VORTEXM4) || defined(DYNAMIC_ARCH)) && \
     (!defined(BFLOAT16) || !defined(BGEMM)) && !defined(HFLOAT16)
 #include <sys/sysctl.h>
@@ -184,6 +207,8 @@ static __inline int sme_level3_threads(int nthreads) {
 #endif
 
 static __inline int num_cpu_avail(int level) {
+
+  if (blas_in_job()) return 1;
 
 #ifdef USE_OPENMP
   /* If the user explicitly called openblas_set_num_threads(),

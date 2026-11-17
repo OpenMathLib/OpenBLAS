@@ -22,6 +22,7 @@ else ()
     test_trmv.c
     test_gemm.c
     test_matrix_packing.c
+    test_nested_thread.c
     test_syrk_thread.c
   )
   # test_syrk_thread_workarea.c calls the threaded SYRK driver directly, which a shared libopenblas does not export
