@@ -1051,7 +1051,7 @@ endif ()
     set(ZGEMM_UNROLL_M 2)
     set(ZGEMM_UNROLL_N 4)
     set(SYMV_P 16)
-  elseif ("${TCORE}" STREQUAL "NEOVERSEN2" OR "${TCORE}" STREQUAL "ARMV9SME")
+  elseif ("${TCORE}" STREQUAL "NEOVERSEN2")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_CODE_SIZE\t65536\n"
       "#define L1_CODE_LINESIZE\t64\n"
