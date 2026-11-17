@@ -162,6 +162,10 @@ ifeq ($(ARCH), x86)
 COMMONOBJS	+= cpuid.$(SUFFIX)
 endif
 
+ifeq ($(ARCH), arm64)
+COMMONOBJS	+= nrm2_range.$(SUFFIX)
+endif
+
 ifdef EXPRECISION
 COMMONOBJS	+= qconjg.$(SUFFIX) qcabs1.$(SUFFIX)
 endif
@@ -204,6 +208,9 @@ kernel$(TSUFFIX).h : $(KERNEL_INTERFACE)
 cpuid.$(SUFFIX): $(KERNELDIR)/cpuid.S
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
+nrm2_range.$(SUFFIX): $(KERNELDIR)/nrm2_range.c
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
 scabs1.$(PSUFFIX): $(KERNELDIR)/$(SCABS_KERNEL)
 	$(CC) -c $(PFLAGS) -DCOMPLEX -UDOUBLE -DF_INTERFACE $< -o $(@F)
 
@@ -220,6 +227,9 @@ lsame.$(PSUFFIX): $(KERNELDIR)/$(LSAME_KERNEL)
 	$(CC) -c $(PFLAGS) -DF_INTERFACE $< -o $(@F)
 
 cpuid.$(PSUFFIX): $(KERNELDIR)/cpuid.S
+	$(CC) -c $(PFLAGS) $< -o $(@F)
+
+nrm2_range.$(PSUFFIX): $(KERNELDIR)/nrm2_range.c
 	$(CC) -c $(PFLAGS) $< -o $(@F)
 
 #ifdef DYNAMIC_ARCH
