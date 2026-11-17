@@ -15,6 +15,7 @@ endif
 # COMMONOBJS	+=  info.$(SUFFIX)
 
 ifeq ($(DYNAMIC_ARCH), 1)
+COMMONOBJS	+=  dispatch.$(SUFFIX)
 ifeq ($(ARCH),arm64)
 COMMONOBJS	+=  dynamic_arm64.$(SUFFIX)
 else
@@ -132,6 +133,9 @@ dynamic%$(SUFFIX) : dynamic%c
 
 dynamic%$(PSUFFIX) : dynamic%c
 	$(CC) $(PFLAGS) -c $< -o $(@F)
+
+dispatch.$(SUFFIX) : dispatch.c
+	$(CC) $(CFLAGS) -c $< -o $(@F)
 
 parameter.$(SUFFIX) : parameter.c ../../param.h
 	$(CC) $(CFLAGS) -c $< -o $(@F)

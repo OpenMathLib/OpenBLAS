@@ -129,9 +129,26 @@ if (DYNAMIC_ARCH)
 	  message (FATAL_ERROR "Your build directory contains a file config_kernel.h, probably from a previous compilation with make. This will conflict with the cmake compilation and cause strange compiler errors - please remove the file before trying again")
   endif ()
 
+  if (EXISTS ${PROJECT_SOURCE_DIR}/dyn_cores.h)
+	  message (FATAL_ERROR "Your source directory contains a file dyn_cores.h, probably from a previous compilation with make. It would be used instead of the one generated for this build - please remove the file before trying again")
+  endif ()
+
   if (NOT DYNAMIC_CORE)
     message (STATUS "DYNAMIC_ARCH is not supported on this architecture, removing from options")
     unset(DYNAMIC_ARCH CACHE)
+  else ()
+    # dyn_cores.h tells common_param.h which cores this build has;
+    # see the equivalent rule in Makefile.system.
+    set(DYN_CORES_LIST ${DYNAMIC_CORE})
+    list(REMOVE_DUPLICATES DYN_CORES_LIST)
+    list(SORT DYN_CORES_LIST)
+    set(DYN_CORES_H "#define OPENBLAS_CORE_LIST(X, arg)")
+    foreach (DCORE ${DYN_CORES_LIST})
+      string(APPEND DYN_CORES_H " X(${DCORE}, arg)")
+    endforeach ()
+    file(WRITE ${PROJECT_BINARY_DIR}/dyn_cores.h.tmp "${DYN_CORES_H}\n")
+    configure_file(${PROJECT_BINARY_DIR}/dyn_cores.h.tmp ${PROJECT_BINARY_DIR}/dyn_cores.h COPYONLY)
+    file(REMOVE ${PROJECT_BINARY_DIR}/dyn_cores.h.tmp)
   endif ()
 endif ()
 

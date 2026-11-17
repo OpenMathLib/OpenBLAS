@@ -45,6 +45,7 @@
 #define SBGEMM_SMALL_MATRIX_PERMIT	gotoblas -> sbgemm_small_matrix_permit
 #endif
 
+#define SBGEMM_SMALL_KERNEL_BASE		FUNC_BASE(sbgemm_small_kernel_nn)
 #define SBGEMM_SMALL_KERNEL_NN		FUNC_OFFSET(sbgemm_small_kernel_nn)
 #define SBGEMM_SMALL_KERNEL_NT		FUNC_OFFSET(sbgemm_small_kernel_nt)
 #define SBGEMM_SMALL_KERNEL_TN		FUNC_OFFSET(sbgemm_small_kernel_tn)
