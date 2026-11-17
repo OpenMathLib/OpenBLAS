@@ -1611,6 +1611,9 @@ endif ()
   endforeach()
   file(APPEND ${TARGET_CONF_TEMP}
     "#define GEMM_MULTITHREAD_THRESHOLD\t${GEMM_MULTITHREAD_THRESHOLD}\n")
+  if(INTERFACE64)
+    file(APPEND "${TARGET_CONF_TEMP}" "#define USE64BITINT\n")
+  endif()
   # Move to where gen_config_h would place it
   file(MAKE_DIRECTORY ${TARGET_CONF_DIR})
   file(RENAME ${TARGET_CONF_TEMP} "${TARGET_CONF_DIR}/${TARGET_CONF}")

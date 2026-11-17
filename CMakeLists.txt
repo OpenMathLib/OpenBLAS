@@ -5,13 +5,10 @@
 cmake_minimum_required(VERSION 3.16.0)
 
 set (CMAKE_ASM_SOURCE_FILE_EXTENSIONS "S")
-project(OpenBLAS C ASM)
-
-set(OpenBLAS_MAJOR_VERSION 0)
-set(OpenBLAS_MINOR_VERSION 3)
-set(OpenBLAS_PATCH_VERSION 34.dev)
-
-set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
+project(
+  OpenBLAS
+  VERSION 0.3.34
+  LANGUAGES C ASM)
 
 # Adhere to GNU filesystem layout conventions
 include(GNUInstallDirs)
@@ -24,6 +21,7 @@ option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS
 option(BUILD_WITHOUT_LAPACKE "Do not build the C interface to LAPACK)" OFF)
 
 option(BUILD_LAPACK_DEPRECATED "When building LAPACK, include also some older, deprecated routines" ON)
+option(BUILD_MATGEN "Build LAPACKE wrappers for the LAPACK matrix generators" ON)
 
 set(LAPACK_STRLEN "" CACHE STRING "When building LAPACK, use this type (e.g. \"int\") for character lengths (defaults to size_t)")
 
@@ -42,6 +40,8 @@ option(DYNAMIC_OLDER "Include specific support for older x86 cpu models (Penryn,
 option(BUILD_RELAPACK "Build with ReLAPACK (recursive implementation of several LAPACK functions on top of standard LAPACK)" OFF)
 
 option(WASM_RELAXED_SIMD "WASM: emit relaxed SIMD opcodes (not portable to engines without the feature, including shipping Safari)" OFF)
+
+option(USE_OPENMP "Build OpenBLAS with OpenMP parallelism" OFF)
 
 option(USE_LOCKING "Use locks even in single-threaded builds to make them callable from multiple threads" OFF)
 
@@ -171,10 +171,6 @@ if (NOT DEFINED BUILD_SINGLE AND NOT DEFINED BUILD_DOUBLE AND NOT DEFINED BUILD_
   set(BUILD_COMPLEX16 true)
 endif ()
 
-if (NOT DEFINED BUILD_MATGEN)
-  set(BUILD_MATGEN true)
-endif()
-
 set(FLOAT_TYPES "")
 if (BUILD_SINGLE)
   message(STATUS "Building Single Precision")
@@ -221,10 +217,7 @@ foreach (SUBDIR ${SUBDIRS})
   list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:${subdir_obj}>")
 endforeach ()
 
-# netlib:
-
-# Can't just use lapack-netlib's CMake files, since they are set up to search for BLAS, build and install a binary. We just want to build a couple of lib files out of lapack and lapacke.
-# Not using add_subdirectory here because lapack-netlib already has its own CMakeLists.txt. Instead include a cmake script with the sources we want.
+# Read the source lists before setting up the bundled LAPACK targets.
 if (NOT NO_LAPACK)
   include("${PROJECT_SOURCE_DIR}/cmake/lapack.cmake")
   if (NOT NO_LAPACKE)
@@ -283,7 +276,11 @@ endif()
 
 # add objects to the openblas lib
 if(NOT NO_LAPACK)
-  add_library(LAPACK_OVERRIDES OBJECT ${LA_SOURCES})
+  add_library(LAPACK_OVERRIDES OBJECT ${lapack_sources})
+  if(C_LAPACK)
+    target_include_directories(LAPACK_OVERRIDES PRIVATE "${PROJECT_SOURCE_DIR}")
+    target_compile_definitions(LAPACK_OVERRIDES PRIVATE ${lapack_c_definitions})
+  endif()
   if (USE_OPENMP AND (NOT NOFORTRAN))
     # Disable OpenMP for LAPACK Fortran codes on Windows.
     if(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
@@ -293,7 +290,9 @@ if(NOT NO_LAPACK)
   list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:LAPACK_OVERRIDES>")
 endif()
 if(NOT NO_LAPACKE)
-  add_library(LAPACKE OBJECT ${LAPACKE_SOURCES})
+  add_library(LAPACKE OBJECT ${lapacke_sources})
+  target_include_directories(LAPACKE PRIVATE "${lapacke_dir}/include")
+  target_compile_definitions(LAPACKE PRIVATE ${lapack_c_definitions})
   list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:LAPACKE>")
 endif()
 #if(BUILD_RELAPACK)
@@ -471,8 +470,8 @@ if (NOT NOFORTRAN)
   # Build test and ctest
   add_subdirectory(test)
  endif()
- if (BUILD_TESTING AND NOT BUILD_WITHOUT_LAPACK)
-    add_subdirectory(lapack-netlib/TESTING)
+  if (BUILD_TESTING AND NOT NO_LAPACK AND NOT C_LAPACK)
+    add_subdirectory(test/lapack)
   endif()
 endif()
   if(NOT NO_CBLAS)
@@ -486,15 +485,15 @@ endif()
 
 if (NOT FIXED_LIBNAME)
 set_target_properties(${OpenBLAS_LIBS} PROPERTIES
-  VERSION ${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}
-  SOVERSION ${OpenBLAS_MAJOR_VERSION}
+  VERSION "${PROJECT_MAJOR_VERSION}.${PROJECT_MINOR_VERSION}"
+  SOVERSION "${PROJECT_MAJOR_VERSION}"
 )
 endif()
 if (BUILD_SHARED_LIBS AND BUILD_RELAPACK)
-  if (NOT MSVC)
-    target_link_libraries(${OpenBLAS_LIBNAME}_shared "-Wl,-allow-multiple-definition")
+  if(MSVC)
+    target_link_options(${OpenBLAS_LIBNAME}_shared PRIVATE /FORCE:MULTIPLE)
   else()
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /FORCE:MULTIPLE")
+    target_link_options(${OpenBLAS_LIBNAME}_shared PRIVATE "LINKER:--allow-multiple-definition")
   endif()
 endif()
 
@@ -721,7 +720,7 @@ foreach(line ${__lines})
   string(REPLACE "#define " "" line ${line})
   file(APPEND ${OPENBLAS_CONFIG_H} "#define OPENBLAS_${line}\n")
 endforeach()
-file(APPEND ${OPENBLAS_CONFIG_H} "#define OPENBLAS_VERSION \"OpenBLAS ${OpenBLAS_VERSION}\"\n")
+file(APPEND ${OPENBLAS_CONFIG_H} "#define OPENBLAS_VERSION \"OpenBLAS ${PROJECT_VERSION}\"\n")
 file(READ   ${CMAKE_CURRENT_SOURCE_DIR}/openblas_config_template.h OPENBLAS_CONFIG_TEMPLATE_H_CONTENTS)
 file(APPEND ${OPENBLAS_CONFIG_H} "${OPENBLAS_CONFIG_TEMPLATE_H_CONTENTS}\n")
 file(APPEND ${OPENBLAS_CONFIG_H} "#endif /* OPENBLAS_CONFIG_H */\n")
@@ -794,22 +793,23 @@ endif()
 
 if(NOT NO_LAPACKE)
   message (STATUS "Copying LAPACKE header files to ${CMAKE_INSTALL_INCLUDEDIR}")
-  if(BUILD_STATIC_LIBS)
-    add_dependencies( ${OpenBLAS_LIBNAME}_static genlapacke)
+  file(GLOB_RECURSE lapacke_headers "${lapacke_dir}/*.h")
+  if(INTERFACE64)
+    foreach(header IN ITEMS lapacke_config.h lapacke_mangling.h)
+      set(source "${lapacke_dir}/include/${header}")
+      set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${source}")
+      file(READ "${source}" contents)
+      file(WRITE "${PROJECT_BINARY_DIR}/generated/${header}"
+        "#ifndef LAPACK_ILP64\n#define LAPACK_ILP64\n#endif\n${contents}")
+      list(REMOVE_ITEM lapacke_headers "${source}")
+      list(APPEND lapacke_headers "${PROJECT_BINARY_DIR}/generated/${header}")
+    endforeach()
   endif()
-  if(BUILD_SHARED_LIBS)
-    add_dependencies( ${OpenBLAS_LIBNAME}_shared genlapacke)
-  endif()
-  FILE(GLOB_RECURSE INCLUDE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/*.h")
-  install (FILES ${INCLUDE_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  install(FILES ${lapacke_headers} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-  ADD_CUSTOM_TARGET(genlapacke
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/include/lapacke_mangling_with_flags.h.in "${CMAKE_BINARY_DIR}/lapacke_mangling.h"
-  )
-  install (FILES ${CMAKE_BINARY_DIR}/lapacke_mangling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
   if (NOT (x${SYMBOLPREFIX}${SYMBOLSUFFIX} STREQUAL "x"))
   message (STATUS "Generating lapacke.h in ${CMAKE_INSTALL_INCLUDEDIR}")
-  set(LAPACKE_H ${CMAKE_BINARY_DIR}/generated/lapacke.h)
+  set(LAPACKE_H ${PROJECT_BINARY_DIR}/generated/lapacke.h)
   file(READ ${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/include/lapacke.h LAPACKE_H_CONTENTS)
   if (NOT ${SYMBOLPREFIX} STREQUAL "")
 	  string(REGEX REPLACE "(LAPACKE_*)" " ${SYMBOLPREFIX}\\1" LAPACKE_H_CONTENTS_NEW	"${LAPACKE_H_CONTENTS}")
@@ -828,7 +828,7 @@ if(NOT NO_LAPACKE)
   file(WRITE ${LAPACKE_H} "${LAPACKE_H_CONTENTS_NEW}")
   install (FILES ${LAPACKE_H} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
   message (STATUS "Generating lapack.h in ${CMAKE_INSTALL_INCLUDEDIR}")
-  set(LAPACK_H ${CMAKE_BINARY_DIR}/generated/lapack.h)
+  set(LAPACK_H ${PROJECT_BINARY_DIR}/generated/lapack.h)
   file(READ ${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/include/lapack.h LAPACK_H_CONTENTS)
   if (NOT ${SYMBOLPREFIX} STREQUAL "")
 	  string(REGEX REPLACE "(LAPACK_[a-z1-9]*[ \(][.\)]*)" "${SYMBOLPREFIX}\\1" LAPACK_H_CONTENTS_NEW	"${LAPACK_H_CONTENTS}")
