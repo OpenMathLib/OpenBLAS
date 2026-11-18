@@ -52,7 +52,13 @@ TARGET_FLAGS = -mips64r6
 endif
 
 ifeq ($(TARGET), C910V)
+# Keep the Xuantie march string unless this CC is upstream GCC.
+C910V_PREBUILD_UPSTREAM := $(shell printf '%s\n' 'int c910v_probe;' | $(CC) -march=rv64gc_xtheadvector -mabi=lp64d -x c -c -o /dev/null - >/dev/null 2>&1 && echo 1)
+ifeq ($(C910V_PREBUILD_UPSTREAM), 1)
+TARGET_FLAGS = -march=rv64gc_xtheadvector -mabi=lp64d
+else
 TARGET_FLAGS = -march=rv64gcv0p7_zfh_xtheadc -mabi=lp64d
+endif
 endif
 
 ifeq ($(TARGET), CK860FV)
