@@ -59,9 +59,9 @@
 
 	pxor	%xmm0, %xmm0
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 	testq	INCX, INCX
-	jle	.L999
+	jle	L(999)
 
 	salq	$ZBASE_SHIFT, INCX
 
@@ -81,15 +81,15 @@
 	movapd	 %xmm0, %xmm3
 
 	cmpq	$2 * SIZE, INCX
-	jne	.L40
+	jne	L(40)
 
-.L30:
+L(30):
 	movq	M,  I
 	sarq	$3, I
-	jle	.L35
+	jle	L(35)
 	ALIGN_4
 
-.L31:
+L(31):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -138,15 +138,15 @@
 
 	addq	$16 * SIZE, X
 	decq	I
-	jg	.L31
+	jg	L(31)
 	ALIGN_4
 
-.L35:
+L(35):
 	andq	$7,  M
-	jle	.L998
+	jle	L(998)
 
 	testq	$4, M
-	je	.L36
+	je	L(36)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -170,9 +170,9 @@
 	addq	$8 * SIZE, X
 	ALIGN_3
 
-.L36:
+L(36):
 	testq	$2, M
-	je	.L37
+	je	L(37)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -186,9 +186,9 @@
 	maxpd	%xmm4, %xmm0
 	ALIGN_3
 
-.L37:
+L(37):
 	testq	$1, M
-	je	.L998
+	je	L(998)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -196,17 +196,17 @@
 	andpd	%xmm15, %xmm5
 	addpd	%xmm5, %xmm4
 	maxsd	%xmm4, %xmm2
-	jmp	.L998
+	jmp	L(998)
 	ALIGN_4
 
 
-.L40:
+L(40):
 	movq	M,  I
 	sarq	$3, I
-	jle	.L45
+	jle	L(45)
 	ALIGN_4
 
-.L41:
+L(41):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -262,15 +262,15 @@
 	maxpd	%xmm6,  %xmm3
 
 	decq	I
-	jg	.L41
+	jg	L(41)
 	ALIGN_4
 
-.L45:
+L(45):
 	andq	$7,  M
-	jle	.L998
+	jle	L(998)
 
 	testq	$4, M
-	je	.L46
+	je	L(46)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -295,9 +295,9 @@
 	maxpd	%xmm6, %xmm1
 	ALIGN_3
 
-.L46:
+L(46):
 	testq	$2, M
-	je	.L47
+	je	L(47)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -311,9 +311,9 @@
 	maxpd	%xmm4, %xmm2
 	ALIGN_3
 
-.L47:
+L(47):
 	testq	$1, M
-	je	.L998
+	je	L(998)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -321,10 +321,10 @@
 	andpd	%xmm15, %xmm5
 	addpd	%xmm5, %xmm4
 	maxsd	%xmm4, %xmm3
-	jmp	.L998
+	jmp	L(998)
 	ALIGN_4
 
-.L998:
+L(998):
 	maxpd	%xmm1, %xmm0
 	maxpd	%xmm3, %xmm2
 	maxpd	%xmm2, %xmm0
@@ -333,7 +333,7 @@
 	maxsd	%xmm1, %xmm0
 	ALIGN_4
 
-.L999:
+L(999):
 	RESTOREREGISTERS
 
 	ret

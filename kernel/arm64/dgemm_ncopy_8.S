@@ -353,13 +353,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	lsl	LDA, LDA, #3					// LDA = LDA * SIZE
 
-.Ldgemm_ncopy_L8_BEGIN:
+L(dgemm_ncopy_L8_BEGIN):
 
 	asr	J, N, #3					// J = N / 8
 	cmp 	J, #0
-	ble	.Ldgemm_ncopy_L4_BEGIN
+	ble	L(dgemm_ncopy_L4_BEGIN)
 
-.Ldgemm_ncopy_L8_M8_BEGIN:
+L(dgemm_ncopy_L8_M8_BEGIN):
 
 	mov	A01, A00
 	add	A02, A01, LDA
@@ -374,46 +374,46 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	I, M, #3					// I = M / 8
 	cmp	I, #0
-	ble	.Ldgemm_ncopy_L8_M8_40
+	ble	L(dgemm_ncopy_L8_M8_40)
 
-.Ldgemm_ncopy_L8_M8_20:
+L(dgemm_ncopy_L8_M8_20):
 
 	COPY8x8
 
 	subs	I , I , #1
-	bne	.Ldgemm_ncopy_L8_M8_20
+	bne	L(dgemm_ncopy_L8_M8_20)
 
 
-.Ldgemm_ncopy_L8_M8_40:
+L(dgemm_ncopy_L8_M8_40):
 
 	and	I, M , #7
 	cmp	I, #0
-	ble	.Ldgemm_ncopy_L8_M8_END
+	ble	L(dgemm_ncopy_L8_M8_END)
 
-.Ldgemm_ncopy_L8_M8_60:
+L(dgemm_ncopy_L8_M8_60):
 
 	COPY1x8
 
 	subs	I , I , #1
-	bne	.Ldgemm_ncopy_L8_M8_60
+	bne	L(dgemm_ncopy_L8_M8_60)
 
 
-.Ldgemm_ncopy_L8_M8_END:
+L(dgemm_ncopy_L8_M8_END):
 
 	subs	J , J, #1						// j--
-	bne	.Ldgemm_ncopy_L8_M8_BEGIN
+	bne	L(dgemm_ncopy_L8_M8_BEGIN)
 
 /*********************************************************************************************/
 
-.Ldgemm_ncopy_L4_BEGIN:
+L(dgemm_ncopy_L4_BEGIN):
 
 	tst	N, #7
-	ble	.Ldgemm_ncopy_L999
+	ble	L(dgemm_ncopy_L999)
 
 	tst	N, #4
-	ble	.Ldgemm_ncopy_L2_BEGIN
+	ble	L(dgemm_ncopy_L2_BEGIN)
 
-.Ldgemm_ncopy_L4_M8_BEGIN:
+L(dgemm_ncopy_L4_M8_BEGIN):
 
 	mov	A01, A00
 	add	A02, A01, LDA
@@ -423,118 +423,118 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	asr	I, M, #3					// I = M / 8
 	cmp	I, #0
-	ble	.Ldgemm_ncopy_L4_M8_40
+	ble	L(dgemm_ncopy_L4_M8_40)
 
-.Ldgemm_ncopy_L4_M8_20:
+L(dgemm_ncopy_L4_M8_20):
 
 	COPY8x4
 
 	subs	I , I , #1
-	bne	.Ldgemm_ncopy_L4_M8_20
+	bne	L(dgemm_ncopy_L4_M8_20)
 
 
-.Ldgemm_ncopy_L4_M8_40:
+L(dgemm_ncopy_L4_M8_40):
 
 	and	I, M , #7
 	cmp	I, #0
-	ble	.Ldgemm_ncopy_L4_M8_END
+	ble	L(dgemm_ncopy_L4_M8_END)
 
-.Ldgemm_ncopy_L4_M8_60:
+L(dgemm_ncopy_L4_M8_60):
 
 	COPY1x4
 
 	subs	I , I , #1
-	bne	.Ldgemm_ncopy_L4_M8_60
+	bne	L(dgemm_ncopy_L4_M8_60)
 
 
-.Ldgemm_ncopy_L4_M8_END:
+L(dgemm_ncopy_L4_M8_END):
 
 
 /*********************************************************************************************/
 
-.Ldgemm_ncopy_L2_BEGIN:
+L(dgemm_ncopy_L2_BEGIN):
 
 	tst	N, #3
-	ble	.Ldgemm_ncopy_L999
+	ble	L(dgemm_ncopy_L999)
 
 	tst	N, #2
-	ble	.Ldgemm_ncopy_L1_BEGIN
+	ble	L(dgemm_ncopy_L1_BEGIN)
 
-.Ldgemm_ncopy_L2_M8_BEGIN:
+L(dgemm_ncopy_L2_M8_BEGIN):
 	mov	A01, A00
 	add	A02, A01, LDA
 	add	A00, A02, LDA
 
 	asr	I, M, #3					// I = M / 8
 	cmp 	I, #0
-	ble	.Ldgemm_ncopy_L2_M8_40
+	ble	L(dgemm_ncopy_L2_M8_40)
 
-.Ldgemm_ncopy_L2_M8_20:
+L(dgemm_ncopy_L2_M8_20):
 
 	COPY8x2
 
 	subs	I , I , #1
-	bne	.Ldgemm_ncopy_L2_M8_20
+	bne	L(dgemm_ncopy_L2_M8_20)
 
 
-.Ldgemm_ncopy_L2_M8_40:
+L(dgemm_ncopy_L2_M8_40):
 
 	and	I, M , #7
 	cmp	I, #0
-	ble	.Ldgemm_ncopy_L2_M8_END
+	ble	L(dgemm_ncopy_L2_M8_END)
 
-.Ldgemm_ncopy_L2_M8_60:
+L(dgemm_ncopy_L2_M8_60):
 
 	COPY1x2
 
 	subs	I , I , #1
-	bne	.Ldgemm_ncopy_L2_M8_60
+	bne	L(dgemm_ncopy_L2_M8_60)
 
 
-.Ldgemm_ncopy_L2_M8_END:
+L(dgemm_ncopy_L2_M8_END):
 
 
 /*********************************************************************************************/
 
-.Ldgemm_ncopy_L1_BEGIN:
+L(dgemm_ncopy_L1_BEGIN):
 
 	tst	N, #1
-	ble	.Ldgemm_ncopy_L999
+	ble	L(dgemm_ncopy_L999)
 
 
-.Ldgemm_ncopy_L1_M8_BEGIN:
+L(dgemm_ncopy_L1_M8_BEGIN):
 
 	mov	A01, A00
 
 	asr	I, M, #3					// I = M / 8
 	cmp	I, #0
-	ble	.Ldgemm_ncopy_L1_M8_40
+	ble	L(dgemm_ncopy_L1_M8_40)
 
-.Ldgemm_ncopy_L1_M8_20:
+L(dgemm_ncopy_L1_M8_20):
 
 	COPY8x1
 
 	subs	I , I , #1
-	bne	.Ldgemm_ncopy_L1_M8_20
+	bne	L(dgemm_ncopy_L1_M8_20)
 
 
-.Ldgemm_ncopy_L1_M8_40:
+L(dgemm_ncopy_L1_M8_40):
 
 	and	I, M , #7
 	cmp	I, #0
-	ble	.Ldgemm_ncopy_L1_M8_END
+	ble	L(dgemm_ncopy_L1_M8_END)
 
-.Ldgemm_ncopy_L1_M8_60:
+L(dgemm_ncopy_L1_M8_60):
 
 	COPY1x1
 
 	subs	I , I , #1
-	bne	.Ldgemm_ncopy_L1_M8_60
+	bne	L(dgemm_ncopy_L1_M8_60)
 
 
-.Ldgemm_ncopy_L1_M8_END:
+L(dgemm_ncopy_L1_M8_END):
 
-.Ldgemm_ncopy_L999:
+L(dgemm_ncopy_L999):
 
 	mov	x0, #0
 	RESTORE_REGS

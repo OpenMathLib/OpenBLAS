@@ -229,51 +229,51 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	cmp	N, xzr
-	ble	.Lzdot_kernel_L999
+	ble	L(zdot_kernel_L999)
 
 	cmp	INC_X, #1
-	bne	.Lzdot_kernel_S_BEGIN
+	bne	L(zdot_kernel_S_BEGIN)
 	cmp	INC_Y, #1
-	bne	.Lzdot_kernel_S_BEGIN
+	bne	L(zdot_kernel_S_BEGIN)
 
-.Lzdot_kernel_F_BEGIN:
+L(zdot_kernel_F_BEGIN):
 
 	asr	I, N, #2
 	cmp	I, xzr
-	beq	.Lzdot_kernel_F1
+	beq	L(zdot_kernel_F1)
 
-.Lzdot_kernel_F4:
+L(zdot_kernel_F4):
 
 	KERNEL_F4
 
 	subs	I, I, #1
-	bne	.Lzdot_kernel_F4
+	bne	L(zdot_kernel_F4)
 
 	KERNEL_F4_FINALIZE
 
-.Lzdot_kernel_F1:
+L(zdot_kernel_F1):
 
 	ands	I, N, #3
-	ble	.Lzdot_kernel_L999
+	ble	L(zdot_kernel_L999)
 
-.Lzdot_kernel_F10:
+L(zdot_kernel_F10):
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     .Lzdot_kernel_F10
+        bne     L(zdot_kernel_F10)
 
 	ret
 
-.Lzdot_kernel_S_BEGIN:
+L(zdot_kernel_S_BEGIN):
 
 	INIT_S
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	.Lzdot_kernel_S1
+	ble	L(zdot_kernel_S1)
 
-.Lzdot_kernel_S4:
+L(zdot_kernel_S4):
 
 	KERNEL_S1
 	KERNEL_S1
@@ -281,21 +281,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Lzdot_kernel_S4
+	bne	L(zdot_kernel_S4)
 
-.Lzdot_kernel_S1:
+L(zdot_kernel_S1):
 
 	ands	I, N, #3
-	ble	.Lzdot_kernel_L999
+	ble	L(zdot_kernel_L999)
 
-.Lzdot_kernel_S10:
+L(zdot_kernel_S10):
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     .Lzdot_kernel_S10
+        bne     L(zdot_kernel_S10)
 
-.Lzdot_kernel_L999:
+L(zdot_kernel_L999):
 
 	ret
 

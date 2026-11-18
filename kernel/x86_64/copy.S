@@ -63,22 +63,22 @@
 	EMMS
 
 	testq	N, N	# if m == 0 goto End
-	jle	.L999
+	jle	L(999)
 
 	salq	$BASE_SHIFT, INCX
 	salq	$BASE_SHIFT, INCY
 
 	cmpq	$SIZE, INCX	# if incx != 1
-	jne	.L100
+	jne	L(100)
 	cmpq	$SIZE, INCY	# if incy != 1
-	jne	.L100
+	jne	L(100)
 
 	movq	N, %rax	# i = m
 	sarq	$3,   %rax
-	jle	.L20
+	jle	L(20)
 	ALIGN_2
 
-.L11:
+L(11):
 #ifdef XDOUBLE
 
 #ifdef PREFETCH
@@ -194,16 +194,16 @@
 	addq	$8 * SIZE, X
 	addq	$8 * SIZE, Y
 	decq	%rax
-	jg	.L11
+	jg	L(11)
 	ALIGN_2
 
-.L20:
+L(20):
 	movq	N, %rax
 	andq	$7,   %rax
-	jle	.L99
+	jle	L(99)
 	ALIGN_2
 
-.L21:
+L(21):
 #ifdef XDOUBLE
 	movq	0(X), %mm0
 	movq	8(X), %mm1
@@ -217,21 +217,21 @@
 	addq	$SIZE, X
 	addq	$SIZE, Y
 	decq	%rax
-	jg	.L21
+	jg	L(21)
 
-.L99:
+L(99):
 	xorq	%rax,%rax
 	EMMS
 	ret
 	ALIGN_3
 
-.L100:
+L(100):
 	movq	N, %rax
 	sarq	$3,   %rax
-	jle	.L120
+	jle	L(120)
 	ALIGN_2
 
-.L111:
+L(111):
 #ifdef XDOUBLE
 	movq	0(X), %mm0
 	movq	8(X), %mm1
@@ -333,15 +333,15 @@
 #endif
 
 	decq	%rax
-	jg	.L111
+	jg	L(111)
 
-.L120:
+L(120):
 	movq	N, %rax
 	andq	$7,   %rax
-	jle	.L999
+	jle	L(999)
 	ALIGN_2
 
-.L121:
+L(121):
 #ifdef XDOUBLE
 	movq	0(X), %mm0
 	movq	8(X), %mm1
@@ -355,9 +355,9 @@
 	addq	INCY, Y
 
 	decq	%rax
-	jg	.L121
+	jg	L(121)
 
-.L999:
+L(999):
 	xorq	%rax,%rax
 	EMMS
 	ret

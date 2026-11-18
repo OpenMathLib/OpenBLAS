@@ -43,18 +43,18 @@
 	PROFCODE
 
 	cmpq	$4096, %rax
-	jle	.L999
+	jle	L(999)
 	ALIGN_3
 
-.L01:
+L(01):
 	subq	$4096, %rax
 	subq	$4096, %rsp
 	movq	$0, (%rsp)
 	cmpq	$4096, %rax
-	jg	.L01
+	jg	L(01)
 	ALIGN_3
 
-.L999:
+L(999):
 	subq	%rax, %rsp
 	ret
 

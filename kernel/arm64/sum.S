@@ -114,52 +114,52 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	cmp	N, xzr
-	ble	.Lsum_kernel_L999
+	ble	L(sum_kernel_L999)
 	cmp	INC_X, xzr
-	ble	.Lsum_kernel_L999
+	ble	L(sum_kernel_L999)
 
 	cmp	INC_X, #1
-	bne	.Lsum_kernel_S_BEGIN
+	bne	L(sum_kernel_S_BEGIN)
 
-.Lsum_kernel_F_BEGIN:
+L(sum_kernel_F_BEGIN):
 
 	asr	I, N, #3
 	cmp	I, xzr
-	beq	.Lsum_kernel_F1
+	beq	L(sum_kernel_F1)
 
-.Lsum_kernel_F8:
+L(sum_kernel_F8):
 
 	KERNEL_F8
 
 	subs	I, I, #1
-	bne	.Lsum_kernel_F8
+	bne	L(sum_kernel_F8)
 
 	KERNEL_F8_FINALIZE
 
-.Lsum_kernel_F1:
+L(sum_kernel_F1):
 
 	ands	I, N, #7
-	ble	.Lsum_kernel_L999
+	ble	L(sum_kernel_L999)
 
-.Lsum_kernel_F10:
+L(sum_kernel_F10):
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     .Lsum_kernel_F10
+        bne     L(sum_kernel_F10)
 
-.Lsum_kernel_L999:
+L(sum_kernel_L999):
 	ret
 
-.Lsum_kernel_S_BEGIN:
+L(sum_kernel_S_BEGIN):
 
 	INIT_S
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	.Lsum_kernel_S1
+	ble	L(sum_kernel_S1)
 
-.Lsum_kernel_S4:
+L(sum_kernel_S4):
 
 	KERNEL_S1
 	KERNEL_S1
@@ -167,19 +167,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Lsum_kernel_S4
+	bne	L(sum_kernel_S4)
 
-.Lsum_kernel_S1:
+L(sum_kernel_S1):
 
 	ands	I, N, #3
-	ble	.Lsum_kernel_L999
+	ble	L(sum_kernel_L999)
 
-.Lsum_kernel_S10:
+L(sum_kernel_S10):
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     .Lsum_kernel_S10
+        bne     L(sum_kernel_S10)
 
 	ret
 

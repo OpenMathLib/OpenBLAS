@@ -104,56 +104,56 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROLOGUE
 
 	cmp	N, xzr
-	ble	.Lswap_kernel_L999
+	ble	L(swap_kernel_L999)
 
 	cmp	INC_X, #1
-	bne	.Lswap_kernel_S_BEGIN
+	bne	L(swap_kernel_S_BEGIN)
 	cmp	INC_Y, #1
-	bne	.Lswap_kernel_S_BEGIN
+	bne	L(swap_kernel_S_BEGIN)
 
-.Lswap_kernel_F_BEGIN:
+L(swap_kernel_F_BEGIN):
 	INIT
 
 	asr	I, N, #N_DIV_SHIFT
 	cmp	I, xzr
-	beq	.Lswap_kernel_F1
+	beq	L(swap_kernel_F1)
 
 	.align 5
-.Lswap_kernel_F:
+L(swap_kernel_F):
 
 	KERNEL_F
 
 	subs	I, I, #1
-	bne	.Lswap_kernel_F
+	bne	L(swap_kernel_F)
 
-.Lswap_kernel_F1:
+L(swap_kernel_F1):
 
 #if defined(DOUBLE) && defined(COMPLEX)
-	b	.Lswap_kernel_L999
+	b	L(swap_kernel_L999)
 #else
 	ands	I, N, #N_REM_MASK
-	ble	.Lswap_kernel_L999
+	ble	L(swap_kernel_L999)
 #endif
 
-.Lswap_kernel_F10:
+L(swap_kernel_F10):
 
 	KERNEL_F1
 
 	subs    I, I, #1
-	bne     .Lswap_kernel_F10
+	bne     L(swap_kernel_F10)
 
-	b	.Lswap_kernel_L999
+	b	L(swap_kernel_L999)
 
 
-.Lswap_kernel_S_BEGIN:
+L(swap_kernel_S_BEGIN):
 
 	INIT
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	.Lswap_kernel_S1
+	ble	L(swap_kernel_S1)
 
-.Lswap_kernel_S4:
+L(swap_kernel_S4):
 
 	KERNEL_F1
 	KERNEL_F1
@@ -161,21 +161,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL_F1
 
 	subs	I, I, #1
-	bne	.Lswap_kernel_S4
+	bne	L(swap_kernel_S4)
 
-.Lswap_kernel_S1:
+L(swap_kernel_S1):
 
 	ands	I, N, #3
-	ble	.Lswap_kernel_L999
+	ble	L(swap_kernel_L999)
 
-.Lswap_kernel_S10:
+L(swap_kernel_S10):
 
 	KERNEL_F1
 
 	subs	I, I, #1
-	bne	.Lswap_kernel_S10
+	bne	L(swap_kernel_S10)
 
-.Lswap_kernel_L999:
+L(swap_kernel_L999):
 
 	mov	w0, wzr
 	ret

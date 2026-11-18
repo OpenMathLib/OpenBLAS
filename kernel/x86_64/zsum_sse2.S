@@ -54,9 +54,9 @@
 
 	xorps	%xmm0, %xmm0
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 	testq	INCX, INCX
-	jle	.L999
+	jle	L(999)
 
 	xorps	%xmm1, %xmm1
 	xorps	%xmm2, %xmm2
@@ -65,13 +65,13 @@
 	salq	$ZBASE_SHIFT, INCX
 
 	cmpq	$2 * SIZE, INCX
-	jne	.L40
+	jne	L(40)
 
 	subq	$-16 * SIZE, X
 	addq	M, M
 
 	testq	$SIZE, X
-	je	.L05
+	je	L(05)
 
 #ifdef movsd
 	xorps	%xmm0, %xmm0
@@ -80,13 +80,13 @@
 	addq	$SIZE, X
 
 	subq	$1, M
-	jle	.L999
+	jle	L(999)
 	ALIGN_3
 
-.L05:
+L(05):
 	movq	M,  I
 	sarq	$4, I
-	jle	.L20
+	jle	L(20)
 
 	movaps	-16 * SIZE(X), %xmm4
 	movaps	-14 * SIZE(X), %xmm5
@@ -99,10 +99,10 @@
 	movaps	 -2 * SIZE(X), %xmm11
 
 	decq	I
-	jle	.L11
+	jle	L(11)
 	ALIGN_4
 
-.L10:
+L(10):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -137,10 +137,10 @@
 
 	subq	$-16 * SIZE, X
 	decq	I
-	jg	.L10
+	jg	L(10)
 	ALIGN_4
 
-.L11:
+L(11):
 
 	addpd	%xmm4,  %xmm0
 	addpd	%xmm5,  %xmm1
@@ -155,12 +155,12 @@
 	subq	$-16 * SIZE, X
 	ALIGN_3
 
-.L20:
+L(20):
 	andq	$15,  M
-	jle	.L998
+	jle	L(998)
 
 	testq	$8, M
-	je	.L21
+	je	L(21)
 
 	movaps	-16 * SIZE(X), %xmm4
 	movaps	-14 * SIZE(X), %xmm5
@@ -174,9 +174,9 @@
 	addq	$8 * SIZE, X
 	ALIGN_3
 
-.L21:
+L(21):
 	testq	$4, M
-	je	.L22
+	je	L(22)
 
 	movaps	-16 * SIZE(X), %xmm4
 	movaps	-14 * SIZE(X), %xmm5
@@ -187,34 +187,34 @@
 	addq	$4 * SIZE, X
 	ALIGN_3
 
-.L22:
+L(22):
 	testq	$2, M
-	je	.L23
+	je	L(23)
 
 	movaps	-16 * SIZE(X), %xmm6
 	addpd	%xmm6, %xmm3
 	addq	$2 * SIZE, X
 
-.L23:
+L(23):
 	testq	$1, M
-	je	.L998
+	je	L(998)
 
 #ifdef movsd
 	xorps	%xmm4, %xmm4
 #endif
 	movsd	-16 * SIZE(X), %xmm4
 	addsd	%xmm4, %xmm0
-	jmp	.L998
+	jmp	L(998)
 	ALIGN_3
 
 
-.L40:
+L(40):
 	movq	M,  I
 	sarq	$2, I
-	jle	.L60
+	jle	L(60)
 	ALIGN_4
 
-.L50:
+L(50):
 #if defined(OPTERON) || defined(BARCELONA) || defined(SHANGHAI)
 	prefetcht0	PREFETCHSIZE * SIZE(X)
 #endif
@@ -244,25 +244,25 @@
 	addpd	%xmm7, %xmm3
 
 	decq	I
-	jg	.L50
+	jg	L(50)
 	ALIGN_4
 
-.L60:
+L(60):
 	andq	$3,  M
-	jle	.L998
+	jle	L(998)
 	ALIGN_4
 
 
-.L61:
+L(61):
 	movsd	0 * SIZE(X), %xmm4
 	movhpd	1 * SIZE(X), %xmm4
 	addpd	%xmm4, %xmm0
 	addq	INCX, X
 	decq	M
-	jg	.L61
+	jg	L(61)
 	ALIGN_4
 
-.L998:
+L(998):
 	addpd	%xmm1, %xmm0
 	addpd	%xmm3, %xmm2
 	addpd	%xmm2, %xmm0
@@ -275,7 +275,7 @@
 #endif
 	ALIGN_4
 
-.L999:
+L(999):
 	RESTOREREGISTERS
 
 	ret

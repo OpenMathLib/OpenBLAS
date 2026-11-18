@@ -406,6 +406,12 @@ static __inline unsigned int blas_quickdivide(unsigned int x, unsigned int y){
 #endif
 
 #ifdef OS_DARWIN
+#define L(x) L##x
+#else
+#define L(x) .L##x
+#endif
+
+#ifdef OS_DARWIN
 #define PROLOGUE .text;.align 5; .globl REALNAME; REALNAME:
 #define PROLOGUE_EXPORT .text;.align 5; .globl REALNAME; REALNAME:
 #define EPILOGUE	.subsections_via_symbols

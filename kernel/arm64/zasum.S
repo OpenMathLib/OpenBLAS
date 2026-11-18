@@ -92,52 +92,52 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmov	SUMF, REG0
 
 	cmp	N, xzr
-	ble	.Lzasum_kernel_L999
+	ble	L(zasum_kernel_L999)
 	cmp	INC_X, xzr
-	ble	.Lzasum_kernel_L999
+	ble	L(zasum_kernel_L999)
 
 	cmp	INC_X, #1
-	bne	.Lzasum_kernel_S_BEGIN
+	bne	L(zasum_kernel_S_BEGIN)
 
-.Lzasum_kernel_F_BEGIN:
+L(zasum_kernel_F_BEGIN):
 
 	asr	I, N, #2
 	cmp	I, xzr
-	beq	.Lzasum_kernel_F1
+	beq	L(zasum_kernel_F1)
 
-.Lzasum_kernel_F4:
+L(zasum_kernel_F4):
 
 	KERNEL_F4
 
 	subs	I, I, #1
-	bne	.Lzasum_kernel_F4
+	bne	L(zasum_kernel_F4)
 
 	KERNEL_F4_FINALIZE
 
-.Lzasum_kernel_F1:
+L(zasum_kernel_F1):
 
 	ands	I, N, #3
-	ble	.Lzasum_kernel_L999
+	ble	L(zasum_kernel_L999)
 
-.Lzasum_kernel_F10:
+L(zasum_kernel_F10):
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     .Lzasum_kernel_F10
+        bne     L(zasum_kernel_F10)
 
-.Lzasum_kernel_L999:
+L(zasum_kernel_L999):
 	ret
 
-.Lzasum_kernel_S_BEGIN:
+L(zasum_kernel_S_BEGIN):
 
 	INIT_S
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	.Lzasum_kernel_S1
+	ble	L(zasum_kernel_S1)
 
-.Lzasum_kernel_S4:
+L(zasum_kernel_S4):
 
 	KERNEL_S1
 	KERNEL_S1
@@ -145,19 +145,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Lzasum_kernel_S4
+	bne	L(zasum_kernel_S4)
 
-.Lzasum_kernel_S1:
+L(zasum_kernel_S1):
 
 	ands	I, N, #3
-	ble	.Lzasum_kernel_L999
+	ble	L(zasum_kernel_L999)
 
-.Lzasum_kernel_S10:
+L(zasum_kernel_S10):
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     .Lzasum_kernel_S10
+        bne     L(zasum_kernel_S10)
 
 	ret
 

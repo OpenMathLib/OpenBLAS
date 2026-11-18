@@ -94,16 +94,16 @@
 	movaps	%xmm1, ALPHA_I
 
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 
 	cmpq	$2 * SIZE, INCX
-	jne	.L20
+	jne	L(20)
 	cmpq	$2 * SIZE, INCY
-	jne	.L20
+	jne	L(20)
 
 	movq	M,  %rax
 	sarq	$2, %rax
-	jle	.L15
+	jle	L(15)
 
 	movsd	 0 * SIZE(X), %xmm0
 	movsd	 1 * SIZE(X), %xmm1
@@ -133,10 +133,10 @@
 	movsd	 5 * SIZE(X), %xmm1
 
 	decq	%rax
-	jle	.L12
+	jle	L(12)
 	ALIGN_3
 
-.L11:
+L(11):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -228,10 +228,10 @@
 	addq	$8 * SIZE, X
 	addq	$8 * SIZE, Y
 	decq	%rax
-	jg	.L11
+	jg	L(11)
 	ALIGN_3
 
-.L12:
+L(12):
 	mulsd	ALPHA_I, %xmm7
 	movsd	 4 * SIZE(Y), %xmm12
 	ADD1	%xmm3, %xmm8
@@ -299,10 +299,10 @@
 	addq	$8 * SIZE, Y
 	ALIGN_3
 
-.L15:
+L(15):
 	movq	M,  %rax
 	andq	$2, %rax
-	jle	.L17
+	jle	L(17)
 
 	movsd	 0 * SIZE(X), %xmm0
 	movsd	 1 * SIZE(X), %xmm1
@@ -348,10 +348,10 @@
 	addq	$4 * SIZE, Y
 	ALIGN_3
 
-.L17:
+L(17):
 	movq	M,  %rax
 	andq	$1, %rax
-	jle	.L999
+	jle	L(999)
 
 	movsd	 0 * SIZE(X), %xmm0
 	movsd	 1 * SIZE(X), %xmm1
@@ -372,15 +372,15 @@
 
 	movsd	%xmm8,   0 * SIZE(Y)
 	movsd	%xmm9,   1 * SIZE(Y)
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_3
 
-.L20:
+L(20):
 	movq	Y, YY
 
 	movq	M,  %rax
 	sarq	$2, %rax
-	jle	.L25
+	jle	L(25)
 
 	movsd	 0 * SIZE(X), %xmm0
 	movsd	 1 * SIZE(X), %xmm1
@@ -415,10 +415,10 @@
 	addq	 INCX, X
 
 	decq	%rax
-	jle	.L22
+	jle	L(22)
 	ALIGN_3
 
-.L21:
+L(21):
 	mulsd	ALPHA_I, %xmm7
 	movsd	 0 * SIZE(Y), %xmm12
 	ADD1	%xmm3, %xmm8
@@ -512,10 +512,10 @@
 	addq	 INCX, X
 
 	decq	%rax
-	jg	.L21
+	jg	L(21)
 	ALIGN_3
 
-.L22:
+L(22):
 	mulsd	ALPHA_I, %xmm7
 	movsd	 0 * SIZE(Y), %xmm12
 	ADD1	%xmm3, %xmm8
@@ -587,10 +587,10 @@
 	addq	 INCY, YY
 	ALIGN_3
 
-.L25:
+L(25):
 	movq	M,  %rax
 	andq	$2, %rax
-	jle	.L27
+	jle	L(27)
 
 	movsd	 0 * SIZE(X), %xmm0
 	movsd	 1 * SIZE(X), %xmm1
@@ -639,10 +639,10 @@
 	addq	 INCY, YY
 	ALIGN_3
 
-.L27:
+L(27):
 	movq	M,  %rax
 	andq	$1, %rax
-	jle	.L999
+	jle	L(999)
 
 	movsd	 0 * SIZE(X), %xmm0
 	movsd	 1 * SIZE(X), %xmm1
@@ -665,7 +665,7 @@
 	movsd	%xmm9,   1 * SIZE(YY)
 	ALIGN_3
 
-.L999:
+L(999):
 	xorq	%rax, %rax
 
 	RESTOREREGISTERS

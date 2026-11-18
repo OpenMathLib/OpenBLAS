@@ -173,19 +173,19 @@
 
 
 
-.L0x:
+L(0x):
 	xorq	M,M
 	addq	$1,M
 	salq	$22,M
 	subq	M,MMM
-	jge .L00
+	jge L(00)
 
 	movq	MMM,%rax
 	addq	M,%rax
-	jle	.L999x
+	jle	L(999x)
 	movq	%rax,M
 
-.L00:
+L(00):
 	movq	LDAX,LDA
 	movq	NN,N
 	movq	AA,A
@@ -205,18 +205,18 @@
 	subq	$-16 * SIZE, A
 
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 	testq	N, N
-	jle	.L999
+	jle	L(999)
 
 	movq	BUFFER, X1
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L05
+	jle	L(05)
 	ALIGN_4
 
-.L02:
+L(02):
 	vmovsd	(X), %xmm0
 	addq	INCX, X
 	vmovhpd	(X), %xmm0 , %xmm0
@@ -244,34 +244,34 @@
 
 	addq	$8 * SIZE, X1
 	decq	I
-	jg	.L02
+	jg	L(02)
 	ALIGN_4
 
-.L05:
+L(05):
 	movq	M,  I
 	andq	$7, I
-	jle	.L10
+	jle	L(10)
 	ALIGN_2
 
-.L06:
+L(06):
 	vmovsd	(X), %xmm0
 	addq	INCX, X
 	vmovsd	%xmm0, 0 * SIZE(X1)
 	addq	$SIZE, X1
 	decq	I
-	jg	.L06
+	jg	L(06)
 	ALIGN_4
 
-.L10:
+L(10):
 	movq	Y, Y1
 
 
 #if GEMV_UNROLL >= 8
 	cmpq	$8, N
-	jl	.L20
+	jl	L(20)
 	ALIGN_3
 
-.L11:
+L(11):
 	subq	$8, N
 
 	leaq	16 * SIZE(BUFFER), X1
@@ -292,17 +292,17 @@
 
 	movq	M,  I
 	sarq	$3,  I
-	jle	.L15
+	jle	L(15)
 
 
 	VMOVUPS_XL1(-16 * SIZE, X1, %xmm12)
 	VMOVUPS_XL1(-14 * SIZE, X1, %xmm13)
 
 	decq	I
-	jle	.L13
+	jle	L(13)
 	ALIGN_4
 
-.L12:
+L(12):
 
 	prefetchnta     A_PRE(A1)
 	prefetchnta     A_PRE(A2)
@@ -367,10 +367,10 @@
 	addq	$8 * SIZE, X1
 
 	decq	I
-	jg	.L12
+	jg	L(12)
 	ALIGN_4
 
-.L13:
+L(13):
 
 	vfmaddpd %xmm0 , -16 * SIZE(A1)           , %xmm12 , %xmm0
 	vfmaddpd %xmm1 , -16 * SIZE(A1 , LDA , 1) , %xmm12 , %xmm1
@@ -423,9 +423,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L15:
+L(15):
 	testq	$4, M
-	jle	.L16
+	jle	L(16)
 
 
 	VMOVUPS_XL1(-16 * SIZE, X1, %xmm12)
@@ -458,9 +458,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L16:
+L(16):
 	testq	$2, M
-	jle	.L17
+	jle	L(17)
 
 	VMOVUPS_XL1(-16 * SIZE, X1, %xmm12)
 
@@ -479,9 +479,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L17:
+L(17):
 	testq	$1, M
-	je	.L18
+	je	L(18)
 
 	vmovsd	-16 * SIZE(X1), %xmm12
 
@@ -507,7 +507,7 @@
 
 	ALIGN_4
 
-.L18:
+L(18):
 	vhaddpd	%xmm1, %xmm0 , %xmm0
 	vhaddpd	%xmm3, %xmm2 , %xmm2
 	vhaddpd	%xmm5, %xmm4 , %xmm4
@@ -519,7 +519,7 @@
 	vmulpd	ALPHA, %xmm6 , %xmm6
 
 	cmpq	$SIZE, INCY
-	jne	.L19
+	jne	L(19)
 
 	vaddpd	0 * SIZE(Y),  %xmm0 , %xmm0
 	vaddpd	2 * SIZE(Y),  %xmm2 , %xmm2
@@ -534,11 +534,11 @@
 	addq	$8 * SIZE, Y1
 
 	cmpq	$8, N
-	jge	.L11
-	jmp	.L20
+	jge	L(11)
+	jmp	L(20)
 	ALIGN_4
 
-.L19:
+L(19):
 
 	vmovsd	(Y), %xmm8
 	addq	INCY, Y
@@ -580,21 +580,21 @@
 	addq	INCY, Y1
 
 	cmpq	$8, N
-	jge	.L11
+	jge	L(11)
 	ALIGN_4
 
-.L20:
+L(20):
 #endif
 
 #if GEMV_UNROLL >= 4
 
 	cmpq	$4, N
-	jl	.L30
+	jl	L(30)
 
 #if GEMV_UNROLL == 4
 	ALIGN_3
 
-.L21:
+L(21):
 #endif
 	subq	$4, N
 
@@ -612,16 +612,16 @@
 
 	movq	M,  I
 	sarq	$3,  I
-	jle	.L25
+	jle	L(25)
 
 	VMOVUPS_XL1(-16 * SIZE, X1, %xmm12)
 	VMOVUPS_XL1(-14 * SIZE, X1, %xmm13)
 
 	decq	I
-	jle	.L23
+	jle	L(23)
 	ALIGN_4
 
-.L22:
+L(22):
 
 	prefetchnta     A_PRE(A1)
 	prefetchnta     A_PRE(A2)
@@ -661,10 +661,10 @@
 	addq	$8 * SIZE, X1
 
 	decq	I
-	jg	.L22
+	jg	L(22)
 	ALIGN_4
 
-.L23:
+L(23):
 
         vfmaddpd %xmm0 , -16 * SIZE(A1)           , %xmm12 , %xmm0
         vfmaddpd %xmm1 , -16 * SIZE(A1 , LDA , 1) , %xmm12 , %xmm1
@@ -696,9 +696,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L25:
+L(25):
 	testq	$4, M
-	jle	.L26
+	jle	L(26)
 
 	VMOVUPS_XL1(-16 * SIZE, X1, %xmm12)
 	VMOVUPS_XL1(-14 * SIZE, X1, %xmm13)
@@ -719,9 +719,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L26:
+L(26):
 	testq	$2, M
-	jle	.L27
+	jle	L(27)
 
 	VMOVUPS_XL1(-16 * SIZE, X1, %xmm12)
 
@@ -735,9 +735,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L27:
+L(27):
 	testq	$1, M
-	je	.L28
+	je	L(28)
 
 	vmovsd	-16 * SIZE(X1), %xmm12
 
@@ -753,7 +753,7 @@
 
 	ALIGN_4
 
-.L28:
+L(28):
 	vhaddpd	%xmm1, %xmm0 , %xmm0
 	vhaddpd	%xmm3, %xmm2 , %xmm2
 
@@ -761,7 +761,7 @@
 	vmulpd	ALPHA, %xmm2 , %xmm2
 
 	cmpq	$SIZE, INCY
-	jne	.L29
+	jne	L(29)
 
 	vmovups	 0 * SIZE(Y), %xmm4
 	vmovups  2 * SIZE(Y), %xmm5
@@ -776,12 +776,12 @@
 
 #if GEMV_UNROLL == 4
 	cmpq	$4, N
-	jge	.L21
+	jge	L(21)
 #endif
-	jmp	.L30
+	jmp	L(30)
 	ALIGN_4
 
-.L29:
+L(29):
 
 	vmovsd	(Y), %xmm4
 	addq	INCY, Y
@@ -806,22 +806,22 @@
 
 #if GEMV_UNROLL == 4
 	cmpq	$4, N
-	jge	.L21
+	jge	L(21)
 #endif
 	ALIGN_4
 
-.L30:
+L(30):
 #endif
 
 #if GEMV_UNROLL >= 2
 
 	cmpq	$2, N
-	jl	.L40
+	jl	L(40)
 
 #if GEMV_UNROLL == 2
 	ALIGN_3
 
-.L31:
+L(31):
 #endif
 
 	subq	$2, N
@@ -840,16 +840,16 @@
 
 	movq	M,  I
 	sarq	$3,  I
-	jle	.L35
+	jle	L(35)
 
 	VMOVUPS_XL1(-16 * SIZE, X1, %xmm12)
 	VMOVUPS_XL1(-14 * SIZE, X1, %xmm13)
 
 	decq	I
-	jle	.L33
+	jle	L(33)
 	ALIGN_4
 
-.L32:
+L(32):
 
         prefetchnta     A_PRE(A1)
         prefetchnta     A_PRE(A2)
@@ -879,10 +879,10 @@
 	addq	$8 * SIZE, X1
 
 	decq	I
-	jg	.L32
+	jg	L(32)
 	ALIGN_4
 
-.L33:
+L(33):
 
         vfmaddpd %xmm0 , -16 * SIZE(A1)           , %xmm12 , %xmm0
         vfmaddpd %xmm1 , -16 * SIZE(A2)           , %xmm12 , %xmm1
@@ -905,9 +905,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L35:
+L(35):
 	testq	$4, M
-	jle	.L36
+	jle	L(36)
 
 	VMOVUPS_XL1(-16 * SIZE, X1, %xmm12)
 	VMOVUPS_XL1(-14 * SIZE, X1, %xmm13)
@@ -924,9 +924,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L36:
+L(36):
 	testq	$2, M
-	jle	.L37
+	jle	L(37)
 
 	VMOVUPS_XL1(-16 * SIZE, X1, %xmm12)
 
@@ -938,9 +938,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L37:
+L(37):
 	testq	$1, M
-	je	.L38
+	je	L(38)
 
 	vmovsd	-16 * SIZE(X1), %xmm12
 
@@ -952,7 +952,7 @@
 
 	ALIGN_4
 
-.L38:
+L(38):
 	vaddpd	%xmm2, %xmm0 , %xmm0
 	vaddpd	%xmm3, %xmm1 , %xmm1
 
@@ -974,13 +974,13 @@
 
 #if GEMV_UNROLL == 2
 	cmpq	$2, N
-	jge	.L31
+	jge	L(31)
 #endif
 	ALIGN_4
 
-.L40:
+L(40):
 	cmpq	$1, N
-	jl	.L999
+	jl	L(999)
 
 #endif
 
@@ -997,17 +997,17 @@
 
 	movq	M,  I
 	sarq	$3,  I
-	jle	.L45
+	jle	L(45)
 
 
 	VMOVUPS_XL1(-16 * SIZE, X1, %xmm12)
 	VMOVUPS_XL1(-14 * SIZE, X1, %xmm13)
 
 	decq	I
-	jle	.L43
+	jle	L(43)
 	ALIGN_4
 
-.L42:
+L(42):
 
 	prefetchnta     A_PRE(A1)
         vfmaddpd %xmm0 , -16 * SIZE(A1)           , %xmm12 , %xmm0
@@ -1027,10 +1027,10 @@
 	addq	$8 * SIZE, X1
 
 	decq	I
-	jg	.L42
+	jg	L(42)
 	ALIGN_4
 
-.L43:
+L(43):
 
         vfmaddpd %xmm0 , -16 * SIZE(A1)           , %xmm12 , %xmm0
         vfmaddpd %xmm2 , -14 * SIZE(A1)           , %xmm13 , %xmm2
@@ -1047,9 +1047,9 @@
 	addq	$8 * SIZE, X1
 	ALIGN_4
 
-.L45:
+L(45):
 	testq	$4, M
-	jle	.L46
+	jle	L(46)
 
 
 	VMOVUPS_XL1(-16 * SIZE, X1, %xmm12)
@@ -1062,9 +1062,9 @@
 	addq	$4 * SIZE, X1
 	ALIGN_4
 
-.L46:
+L(46):
 	testq	$2, M
-	jle	.L47
+	jle	L(47)
 
 	VMOVUPS_XL1(-16 * SIZE, X1, %xmm12)
 
@@ -1074,9 +1074,9 @@
 	addq	$2 * SIZE, X1
 	ALIGN_4
 
-.L47:
+L(47):
 	testq	$1, M
-	je	.L48
+	je	L(48)
 
 	vmovsd	-16 * SIZE(X1), %xmm12
 	vmovsd	-16 * SIZE(A1), %xmm8
@@ -1084,7 +1084,7 @@
 	vfmaddpd %xmm0, %xmm8 , %xmm12, %xmm0
 	ALIGN_4
 
-.L48:
+L(48):
 	vaddpd	%xmm2, %xmm0 , %xmm0
 	vaddpd	%xmm3, %xmm1 , %xmm1
 
@@ -1104,13 +1104,13 @@
 
 	ALIGN_4
 
-.L999:
+L(999):
 	leaq	(, M, SIZE), %rax
 	addq %rax,AA
-	jmp .L0x;
+	jmp L(0x);
 	ALIGN_4
 
-.L999x:
+L(999x):
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12

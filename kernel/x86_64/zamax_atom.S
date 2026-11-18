@@ -60,10 +60,10 @@
 	salq	$ZBASE_SHIFT, INCX
 
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 
 	testq	INCX, INCX
-	jle	.L999
+	jle	L(999)
 
 	pcmpeqb	%xmm15, %xmm15
 	psrlq	$1, %xmm15
@@ -77,16 +77,16 @@
 
 	addsd	%xmm4,  %xmm0
 	decq	M
-	jle	.L999
+	jle	L(999)
 
 	movaps	 %xmm0, %xmm1
 
 	cmpq	$2 * SIZE, INCX
-	jne	.L20
+	jne	L(20)
 
 	movq	M,  I
 	sarq	$2, I
-	jle	.L15
+	jle	L(15)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -101,10 +101,10 @@
 	addsd	%xmm4,  %xmm5
 	movsd	7 * SIZE(X), %xmm11
 	decq	I
-	jle	.L13
+	jle	L(13)
 	ALIGN_4
 
-.L12:
+L(12):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -139,10 +139,10 @@
 
 	addq	$8 * SIZE, X
 	decq	I
-	jg	.L12
+	jg	L(12)
 	ALIGN_4
 
-.L13:
+L(13):
 	andps	%xmm15, %xmm6
 	andps	%xmm15, %xmm7
 	addsd	%xmm6,  %xmm7
@@ -163,9 +163,9 @@
 	addq	$8 * SIZE, X
 	ALIGN_4
 
-.L15:
+L(15):
 	testq	$2, M
-	jle	.L17
+	jle	L(17)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -185,9 +185,9 @@
 	maxsd	%xmm7,  %xmm1
 	ALIGN_3
 
-.L17:
+L(17):
 	testq	$1, M
-	jle	.L998
+	jle	L(998)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -197,13 +197,13 @@
 
 	addsd	%xmm4,  %xmm5
 	maxsd	%xmm5,  %xmm0
-	jmp	.L998
+	jmp	L(998)
 	ALIGN_3
 
-.L20:
+L(20):
 	movq	M,  I
 	sarq	$2, I
-	jle	.L25
+	jle	L(25)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -223,10 +223,10 @@
 	addq	INCX, X
 
 	decq	I
-	jle	.L23
+	jle	L(23)
 	ALIGN_4
 
-.L22:
+L(22):
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -264,10 +264,10 @@
 	addsd	%xmm4,  %xmm5
 
 	decq	I
-	jg	.L22
+	jg	L(22)
 	ALIGN_4
 
-.L23:
+L(23):
 	andps	%xmm15, %xmm6
 	andps	%xmm15, %xmm7
 	addsd	%xmm6,  %xmm7
@@ -286,9 +286,9 @@
 	maxsd	%xmm11, %xmm1
 	ALIGN_4
 
-.L25:
+L(25):
 	testq	$2, M
-	jle	.L27
+	jle	L(27)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -309,9 +309,9 @@
 	maxsd	%xmm7,  %xmm1
 	ALIGN_3
 
-.L27:
+L(27):
 	testq	$1, M
-	jle	.L998
+	jle	L(998)
 
 	movsd	0 * SIZE(X), %xmm4
 	movsd	1 * SIZE(X), %xmm5
@@ -323,11 +323,11 @@
 	maxsd	%xmm5,  %xmm0
 	ALIGN_3
 
-.L998:
+L(998):
 	maxsd	%xmm1, %xmm0
 	ALIGN_4
 
-.L999:
+L(999):
 
 	RESTOREREGISTERS
 

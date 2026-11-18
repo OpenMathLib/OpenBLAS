@@ -102,33 +102,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ldr LDC, [sp]
 	SAVE_REGS
 
-.Lgemm_beta_BEGIN:
+L(gemm_beta_BEGIN):
 
 	fmov beta0, BETA
 	cmp 	N, #0
-	ble	.Lgemm_beta_L999
+	ble	L(gemm_beta_L999)
 
 	fcmp BETA, #0.0
-	beq .Lgemm_beta_zero_01
+	beq L(gemm_beta_zero_01)
 
-.Lgemm_beta_01:
+L(gemm_beta_01):
 
 	lsl LDC, LDC, #2
 
 	.align 5
-.Lgemm_beta_02:
+L(gemm_beta_02):
 
 	mov	A01, C00
 	add C00, C00, LDC
 	asr	I, M, #5
 	cmp 	I, #0
-	ble .Lgemm_beta_04
+	ble L(gemm_beta_04)
 	add	A02, A01, #32
 	add	A03, A02, #32
 	add	A04, A03, #32
 
 	.align 5
-.Lgemm_beta_03:
+L(gemm_beta_03):
 
 	prfm	PLDL1KEEP, [A01, prfm_size]
 
@@ -161,17 +161,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	A04, A04, calc_size
 
 	subs	I , I , #1
-	bne	.Lgemm_beta_03
+	bne	L(gemm_beta_03)
 
 	.align 5
-.Lgemm_beta_04:
+L(gemm_beta_04):
 
 	and	I, M , #31
 	cmp	I, #0
-	ble	.Lgemm_beta_06
+	ble	L(gemm_beta_06)
 
 	.align 5
-.Lgemm_beta_05:
+L(gemm_beta_05):
 
 	ldr	s12, [A01]
 	fmul	s12, s12, beta0
@@ -179,42 +179,42 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	A01, A01, #4
 
 	subs	I , I , #1
-	bne	.Lgemm_beta_05
+	bne	L(gemm_beta_05)
 
 	.align 5
-.Lgemm_beta_06:
+L(gemm_beta_06):
 
 	subs	N , N, #1			// N--
-	bne	.Lgemm_beta_02
+	bne	L(gemm_beta_02)
 
 	.align 5
-.Lgemm_beta_L999:
+L(gemm_beta_L999):
 
 	mov	x0, #0
 	RESTORE_REGS
 	ret
 
 	.align 5
-.Lgemm_beta_zero_01:
+L(gemm_beta_zero_01):
 
 	INIT_ZERO
 	lsl LDC, LDC, #2
 
 	.align 5
-.Lgemm_beta_zero_02:
+L(gemm_beta_zero_02):
 
 	mov A01, C00
 	add C00, C00, LDC
 
 	asr I, M, #5
 	cmp I, #0
-	ble .Lgemm_beta_zero_04
+	ble L(gemm_beta_zero_04)
 	add A02, A01, #32
 	add A03, A02, #32
 	add A04, A03, #32
 
 	.align 5
-.Lgemm_beta_zero_03:
+L(gemm_beta_zero_03):
 
 	st1	{v0.4s, v1.4s}, [A01]
 	add	 A01, A01, calc_size
@@ -226,32 +226,32 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	A04, A04, calc_size
 
 	subs I, I, #1
-	bne .Lgemm_beta_zero_03
+	bne L(gemm_beta_zero_03)
 
 	.align 5
-.Lgemm_beta_zero_04:
+L(gemm_beta_zero_04):
 
 	and I, M, #31
 	cmp I, #0
-	ble .Lgemm_beta_zero_06
+	ble L(gemm_beta_zero_06)
 
 	.align 5
-.Lgemm_beta_zero_05:
+L(gemm_beta_zero_05):
 
 	str beta0, [A01]
 	add A01, A01, #4
 
 	subs I, I, #1
-	bne .Lgemm_beta_zero_05
+	bne L(gemm_beta_zero_05)
 
 	.align 5
-.Lgemm_beta_zero_06:
+L(gemm_beta_zero_06):
 
 	subs N, N, #1
-	bne .Lgemm_beta_zero_02
+	bne L(gemm_beta_zero_02)
 
 	.align 5
-.Lgemm_beta_zero_L999:
+L(gemm_beta_zero_L999):
 	mov x0, #0
 	RESTORE_REGS
 	ret

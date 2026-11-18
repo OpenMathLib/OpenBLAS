@@ -122,52 +122,52 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 	cmp	N, xzr
-	ble	.Lasum_kernel_L999
+	ble	L(asum_kernel_L999)
 	cmp	INC_X, xzr
-	ble	.Lasum_kernel_L999
+	ble	L(asum_kernel_L999)
 
 	cmp	INC_X, #1
-	bne	.Lasum_kernel_S_BEGIN
+	bne	L(asum_kernel_S_BEGIN)
 
-.Lasum_kernel_F_BEGIN:
+L(asum_kernel_F_BEGIN):
 
 	asr	I, N, #3
 	cmp	I, xzr
-	beq	.Lasum_kernel_F1
+	beq	L(asum_kernel_F1)
 
-.Lasum_kernel_F8:
+L(asum_kernel_F8):
 
 	KERNEL_F8
 
 	subs	I, I, #1
-	bne	.Lasum_kernel_F8
+	bne	L(asum_kernel_F8)
 
 	KERNEL_F8_FINALIZE
 
-.Lasum_kernel_F1:
+L(asum_kernel_F1):
 
 	ands	I, N, #7
-	ble	.Lasum_kernel_L999
+	ble	L(asum_kernel_L999)
 
-.Lasum_kernel_F10:
+L(asum_kernel_F10):
 
 	KERNEL_F1
 
 	subs    I, I, #1
-        bne     .Lasum_kernel_F10
+        bne     L(asum_kernel_F10)
 
-.Lasum_kernel_L999:
+L(asum_kernel_L999):
 	ret
 
-.Lasum_kernel_S_BEGIN:
+L(asum_kernel_S_BEGIN):
 
 	INIT_S
 
 	asr	I, N, #2
 	cmp	I, xzr
-	ble	.Lasum_kernel_S1
+	ble	L(asum_kernel_S1)
 
-.Lasum_kernel_S4:
+L(asum_kernel_S4):
 
 	KERNEL_S1
 	KERNEL_S1
@@ -175,19 +175,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL_S1
 
 	subs	I, I, #1
-	bne	.Lasum_kernel_S4
+	bne	L(asum_kernel_S4)
 
-.Lasum_kernel_S1:
+L(asum_kernel_S1):
 
 	ands	I, N, #3
-	ble	.Lasum_kernel_L999
+	ble	L(asum_kernel_L999)
 
-.Lasum_kernel_S10:
+L(asum_kernel_S10):
 
 	KERNEL_S1
 
 	subs    I, I, #1
-        bne     .Lasum_kernel_S10
+        bne     L(asum_kernel_S10)
 
 	ret
 

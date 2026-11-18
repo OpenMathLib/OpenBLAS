@@ -69,27 +69,27 @@
 	SAVEREGISTERS
 
 	testq	M, M
-	jle	.L999
+	jle	L(999)
 
 	pxor	%xmm1, %xmm1
 	lea	(, INCX, SIZE), INCX
 	comisd	%xmm0, %xmm1
-	jne	.L100
-	jp	.L100
+	jne	L(100)
+	jp	L(100)
 
 	cmpq	$1, %r9
-	je	.L100
+	je	L(100)
 
 /* Alpha == ZERO */
 	cmpq	$SIZE, INCX
-	jne	.L50
+	jne	L(50)
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L12
+	jle	L(12)
 	ALIGN_4
 
-.L11:
+L(11):
 	movsd	%xmm1,  0 * SIZE(X)
 	movsd	%xmm1,  1 * SIZE(X)
 	movsd	%xmm1,  2 * SIZE(X)
@@ -102,12 +102,12 @@
 
 	addq	$8 * SIZE, X
 	decq	I
-	jg	.L11
+	jg	L(11)
 	ALIGN_4
 
-.L12:
+L(12):
 	testq  $4, M
-	je    .L14
+	je    L(14)
 
 	movsd	%xmm1,  0 * SIZE(X)
 	movsd	%xmm1,  1 * SIZE(X)
@@ -117,9 +117,9 @@
 	addq	$4 * SIZE, X
 	ALIGN_3
 
-.L14:
+L(14):
 	testq  $2, M
-	je    .L15
+	je    L(15)
 
 	movsd	%xmm1,  0 * SIZE(X)
 	movsd	%xmm1,  1 * SIZE(X)
@@ -127,21 +127,21 @@
 	addq	$2 * SIZE, X
 	ALIGN_3
 
-.L15:
+L(15):
 	testq  $1, M
-	je    .L999
+	je    L(999)
 
 	movsd	%xmm1,  0 * SIZE(X)
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
-.L50:
+L(50):
 	movq	M,  I
 	sarq	$3, I
-	jle	.L52
+	jle	L(52)
 	ALIGN_4
 
-.L51:
+L(51):
 	movsd	%xmm1, 0 * SIZE(X)
 	addq	INCX, X
 	movsd	%xmm1, 0 * SIZE(X)
@@ -160,15 +160,15 @@
 	addq	INCX, X
 
 	decq	I
-	jg	.L51
+	jg	L(51)
 	ALIGN_4
 
-.L52:
+L(52):
 	testq	$7, M
-	je	.L999
+	je	L(999)
 
 	testq	$4, M
-	je	.L53
+	je	L(53)
 
 	movsd	%xmm1, 0 * SIZE(X)
 	addq	INCX, X
@@ -180,9 +180,9 @@
 	addq	INCX, X
 	ALIGN_3
 
-.L53:
+L(53):
 	testq	$2, M
-	je	.L54
+	je	L(54)
 
 	movsd	%xmm1, 0 * SIZE(X)
 	addq	INCX, X
@@ -190,25 +190,25 @@
 	addq	INCX, X
 	ALIGN_3
 
-.L54:
+L(54):
 	testq	$1, M
-	je	.L999
+	je	L(999)
 
 	movsd	%xmm1, 0 * SIZE(X)
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_4
 
 /* Alpha != ZERO */
 
-.L100:
+L(100):
 	cmpq	$SIZE, INCX
-	jne	.L150
+	jne	L(150)
 
 	unpcklpd %xmm0, %xmm0
 
 	movq	M,  I
 	sarq	$3, I
-	jle	.L113
+	jle	L(113)
 
 	movsd	 0 * SIZE(X), %xmm1
 	movsd	 1 * SIZE(X), %xmm2
@@ -225,10 +225,10 @@
 	mulsd	%xmm0, %xmm4
 
 	decq	I
-	jle	.L112
+	jle	L(112)
 	ALIGN_4
 
-.L111:
+L(111):
 #ifdef PREFETCHW
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
@@ -263,10 +263,10 @@
 
 	addq	$8 * SIZE, X
 	decq	I
-	jg	.L111
+	jg	L(111)
 	ALIGN_4
 
-.L112:
+L(112):
 	movsd	%xmm1,  0 * SIZE(X)
 	mulsd	%xmm0, %xmm5
 	movsd	%xmm2,  1 * SIZE(X)
@@ -283,9 +283,9 @@
 	addq	$8 * SIZE, X
 	ALIGN_3
 
-.L113:
+L(113):
 	testq	$4, M
-	je	.L115
+	je	L(115)
 
 	movsd	 0 * SIZE(X), %xmm1
 	movsd	 1 * SIZE(X), %xmm2
@@ -305,9 +305,9 @@
 	addq	$4 * SIZE, X
 	ALIGN_3
 
-.L115:
+L(115):
 	testq	$2, M
-	je	.L116
+	je	L(116)
 
 	movsd	 0 * SIZE(X), %xmm1
 	movsd	 1 * SIZE(X), %xmm2
@@ -321,26 +321,26 @@
 	addq	$2 * SIZE, X
 	ALIGN_3
 
-.L116:
+L(116):
 	testq	$1, M
-	je	.L999
+	je	L(999)
 
 	movsd	 0 * SIZE(X), %xmm1
 	mulsd	%xmm0, %xmm1
 	movsd	%xmm1,  0 * SIZE(X)
-	jmp	.L999
+	jmp	L(999)
 	ALIGN_3
 
 /* incx != 1 */
 
-.L150:
+L(150):
 	movq	X, XX
 	movq	M,  I		# rcx = n
 	sarq	$3, I		# (n >> 3)
-	jle	.L152
+	jle	L(152)
 	ALIGN_4
 
-.L151:
+L(151):
 	movsd	0 * SIZE(X), %xmm1
 	addq	INCX, X
 	movsd	0 * SIZE(X), %xmm2
@@ -383,15 +383,15 @@
 	movsd	%xmm8, 0 * SIZE(XX)
 	addq	INCX, XX
 	decq	I
-	jg	.L151
+	jg	L(151)
 	ALIGN_4
 
-.L152:
+L(152):
 	testq	$7, M
-	je	.L999
+	je	L(999)
 
 	testq	$4, M
-	je	.L153
+	je	L(153)
 
 	movsd	 0 * SIZE(X), %xmm1
 	addq	INCX, X
@@ -416,9 +416,9 @@
 	addq	INCX, XX
 	ALIGN_3
 
-.L153:
+L(153):
 	testq	$2, M
-	je	.L154
+	je	L(154)
 
 	movsd	 0 * SIZE(X), %xmm1
 	addq	INCX, X
@@ -433,16 +433,16 @@
 	addq	INCX, XX
 	ALIGN_3
 
-.L154:
+L(154):
 	testq	$1, M
-	je	.L999
+	je	L(999)
 
 	movsd	 0 * SIZE(X), %xmm1
 	mulsd	%xmm0, %xmm1
 	movsd	%xmm1,  0 * SIZE(X)
 	ALIGN_4
 
-.L999:
+L(999):
 	xorq	%rax, %rax
 
 	RESTOREREGISTERS

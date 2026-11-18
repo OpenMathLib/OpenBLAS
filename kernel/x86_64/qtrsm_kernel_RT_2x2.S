@@ -132,7 +132,7 @@
 
 	movq	N,  %rax
 	testq	$1, %rax
-	je	.L30
+	je	L(30)
 
 #if defined(LT) || defined(RN)
 	movq	A, AO
@@ -168,10 +168,10 @@
 
 	movq	M,  I
 	sarq	$1, I
-	je	.L40
+	je	L(40)
 	ALIGN_4
 
-.L31:
+L(31):
 #ifdef LN
        movq	K, %rax
        salq	$1 + BASE_SHIFT, %rax
@@ -204,10 +204,10 @@
 	subq	KK, %rax
 #endif
 	sarq	$2, %rax
- 	je	.L35
+ 	je	L(35)
 	ALIGN_4
 
-.L32:
+L(32):
 	PREFETCH	(PREFETCHSIZE + 0) * SIZE(AO)
 
 	FLD	 -8 * SIZE(BO)
@@ -250,10 +250,10 @@
 	addq	$4 * SIZE,BO
 
 	decq	%rax
-	jne	.L32
+	jne	L(32)
 	ALIGN_4
 
-.L35:
+L(35):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -261,10 +261,10 @@
 	subq	KK, %rax
 #endif
 	and	$3,  %rax
-	je	.L38
+	je	L(38)
 	ALIGN_4
 
-.L36:
+L(36):
 	FLD	 -8 * SIZE(BO)
 
 	FLD	 -8 * SIZE(AO)
@@ -279,10 +279,10 @@
 	addq	$1 * SIZE,BO
 
 	decq	%rax
-	jne	 .L36
+	jne	 L(36)
 	ALIGN_4
 
-.L38:
+L(38):
 #if defined(LN) || defined(RT)
 	movq	KK, %rax
 #ifdef LN
@@ -395,16 +395,16 @@
 #endif
 
 	decq	I
-	jne	.L31
+	jne	L(31)
 	ALIGN_4
 
-.L40:
+L(40):
 	movq	 M, %rax
 	andq	$1, %rax
-	je	.L49
+	je	L(49)
 	ALIGN_4
 
-.L41:
+L(41):
 #ifdef LN
        movq	K, %rax
        salq	$0 + BASE_SHIFT, %rax
@@ -430,10 +430,10 @@
 	subq	KK, %rax
 #endif
 	sarq	$2, %rax
- 	je	.L45
+ 	je	L(45)
 	ALIGN_4
 
-.L42:
+L(42):
 	PREFETCH	(PREFETCHSIZE + 0) * SIZE(AO)
 
 	FLD	 -8 * SIZE(AO)
@@ -460,10 +460,10 @@
 	addq	$4 * SIZE,BO
 
 	decq	%rax
-	jne	.L42
+	jne	L(42)
 	ALIGN_4
 
-.L45:
+L(45):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -471,10 +471,10 @@
 	subq	KK, %rax
 #endif
 	and	$3,  %rax
-	je	.L48
+	je	L(48)
 	ALIGN_4
 
-.L46:
+L(46):
 	FLD	 -8 * SIZE(AO)
 
 	FLD	 -8 * SIZE(BO)
@@ -485,10 +485,10 @@
 	addq	$1 * SIZE,BO
 
 	decq	%rax
-	jne	 .L46
+	jne	 L(46)
 	ALIGN_4
 
-.L48:
+L(48):
 #if defined(LN) || defined(RT)
 	movq	KK, %rax
 #ifdef LN
@@ -573,7 +573,7 @@
 #endif
 	ALIGN_4
 
-.L49:
+L(49):
 #ifdef LN
        movq	K, %rax
        salq	$BASE_SHIFT, %rax
@@ -593,14 +593,14 @@
 #endif
 	ALIGN_4
 
-.L30:
+L(30):
 	movq	N,   %rax
 	sarq	$1,  %rax
 	movq	%rax, J
-	je	.L999
+	je	L(999)
 	ALIGN_4
 
-.L01:
+L(01):
 #if defined(LT) || defined(RN)
 	movq	A, AO
 #else
@@ -637,10 +637,10 @@
 
 	movq	M,  I
 	sarq	$1, I
-	je	.L20
+	je	L(20)
 	ALIGN_4
 
-.L11:
+L(11):
 #ifdef LN
        movq	K, %rax
        salq	$1 + BASE_SHIFT, %rax
@@ -677,10 +677,10 @@
 	subq	KK, %rax
 #endif
 	sarq	$2, %rax
- 	je	.L15
+ 	je	L(15)
 	ALIGN_4
 
-.L12:
+L(12):
 	PREFETCH	(PREFETCHSIZE + 0) * SIZE(AO)
 
 	FLD	 -8 * SIZE(AO)
@@ -761,10 +761,10 @@
 	addq	$8 * SIZE,BO
 
 	decq	%rax
-	jne	.L12
+	jne	L(12)
 	ALIGN_4
 
-.L15:
+L(15):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -772,10 +772,10 @@
 	subq	KK, %rax
 #endif
 	and	$3,  %rax
-	je	.L18
+	je	L(18)
 	ALIGN_4
 
-.L16:
+L(16):
 	FLD	 -8 * SIZE(AO)
 
 	FLD	 -8 * SIZE(BO)
@@ -798,10 +798,10 @@
 	addq	$2 * SIZE,BO
 
 	decq	%rax
-	jne	 .L16
+	jne	 L(16)
 	ALIGN_4
 
-.L18:
+L(18):
 #if defined(LN) || defined(RT)
 	movq	KK, %rax
 #ifdef LN
@@ -976,16 +976,16 @@
 #endif
 
 	decq	I
-	jne	.L11
+	jne	L(11)
 	ALIGN_4
 
-.L20:
+L(20):
 	movq	 M, %rax
 	andq	$1, %rax
-	je	.L29
+	je	L(29)
 	ALIGN_4
 
-.L21:
+L(21):
 #ifdef LN
        movq	K, %rax
        salq	$0 + BASE_SHIFT, %rax
@@ -1012,10 +1012,10 @@
 	subq	KK, %rax
 #endif
 	sarq	$2, %rax
- 	je	.L25
+ 	je	L(25)
 	ALIGN_4
 
-.L22:
+L(22):
 	PREFETCH	(PREFETCHSIZE + 0) * SIZE(AO)
 
 	FLD	 -8 * SIZE(AO)
@@ -1062,10 +1062,10 @@
 	addq	$8 * SIZE,BO
 
 	decq	%rax
-	jne	.L22
+	jne	L(22)
 	ALIGN_4
 
-.L25:
+L(25):
 #if defined(LT) || defined(RN)
 	movq	KK, %rax
 #else
@@ -1073,10 +1073,10 @@
 	subq	KK, %rax
 #endif
 	and	$3,  %rax
-	je	.L28
+	je	L(28)
 	ALIGN_4
 
-.L26:
+L(26):
 	FLD	 -8 * SIZE(AO)
 
 	FLD	 -8 * SIZE(BO)
@@ -1091,10 +1091,10 @@
 	addq	$2 * SIZE,BO
 
 	decq	%rax
-	jne	 .L26
+	jne	 L(26)
 	ALIGN_4
 
-.L28:
+L(28):
 #if defined(LN) || defined(RT)
 	movq	KK, %rax
 #ifdef LN
@@ -1202,7 +1202,7 @@
 #endif
 	ALIGN_4
 
-.L29:
+L(29):
 #ifdef LN
        movq	K, %rax
        salq	$BASE_SHIFT, %rax
@@ -1222,10 +1222,10 @@
 #endif
 
 	decq	J
-	jne	.L01
+	jne	L(01)
 	ALIGN_4
 
-.L999:
+L(999):
 	movq	  0(%rsp), %rbx
 	movq	  8(%rsp), %rbp
 	movq	 16(%rsp), %r12
