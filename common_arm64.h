@@ -50,6 +50,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define RETURN_BY_COMPLEX
 #endif
 
+/* Apple clang 16 (Xcode 16.0 to 16.2) supports SME but rejects "za" as an
+   inline asm clobber ("unknown register name 'za' in asm"), so leave it out
+   there. Other compilers too old for "za" also lack the SME support these
+   kernels need, so they keep failing to build. */
+#if defined(__apple_build_version__) && __clang_major__ == 16
+#define SME_ZA_CLOBBER
+#else
+#define SME_ZA_CLOBBER , "za"
+#endif
+
 #ifndef ASSEMBLER
 
 

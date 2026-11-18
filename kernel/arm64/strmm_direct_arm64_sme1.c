@@ -26,7 +26,7 @@ static uint64_t sve_cntw() {
 }
 #endif
 
-#if defined(__ARM_FEATURE_SME) && defined(__ARM_FEATURE_LOCALLY_STREAMING) && defined(__clang__) && __clang_major__ >= 16
+#if defined(__ARM_FEATURE_SME) && (defined(__ARM_FEATURE_LOCALLY_STREAMING) || defined(__apple_build_version__)) && defined(__clang__) && __clang_major__ >= 16
 
 #if !defined(TRANSA)
 // Transpose 1SVL x N panel of A
