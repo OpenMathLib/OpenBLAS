@@ -605,6 +605,10 @@ set (PDBOPT "")
 endif()
  #if (USE_PERL)
 message(STATUS "adding postbuild instruction to rename syms")
+  # VERBATIM quotes every COMMAND argument, so CMAKE_C_FLAGS has to be turned
+  # into a list first: as a single string it is passed to the compiler as one
+  # argument, and none of the flags or defines in it take effect.
+  separate_arguments(DLLINIT_C_FLAGS NATIVE_COMMAND "${CMAKE_C_FLAGS}")
   add_custom_command(TARGET ${OpenBLAS_LIBNAME}_static POST_BUILD
 	COMMAND perl ${PROJECT_SOURCE_DIR}/exports/gensymbol.pl "win2k" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" "${SYMBOLPREFIX}" "${SYMBOLSUFFIX}" "${BLD}" "${BBF16}" "${BHF16}" "${BS}" "${BD}" "${BC}" "${BZ}" > ${PROJECT_BINARY_DIR}/renamesyms.def
 	COMMAND ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} -I${PROJECT_SOURCE_DIR} -I${PROJECT_BINARY_DIR} -c -o ${PROJECT_BINARY_DIR}/dllinit.o ${PROJECT_SOURCE_DIR}/exports/dllinit.c
