@@ -24,8 +24,8 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-
 #define ASSEMBLER
+
 #include "common.h"
 
 #define N      $r4
@@ -61,6 +61,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define x2     $vr17
 #define x3     $vr16
 #define x4     $vr15
+#define T0     $vr13
+#define T1     $vr14
+#define S0     $vr9
+#define S1     $vr11
+#define VNAI   $vr10
+
+	.section	.rodata
+	.balign	64
+cscal_vsgn_d:
+	.double	-1.0, 1.0
+cscal_vsgn_s:
+	.float	-1.0, 1.0, -1.0, 1.0
+	.text
 
     PROLOGUE
 
@@ -77,13 +90,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     vreplgr2vr.d VXAR, t1
     movfr2gr.d t2, ALPHAI
     vreplgr2vr.d VXAI, t2
+    vxor.v VXZ, VXZ, VXZ
+    la.local $r6, cscal_vsgn_d
+    vld $vr5, $r6, 0
+    vfmul.d VNAI, VXAI, $vr5
+    srai.d I, N, 1
 #else
     vreplgr2vr.w VXAR, t1
     movfr2gr.s t2, ALPHAI
     vreplgr2vr.w VXAI, t2
-#endif
     vxor.v VXZ, VXZ, VXZ
+    la.local $r6, cscal_vsgn_s
+    vld	$vr5, $r6, 0
+    vfmul.s VNAI, VXAI, $vr5
     srai.d I, N, 2
+#endif
     bne INCX, TEMP, .L22
 
 ///////    INCX == 1   ////////
@@ -91,9 +112,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     CMPEQ  $fcc0, ALPHAR, a1
     CMPEQ  $fcc1, ALPHAI, a1
     bge $r0, I, .L19
-
-///////   INCX == 1 && N >= 4   ////////
-    bnez  DUMMY2, .L17 // if DUMMPY2 == 1, called from c/zscal.
+///////   INCX == 1 && N >= 2 (double) / 4 (single)  ////////
+    bnez  DUMMY2, .L17 // if DUMMY2 == 1, called from c/zscal.
 
     bceqz $fcc0, .L17
 
@@ -103,12 +123,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     vst VXZ, X, 0 * SIZE
 #ifdef DOUBLE
     vst VXZ, X, 2 * SIZE
-    vst VXZ, X, 4 * SIZE
-    vst VXZ, X, 6 * SIZE
+    addi.d X, X, 4 * SIZE
 #else
     vst VXZ, X, 4 * SIZE
-#endif
     addi.d X, X, 8 * SIZE
+#endif
     addi.d  I, I, -1
     blt $r0, I, .L15
     b .L19
@@ -118,58 +137,49 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     vld VX0, X, 0 * SIZE
 #ifdef DOUBLE
     vld VX1, X, 2 * SIZE
-    vpickev.d x1, VX1, VX0
-    vpickod.d x2, VX1, VX0
-    vfmul.d VX0, VXAI, x2
-    vfmsub.d x3, VXAR, x1, VX0
-    vfmul.d VX1, VXAI, x1
-    vfmadd.d x4, VXAR, x2, VX1
-    vilvl.d VX2, x4 ,x3
-    vilvh.d VX3, x4, x3
+    vfmul.d T0, VX0, VXAR
+    vfmul.d T1, VX1, VXAR
+    vshuf4i.w S0, VX0, 0x4e
+    vshuf4i.w S1, VX1, 0x4e
+    vfmadd.d VX2, S0, VNAI, T0
+    vfmadd.d VX3, S1, VNAI, T1
     vst VX2, X, 0 * SIZE
     vst VX3, X, 2 * SIZE
-    vld VX0, X, 4 * SIZE
-    vld VX1, X, 6 * SIZE
-    vpickev.d x1, VX1, VX0
-    vpickod.d x2, VX1, VX0
-    vfmul.d VX0, VXAI, x2
-    vfmsub.d x3, VXAR, x1, VX0
-    vfmul.d VX1, VXAI, x1
-    vfmadd.d x4, VXAR, x2, VX1
-    vilvl.d VX2, x4 ,x3
-    vilvh.d VX3, x4, x3
-    vst VX2, X, 4 * SIZE
-    vst VX3, X, 6 * SIZE
+    addi.d X, X, 4 * SIZE
 #else
     vld VX1, X, 4 * SIZE
-    vpickev.w x1, VX1, VX0
-    vpickod.w x2, VX1, VX0
-    vfmul.s VX0, VXAI, x2
-    vfmsub.s x3, VXAR, x1, VX0
-    vfmul.s VX1, VXAI, x1
-    vfmadd.s x4, VXAR, x2, VX1
-    vilvl.w VX2, x4 ,x3
-    vilvh.w VX3, x4, x3
+    vfmul.s T0, VX0, VXAR
+    vfmul.s T1, VX1, VXAR
+    vshuf4i.w S0, VX0, 0xb1
+    vshuf4i.w S1, VX1, 0xb1
+    vfmadd.s VX2, S0, VNAI, T0
+    vfmadd.s VX3, S1, VNAI, T1
     vst VX2, X, 0 * SIZE
     vst VX3, X, 4 * SIZE
-#endif
     addi.d X, X, 8 * SIZE
+#endif
     addi.d  I, I, -1
     blt $r0, I, .L17
     b .L19
+
     .align 3
 
-///////  INCX == 1 && N < 8   ///////
+///////  INCX == 1 && N < 2 (double) / 4 (single)   ///////
 .L19:
+#ifdef DOUBLE
+    andi   I,   N,   1
+#else
     andi   I,   N,   3
+#endif
     beqz   I,   .L999
-    bnez  DUMMY2, .L998 // if DUMMPY2 == 1, called from c/zscal.
+    bnez  DUMMY2, .L998 // if DUMMY2 == 1, called from c/zscal.
 
     bceqz $fcc0, .L998
 
     bceqz $fcc1, .L998
 
     b .L995            // alpha_r == 0.0 && alpha_i == 0.0
+    .align 3
 
 ///////    INCX != 1   ////////
 .L22:
@@ -177,8 +187,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     CMPEQ  $fcc1, ALPHAI, a1
     move XX, X
     bge $r0, I, .L29
-    bnez  DUMMY2, .L25 // if DUMMPY2 == 1, called from c/zscal.
-
+    bnez  DUMMY2, .L25 // if DUMMY2 == 1, called from c/zscal.
     bceqz $fcc0, .L25
 
     bceqz $fcc1, .L25
@@ -191,11 +200,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     vstelm.d VXZ, X, 0, 0
     vstelm.d VXZ, X, 1 * SIZE, 0
     add.d X, X, INCX
-    vstelm.d VXZ, X, 0, 0
-    vstelm.d VXZ, X, 1 * SIZE, 0
-    add.d X, X, INCX
-    vstelm.d VXZ, X, 0, 0
-    vstelm.d VXZ, X, 1 * SIZE, 0
 #else
     vstelm.w VXZ, X, 0, 0
     vstelm.w VXZ, X, 1 * SIZE, 0
@@ -208,8 +212,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     add.d X, X, INCX
     vstelm.w VXZ, X, 0, 0
     vstelm.w VXZ, X, 1 * SIZE, 0
-#endif
     add.d X, X, INCX
+#endif
     addi.d  I, I, -1
     blt $r0, I, .L27
     b .L29
@@ -217,27 +221,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L25:
 #ifdef DOUBLE
-    ld.d t1, X, 0 * SIZE
-    ld.d t2, X, 1 * SIZE
-    add.d X, X, INCX
-    ld.d t3, X, 0 * SIZE
-    ld.d t4, X, 1 * SIZE
-    add.d X, X, INCX
-    vinsgr2vr.d x1, t1, 0
-    vinsgr2vr.d x2, t2, 0
-    vinsgr2vr.d x1, t3, 1
-    vinsgr2vr.d x2, t4, 1
-    vfmul.d VX0, VXAI, x2
-    vfmsub.d x3, VXAR, x1, VX0
-    vfmul.d VX1, VXAI, x1
-    vfmadd.d x4, VXAR, x2, VX1
-    vstelm.d x3, XX, 0 * SIZE, 0
-    vstelm.d x4, XX, 1 * SIZE, 0
-    add.d XX, XX, INCX
-    vstelm.d x3, XX, 0 * SIZE, 1
-    vstelm.d x4, XX, 1 * SIZE, 1
-    add.d XX, XX, INCX
-
     ld.d t1, X, 0 * SIZE
     ld.d t2, X, 1 * SIZE
     add.d X, X, INCX
@@ -279,7 +262,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     vinsgr2vr.w x1, t3, 3
     vinsgr2vr.w x2, t4, 3
     add.d X, X, INCX
-
     vfmul.s VX0, VXAI, x2
     vfmsub.s x3, VXAR, x1, VX0
     vfmul.s VX1, VXAI, x1
@@ -302,17 +284,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     b .L29
     .align 3
 
-///////  INCX != 1 && N < 8   ///////
+///////  INCX != 1 && N < 2 (double) / 4 (single)   ///////
 .L29:
+#ifdef DOUBLE
+    andi   I,   N,   1
+#else
     andi   I,   N,   3
+#endif
     beqz   I,   .L999
-    bnez  DUMMY2, .L998 // if DUMMPY2 == 1, called from c/zscal.
+    bnez  DUMMY2, .L998 // if DUMMY2 == 1, called from c/zscal.
 
     bceqz $fcc0, .L998
 
     bceqz $fcc1, .L998
-
-    b .L995            // alpha_r == 0.0 && alpha_i == 0.0
 
 .L995: // alpha_r == 0.0 && alpha_i == 0.0
     ST   a1, X, 0 * SIZE
@@ -339,5 +323,4 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     move $r4, $r12
     jirl $r0, $r1, 0x0
     .align 3
-
     EPILOGUE
