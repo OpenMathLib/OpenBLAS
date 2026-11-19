@@ -37,7 +37,14 @@ if (${CMAKE_C_COMPILER_ID} MATCHES "IntelLLVM")
 endif ()
 
 if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_C_COMPILER_ID} STREQUAL "LSB" OR ${CMAKE_C_COMPILER_ID} MATCHES "Clang")
-  set(CCOMMON_OPT "${CCOMMON_OPT} -Wall")
+  if (CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+    # clang-cl parses -Wall as the MSVC /Wall, which is -Weverything, so the
+    # gcc-style -Wall meant here has to be spelled /W3 (clang-cl's alias for
+    # it).  Plain -Wall yields tens of thousands of warnings.
+    set(CCOMMON_OPT "${CCOMMON_OPT} /W3")
+  else ()
+    set(CCOMMON_OPT "${CCOMMON_OPT} -Wall")
+  endif ()
   set(COMMON_PROF "${COMMON_PROF} -fno-inline")
   set(NO_UNINITIALIZED_WARN "-Wno-uninitialized")
   set(GCC_VERSION ${CMAKE_C_COMPILER_VERSION})
