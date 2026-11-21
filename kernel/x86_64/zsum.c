@@ -71,7 +71,7 @@ static FLOAT sum_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
 #if defined(SMP)
 static int sum_thread_function(BLASLONG n, 
-        BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy2,
+        BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy2r, FLOAT dummy2i,
         FLOAT *x, BLASLONG inc_x,
         FLOAT * dummy3, BLASLONG dummy4,
         FLOAT * result, BLASLONG dummy5)
@@ -85,7 +85,7 @@ extern int blas_level1_thread_with_return_value(int mode,
         void *a, BLASLONG lda, 
         void *b, BLASLONG ldb,
         void *c, BLASLONG ldc,
-        int (*function)(),
+        int (*function)(void),
         int nthread);
 #endif
 
@@ -93,7 +93,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
 #if defined(SMP)
     int nthreads;
-    FLOAT dummy_alpha[2];
+    FLOAT dummy_alpha[2] = {ZERO, ZERO};
 #endif
     FLOAT sumf = 0.0;
 

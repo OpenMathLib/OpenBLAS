@@ -165,7 +165,13 @@ static int do_copy(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_
 
 #if defined(SMP)
 static int copy_thread_function(BLASLONG n, BLASLONG dummy0,
-	BLASLONG dummy1, FLOAT dummy2, FLOAT *x, BLASLONG inc_x, FLOAT *y,
+	BLASLONG dummy1,
+#if !defined(COMPLEX)
+	FLOAT dummy2,
+#else
+	FLOAT dummy2r, FLOAT dummy2i,
+#endif
+	FLOAT *x, BLASLONG inc_x, FLOAT *y,
 	BLASLONG inc_y, FLOAT *dummy3, BLASLONG dummy4)
 {
 	do_copy(n, x, inc_x, y, inc_y);
@@ -178,7 +184,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 {
 #if defined(SMP)
 	int nthreads;
-	FLOAT dummy_alpha;
+	FLOAT dummy_alpha[2] = {ZERO, ZERO};
 #endif
 
 	if (n <= 0) return 0;
@@ -205,9 +211,9 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 		mode |= BLAS_DOUBLE;
 #endif
 
-		blas_level1_thread(mode, n, 0, 0, &dummy_alpha,
+		blas_level1_thread(mode, n, 0, 0, dummy_alpha,
 				   x, inc_x, y, inc_y, NULL, 0,
-				   ( void *)copy_thread_function, nthreads);
+				   (int (*)(void))copy_thread_function, nthreads);
 	}
 #else
 	do_copy(n, x, inc_x, y, inc_y);

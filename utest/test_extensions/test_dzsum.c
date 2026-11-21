@@ -221,6 +221,20 @@ CTEST(dzsum, step_2_N_50){
    ASSERT_DBL_NEAR_TOL(0.0, sum, DOUBLE_EPS);
 }
 
+CTEST(dzsum, step_1_N_20005){
+   blasint i;
+   blasint N = 20005, inc = 1;
+   double sum;
+   double *x = (double *)calloc((size_t)(N * 2), sizeof(double));
+   ASSERT_NOT_NULL(x);
+   for (i = 0; i < N * 2; i++) {
+      x[i] = 0.5;
+   }
+   sum = BLASFUNC(dzsum)(&N, x, &inc);
+   free(x);
+   ASSERT_DBL_NEAR_TOL((double)N, sum, DOUBLE_EPS * (double)N);
+}
+
 #ifndef NO_CBLAS
 /**
  * C API specific test

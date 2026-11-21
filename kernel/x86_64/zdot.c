@@ -182,7 +182,7 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 {
 #if defined(SMP)
 	int nthreads;
-	FLOAT dummy_alpha;
+	FLOAT dummy_alpha[2] = {ZERO, ZERO};
 #if defined(C_PGI) || defined(C_SUN)	
 	FLOAT zdotr=0., zdoti=0.;
 #endif	
@@ -215,7 +215,7 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 		mode = BLAS_DOUBLE  | BLAS_COMPLEX;
 #endif
 
-		blas_level1_thread_with_return_value(mode, n, 0, 0, &dummy_alpha,
+		blas_level1_thread_with_return_value(mode, n, 0, 0, dummy_alpha,
 				   x, inc_x, y, inc_y, result, 0,
 				   (int (*)(void))zdot_thread_function, nthreads);
 
