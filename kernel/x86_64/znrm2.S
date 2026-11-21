@@ -54,6 +54,13 @@
 	emms
 #endif
 
+	subq	$8, %rsp
+	fnstcw	(%rsp)
+	movzwl	(%rsp), %eax
+	orl	$0x0300, %eax
+	movw	%ax, 4(%rsp)
+	fldcw	4(%rsp)
+
 	fldz
 	testq	M, M
 	jle	.L999
@@ -206,6 +213,8 @@
 	MOVSD	(%rsp), %xmm0
 	add	$2 * SIZE, %rsp
 #endif
+	fldcw	(%rsp)
+	addq	$8, %rsp
 	ret
 
 	EPILOGUE
