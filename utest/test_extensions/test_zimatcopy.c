@@ -763,7 +763,7 @@ CTEST(zimatcopy, xerbla_rowmajor_notrans_invalid_ldb)
     blasint lda_src = 100, lda_dst = 50;
     char order = 'R';
     char trans = 'N';
-    int expected_info = 9;
+    int expected_info = 8;
 
     int passed = check_badargs(order, trans, m, n, lda_src, lda_dst, expected_info);
     ASSERT_EQUAL(TRUE, passed);
@@ -780,7 +780,7 @@ CTEST(zimatcopy, xerbla_rowmajor_trans_invalid_ldb)
     blasint lda_src = 100, lda_dst = 50;
     char order = 'R';
     char trans = 'T';
-    int expected_info = 9;
+    int expected_info = 8;
 
     int passed = check_badargs(order, trans, m, n, lda_src, lda_dst, expected_info);
     ASSERT_EQUAL(TRUE, passed);
@@ -797,7 +797,7 @@ CTEST(zimatcopy, xerbla_colmajor_notrans_invalid_ldb)
     blasint lda_src = 100, lda_dst = 50;
     char order = 'C';
     char trans = 'N';
-    int expected_info = 9;
+    int expected_info = 8;
 
     int passed = check_badargs(order, trans, m, n, lda_src, lda_dst, expected_info);
     ASSERT_EQUAL(TRUE, passed);
@@ -814,7 +814,7 @@ CTEST(zimatcopy, xerbla_colmajor_trans_invalid_ldb)
     blasint lda_src = 100, lda_dst = 50;
     char order = 'C';
     char trans = 'T';
-    int expected_info = 9;
+    int expected_info = 8;
 
     int passed = check_badargs(order, trans, m, n, lda_src, lda_dst, expected_info);
     ASSERT_EQUAL(TRUE, passed);
