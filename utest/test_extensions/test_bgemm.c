@@ -369,4 +369,118 @@ CTEST(bgemm, nn_alpha1p5_beta2_M50_N50_K50)
     ASSERT_DBL_NEAR_TOL(0.0f, rdiff, BGEMM_TOL);
 }
 
+#ifndef NO_CBLAS
+CTEST(bgemm, sbgemmt_rowmajor_uplo)
+{
+    blasint m = 4, k = 3, lda = 3, ldb = 4, ldc = 4;
+    blasint i, j;
+    bfloat16 a[12], b[12];
+    float c_upper[16], c_lower[16];
+
+    for (i = 0; i < 12; i++) {
+        a[i] = float_to_bf16(1.0f);
+        b[i] = float_to_bf16(2.0f);
+    }
+    for (i = 0; i < 16; i++) {
+        c_upper[i] = -99.0f;
+        c_lower[i] = -99.0f;
+    }
+
+    cblas_sbgemmt(CblasRowMajor, CblasUpper, CblasNoTrans, CblasNoTrans,
+                  m, k, 1.0f, a, lda, b, ldb, 0.0f, c_upper, ldc);
+    for (i = 0; i < m; i++) {
+        for (j = 0; j < m; j++) {
+            float expected = (j >= i) ? 6.0f : -99.0f;
+            ASSERT_DBL_NEAR_TOL((double)expected, (double)c_upper[i * ldc + j], SINGLE_EPS);
+        }
+    }
+
+    cblas_sbgemmt(CblasRowMajor, CblasLower, CblasNoTrans, CblasNoTrans,
+                  m, k, 1.0f, a, lda, b, ldb, 0.0f, c_lower, ldc);
+    for (i = 0; i < m; i++) {
+        for (j = 0; j < m; j++) {
+            float expected = (j <= i) ? 6.0f : -99.0f;
+            ASSERT_DBL_NEAR_TOL((double)expected, (double)c_lower[i * ldc + j], SINGLE_EPS);
+        }
+    }
+
+    for (i = 0; i < 16; i++) c_upper[i] = -99.0f;
+    cblas_sbgemmt(CblasColMajor, CblasUpper, CblasNoTrans, CblasNoTrans,
+                  m, k, 1.0f, b, ldb, a, lda, 0.0f, c_upper, ldc);
+    for (j = 0; j < m; j++) {
+        for (i = 0; i < m; i++) {
+            float expected = (i <= j) ? 6.0f : -99.0f;
+            ASSERT_DBL_NEAR_TOL((double)expected, (double)c_upper[j * ldc + i], SINGLE_EPS);
+        }
+    }
+}
+#endif
+
+CTEST(bgemm, sbgemmt_k0_and_alpha0_beta_scaling)
+{
+    char uplo_u = 'U', uplo_l = 'L', trans = 'N';
+    blasint m = 4, k0 = 0, k3 = 3, lda = 4, ldb = 4, ldc = 4;
+    blasint i, j;
+    float alpha1 = 1.0f, alpha0 = 0.0f, beta2 = 2.0f, beta0 = 0.0f;
+    bfloat16 a[16], b[16];
+    float c[16];
+
+    for (i = 0; i < 16; i++) {
+        a[i] = (bfloat16)0x7fc0u; /* quiet NaN */
+        b[i] = float_to_bf16(1.0f);
+        c[i] = 3.0f;
+    }
+
+    /* k == 0 with beta == 2 must scale only the upper triangle (column-major) */
+    BLASFUNC(sbgemmt)(&uplo_u, &trans, &trans, &m, &k0, &alpha1,
+                      a, &lda, b, &ldb, &beta2, c, &ldc);
+    for (j = 0; j < m; j++) {
+        for (i = 0; i < m; i++) {
+            float expected = (i <= j) ? 6.0f : 3.0f;
+            ASSERT_DBL_NEAR_TOL((double)expected, (double)c[j * ldc + i], SINGLE_EPS);
+        }
+    }
+
+    /* alpha == 0 with beta == 0 must zero the lower triangle without reading NaN in A */
+    for (i = 0; i < 16; i++) c[i] = (i == 0) ? (float)NAN : -99.0f;
+    BLASFUNC(sbgemmt)(&uplo_l, &trans, &trans, &m, &k3, &alpha0,
+                      a, &lda, b, &ldb, &beta0, c, &ldc);
+    for (j = 0; j < m; j++) {
+        for (i = 0; i < m; i++) {
+            float expected = (i >= j) ? 0.0f : -99.0f;
+            ASSERT_DBL_NEAR_TOL((double)expected, (double)c[j * ldc + i], SINGLE_EPS);
+        }
+    }
+}
+
+CTEST(bgemm, bscal_multithreaded)
+{
+    blasint n = 1048600, guard = 64, incx = 1;
+    blasint i;
+    bfloat16 alpha = float_to_bf16(2.0f);
+    bfloat16 init_val = float_to_bf16(1.5f);
+    bfloat16 canary = float_to_bf16(7.0f);
+    bfloat16 *x = (bfloat16 *)calloc((size_t)(n * 2 + guard), sizeof(bfloat16));
+
+    ASSERT_NOT_NULL(x);
+    for (i = 0; i < n; i++) x[i] = init_val;
+    for (i = n; i < n + guard; i++) x[i] = canary;
+
+    BLASFUNC(bscal)(&n, &alpha, x, &incx);
+
+    for (i = 0; i < n; i++) {
+        if (bf16_to_float(x[i]) != 3.0f) {
+            free(x);
+            ASSERT_FAIL();
+        }
+    }
+    for (i = n; i < n + guard; i++) {
+        if (bf16_to_float(x[i]) != 7.0f) {
+            free(x);
+            ASSERT_FAIL();
+        }
+    }
+    free(x);
+}
+
 #endif /* BUILD_BFLOAT16 */

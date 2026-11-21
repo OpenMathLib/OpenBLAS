@@ -102,6 +102,8 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx){
 
 #ifdef DOUBLE
     mode  =  BLAS_DOUBLE | BLAS_REAL;
+#elif defined(BGEMM)
+    mode  =  BLAS_BFLOAT16 | BLAS_REAL;
 #else
     mode  =  BLAS_SINGLE | BLAS_REAL;
 #endif
