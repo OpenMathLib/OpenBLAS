@@ -126,8 +126,8 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
 					*R = *DA * (h / adahsq);
 					*(R+1) = *(DA+1) * (h / adahsq);
 				}
-				*S = *S1 * (*DA) / adahsq;
-				*(S+1) = *(S1+1) * (*DA) / adahsq;
+				*S = *S1 * (*DA / adahsq) - *(S1+1) * (*(DA+1) / adahsq);
+				*(S+1) = *S1 * (*(DA+1) / adahsq) + *(S1+1) * (*DA / adahsq);
 			}
 			*DA=*R;
 			*(DA+1)=*(R+1);

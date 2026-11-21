@@ -302,3 +302,6 @@ hheei <hheei@users.noreply.github.com>
 
 * Nathan Moinvaziri <https://github.com/nmoinvaz>
   * [2026-11-14] Fix work buffer overflow in threaded GETRF for large N
+
+* vera-rubin <https://github.com/vera-rubin>
+  * [2026-11-21] Fix the sine in the small-cosine branch of CROTG/ZROTG for complex inputs
