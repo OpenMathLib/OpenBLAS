@@ -155,4 +155,18 @@ CTEST(caxpyc, conj_strides_two)
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
+
+CTEST(caxpyc, conj_strides_zero)
+{
+    blasint n = 4, incx = 0, incy = 0;
+    float alpha[] = {1.0f, 2.0f};
+    float x[] = {3.0f, 4.0f};
+    float y[] = {0.5f, -1.5f};
+
+    BLASFUNC(caxpyc)(&n, alpha, x, &incx, y, &incy);
+
+    /* y += 4 * (1 + 2i) * (3 - 4i) = 4 * (11 + 2i) = 44 + 8i */
+    ASSERT_DBL_NEAR_TOL(44.5, (double)y[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(6.5, (double)y[1], SINGLE_EPS);
+}
 #endif

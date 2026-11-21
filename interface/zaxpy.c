@@ -86,9 +86,14 @@ void CNAME(blasint n, FLOAT *ALPHA, FLOAT *x, blasint incx, FLOAT *y, blasint in
   if ((alpha_r == ZERO) && (alpha_i == ZERO)) return;
 
   if (incx == 0 && incy == 0) {
-  *y += n * (alpha_r * (*x) - alpha_i* (*(x+1)) );
-  *(y+1) += n * (alpha_i * (*x) + alpha_r * (*(x +1)) );
-  return;
+#ifndef CONJ
+    *y       += n * (alpha_r * (*x) - alpha_i * (*(x + 1)));
+    *(y + 1) += n * (alpha_i * (*x) + alpha_r * (*(x + 1)));
+#else
+    *y       += n * (alpha_r * (*x) + alpha_i * (*(x + 1)));
+    *(y + 1) += n * (alpha_i * (*x) - alpha_r * (*(x + 1)));
+#endif
+    return;
   }
   
   IDEBUG_START;

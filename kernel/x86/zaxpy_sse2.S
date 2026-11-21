@@ -1320,9 +1320,9 @@
 	movl	M,  %eax
 //If incx==0 || incy==0, avoid unloop and jump to end.
 	cmpl	$0, INCX
-	je  .L58
+	je	.L200
 	cmpl	$0, INCY
-	je	.L58
+	je	.L200
 
 	sarl	$2, %eax
 	jle	.L55
@@ -1517,10 +1517,33 @@
 
 	movlpd	%xmm4,   0 * SIZE(YY)
 	movhpd	%xmm4,   1 * SIZE(YY)
+	jmp	.L999
+	ALIGN_3
 
+.L200:
+	movl	M,  %eax
+	cmpl	$0, %eax
+	jle	.L999
+	ALIGN_3
 
-	decl %eax
-	jg	.L58
+.L201:
+	MOVDDUP( 0 * SIZE, X, %xmm0)
+	MOVDDUP( 1 * SIZE, X, %xmm1)
+	addl	 INCX, X
+
+	movsd	 0 * SIZE(Y), %xmm4
+	movhpd	 1 * SIZE(Y), %xmm4
+	mulpd	ALPHA_R, %xmm0
+	mulpd	ALPHA_I, %xmm1
+	addpd	%xmm0, %xmm4
+	addpd	%xmm1, %xmm4
+
+	movlpd	%xmm4,   0 * SIZE(Y)
+	movhpd	%xmm4,   1 * SIZE(Y)
+	addl	 INCY, Y
+
+	decl	%eax
+	jg	.L201
 	ALIGN_3
 
 .L999:

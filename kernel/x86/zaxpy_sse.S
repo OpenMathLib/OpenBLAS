@@ -3106,6 +3106,7 @@
 
 .L201:
 	movsd	 (X), %xmm0
+	addl	 INCX, X
 
 #ifdef HAVE_SSE3
 	movshdup  %xmm0, %xmm1
@@ -3125,6 +3126,7 @@
 	addps	%xmm1, %xmm4
 
 	movsd	%xmm4,   (Y)
+	addl	 INCY, Y
 
 	decl    %eax
 	jg  .L201

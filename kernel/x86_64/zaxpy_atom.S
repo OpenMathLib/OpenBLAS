@@ -376,6 +376,11 @@
 	ALIGN_3
 
 .L20:
+	cmpq	$0, INCX
+	je	.L200
+	cmpq	$0, INCY
+	je	.L200
+
 	movq	Y, YY
 
 	movq	M,  %rax
@@ -663,6 +668,40 @@
 
 	movsd	%xmm8,   0 * SIZE(YY)
 	movsd	%xmm9,   1 * SIZE(YY)
+	jmp	.L999
+	ALIGN_3
+
+.L200:
+	movq	M,  %rax
+	cmpq	$0, %rax
+	jle	.L999
+	ALIGN_3
+
+.L201:
+	movsd	 0 * SIZE(X), %xmm0
+	movsd	 1 * SIZE(X), %xmm1
+	addq	 INCX, X
+	movsd	 0 * SIZE(Y), %xmm8
+	movsd	 1 * SIZE(Y), %xmm9
+
+	movaps	 %xmm0,  %xmm2
+	mulsd	ALPHA_R, %xmm0
+	movaps	 %xmm1,  %xmm3
+	mulsd	ALPHA_R, %xmm1
+	mulsd	ALPHA_I, %xmm3
+	mulsd	ALPHA_I, %xmm2
+
+	addsd	%xmm0, %xmm8
+	ADD2	%xmm1, %xmm9
+	ADD1	%xmm3, %xmm8
+	addsd	%xmm2, %xmm9
+
+	movsd	%xmm8,   0 * SIZE(Y)
+	movsd	%xmm9,   1 * SIZE(Y)
+	addq	 INCY, Y
+
+	decq	%rax
+	jg	.L201
 	ALIGN_3
 
 .L999:
