@@ -73,7 +73,6 @@ jobs:
           xz-utils \\
           wget
       RUN mkdir /tmp/SDE && cd /tmp/SDE && \\
-          INTEL_SDE_URL=$(curl -s https://www.intel.com/content/www/us/en/download/684897/intel-software-development-emulator.html | grep -Po 'https://downloadmirror.intel.com/.*lin.tar.xz(?=")') && \
           mkdir sde-external && \\
           wget --quiet -O sde-external-lin.tar.xz $(curl -s https://www.intel.com/content/www/us/en/download/684897/intel-software-development-emulator.html | grep -Po 'https://downloadmirror.intel.com/.*lin.tar.xz(?=")') && \\
           tar -xJvf sde-external-lin.tar.xz -C /tmp/SDE/sde-external --strip-components=1
@@ -91,7 +90,7 @@ jobs:
   - task: CMake@1
     inputs:
       workingDirectory: 'build' # Optional
-      cmakeArgs: '-G "Visual Studio 17 2022" ..'
+      cmakeArgs: '-G "Visual Studio 18 2026" ..'
   - task: CMake@1
     inputs:
       cmakeArgs: '--build . --config Release'
