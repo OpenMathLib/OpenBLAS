@@ -109,6 +109,44 @@ CTEST(crotg, positive_real_positive_img)
 }
 
 /**
+ * Test the scaled path with a nonzero imaginary part of b
+ */
+CTEST(crotg, scaled_complex_b)
+{
+    float scale = (float)ldexp(1.0, 70);
+    float expected = (float)(1.0 / sqrt(3.0));
+    float sa[2] = {scale, 0.0f};
+    float sb[2] = {scale, scale};
+    float ss[2];
+    float sc;
+    BLASFUNC(crotg)(sa, sb, &sc, ss);
+    ASSERT_DBL_NEAR_TOL(expected, sc, SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(expected, ss[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(-expected, ss[1], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(sqrt(3.0), sa[0] / scale, SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.0f, sa[1] / scale, SINGLE_EPS);
+}
+
+/**
+ * Test the scaled path when a is much smaller than b
+ */
+CTEST(crotg, scaled_separated_magnitudes)
+{
+    float scale_a = (float)ldexp(1.0, 30);
+    float scale_b = (float)ldexp(1.0, 80);
+    float sa[2] = {scale_a, scale_a};
+    float sb[2] = {scale_b, scale_b};
+    float ss[2];
+    float sc;
+    BLASFUNC(crotg)(sa, sb, &sc, ss);
+    ASSERT_DBL_NEAR_TOL(1.0f, sc / (scale_a / scale_b), SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.0f, ss[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.0f, ss[1], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.0f, sa[0] / scale_b, SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.0f, sa[1] / scale_b, SINGLE_EPS);
+}
+
+/**
  * Fortran API specific test
  * Test crotg by comparing it against pre-calculated values
  */
@@ -232,6 +270,44 @@ CTEST(crotg, c_api_positive_real_positive_img)
     ASSERT_DBL_NEAR_TOL(-0.04558f, ss[1], SINGLE_EPS);
     ASSERT_DBL_NEAR_TOL(5.26498f, sa[0], SINGLE_EPS);
     ASSERT_DBL_NEAR_TOL(7.01997f, sa[1], SINGLE_EPS);
+}
+
+/**
+ * Test the scaled path with a nonzero imaginary part of b
+ */
+CTEST(crotg, c_api_scaled_complex_b)
+{
+    float scale = (float)ldexp(1.0, 70);
+    float expected = (float)(1.0 / sqrt(3.0));
+    float sa[2] = {scale, 0.0f};
+    float sb[2] = {scale, scale};
+    float ss[2];
+    float sc;
+    cblas_crotg(sa, sb, &sc, ss);
+    ASSERT_DBL_NEAR_TOL(expected, sc, SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(expected, ss[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(-expected, ss[1], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(sqrt(3.0), sa[0] / scale, SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.0f, sa[1] / scale, SINGLE_EPS);
+}
+
+/**
+ * Test the scaled path when a is much smaller than b
+ */
+CTEST(crotg, c_api_scaled_separated_magnitudes)
+{
+    float scale_a = (float)ldexp(1.0, 30);
+    float scale_b = (float)ldexp(1.0, 80);
+    float sa[2] = {scale_a, scale_a};
+    float sb[2] = {scale_b, scale_b};
+    float ss[2];
+    float sc;
+    cblas_crotg(sa, sb, &sc, ss);
+    ASSERT_DBL_NEAR_TOL(1.0f, sc / (scale_a / scale_b), SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.0f, ss[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.0f, ss[1], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.0f, sa[0] / scale_b, SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.0f, sa[1] / scale_b, SINGLE_EPS);
 }
 
 /**

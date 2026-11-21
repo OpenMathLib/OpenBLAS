@@ -161,9 +161,9 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
 				if ( f2 > rtmin && h < rtmax) {
 					FLOAT f2h=sqrt(f2*h);
 					*S = gs_r * (fs_r /f2h) + gs_i * (fs_i / f2h);
-					*(S+1) = gs_r * (fs_i /f2h) - gs_i * -1. * (fs_r / f2h);
+					*(S+1) = gs_r * (fs_i /f2h) + gs_i * -1. * (fs_r / f2h);
 				} else {
-					*S = gs_r * (*DA/h) - gs_i * (*(DA+1) / h);
+					*S = gs_r * (*DA/h) + gs_i * (*(DA+1) / h);
 					*(S+1) = gs_r * (*(DA+1) /h) + gs_i * -1. * (*DA / h);
 				}
 			} else { // intermediates might overflow
