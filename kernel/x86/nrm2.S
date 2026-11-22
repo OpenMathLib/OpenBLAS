@@ -40,7 +40,7 @@
 #include "common.h"
 
 #define STACK	 8
-#define ARGS	 0
+#define ARGS	 8
 
 #define STACK_M		 4 + STACK + ARGS(%esp)
 #define STACK_X		 8 + STACK + ARGS(%esp)
@@ -56,6 +56,7 @@
 
 	PROLOGUE
 
+	subl	$ARGS, %esp
 	pushl	%esi
 	pushl	%ebx
 
@@ -73,6 +74,12 @@
 	movl	(M),    M
 	movl	(INCX), INCX
 #endif
+
+	fnstcw	0 + STACK(%esp)
+	movzwl	0 + STACK(%esp), %eax
+	orl	$0x0300, %eax
+	movw	%ax, 4 + STACK(%esp)
+	fldcw	4 + STACK(%esp)
 
 	fldz
 	testl	M, M
@@ -219,8 +226,10 @@
 
 .L999:
 	fsqrt
+	fldcw	0 + STACK(%esp)
 	popl	%ebx
 	popl	%esi
+	addl	$ARGS, %esp
 	ret
 
 	EPILOGUE
