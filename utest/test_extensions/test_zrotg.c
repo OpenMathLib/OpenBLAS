@@ -109,6 +109,44 @@ CTEST(zrotg, positive_real_positive_img)
 }
 
 /**
+ * Test the scaled path with a nonzero imaginary part of b
+ */
+CTEST(zrotg, scaled_complex_b)
+{
+    double scale = ldexp(1.0, 512);
+    double expected = 1.0 / sqrt(3.0);
+    double sa[2] = {scale, 0.0};
+    double sb[2] = {scale, scale};
+    double ss[2];
+    double sc;
+    BLASFUNC(zrotg)(sa, sb, &sc, ss);
+    ASSERT_DBL_NEAR_TOL(expected, sc, DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(expected, ss[0], DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(-expected, ss[1], DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(sqrt(3.0), sa[0] / scale, DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.0, sa[1] / scale, DOUBLE_EPS);
+}
+
+/**
+ * Test the scaled path when a is much smaller than b
+ */
+CTEST(zrotg, scaled_separated_magnitudes)
+{
+    double scale_a = ldexp(1.0, 300);
+    double scale_b = ldexp(1.0, 600);
+    double sa[2] = {scale_a, scale_a};
+    double sb[2] = {scale_b, scale_b};
+    double ss[2];
+    double sc;
+    BLASFUNC(zrotg)(sa, sb, &sc, ss);
+    ASSERT_DBL_NEAR_TOL(1.0, sc / (scale_a / scale_b), DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.0, ss[0], DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.0, ss[1], DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.0, sa[0] / scale_b, DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.0, sa[1] / scale_b, DOUBLE_EPS);
+}
+
+/**
  * Fortran API specific test
  * Test zrotg by comparing it against pre-calculated values
  */
@@ -233,6 +271,44 @@ CTEST(zrotg, c_api_positive_real_positive_img)
     ASSERT_DBL_NEAR_TOL(-0.04558423058385, ss[1], DOUBLE_EPS);
     ASSERT_DBL_NEAR_TOL(5.26497863243527, sa[0], DOUBLE_EPS);
     ASSERT_DBL_NEAR_TOL(7.01997150991369, sa[1], DOUBLE_EPS);
+}
+
+/**
+ * Test the scaled path with a nonzero imaginary part of b
+ */
+CTEST(zrotg, c_api_scaled_complex_b)
+{
+    double scale = ldexp(1.0, 512);
+    double expected = 1.0 / sqrt(3.0);
+    double sa[2] = {scale, 0.0};
+    double sb[2] = {scale, scale};
+    double ss[2];
+    double sc;
+    cblas_zrotg(sa, sb, &sc, ss);
+    ASSERT_DBL_NEAR_TOL(expected, sc, DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(expected, ss[0], DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(-expected, ss[1], DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(sqrt(3.0), sa[0] / scale, DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.0, sa[1] / scale, DOUBLE_EPS);
+}
+
+/**
+ * Test the scaled path when a is much smaller than b
+ */
+CTEST(zrotg, c_api_scaled_separated_magnitudes)
+{
+    double scale_a = ldexp(1.0, 300);
+    double scale_b = ldexp(1.0, 600);
+    double sa[2] = {scale_a, scale_a};
+    double sb[2] = {scale_b, scale_b};
+    double ss[2];
+    double sc;
+    cblas_zrotg(sa, sb, &sc, ss);
+    ASSERT_DBL_NEAR_TOL(1.0, sc / (scale_a / scale_b), DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.0, ss[0], DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.0, ss[1], DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.0, sa[0] / scale_b, DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.0, sa[1] / scale_b, DOUBLE_EPS);
 }
 
 /**
