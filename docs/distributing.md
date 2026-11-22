@@ -265,8 +265,8 @@ helpful as a reference:
 
 - [Fedora](https://src.fedoraproject.org/rpms/openblas/blob/rawhide/f/openblas.spec)
 - [Debian](https://salsa.debian.org/science-team/openblas/-/blob/master/debian/rules)
-- [Homebrew](https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/openblas.rb)
+- [Homebrew](https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/o/openblas.rb)
 - [MSYS2](https://github.com/msys2/MINGW-packages/blob/master/mingw-w64-openblas/PKGBUILD)
 - [conda-forge](https://github.com/conda-forge/openblas-feedstock/blob/main/recipe/build.sh)
-- [NumPy/SciPy](https://github.com/MacPython/openblas-libs/blob/main/tools/build_openblas.sh)
+- [NumPy/SciPy](https://github.com/MacPython/openblas-libs/blob/main/tools/build_steps.sh)
 - [Nixpkgs](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/libraries/science/math/openblas/default.nix)
