@@ -61,24 +61,28 @@ jobs:
     vmImage: 'ubuntu-latest'
   steps:
   - script: |
-      # at the time of writing the available Azure Ubuntu vm image
-      # does not support AVX512VL, so use more recent LTS version
-      echo "FROM ubuntu:bionic
-      ENV INTEL_SDE_URL=""
+      set -euo pipefail
+      INTEL_SDE_URL=$(curl -fsSL https://www.intel.com/content/www/us/en/download/684897/intel-software-development-emulator.html | grep -Po 'https://downloadmirror.intel.com/[^"]*lin\.tar\.xz' | head -n 1)
+      test -n "$INTEL_SDE_URL"
+      cat <<EOF > Dockerfile
+      FROM ubuntu:24.04
+      ENV DEBIAN_FRONTEND=noninteractive
       COPY . /tmp/openblas
-      RUN apt-get -y update && apt-get -y install \\
-          cmake \\
-          gfortran \\
-          make \\
-          xz-utils \\
-          wget
-      RUN mkdir /tmp/SDE && cd /tmp/SDE && \\
-          INTEL_SDE_URL=$(curl -s https://www.intel.com/content/www/us/en/download/684897/intel-software-development-emulator.html | grep -Po 'https://downloadmirror.intel.com/.*lin.tar.xz(?=")') && \
-          mkdir sde-external && \\
-          wget --quiet -O sde-external-lin.tar.xz $(curl -s https://www.intel.com/content/www/us/en/download/684897/intel-software-development-emulator.html | grep -Po 'https://downloadmirror.intel.com/.*lin.tar.xz(?=")') && \\
-          tar -xJvf sde-external-lin.tar.xz -C /tmp/SDE/sde-external --strip-components=1
-      RUN cd /tmp/openblas && CC=gcc make QUIET_MAKE=1 DYNAMIC_ARCH=1 NUM_THREADS=32 BINARY=64
-      CMD cd /tmp/openblas && echo 0 > /proc/sys/kernel/yama/ptrace_scope && CC=gcc OPENBLAS_VERBOSE=2 /tmp/SDE/sde-external/sde64 -cpuid_in /tmp/SDE/sde-external/misc/cpuid/gnr/cpuid.def -- make -C utest DYNAMIC_ARCH=1 NUM_THREADS=32 BINARY=64" > Dockerfile
+      RUN apt-get -y update && apt-get -y install \
+          ca-certificates \
+          cmake \
+          gcc \
+          gfortran \
+          make \
+          wget \
+          xz-utils
+      RUN mkdir -p /tmp/SDE/sde-external && cd /tmp/SDE && \
+          wget --quiet -O sde-external-lin.tar.xz "$INTEL_SDE_URL" && \
+          tar -xJvf sde-external-lin.tar.xz -C /tmp/SDE/sde-external --strip-components=1 && \
+          rm -f sde-external-lin.tar.xz
+      RUN cd /tmp/openblas && CC=gcc make -j\$(nproc) QUIET_MAKE=1 DYNAMIC_ARCH=1 NUM_THREADS=32 BINARY=64
+      CMD cd /tmp/openblas && echo 0 > /proc/sys/kernel/yama/ptrace_scope && CC=gcc OPENBLAS_VERBOSE=2 /tmp/SDE/sde-external/sde64 -cpuid_in /tmp/SDE/sde-external/misc/cpuid/gnr/cpuid.def -- make -C utest DYNAMIC_ARCH=1 NUM_THREADS=32 BINARY=64
+      EOF
       docker build -t intel_sde .
       # we need a privileged docker run for sde process attachment
       docker run --privileged intel_sde
@@ -91,7 +95,7 @@ jobs:
   - task: CMake@1
     inputs:
       workingDirectory: 'build' # Optional
-      cmakeArgs: '-G "Visual Studio 17 2022" ..'
+      cmakeArgs: '-A x64 ..'
   - task: CMake@1
     inputs:
       cmakeArgs: '--build . --config Release'
@@ -206,7 +210,7 @@ jobs:
 - job: OSX_LLVM_flangnew
   timeoutInMinutes: 100
   pool:
-     vmImage: 'macOS-latest'
+     vmImage: 'macOS-15'
   variables:
      RANLIB: touch
   steps:
@@ -222,7 +226,7 @@ jobs:
 - job: OSX_OpenMP_Clang
   timeoutInMinutes: 100
   pool:
-     vmImage: 'macOS-latest'
+     vmImage: 'macOS-15'
   variables:
      RANLIB: touch
   steps:
@@ -237,7 +241,7 @@ jobs:
 - job: OSX_OpenMP_Clang_cmake
   timeoutInMinutes: 100
   pool:
-     vmImage: 'macOS-latest'
+     vmImage: 'macOS-15'
   steps:
   - script: |
       set -euo pipefail
@@ -270,7 +274,7 @@ jobs:
 
 - job: OSX_Ifort_Clang
   pool:
-     vmImage: 'macOS-latest'
+     vmImage: 'macOS-15'
   variables:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
      MACOS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/edb4dc2f-266f-47f2-8d56-21bc7764e119/m_HPCKit_p_2023.2.0.49443.dmg
@@ -297,7 +301,7 @@ jobs:
       hdiutil attach webimage.dmg
       sudo /Volumes/"$(basename "$(MACOS_HPCKIT_URL)" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --components="$(MACOS_FORTRAN_COMPONENTS)" --eula=accept --continue-with-optional-error=yes --log-dir=.
       installer_exit_code=$?
-      hdiutil detach /Volumes/"$(basename "$URL" .dmg)" -quiet
+      hdiutil detach /Volumes/"$(basename "$(MACOS_HPCKIT_URL)" .dmg)" -quiet
       exit $installer_exit_code
     displayName: install
     condition: ne(variables.CACHE_RESTORED, 'true')

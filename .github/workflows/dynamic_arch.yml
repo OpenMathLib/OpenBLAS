@@ -687,8 +687,8 @@ jobs:
 
       - name: Build OpenBLAS
         run: |
-          make -j${nproc}
-          make -j${nproc} lapack-test
+          make -j$(nproc)
+          make -j$(nproc) lapack-test
 
   neoverse_n1_build:
     if: "github.repository == 'OpenMathLib/OpenBLAS'"
@@ -705,8 +705,8 @@ jobs:
 
       - name: Build OpenBLAS
         run: |
-          make -j${nproc} TARGET=NEOVERSEN1
-          make -j${nproc} TARGET=NEOVERSEN1 lapack-test
+          make -j$(nproc) TARGET=NEOVERSEN1
+          make -j$(nproc) TARGET=NEOVERSEN1 lapack-test
 
   neoverse_n1_omp_build:
     if: "github.repository == 'OpenMathLib/OpenBLAS'"
@@ -723,7 +723,7 @@ jobs:
 
       - name: Build OpenBLAS
         run: |
-          make -j${nproc} TARGET=NEOVERSEN1 USE_OPENMP=1
+          make -j$(nproc) TARGET=NEOVERSEN1 USE_OPENMP=1
 
   neoverse_n1_ilp64_build:
     if: "github.repository == 'OpenMathLib/OpenBLAS'"
@@ -740,5 +740,5 @@ jobs:
 
       - name: Build OpenBLAS
         run: |
-          make -j${nproc} TARGET=NEOVERSEN1 INTERFACE64=1
-          make -j${nproc} TARGET=NEOVERSEN1 INTERFACE64=1 lapack-test
+          make -j$(nproc) TARGET=NEOVERSEN1 INTERFACE64=1
+          make -j$(nproc) TARGET=NEOVERSEN1 INTERFACE64=1 lapack-test
