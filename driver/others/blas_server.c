@@ -115,6 +115,27 @@ int blas_server_avail   __attribute__((aligned(ATTRIBUTE_SIZE))) = 0;
 
 int blas_omp_threads_local = 1;
 
+#ifdef BLAS_THREAD_LOCAL
+BLAS_THREAD_LOCAL int blas_thread_in_job = 0;
+#define blas_set_in_job(v) (blas_thread_in_job = (v))
+#else
+static pthread_key_t blas_in_job_key;
+static pthread_once_t blas_in_job_once = PTHREAD_ONCE_INIT;
+static int blas_in_job_key_ok = 0;
+static void blas_in_job_key_init(void) {
+  blas_in_job_key_ok = (pthread_key_create(&blas_in_job_key, NULL) == 0);
+}
+int blas_in_job(void) {
+  pthread_once(&blas_in_job_once, blas_in_job_key_init);
+  return blas_in_job_key_ok && pthread_getspecific(blas_in_job_key) != NULL;
+}
+static void blas_set_in_job(int v) {
+  pthread_once(&blas_in_job_once, blas_in_job_key_init);
+  if (blas_in_job_key_ok)
+    pthread_setspecific(blas_in_job_key, v ? (void *)1 : NULL);
+}
+#endif
+
 static void * blas_thread_buffer[MAX_CPU_NUMBER];
 
 /* Local Variables */
@@ -389,6 +410,9 @@ blas_queue_t *tscq;
 #ifdef TIMING_DEBUG
   unsigned long start, stop;
 #endif
+
+  /* this thread only ever runs jobs of the pool */
+  blas_set_in_job(1);
 
 #if defined(OS_LINUX) && !defined(NO_AFFINITY)
   if (!increased_threads)
@@ -795,6 +819,7 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
   if (unlikely(blas_server_avail == 0)) blas_thread_init();
 #endif
   int (*routine)(blas_arg_t *, void *, void *, double *, double *, BLASLONG);
+  int in_job;
 
 #ifdef TIMING_DEBUG
   BLASULONG start, stop;
@@ -839,6 +864,9 @@ if (openblas_threads_callback_) {
   routine = (int (*)(blas_arg_t *, void *, void *, double *, double *, BLASLONG))queue -> routine;
   queue->worker_sb = queue->sb;
 
+  in_job = blas_in_job();
+  blas_set_in_job(1);
+
   if (queue -> mode & BLAS_LEGACY) {
     legacy_exec(routine, queue -> mode, queue -> args, queue -> sb);
   } else
@@ -848,6 +876,8 @@ if (openblas_threads_callback_) {
     } else
       (routine)(queue -> args, queue -> range_m, queue -> range_n,
 		queue -> sa, queue -> sb, 0);
+
+  blas_set_in_job(in_job);
 
 #ifdef TIMING_DEBUG
   stop = rpcc();
@@ -1059,6 +1089,7 @@ static void adjust_thread_buffers() {
 static void exec_threads(int cpu, blas_queue_t *queue, int buf_index) {
 
   int (*routine)(blas_arg_t *, void *, void *, void *, void *, BLASLONG) = (int (*)(blas_arg_t *, void *, void *, void *, void *, BLASLONG))queue -> routine;
+  int in_job = blas_in_job();
 
   atomic_store_queue(&thread_status[cpu].queue, (blas_queue_t *)1);
 
@@ -1149,6 +1180,8 @@ if (!(queue -> mode & BLAS_COMPLEX)){
 main_status[cpu] = MAIN_RUNNING2;
 #endif
 
+    blas_set_in_job(1);
+
     if (queue -> mode & BLAS_LEGACY) {
 legacy_exec(routine, queue -> mode, queue -> args, sb);
     } else
@@ -1157,6 +1190,8 @@ if (queue -> mode & BLAS_PTHREAD) {
   (pthreadcompat)(queue -> args);
 } else
   (routine)(queue -> args, queue -> range_m, queue -> range_n, sa, sb, queue -> position);
+
+    blas_set_in_job(in_job);
 
 #ifdef SMP_DEBUG
     fprintf(STDERR, "Server[%2ld] Calculation finished!\n", cpu);
