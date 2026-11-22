@@ -298,5 +298,109 @@ CTEST(cgemm, strided_batch_complex_scalars)
     ASSERT_DBL_NEAR_TOL(-40.0, c[0], SINGLE_EPS);
     ASSERT_DBL_NEAR_TOL(5.0, c[1], SINGLE_EPS);
 }
+
+CTEST(cgemm, batch_validation_and_lowercase_trans)
+{
+    float a[] = {1.0f, 2.0f};
+    float b[] = {3.0f, 4.0f};
+    float c[] = {0.0f, 0.0f};
+    float alpha[] = {1.0f, 0.0f};
+    float beta[] = {0.0f, 0.0f};
+    const float *a_arr[2] = {a, a};
+    const float *b_arr[2] = {b, b};
+    float *c_arr[2] = {c, c};
+    CBLAS_TRANSPOSE ta_arr[2] = {CblasNoTrans, CblasNoTrans};
+    CBLAS_TRANSPOSE tb_arr[2] = {CblasNoTrans, CblasNoTrans};
+    blasint m_arr[2] = {1, 1}, n_arr[2] = {1, 1}, k_arr[2] = {1, 1};
+    blasint ld_arr[2] = {1, 1};
+    blasint bad_gsize[2] = {2, -2};
+    char ta_f = 'r', tb_f = 'n';
+    blasint one = 1;
+
+    set_xerbla("CGEMM_BATCH ", 0);
+    cblas_cgemm_batch((CBLAS_ORDER)INVALID, ta_arr, tb_arr, m_arr, n_arr, k_arr,
+                      alpha, (const void **)a_arr, ld_arr, (const void **)b_arr, ld_arr,
+                      beta, (void **)c_arr, ld_arr, 1, &one);
+    ASSERT_EQUAL(TRUE, check_error());
+
+    set_xerbla("CGEMM_BATCH ", 14);
+    cblas_cgemm_batch(CblasColMajor, ta_arr, tb_arr, m_arr, n_arr, k_arr,
+                      alpha, (const void **)a_arr, ld_arr, (const void **)b_arr, ld_arr,
+                      beta, (void **)c_arr, ld_arr, -1, &one);
+    ASSERT_EQUAL(TRUE, check_error());
+
+    set_xerbla("CGEMM_BATCH ", 15);
+    cblas_cgemm_batch(CblasColMajor, ta_arr, tb_arr, m_arr, n_arr, k_arr,
+                      alpha, (const void **)a_arr, ld_arr, (const void **)b_arr, ld_arr,
+                      beta, (void **)c_arr, ld_arr, 2, bad_gsize);
+    ASSERT_EQUAL(TRUE, check_error());
+
+    set_xerbla("CGEMM_BATCH_STRIDED ", 11);
+    cblas_cgemm_batch_strided(CblasColMajor, CblasNoTrans, CblasNoTrans,
+                              2, 2, 2, alpha, a, 2, 4, b, 1, 4, beta, c, 2, 4, 1);
+    ASSERT_EQUAL(TRUE, check_error());
+
+    set_xerbla("CGEMM_BATCH_STRIDED ", 15);
+    cblas_cgemm_batch_strided(CblasColMajor, CblasNoTrans, CblasNoTrans,
+                              2, 2, 2, alpha, a, 2, 4, b, 2, 4, beta, c, 1, 4, 1);
+    ASSERT_EQUAL(TRUE, check_error());
+
+    set_xerbla("CGEMM_BATCH_STRIDED ", 17);
+    cblas_cgemm_batch_strided(CblasColMajor, CblasNoTrans, CblasNoTrans,
+                              1, 1, 1, alpha, a, 1, 2, b, 1, 2, beta, c, 1, 2, -1);
+    ASSERT_EQUAL(TRUE, check_error());
+
+    /* conj(1 + 2i) * (3 + 4i) = (1 - 2i)(3 + 4i) = 11 - 2i */
+    BLASFUNC(cgemm_batch)(&ta_f, &tb_f, &one, &one, &one, alpha,
+                          (float **)a_arr, &one, (float **)b_arr, &one,
+                          beta, c_arr, &one, &one, &one);
+    ASSERT_DBL_NEAR_TOL(11.0, c[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(-2.0, c[1], SINGLE_EPS);
+
+    c[0] = 0.0f;
+    c[1] = 0.0f;
+    BLASFUNC(cgemm_batch_strided)(&ta_f, &tb_f, &one, &one, &one, alpha,
+                                  a, &one, &one, b, &one, &one,
+                                  beta, c, &one, &one, &one);
+    ASSERT_DBL_NEAR_TOL(11.0, c[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(-2.0, c[1], SINGLE_EPS);
+}
 #endif
+#endif
+
+#if defined(BUILD_BFLOAT16) && !defined(NO_CBLAS)
+CTEST(cgemm, sbgemm_batch_and_sbgemv_order)
+{
+    /* 0x3f80 is 1.0f in bfloat16, 0x4000 is 2.0f in bfloat16 */
+    bfloat16 a[2] = {0x3f80, 0x4000};
+    bfloat16 b[2] = {0x4000, 0x3f80};
+    float c[2] = {0.0f, 0.0f};
+    const bfloat16 *a_arr[1] = {a};
+    const bfloat16 *b_arr[1] = {b};
+    float *c_arr[1] = {c};
+    CBLAS_TRANSPOSE ta = CblasNoTrans, tb = CblasNoTrans;
+    blasint m = 1, n = 1, k = 2, ld_a = 1, ld_b = 2, ld_c = 1, gsize = 1;
+    float alpha = 1.0f, beta = 0.0f;
+
+    cblas_sbgemm_batch(CblasColMajor, &ta, &tb, &m, &n, &k,
+                       &alpha, a_arr, &ld_a, b_arr, &ld_b,
+                       &beta, c_arr, &ld_c, 1, &gsize);
+    /* 1.0 * 2.0 + 2.0 * 1.0 = 4.0 */
+    ASSERT_DBL_NEAR_TOL(4.0, c[0], SINGLE_EPS);
+
+    c[0] = 0.0f;
+    cblas_sbgemm_batch_strided(CblasColMajor, CblasNoTrans, CblasNoTrans,
+                               1, 1, 2, 1.0f, a, 1, 2, b, 2, 2, 0.0f, c, 1, 1, 1);
+    ASSERT_DBL_NEAR_TOL(4.0, c[0], SINGLE_EPS);
+
+    set_xerbla("SBGEMM_BATCH ", 14);
+    cblas_sbgemm_batch(CblasColMajor, &ta, &tb, &m, &n, &k,
+                       &alpha, a_arr, &ld_a, b_arr, &ld_b,
+                       &beta, c_arr, &ld_c, -1, &gsize);
+    ASSERT_EQUAL(TRUE, check_error());
+
+    set_xerbla("SBGEMV ", 0);
+    cblas_sbgemv((CBLAS_ORDER)INVALID, CblasNoTrans, 1, 1, 1.0f, a, 1, b, 1, 0.0f, c, 1);
+    ASSERT_EQUAL(TRUE, check_error());
+}
 #endif

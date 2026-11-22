@@ -43,6 +43,9 @@ void openblas_warning(int verbose, const char * msg);
 #elif defined(DOUBLE)
 #define ERROR_NAME "DGEMM_BATCH "
 #define GEMM_BATCH_THREAD dgemm_batch_thread
+#elif defined(BFLOAT16)
+#define ERROR_NAME "SBGEMM_BATCH "
+#define GEMM_BATCH_THREAD sbgemm_batch_thread
 #else
 #define ERROR_NAME "SGEMM_BATCH "
 #define GEMM_BATCH_THREAD sgemm_batch_thread
@@ -155,9 +158,10 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
   blas_arg_t * args_array=NULL;
 
   int mode=0, group_mode=0;
-  blasint total_num=0;
+  BLASLONG total_num=0;
 
-  blasint i=0, j=0, matrix_idx=0, count=0;
+  blasint i=0, j=0;
+  BLASLONG matrix_idx=0, count=0;
 
   int group_transa, group_transb;
   BLASLONG group_nrowa, group_nrowb;
@@ -174,12 +178,32 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
 #endif
 
   PRINT_DEBUG_CNAME;
-    
+
+#if defined(CBLAS)
+  if (order != CblasColMajor && order != CblasRowMajor) {
+    info = 0;
+    BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
+    return;
+  }
+#endif
+  if (group_count < 0) {
+    info = 14;
+    BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
+    return;
+  }
   for(i=0; i<group_count; i++){
+    if (group_size[i] < 0) {
+      info = 15;
+      BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
+      return;
+    }
     total_num+=group_size[i];
   }
+  if (group_count == 0) {
+    return;
+  }
 
-  args_array=(blas_arg_t *)malloc(total_num * sizeof(blas_arg_t));
+  args_array=(blas_arg_t *)malloc((total_num > 0 ? (size_t)total_num : 1) * sizeof(blas_arg_t));
   
   if(args_array == NULL){
     openblas_warning(0, "memory alloc failed!\n");
@@ -297,21 +321,30 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
       group_lda = lda_array[i];
       group_ldb = ldb_array[i];
       group_ldc = ldc_array[i];
-      
-      if (transa_array[i] == 'N')   group_transa = 0;
-      if (transa_array[i] == 'T')   group_transa = 1;
+      {
+        char ta = transa_array[i];
+        char tb = transb_array[i];
+        TOUPPER(ta);
+        TOUPPER(tb);
+        if (ta == 'N')   group_transa = 0;
+        if (ta == 'T')   group_transa = 1;
 #ifndef COMPLEX
-      if (transa_array[i] == 'C')   group_transa = 1;
+        if (ta == 'R')   group_transa = 0;
+        if (ta == 'C')   group_transa = 1;
 #else
-      if (transa_array[i] == 'C')   group_transa = 3;
+        if (ta == 'R')   group_transa = 2;
+        if (ta == 'C')   group_transa = 3;
 #endif
-      if (transb_array[i] == 'N')   group_transb = 0;
-      if (transb_array[i] == 'T')   group_transb = 1;
+        if (tb == 'N')   group_transb = 0;
+        if (tb == 'T')   group_transb = 1;
 #ifndef COMPLEX
-      if (transb_array[i] == 'C')   group_transb = 1;
+        if (tb == 'R')   group_transb = 0;
+        if (tb == 'C')   group_transb = 1;
 #else
-      if (transb_array[i] == 'C')   group_transb = 3;
+        if (tb == 'R')   group_transb = 2;
+        if (tb == 'C')   group_transb = 3;
 #endif
+      }
 #endif
 
       group_nrowa = group_m;
@@ -353,7 +386,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
         GEMM_SMALL_MATRIX_PERMIT(group_transa, group_transb, group_m, group_n, group_k,
                                  *(FLOAT *)(group_alpha), *(FLOAT *)(group_beta))){
 #else
-    if (((FLOAT *)(group_alpha))[0] != ZERO &&
+    if ((((FLOAT *)(group_alpha))[0] != ZERO || ((FLOAT *)(group_alpha))[1] != ZERO) &&
         GEMM_SMALL_MATRIX_PERMIT(group_transa, group_transb, group_m, group_n, group_k,
                                  ((FLOAT *)(group_alpha))[0], ((FLOAT *)(group_alpha))[1],
                                  ((FLOAT *)(group_beta))[0], ((FLOAT *)(group_beta))[1])){

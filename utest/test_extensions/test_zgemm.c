@@ -298,5 +298,72 @@ CTEST(zgemm, strided_batch_complex_scalars)
     ASSERT_DBL_NEAR_TOL(-40.0, c[0], DOUBLE_EPS);
     ASSERT_DBL_NEAR_TOL(5.0, c[1], DOUBLE_EPS);
 }
+
+CTEST(zgemm, batch_validation_and_lowercase_trans)
+{
+    double a[] = {1.0, 2.0};
+    double b[] = {3.0, 4.0};
+    double c[] = {0.0, 0.0};
+    double alpha[] = {1.0, 0.0};
+    double beta[] = {0.0, 0.0};
+    const double *a_arr[2] = {a, a};
+    const double *b_arr[2] = {b, b};
+    double *c_arr[2] = {c, c};
+    CBLAS_TRANSPOSE ta_arr[2] = {CblasNoTrans, CblasNoTrans};
+    CBLAS_TRANSPOSE tb_arr[2] = {CblasNoTrans, CblasNoTrans};
+    blasint m_arr[2] = {1, 1}, n_arr[2] = {1, 1}, k_arr[2] = {1, 1};
+    blasint ld_arr[2] = {1, 1};
+    blasint bad_gsize[2] = {2, -2};
+    char ta_f = 'r', tb_f = 'n';
+    blasint one = 1;
+
+    set_xerbla("ZGEMM_BATCH ", 0);
+    cblas_zgemm_batch((CBLAS_ORDER)INVALID, ta_arr, tb_arr, m_arr, n_arr, k_arr,
+                      alpha, (const void **)a_arr, ld_arr, (const void **)b_arr, ld_arr,
+                      beta, (void **)c_arr, ld_arr, 1, &one);
+    ASSERT_EQUAL(TRUE, check_error());
+
+    set_xerbla("ZGEMM_BATCH ", 14);
+    cblas_zgemm_batch(CblasColMajor, ta_arr, tb_arr, m_arr, n_arr, k_arr,
+                      alpha, (const void **)a_arr, ld_arr, (const void **)b_arr, ld_arr,
+                      beta, (void **)c_arr, ld_arr, -1, &one);
+    ASSERT_EQUAL(TRUE, check_error());
+
+    set_xerbla("ZGEMM_BATCH ", 15);
+    cblas_zgemm_batch(CblasColMajor, ta_arr, tb_arr, m_arr, n_arr, k_arr,
+                      alpha, (const void **)a_arr, ld_arr, (const void **)b_arr, ld_arr,
+                      beta, (void **)c_arr, ld_arr, 2, bad_gsize);
+    ASSERT_EQUAL(TRUE, check_error());
+
+    set_xerbla("ZGEMM_BATCH_STRIDED ", 11);
+    cblas_zgemm_batch_strided(CblasColMajor, CblasNoTrans, CblasNoTrans,
+                              2, 2, 2, alpha, a, 2, 4, b, 1, 4, beta, c, 2, 4, 1);
+    ASSERT_EQUAL(TRUE, check_error());
+
+    set_xerbla("ZGEMM_BATCH_STRIDED ", 15);
+    cblas_zgemm_batch_strided(CblasColMajor, CblasNoTrans, CblasNoTrans,
+                              2, 2, 2, alpha, a, 2, 4, b, 2, 4, beta, c, 1, 4, 1);
+    ASSERT_EQUAL(TRUE, check_error());
+
+    set_xerbla("ZGEMM_BATCH_STRIDED ", 17);
+    cblas_zgemm_batch_strided(CblasColMajor, CblasNoTrans, CblasNoTrans,
+                              1, 1, 1, alpha, a, 1, 2, b, 1, 2, beta, c, 1, 2, -1);
+    ASSERT_EQUAL(TRUE, check_error());
+
+    /* conj(1 + 2i) * (3 + 4i) = (1 - 2i)(3 + 4i) = 11 - 2i */
+    BLASFUNC(zgemm_batch)(&ta_f, &tb_f, &one, &one, &one, alpha,
+                          (double **)a_arr, &one, (double **)b_arr, &one,
+                          beta, c_arr, &one, &one, &one);
+    ASSERT_DBL_NEAR_TOL(11.0, c[0], DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(-2.0, c[1], DOUBLE_EPS);
+
+    c[0] = 0.0;
+    c[1] = 0.0;
+    BLASFUNC(zgemm_batch_strided)(&ta_f, &tb_f, &one, &one, &one, alpha,
+                                  a, &one, &one, b, &one, &one,
+                                  beta, c, &one, &one, &one);
+    ASSERT_DBL_NEAR_TOL(11.0, c[0], DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(-2.0, c[1], DOUBLE_EPS);
+}
 #endif
 #endif
