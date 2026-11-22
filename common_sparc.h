@@ -95,7 +95,7 @@ static __inline unsigned long rpcc(void){
 #define GET_IMAGE_CANCEL
 
 #ifdef SMP
-static __inline int blas_quickdivide(blasint x, blasint y){
+static __inline BLASULONG blas_quickdivide(BLASULONG x, BLASULONG y){
   return x / y;
 }
 #endif

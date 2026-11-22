@@ -128,7 +128,7 @@ static __inline BLASULONG rpcc(void){
 #define RPCC64BIT
 #endif 
 
-static inline int blas_quickdivide(blasint x, blasint y){
+static inline BLASULONG blas_quickdivide(BLASULONG x, BLASULONG y){
   return x / y;
 }
 

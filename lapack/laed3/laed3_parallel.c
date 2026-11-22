@@ -117,7 +117,8 @@ blasint CNAME(blasint *k, blasint *n, blasint *n1, FLOAT *d,
   blas_arg_t args;
   BLASLONG range[MAX_CPU_NUMBER + 1];
   blasint infoarray[MAX_CPU_NUMBER];
-  int width, num_cpu, mode, nthreads;
+  BLASLONG width;
+  int num_cpu, mode, nthreads;
 
   qdim = *ldq;
   kval = *k;

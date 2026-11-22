@@ -217,12 +217,8 @@ static __inline int WhereAmI(void){
 #define GET_IMAGE_CANCEL
 
 #ifdef SMP
-#if defined(USE64BITINT)
-static __inline blasint blas_quickdivide(blasint x, blasint y){
-  return x / y;
-}
-#elif defined (C_MSVC)
-static __inline BLASLONG blas_quickdivide(BLASLONG x, BLASLONG y){
+#if defined(USE64BITINT) || defined(C_MSVC)
+static __inline BLASULONG blas_quickdivide(BLASULONG x, BLASULONG y){
   return x / y;
 }
 #else

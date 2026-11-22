@@ -113,3 +113,18 @@ CTEST(swap,cswap_inc_0)
 }
 #endif
 
+#ifdef SMP
+CTEST(swap, quickdivide_large_bounds)
+{
+	BLASULONG q = blas_quickdivide((BLASULONG)2147483640UL + 15UL, (BLASULONG)16UL);
+	ASSERT_TRUE(q == (BLASULONG)134217728UL);
+#if defined(USE64BITINT)
+	{
+		BLASULONG hi = (((BLASULONG)1) << 33) + (BLASULONG)7;
+		BLASULONG q64 = blas_quickdivide(hi, (BLASULONG)2);
+		ASSERT_TRUE(q64 == ((((BLASULONG)1) << 32) + (BLASULONG)3));
+	}
+#endif
+}
+#endif
+

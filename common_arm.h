@@ -78,7 +78,7 @@ static __inline void blas_lock(volatile BLASULONG *address){
 #endif
 #endif
 
-static inline int blas_quickdivide(blasint x, blasint y){
+static inline BLASULONG blas_quickdivide(BLASULONG x, BLASULONG y){
   return x / y;
 }
 
