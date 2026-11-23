@@ -50,7 +50,7 @@ endif
 
 ifeq ($(BUILD_BFLOAT16),1)
 BBLASOBJS       += bgemm_nn.$(SUFFIX) bgemm_nt.$(SUFFIX) bgemm_tn.$(SUFFIX) bgemm_tt.$(SUFFIX)
-SBBLASOBJS       += sbgemm_nn.$(SUFFIX) sbgemm_nt.$(SUFFIX) sbgemm_tn.$(SUFFIX) sbgemm_tt.$(SUFFIX)
+SBBLASOBJS       += sbgemm_nn.$(SUFFIX) sbgemm_nt.$(SUFFIX) sbgemm_tn.$(SUFFIX) sbgemm_tt.$(SUFFIX) sbgemm_batch_thread.$(SUFFIX)
 endif
 
 ifeq ($(BUILD_HFLOAT16),1)
