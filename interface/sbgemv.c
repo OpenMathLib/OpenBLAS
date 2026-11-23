@@ -143,7 +143,14 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, blasint m, blasi
         } else if (TransA == CblasTrans || TransA == CblasConjTrans) {
             trans = 1;
         }
-    } else {                        // Row Major
+        info = -1;
+        if (incy == 0)       {info = 11;}
+        if (incx == 0)       {info = 8;}
+        if (lda < MAX(1, m)) {info = 6;}
+        if (n < 0)           {info = 3;}
+        if (m < 0)           {info = 2;}
+        if (trans < 0)       {info = 1;}
+    } else if (order == CblasRowMajor) { // Row Major
         if (TransA == CblasNoTrans || TransA == CblasConjNoTrans) {
             trans = 1;
         } else if (TransA == CblasTrans || TransA == CblasConjTrans) {
@@ -153,16 +160,15 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, blasint m, blasi
         t = n;
         n = m;
         m = t;
+
+        info = -1;
+        if (incy == 0)       {info = 11;}
+        if (incx == 0)       {info = 8;}
+        if (lda < MAX(1, m)) {info = 6;}
+        if (n < 0)           {info = 3;}
+        if (m < 0)           {info = 2;}
+        if (trans < 0)       {info = 1;}
     }
-
-    info = -1;
-
-    if (incy == 0)       {info = 11;}
-    if (incx == 0)       {info = 8;}
-    if (lda < MAX(1, m)) {info = 6;}
-    if (n < 0)           {info = 3;}
-    if (m < 0)           {info = 2;}
-    if (trans < 0)       {info = 1;}
 
     if (info >= 0) {
         BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
@@ -202,7 +208,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, blasint m, blasi
     if (incy < 0) {y -= (leny - 1) * incy;}
 
 #ifdef SMP
-    if ( 1L * m * n < 115200L * GEMM_MULTITHREAD_THRESHOLD )
+    if ( (BLASLONG)m * n < (BLASLONG)115200 * GEMM_MULTITHREAD_THRESHOLD )
       nthreads = 1;
     else
       nthreads = num_cpu_avail(2);

@@ -100,6 +100,10 @@ if (USE_THREAD)
   endif ()
 endif ()
 
+if (BUILD_BFLOAT16)
+  GenerateNamedObjects("gemm_batch_thread.c" "" "gemm_batch_thread" 0 "" "" false "BFLOAT16")
+endif ()
+
 foreach (float_type ${FLOAT_TYPES})
   GenerateNamedObjects("gemm_batch_thread.c" "" "gemm_batch_thread" 0 "" "" false ${float_type})
 
