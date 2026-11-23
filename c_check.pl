@@ -5,6 +5,7 @@
 
 # Checking cross compile
 $hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
+$hostos = "AIX" if ($hostos eq "OS400");
 $hostarch = `uname -m | sed -e s/i.86/x86/`;
 $hostarch = `uname -p` if ($hostos eq "AIX" || $hostos eq "SunOS");
 chop($hostarch);
