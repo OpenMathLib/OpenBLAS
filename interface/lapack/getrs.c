@@ -104,6 +104,7 @@ void NAME(char *TRANS, blasint *N, blasint *NRHS, FLOAT *a, blasint *ldA,
 
   if (info != 0) {
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME) - 1);
+    *Info = -info;
     return;
   }
 

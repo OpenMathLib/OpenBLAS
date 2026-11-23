@@ -103,17 +103,17 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
 
 	if ( order == BlasColMajor)
 	{
-        	if ( trans == BlasNoTrans      &&  *ldb < MAX(1,*rows) ) info = 9;
-        	if ( trans == BlasConj         &&  *ldb < MAX(1,*rows) ) info = 9;
-        	if ( trans == BlasTrans        &&  *ldb < MAX(1,*cols) ) info = 9;
-        	if ( trans == BlasTransConj    &&  *ldb < MAX(1,*cols) ) info = 9;
+		if ( trans == BlasNoTrans      &&  *ldb < MAX(1,*rows) ) info = 8;
+		if ( trans == BlasConj         &&  *ldb < MAX(1,*rows) ) info = 8;
+		if ( trans == BlasTrans        &&  *ldb < MAX(1,*cols) ) info = 8;
+		if ( trans == BlasTransConj    &&  *ldb < MAX(1,*cols) ) info = 8;
 	}
 	if ( order == BlasRowMajor)
 	{
-        	if ( trans == BlasNoTrans    &&  *ldb < MAX(1,*cols) ) info = 9;
-        	if ( trans == BlasConj       &&  *ldb < MAX(1,*cols) ) info = 9;
-        	if ( trans == BlasTrans      &&  *ldb < MAX(1,*rows) ) info = 9;
-        	if ( trans == BlasTransConj  &&  *ldb < MAX(1,*rows) ) info = 9;
+		if ( trans == BlasNoTrans    &&  *ldb < MAX(1,*cols) ) info = 8;
+		if ( trans == BlasConj       &&  *ldb < MAX(1,*cols) ) info = 8;
+		if ( trans == BlasTrans      &&  *ldb < MAX(1,*rows) ) info = 8;
+		if ( trans == BlasTransConj  &&  *ldb < MAX(1,*rows) ) info = 8;
 	}
 
 	if ( order == BlasColMajor &&  *lda < MAX(1,*rows) ) info = 7;

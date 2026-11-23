@@ -571,3 +571,49 @@ CTEST(potrf, smoketest_trivial){
     }
   }
 }
+
+static void silent_xerbla(const char *srname, const blasint *vinfo, size_t length)
+{
+  (void)srname;
+  (void)vinfo;
+  (void)length;
+}
+
+CTEST(potrf, getrs_invalid_arg_info){
+  char trans = 'N', bad_uplo = 'X';
+  blasint bad_n = -1, nrhs = 1, n1 = 1, lda = 1, ldb = 1, ipiv = 1, info;
+  float as = 1.0f, bs = 1.0f;
+  double ad = 1.0, bd = 1.0;
+  float ac[2] = {1.0f, 0.0f}, bc[2] = {1.0f, 0.0f};
+  double az[2] = {1.0, 0.0}, bz[2] = {1.0, 0.0};
+  openblas_xerbla_handler prev = openblas_set_xerbla(silent_xerbla);
+
+#ifdef BUILD_SINGLE
+  info = 777;
+  BLASFUNC(sgetrs)(&trans, &bad_n, &nrhs, &as, &lda, &ipiv, &bs, &ldb, &info);
+  ASSERT_EQUAL(-2, info);
+#endif
+#ifdef BUILD_DOUBLE
+  info = 777;
+  BLASFUNC(dgetrs)(&trans, &bad_n, &nrhs, &ad, &lda, &ipiv, &bd, &ldb, &info);
+  ASSERT_EQUAL(-2, info);
+#endif
+#ifdef BUILD_COMPLEX
+  info = 777;
+  BLASFUNC(cgetrs)(&trans, &bad_n, &nrhs, ac, &lda, &ipiv, bc, &ldb, &info);
+  ASSERT_EQUAL(-2, info);
+  info = 777;
+  BLASFUNC(clauum)(&bad_uplo, &n1, ac, &lda, &info);
+  ASSERT_EQUAL(-1, info);
+#endif
+#ifdef BUILD_COMPLEX16
+  info = 777;
+  BLASFUNC(zgetrs)(&trans, &bad_n, &nrhs, az, &lda, &ipiv, bz, &ldb, &info);
+  ASSERT_EQUAL(-2, info);
+  info = 777;
+  BLASFUNC(zlauum)(&bad_uplo, &n1, az, &lda, &info);
+  ASSERT_EQUAL(-1, info);
+#endif
+
+  openblas_set_xerbla(prev);
+}
