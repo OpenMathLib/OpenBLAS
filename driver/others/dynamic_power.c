@@ -49,6 +49,9 @@ char *gotoblas_corename(void) {
 #ifndef POWER_10
 #define POWER_10        0x40000         /* 10 class CPU */
 #endif
+#ifndef POWER_11
+#define POWER_11        0x80000         /* 11 class CPU */
+#endif
 
 #ifdef _AIX
 #include <sys/systemcfg.h>
