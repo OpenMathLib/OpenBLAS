@@ -212,3 +212,58 @@ CTEST(axpy,saxpy_zero_output_stride)
                 }
 }
 #endif
+
+#if defined(__x86_64__) || defined(__i386__) || defined(_M_X64) || defined(_M_IX86)
+#ifdef BUILD_COMPLEX
+CTEST(axpy,caxpy_zero_output_stride)
+{
+    const blasint lengths[] = {1, 2, 9, 17, 33};
+    const blasint strides[] = {1, 2, -1, -2};
+    int ni, si, k;
+    for (ni = 0; ni < 5; ++ni)
+        for (si = 0; si < 4; ++si) {
+            blasint n = lengths[ni], incx = strides[si], incy = 0;
+            float alpha[2] = {1.0f, 2.0f};
+            float x[132], y[6] = {99.0f, 99.0f, 0.5f, -1.5f, 99.0f, 99.0f};
+            for (k = 0; k < 66; ++k) {
+                x[2 * k] = 3.0f;
+                x[2 * k + 1] = 4.0f;
+            }
+            BLASFUNC(caxpy)(&n, alpha, x, &incx, y + 2, &incy);
+            /* (1 + 2i) * (3 + 4i) = -5 + 10i */
+            ASSERT_DBL_NEAR_TOL(0.5 - 5.0 * (double)n, (double)y[2], SINGLE_EPS);
+            ASSERT_DBL_NEAR_TOL(-1.5 + 10.0 * (double)n, (double)y[3], SINGLE_EPS);
+            ASSERT_DBL_NEAR_TOL(99.0, (double)y[0], SINGLE_EPS);
+            ASSERT_DBL_NEAR_TOL(99.0, (double)y[1], SINGLE_EPS);
+            ASSERT_DBL_NEAR_TOL(99.0, (double)y[4], SINGLE_EPS);
+            ASSERT_DBL_NEAR_TOL(99.0, (double)y[5], SINGLE_EPS);
+        }
+}
+#endif
+
+#ifdef BUILD_COMPLEX16
+CTEST(axpy,zaxpy_zero_output_stride)
+{
+    const blasint lengths[] = {1, 2, 9, 17, 33};
+    const blasint strides[] = {1, 2, -1, -2};
+    int ni, si, k;
+    for (ni = 0; ni < 5; ++ni)
+        for (si = 0; si < 4; ++si) {
+            blasint n = lengths[ni], incx = strides[si], incy = 0;
+            double alpha[2] = {1.0, 2.0};
+            double x[132], y[6] = {99.0, 99.0, 0.5, -1.5, 99.0, 99.0};
+            for (k = 0; k < 66; ++k) {
+                x[2 * k] = 3.0;
+                x[2 * k + 1] = 4.0;
+            }
+            BLASFUNC(zaxpy)(&n, alpha, x, &incx, y + 2, &incy);
+            ASSERT_DBL_NEAR_TOL(0.5 - 5.0 * (double)n, y[2], DOUBLE_EPS);
+            ASSERT_DBL_NEAR_TOL(-1.5 + 10.0 * (double)n, y[3], DOUBLE_EPS);
+            ASSERT_DBL_NEAR_TOL(99.0, y[0], DOUBLE_EPS);
+            ASSERT_DBL_NEAR_TOL(99.0, y[1], DOUBLE_EPS);
+            ASSERT_DBL_NEAR_TOL(99.0, y[4], DOUBLE_EPS);
+            ASSERT_DBL_NEAR_TOL(99.0, y[5], DOUBLE_EPS);
+        }
+}
+#endif
+#endif

@@ -156,4 +156,18 @@ CTEST(zaxpyc, conj_strides_two)
 
 	ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
+
+CTEST(zaxpyc, conj_strides_zero)
+{
+	blasint n = 4, incx = 0, incy = 0;
+	double alpha[] = {1.0, 2.0};
+	double x[] = {3.0, 4.0};
+	double y[] = {0.5, -1.5};
+
+	BLASFUNC(zaxpyc)(&n, alpha, x, &incx, y, &incy);
+
+	/* y += 4 * (1 + 2i) * (3 - 4i) = 4 * (11 + 2i) = 44 + 8i */
+	ASSERT_DBL_NEAR_TOL(44.5, y[0], DOUBLE_EPS);
+	ASSERT_DBL_NEAR_TOL(6.5, y[1], DOUBLE_EPS);
+}
 #endif
