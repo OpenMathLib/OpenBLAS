@@ -93,6 +93,7 @@ ${DIR_EXT}/test_ztrsv.c
 ${DIR_EXT}/test_ctrsv.c
 ${DIR_EXT}/test_zgemm.c
 ${DIR_EXT}/test_cgemm.c
+${DIR_EXT}/test_bgemm.c
 )
 
 # crashing on travis cl with an error code suggesting resource not found

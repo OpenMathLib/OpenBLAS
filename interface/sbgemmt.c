@@ -230,8 +230,8 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 		lda = LDB;
 		ldb = LDA;
 
-		if (Uplo == CblasUpper) uplo = 0;
-		if (Uplo == CblasLower) uplo = 1;
+		if (Uplo == CblasUpper) uplo = 1;
+		if (Uplo == CblasLower) uplo = 0;
 
 		if (TransB == CblasNoTrans)
 			transa = 0;
@@ -314,6 +314,21 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 		return;
 
 	IDEBUG_START;
+
+	if (k == 0 || alpha == ZERO) {
+		if (beta != ONE) {
+			if (uplo == 1) {
+				for (i = 0; i < m; i++) {
+					SCAL_K(m - i, 0, 0, beta, c + i * ldc + i, 1, NULL, 0, NULL, 0);
+				}
+			} else {
+				for (i = 0; i < m; i++) {
+					SCAL_K(i + 1, 0, 0, beta, c + i * ldc, 1, NULL, 0, NULL, 0);
+				}
+			}
+		}
+		return;
+	}
 
 	const blasint incb = ((transb & 1) == 0) ? 1 : ldb;
 
