@@ -2,6 +2,9 @@
 
 # Checking cross compile
 hostos=`uname -s | sed -e 's/\-.*//'`
+if [ "$hostos" = "OS400" ]; then
+    hostos = AIX
+fi
 hostarch=`uname -m | sed -e 's/i.86/x86/'`
 if [ "$hostos" = "AIX" ] || [ "$hostos" = "SunOS" ]; then
     hostarch=`uname -p`
