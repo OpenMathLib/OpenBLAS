@@ -58,7 +58,7 @@ double sqrt(double);
 #endif
 
 #define GEMM_PQ  MAX(GEMM_P, GEMM_Q)
-#define REAL_GEMM_R (GEMM_R - GEMM_PQ)
+#define REAL_GEMM_R (MAX(GEMM_R, GEMM_PQ + 96) - GEMM_PQ)
 
 #ifndef GETRF_FACTOR
 #define GETRF_FACTOR 0.75

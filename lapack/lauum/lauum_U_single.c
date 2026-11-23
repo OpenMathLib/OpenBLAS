@@ -66,7 +66,7 @@ static FLOAT dp1 =  1.;
 #endif
 
 #define GEMM_PQ  MAX(GEMM_P, GEMM_Q)
-#define REAL_GEMM_R (GEMM_R - GEMM_PQ)
+#define REAL_GEMM_R (MAX(GEMM_R, GEMM_PQ + 96) - GEMM_PQ)
 
 blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLOAT *sb, BLASLONG myid) {
 
