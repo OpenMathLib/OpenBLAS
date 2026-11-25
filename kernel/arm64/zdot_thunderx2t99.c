@@ -319,7 +319,7 @@ static void zdot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLON
 
 #if defined(SMP)
 static int zdot_thread_function(BLASLONG n, BLASLONG dummy0,
-	BLASLONG dummy1, FLOAT dummy2, FLOAT *x, BLASLONG inc_x, FLOAT *y,
+	BLASLONG dummy1, FLOAT dummy2r, FLOAT dummy2i, FLOAT *x, BLASLONG inc_x, FLOAT *y,
 	BLASLONG inc_y, FLOAT *result, BLASLONG dummy3)
 {
 	zdot_compute(n, x, inc_x, y, inc_y, (void *)result);
@@ -332,7 +332,7 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 {
 #if defined(SMP)
 	int nthreads;
-	FLOAT dummy_alpha;
+	FLOAT dummy_alpha[2] = {ZERO, ZERO};
 #endif
 #ifdef _MSC_VER
     OPENBLAS_COMPLEX_FLOAT zdot;
@@ -361,9 +361,9 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 		mode = BLAS_DOUBLE  | BLAS_COMPLEX;
 #endif
 
-		blas_level1_thread_with_return_value(mode, n, 0, 0, &dummy_alpha,
+		blas_level1_thread_with_return_value(mode, n, 0, 0, dummy_alpha,
 				   x, inc_x, y, inc_y, result, 0,
-				   ( void *)zdot_thread_function, nthreads);
+				   (int (*)(void))zdot_thread_function, nthreads);
 
 		ptr = (OPENBLAS_COMPLEX_FLOAT *)result;
 		for (i = 0; i < nthreads; i++) {

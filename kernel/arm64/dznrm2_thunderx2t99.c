@@ -33,7 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(SMP)
 extern int blas_level1_thread_with_return_value(int mode, BLASLONG m, BLASLONG n,
 	BLASLONG k, void *alpha, void *a, BLASLONG lda, void *b, BLASLONG ldb,
-	void *c, BLASLONG ldc, int (*function)(), int nthreads);
+	void *c, BLASLONG ldc, int (*function)(void), int nthreads);
 #endif
 
 #define N		"x0"	/* vector length */
@@ -328,7 +328,13 @@ static void nrm2_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x,
 
 #if defined(SMP)
 static int nrm2_thread_function(BLASLONG n, BLASLONG dummy0,
-	BLASLONG dummy1, FLOAT dummy2, FLOAT *x, BLASLONG inc_x, FLOAT *dummy3,
+	BLASLONG dummy1,
+#if !defined(COMPLEX)
+	FLOAT dummy2,
+#else
+	FLOAT dummy2r, FLOAT dummy2i,
+#endif
+	FLOAT *x, BLASLONG inc_x, FLOAT *dummy3,
 	BLASLONG dummy4, FLOAT *result, BLASLONG dummy5)
 {
 	nrm2_compute(n, x, inc_x, result, result + 1);
@@ -341,7 +347,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
 #if defined(SMP)
 	int nthreads;
-	FLOAT dummy_alpha[2];
+	FLOAT dummy_alpha[2] = {ZERO, ZERO};
 #endif
 	FLOAT ssq, scale;
 
@@ -366,9 +372,9 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 		mode = BLAS_DOUBLE  | BLAS_COMPLEX;
 #endif
 
-		blas_level1_thread_with_return_value(mode, n, 0, 0, &dummy_alpha,
+		blas_level1_thread_with_return_value(mode, n, 0, 0, dummy_alpha,
 				   x, inc_x, NULL, 0, result, 0,
-				   ( void *)nrm2_thread_function, nthreads);
+				   (int (*)(void))nrm2_thread_function, nthreads);
 
 		scale = 0.0;
 		ssq = 1.0;

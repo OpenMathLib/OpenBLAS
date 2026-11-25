@@ -120,7 +120,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(SMP)
 extern int blas_level1_thread_with_return_value(int mode, BLASLONG m, BLASLONG n,
 	BLASLONG k, void *alpha, void *a, BLASLONG lda, void *b, BLASLONG ldb,
-	void *c, BLASLONG ldc, int (*function)(), int nthreads);
+	void *c, BLASLONG ldc, int (*function)(void), int nthreads);
 #endif
 
 
@@ -213,7 +213,7 @@ static FLOAT zasum_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
 #if defined(SMP)
 static int zasum_thread_function(BLASLONG n, BLASLONG dummy0,
-	BLASLONG dummy1, FLOAT dummy2, FLOAT *x, BLASLONG inc_x, FLOAT *y,
+	BLASLONG dummy1, FLOAT dummy2r, FLOAT dummy2i, FLOAT *x, BLASLONG inc_x, FLOAT *y,
 	BLASLONG inc_y, FLOAT *result, BLASLONG dummy3)
 {
 	*result = zasum_compute(n, x, inc_x);
@@ -226,7 +226,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
 #if defined(SMP)
 	int nthreads;
-	FLOAT dummy_alpha;
+	FLOAT dummy_alpha[2] = {ZERO, ZERO};
 #endif
 	FLOAT asum = 0.0;
 
@@ -245,9 +245,9 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
 		mode = BLAS_DOUBLE | BLAS_COMPLEX;
 
-		blas_level1_thread_with_return_value(mode, n, 0, 0, &dummy_alpha,
+		blas_level1_thread_with_return_value(mode, n, 0, 0, dummy_alpha,
 				   x, inc_x, NULL, 0, result, 0,
-				   ( void *)zasum_thread_function, nthreads);
+				   (int (*)(void))zasum_thread_function, nthreads);
 
 		ptr = (FLOAT *)result;
 		for (i = 0; i < nthreads; i++) {

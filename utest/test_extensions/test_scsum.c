@@ -221,6 +221,20 @@ CTEST(scsum, step_2_N_50){
    ASSERT_DBL_NEAR_TOL(0.0f, sum, SINGLE_EPS);
 }
 
+CTEST(scsum, step_1_N_20005){
+   blasint i;
+   blasint N = 20005, inc = 1;
+   float sum;
+   float *x = (float *)calloc((size_t)(N * 2), sizeof(float));
+   ASSERT_NOT_NULL(x);
+   for (i = 0; i < N * 2; i++) {
+      x[i] = (i & 1) ? -0.5f : 1.0f;
+   }
+   sum = BLASFUNC(scsum)(&N, x, &inc);
+   free(x);
+   ASSERT_DBL_NEAR_TOL(0.5 * (double)N, (double)sum, 1e-1);
+}
+
 #ifndef NO_CBLAS
 /**
  * C API specific test
