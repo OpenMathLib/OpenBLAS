@@ -257,13 +257,20 @@ typedef struct Namelist Namelist;
 
 #ifdef _MSC_VER
 static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
-	_Dcomplex pow={1.0,0.0}; unsigned long int u;
+	_Dcomplex pow={1.0,0.0}; unsigned long long u;
 	if(n != 0) {
-		if(n < 0) {
-			double d = x._Val[0]*x._Val[0] + x._Val[1]*x._Val[1];
-			n = -n; x = _Cbuild(x._Val[0]/d, -x._Val[1]/d);
-		}
-		for(u = n; ; ) {
+		if(n < 0) { /* scaled complex reciprocal, avoids overflow/underflow */
+			double r, den;
+			if (fabs(x._Val[0]) >= fabs(x._Val[1])) {
+				r = x._Val[1] / x._Val[0]; den = x._Val[0] + x._Val[1] * r;
+				x = _Cbuild(1 / den, -r / den);
+			} else {
+				r = x._Val[0] / x._Val[1]; den = x._Val[1] + x._Val[0] * r;
+				x = _Cbuild(r / den, -1 / den);
+			}
+			u = 0ULL - (unsigned long long)n;
+		} else u = (unsigned long long)n;
+		for(; ; ) {
 			if(u & 01) pow = _Cmulcc(pow, x);
 			if(u >>= 1) x = _Cmulcc(x, x);
 			else break;
