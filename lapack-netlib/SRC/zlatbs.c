@@ -263,15 +263,15 @@ static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
 			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0]
 				+ Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
-			zdotc._Val[1] -= Cd(&x[i])._Val[1] * Cd(&y[i])._Val[0]
-				- Cd(&x[i])._Val[0] * Cd(&y[i])._Val[1];
+			zdotc._Val[1] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[1]
+				- Cd(&x[i])._Val[1] * Cd(&y[i])._Val[0];
 		}
 	} else {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
 			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0]
 				+ Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
-			zdotc._Val[1] -= Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[0]
-				- Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[1];
+			zdotc._Val[1] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[1]
+				- Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[0];
 		}
 	}
 	pCd(z) = zdotc;
@@ -295,18 +295,18 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 #ifdef _MSC_VER
 	_Dcomplex zdotc = {0.0, 0.0};
 	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+		for (i=0;i<n;i++) { /* zdotc = zdotc + x(i)* y(i) */
 			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0]
 				- Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
-			zdotc._Val[1] += Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1]
-				+ Cd(&x[i])._Val[0] * Cd(&y[i])._Val[1];
+			zdotc._Val[1] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[1]
+				+ Cd(&x[i])._Val[1] * Cd(&y[i])._Val[0];
 		}
 	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+		for (i=0;i<n;i++) { /* zdotc = zdotc + x(i)* y(i) */
 			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0]
 				- Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
-			zdotc._Val[1] += Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1]
-				+ Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[1];
+			zdotc._Val[1] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[1]
+				+ Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[0];
 		}
 	}
 	pCd(z) = zdotc;

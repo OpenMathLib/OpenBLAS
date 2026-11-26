@@ -255,11 +255,14 @@ typedef struct Namelist Namelist;
 #ifdef _MSC_VER
 static _Fcomplex cpow_ui(_Fcomplex x, integer n) {
 	_Fcomplex pow={1.0,0.0}; unsigned long int u;
-		if(n != 0) {
-		if(n < 0) n = -n, x._Val[0] = 1./x._Val[0], x._Val[1]=1./x._Val[1];
+	if(n != 0) {
+		if(n < 0) {
+			float d = x._Val[0]*x._Val[0] + x._Val[1]*x._Val[1];
+			n = -n; x = _FCbuild(x._Val[0]/d, -x._Val[1]/d);
+		}
 		for(u = n; ; ) {
-			if(u & 01) pow = _FCmulcc (pow,x);
-			if(u >>= 1) x = _FCmulcc (x,x);
+			if(u & 01) pow = _FCmulcc(pow, x);
+			if(u >>= 1) x = _FCmulcc(x, x);
 			else break;
 		}
 	}

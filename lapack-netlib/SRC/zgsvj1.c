@@ -262,15 +262,15 @@ static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
 			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0]
 				+ Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
-			zdotc._Val[1] -= Cd(&x[i])._Val[1] * Cd(&y[i])._Val[0]
-				- Cd(&x[i])._Val[0] * Cd(&y[i])._Val[1];
+			zdotc._Val[1] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[1]
+				- Cd(&x[i])._Val[1] * Cd(&y[i])._Val[0];
 		}
 	} else {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
 			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0]
 				+ Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
-			zdotc._Val[1] -= Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[0]
-				- Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[1];
+			zdotc._Val[1] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[1]
+				- Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[0];
 		}
 	}
 	pCd(z) = zdotc;

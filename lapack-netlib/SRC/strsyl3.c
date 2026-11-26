@@ -258,18 +258,20 @@ static double dpow_ui(double x, integer n) {
 	return pow;
 }
 #ifdef _MSC_VER
-static _Fcomplex cpow_ui(complex x, integer n) {
-	complex pow={1.0,0.0}; unsigned long int u;
-		if(n != 0) {
-		if(n < 0) n = -n, x.r = 1/x.r, x.i=1/x.i;
+static _Fcomplex cpow_ui(_Fcomplex x, integer n) {
+	_Fcomplex pow={1.0,0.0}; unsigned long int u;
+	if(n != 0) {
+		if(n < 0) {
+			float d = x._Val[0]*x._Val[0] + x._Val[1]*x._Val[1];
+			n = -n; x = _FCbuild(x._Val[0]/d, -x._Val[1]/d);
+		}
 		for(u = n; ; ) {
-			if(u & 01) pow.r *= x.r, pow.i *= x.i;
-			if(u >>= 1) x.r *= x.r, x.i *= x.i;
+			if(u & 01) pow = _FCmulcc(pow, x);
+			if(u >>= 1) x = _FCmulcc(x, x);
 			else break;
 		}
 	}
-	_Fcomplex p={pow.r, pow.i};
-	return p;
+	return pow;
 }
 #else
 static _Complex float cpow_ui(_Complex float x, integer n) {
@@ -289,15 +291,17 @@ static _Complex float cpow_ui(_Complex float x, integer n) {
 static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
 	_Dcomplex pow={1.0,0.0}; unsigned long int u;
 	if(n != 0) {
-		if(n < 0) n = -n, x._Val[0] = 1/x._Val[0], x._Val[1] =1/x._Val[1];
+		if(n < 0) {
+			double d = x._Val[0]*x._Val[0] + x._Val[1]*x._Val[1];
+			n = -n; x = _Cbuild(x._Val[0]/d, -x._Val[1]/d);
+		}
 		for(u = n; ; ) {
-			if(u & 01) pow._Val[0] *= x._Val[0], pow._Val[1] *= x._Val[1];
-			if(u >>= 1) x._Val[0] *= x._Val[0], x._Val[1] *= x._Val[1];
+			if(u & 01) pow = _Cmulcc(pow, x);
+			if(u >>= 1) x = _Cmulcc(x, x);
 			else break;
 		}
 	}
-	_Dcomplex p = {pow._Val[0], pow._Val[1]};
-	return p;
+	return pow;
 }
 #else
 static _Complex double zpow_ui(_Complex double x, integer n) {
@@ -350,13 +354,17 @@ static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, c
 	_Fcomplex zdotc = {0.0, 0.0};
 	if (incx == 1 && incy == 1) {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conjf(Cf(&x[i]))._Val[0] * Cf(&y[i])._Val[0];
-			zdotc._Val[1] += conjf(Cf(&x[i]))._Val[1] * Cf(&y[i])._Val[1];
+			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0]
+				+ Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
+			zdotc._Val[1] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[1]
+				- Cf(&x[i])._Val[1] * Cf(&y[i])._Val[0];
 		}
 	} else {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conjf(Cf(&x[i*incx]))._Val[0] * Cf(&y[i*incy])._Val[0];
-			zdotc._Val[1] += conjf(Cf(&x[i*incx]))._Val[1] * Cf(&y[i*incy])._Val[1];
+			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0]
+				+ Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
+			zdotc._Val[1] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[1]
+				- Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[0];
 		}
 	}
 	pCf(z) = zdotc;
@@ -381,13 +389,17 @@ static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	_Dcomplex zdotc = {0.0, 0.0};
 	if (incx == 1 && incy == 1) {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i]))._Val[0] * Cd(&y[i])._Val[0];
-			zdotc._Val[1] += conj(Cd(&x[i]))._Val[1] * Cd(&y[i])._Val[1];
+			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0]
+				+ Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
+			zdotc._Val[1] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[1]
+				- Cd(&x[i])._Val[1] * Cd(&y[i])._Val[0];
 		}
 	} else {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i*incx]))._Val[0] * Cd(&y[i*incy])._Val[0];
-			zdotc._Val[1] += conj(Cd(&x[i*incx]))._Val[1] * Cd(&y[i*incy])._Val[1];
+			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0]
+				+ Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
+			zdotc._Val[1] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[1]
+				- Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[0];
 		}
 	}
 	pCd(z) = zdotc;
@@ -411,14 +423,18 @@ static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, c
 #ifdef _MSC_VER
 	_Fcomplex zdotc = {0.0, 0.0};
 	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0];
-			zdotc._Val[1] += Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
+		for (i=0;i<n;i++) { /* zdotc = zdotc + x(i)* y(i) */
+			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0]
+				- Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
+			zdotc._Val[1] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[1]
+				+ Cf(&x[i])._Val[1] * Cf(&y[i])._Val[0];
 		}
 	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0];
-			zdotc._Val[1] += Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
+		for (i=0;i<n;i++) { /* zdotc = zdotc + x(i)* y(i) */
+			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0]
+				- Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
+			zdotc._Val[1] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[1]
+				+ Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[0];
 		}
 	}
 	pCf(z) = zdotc;
@@ -442,14 +458,18 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 #ifdef _MSC_VER
 	_Dcomplex zdotc = {0.0, 0.0};
 	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0];
-			zdotc._Val[1] += Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
+		for (i=0;i<n;i++) { /* zdotc = zdotc + x(i)* y(i) */
+			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0]
+				- Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
+			zdotc._Val[1] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[1]
+				+ Cd(&x[i])._Val[1] * Cd(&y[i])._Val[0];
 		}
 	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0];
-			zdotc._Val[1] += Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
+		for (i=0;i<n;i++) { /* zdotc = zdotc + x(i)* y(i) */
+			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0]
+				- Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
+			zdotc._Val[1] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[1]
+				+ Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[0];
 		}
 	}
 	pCd(z) = zdotc;

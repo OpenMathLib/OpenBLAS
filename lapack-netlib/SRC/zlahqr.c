@@ -259,15 +259,17 @@ typedef struct Namelist Namelist;
 static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
 	_Dcomplex pow={1.0,0.0}; unsigned long int u;
 	if(n != 0) {
-		if(n < 0) n = -n, x._Val[0] = 1/x._Val[0], x._Val[1] =1/x._Val[1];
+		if(n < 0) {
+			double d = x._Val[0]*x._Val[0] + x._Val[1]*x._Val[1];
+			n = -n; x = _Cbuild(x._Val[0]/d, -x._Val[1]/d);
+		}
 		for(u = n; ; ) {
-			if(u & 01) pow._Val[0] *= x._Val[0], pow._Val[1] *= x._Val[1];
-			if(u >>= 1) x._Val[0] *= x._Val[0], x._Val[1] *= x._Val[1];
+			if(u & 01) pow = _Cmulcc(pow, x);
+			if(u >>= 1) x = _Cmulcc(x, x);
 			else break;
 		}
 	}
-	_Dcomplex p = {pow._Val[0], pow._Val[1]};
-	return p;
+	return pow;
 }
 #else
 static _Complex double zpow_ui(_Complex double x, integer n) {
