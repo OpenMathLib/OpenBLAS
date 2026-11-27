@@ -109,7 +109,7 @@ static inline int WhereAmI(void){
 }
 #endif
 
-static inline int blas_quickdivide(blasint x, blasint y){
+static inline BLASULONG blas_quickdivide(BLASULONG x, BLASULONG y){
   return x / y;
 }
 

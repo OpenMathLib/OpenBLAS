@@ -166,7 +166,7 @@ static inline unsigned long getstackaddr(void){
 #endif
 
 #ifdef SMP
-static inline int blas_quickdivide(blasint x, blasint y){
+static inline BLASULONG blas_quickdivide(BLASULONG x, BLASULONG y){
   return x / y;
 }
 #endif

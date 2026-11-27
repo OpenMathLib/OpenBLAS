@@ -41,7 +41,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define WMB do { __asm__ __volatile__("": : :"memory"); } while (0)
 #define RMB
 
-static inline int blas_quickdivide(blasint x, blasint y) {
+static inline BLASULONG blas_quickdivide(BLASULONG x, BLASULONG y) {
   return x / y;
 }
 
