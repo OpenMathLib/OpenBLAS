@@ -305,3 +305,6 @@ hheei <hheei@users.noreply.github.com>
 
 * vera-rubin <https://github.com/vera-rubin>
   * [2026-11-21] Fix the sine in the small-cosine branch of CROTG/ZROTG for complex inputs
+
+* Ryan Curtin <ryan@ratml.org>
+  * [2026-11-27] Fix TRMM kernels for mips architectures.
