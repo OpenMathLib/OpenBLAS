@@ -199,6 +199,25 @@ CTEST(crotg, negative_real_negative_img)
     ASSERT_DBL_NEAR_TOL(-5.26498f, sa[0], SINGLE_EPS);
     ASSERT_DBL_NEAR_TOL(-7.01997f, sa[1], SINGLE_EPS);
 }
+/**
+ * Fortran API specific test
+ * Test crotg with a complex a much smaller than b, where the cosine
+ * is computed in the small-cosine branch
+ */
+CTEST(crotg, unbalanced_complex_a)
+{
+    float sa[2] = {ldexpf(1.0, -30), ldexpf(1.0, -30)};
+    float sb[2] = {ldexpf(1.0, 50), 0.0};
+    float ss[2];
+    float sc;
+    BLASFUNC(crotg)(sa, sb, &sc, ss);
+    ASSERT_DBL_NEAR_TOL(1.41421356237310, ldexp(sc, 80), SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.70710678118655, ss[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.70710678118655, ss[1], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.41421356237310, ldexp(sa[0], -49), SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.41421356237310, ldexp(sa[1], -49), SINGLE_EPS);
+}
+
 #ifndef NO_CBLAS
 /**
  * C API specific test
@@ -362,6 +381,25 @@ CTEST(crotg, c_api_negative_real_negative_img)
     ASSERT_DBL_NEAR_TOL(-0.04558f, ss[1], SINGLE_EPS);
     ASSERT_DBL_NEAR_TOL(-5.26498f, sa[0], SINGLE_EPS);
     ASSERT_DBL_NEAR_TOL(-7.01997f, sa[1], SINGLE_EPS);
+}
+
+/**
+ * C API specific test
+ * Test crotg with a complex a much smaller than b, where the cosine
+ * is computed in the small-cosine branch
+ */
+CTEST(crotg, c_api_unbalanced_complex_a)
+{
+    float sa[2] = {ldexpf(1.0, -30), ldexpf(1.0, -30)};
+    float sb[2] = {ldexpf(1.0, 50), 0.0};
+    float ss[2];
+    float sc;
+    cblas_crotg(sa, sb, &sc, ss);
+    ASSERT_DBL_NEAR_TOL(1.41421356237310, ldexp(sc, 80), SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.70710678118655, ss[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.70710678118655, ss[1], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.41421356237310, ldexp(sa[0], -49), SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.41421356237310, ldexp(sa[1], -49), SINGLE_EPS);
 }
 #endif
 #endif
