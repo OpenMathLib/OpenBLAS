@@ -302,3 +302,6 @@ hheei <hheei@users.noreply.github.com>
 
 * Nathan Moinvaziri <https://github.com/nmoinvaz>
   * [2026-11-14] Fix work buffer overflow in threaded GETRF for large N
+
+* Ryan Curtin <ryan@ratml.org>
+  * [2026-11-27] Fix TRMM kernels for mips architectures.
