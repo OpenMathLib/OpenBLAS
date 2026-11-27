@@ -460,7 +460,7 @@
      $                   NMATS, NMAX, NSELC, NSELR, NTEST, NTESTT
       DOUBLE PRECISION   ANINV, ANORM, COND, CONDS, OVFL, PRODI, PRODR,
      $                   RTOVFL, RTULP, RTULPI, RTUNFL, SJ, TEMP1,
-     $                   TEMP2, ULP, ULPINV, UNFL, XNORM, YNORM
+     $                   TEMP2, TEMP3, ULP, ULPINV, UNFL, XNORM, YNORM
 *     ..
 *     .. Local Arrays ..
       CHARACTER          ADUMMA( 1 )
@@ -978,11 +978,10 @@
 *           eigenvalue j of T1, is what makes the comparison meaningful.
 *           A backward error eps in H moves that eigenvalue by
 *           eps / s(j), so the two can only be asked to agree to within
-*           |dW(j)| s(j); s(j) = 1 for a normal matrix.  Eigenvalues
-*           with s(j) < sqrt(ulp) are skipped: those are the ones the
-*           two paths have been seen to return in a different order,
-*           which the index-wise comparison could not tell apart from a
-*           real error.
+*           |dW(j)| s(j); s(j) = 1 for a normal matrix.  The two
+*           paths may return the eigenvalues in a different order, so
+*           each eigenvalue of W1 is compared with the nearest one of
+*           W3.  Eigenvalues with s(j) < sqrt(ulp) are skipped.
 *
             NTEST = 11
             RESULT( 11 ) = ULPINV
@@ -1017,9 +1016,15 @@
                SJ = SJ / MAX( XNORM*YNORM, UNFL )
                TEMP1 = MAX( TEMP1, ABS( WR1( J ) )+ABS( WI1( J ) ),
      $                 ABS( WR3( J ) )+ABS( WI3( J ) ) )
-               IF( SJ.GE.RTULP )
-     $            TEMP2 = MAX( TEMP2, SJ*( ABS( WR1( J )-WR3( J ) )+
-     $                 ABS( WI1( J )-WI3( J ) ) ) )
+               IF( SJ.GE.RTULP ) THEN
+                  TEMP3 = ABS( WR1( J )-WR3( 1 ) ) +
+     $                    ABS( WI1( J )-WI3( 1 ) )
+                  DO 154 I = 2, N
+                     TEMP3 = MIN( TEMP3, ABS( WR1( J )-WR3( I ) )+
+     $                       ABS( WI1( J )-WI3( I ) ) )
+  154             CONTINUE
+                  TEMP2 = MAX( TEMP2, SJ*TEMP3 )
+               END IF
   155       CONTINUE
 *
             RESULT( 11 ) = TEMP2 / MAX( UNFL, ULP*MAX( TEMP1, TEMP2 ) )
