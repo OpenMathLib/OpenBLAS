@@ -200,6 +200,25 @@ CTEST(zrotg, negative_real_negative_img)
     ASSERT_DBL_NEAR_TOL(-7.01997150991369, sa[1], DOUBLE_EPS);
 }
 
+/**
+ * Fortran API specific test
+ * Test zrotg with a complex a much smaller than b, where the cosine
+ * is computed in the small-cosine branch
+ */
+CTEST(zrotg, unbalanced_complex_a)
+{
+    double sa[2] = {ldexp(1.0, -200), ldexp(1.0, -200)};
+    double sb[2] = {ldexp(1.0, 400), 0.0};
+    double ss[2];
+    double sc;
+    BLASFUNC(zrotg)(sa, sb, &sc, ss);
+    ASSERT_DBL_NEAR_TOL(1.41421356237310, ldexp(sc, 600), DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.70710678118655, ss[0], DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.70710678118655, ss[1], DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.41421356237310, ldexp(sa[0], -399), DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.41421356237310, ldexp(sa[1], -399), DOUBLE_EPS);
+}
+
 #ifndef NO_CBLAS
 /**
  * C API specific test
@@ -363,6 +382,25 @@ CTEST(zrotg, c_api_negative_real_negative_img)
     ASSERT_DBL_NEAR_TOL(-0.04558423058385, ss[1], DOUBLE_EPS);
     ASSERT_DBL_NEAR_TOL(-5.26497863243527, sa[0], DOUBLE_EPS);
     ASSERT_DBL_NEAR_TOL(-7.01997150991369, sa[1], DOUBLE_EPS);
+}
+
+/**
+ * C API specific test
+ * Test zrotg with a complex a much smaller than b, where the cosine
+ * is computed in the small-cosine branch
+ */
+CTEST(zrotg, c_api_unbalanced_complex_a)
+{
+    double sa[2] = {ldexp(1.0, -200), ldexp(1.0, -200)};
+    double sb[2] = {ldexp(1.0, 400), 0.0};
+    double ss[2];
+    double sc;
+    cblas_zrotg(sa, sb, &sc, ss);
+    ASSERT_DBL_NEAR_TOL(1.41421356237310, ldexp(sc, 600), DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.70710678118655, ss[0], DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.70710678118655, ss[1], DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.41421356237310, ldexp(sa[0], -399), DOUBLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.41421356237310, ldexp(sa[1], -399), DOUBLE_EPS);
 }
 #endif
 #endif
