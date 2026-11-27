@@ -43,6 +43,8 @@ lapack_complex_float lapack_make_complex_float( float re, float im ) {
     z = re + im * I;
 #elif defined(LAPACK_COMPLEX_CPP)
     z = std::complex<float>(re,im);
+#elif _MSC_VER
+    z = _FCbuild(re, im);
 #else /* C99 is default */
     z = re + im*I;
 #endif
