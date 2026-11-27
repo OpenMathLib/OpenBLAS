@@ -82,7 +82,7 @@ ZNRM2KERNEL =  znrm2_lasx.S
 CSWAPKERNEL = cswap_lasx.S
 ZSWAPKERNEL = cswap_lasx.S
 
-CSUMKERNEL = csum_lasx.S
+CSUMKERNEL = ../arm/zsum.c
 ZSUMKERNEL = csum_lasx.S
 
 DGEMMKERNEL    = dgemm_kernel_16x6.S
