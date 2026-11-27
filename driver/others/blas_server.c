@@ -590,7 +590,7 @@ int blas_thread_init(void){
   LOCK_COMMAND(&server_lock);
 
   // Adjust thread buffers
-  adjust_thread_buffers();
+  //adjust_thread_buffers();
 
   if (!blas_server_avail){
 
