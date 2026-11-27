@@ -113,10 +113,17 @@ CGEMVTKERNEL = ../arm/zgemv_t.c
 ZGEMVTKERNEL = ../arm/zgemv_t.c
 endif
 
+ifndef NO_MSA
+STRMMKERNEL = ../mips/sgemm_kernel_8x8_msa.c
+DTRMMKERNEL = ../mips/dgemm_kernel_8x4_msa.c
+CTRMMKERNEL = ../mips/cgemm_kernel_8x4_msa.c
+ZTRMMKERNEL = ../mips/zgemm_kernel_4x4_msa.c
+else
 STRMMKERNEL = ../generic/trmmkernel_2x2.c
 DTRMMKERNEL = ../generic/trmmkernel_2x2.c
 CTRMMKERNEL = ../generic/ztrmmkernel_2x2.c
 ZTRMMKERNEL = ../generic/ztrmmkernel_2x2.c
+endif
 
 ifndef NO_MSA
 SGEMMKERNEL    = ../mips/sgemm_kernel_8x8_msa.c
