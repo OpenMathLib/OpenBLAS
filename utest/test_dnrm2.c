@@ -30,6 +30,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
+#include <float.h>
 #include <math.h>
 #include "openblas_utest.h"
 #if defined(BUILD_DOUBLE)
@@ -167,5 +168,61 @@ CTEST(dnrm2,dznrm2_x87_precision_control)
 	ASSERT_EQUAL(cw_53, cw_after);
 	ASSERT_DBL_NEAR_TOL(res_64, res_53, DOUBLE_EPS);
 }
+#endif
+#endif
+
+/* Negative increments are supported by the public NRM2 interfaces. Keep
+   complex RVV byte strides signed when the wrapper starts at the last item. */
+#if !defined(NO_CBLAS) && (defined(BUILD_COMPLEX) || defined(BUILD_COMPLEX16))
+#include "cblas.h"
+#endif
+
+#if defined(BUILD_COMPLEX)
+static void check_cnrm2_stride(int c_api, blasint increment) {
+    blasint n = 3;
+    float x[10] = {3.0f, 4.0f, 0.0f, 0.0f, 0.0f,
+                   0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    float result;
+    (void)c_api;
+#ifndef NO_CBLAS
+    if (c_api) result = cblas_scnrm2(n, x, increment);
+    else
+#endif
+    result = BLASFUNC(scnrm2)(&n, x, &increment);
+    ASSERT_TRUE(result >= -FLT_MAX && result <= FLT_MAX);
+    ASSERT_DBL_NEAR_TOL(5.0, result, SINGLE_EPS);
+}
+CTEST(cnrm2, negative_unit_fortran) { check_cnrm2_stride(0, -1); }
+CTEST(cnrm2, negative_nonunit_fortran) { check_cnrm2_stride(0, -2); }
+CTEST(cnrm2, positive_nonunit_fortran) { check_cnrm2_stride(0, 2); }
+#ifndef NO_CBLAS
+CTEST(cnrm2, negative_unit_cblas) { check_cnrm2_stride(1, -1); }
+CTEST(cnrm2, negative_nonunit_cblas) { check_cnrm2_stride(1, -2); }
+CTEST(cnrm2, positive_nonunit_cblas) { check_cnrm2_stride(1, 2); }
+#endif
+#endif
+
+#if defined(BUILD_COMPLEX16)
+static void check_znrm2_stride(int c_api, blasint increment) {
+    blasint n = 3;
+    double x[10] = {3.0, 4.0, 0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0, 0.0, 0.0};
+    double result;
+    (void)c_api;
+#ifndef NO_CBLAS
+    if (c_api) result = cblas_dznrm2(n, x, increment);
+    else
+#endif
+    result = BLASFUNC(dznrm2)(&n, x, &increment);
+    ASSERT_TRUE(result >= -DBL_MAX && result <= DBL_MAX);
+    ASSERT_DBL_NEAR_TOL(5.0, result, DOUBLE_EPS);
+}
+CTEST(znrm2, negative_unit_fortran) { check_znrm2_stride(0, -1); }
+CTEST(znrm2, negative_nonunit_fortran) { check_znrm2_stride(0, -2); }
+CTEST(znrm2, positive_nonunit_fortran) { check_znrm2_stride(0, 2); }
+#ifndef NO_CBLAS
+CTEST(znrm2, negative_unit_cblas) { check_znrm2_stride(1, -1); }
+CTEST(znrm2, negative_nonunit_cblas) { check_znrm2_stride(1, -2); }
+CTEST(znrm2, positive_nonunit_cblas) { check_znrm2_stride(1, 2); }
 #endif
 #endif

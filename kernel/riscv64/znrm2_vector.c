@@ -110,7 +110,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
         v_scale = VFMVVF_FLOAT(0, gvl);
         v_zero = VFMVVF_FLOAT(0, gvl);
 
-        unsigned int stride_x = inc_x * sizeof(FLOAT) * 2;
+        BLASLONG stride_x = inc_x * sizeof(FLOAT) * 2;
         int idx = 0;
 
         for(i=0; i<n/gvl; i++){
