@@ -286,18 +286,27 @@ static double dpow_ui(double x, integer n) {
 	return pow;
 }
 #ifdef _MSC_VER
-static _Fcomplex cpow_ui(complex x, integer n) {
-	complex pow={1.0,0.0}; unsigned long int u;
-		if(n != 0) {
-		if(n < 0) n = -n, x.r = 1/x.r, x.i=1/x.i;
-		for(u = n; ; ) {
-			if(u & 01) pow.r *= x.r, pow.i *= x.i;
-			if(u >>= 1) x.r *= x.r, x.i *= x.i;
+static _Fcomplex cpow_ui(_Fcomplex x, integer n) {
+	_Fcomplex pow={1.0,0.0}; unsigned long long u;
+	if(n != 0) {
+		if(n < 0) { /* scaled complex reciprocal, avoids overflow/underflow */
+			float r, den;
+			if (fabsf(x._Val[0]) >= fabsf(x._Val[1])) {
+				r = x._Val[1] / x._Val[0]; den = x._Val[0] + x._Val[1] * r;
+				x = _FCbuild(1 / den, -r / den);
+			} else {
+				r = x._Val[0] / x._Val[1]; den = x._Val[1] + x._Val[0] * r;
+				x = _FCbuild(r / den, -1 / den);
+			}
+			u = 0ULL - (unsigned long long)n;
+		} else u = (unsigned long long)n;
+		for(; ; ) {
+			if(u & 01) pow = _FCmulcc(pow, x);
+			if(u >>= 1) x = _FCmulcc(x, x);
 			else break;
 		}
 	}
-	_Fcomplex p={pow.r, pow.i};
-	return p;
+	return pow;
 }
 #else
 static _Complex float cpow_ui(_Complex float x, integer n) {
@@ -315,17 +324,26 @@ static _Complex float cpow_ui(_Complex float x, integer n) {
 #endif
 #ifdef _MSC_VER
 static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
-	_Dcomplex pow={1.0,0.0}; unsigned long int u;
+	_Dcomplex pow={1.0,0.0}; unsigned long long u;
 	if(n != 0) {
-		if(n < 0) n = -n, x._Val[0] = 1/x._Val[0], x._Val[1] =1/x._Val[1];
-		for(u = n; ; ) {
-			if(u & 01) pow._Val[0] *= x._Val[0], pow._Val[1] *= x._Val[1];
-			if(u >>= 1) x._Val[0] *= x._Val[0], x._Val[1] *= x._Val[1];
+		if(n < 0) { /* scaled complex reciprocal, avoids overflow/underflow */
+			double r, den;
+			if (fabs(x._Val[0]) >= fabs(x._Val[1])) {
+				r = x._Val[1] / x._Val[0]; den = x._Val[0] + x._Val[1] * r;
+				x = _Cbuild(1 / den, -r / den);
+			} else {
+				r = x._Val[0] / x._Val[1]; den = x._Val[1] + x._Val[0] * r;
+				x = _Cbuild(r / den, -1 / den);
+			}
+			u = 0ULL - (unsigned long long)n;
+		} else u = (unsigned long long)n;
+		for(; ; ) {
+			if(u & 01) pow = _Cmulcc(pow, x);
+			if(u >>= 1) x = _Cmulcc(x, x);
 			else break;
 		}
 	}
-	_Dcomplex p = {pow._Val[0], pow._Val[1]};
-	return p;
+	return pow;
 }
 #else
 static _Complex double zpow_ui(_Complex double x, integer n) {
@@ -382,15 +400,15 @@ static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, c
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
 			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0]
 				+ Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
-			zdotc._Val[1] -= Cf(&x[i])._Val[1] * Cf(&y[i])._Val[0]
-				- Cf(&x[i])._Val[0] * Cf(&y[i])._Val[1];
+			zdotc._Val[1] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[1]
+				- Cf(&x[i])._Val[1] * Cf(&y[i])._Val[0];
 		}
 	} else {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
 			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0]
 				+ Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
-			zdotc._Val[1] -= Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1]
-				- Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[1];
+			zdotc._Val[1] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[1]
+				- Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[0];
 		}
 	}
 	pCf(z) = zdotc;

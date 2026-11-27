@@ -269,15 +269,15 @@ static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, c
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
 			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0]
 				+ Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
-			zdotc._Val[1] -= Cf(&x[i])._Val[1] * Cf(&y[i])._Val[0]
-				- Cf(&x[i])._Val[0] * Cf(&y[i])._Val[1];
+			zdotc._Val[1] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[1]
+				- Cf(&x[i])._Val[1] * Cf(&y[i])._Val[0];
 		}
 	} else {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
 			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0]
 				+ Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
-			zdotc._Val[1] -= Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1]
-				- Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[1];
+			zdotc._Val[1] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[1]
+				- Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[0];
 		}
 	}
 	pCf(z) = zdotc;
@@ -301,18 +301,18 @@ static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, c
 #ifdef _MSC_VER
 	_Fcomplex zdotc = {0.0, 0.0};
 	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+		for (i=0;i<n;i++) { /* zdotc = zdotc + x(i)* y(i) */
 			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0]
 				- Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
-			zdotc._Val[1] += Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1]
-				+ Cf(&x[i])._Val[0] * Cf(&y[i])._Val[1];
+			zdotc._Val[1] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[1]
+				+ Cf(&x[i])._Val[1] * Cf(&y[i])._Val[0];
 		}
 	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
+		for (i=0;i<n;i++) { /* zdotc = zdotc + x(i)* y(i) */
 			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0]
 				- Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
-			zdotc._Val[1] += Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1]
-				+ Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[1];
+			zdotc._Val[1] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[1]
+				+ Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[0];
 		}
 	}
 	pCf(z) = zdotc;
