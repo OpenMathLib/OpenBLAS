@@ -347,6 +347,7 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 		nthreads = 1;
 	else
 		nthreads = num_cpu_avail(1);
+	nthreads = apple_omp_level1_threads(2 * (size_t)n * COMPSIZE * sizeof(FLOAT), inc_x == 1 && inc_y == 1, nthreads);
 
 	if (nthreads == 1) {
 		zdot_compute(n, x, inc_x, y, inc_y, &zdot);
