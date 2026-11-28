@@ -1866,15 +1866,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME "RISCV64_ZVL128B"
 #endif
 
-#if defined(FORCE_E2K) || defined(__e2k__)
+#ifdef FORCE_E2K
 #define FORCE
 #define ARCHITECTURE "E2K"
-#define ARCHCONFIG   "-DGENERIC " \
+#define ARCHCONFIG   "-DE2K " \
 		     "-DL1_DATA_SIZE=16384 -DL1_DATA_LINESIZE=64 " \
 		     "-DL2_SIZE=524288 -DL2_LINESIZE=64 " \
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
 #define LIBNAME   "generic"
-#define CORENAME  "generic"
+#define CORENAME  "GENERIC"
 #endif
 
 #ifdef FORCE_CSKY
@@ -1981,6 +1981,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define OPENBLAS_SUPPORTED
 #endif
 
+#ifdef __e2k__
+#include "cpuid_e2k.c"
+#define OPENBLAS_SUPPORTED
+#endif
+
 #ifndef OPENBLAS_SUPPORTED
 #error "This arch/CPU is not supported by OpenBLAS."
 #endif
@@ -2047,7 +2052,7 @@ int main(int argc, char *argv[]){
 #ifdef FORCE
     printf("CORE=%s\n", CORENAME);
 #else
-#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__) || defined(__riscv) || defined(__alpha__) || defined(__csky__)
+#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__) || defined(__riscv) || defined(__alpha__) || defined(__csky__) || defined(__e2k__)
     printf("CORE=%s\n", get_corename());
 #endif
 #endif
@@ -2193,7 +2198,7 @@ printf("ELF_VERSION=2\n");
 #ifdef FORCE
     printf("#define CHAR_CORENAME \"%s\"\n", CORENAME);
 #else
-#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__) || defined(__riscv) || defined(__csky__)
+#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__) || defined(__riscv) || defined(__csky__) || defined(__e2k__)
     printf("#define CHAR_CORENAME \"%s\"\n", get_corename());
 #endif
 #endif
