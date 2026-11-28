@@ -41,7 +41,7 @@ static uint64_t sve_cntw() {
 }
 #endif
 
-#if defined(__ARM_FEATURE_SME) && defined(__ARM_FEATURE_LOCALLY_STREAMING) && defined(__clang__) && __clang_major__ >= 16
+#if defined(__ARM_FEATURE_SME) && (defined(__ARM_FEATURE_LOCALLY_STREAMING) || defined(__apple_build_version__)) && defined(__clang__) && __clang_major__ >= 16
 // Outer product kernel.
 // Computes a 2SVL x 2SVL block of C, utilizing all four FP32 tiles of ZA.
 __attribute__((always_inline)) inline void
